@@ -1,0 +1,58 @@
+{
+    "name": "friendsofhyperf/tinker",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "php",
+        "hyperf",
+        "tinker",
+        "swoole"
+    ],
+    "authors": [{
+        "name": "Huangdijia",
+        "email": "huangdijia@gmail.com",
+        "homepage": "https://github.com/huangdijia"
+    }],
+    "description": "Powerful REPL for the Hyperf framework.",
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Tinker\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FriendsOfHyperf\\Tinker\\Tests\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=7.2",
+        "ext-swoole": ">=4.5",
+        "hyperf/command": "^2.0",
+        "hyperf/contract": "^2.0",
+        "hyperf/di": "^2.0",
+        "hyperf/framework": "^2.0",
+        "hyperf/utils": "^2.0",
+        "psy/psysh": "^0.10.0|^0.11.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^2.14",
+        "hyperf/database": "^2.0",
+        "hyperf/redis": "^2.0",
+        "hyperf/testing": "^2.0",
+        "hyperf/view-engine": "^2.2",
+        "phpstan/phpstan": "^0.12"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Tinker\\ConfigProvider"
+        }
+    },
+    "scripts": {
+        "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./src",
+        "cs-fix": "php-cs-fixer fix $1",
+        "test": "phpunit -c phpunit.xml --colors=always"
+    }
+}

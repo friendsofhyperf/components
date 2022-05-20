@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Tests\Helpers;
 
+use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Utils\Stringable;
 use stdClass;
 
