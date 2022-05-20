@@ -58,6 +58,7 @@
         ],
         "psr-4": {
             "FriendsOfHyperf\\AccessLog\\": "src/access-log/src/",
+            "FriendsOfHyperf\\Cache\\": "src/cache/src/",
             "FriendsOfHyperf\\ClosureCommand\\": "src/closure-command/src/",
             "FriendsOfHyperf\\ExceptionEvent\\": "src/exception-event/src/",
             "FriendsOfHyperf\\Facade\\": "src/facade/src/",
@@ -80,6 +81,7 @@
         "hyperf": {
             "config": [
                 "FriendsOfHyperf\\AccessLog\\ConfigProvider",
+                "FriendsOfHyperf\\Lock\\ConfigProvider",
                 "FriendsOfHyperf\\ClosureCommand\\ConfigProvider",
                 "FriendsOfHyperf\\ExceptionEvent\\ConfigProvider",
                 "FriendsOfHyperf\\Facade\\ConfigProvider",

@@ -1,0 +1,37 @@
+{
+    "name": "friendsofhyperf/cache",
+    "type": "library",
+    "description": "Yet another cache for hyperf.",
+    "license": "MIT",
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
+    "require": {
+        "hyperf/cache": "~2.2.0",
+        "nesbot/carbon": "^2.43"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "hyperf/di": "~2.2.0",
+        "hyperf/event": "~2.2.0",
+        "hyperf/framework": "~2.2.0",
+        "swoole/ide-helper": "dev-master",
+        "phpstan/phpstan": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Cache\\": "src/"
+        }
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Cache\\ConfigProvider"
+        }
+    },
+    "minimum-stability": "dev",
+    "scripts": {
+        "cs-fix": "php-cs-fixer fix $1",
+        "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./src"
+    }
+}
