@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 /**
- * This file is part of friendsofhyperf/exception-event.
+ * This file is part of friendsofhyperf/components.
  *
- * @link     https://github.com/friendsofhyperf/exception-event
- * @document https://github.com/friendsofhyperf/exception-event/blob/main/README.md
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/1.x/README.md
  * @contact  huangdijia@gmail.com
  */
 use FriendsOfHyperf\ExceptionEvent\Event\ExceptionDispatched;

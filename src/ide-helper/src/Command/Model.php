@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of friendsofhyperf/components.
  *
- * @link     https://github.com/friendsofhyperf/ide-helper
- * @document https://github.com/friendsofhyperf/ide-helper/blob/master/README.md
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/1.x/README.md
  * @contact  huangdijia@gmail.com
- * @license  https://github.com/friendsofhyperf/ide-helper/blob/master/LICENSE
  */
 namespace FriendsOfHyperf\IdeHelper\Command;
 
@@ -137,7 +136,7 @@ class Model extends Command
      */
     protected function getParameters($method)
     {
-        //Loop through the default values for parameters, and make the correct output string
+        // Loop through the default values for parameters, and make the correct output string
         $params = [];
         $paramsWithDefault = [];
         /** @var \ReflectionParameter $param */
@@ -154,7 +153,7 @@ class Model extends Command
                 } elseif (is_null($default)) {
                     $default = 'null';
                 } elseif (is_int($default)) {
-                    //$default = $default;
+                    // $default = $default;
                 } else {
                     $default = "'" . trim($default) . "'";
                 }
@@ -427,7 +426,7 @@ class Model extends Command
                     'Attribute'
                 ) && $method !== 'getAttribute'
                 ) {
-                    //Magic get<name>Attribute
+                    // Magic get<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
                     if (! empty($name)) {
                         $reflection = new \ReflectionMethod($model, $method);
@@ -439,18 +438,18 @@ class Model extends Command
                     'Attribute'
                 ) && $method !== 'setAttribute'
                 ) {
-                    //Magic set<name>Attribute
+                    // Magic set<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
                     if (! empty($name)) {
                         $this->setProperty($name, null, null, true);
                     }
                 } elseif (Str::startsWith($method, 'scope') && $method !== 'scopeQuery') {
-                    //Magic set<name>Attribute
+                    // Magic set<name>Attribute
                     $name = Str::camel(substr($method, 5));
                     if (! empty($name)) {
                         $reflection = new \ReflectionMethod($model, $method);
                         $args = $this->getParameters($reflection);
-                        //Remove the first ($query) argument
+                        // Remove the first ($query) argument
                         array_shift($args);
                         $this->setMethod($name, '\Hyperf\Database\Model\Builder|\\' . $reflection->class, $args);
                     }
@@ -502,7 +501,7 @@ class Model extends Command
                     ] as $relation => $impl) {
                         $search = '$this->' . $relation . '(';
                         if (stripos($code, $search) || ltrim($impl, '\\') === ltrim((string) $type, '\\')) {
-                            //Resolve the relation's model to a Relation object.
+                            // Resolve the relation's model to a Relation object.
                             $methodReflection = new \ReflectionMethod($model, $method);
                             if ($methodReflection->getNumberOfParameters()) {
                                 continue;
@@ -527,7 +526,7 @@ class Model extends Command
                                     'morphedByMany',
                                 ];
                                 if (strpos(get_class($relationObj), 'Many') !== false) {
-                                    //Collection or array of models (because Collection is Arrayable)
+                                    // Collection or array of models (because Collection is Arrayable)
                                     $this->setProperty(
                                         $method,
                                         $this->getCollectionClass($relatedModel) . '|' . $relatedModel . '[]',
@@ -549,7 +548,7 @@ class Model extends Command
                                         null
                                     );
                                 } else {
-                                    //Single model is returned
+                                    // Single model is returned
                                     $this->setProperty(
                                         $method,
                                         $relatedModel,

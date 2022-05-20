@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 /**
- * This file is part of closure-command.
+ * This file is part of friendsofhyperf/components.
  *
- * @link     https://github.com/friendsofhyperf/closure-command
- * @document https://github.com/friendsofhyperf/closure-command/blob/1.x/README.md
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/1.x/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\ClosureCommand\Listener;

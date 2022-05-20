@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of friendsofhyperf/components.
  *
- * @link     https://github.com/friendsofhyperf/ide-helper
- * @document https://github.com/friendsofhyperf/ide-helper/blob/master/README.md
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/1.x/README.md
  * @contact  huangdijia@gmail.com
- * @license  https://github.com/friendsofhyperf/ide-helper/blob/master/LICENSE
  */
 namespace FriendsOfHyperf\IdeHelper;
 

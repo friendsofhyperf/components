@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of friendsofhyperf/components.
  *
- * @link     https://github.com/friendsofhyperf/ide-helper
- * @document https://github.com/friendsofhyperf/ide-helper/blob/master/README.md
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/1.x/README.md
  * @contact  huangdijia@gmail.com
- * @license  https://github.com/friendsofhyperf/ide-helper/blob/master/LICENSE
  */
 namespace FriendsOfHyperf\IdeHelper;
 
@@ -63,13 +62,13 @@ class Method
         $this->real_name = $method->isClosure() ? $this->name : $method->name;
         $this->initClassDefinedProperties($method, $class);
 
-        //Reference the 'real' function in the declaring class
+        // Reference the 'real' function in the declaring class
         $this->root = '\\' . ltrim($class->getName(), '\\');
 
-        //Create a DocBlock and serializer instance
+        // Create a DocBlock and serializer instance
         $this->initPhpDoc($method);
 
-        //Normalize the description and inherit the docs from parents/interfaces
+        // Normalize the description and inherit the docs from parents/interfaces
         try {
             $this->normalizeParams($this->phpdoc);
             $this->normalizeReturn($this->phpdoc);
@@ -77,10 +76,10 @@ class Method
         } catch (\Exception $e) {
         }
 
-        //Get the parameters, including formatted default values
+        // Get the parameters, including formatted default values
         $this->getParameters($method);
 
-        //Make the method static
+        // Make the method static
         $this->phpdoc->appendTag(Tag::createInstance('@static', $this->phpdoc));
     }
 
@@ -199,7 +198,7 @@ class Method
      */
     public function getParameters($method)
     {
-        //Loop through the default values for paremeters, and make the correct output string
+        // Loop through the default values for paremeters, and make the correct output string
         $params = [];
         $paramsWithDefault = [];
         foreach ($method->getParameters() as $param) {
@@ -214,9 +213,9 @@ class Method
                 } elseif (is_null($default)) {
                     $default = 'null';
                 } elseif (is_int($default)) {
-                    //$default = $default;
+                    // $default = $default;
                 } elseif (is_resource($default)) {
-                    //skip to not fail
+                    // skip to not fail
                 } else {
                     $default = "'" . trim($default) . "'";
                 }
@@ -252,10 +251,10 @@ class Method
      */
     protected function normalizeDescription(DocBlock $phpdoc)
     {
-        //Get the short + long description from the DocBlock
+        // Get the short + long description from the DocBlock
         $description = $phpdoc->getText();
 
-        //Loop through parents/interfaces, to fill in {@inheritdoc}
+        // Loop through parents/interfaces, to fill in {@inheritdoc}
         if (strpos($description, '{@inheritdoc}') !== false) {
             $inheritdoc = $this->getInheritDoc($this->method);
             $inheritDescription = $inheritdoc->getText();
@@ -266,7 +265,7 @@ class Method
             $this->normalizeParams($inheritdoc);
             $this->normalizeReturn($inheritdoc);
 
-            //Add the tags that are inherited
+            // Add the tags that are inherited
             $inheritTags = $inheritdoc->getTags();
             if ($inheritTags) {
                 /** @var Tag $tag */
@@ -283,7 +282,7 @@ class Method
      */
     protected function normalizeParams(DocBlock $phpdoc)
     {
-        //Get the return type and adjust them for beter autocomplete
+        // Get the return type and adjust them for beter autocomplete
         $paramTags = $phpdoc->getTagsByName('param');
         if ($paramTags) {
             /** @var ParamTag $tag */
@@ -304,7 +303,7 @@ class Method
      */
     protected function normalizeReturn(DocBlock $phpdoc)
     {
-        //Get the return type and adjust them for beter autocomplete
+        // Get the return type and adjust them for beter autocomplete
         $returnTags = $phpdoc->getTagsByName('return');
         if ($returnTags) {
             /** @var ReturnTag $tag */
@@ -351,7 +350,7 @@ class Method
     {
         $parentClass = $reflectionMethod->getDeclaringClass()->getParentClass();
 
-        //Get either a parent or the interface
+        // Get either a parent or the interface
         if ($parentClass) {
             $method = $parentClass->getMethod($reflectionMethod->getName());
         } else {
@@ -362,7 +361,7 @@ class Method
             $phpdoc = new DocBlock($method, new Context($namespace));
 
             if (strpos($phpdoc->getText(), '{@inheritdoc}') !== false) {
-                //Not at the end yet, try another parent/interface..
+                // Not at the end yet, try another parent/interface..
                 return $this->getInheritDoc($method);
             }
             return $phpdoc;

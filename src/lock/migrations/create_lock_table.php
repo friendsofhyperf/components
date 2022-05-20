@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 /**
- * This file is part of hyperf-lock.
+ * This file is part of friendsofhyperf/components.
  *
- * @link     https://github.com/friendsofhyperf/lock
- * @document https://github.com/friendsofhyperf/lock/blob/main/README.md
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/1.x/README.md
  * @contact  huangdijia@gmail.com
  */
 use Hyperf\Database\Migrations\Migration;
