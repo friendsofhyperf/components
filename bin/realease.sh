@@ -2,6 +2,12 @@
 
 set -e
 
+# Usage:
+#  ./bin/release.sh v[version]
+#
+# Example:
+# ./bin/release.sh v1.0.0
+
 # Make sure the release tag is provided.
 if (( "$#" != 1 ))
 then
@@ -12,6 +18,7 @@ fi
 
 RELEASE_BRANCH="master"
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
+BASEPATH=$(cd `dirname $0`; cd ../src/; pwd)
 VERSION=$1
 
 # Make sure current branch and release branch match.
@@ -47,19 +54,21 @@ then
     VERSION="v$VERSION"
 fi
 
+REMOTES=$(ls $BASEPATH)
+
 # Tag Framework
 git tag $VERSION
 git push origin --tags
 
 # Tag Components
-for REMOTE in helpers
+for REMOTE in $REMOTES
 do
     echo ""
     echo ""
     echo "Releasing $REMOTE";
 
-    TMP_DIR="/tmp/friendsofhyperf-split"
-    REMOTE_URL="git@github.com:friendsofhyperf/$REMOTE.git"
+    TMP_DIR="/tmp/go-packagist-split"
+    REMOTE_URL="git@github.com:go-packagist/$REMOTE.git"
 
     rm -rf $TMP_DIR;
     mkdir $TMP_DIR;
