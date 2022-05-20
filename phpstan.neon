@@ -1,0 +1,33 @@
+# Magic behaviour with __get, __set, __call and __callStatic is not exactly static analyser-friendly :)
+# Fortunately, You can ingore it by the following config.
+#
+# vendor/bin/phpstan analyse app --memory-limit 200M -l 0
+#
+parameters:
+  reportUnmatchedIgnoredErrors: false
+  ignoreErrors:
+    # - '#Unsafe usage of new static\(\)#'
+    -
+      message: '#Undefined variable: \$this#'
+      paths:
+        - src/macros/src/collection.php
+        - src/macros/src/stringable.php
+        - src/closure-command/publish/console.php
+    -
+      message: '#Calling static::\w+\(\) outside of class scope#'
+      path: src/macros/src/collection.php
+    -
+      message: '#Using static outside of class scope#'
+      paths:
+        - src/macros/src/collection.php
+        - src/macros/src/stringable.php
+    - 
+      message: '#Call to an undefined static method Hyperf\\Utils\\Arr::hasMacro\(\).#'
+      path: src/macros/src/arr.php
+    - 
+      message: '#Call to an undefined static method Hyperf\\Utils\\Arr::macro\(\).#'
+      path: src/macros/src/arr.php
+    - 
+      message: '#Accessing static::\$\w+Cache outside of class scope.#'
+      path: src/macros/src/str.php
+    

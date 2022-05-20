@@ -1,0 +1,41 @@
+{
+    "name": "friendsofhyperf/http-request-lifecycle",
+    "description": "Http request lifecycle component for hyperf.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
+    "require": {
+        "hyperf/http-server": "3.0.*"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "hyperf/di": "3.0.*",
+        "hyperf/context": "3.0.*",
+        "hyperf/framework": "3.0.*",
+        "phpstan/phpstan": "^1.0",
+        "swoole/ide-helper": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\HttpRequestLifeCycle\\": "src"
+        }
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\HttpRequestLifeCycle\\ConfigProvider"
+        }
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "scripts": {
+        "cs-fix": "php-cs-fixer fix $1",
+        "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./src"
+    }
+}

@@ -1,0 +1,47 @@
+{
+    "name": "friendsofhyperf/access-log",
+    "description": "Access log component for hyperf.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
+    "require": {
+        "friendsofhyperf/http-request-lifecycle": "^1.0",
+        "hyperf/config": "~2.2.0",
+        "hyperf/event": "~2.2.0",
+        "hyperf/logger": "~2.2.0",
+        "hyperf/utils": "~2.2.0",
+        "nesbot/carbon": "^2.44"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "hyperf/di": "~2.2.0",
+        "hyperf/framework": "~2.2.0",
+        "hyperf/ide-helper": "~2.2.0",
+        "phpstan/phpstan": "^0.12",
+        "swoole/ide-helper": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\AccessLog\\": "src"
+        }
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\AccessLog\\ConfigProvider"
+        }
+    },
+    "suggest": {
+        "hyperf/cache": "Require this component for driver 'file'."
+    },
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "scripts": {
+        "cs-fix": "php-cs-fixer fix $1",
+        "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./src"
+    }
+}

@@ -1,0 +1,300 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * This file is part of friendsofhyperf/macros.
+ *
+ * @link     https://github.com/friendsofhyperf/macros
+ * @document https://github.com/friendsofhyperf/macros/blob/1.x/README.md
+ * @contact  huangdijia@gmail.com
+ */
+namespace Hyperf\Utils;
+
+class Stringable
+{
+    /**
+     * Get the namespace of the class path.
+     *
+     * @return static
+     */
+    public function classNamespace()
+    {
+    }
+
+    /**
+     * Extracts an excerpt from text that matches the first instance of a phrase.
+     *
+     * @param string $phrase
+     * @param array $options
+     * @return null|string
+     */
+    public function excerpt($phrase = '', $options = [])
+    {
+    }
+
+    /**
+     * Convert the given string to title case for each word.
+     *
+     * @return static
+     */
+    public function headline()
+    {
+    }
+
+    /**
+     * Determine if a given string is 7 bit ASCII.
+     *
+     * @return bool
+     */
+    public function isAscii()
+    {
+    }
+
+    /**
+     * Determine if a given string is a valid UUID.
+     *
+     * @return bool
+     */
+    public function isUuid()
+    {
+    }
+
+    /**
+     * Make a string's first character lowercase.
+     *
+     * @return static
+     */
+    public function lcfirst()
+    {
+    }
+
+    /**
+     * Convert GitHub flavored Markdown into HTML.
+     *
+     * @return static
+     */
+    public function markdown(array $options = [])
+    {
+    }
+
+    /**
+     * Append a new line to the string.
+     *
+     * @param int $count
+     * @return $this
+     */
+    public function newLine($count = 1)
+    {
+    }
+
+    /**
+     * Reverse the string.
+     *
+     * @return static
+     */
+    public function reverse()
+    {
+    }
+
+    /**
+     * Remove all "extra" blank space from the given string.
+     *
+     * @return static
+     */
+    public function squish()
+    {
+    }
+
+    /**
+     * Parse input from a string to a collection, according to a format.
+     *
+     * @param string $format
+     * @return \Hyperf\Utils\Collection
+     */
+    public function scan($format)
+    {
+    }
+
+    /**
+     * Replace text within a portion of a string.
+     *
+     * @param array|string $replace
+     * @param array|int $offset
+     * @param null|array|int $length
+     * @return static
+     */
+    public function substrReplace($replace, $offset = 0, $length = null)
+    {
+    }
+
+    /**
+     * Swap multiple keywords in a string with other keywords.
+     *
+     * @return static
+     */
+    public function swap(array $map)
+    {
+    }
+
+    /**
+     * Determine if the string matches the given pattern.
+     *
+     * @param string $pattern
+     * @return bool
+     */
+    public function test($pattern)
+    {
+    }
+
+    /**
+     * Convert the string into a `HtmlString` instance.
+     *
+     * @return \FriendsOfHyperf\Macros\Foundation\HtmlString
+     */
+    public function toHtmlString()
+    {
+    }
+
+    /**
+     * Split a string by uppercase characters.
+     *
+     * @return Collection
+     */
+    public function ucsplit()
+    {
+    }
+
+    /**
+     * Wrap the string with the given strings.
+     *
+     * @param string $before
+     * @param null|string $after
+     * @return static
+     */
+    public function wrap($before, $after = null)
+    {
+    }
+
+    /**
+     * Execute the given callback if the string contains a given substring.
+     *
+     * @param array|string $needles
+     * @param callable $callback
+     * @param null|callable $default
+     * @return static
+     */
+    public function whenContains($needles, $callback, $default = null)
+    {
+    }
+
+    /**
+     * Execute the given callback if the string contains all array values.
+     *
+     * @param callable $callback
+     * @param null|callable $default
+     * @return static
+     */
+    public function whenContainsAll(array $needles, $callback, $default = null)
+    {
+    }
+
+    /**
+     * Execute the given callback if the string ends with a given substring.
+     *
+     * @param array|string $needles
+     * @param callable $callback
+     * @param null|callable $default
+     * @return static
+     */
+    public function whenEndsWith($needles, $callback, $default = null)
+    {
+    }
+
+    /**
+     * Execute the given callback if the string is an exact match with the given value.
+     *
+     * @param string $value
+     * @param callable $callback
+     * @param null|callable $default
+     * @return static
+     */
+    public function whenExactly($value, $callback, $default = null)
+    {
+    }
+
+    /**
+     * Execute the given callback if the string matches a given pattern.
+     *
+     * @param array|string $pattern
+     * @param callable $callback
+     * @param null|callable $default
+     * @return static
+     */
+    public function whenIs($pattern, $callback, $default = null)
+    {
+    }
+
+    /**
+     * Execute the given callback if the string is 7 bit ASCII.
+     *
+     * @param callable $callback
+     * @param null|callable $default
+     * @return static
+     */
+    public function whenIsAscii($callback, $default = null)
+    {
+    }
+
+    /**
+     * Execute the given callback if the string is a valid UUID.
+     *
+     * @param callable $callback
+     * @param null|callable $default
+     * @return static
+     */
+    public function whenIsUuid($callback, $default = null)
+    {
+    }
+
+    /**
+     * Execute the given callback if the string matches the given pattern.
+     *
+     * @param string $pattern
+     * @param callable $callback
+     * @param null|callable $default
+     * @return static
+     */
+    public function whenTest($pattern, $callback, $default = null)
+    {
+    }
+
+    /**
+     * Execute the given callback if the string starts with a given substring.
+     *
+     * @param array|string $needles
+     * @param callable $callback
+     * @param null|callable $default
+     * @return static
+     */
+    public function whenStartsWith($needles, $callback, $default = null)
+    {
+    }
+
+    /**
+     * Get the underlying string value.
+     *
+     * @return string
+     */
+    public function value()
+    {
+    }
+
+    /**
+     * Get the underlying string value.
+     *
+     * @return string
+     */
+    public function toString()
+    {
+    }
+}

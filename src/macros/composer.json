@@ -1,0 +1,58 @@
+{
+    "name": "friendsofhyperf/macros",
+    "description": "The commonly used macros for hyperf.",
+    "type": "library",
+    "require": {
+        "hyperf/macroable": "~2.2.0",
+        "hyperf/utils": "~2.2.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "hyperf/di": "~2.2.0",
+        "hyperf/framework": "~2.2.0",
+        "league/commonmark": "^1.3|^2.0.2",
+        "opis/closure": "^3.1",
+        "ramsey/uuid": "^4.0",
+        "voku/portable-ascii": "^1.4|^1.5",
+        "nesbot/carbon": "^2.43",
+        "phpstan/phpstan": "^0.12",
+        "swoole/ide-helper": "^4.6",
+        "phpunit/phpunit": "^9.5|^10.0"
+    },
+    "autoload": {
+        "files": [
+            "src/arr.php",
+            "src/collection.php",
+            "src/str.php",
+            "src/stringable.php"
+        ],
+        "psr-4": {
+            "FriendsOfHyperf\\Macros\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FriendsOfHyperf\\Macros\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Macros\\ConfigProvider"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "scripts": {
+        "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./src",
+        "cs-fix": "php-cs-fixer fix $1",
+        "test": "phpunit -c phpunit.xml --colors=always"
+    }
+}
