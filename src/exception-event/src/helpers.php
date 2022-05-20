@@ -9,18 +9,19 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 use FriendsOfHyperf\ExceptionEvent\Event\ExceptionDispatched;
-use Hyperf\Context\Context;
 use Hyperf\Utils\ApplicationContext;
+use Hyperf\Utils\Context;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-if (class_exists(\Hyperf\Utils\ApplicationContext::class) && ! function_exists('report')) {
+if (class_exists('Hyperf\Utils\ApplicationContext') && ! function_exists('report')) {
     /**
+     * @param string|Throwable $exception
      * @param array ...$arguments
      */
-    function report(string|Throwable $exception = \RuntimeException::class, ...$parameters)
+    function report($exception = 'RuntimeException', ...$parameters)
     {
         if (is_string($exception)) {
             $exception = class_exists($exception) ? new $exception(...$parameters) : new RuntimeException($exception, ...$parameters);
@@ -43,11 +44,12 @@ if (class_exists(\Hyperf\Utils\ApplicationContext::class) && ! function_exists('
 if (! function_exists('report_if')) {
     /**
      * @param mixed $condition
+     * @param string|Throwable $exception
      * @param array ...$parameters
      * @throws TypeError
      * @return mixed
      */
-    function report_if($condition, string|Throwable $exception = \RuntimeException::class, ...$parameters)
+    function report_if($condition, $exception = 'RuntimeException', ...$parameters)
     {
         if ($condition) {
             if (is_string($exception)) {
@@ -64,11 +66,12 @@ if (! function_exists('report_if')) {
 if (! function_exists('report_unless')) {
     /**
      * @param mixed $condition
+     * @param string|Throwable $exception
      * @param array ...$parameters
      * @throws TypeError
      * @return mixed
      */
-    function report_unless($condition, string|Throwable $exception = \RuntimeException::class, ...$parameters)
+    function report_unless($condition, $exception = 'RuntimeException', ...$parameters)
     {
         if (! $condition) {
             if (is_string($exception)) {

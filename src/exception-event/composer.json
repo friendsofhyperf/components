@@ -9,16 +9,7 @@
     "type": "library",
     "license": "MIT",
     "require": {
-        "hyperf/exception-handler": "3.0.*"
-    },
-    "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.0",
-        "hyperf/context": "3.0.*",
-        "hyperf/di": "3.0.*",
-        "hyperf/event": "3.0.*",
-        "hyperf/framework": "3.0.*",
-        "hyperf/utils": "3.0.*",
-        "phpstan/phpstan": "^1.0"
+        "hyperf/exception-handler": "^2.1"
     },
     "autoload": {
         "psr-4": {
@@ -28,6 +19,14 @@
             "src/helpers.php"
         ]
     },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "hyperf/di": "^2.1",
+        "hyperf/event": "^2.1",
+        "hyperf/framework": "^2.1",
+        "hyperf/utils": "^2.1",
+        "phpstan/phpstan": "^0.12"
+    },
     "extra": {
         "hyperf": {
             "config": "FriendsOfHyperf\\ExceptionEvent\\ConfigProvider"
@@ -36,7 +35,6 @@
     "config": {
         "sort-packages": true
     },
-    "minimum-stability": "dev",
     "scripts": {
         "cs-fix": "php-cs-fixer fix $1",
         "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./src"

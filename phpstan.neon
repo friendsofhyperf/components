@@ -30,4 +30,8 @@ parameters:
     - 
       message: '#Accessing static::\$\w+Cache outside of class scope.#'
       path: src/macros/src/str.php
+    - '#Static call to instance method Hyperf\\HttpServer\\Router\\Router::[a-zA-Z0-9\\_]+\(\)#'
+    - '#Static call to instance method Hyperf\\DbConnection\\Db::[a-zA-Z0-9\\_]+\(\)#'
+    - '#Access to an undefined property App\\Util\\Http\\Client\\Response::\$transferStats\.#'
+    - '#Access to an undefined property App\\Util\\Http\\Client\\Response::\$cookies\.#'
     

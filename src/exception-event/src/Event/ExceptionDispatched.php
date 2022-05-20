@@ -16,8 +16,26 @@ use Throwable;
 
 class ExceptionDispatched
 {
-    public function __construct(public Throwable $throwable, public ?ServerRequestInterface $request = null, public ?ResponseInterface $response = null)
+    /**
+     * @var Throwable
+     */
+    public $throwable;
+
+    /**
+     * @var null|ServerRequestInterface
+     */
+    public $request;
+
+    /**
+     * @var null|ResponseInterface
+     */
+    public $response;
+
+    public function __construct(Throwable $throwable, ?ServerRequestInterface $request = null, ?ResponseInterface $response = null)
     {
+        $this->throwable = $throwable;
+        $this->request = $request;
+        $this->response = $response;
     }
 
     /**

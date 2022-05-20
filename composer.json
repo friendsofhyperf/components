@@ -28,6 +28,8 @@
         "opis/closure": "^3.1",
         "phpstan/phpstan": "^0.12",
         "phpunit/phpunit": "^9.5",
+        "barryvdh/reflection-docblock": "^2.0",
+        "composer/composer": "^1.0|^2.0",
         "ramsey/uuid": "^4.0"
     },
     "require-dev": {
@@ -52,9 +54,11 @@
         "psr-4": {
             "FriendsOfHyperf\\AccessLog\\": "src/access-log/src/",
             "FriendsOfHyperf\\ClosureCommand\\": "src/closure-command/src/",
+            "FriendsOfHyperf\\ExceptionEvent\\": "src/exception-event/src/",
             "FriendsOfHyperf\\Facade\\": "src/facade/src/",
             "FriendsOfHyperf\\Helpers\\": "src/helpers/src/",
-            "FriendsOfHyperf\\HttpRequestLifeCycle\\": "src/http-request-lifecycle/src",
+            "FriendsOfHyperf\\HttpRequestLifeCycle\\": "src/http-request-lifecycle/src/",
+            "FriendsOfHyperf\\IdeHelper\\": "src/ide-helper/src/",
             "FriendsOfHyperf\\Macros\\": "src/macros/src/"
         }
     },
@@ -68,9 +72,11 @@
             "config": [
                 "FriendsOfHyperf\\AccessLog\\ConfigProvider",
                 "FriendsOfHyperf\\ClosureCommand\\ConfigProvider",
+                "FriendsOfHyperf\\ExceptionEvent\\ConfigProvider",
                 "FriendsOfHyperf\\Facade\\ConfigProvider",
                 "FriendsOfHyperf\\Helpers\\ConfigProvider",
                 "FriendsOfHyperf\\HttpRequestLifeCycle\\ConfigProvider",
+                "FriendsOfHyperf\\IdeHelper\\ConfigProvider",
                 "FriendsOfHyperf\\Macros\\ConfigProvider"
             ]
         }
