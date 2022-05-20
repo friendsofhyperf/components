@@ -119,7 +119,6 @@
             ]
         }
     },
-    "minimum-stability": "stable",
     "config": {
         "sort-packages": true
     },
