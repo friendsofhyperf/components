@@ -1,6 +1,5 @@
 # Tinker
 
-[![Latest Test](https://github.com/friendsofhyperf/tinker/workflows/tests/badge.svg)](https://github.com/friendsofhyperf/tinker/actions)
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/tinker/version.png)](https://packagist.org/packages/friendsofhyperf/tinker)
 [![Total Downloads](https://poser.pugx.org/friendsofhyperf/tinker/d/total.png)](https://packagist.org/packages/friendsofhyperf/tinker)
 [![GitHub license](https://img.shields.io/github/license/friendsofhyperf/tinker)](https://github.com/friendsofhyperf/tinker)
