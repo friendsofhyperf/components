@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Tinker\Command;
 
 use FriendsOfHyperf\Tinker\ClassAliasAutoloader;
+use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
@@ -23,6 +24,10 @@ use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+/**
+ * @Command
+ */
+#[Command]
 class TinkerCommand extends HyperfCommand
 {
     /**

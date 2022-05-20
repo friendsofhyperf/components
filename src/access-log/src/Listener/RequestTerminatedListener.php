@@ -18,6 +18,7 @@ use Hyperf\Event\Contract\ListenerInterface;
 /**
  * @Listener
  */
+#[Listener]
 class RequestTerminatedListener implements ListenerInterface
 {
     /**

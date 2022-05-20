@@ -33,6 +33,7 @@ use Psr\Container\ContainerInterface;
 /**
  * @Listener
  */
+#[Listener]
 class ObserverListener implements ListenerInterface
 {
     /**

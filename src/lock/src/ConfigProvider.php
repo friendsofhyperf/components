@@ -18,9 +18,6 @@ class ConfigProvider
 
         return [
             'dependencies' => [],
-            'aspects' => [
-                Annotation\LockAspect::class,
-            ],
             'annotations' => [
                 'scan' => [
                     'paths' => [
@@ -29,9 +26,7 @@ class ConfigProvider
                 ],
             ],
             'commands' => [],
-            'listeners' => [
-                Listener\RegisterPropertyHandlerListener::class,
-            ],
+            'listeners' => [],
             'publish' => [
                 [
                     'id' => 'config',

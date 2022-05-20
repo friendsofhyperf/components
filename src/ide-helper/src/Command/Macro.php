@@ -11,16 +11,21 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\IdeHelper\Command;
 
 use Barryvdh\Reflection\DocBlock;
-use Hyperf\Command\Command;
+use Hyperf\Command\Annotation\Command;
+use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Macroable\Macroable;
 use Hyperf\Utils\Filesystem\Filesystem;
 use Hyperf\Utils\Str;
-use Hyperf\Utils\Traits\Macroable;
 use Psr\Container\ContainerInterface;
 use Swoole\Coroutine\System;
 use Throwable;
 
-class Macro extends Command
+/**
+ * @Command
+ */
+#[Command]
+class Macro extends HyperfCommand
 {
     /**
      * @var string

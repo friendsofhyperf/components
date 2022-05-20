@@ -25,6 +25,7 @@ use Hyperf\Event\Contract\ListenerInterface;
 /**
  * @Listener
  */
+#[Listener]
 class RequestHandledListener implements ListenerInterface
 {
     public function listen(): array

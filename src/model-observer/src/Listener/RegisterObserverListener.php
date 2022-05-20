@@ -19,6 +19,7 @@ use Hyperf\Framework\Event\BootApplication;
 /**
  * @Listener
  */
+#[Listener]
 class RegisterObserverListener implements ListenerInterface
 {
     public function listen(): array

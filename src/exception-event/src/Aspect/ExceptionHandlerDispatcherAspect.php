@@ -24,6 +24,7 @@ use Throwable;
 /**
  * @Aspect
  */
+#[Aspect]
 class ExceptionHandlerDispatcherAspect extends AbstractAspect
 {
     public $classes = [

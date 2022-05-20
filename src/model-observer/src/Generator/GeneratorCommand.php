@@ -24,6 +24,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 /**
  * @Command
  */
+#[Command]
 class GeneratorCommand extends BasCommand
 {
     /**

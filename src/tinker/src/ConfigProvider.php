@@ -25,9 +25,7 @@ class ConfigProvider
                     ],
                 ],
             ],
-            'commands' => [
-                Command\TinkerCommand::class,
-            ],
+            'commands' => [],
             'publish' => [
                 [
                     'id' => 'config',

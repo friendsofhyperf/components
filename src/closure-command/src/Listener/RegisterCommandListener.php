@@ -21,6 +21,7 @@ use Psr\Container\ContainerInterface;
 /**
  * @Listener
  */
+#[Listener]
 class RegisterCommandListener implements ListenerInterface
 {
     /**
