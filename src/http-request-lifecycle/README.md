@@ -1,6 +1,5 @@
 # Http Request LifeCycle
 
-[![Latest Test](https://github.com/friendsofhyperf/http-request-lifecycle/workflows/tests/badge.svg)](https://github.com/friendsofhyperf/http-request-lifecycle/actions)
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/http-request-lifecycle/version.png)](https://packagist.org/packages/friendsofhyperf/http-request-lifecycle)
 [![Total Downloads](https://poser.pugx.org/friendsofhyperf/http-request-lifecycle/d/total.png)](https://packagist.org/packages/friendsofhyperf/http-request-lifecycle)
 [![GitHub license](https://img.shields.io/github/license/friendsofhyperf/http-request-lifecycle)](https://github.com/friendsofhyperf/http-request-lifecycle)

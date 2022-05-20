@@ -1,6 +1,5 @@
 # Helpers
 
-[![Latest Test](https://github.com/friendsofhyperf/helpers/workflows/tests/badge.svg)](https://github.com/friendsofhyperf/helpers/actions)
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/helpers/version.png)](https://packagist.org/packages/friendsofhyperf/helpers)
 [![Total Downloads](https://poser.pugx.org/friendsofhyperf/helpers/d/total.png)](https://packagist.org/packages/friendsofhyperf/helpers)
 [![GitHub license](https://img.shields.io/github/license/friendsofhyperf/helpers)](https://github.com/friendsofhyperf/helpers)

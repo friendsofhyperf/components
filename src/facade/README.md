@@ -1,6 +1,5 @@
 # Hyperf Facades
 
-[![Latest Test](https://github.com/friendsofhyperf/facade/workflows/tests/badge.svg)](https://github.com/friendsofhyperf/facade/actions)
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/facade/version.png)](https://packagist.org/packages/friendsofhyperf/facade)
 [![Total Downloads](https://poser.pugx.org/friendsofhyperf/facade/d/total.png)](https://packagist.org/packages/friendsofhyperf/facade)
 [![GitHub license](https://img.shields.io/github/license/friendsofhyperf/facade)](https://github.com/friendsofhyperf/facade)
