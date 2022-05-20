@@ -1,0 +1,44 @@
+{
+    "name": "friendsofhyperf/http-client",
+    "description": "HTTP Client for Hyperf, from Laravel.",
+    "type": "library",
+    "homepage": "https://github.com/friendsofhyperf/http-client",
+    "license": "MIT",
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
+    "require": {
+        "hyperf/guzzle": "~2.2.0",
+        "hyperf/macroable": "~2.2.0",
+        "symfony/var-dumper": "^5.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "phpstan/phpstan": "^0.12",
+        "hyperf/di": "~2.2.0",
+        "hyperf/utils": "~2.2.0",
+        "hyperf/command": "~2.2.0",
+        "phpunit/phpunit": "^9.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Http\\Client\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "FriendsOfHyperf\\Http\\Client\\Tests\\": "tests/"
+        }
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Http\\Client\\ConfigProvider"
+        }
+    },
+    "scripts": {
+        "test": "phpunit -c phpunit.xml --colors=always",
+        "cs-fix": "php-cs-fixer fix $1",
+        "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./src"
+    }
+}

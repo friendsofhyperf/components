@@ -34,4 +34,7 @@ parameters:
     - '#Static call to instance method Hyperf\\DbConnection\\Db::[a-zA-Z0-9\\_]+\(\)#'
     - '#Access to an undefined property App\\Util\\Http\\Client\\Response::\$transferStats\.#'
     - '#Access to an undefined property App\\Util\\Http\\Client\\Response::\$cookies\.#'
+    - '#Access to an undefined property FriendsOfHyperf\\Http\\Client\\Response::\$\w+\.#'
+    - '#Function GuzzleHttp\\Psr7\\get_message_body_summary not found.#'
+    - '#.*should either be compatible with ArrayAccess::offset\w+.*#'
     
