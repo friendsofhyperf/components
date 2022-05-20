@@ -36,6 +36,9 @@
         "swoole/ide-helper": "dev-master",
         "voku/portable-ascii": "^1.4|^1.5"
     },
+    "replace": {
+        "friendsofhyperf/http-request-lifecycle": "self.version"
+    },
     "autoload": {
         "files": [
             "src/closure-command/src/functions.php",
