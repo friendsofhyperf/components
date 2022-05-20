@@ -1,0 +1,79 @@
+#!/usr/bin/env php
+<?php
+/**
+ * This file is part of friendsofhyperf/components.
+ *
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/2.x/README.md
+ * @contact  huangdijia@gmail.com
+ */
+use Symfony\Component\Finder\Finder;
+
+foreach ([__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php'] as $file) {
+    if (file_exists($file)) {
+        require $file;
+        break;
+    }
+}
+
+$files = Finder::create()
+    ->in(__DIR__ . '/../src')
+    ->name('composer.json')
+    ->files();
+
+$require = [];
+$autoload = [];
+$autoloadFiles = [];
+$autoloadDev = [
+    'FriendsOfHyperf\\Tests\\' => 'tests/',
+];
+$configProviders = [];
+$replaces = [];
+foreach ($files as $file) {
+    $component = basename(dirname($file));
+    $composerJson = json_decode(file_get_contents($file), true);
+    if (isset($composerJson['name']) && str_starts_with($composerJson['name'], 'friendsofhyperf')) {
+        $replaces[$composerJson['name']] = '*';
+    }
+
+    foreach ($composerJson['autoload']['files'] ?? [] as $file) {
+        $autoloadFiles[] = "src/{$component}/" . preg_replace('#^./#', '', $file);
+    }
+    foreach ($composerJson['autoload']['psr-4'] ?? [] as $ns => $dir) {
+        $value = "src/{$component}/" . trim($dir, '/') . '/';
+        if (isset($autoload[$ns])) {
+            $autoload[$ns] = [$value, ...(array) $autoload[$ns]];
+        } else {
+            $autoload[$ns] = $value;
+        }
+    }
+    foreach ($composerJson['autoload-dev']['psr-4'] ?? [] as $ns => $dir) {
+        $value = "src/{$component}/" . trim($dir, '/') . '/';
+        if (isset($autoloadDev[$ns])) {
+            $autoloadDev[$ns] = [$value, ...(array) $autoloadDev[$ns]];
+        } else {
+            $autoloadDev[$ns] = $value;
+        }
+    }
+    if (isset($composerJson['extra']['hyperf']['config'])) {
+        $configProviders = array_merge($configProviders, (array) $composerJson['extra']['hyperf']['config']);
+    }
+}
+
+ksort($autoload);
+sort($autoloadFiles);
+ksort($autoloadDev);
+sort($configProviders);
+ksort($replaces);
+
+$json = json_decode(file_get_contents(__DIR__ . '/../composer.json'));
+$json->autoload->files = $autoloadFiles;
+$json->autoload->{'psr-4'} = $autoload;
+$json->{'autoload-dev'}->{'psr-4'} = $autoloadDev;
+$json->extra->hyperf->config = $configProviders;
+$json->replace = $replaces;
+
+file_put_contents(
+    __DIR__ . '/../composer.json',
+    json_encode($json, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . PHP_EOL
+);

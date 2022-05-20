@@ -51,12 +51,27 @@
         "voku/portable-ascii": "^1.4|^1.5"
     },
     "replace": {
-        "friendsofhyperf/http-request-lifecycle": "self.version"
+        "friendsofhyperf/access-log": "*",
+        "friendsofhyperf/cache": "*",
+        "friendsofhyperf/closure-command": "*",
+        "friendsofhyperf/console-spinner": "*",
+        "friendsofhyperf/exception-event": "*",
+        "friendsofhyperf/facade": "*",
+        "friendsofhyperf/helpers": "*",
+        "friendsofhyperf/http-client": "*",
+        "friendsofhyperf/http-request-lifecycle": "*",
+        "friendsofhyperf/ide-helper": "*",
+        "friendsofhyperf/lock": "*",
+        "friendsofhyperf/macros": "*",
+        "friendsofhyperf/model-observer": "*",
+        "friendsofhyperf/tinker": "*"
     },
     "autoload": {
         "files": [
             "src/closure-command/src/functions.php",
+            "src/exception-event/src/helpers.php",
             "src/helpers/src/helpers.php",
+            "src/lock/src/functions.php",
             "src/macros/src/arr.php",
             "src/macros/src/collection.php",
             "src/macros/src/str.php",
@@ -70,8 +85,8 @@
             "FriendsOfHyperf\\ExceptionEvent\\": "src/exception-event/src/",
             "FriendsOfHyperf\\Facade\\": "src/facade/src/",
             "FriendsOfHyperf\\Helpers\\": "src/helpers/src/",
-            "FriendsOfHyperf\\Http\\Client\\": "src/http-client/src/",
             "FriendsOfHyperf\\HttpRequestLifeCycle\\": "src/http-request-lifecycle/src/",
+            "FriendsOfHyperf\\Http\\Client\\": "src/http-client/src/",
             "FriendsOfHyperf\\IdeHelper\\": "src/ide-helper/src/",
             "FriendsOfHyperf\\Lock\\": "src/lock/src/",
             "FriendsOfHyperf\\Macros\\": "src/macros/src/",
@@ -94,8 +109,8 @@
                 "FriendsOfHyperf\\ExceptionEvent\\ConfigProvider",
                 "FriendsOfHyperf\\Facade\\ConfigProvider",
                 "FriendsOfHyperf\\Helpers\\ConfigProvider",
-                "FriendsOfHyperf\\Http\\Client\\ConfigProvider",
                 "FriendsOfHyperf\\HttpRequestLifeCycle\\ConfigProvider",
+                "FriendsOfHyperf\\Http\\Client\\ConfigProvider",
                 "FriendsOfHyperf\\IdeHelper\\ConfigProvider",
                 "FriendsOfHyperf\\Lock\\ConfigProvider",
                 "FriendsOfHyperf\\Macros\\ConfigProvider",
@@ -111,6 +126,7 @@
     "scripts": {
         "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./src",
         "cs-fix": "php-cs-fixer fix $1",
+        "json-fix": "./bin/composer-json-fixer",
         "test": "phpunit -c phpunit.xml --colors=always"
     }
 }
