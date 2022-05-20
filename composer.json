@@ -29,7 +29,7 @@
         "hyperf/validation": "~2.2.0",
         "hyperf/view": "~2.2.0",
         "league/commonmark": "^1.3|^2.0.2",
-        "nesbot/carbon": "^2.43",
+        "nesbot/carbon": "^2.0",
         "opis/closure": "^3.1",
         "phpstan/phpstan": "^0.12",
         "psy/psysh": "^0.10.0|^0.11.0",
