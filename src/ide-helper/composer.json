@@ -12,11 +12,6 @@
             "FriendsOfHyperf\\IdeHelper\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "HyperfTest\\": "tests"
-        }
-    },
     "require": {
         "barryvdh/reflection-docblock": "^2.0",
         "composer/composer": "^1.0|^2.0",
