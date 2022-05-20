@@ -12,7 +12,7 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "friendsofhyperf/macros": "^1.0",
+        "friendsofhyperf/macros": "^2.0",
         "hyperf/macroable": "~2.2.0",
         "hyperf/utils": "~2.2.0",
         "opis/closure": "^3.1",
@@ -42,6 +42,7 @@
             "config": "FriendsOfHyperf\\Helpers\\ConfigProvider"
         }
     },
+    "minimum-stability": "dev",
     "config": {
         "sort-packages": true
     }

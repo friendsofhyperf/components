@@ -32,6 +32,7 @@
     "suggest": {
         "hyperf/cache": "Require this component for driver 'file'."
     },
+    "minimum-stability": "dev",
     "config": {
         "sort-packages": true,
         "optimize-autoloader": true
