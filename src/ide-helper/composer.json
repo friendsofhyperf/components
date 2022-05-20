@@ -17,26 +17,11 @@
         "composer/composer": "^1.0|^2.0",
         "hyperf/filesystem": "~2.2.0"
     },
-    "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.0",
-        "hyperf/command": "~2.2.0",
-        "hyperf/contract": "~2.2.0",
-        "hyperf/database": "~2.2.0",
-        "hyperf/testing": "~2.2.0",
-        "hyperf/utils": "~2.2.0",
-        "phpstan/phpstan": "^0.12",
-        "swoole/ide-helper": "dev-master"
-    },
     "config": {
         "sort-packages": true
     },
     "suggest": {
         "doctrine/dbal": "Required to rename columns (^2.5|^3.0)."
-    },
-    "scripts": {
-        "test": "co-phpunit -c phpunit.xml --colors=always",
-        "analyze": "phpstan analyse --memory-limit 300M -l 0 ./src",
-        "cs-fix": "php-cs-fixer fix $1"
     },
     "extra": {
         "hyperf": {

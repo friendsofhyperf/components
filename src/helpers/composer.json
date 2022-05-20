@@ -2,27 +2,28 @@
     "name": "friendsofhyperf/helpers",
     "description": "The commonly used functions for hyperf.",
     "type": "library",
+    "license": "MIT",
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
     "require": {
         "friendsofhyperf/macros": "^1.0",
         "hyperf/macroable": "~2.2.0",
         "hyperf/utils": "~2.2.0",
-        "opis/closure": "^3.1"
+        "opis/closure": "^3.1",
+        "nesbot/carbon": "^2.0"
     },
-    "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.0",
-        "hyperf/amqp": "~2.2.0",
-        "hyperf/async-queue": "~2.2.0",
-        "hyperf/cache": "~2.2.0",
-        "hyperf/di": "~2.2.0",
-        "hyperf/framework": "~2.2.0",
-        "hyperf/kafka": "~2.2.0",
-        "hyperf/logger": "~2.2.0",
-        "hyperf/session": "~2.2.0",
-        "hyperf/validation": "~2.2.0",
-        "nesbot/carbon": "^2.43",
-        "phpstan/phpstan": "^0.12",
-        "swoole/ide-helper": "^4.6",
-        "phpunit/phpunit": "^9.5"
+    "suggest": {
+        "hyperf/amqp": "Required to use (~2.2.0)",
+        "hyperf/async-queue": "Required to use (~2.2.0)",
+        "hyperf/cache": "Required to use (~2.2.0)",
+        "hyperf/di": "Required to use (~2.2.0)",
+        "hyperf/framework": "Required to use (~2.2.0)",
+        "hyperf/kafka": "Required to use (~2.2.0)",
+        "hyperf/logger": "Required to use (~2.2.0)",
+        "hyperf/session": "Required to use (~2.2.0)",
+        "hyperf/validation": "Required to use (~2.2.0)"
     },
     "autoload": {
         "files": [
@@ -32,11 +33,6 @@
             "FriendsOfHyperf\\Helpers\\": "src/"
         }
     },
-    "autoload-dev": {
-        "psr-4": {
-            "FriendsOfHyperf\\Helpers\\Tests\\": "tests/"
-        }
-    },
     "extra": {
         "hyperf": {
             "config": "FriendsOfHyperf\\Helpers\\ConfigProvider"
@@ -44,15 +40,5 @@
     },
     "config": {
         "sort-packages": true
-    },
-    "license": "MIT",
-    "authors": [{
-        "name": "huangdijia",
-        "email": "huangdijia@gmail.com"
-    }],
-    "scripts": {
-        "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./src",
-        "cs-fix": "php-cs-fixer fix $1",
-        "test": "phpunit -c phpunit.xml --colors=always"
     }
 }

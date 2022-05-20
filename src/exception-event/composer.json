@@ -12,20 +12,12 @@
         "hyperf/exception-handler": "^2.1"
     },
     "autoload": {
-        "psr-4": {
-            "FriendsOfHyperf\\ExceptionEvent\\": "src"
-        },
         "files": [
             "src/helpers.php"
-        ]
-    },
-    "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.0",
-        "hyperf/di": "^2.1",
-        "hyperf/event": "^2.1",
-        "hyperf/framework": "^2.1",
-        "hyperf/utils": "^2.1",
-        "phpstan/phpstan": "^0.12"
+        ],
+        "psr-4": {
+            "FriendsOfHyperf\\ExceptionEvent\\": "src"
+        }
     },
     "extra": {
         "hyperf": {
@@ -34,9 +26,5 @@
     },
     "config": {
         "sort-packages": true
-    },
-    "scripts": {
-        "cs-fix": "php-cs-fixer fix $1",
-        "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./src"
     }
 }
