@@ -13,6 +13,10 @@
         "email": "huangdijia@gmail.com",
         "homepage": "https://github.com/huangdijia"
     }],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
     "description": "Powerful REPL for the Hyperf framework.",
     "require": {
         "hyperf/command": "~2.2.0",

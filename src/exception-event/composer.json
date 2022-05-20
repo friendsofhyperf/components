@@ -8,6 +8,10 @@
     }],
     "type": "library",
     "license": "MIT",
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
     "require": {
         "hyperf/exception-handler": "^2.1"
     },

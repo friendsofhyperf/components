@@ -7,6 +7,10 @@
         "name": "huangdijia",
         "email": "huangdijia@gmail.com"
     }],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
     "require": {
         "hyperf/http-server": "~2.2.0"
     },

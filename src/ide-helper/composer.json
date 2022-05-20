@@ -7,6 +7,10 @@
         "hyperf"
     ],
     "description": "Hyperf Ide Helper",
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\IdeHelper\\": "src/"
