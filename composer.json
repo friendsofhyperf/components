@@ -34,7 +34,9 @@
         "phpstan/phpstan": "^0.12",
         "psy/psysh": "^0.10.0|^0.11.0",
         "ramsey/uuid": "^4.0",
-        "symfony/var-dumper": "^5.0"
+        "symfony/var-dumper": "^5.0",
+        "symfony/console": "^5.0",
+        "symfony/process": "^5.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
@@ -60,6 +62,7 @@
             "FriendsOfHyperf\\AccessLog\\": "src/access-log/src/",
             "FriendsOfHyperf\\Cache\\": "src/cache/src/",
             "FriendsOfHyperf\\ClosureCommand\\": "src/closure-command/src/",
+            "FriendsOfHyperf\\ConsoleSpinner\\": "src/console-spinner/src/",
             "FriendsOfHyperf\\ExceptionEvent\\": "src/exception-event/src/",
             "FriendsOfHyperf\\Facade\\": "src/facade/src/",
             "FriendsOfHyperf\\Helpers\\": "src/helpers/src/",
@@ -83,6 +86,7 @@
                 "FriendsOfHyperf\\AccessLog\\ConfigProvider",
                 "FriendsOfHyperf\\Cache\\ConfigProvider",
                 "FriendsOfHyperf\\ClosureCommand\\ConfigProvider",
+                "FriendsOfHyperf\\ConsoleSpinner\\ConfigProvider",
                 "FriendsOfHyperf\\ExceptionEvent\\ConfigProvider",
                 "FriendsOfHyperf\\Facade\\ConfigProvider",
                 "FriendsOfHyperf\\Helpers\\ConfigProvider",
