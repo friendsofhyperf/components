@@ -1,6 +1,5 @@
 # console-spinner
 
-[![Open in Visual Studio Code](https://open.vscode.dev/badges/open-in-vscode.svg)](https://open.vscode.dev/friendsofhyperf/console-spinner)
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/console-spinner/version.png)](https://packagist.org/packages/friendsofhyperf/console-spinner)
 [![Total Downloads](https://poser.pugx.org/friendsofhyperf/console-spinner/d/total.png)](https://packagist.org/packages/friendsofhyperf/console-spinner)
 [![GitHub license](https://img.shields.io/github/license/friendsofhyperf/console-spinner)](https://github.com/friendsofhyperf/console-spinner)
