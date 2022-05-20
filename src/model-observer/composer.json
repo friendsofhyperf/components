@@ -1,0 +1,36 @@
+{
+    "name": "friendsofhyperf/model-observer",
+    "description": "Model Observer For Hyperf",
+    "type": "library",
+    "require": {
+        "hyperf/command": "~2.2.0",
+        "hyperf/event": "~2.2.0",
+        "hyperf/di": "~2.2.0"
+    },
+    "require-dev": {
+        "hyperf/framework": "~2.2.0",
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "phpstan/phpstan": "^0.12",
+        "swoole/ide-helper": "dev-master",
+        "hyperf/database": "~2.2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\ModelObserver\\": "src/"
+        }
+    },
+    "license": "MIT",
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\ModelObserver\\ConfigProvider"
+        }
+    },
+    "scripts": {
+        "cs-fix": "php-cs-fixer fix $1",
+        "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./src"
+    }
+}

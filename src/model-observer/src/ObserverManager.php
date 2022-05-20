@@ -1,0 +1,59 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * This file is part of model-observer.
+ *
+ * @link     https://github.com/friendsofhyperf/model-observer
+ * @document https://github.com/friendsofhyperf/model-observer/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ */
+namespace FriendsOfHyperf\ModelObserver;
+
+use FriendsOfHyperf\ModelObserver\Annotation\Observer;
+use Hyperf\Di\Annotation\AnnotationCollector;
+use SplPriorityQueue;
+
+class ObserverManager
+{
+    /**
+     * @var array
+     */
+    private static $container = [];
+
+    public static function register(): void
+    {
+        /** @var SplPriorityQueue[] $queues */
+        $queues = [];
+        $classes = AnnotationCollector::getClassesByAnnotation(Observer::class);
+
+        foreach ($classes as $class => $property) {
+            $model = $property->model ?? null;
+
+            if (! $model || ! class_exists($model)) {
+                continue;
+            }
+
+            if (! isset($queues[$model])) {
+                $queues[$model] = new SplPriorityQueue();
+            }
+
+            $queues[$model]->insert($class, $property->priority);
+        }
+
+        foreach ($queues as $class => $queue) {
+            if (! isset(self::$container[$class])) {
+                self::$container[$class] = [];
+            }
+
+            foreach ($queue as $observer) {
+                self::$container[$class][] = $observer;
+            }
+        }
+    }
+
+    public static function get(string $model): array
+    {
+        return self::$container[$model] ?? [];
+    }
+}

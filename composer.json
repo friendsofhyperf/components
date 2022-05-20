@@ -65,6 +65,7 @@
             "FriendsOfHyperf\\HttpRequestLifeCycle\\": "src/http-request-lifecycle/src/",
             "FriendsOfHyperf\\IdeHelper\\": "src/ide-helper/src/",
             "FriendsOfHyperf\\Macros\\": "src/macros/src/",
+            "FriendsOfHyperf\\ModelObserver\\": "src/model-observer/src/",
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/"
         }
     },
@@ -85,6 +86,7 @@
                 "FriendsOfHyperf\\HttpRequestLifeCycle\\ConfigProvider",
                 "FriendsOfHyperf\\IdeHelper\\ConfigProvider",
                 "FriendsOfHyperf\\Macros\\ConfigProvider",
+                "FriendsOfHyperf\\ModelObserver\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider"
             ]
         }
