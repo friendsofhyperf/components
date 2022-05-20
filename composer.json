@@ -60,9 +60,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "FriendsOfHyperf\\Facade\\Tests\\": "src/facade/tests/",
-            "FriendsOfHyperf\\Helpers\\Tests\\": "src/helpers/tests/",
-            "FriendsOfHyperf\\Macros\\Tests\\": "src/macros/tests/"
+            "FriendsOfHyperf\\Tests\\": "tests/"
         }
     },
     "extra": {

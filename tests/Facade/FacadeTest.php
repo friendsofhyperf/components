@@ -8,9 +8,10 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/1.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Facade\Tests;
+namespace FriendsOfHyperf\Tests\Facade;
 
 use FriendsOfHyperf\Facade\Log;
+use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Utils\ApplicationContext;
 use Mockery;

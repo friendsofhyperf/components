@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 /**
- * This file is part of friendsofhyperf/macros.
+ * This file is part of friendsofhyperf/components.
  *
- * @link     https://github.com/friendsofhyperf/macros
- * @document https://github.com/friendsofhyperf/macros/blob/1.x/README.md
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/1.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Macros\Tests;
+namespace FriendsOfHyperf\Tests\Macros;
 
+use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Utils\Str;
 use Ramsey\Uuid\UuidInterface;
 use ReflectionClass;
