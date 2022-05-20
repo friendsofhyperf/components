@@ -64,7 +64,8 @@
             "FriendsOfHyperf\\Http\\Client\\": "src/http-client/src/",
             "FriendsOfHyperf\\HttpRequestLifeCycle\\": "src/http-request-lifecycle/src/",
             "FriendsOfHyperf\\IdeHelper\\": "src/ide-helper/src/",
-            "FriendsOfHyperf\\Macros\\": "src/macros/src/"
+            "FriendsOfHyperf\\Macros\\": "src/macros/src/",
+            "FriendsOfHyperf\\Tinker\\": "src/tinker/src/"
         }
     },
     "autoload-dev": {
@@ -83,7 +84,8 @@
                 "FriendsOfHyperf\\Http\\Client\\ConfigProvider",
                 "FriendsOfHyperf\\HttpRequestLifeCycle\\ConfigProvider",
                 "FriendsOfHyperf\\IdeHelper\\ConfigProvider",
-                "FriendsOfHyperf\\Macros\\ConfigProvider"
+                "FriendsOfHyperf\\Macros\\ConfigProvider",
+                "FriendsOfHyperf\\Tinker\\ConfigProvider"
             ]
         }
     },
