@@ -19,6 +19,7 @@
         "hyperf/amqp": "~2.2.0",
         "hyperf/async-queue": "~2.2.0",
         "hyperf/cache": "~2.2.0",
+        "hyperf/config-center": "~2.2.0",
         "hyperf/db-connection": "~2.2.0",
         "hyperf/command": "~2.2.0",
         "hyperf/di": "~2.2.0",
