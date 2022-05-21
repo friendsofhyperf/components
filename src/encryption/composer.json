@@ -1,0 +1,43 @@
+{
+    "name": "friendsofhyperf/encryption",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "php",
+        "hyperf",
+        "encryption",
+        "swoole"
+    ],
+    "authors": [{
+        "name": "Huangdijia",
+        "email": "huangdijia@gmail.com",
+        "homepage": "https://github.com/huangdijia"
+    }],
+    "description": "The Encryption components for Hyperf.",
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
+    "autoload": {
+        "psr-4": {
+            "Friendsofhyperf\\Encryption\\": "src/"
+        },
+        "files": [
+            "src/helpers.php"
+        ]
+    },
+    "require": {
+        "hyperf/contract": "~2.2.0",
+        "hyperf/di": "~2.2.0",
+        "hyperf/event": "~2.2.0",
+        "opis/closure": "^3.6"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "hyperf": {
+            "config": "Friendsofhyperf\\Encryption\\ConfigProvider"
+        }
+    }
+}

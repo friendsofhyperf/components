@@ -55,6 +55,7 @@
         "friendsofhyperf/cache": "*",
         "friendsofhyperf/closure-command": "*",
         "friendsofhyperf/console-spinner": "*",
+        "friendsofhyperf/encryption": "*",
         "friendsofhyperf/exception-event": "*",
         "friendsofhyperf/facade": "*",
         "friendsofhyperf/helpers": "*",
@@ -69,6 +70,7 @@
     "autoload": {
         "files": [
             "src/closure-command/src/functions.php",
+            "src/encryption/src/helpers.php",
             "src/exception-event/src/helpers.php",
             "src/helpers/src/helpers.php",
             "src/lock/src/functions.php",
@@ -91,7 +93,8 @@
             "FriendsOfHyperf\\Lock\\": "src/lock/src/",
             "FriendsOfHyperf\\Macros\\": "src/macros/src/",
             "FriendsOfHyperf\\ModelObserver\\": "src/model-observer/src/",
-            "FriendsOfHyperf\\Tinker\\": "src/tinker/src/"
+            "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
+            "Friendsofhyperf\\Encryption\\": "src/encryption/src/"
         }
     },
     "autoload-dev": {
@@ -115,7 +118,8 @@
                 "FriendsOfHyperf\\Lock\\ConfigProvider",
                 "FriendsOfHyperf\\Macros\\ConfigProvider",
                 "FriendsOfHyperf\\ModelObserver\\ConfigProvider",
-                "FriendsOfHyperf\\Tinker\\ConfigProvider"
+                "FriendsOfHyperf\\Tinker\\ConfigProvider",
+                "Friendsofhyperf\\Encryption\\ConfigProvider"
             ]
         }
     },
