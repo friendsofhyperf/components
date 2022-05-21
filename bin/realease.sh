@@ -57,8 +57,9 @@ fi
 REMOTES=$(ls $BASEPATH)
 
 # Delete the old release tag.
-# git tag -d $VERSION
+# git push --delete origin $VERSION
 # git push origin :refs/tags/$VERSION
+# git tag --delete $VERSION
 
 # Tag Framework
 git tag $VERSION
