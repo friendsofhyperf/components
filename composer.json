@@ -22,6 +22,7 @@
         "hyperf/config-center": "~2.2.0",
         "hyperf/db-connection": "~2.2.0",
         "hyperf/command": "~2.2.0",
+        "hyperf/consul": "~2.2.0",
         "hyperf/di": "~2.2.0",
         "hyperf/filesystem": "~2.2.0",
         "hyperf/framework": "~2.2.0",
