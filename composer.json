@@ -128,11 +128,14 @@
             ]
         }
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "config": {
+        "optimize-autoloader": true,
         "sort-packages": true
     },
     "scripts": {
-        "analyse": "phpstan analyse --memory-limit 300M -l 0 -c phpstan.neon ./src",
+        "analyse": "phpstan analyse --memory-limit 4096M -l 5 -c phpstan.neon ./src",
         "cs-fix": "php-cs-fixer fix $1",
         "json-fix": "./bin/composer-json-fixer",
         "test": "phpunit -c phpunit.xml --colors=always"
