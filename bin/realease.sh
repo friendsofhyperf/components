@@ -72,7 +72,8 @@ do
     echo "Releasing $REMOTE";
 
     TMP_DIR="/tmp/friendsofhyperf-split"
-    REMOTE_URL="https://github.com/friendsofhyperf/${REMOTE}"
+    # REMOTE_URL="https://github.com/friendsofhyperf/${REMOTE}"
+    REMOTE_URL="git@github.com:friendsofhyperf/$REMOTE.git"
 
     rm -rf $TMP_DIR;
     mkdir $TMP_DIR;
