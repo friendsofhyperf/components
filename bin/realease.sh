@@ -67,8 +67,8 @@ do
     echo ""
     echo "Releasing $REMOTE";
 
-    TMP_DIR="/tmp/go-packagist-split"
-    REMOTE_URL="git@github.com:go-packagist/$REMOTE.git"
+    TMP_DIR="/tmp/friendsofhyperf-split"
+    REMOTE_URL="https://github.com/friendsofhyperf/$REMOTE.git"
 
     rm -rf $TMP_DIR;
     mkdir $TMP_DIR;
