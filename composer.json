@@ -1,5 +1,6 @@
 {
     "name": "friendsofhyperf/components",
+    "description": "The most popular components for Hyperf.",
     "type": "library",
     "license": "MIT",
     "authors": [

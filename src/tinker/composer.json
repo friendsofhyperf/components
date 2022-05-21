@@ -1,5 +1,6 @@
 {
     "name": "friendsofhyperf/tinker",
+    "description": "The Powerful REPL for Hyperf.",
     "type": "library",
     "license": "MIT",
     "keywords": [
@@ -17,7 +18,6 @@
         "issues": "https://github.com/friendsofhyperf/components/issues",
         "source": "https://github.com/friendsofhyperf/components"
     },
-    "description": "Powerful REPL for the Hyperf framework.",
     "require": {
         "hyperf/command": "~2.2.0",
         "hyperf/contract": "~2.2.0",

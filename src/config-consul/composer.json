@@ -1,6 +1,6 @@
 {
     "name": "friendsofhyperf/config-consul",
-    "description": "Config extension for Hyperf.",
+    "description": "The config component for Hyperf.",
     "type": "library",
     "license": "MIT",
     "authors": [{
