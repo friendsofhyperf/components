@@ -1,7 +1,7 @@
 {
     "name": "friendsofhyperf/cache",
     "type": "library",
-    "description": "Yet another cache for hyperf.",
+    "description": "The cache component for Hyperf.",
     "license": "MIT",
     "authors": [{
         "name": "huangdijia",

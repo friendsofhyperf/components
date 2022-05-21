@@ -6,7 +6,7 @@
         "php",
         "hyperf"
     ],
-    "description": "Hyperf Ide Helper",
+    "description": "The ide-helper component for Hyperf.",
     "support": {
         "issues": "https://github.com/friendsofhyperf/components/issues",
         "source": "https://github.com/friendsofhyperf/components"

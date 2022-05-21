@@ -1,6 +1,6 @@
 {
     "name": "friendsofhyperf/http-client",
-    "description": "HTTP Client for Hyperf, from Laravel.",
+    "description": "The http client component for Hyperf, from Laravel.",
     "type": "library",
     "license": "MIT",
     "authors": [{

@@ -1,6 +1,6 @@
 {
     "name": "friendsofhyperf/lock",
-    "description": "Lock component for hyperf.",
+    "description": "The lock component for Hyperf.",
     "type": "library",
     "license": "MIT",
     "authors": [{

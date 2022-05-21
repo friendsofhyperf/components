@@ -1,6 +1,6 @@
 {
     "name": "friendsofhyperf/macros",
-    "description": "The commonly used macros for hyperf.",
+    "description": "The commonly used macros for Hyperf.",
     "type": "library",
     "license": "MIT",
     "authors": [

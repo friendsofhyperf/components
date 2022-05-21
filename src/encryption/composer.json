@@ -1,6 +1,7 @@
 {
     "name": "friendsofhyperf/encryption",
     "type": "library",
+    "description": "The encryption component for Hyperf.",
     "license": "MIT",
     "keywords": [
         "php",
@@ -13,7 +14,6 @@
         "email": "huangdijia@gmail.com",
         "homepage": "https://github.com/huangdijia"
     }],
-    "description": "The Encryption components for Hyperf.",
     "support": {
         "issues": "https://github.com/friendsofhyperf/components/issues",
         "source": "https://github.com/friendsofhyperf/components"

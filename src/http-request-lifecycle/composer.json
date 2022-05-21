@@ -1,6 +1,6 @@
 {
     "name": "friendsofhyperf/http-request-lifecycle",
-    "description": "Http request lifecycle component for hyperf.",
+    "description": "The http request lifecycle component for Hyperf.",
     "type": "library",
     "license": "MIT",
     "authors": [{

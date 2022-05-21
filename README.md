@@ -1,4 +1,4 @@
-# friendsofhyperf/components
+# The most popular components for Hyperf
 
 [![Latest Test](https://github.com/friendsofhyperf/components/workflows/tests/badge.svg)](https://github.com/friendsofhyperf/components/actions)
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/components/version.png)](https://packagist.org/packages/friendsofhyperf/components)

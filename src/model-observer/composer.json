@@ -1,6 +1,6 @@
 {
     "name": "friendsofhyperf/model-observer",
-    "description": "Model Observer For Hyperf",
+    "description": "The model observer component for Hyperf.",
     "type": "library",
     "license": "MIT",
     "authors": [{

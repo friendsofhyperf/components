@@ -1,6 +1,6 @@
 {
     "name": "friendsofhyperf/access-log",
-    "description": "Access log component for hyperf.",
+    "description": "The access log component for Hyperf.",
     "type": "library",
     "license": "MIT",
     "authors": [{
