@@ -56,6 +56,10 @@ fi
 
 REMOTES=$(ls $BASEPATH)
 
+# Delete the old release tag.
+# git tag -d $VERSION
+# git push origin :refs/tags/$VERSION
+
 # Tag Framework
 git tag $VERSION
 git push origin --tags
@@ -68,7 +72,7 @@ do
     echo "Releasing $REMOTE";
 
     TMP_DIR="/tmp/friendsofhyperf-split"
-    REMOTE_URL="https://github.com/friendsofhyperf/$REMOTE.git"
+    REMOTE_URL="https://github.com/friendsofhyperf/${REMOTE}"
 
     rm -rf $TMP_DIR;
     mkdir $TMP_DIR;
