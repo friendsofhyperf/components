@@ -14,7 +14,7 @@
     "require": {
         "hyperf/config": "~2.2.0",
         "hyperf/utils": "~2.2.0",
-        "nesbot/carbon": "^2.44"
+        "nesbot/carbon": "^2.0"
     },
     "autoload": {
         "psr-4": {
