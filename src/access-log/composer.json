@@ -13,10 +13,10 @@
     },
     "require": {
         "friendsofhyperf/http-request-lifecycle": "^2.0",
-        "hyperf/config": "~2.2.0",
-        "hyperf/event": "~2.2.0",
-        "hyperf/logger": "~2.2.0",
-        "hyperf/utils": "~2.2.0",
+        "hyperf/config": "3.0.*",
+        "hyperf/event": "3.0.*",
+        "hyperf/logger": "3.0.*",
+        "hyperf/utils": "3.0.*",
         "nesbot/carbon": "^2.0"
     },
     "autoload": {

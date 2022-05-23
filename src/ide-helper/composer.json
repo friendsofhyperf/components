@@ -19,7 +19,7 @@
     "require": {
         "barryvdh/reflection-docblock": "^2.0",
         "composer/composer": "^1.0|^2.0",
-        "hyperf/filesystem": "~2.2.0"
+        "hyperf/filesystem": "3.0.*"
     },
     "config": {
         "sort-packages": true

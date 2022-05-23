@@ -12,8 +12,8 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "hyperf/guzzle": "~2.2.0",
-        "hyperf/macroable": "~2.2.0",
+        "hyperf/guzzle": "3.0.*",
+        "hyperf/macroable": "3.0.*",
         "symfony/var-dumper": "^5.0"
     },
     "autoload": {

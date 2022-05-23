@@ -13,7 +13,7 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "hyperf/exception-handler": "~2.2.0"
+        "hyperf/exception-handler": "3.0.*"
     },
     "autoload": {
         "files": [

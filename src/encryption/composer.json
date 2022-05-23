@@ -27,9 +27,9 @@
         ]
     },
     "require": {
-        "hyperf/contract": "~2.2.0",
-        "hyperf/di": "~2.2.0",
-        "hyperf/event": "~2.2.0",
+        "hyperf/contract": "3.0.*",
+        "hyperf/di": "3.0.*",
+        "hyperf/event": "3.0.*",
         "opis/closure": "^3.6"
     },
     "config": {

@@ -12,22 +12,22 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "hyperf/di": "~2.2.0"
+        "hyperf/di": "3.0.*"
     },
     "suggest": {
-        "hyperf/amqp": "equired to use (~2.2.0)",
-        "hyperf/async-queue": "equired to use (~2.2.0)",
-        "hyperf/cache": "equired to use (~2.2.0)",
-        "hyperf/config": "equired to use (~2.2.0)",
-        "hyperf/filesystem": "equired to use (~2.2.0)",
-        "hyperf/framework": "equired to use (~2.2.0)",
-        "hyperf/kafka": "equired to use (~2.2.0)",
-        "hyperf/logger": "equired to use (~2.2.0)",
-        "hyperf/redis": "equired to use (~2.2.0)",
-        "hyperf/session": "equired to use (~2.2.0)",
-        "hyperf/translation": "equired to use (~2.2.0)",
-        "hyperf/validation": "equired to use (~2.2.0)",
-        "hyperf/view": "equired to use (~2.2.0)"
+        "hyperf/amqp": "equired to use (3.0.*)",
+        "hyperf/async-queue": "equired to use (3.0.*)",
+        "hyperf/cache": "equired to use (3.0.*)",
+        "hyperf/config": "equired to use (3.0.*)",
+        "hyperf/filesystem": "equired to use (3.0.*)",
+        "hyperf/framework": "equired to use (3.0.*)",
+        "hyperf/kafka": "equired to use (3.0.*)",
+        "hyperf/logger": "equired to use (3.0.*)",
+        "hyperf/redis": "equired to use (3.0.*)",
+        "hyperf/session": "equired to use (3.0.*)",
+        "hyperf/translation": "equired to use (3.0.*)",
+        "hyperf/validation": "equired to use (3.0.*)",
+        "hyperf/view": "equired to use (3.0.*)"
     },
     "autoload": {
         "psr-4": {
