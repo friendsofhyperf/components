@@ -1,8 +1,8 @@
 # console-spinner
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/console-spinner/version.png)](https://packagist.org/packages/friendsofhyperf/console-spinner)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/console-spinner/d/total.png)](https://packagist.org/packages/friendsofhyperf/console-spinner)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/console-spinner)](https://github.com/friendsofhyperf/console-spinner)
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/console-spinner)](https://packagist.org/packages/friendsofhyperf/console-spinner)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/console-spinner)](https://packagist.org/packages/friendsofhyperf/console-spinner)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/console-spinner)](https://github.com/friendsofhyperf/console-spinner)
 
 ## Installation
 

@@ -1,8 +1,8 @@
 # model-observer
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/model-observer/version.png)](https://packagist.org/packages/friendsofhyperf/model-observer)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/model-observer/d/total.png)](https://packagist.org/packages/friendsofhyperf/model-observer)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/model-observer)](https://github.com/friendsofhyperf/model-observer)
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/model-observer)](https://packagist.org/packages/friendsofhyperf/model-observer)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/model-observer)](https://packagist.org/packages/friendsofhyperf/model-observer)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/model-observer)](https://github.com/friendsofhyperf/model-observer)
 
 ## Installation
 

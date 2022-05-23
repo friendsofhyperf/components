@@ -1,8 +1,8 @@
-# Hyperf config-consul
+# config-consul
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/config-consul/version.png)](https://packagist.org/packages/friendsofhyperf/config-consul)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/config-consul/d/total.png)](https://packagist.org/packages/friendsofhyperf/config-consul)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/config-consul)](https://github.com/friendsofhyperf/config-consul)
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/config-consul)](https://packagist.org/packages/friendsofhyperf/config-consul)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/config-consul)](https://packagist.org/packages/friendsofhyperf/config-consul)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/config-consul)](https://github.com/friendsofhyperf/config-consul)
 
 ## Installation
 

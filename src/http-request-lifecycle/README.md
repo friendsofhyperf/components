@@ -1,15 +1,15 @@
 # Http Request LifeCycle
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/http-request-lifecycle/version.png)](https://packagist.org/packages/friendsofhyperf/http-request-lifecycle)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/http-request-lifecycle/d/total.png)](https://packagist.org/packages/friendsofhyperf/http-request-lifecycle)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/http-request-lifecycle)](https://github.com/friendsofhyperf/http-request-lifecycle)
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/http-request-lifecycle)](https://packagist.org/packages/friendsofhyperf/http-request-lifecycle)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/http-request-lifecycle)](https://packagist.org/packages/friendsofhyperf/http-request-lifecycle)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/http-request-lifecycle)](https://github.com/friendsofhyperf/http-request-lifecycle)
 
-Http Request LifeCycle component for hyperf.
+Http Request LifeCycle component for Hyperf.
 
 ## Installation
 
 ```bash
-composer require friendsofhyperf/Http-request-lifecycle
+composer require friendsofhyperf/http-request-lifecycle
 ```
 
 ## Usage

@@ -1,8 +1,8 @@
 # Hyperf Facades
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/facade/version.png)](https://packagist.org/packages/friendsofhyperf/facade)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/facade/d/total.png)](https://packagist.org/packages/friendsofhyperf/facade)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/facade)](https://github.com/friendsofhyperf/facade)
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/facade)](https://packagist.org/packages/friendsofhyperf/facade)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/facade)](https://packagist.org/packages/friendsofhyperf/facade)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/facade)](https://github.com/friendsofhyperf/facade)
 
 The commonly used facades for hyperf.
 

@@ -1,8 +1,8 @@
 # Tinker
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/tinker/version.png)](https://packagist.org/packages/friendsofhyperf/tinker)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/tinker/d/total.png)](https://packagist.org/packages/friendsofhyperf/tinker)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/tinker)](https://github.com/friendsofhyperf/tinker)
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/tinker)](https://packagist.org/packages/friendsofhyperf/tinker)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/tinker)](https://packagist.org/packages/friendsofhyperf/tinker)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/tinker)](https://github.com/friendsofhyperf/tinker)
 
 ## Installation
 

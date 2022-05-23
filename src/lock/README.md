@@ -1,8 +1,8 @@
 # Lock
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/lock/version.png)](https://packagist.org/packages/friendsofhyperf/lock)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/lock/d/total.png)](https://packagist.org/packages/friendsofhyperf/lock)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/lock)](https://github.com/friendsofhyperf/lock)
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/lock)](https://packagist.org/packages/friendsofhyperf/lock)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/lock)](https://packagist.org/packages/friendsofhyperf/lock)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/lock)](https://github.com/friendsofhyperf/lock)
 
 Lock component for hyperf. [中文说明](README_CN.md)
 

@@ -1,10 +1,10 @@
 # ide-helper
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/ide-helper/version.png)](https://packagist.org/packages/friendsofhyperf/ide-helper)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/ide-helper/d/total.png)](https://packagist.org/packages/friendsofhyperf/ide-helper)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/ide-helper)](https://github.com/friendsofhyperf/ide-helper)
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/ide-helper)](https://packagist.org/packages/friendsofhyperf/ide-helper)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/ide-helper)](https://packagist.org/packages/friendsofhyperf/ide-helper)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/ide-helper)](https://github.com/friendsofhyperf/ide-helper)
 
-IDE Helper for Hyperf
+IDE Helper for Hyperf.
 
 ## Installation
 

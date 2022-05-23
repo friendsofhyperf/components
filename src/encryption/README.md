@@ -1,8 +1,8 @@
 # Encryption
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/encryption/version.png)](https://packagist.org/packages/friendsofhyperf/encryption)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/encryption/d/total.png)](https://packagist.org/packages/friendsofhyperf/encryption)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/encryption)](https://github.com/friendsofhyperf/encryption)
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/encryption)](https://packagist.org/packages/friendsofhyperf/encryption)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/encryption)](https://packagist.org/packages/friendsofhyperf/encryption)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/encryption)](https://github.com/friendsofhyperf/encryption)
 
 ## Installation
 

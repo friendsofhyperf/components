@@ -1,9 +1,5 @@
 # 原子锁
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/lock/version.png)](https://packagist.org/packages/friendsofhyperf/lock)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/lock/d/total.png)](https://packagist.org/packages/friendsofhyperf/lock)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/lock)](https://github.com/friendsofhyperf/lock)
-
 Hyperf 原子锁组件。[English Document](README.md)
 
 ## Installation

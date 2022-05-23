@@ -1,8 +1,8 @@
 # Access Log
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/access-log/version.png)](https://packagist.org/packages/friendsofhyperf/access-log)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/access-log/d/total.png)](https://packagist.org/packages/friendsofhyperf/access-log)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/access-log)](https://github.com/friendsofhyperf/access-log)
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/access-log)](https://packagist.org/packages/friendsofhyperf/access-log)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/access-log)](https://packagist.org/packages/friendsofhyperf/access-log)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/access-log)](https://github.com/friendsofhyperf/access-log)
 
 Access log component for hyperf.
 

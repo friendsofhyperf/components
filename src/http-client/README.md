@@ -1,8 +1,8 @@
 # http-client
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/http-client/version.png)](https://packagist.org/packages/friendsofhyperf/http-client)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/http-client/d/total.png)](https://packagist.org/packages/friendsofhyperf/http-client)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/http-client)](https://github.com/friendsofhyperf/http-client)
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/http-client)](https://packagist.org/packages/friendsofhyperf/http-client)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/http-client)](https://packagist.org/packages/friendsofhyperf/http-client)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/http-client)](https://github.com/friendsofhyperf/http-client)
 
 HTTP Client for Hyperf, from Laravel.
 

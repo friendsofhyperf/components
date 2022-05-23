@@ -1,8 +1,8 @@
 # Cache
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/cache/version.png)](https://packagist.org/packages/friendsofhyperf/cache)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/cache/d/total.png)](https://packagist.org/packages/friendsofhyperf/cache)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/cache)](https://github.com/friendsofhyperf/cache)
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/cache)](https://packagist.org/packages/friendsofhyperf/cache)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/cache)](https://packagist.org/packages/friendsofhyperf/cache)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/cache)](https://github.com/friendsofhyperf/cache)
 
 Yet Another Hyperf Cache
 
