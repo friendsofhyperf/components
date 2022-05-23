@@ -9,7 +9,8 @@
 			// Append -bullseye or -buster to pin to an OS version.
 			// Use -bullseye variants on local on arm64/Apple Silicon.
 			"VARIANT": "7-bullseye",
-			"NODE_VERSION": "lts/*"
+			"NODE_VERSION": "lts/*",
+			"ID_ED25519_PRIV": "${localEnv:ID_ED25519_PRIV}"
 		}
 	},
 	

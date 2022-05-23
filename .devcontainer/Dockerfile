@@ -13,3 +13,11 @@ RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/
 
 # [Optional] Uncomment this line to install global node packages.
 # RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
+
+# Set up the environment.
+ARG ID_ED25519_PRIV
+RUN mkdir -p /home/vscode/.ssh/ \
+    && echo $ID_ED25519_PRIV > /home/vscode/.ssh/id_ed25519 \
+    && chown vscode. /home/vscode/.ssh/id_ed25519 \
+    && chmod 600 /home/vscode/.ssh/id_ed25519 \
+    && ssh-keyscan github.com >> /home/vscode/.ssh/known_hosts
