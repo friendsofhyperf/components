@@ -19,9 +19,6 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Psr\Container\ContainerInterface;
 
-/**
- * @Listener
- */
 #[Listener]
 class RegisterPropertyHandlerListener implements ListenerInterface
 {

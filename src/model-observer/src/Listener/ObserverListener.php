@@ -30,9 +30,6 @@ use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
 
-/**
- * @Listener
- */
 #[Listener]
 class ObserverListener implements ListenerInterface
 {

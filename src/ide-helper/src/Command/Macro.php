@@ -21,9 +21,6 @@ use Psr\Container\ContainerInterface;
 use Swoole\Coroutine\System;
 use Throwable;
 
-/**
- * @Command
- */
 #[Command]
 class Macro extends HyperfCommand
 {

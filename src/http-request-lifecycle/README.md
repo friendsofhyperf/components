@@ -22,9 +22,6 @@ use FriendsOfHyperf\HttpRequestLifeCycle\Events\RequestHandled;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 
-/**
- * @Listener
- */
 #[Listener]
 class RequestHandledListener implements ListenerInterface
 {

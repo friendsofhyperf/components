@@ -13,10 +13,6 @@ namespace FriendsOfHyperf\Lock\Annotation;
 use Attribute;
 use Hyperf\Di\Annotation\AbstractAnnotation;
 
-/**
- * @Annotation
- * @Target({"PROPERTY"})
- */
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Lock extends AbstractAnnotation
 {

@@ -21,9 +21,6 @@ use Hyperf\Framework\Event\BootApplication;
 use Opis\Closure\SerializableClosure;
 use Psr\Container\ContainerInterface;
 
-/**
- * @Listener
- */
 #[Listener]
 class BootEncryptionListener implements ListenerInterface
 {

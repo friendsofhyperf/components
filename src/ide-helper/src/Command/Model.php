@@ -25,9 +25,6 @@ use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * @Command
- */
 #[Command]
 class Model extends HyperfCommand
 {

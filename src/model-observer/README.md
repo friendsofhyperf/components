@@ -26,9 +26,7 @@ namespace App\Observer;
 use App\Model\User;
 use FriendsOfHyperf\ModelObserver\Annotation\Observer;
 
-/**
- * @Observer(User::class)
- */
+#[Observer(User::class)]
 class FooObserver
 {
     public function creating(User $model)
