@@ -27,7 +27,7 @@ use Throwable;
 #[Aspect]
 class ExceptionHandlerDispatcherAspect extends AbstractAspect
 {
-    public $classes = [
+    public array $classes = [
         'Hyperf\\ExceptionHandler\\ExceptionHandlerDispatcher::dispatch',
     ];
 

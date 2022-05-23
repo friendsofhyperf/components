@@ -31,15 +31,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 #[Command]
 class Model extends HyperfCommand
 {
-    /**
-     * @var string
-     */
-    protected $signature = 'ide-helper:model {--I|ignore= : What prefix that you want the Model set.} {--N|name=_ide_helper_models.php : Name of IDE Helper.}';
+    protected ?string $signature = 'ide-helper:model {--I|ignore= : What prefix that you want the Model set.} {--N|name=_ide_helper_models.php : Name of IDE Helper.}';
 
-    /**
-     * @var string
-     */
-    protected $description = 'Generate a new Model IDE Helper file.';
+    protected string $description = 'Generate a new Model IDE Helper file.';
 
     /**
      * @var bool

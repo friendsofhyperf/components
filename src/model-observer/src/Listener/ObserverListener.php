@@ -69,7 +69,7 @@ class ObserverListener implements ListenerInterface
     /**
      * @param Event $event
      */
-    public function process(object $event)
+    public function process(object $event): void
     {
         if (! $event instanceof Event) {
             return;

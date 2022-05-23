@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Http\Client;
 use ArrayAccess;
 use Hyperf\Utils\Arr;
 use Hyperf\Utils\Str;
-use Hyperf\Utils\Traits\Macroable;
+use Hyperf\Macroable\Macroable;
 use LogicException;
 
 class Request implements ArrayAccess

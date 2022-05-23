@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Http\Client;
 
-use Hyperf\Utils\Traits\Macroable;
+use Hyperf\Macroable\Macroable;
 
 /**
  * @method static \GuzzleHttp\Promise\PromiseInterface response($body = null, $status = 200, $headers = [])

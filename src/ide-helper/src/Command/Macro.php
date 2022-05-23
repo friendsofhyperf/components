@@ -27,15 +27,9 @@ use Throwable;
 #[Command]
 class Macro extends HyperfCommand
 {
-    /**
-     * @var string
-     */
-    protected $signature = 'ide-helper:macro {--N|name=_ide_helper_macros.php : Name of IDE Helper.}';
+    protected ?string $signature = 'ide-helper:macro {--N|name=_ide_helper_macros.php : Name of IDE Helper.}';
 
-    /**
-     * @var string
-     */
-    protected $description = 'Generate a new Macros IDE Helper file.';
+    protected string $description = 'Generate a new Macros IDE Helper file.';
 
     /**
      * @var Filesystem

@@ -12,7 +12,7 @@ namespace FriendsOfHyperf\Http\Client;
 
 use ArrayAccess;
 use Hyperf\Utils\Collection;
-use Hyperf\Utils\Traits\Macroable;
+use Hyperf\Macroable\Macroable;
 use LogicException;
 
 class Response implements ArrayAccess

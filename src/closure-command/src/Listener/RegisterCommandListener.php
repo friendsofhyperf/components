@@ -53,7 +53,7 @@ class RegisterCommandListener implements ListenerInterface
         ];
     }
 
-    public function process(object $event)
+    public function process(object $event): void
     {
         $route = BASE_PATH . '/config/console.php';
 

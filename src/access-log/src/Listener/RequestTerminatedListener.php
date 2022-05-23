@@ -41,7 +41,7 @@ class RequestTerminatedListener implements ListenerInterface
     /**
      * @param RequestTerminated $event
      */
-    public function process(object $event)
+    public function process(object $event): void
     {
         $this->handler->process($event->request, $event->response);
     }

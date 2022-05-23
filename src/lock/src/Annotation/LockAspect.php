@@ -20,7 +20,7 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 #[Aspect]
 class LockAspect extends AbstractAspect
 {
-    public $annotations = [
+    public array $annotations = [
         Lock::class,
     ];
 

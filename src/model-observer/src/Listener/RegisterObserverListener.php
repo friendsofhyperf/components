@@ -32,7 +32,7 @@ class RegisterObserverListener implements ListenerInterface
     /**
      * @param Event $event
      */
-    public function process(object $event)
+    public function process(object $event): void
     {
         ObserverManager::register();
     }

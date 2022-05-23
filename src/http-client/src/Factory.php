@@ -14,9 +14,9 @@ use Closure;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Response as Psr7Response;
 use GuzzleHttp\TransferStats;
+use Hyperf\Macroable\Macroable;
 use Hyperf\Utils\Collection;
 use Hyperf\Utils\Str;
-use Hyperf\Utils\Traits\Macroable;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Psr\EventDispatcher\EventDispatcherInterface;
 

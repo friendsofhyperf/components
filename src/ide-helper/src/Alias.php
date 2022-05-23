@@ -396,7 +396,7 @@ class Alias
 
             // Check if the class is macroable
             $traits = collect($reflection->getTraitNames());
-            if ($traits->contains('Hyperf\Utils\Traits\Macroable')) {
+            if ($traits->contains('Hyperf\Macroable\Macroable')) {
                 $properties = $reflection->getStaticProperties();
                 $macros = isset($properties['macros']) ? $properties['macros'] : [];
                 foreach ($macros as $macro_name => $macro_func) {
