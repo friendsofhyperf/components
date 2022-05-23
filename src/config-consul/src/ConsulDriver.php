@@ -17,15 +17,9 @@ use Psr\Container\ContainerInterface;
 
 class ConsulDriver extends AbstractDriver
 {
-    /**
-     * @var string
-     */
-    protected $driverName = 'consul';
+    protected string $driverName = 'consul';
 
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
+    protected ContainerInterface $container;
 
     /**
      * @var Base64Packer
@@ -46,7 +40,7 @@ class ConsulDriver extends AbstractDriver
         $this->packer = $container->get($this->config->get('config_center.drivers.consul.packer', JsonPacker::class));
     }
 
-    protected function updateConfig(array $config)
+    protected function updateConfig(array $config): void
     {
         $configurations = $this->format($config);
 

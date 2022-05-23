@@ -9,8 +9,8 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 use FriendsOfHyperf\ExceptionEvent\Event\ExceptionDispatched;
+use Hyperf\Context\Context;
 use Hyperf\Utils\ApplicationContext;
-use Hyperf\Utils\Context;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;

@@ -11,10 +11,10 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ExceptionEvent\Aspect;
 
 use FriendsOfHyperf\ExceptionEvent\Event\ExceptionDispatched;
+use Hyperf\Context\Context;
 use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Hyperf\Utils\Context;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
