@@ -15,26 +15,7 @@ if (! function_exists('app')) {
      */
     function app(string $abstract = null, array $parameters = [])
     {
-        if (\Hyperf\Utils\ApplicationContext::hasContainer()) {
-            /** @var \Hyperf\Contract\ContainerInterface $container */
-            $container = \Hyperf\Utils\ApplicationContext::getContainer();
-
-            if (is_null($abstract)) {
-                return $container;
-            }
-
-            if (count($parameters) == 0 && $container->has($abstract)) {
-                return $container->get($abstract);
-            }
-
-            return $container->make($abstract, $parameters);
-        }
-
-        if (is_null($abstract)) {
-            throw new \InvalidArgumentException('Invalid argument $abstract');
-        }
-
-        return new $abstract(...array_values($parameters));
+        return di($abstract, $parameters);
     }
 }
 
@@ -80,7 +61,7 @@ if (! function_exists('cache')) {
     function cache()
     {
         $arguments = func_get_args();
-        $cache = app(\Psr\SimpleCache\CacheInterface::class);
+        $cache = di(\Psr\SimpleCache\CacheInterface::class);
 
         if (empty($arguments)) {
             return $cache;
@@ -114,7 +95,7 @@ if (! function_exists('call_command')) {
         $output = new \Symfony\Component\Console\Output\NullOutput();
 
         /** @var \Symfony\Component\Console\Application $application */
-        $application = app(\Hyperf\Contract\ApplicationInterface::class);
+        $application = di(\Hyperf\Contract\ApplicationInterface::class);
         $application->setAutoExit(false);
 
         return $application->run($input, $output);
@@ -139,7 +120,7 @@ if (! function_exists('cookie')) {
     function cookie($name = null, $value = null, $minutes = 0, $path = null, $domain = null, $secure = null, $httpOnly = true, $raw = false, $sameSite = null)
     {
         if (is_null($name)) {
-            return app(\Hyperf\HttpMessage\Cookie\CookieJarInterface::class);
+            return di(\Hyperf\HttpMessage\Cookie\CookieJarInterface::class);
         }
 
         $time = ($minutes == 0) ? 0 : $minutes * 60;
@@ -163,6 +144,36 @@ if (! function_exists('class_namespace')) {
     }
 }
 
+if (! function_exists('di')) {
+    /**
+     * @throws TypeError
+     * @return mixed|\Psr\Container\ContainerInterface
+     */
+    function di(string $abstract = null, array $parameters = [])
+    {
+        if (\Hyperf\Utils\ApplicationContext::hasContainer()) {
+            /** @var \Hyperf\Contract\ContainerInterface $container */
+            $container = \Hyperf\Utils\ApplicationContext::getContainer();
+
+            if (is_null($abstract)) {
+                return $container;
+            }
+
+            if (count($parameters) == 0 && $container->has($abstract)) {
+                return $container->get($abstract);
+            }
+
+            return $container->make($abstract, $parameters);
+        }
+
+        if (is_null($abstract)) {
+            throw new \InvalidArgumentException('Invalid argument $abstract');
+        }
+
+        return new $abstract(...array_values($parameters));
+    }
+}
+
 if (! function_exists('dispatch')) {
     /**
      * @param Closure|\Hyperf\Amqp\Message\ProducerMessageInterface|\Hyperf\AsyncQueue\JobInterface|\longlang\phpkafka\Producer\ProduceMessage $job
@@ -179,19 +190,19 @@ if (! function_exists('dispatch')) {
 
         if ($job instanceof \Hyperf\AsyncQueue\JobInterface) {
             /** @var \Hyperf\AsyncQueue\Driver\DriverInterface $driver */
-            $driver = app(\Hyperf\AsyncQueue\Driver\DriverFactory::class)->get((string) ($arguments[0] ?? $job->queue ?? 'default'));
+            $driver = di(\Hyperf\AsyncQueue\Driver\DriverFactory::class)->get((string) ($arguments[0] ?? $job->queue ?? 'default'));
             return $driver->push($job, (int) ($arguments[1] ?? $job->delay ?? 0));
         }
 
         if ($job instanceof \Hyperf\Amqp\Message\ProducerMessageInterface) {
             /** @var \Hyperf\Amqp\Producer $producer */
-            $producer = app(\Hyperf\Amqp\Producer::class);
+            $producer = di(\Hyperf\Amqp\Producer::class);
             return $producer->produce($job, ...$arguments);
         }
 
         if ($job instanceof \longlang\phpkafka\Producer\ProduceMessage) {
             /** @var \Hyperf\Kafka\Producer $producer */
-            $producer = app(\Hyperf\Kafka\ProducerManager::class)->getProducer((string) ($arguments[0] ?? 'default'));
+            $producer = di(\Hyperf\Kafka\ProducerManager::class)->getProducer((string) ($arguments[0] ?? 'default'));
             return $producer->sendBatch([$job]);
         }
 
@@ -226,7 +237,7 @@ if (! function_exists('environment')) {
      */
     function environment(...$environments)
     {
-        $environment = app(\FriendsOfHyperf\Helpers\Foundation\Environment::class);
+        $environment = di(\FriendsOfHyperf\Helpers\Foundation\Environment::class);
 
         if (count($environments) > 0) {
             return $environment->environment(...$environments);
@@ -244,7 +255,7 @@ if (! function_exists('event')) {
      */
     function event(object $event)
     {
-        return app(\Psr\EventDispatcher\EventDispatcherInterface::class)->dispatch($event);
+        return di(\Psr\EventDispatcher\EventDispatcherInterface::class)->dispatch($event);
     }
 }
 
@@ -307,7 +318,7 @@ if (! function_exists('logs')) {
      */
     function logs($name = 'hyperf', $group = 'default')
     {
-        return app(\Hyperf\Logger\LoggerFactory::class)->get($name, $group);
+        return di(\Hyperf\Logger\LoggerFactory::class)->get($name, $group);
     }
 }
 
@@ -380,7 +391,7 @@ if (! function_exists('request')) {
     function request($key = null, $default = null)
     {
         /** @var \Hyperf\HttpServer\Contract\RequestInterface $request */
-        $request = app(\Hyperf\HttpServer\Contract\RequestInterface::class);
+        $request = di(\Hyperf\HttpServer\Contract\RequestInterface::class);
 
         if (is_null($key)) {
             return $request;
@@ -405,7 +416,7 @@ if (! function_exists('response')) {
     function response($content = '', $status = 200, array $headers = [])
     {
         /** @var \Hyperf\HttpServer\Contract\ResponseInterface|\Psr\Http\Message\ResponseInterface $response */
-        $response = app(\Hyperf\HttpServer\Contract\ResponseInterface::class);
+        $response = di(\Hyperf\HttpServer\Contract\ResponseInterface::class);
 
         if (func_num_args() === 0) {
             return $response;
@@ -440,7 +451,7 @@ if (! function_exists('session')) {
      */
     function session($key = null, $default = null)
     {
-        $session = app(\Hyperf\Contract\SessionInterface::class);
+        $session = di(\Hyperf\Contract\SessionInterface::class);
 
         if (is_null($key)) {
             return $session;
@@ -551,7 +562,7 @@ if (! function_exists('validator')) {
     function validator(array $data = [], array $rules = [], array $messages = [], array $customAttributes = [])
     {
         /** @var \Hyperf\Validation\Contract\ValidatorFactoryInterface $factory */
-        $factory = app(\Hyperf\Validation\Contract\ValidatorFactoryInterface::class);
+        $factory = di(\Hyperf\Validation\Contract\ValidatorFactoryInterface::class);
 
         if (func_num_args() === 0) {
             return $factory;
@@ -584,7 +595,7 @@ if (! function_exists('get_client_ip')) {
     function get_client_ip(): string
     {
         /** @var \Hyperf\HttpServer\Contract\RequestInterface $request */
-        $request = app(\Hyperf\HttpServer\Contract\RequestInterface::class);
+        $request = di(\Hyperf\HttpServer\Contract\RequestInterface::class);
         return $request->getHeaderLine('x-real-ip') ?: $request->server('remote_addr');
     }
 }
