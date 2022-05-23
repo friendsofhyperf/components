@@ -80,6 +80,7 @@
             "src/lock/src/functions.php",
             "src/macros/src/arr.php",
             "src/macros/src/collection.php",
+            "src/macros/src/request.php",
             "src/macros/src/str.php",
             "src/macros/src/stringable.php"
         ],
