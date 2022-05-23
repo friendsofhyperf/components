@@ -12,6 +12,7 @@ parameters:
       paths:
         - src/macros/src/collection.php
         - src/macros/src/stringable.php
+        - src/macros/src/request.php
         - src/closure-command/publish/console.php
     -
       message: '#Calling static::\w+\(\) outside of class scope#'
