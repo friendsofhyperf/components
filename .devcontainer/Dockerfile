@@ -15,11 +15,5 @@ RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/
 # RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
 
 # Set up the environment.
-ARG ID_ED25519_PRIV
-RUN mkdir -p /home/vscode/.ssh/ \
-    && echo $ID_ED25519_PRIV > /home/vscode/.ssh/id_ed25519 \
-    && chown vscode. /home/vscode/.ssh/id_ed25519 \
-    && chmod 600 /home/vscode/.ssh/id_ed25519
-
-RUN ssh-keyscan github.com >> /home/vscode/.ssh/known_hosts \
-    && chown vscode. /home/vscode/.ssh/known_hosts
+ARG ID_ED25519_PRIV="none"
+RUN if [ "${ID_ED25519_PRIV}" != "none" ]; then su vscode -c "mkdir -p ~/.ssh/ && echo -e ${ID_ED25519_PRIV} > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519 && ssh-keyscan github.com >> ~/.ssh/known_hosts"; fi
