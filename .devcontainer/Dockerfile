@@ -19,5 +19,7 @@ ARG ID_ED25519_PRIV
 RUN mkdir -p /home/vscode/.ssh/ \
     && echo $ID_ED25519_PRIV > /home/vscode/.ssh/id_ed25519 \
     && chown vscode. /home/vscode/.ssh/id_ed25519 \
-    && chmod 600 /home/vscode/.ssh/id_ed25519 \
-    && ssh-keyscan github.com >> /home/vscode/.ssh/known_hosts
+    && chmod 600 /home/vscode/.ssh/id_ed25519
+
+RUN ssh-keyscan github.com >> /home/vscode/.ssh/known_hosts \
+    && chown vscode. /home/vscode/.ssh/known_hosts
