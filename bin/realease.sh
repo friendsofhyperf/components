@@ -16,7 +16,7 @@ then
     exit 1
 fi
 
-RELEASE_BRANCH="2.x"
+RELEASE_BRANCH="3.x"
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 BASEPATH=$(cd `dirname $0`; cd ../src/; pwd)
 VERSION=$1
