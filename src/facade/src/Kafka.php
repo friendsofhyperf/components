@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Facade;
 
-use Hyperf\Kafka\Exception\ConnectionCLosedException;
+use Hyperf\Kafka\Exception\ConnectionClosedException;
 use Hyperf\Kafka\Exception\TimeoutException;
 use Hyperf\Kafka\ProducerManager as Accessor;
 use longlang\phpkafka\Producer\ProduceMessage;
@@ -22,7 +22,7 @@ class Kafka extends Facade
 {
     /**
      * @param string $queue
-     * @throws ConnectionCLosedException
+     * @throws ConnectionClosedException
      * @throws TimeoutException
      */
     public static function send(ProduceMessage $produceMessage, $queue = 'default')
@@ -33,7 +33,7 @@ class Kafka extends Facade
     /**
      * @param ProduceMessage[] $produceMessages
      * @param string $queue
-     * @throws ConnectionCLosedException
+     * @throws ConnectionClosedException
      * @throws TimeoutException
      */
     public static function sendBatch($produceMessages, $queue = 'default')
