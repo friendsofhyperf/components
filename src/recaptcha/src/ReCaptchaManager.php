@@ -19,7 +19,7 @@ use TypeError;
 class ReCaptchaManager
 {
     /**
-     * @var array
+     * @var ReCaptcha[]
      */
     protected static $recaptchas = [];
 
@@ -31,19 +31,21 @@ class ReCaptchaManager
      */
     public static function get(string $version = null)
     {
-        if (! isset(self::$recaptchas[$version])) {
-            /** @var ConfigInterface $config */
-            $config = ApplicationContext::getContainer()->get(ConfigInterface::class);
-
-            if (! $config->has('recaptcha')) {
-                throw new RuntimeException('Not publish yet, please run \'php bin/hyperf.php vendor:publish friendsofhyperf/recaptcha\'');
-            }
-
-            $version = $version ?? $config->get('recaptcha.default', 'v3');
-
-            self::$recaptchas[$version] = make(ReCaptcha::class, ['secret' => $config->get('recaptcha.' . $version . '.secret_key', '')]);
+        if (isset(self::$recaptchas[$version])) {
+            return self::$recaptchas[$version];
         }
 
-        return self::$recaptchas[$version];
+        /** @var ConfigInterface $config */
+        $config = ApplicationContext::getContainer()->get(ConfigInterface::class);
+
+        if (! $config->has('recaptcha')) {
+            throw new RuntimeException('Not publish yet, please run \'php bin/hyperf.php vendor:publish friendsofhyperf/recaptcha\'');
+        }
+
+        $version = $version ?? $config->get('recaptcha.default', 'v3');
+
+        return self::$recaptchas[$version] = make(ReCaptcha::class, [
+            'secret' => $config->get('recaptcha.' . $version . '.secret_key', ''),
+        ]);
     }
 }
