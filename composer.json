@@ -17,6 +17,7 @@
         "php": "^8.0.0",
         "barryvdh/reflection-docblock": "^2.0",
         "composer/composer": "^1.0|^2.0",
+        "google/recaptcha": "^1.2",
         "hyperf/amqp": "3.0.*",
         "hyperf/async-queue": "3.0.*",
         "hyperf/cache": "3.0.*",
