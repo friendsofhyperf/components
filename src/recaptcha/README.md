@@ -1,10 +1,10 @@
 # ReCaptcha
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/recaptcha/version.png)](https://packagist.org/packages/friendsofhyperf/recaptcha)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/recaptcha/d/total.png)](https://packagist.org/packages/friendsofhyperf/recaptcha)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/recaptcha)](https://github.com/friendsofhyperf/recaptcha)
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/recaptcha)](https://packagist.org/packages/friendsofhyperf/recaptcha)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/recaptcha)](https://packagist.org/packages/friendsofhyperf/recaptcha)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/recaptcha)](https://github.com/friendsofhyperf/recaptcha)
 
-Google recaptcha for hyperf.
+The Google recaptcha for Hyperf.
 
 ## Installation
 
