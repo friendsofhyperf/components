@@ -5,14 +5,14 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/2.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Http\Client;
 
 use ArrayAccess;
-use Hyperf\Utils\Collection;
 use Hyperf\Macroable\Macroable;
+use Hyperf\Utils\Collection;
 use LogicException;
 
 class Response implements ArrayAccess
