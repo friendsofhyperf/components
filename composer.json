@@ -17,6 +17,7 @@
         "php": "^7.4|~8.0.0",
         "barryvdh/reflection-docblock": "^2.0",
         "composer/composer": "^1.0|^2.0",
+        "google/recaptcha": "^1.2",
         "hyperf/amqp": "~2.2.0",
         "hyperf/async-queue": "~2.2.0",
         "hyperf/cache": "~2.2.0",
@@ -69,6 +70,7 @@
         "friendsofhyperf/lock": "*",
         "friendsofhyperf/macros": "*",
         "friendsofhyperf/model-observer": "*",
+        "friendsofhyperf/recaptcha": "*",
         "friendsofhyperf/tinker": "*"
     },
     "autoload": {
@@ -98,6 +100,7 @@
             "FriendsOfHyperf\\Lock\\": "src/lock/src/",
             "FriendsOfHyperf\\Macros\\": "src/macros/src/",
             "FriendsOfHyperf\\ModelObserver\\": "src/model-observer/src/",
+            "FriendsOfHyperf\\ReCaptcha\\": "src/recaptcha/src/",
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
             "Friendsofhyperf\\Encryption\\": "src/encryption/src/"
         }
@@ -124,6 +127,7 @@
                 "FriendsOfHyperf\\Lock\\ConfigProvider",
                 "FriendsOfHyperf\\Macros\\ConfigProvider",
                 "FriendsOfHyperf\\ModelObserver\\ConfigProvider",
+                "FriendsOfHyperf\\ReCaptcha\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
                 "Friendsofhyperf\\Encryption\\ConfigProvider"
             ]
