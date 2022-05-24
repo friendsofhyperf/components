@@ -1,0 +1,31 @@
+{
+    "name": "friendsofhyperf/recaptcha",
+    "description": "The Google recaptcha component for Hyperf.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
+    "require": {
+        "google/recaptcha": "^1.2",
+        "hyperf/di": "~2.2.0",
+        "hyperf/event": "~2.2.0",
+        "hyperf/http-server": "~2.2.0",
+        "hyperf/validation": "~2.2.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\ReCaptcha\\": "src/"
+        }
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\ReCaptcha\\ConfigProvider"
+        }
+    }
+}

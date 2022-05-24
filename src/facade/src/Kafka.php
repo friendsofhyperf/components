@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Facade;
 
-use Hyperf\Kafka\Exception\ConnectionClosedException;
+use Hyperf\Kafka\Exception\ConnectionCLosedException as ConnectionClosedException;
 use Hyperf\Kafka\Exception\TimeoutException;
 use Hyperf\Kafka\ProducerManager as Accessor;
 use longlang\phpkafka\Producer\ProduceMessage;
