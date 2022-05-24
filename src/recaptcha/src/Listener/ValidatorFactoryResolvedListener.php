@@ -28,7 +28,7 @@ class ValidatorFactoryResolvedListener implements ListenerInterface
     /**
      * @param ValidatorFactoryResolved $event
      */
-    public function process(object $event)
+    public function process(object $event): void
     {
         $validatorFactory = $event->validatorFactory;
 
