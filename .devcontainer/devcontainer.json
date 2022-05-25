@@ -11,7 +11,7 @@
 			"VARIANT": "7-bullseye",
 			"NODE_VERSION": "lts/*",
 			"ID_ED25519_PRIV": "${localEnv:ID_ED25519_PRIV}",
-			"SWOOLE_VERSION": "none"
+			"SWOOLE_VERSION": "4.8.9"
 		}
 	},
 	

@@ -20,6 +20,8 @@ RUN if [ "${ID_ED25519_PRIV}" != "none" ]; then su vscode -c "mkdir -p ~/.ssh/ &
 
 # Install php-ext sockets & bcmath
 RUN set -ex \
+    && apt-get update \
+    && apt-get install -y libssl-dev libcurl4-openssl-dev \
     && docker-php-ext-install sockets bcmath
 
 # Install php-ext redis
@@ -29,8 +31,10 @@ RUN set -ex \
 
 # Install php-ext swoole
 ARG SWOOLE_VERSION="none"
+ARG SWOOLE_CONFIGURE_OPTIONS="'enable-sockets=\"yes\" enable-openssl=\"yes\" enable-http2=\"yes\" enable-mysqlnd=\"yes\" enable-swoole-json=\"yes\" enable-swoole-curl=\"yes\" enable-cares=\"yes\"'"
 RUN set -ex \
-    && if [ "${SWOOLE_VERSION}" != "none"]; then pecl install http://pecl.php.net/get/swoole-${SWOOLE_VERSION}.tgz; else pecl install swoole; fi \
+    && if [ "${SWOOLE_VERSION}" != "none"]; then pecl install --configureoptions ${SWOOLE_CONFIGURE_OPTIONS} http://pecl.php.net/get/swoole-${SWOOLE_VERSION}.tgz; else pecl install swoole; fi \
+    && if [ "${SWOOLE_VERSION}" = "none"]; then pecl install --configureoptions ${SWOOLE_CONFIGURE_OPTIONS} swoole; fi \
     && echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini \
     && echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/swoole.ini
 
