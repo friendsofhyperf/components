@@ -33,8 +33,7 @@ RUN set -ex \
 ARG SWOOLE_VERSION="none"
 ARG SWOOLE_CONFIGURE_OPTIONS="'enable-sockets=\"no\" enable-openssl=\"yes\" enable-http2=\"yes\" enable-mysqlnd=\"yes\" enable-swoole-json=\"no\" enable-swoole-curl=\"yes\" enable-cares=\"yes\"'"
 RUN set -ex \
-    && PACKAGE="swoole" \
-    && [ "${SWOOLE_VERSION}" != "none" ] && PACKAGE="http://pecl.php.net/get/swoole-${SWOOLE_VERSION}.tgz" \
+    && if [ "${SWOOLE_VERSION}" != "none" ]; then PACKAGE="http://pecl.php.net/get/swoole-${SWOOLE_VERSION}.tgz"; else PACKAGE="swoole"; fi \
     && pecl install --configureoptions ${SWOOLE_CONFIGURE_OPTIONS} ${PACKAGE} \
     && echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini \
     && echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/swoole.ini
