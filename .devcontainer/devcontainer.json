@@ -11,7 +11,10 @@
 			"VARIANT": "7-bullseye",
 			"NODE_VERSION": "lts/*",
 			"ID_ED25519_PRIV": "${localEnv:ID_ED25519_PRIV}",
-			"SWOOLE_VERSION": "4.8.9"
+			// Swoole version: 4.5.7 ~ 4.8.9
+			"SWOOLE_VERSION": "none",
+			// https://wiki.swoole.com/#/environment?id=pecl
+			"SWOOLE_CONFIGURE_OPTIONS": "'enable-sockets=\"yes\" enable-openssl=\"yes\" enable-http2=\"yes\" enable-mysqlnd=\"yes\" enable-swoole-json=\"yes\" enable-swoole-curl=\"yes\" enable-cares=\"yes\"'"
 		}
 	},
 	

@@ -31,10 +31,11 @@ RUN set -ex \
 
 # Install php-ext swoole
 ARG SWOOLE_VERSION="none"
-ARG SWOOLE_CONFIGURE_OPTIONS="'enable-sockets=\"yes\" enable-openssl=\"yes\" enable-http2=\"yes\" enable-mysqlnd=\"yes\" enable-swoole-json=\"yes\" enable-swoole-curl=\"yes\" enable-cares=\"yes\"'"
+ARG SWOOLE_CONFIGURE_OPTIONS="'enable-sockets=\"no\" enable-openssl=\"yes\" enable-http2=\"yes\" enable-mysqlnd=\"yes\" enable-swoole-json=\"no\" enable-swoole-curl=\"yes\" enable-cares=\"yes\"'"
 RUN set -ex \
-    && if [ "${SWOOLE_VERSION}" != "none"]; then pecl install --configureoptions ${SWOOLE_CONFIGURE_OPTIONS} http://pecl.php.net/get/swoole-${SWOOLE_VERSION}.tgz; else pecl install swoole; fi \
-    && if [ "${SWOOLE_VERSION}" = "none"]; then pecl install --configureoptions ${SWOOLE_CONFIGURE_OPTIONS} swoole; fi \
+    && PACKAGE="swoole" \
+    && [ "${SWOOLE_VERSION}" != "none" ] && PACKAGE="http://pecl.php.net/get/swoole-${SWOOLE_VERSION}.tgz" \
+    && pecl install --configureoptions ${SWOOLE_CONFIGURE_OPTIONS} ${PACKAGE} \
     && echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini \
     && echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/swoole.ini
 
