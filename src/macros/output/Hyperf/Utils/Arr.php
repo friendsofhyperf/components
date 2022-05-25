@@ -49,6 +49,26 @@ class Arr
     }
 
     /**
+     * Run a map over each of the items in the array.
+     *
+     * @return array
+     */
+    public static function map(array $array, callable $callback)
+    {
+    }
+
+    /**
+     * Prepend the key names of an associative array.
+     *
+     * @param array $array
+     * @param string $prependWith
+     * @return array
+     */
+    public static function prependKeysWith($array, $prependWith)
+    {
+    }
+
+    /**
      * Sort given array by many properties.
      *
      * @param array $array
@@ -56,15 +76,6 @@ class Arr
      * @return array
      */
     public static function sortByMany($array, $comparisons = [])
-    {
-    }
-
-    /**
-     * Run a map over each of the items in the array.
-     *
-     * @return array
-     */
-    public static function map(array $array, callable $callback)
     {
     }
 

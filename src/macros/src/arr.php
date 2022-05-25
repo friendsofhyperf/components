@@ -52,6 +52,14 @@ if (! Arr::hasMacro('map')) {
     });
 }
 
+if (! Arr::hasMacro('prependKeysWith')) {
+    Arr::macro('prependKeysWith', function ($array, $prependWith) {
+        return Collection::make($array)->mapWithKeys(function ($item, $key) use ($prependWith) {
+            return [$prependWith . $key => $item];
+        })->all();
+    });
+}
+
 if (! Arr::hasMacro('sortByMany')) {
     Arr::macro('sortByMany', function ($array, $comparisons = []) {
         usort($array, function ($a, $b) use ($comparisons) {
