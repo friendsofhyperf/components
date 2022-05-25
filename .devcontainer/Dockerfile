@@ -21,7 +21,8 @@ RUN if [ "${ID_ED25519_PRIV}" != "none" ]; then su vscode -c "mkdir -p ~/.ssh/ &
 # Install php-ext sockets & bcmath
 RUN set -ex \
     && apt-get update \
-    && apt-get install -y libssl-dev libcurl4-openssl-dev \
+    && apt-get install -y libssl-dev libcurl4-openssl-dev zsh \
+    && chsh -s /bin/zsh vscode \
     && docker-php-ext-install sockets bcmath
 
 # Install php-ext redis
