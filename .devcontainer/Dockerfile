@@ -23,7 +23,7 @@ RUN docker-php-ext-install sockets
 
 # Install redis
 RUN set -ex \
-    && pecl install swoole \
+    && pecl install redis \
     && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
 
 # Install swoole
