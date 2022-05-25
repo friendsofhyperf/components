@@ -30,7 +30,10 @@ RUN set -ex \
 ARG SWOOLE_VERSION="4.8.9"
 RUN set -ex \
     && pecl install http://pecl.php.net/get/swoole-${SWOOLE_VERSION}.tgz \
-    && echo "memory_limit=1G" > /usr/local/etc/php/conf.d/default.ini \
-    && echo "opcache.enable_cli = 'On'" >> /usr/local/etc/php/conf.d/opcache.ini \
     && echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini \
     && echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/swoole.ini
+
+# Configure PHP
+RUN set -ex \
+    && echo "memory_limit=1G" > /usr/local/etc/php/conf.d/default.ini \
+    && echo "opcache.enable_cli = 'On'" >> /usr/local/etc/php/conf.d/opcache.ini
