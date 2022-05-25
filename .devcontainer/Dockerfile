@@ -17,3 +17,20 @@ RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/
 # Set up the environment.
 ARG ID_ED25519_PRIV="none"
 RUN if [ "${ID_ED25519_PRIV}" != "none" ]; then su vscode -c "mkdir -p ~/.ssh/ && echo -e \"${ID_ED25519_PRIV}\" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519 && ssh-keyscan github.com >> ~/.ssh/known_hosts"; fi
+
+# Install sockets
+RUN docker-php-ext-install sockets
+
+# Install redis
+RUN set -ex \
+    && pecl install swoole \
+    && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
+
+# Install swoole
+ARG SWOOLE_VERSION="4.8.9"
+RUN set -ex \
+    && pecl install http://pecl.php.net/get/swoole-${SWOOLE_VERSION}.tgz \
+    && echo "memory_limit=1G" > /usr/local/etc/php/conf.d/default.ini \
+    && echo "opcache.enable_cli = 'On'" >> /usr/local/etc/php/conf.d/opcache.ini \
+    && echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini \
+    && echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/swoole.ini
