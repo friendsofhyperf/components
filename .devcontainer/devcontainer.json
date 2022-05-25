@@ -10,7 +10,11 @@
 			// Use -bullseye variants on local on arm64/Apple Silicon.
 			"VARIANT": "7-bullseye",
 			"NODE_VERSION": "lts/*",
-			"ID_ED25519_PRIV": "${localEnv:ID_ED25519_PRIV}"
+			"ID_ED25519_PRIV": "${localEnv:ID_ED25519_PRIV}",
+			// Swoole version: 4.5.7 ~ 4.8.9
+			"SWOOLE_VERSION": "none",
+			// https://wiki.swoole.com/#/environment?id=pecl
+			"SWOOLE_CONFIGURE_OPTIONS": "'enable-sockets=\"yes\" enable-openssl=\"yes\" enable-http2=\"yes\" enable-mysqlnd=\"yes\" enable-swoole-json=\"yes\" enable-swoole-curl=\"yes\" enable-cares=\"yes\"'"
 		}
 	},
 	

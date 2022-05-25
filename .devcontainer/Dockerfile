@@ -17,3 +17,29 @@ RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/
 # Set up the environment.
 ARG ID_ED25519_PRIV="none"
 RUN if [ "${ID_ED25519_PRIV}" != "none" ]; then su vscode -c "mkdir -p ~/.ssh/ && echo -e \"${ID_ED25519_PRIV}\" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519 && ssh-keyscan github.com >> ~/.ssh/known_hosts"; fi
+
+# Install php-ext sockets & bcmath
+RUN set -ex \
+    && apt-get update \
+    && apt-get install -y libssl-dev libcurl4-openssl-dev zsh \
+    && chsh -s /bin/zsh vscode \
+    && docker-php-ext-install sockets bcmath
+
+# Install php-ext redis
+RUN set -ex \
+    && pecl install redis \
+    && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
+
+# Install php-ext swoole
+ARG SWOOLE_VERSION="none"
+ARG SWOOLE_CONFIGURE_OPTIONS="'enable-sockets=\"no\" enable-openssl=\"yes\" enable-http2=\"yes\" enable-mysqlnd=\"yes\" enable-swoole-json=\"no\" enable-swoole-curl=\"yes\" enable-cares=\"yes\"'"
+RUN set -ex \
+    && if [ "${SWOOLE_VERSION}" != "none" ]; then PACKAGE="http://pecl.php.net/get/swoole-${SWOOLE_VERSION}.tgz"; else PACKAGE="swoole"; fi \
+    && pecl install --configureoptions ${SWOOLE_CONFIGURE_OPTIONS} ${PACKAGE} \
+    && echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini \
+    && echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/swoole.ini
+
+# Configure PHP
+RUN set -ex \
+    && echo "memory_limit=1G" > /usr/local/etc/php/conf.d/default.ini \
+    && echo "opcache.enable_cli = 'On'" >> /usr/local/etc/php/conf.d/opcache.ini
