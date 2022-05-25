@@ -18,18 +18,19 @@ RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/
 ARG ID_ED25519_PRIV="none"
 RUN if [ "${ID_ED25519_PRIV}" != "none" ]; then su vscode -c "mkdir -p ~/.ssh/ && echo -e \"${ID_ED25519_PRIV}\" > ~/.ssh/id_ed25519 && chmod 600 ~/.ssh/id_ed25519 && ssh-keyscan github.com >> ~/.ssh/known_hosts"; fi
 
-# Install sockets
-RUN docker-php-ext-install sockets
+# Install php-ext sockets & bcmath
+RUN set -ex \
+    && docker-php-ext-install sockets bcmath
 
-# Install redis
+# Install php-ext redis
 RUN set -ex \
     && pecl install redis \
     && echo "extension=redis.so" > /usr/local/etc/php/conf.d/redis.ini
 
-# Install swoole
-ARG SWOOLE_VERSION="4.8.9"
+# Install php-ext swoole
+ARG SWOOLE_VERSION="none"
 RUN set -ex \
-    && pecl install http://pecl.php.net/get/swoole-${SWOOLE_VERSION}.tgz \
+    && if [ "${SWOOLE_VERSION}" != "none"]; then pecl install http://pecl.php.net/get/swoole-${SWOOLE_VERSION}.tgz; else pecl install swoole; fi \
     && echo "extension=swoole.so" > /usr/local/etc/php/conf.d/swoole.ini \
     && echo "swoole.use_shortname = 'Off'" >> /usr/local/etc/php/conf.d/swoole.ini
 
