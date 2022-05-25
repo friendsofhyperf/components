@@ -44,7 +44,7 @@ abstract class Facade
     /**
      * Get the root object behind the facade.
      *
-     * @return object
+     * @return mixed
      */
     public static function getFacadeRoot()
     {
