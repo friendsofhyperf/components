@@ -8,7 +8,7 @@
 			// Update VARIANT to pick a PHP version: 8, 8.0, 7, 7.4, 7.3
 			// Append -bullseye or -buster to pin to an OS version.
 			// Use -bullseye variants on local on arm64/Apple Silicon.
-			"VARIANT": "7-bullseye",
+			"VARIANT": "8-bullseye",
 			"NODE_VERSION": "lts/*",
 			"ID_ED25519_PRIV": "${localEnv:ID_ED25519_PRIV}",
 			// Swoole version: 4.5.7 ~ 4.8.9
