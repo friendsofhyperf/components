@@ -42,6 +42,12 @@ if (! Stringable::hasMacro('isAscii')) {
     });
 }
 
+if (! Stringable::hasMacro('isJson')) {
+    Stringable::macro('isJson', function () {
+        return Str::isJson($this->value);
+    });
+}
+
 if (! Stringable::hasMacro('isUuid')) {
     Stringable::macro('isUuid', function () {
         return Str::isUuid($this->value);

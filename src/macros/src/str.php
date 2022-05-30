@@ -95,6 +95,22 @@ if (! Str::hasMacro('isAscii')) {
     });
 }
 
+if (! Str::hasMacro('isJson')) {
+    Str::macro('isJson', function ($value) {
+        if (! is_string($value)) {
+            return false;
+        }
+
+        try {
+            json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
+            return false;
+        }
+
+        return true;
+    });
+}
+
 if (! Str::hasMacro('isUuid')) {
     Str::macro('isUuid', function ($value) {
         if (! is_string($value)) {
