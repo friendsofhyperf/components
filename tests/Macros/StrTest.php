@@ -138,6 +138,24 @@ class StrTest extends TestCase
         $this->assertSame('Orwell 1984', Str::headline(' orwell_- 1984 '));
     }
 
+    public function testIsJson()
+    {
+        $this->assertTrue(Str::isJson('1'));
+        $this->assertTrue(Str::isJson('[1,2,3]'));
+        $this->assertTrue(Str::isJson('[1,   2,   3]'));
+        $this->assertTrue(Str::isJson('{"first": "John", "last": "Doe"}'));
+        $this->assertTrue(Str::isJson('[{"first": "John", "last": "Doe"}, {"first": "Jane", "last": "Doe"}]'));
+
+        $this->assertFalse(Str::isJson('1,'));
+        $this->assertFalse(Str::isJson('[1,2,3'));
+        $this->assertFalse(Str::isJson('[1,   2   3]'));
+        $this->assertFalse(Str::isJson('{first: "John"}'));
+        $this->assertFalse(Str::isJson('[{first: "John"}, {first: "Jane"}]'));
+        $this->assertFalse(Str::isJson(''));
+        $this->assertFalse(Str::isJson(null));
+        $this->assertFalse(Str::isJson([]));
+    }
+
     public function testLcfirst()
     {
         $this->assertSame('laravel', Str::lcfirst('Laravel'));

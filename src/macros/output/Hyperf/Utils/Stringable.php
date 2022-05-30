@@ -51,6 +51,15 @@ class Stringable
     }
 
     /**
+     * Determine if a given string is valid JSON.
+     *
+     * @return bool
+     */
+    public function isJson()
+    {
+    }
+
+    /**
      * Determine if a given string is a valid UUID.
      *
      * @return bool

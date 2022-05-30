@@ -74,6 +74,16 @@ class Str
     }
 
     /**
+     * Determine if a given string is valid JSON.
+     *
+     * @param string $value
+     * @return bool
+     */
+    public static function isJson($value)
+    {
+    }
+
+    /**
      * Determine if a given string is a valid UUID.
      *
      * @param string $value
