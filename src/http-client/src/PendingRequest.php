@@ -21,12 +21,12 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\HandlerStack;
 use Hyperf\Guzzle\CoroutineHandler;
+use Hyperf\Macroable\Macroable;
 use Hyperf\Utils\Arr;
 use Hyperf\Utils\Collection;
 use Hyperf\Utils\Coroutine;
 use Hyperf\Utils\Str;
 use Hyperf\Utils\Traits\Conditionable;
-use Hyperf\Utils\Traits\Macroable;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\VarDumper\VarDumper;
@@ -98,6 +98,13 @@ class PendingRequest
      * @var array
      */
     protected $options = [];
+
+    /**
+     * A callback to run when throwing if a server or client error occurs.
+     *
+     * @var \Closure
+     */
+    protected $throwCallback;
 
     /**
      * The number of times to try the request.
@@ -525,6 +532,39 @@ class PendingRequest
     }
 
     /**
+     * Throw an exception if a server or client error occurs.
+     *
+     * @return $this
+     */
+    public function throw(callable $callback = null)
+    {
+        $this->throwCallback = $callback ?: function () { return null; };
+        return $this;
+    }
+
+    /**
+     * Throw an exception if a server or client error occurred and the given condition evaluates to true.
+     *
+     * @param bool $condition
+     * @return $this
+     */
+    public function throwIf($condition)
+    {
+        return $condition ? $this->throw() : $this;
+    }
+
+    /**
+     * Throw an exception if a server or client error occurred and the given condition evaluates to false.
+     *
+     * @param bool $condition
+     * @return $this
+     */
+    public function throwUnless($condition)
+    {
+        return $this->throwIf(! $condition);
+    }
+
+    /**
      * Dump the request before sending.
      *
      * @return $this
@@ -705,6 +745,10 @@ class PendingRequest
                             $shouldRetry = false;
 
                             throw $exception;
+                        }
+
+                        if ($this->throwCallback) {
+                            $response->throw($this->throwCallback);
                         }
 
                         if ($attempt < $this->tries && $shouldRetry) {
