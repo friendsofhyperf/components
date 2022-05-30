@@ -100,6 +100,13 @@ class PendingRequest
     protected $options = [];
 
     /**
+     * A callback to run when throwing if a server or client error occurs.
+     *
+     * @var \Closure
+     */
+    protected $throwCallback;
+
+    /**
      * The number of times to try the request.
      *
      * @var int
@@ -525,6 +532,39 @@ class PendingRequest
     }
 
     /**
+     * Throw an exception if a server or client error occurs.
+     *
+     * @return $this
+     */
+    public function throw(callable $callback = null)
+    {
+        $this->throwCallback = $callback ?: function () { return null; };
+        return $this;
+    }
+
+    /**
+     * Throw an exception if a server or client error occurred and the given condition evaluates to true.
+     *
+     * @param bool $condition
+     * @return $this
+     */
+    public function throwIf($condition)
+    {
+        return $condition ? $this->throw() : $this;
+    }
+
+    /**
+     * Throw an exception if a server or client error occurred and the given condition evaluates to false.
+     *
+     * @param bool $condition
+     * @return $this
+     */
+    public function throwUnless($condition)
+    {
+        return $this->throwIf(! $condition);
+    }
+
+    /**
      * Dump the request before sending.
      *
      * @return $this
@@ -705,6 +745,10 @@ class PendingRequest
                             $shouldRetry = false;
 
                             throw $exception;
+                        }
+
+                        if ($this->throwCallback) {
+                            $response->throw($this->throwCallback);
                         }
 
                         if ($attempt < $this->tries && $shouldRetry) {
