@@ -12,8 +12,11 @@ composer require friendsofhyperf/grpc-validation
 
 ## Usage
 
-```php
+~~~php
 <?php
+
+use FriendsOfHyperf\GrpcValidation\Annotation;
+
 #[Validation(rules: [
     'name' => 'required|string|max:10',
     'message' => 'required|string|max:500',
@@ -25,5 +28,4 @@ public function sayHello(HiUser $user)
     $message->setUser($user);
     return $message;
 }
-
-```
+~~~
