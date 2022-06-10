@@ -1,4 +1,4 @@
-# Hyperf config-array
+# Hyperf grpc-validation
 
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/grpc-validation/version.png)](https://packagist.org/packages/friendsofhyperf/grpc-validation)
 [![Total Downloads](https://poser.pugx.org/friendsofhyperf/grpc-validation/d/total.png)](https://packagist.org/packages/friendsofhyperf/grpc-validation)
