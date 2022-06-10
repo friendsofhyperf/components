@@ -1,0 +1,31 @@
+{
+    "name": "friendsofhyperf/grpc-validation",
+    "description": "The GRPC validation component for Hyperf.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
+    "require": {
+        "hyperf/context": "3.0.*",
+        "hyperf/di": "3.0.*",
+        "hyperf/grpc-server": "3.0.*",
+        "hyperf/validation": "3.0.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\GrpcValidation\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\GrpcValidation\\ConfigProvider"
+        }
+    }
+}
