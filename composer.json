@@ -29,6 +29,7 @@
         "hyperf/di": "3.0.*",
         "hyperf/filesystem": "3.0.*",
         "hyperf/framework": "3.0.*",
+        "hyperf/grpc-server": "3.0.*",
         "hyperf/guzzle": "3.0.*",
         "hyperf/kafka": "3.0.*",
         "hyperf/logger": "3.0.*",
