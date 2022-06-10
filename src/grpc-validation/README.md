@@ -13,6 +13,7 @@ composer require friendsofhyperf/grpc-validation
 ## Usage
 
 ```php
+<?php
 #[Validation(rules: [
     'name' => 'required|string|max:10',
     'message' => 'required|string|max:500',
