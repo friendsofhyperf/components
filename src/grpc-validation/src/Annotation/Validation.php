@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 /**
- * This file is part of grpc-validation.
+ * This file is part of friendsofhyperf/components.
  *
- * @link     https://github.com/friendofhyperf/grpc-validation
- * @document https://github.com/friendofhyperf/grpc-validation/blob/main/README.md
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
- * @license  https://github.com/friendofhyperf/grpc-validation/blob/main/LICENSE
  */
 namespace FriendsOfHyperf\GrpcValidation\Annotation;
 
