@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\AccessLog\Formatter;
 
 use Monolog\Formatter\FormatterInterface;
+use Monolog\LogRecord;
 
 class AccessLogFormatter implements FormatterInterface
 {
@@ -26,7 +27,7 @@ class AccessLogFormatter implements FormatterInterface
         return $message;
     }
 
-    public function format(array $record)
+    public function format(array|LogRecord $record)
     {
         $context = (array) ($record['context'] ?? []);
 
