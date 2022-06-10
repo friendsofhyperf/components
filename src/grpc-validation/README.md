@@ -1,6 +1,5 @@
 # Hyperf config-array
 
-[![Latest Test](https://github.com/friendsofhyperf/grpc-validation/workflows/tests/badge.svg)](https://github.com/friendsofhyperf/grpc-validation/actions)
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/grpc-validation/version.png)](https://packagist.org/packages/friendsofhyperf/grpc-validation)
 [![Total Downloads](https://poser.pugx.org/friendsofhyperf/grpc-validation/d/total.png)](https://packagist.org/packages/friendsofhyperf/grpc-validation)
 [![GitHub license](https://img.shields.io/github/license/friendsofhyperf/grpc-validation)](https://github.com/friendsofhyperf/grpc-validation)
