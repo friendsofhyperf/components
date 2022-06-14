@@ -10,6 +10,8 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\GrpcValidation\Annotation;
 
+use DivisionByZeroError;
+use Google\Protobuf\Internal\GPBDecodeException;
 use Google\Protobuf\Internal\Message;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ValidatorInterface;
@@ -19,7 +21,6 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Hyperf\Validation\Request\FormRequest;
 use Psr\Container\ContainerInterface;
-use ReflectionProperty;
 
 #[Aspect()]
 class ValidationAspect extends AbstractAspect
@@ -40,7 +41,7 @@ class ValidationAspect extends AbstractAspect
         if (
             $rules
             && $protobufMessage
-            && $data = $this->convertProtobufMessageToArray($protobufMessage)
+            && $data = $this->serializeToJsonArray($protobufMessage)
         ) {
             Context::set(get_class($protobufMessage), $data);
             $validator = $this->validatorFactory->make($data, $rules, $messages);
@@ -89,25 +90,16 @@ class ValidationAspect extends AbstractAspect
         return null;
     }
 
-    protected function convertProtobufMessageToArray(Message $message): array
+    /**
+     * @throws GPBDecodeException
+     * @throws DivisionByZeroError
+     */
+    protected function serializeToJsonArray(Message $message): ?array
     {
-        $array = [];
-        $reflect = new \ReflectionObject($message);
-        $props = $reflect->getProperties(ReflectionProperty::IS_PROTECTED);
-
-        foreach ($props as $prop) {
-            $prop->setAccessible(true);
-
-            $name = $prop->getName();
-            $value = $prop->getValue($message);
-
-            if ($value instanceof Message) {
-                $array[$name] = $this->convertProtobufMessageToArray($value);
-            } else {
-                $array[$name] = $value;
-            }
+        try {
+            return json_decode($message->serializeToJsonString(), true, flags: JSON_THROW_ON_ERROR);
+        } catch (\JsonException $e) {
+            return null;
         }
-
-        return $array;
     }
 }
