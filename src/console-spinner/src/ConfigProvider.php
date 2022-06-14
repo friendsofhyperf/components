@@ -33,7 +33,7 @@ class ConfigProvider
                     'id' => 'config',
                     'description' => 'config file of console-spinner.',
                     'source' => __DIR__ . '/../publish/console_spinner.php',
-                    'destination' => BASE_PATH . '/config/console_spinner.php',
+                    'destination' => BASE_PATH . '/config/autoload/console_spinner.php',
                 ],
             ],
         ];
