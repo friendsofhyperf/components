@@ -14,6 +14,9 @@
     "require": {
         "hyperf/http-server": "~2.2.0"
     },
+    "require-dev": {
+        "hyperf/grpc-server": "~2.2.0"
+    },
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\HttpRequestLifeCycle\\": "src"

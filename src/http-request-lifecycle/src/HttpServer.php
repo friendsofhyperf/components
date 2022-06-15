@@ -20,7 +20,7 @@ use Hyperf\Utils\Coordinator\CoordinatorManager;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Throwable;
 
-class Server extends \Hyperf\HttpServer\Server
+class HttpServer extends \Hyperf\HttpServer\Server
 {
     public function onRequest($request, $response): void
     {
