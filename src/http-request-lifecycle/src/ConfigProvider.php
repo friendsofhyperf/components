@@ -18,7 +18,8 @@ class ConfigProvider
 
         return [
             'dependencies' => [
-                \Hyperf\HttpServer\Server::class => Server::class,
+                \Hyperf\HttpServer\Server::class => HttpServer::class,
+                \Hyperf\GrpcServer\Server::class => GrpcServer::class,
             ],
             'aspects' => [],
             'annotations' => [
