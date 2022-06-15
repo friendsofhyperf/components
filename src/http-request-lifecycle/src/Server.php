@@ -13,10 +13,10 @@ namespace FriendsOfHyperf\HttpRequestLifeCycle;
 use FriendsOfHyperf\HttpRequestLifeCycle\Events\RequestHandled;
 use FriendsOfHyperf\HttpRequestLifeCycle\Events\RequestReceived;
 use FriendsOfHyperf\HttpRequestLifeCycle\Events\RequestTerminated;
+use Hyperf\Coordinator\Constants;
+use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\HttpServer\MiddlewareManager;
 use Hyperf\HttpServer\Router\Dispatched;
-use Hyperf\Utils\Coordinator\Constants;
-use Hyperf\Utils\Coordinator\CoordinatorManager;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Throwable;
 
