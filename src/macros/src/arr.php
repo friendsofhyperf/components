@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
+use ArgumentCountError;
 use Hyperf\Utils\Arr;
 use Hyperf\Utils\Collection;
 
@@ -46,7 +47,12 @@ if (! Arr::hasMacro('join')) {
 if (! Arr::hasMacro('map')) {
     Arr::macro('map', function (array $array, callable $callback) {
         $keys = array_keys($array);
-        $items = array_map($callback, $array, $keys);
+
+        try {
+            $items = array_map($callback, $array, $keys);
+        } catch (ArgumentCountError) {
+            $items = array_map($callback, $array);
+        }
 
         return array_combine($keys, $items);
     });
