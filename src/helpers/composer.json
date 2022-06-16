@@ -13,21 +13,21 @@
     },
     "require": {
         "friendsofhyperf/macros": "^3.0",
-        "hyperf/macroable": "3.0.*",
-        "hyperf/utils": "3.0.*",
+        "hyperf/macroable": "~3.0.0",
+        "hyperf/utils": "~3.0.0",
         "opis/closure": "^3.6",
         "nesbot/carbon": "^2.0"
     },
     "suggest": {
-        "hyperf/amqp": "Required to use (3.0.*)",
-        "hyperf/async-queue": "Required to use (3.0.*)",
-        "hyperf/cache": "Required to use (3.0.*)",
-        "hyperf/di": "Required to use (3.0.*)",
-        "hyperf/framework": "Required to use (3.0.*)",
-        "hyperf/kafka": "Required to use (3.0.*)",
-        "hyperf/logger": "Required to use (3.0.*)",
-        "hyperf/session": "Required to use (3.0.*)",
-        "hyperf/validation": "Required to use (3.0.*)"
+        "hyperf/amqp": "Required to use (~3.0.0)",
+        "hyperf/async-queue": "Required to use (~3.0.0)",
+        "hyperf/cache": "Required to use (~3.0.0)",
+        "hyperf/di": "Required to use (~3.0.0)",
+        "hyperf/framework": "Required to use (~3.0.0)",
+        "hyperf/kafka": "Required to use (~3.0.0)",
+        "hyperf/logger": "Required to use (~3.0.0)",
+        "hyperf/session": "Required to use (~3.0.0)",
+        "hyperf/validation": "Required to use (~3.0.0)"
     },
     "autoload": {
         "files": [

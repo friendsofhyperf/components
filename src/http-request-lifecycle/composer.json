@@ -12,10 +12,10 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "hyperf/http-server": "3.0.*"
+        "hyperf/http-server": "~3.0.0"
     },
-    "require-dev": {
-        "hyperf/grpc-server": "3.0.*"
+    "suggest": {
+        "hyperf/grpc-server": "Required to use (~3.0.0)"
     },
     "autoload": {
         "psr-4": {

@@ -12,9 +12,9 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "hyperf/command": "3.0.*",
-        "hyperf/di": "3.0.*",
-        "hyperf/event": "3.0.*"
+        "hyperf/command": "~3.0.0",
+        "hyperf/di": "~3.0.0",
+        "hyperf/event": "~3.0.0"
     },
     "autoload": {
         "files": [
