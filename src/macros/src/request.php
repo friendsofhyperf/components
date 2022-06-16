@@ -32,15 +32,22 @@ if (! Request::hasMacro('anyFilled')) {
 }
 
 if (! Request::hasMacro('boolean')) {
-    Request::macro('boolean', fn ($key = null, $default = false) => filter_var($this->input($key, $default), FILTER_VALIDATE_BOOLEAN));
+    Request::macro('boolean', fn (string $key = '', $default = false) => filter_var($this->input($key, $default), FILTER_VALIDATE_BOOLEAN));
 }
 
 if (! Request::hasMacro('collect')) {
-    Request::macro('collect', fn ($key = null) => collect(is_array($key) ? $this->only($key) : $this->input($key)));
+    Request::macro('collect', function ($key = null) {
+        /* @var Request $this */
+        if (is_null($key)) {
+            return $this->all();
+        }
+
+        return collect(is_array($key) ? $this->only($key) : $this->input($key));
+    });
 }
 
 if (! Request::hasMacro('date')) {
-    Request::macro('date', function ($key, $format = null, $tz = null) {
+    Request::macro('date', function (string $key, $format = null, $tz = null) {
         if ($this->isNotFilled($key)) {
             return null;
         }
@@ -113,6 +120,37 @@ if (! Request::hasMacro('isNotFilled')) {
 
 if (! Request::hasMacro('keys')) {
     Request::macro('keys', fn () => array_merge(array_keys($this->all()), array_keys($this->getUploadedFiles())));
+}
+
+if (! Request::hasMacro('host')) {
+    Request::macro('host', function () {
+        /* @var Request $this */
+        return $this->getHttpHost();
+    });
+}
+
+if (! Request::hasMacro('httpHost')) {
+    Request::macro('httpHost', function () {
+        /** @var Request $this */
+        if ($host = $this->getHeader('HOST')[0] ?? null) {
+            return $host;
+        }
+        if ($host = $this->getServerParams('SERVER_NAME')[0] ?? null) {
+            return $host;
+        }
+        if ($host = $this->getServerParams('SERVER_ADDR')[0] ?? null) {
+            return $host;
+        }
+        return '';
+    });
+}
+
+if (! Request::hasMacro('schemeAndHttpHost')) {
+    Request::macro('schemeAndHttpHost', function () {
+        /** @var Request $this */
+        $https = $this->getServerParams('HTTPS')[0] ?? null;
+        return ($https ? 'https' : 'http') . '://' . $this->httpHost();
+    });
 }
 
 if (! Request::hasMacro('missing')) {

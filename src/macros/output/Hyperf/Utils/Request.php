@@ -126,6 +126,33 @@ class Request
     }
 
     /**
+     * Get the host name.
+     *
+     * @return string
+     */
+    public function host()
+    {
+    }
+
+    /**
+     * Get the HTTP host being requested.
+     *
+     * @return string
+     */
+    public function httpHost()
+    {
+    }
+
+    /**
+     * Get the scheme and HTTP host.
+     *
+     * @return string
+     */
+    public function schemeAndHttpHost()
+    {
+    }
+
+    /**
      * Determine if the request is missing a given input item key.
      *
      * @param array|string $key
