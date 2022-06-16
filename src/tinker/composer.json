@@ -19,11 +19,11 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "hyperf/command": "3.0.*",
-        "hyperf/contract": "3.0.*",
-        "hyperf/di": "3.0.*",
-        "hyperf/framework": "3.0.*",
-        "hyperf/utils": "3.0.*",
+        "hyperf/command": "~3.0.0",
+        "hyperf/contract": "~3.0.0",
+        "hyperf/di": "~3.0.0",
+        "hyperf/framework": "~3.0.0",
+        "hyperf/utils": "~3.0.0",
         "psy/psysh": "^0.10.0|^0.11.0"
     },
     "autoload": {

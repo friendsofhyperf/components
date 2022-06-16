@@ -8,10 +8,10 @@
         "email": "huangdijia@gmail.com"
     }],
     "require": {
-        "hyperf/context": "3.0.*",
-        "hyperf/di": "3.0.*",
-        "hyperf/grpc-server": "3.0.*",
-        "hyperf/validation": "3.0.*"
+        "hyperf/context": "~3.0.0",
+        "hyperf/di": "~3.0.0",
+        "hyperf/grpc-server": "~3.0.0",
+        "hyperf/validation": "~3.0.0"
     },
     "autoload": {
         "psr-4": {

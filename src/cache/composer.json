@@ -12,7 +12,7 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "hyperf/cache": "3.0.*",
+        "hyperf/cache": "~3.0.0",
         "nesbot/carbon": "^2.0"
     },
     "autoload": {
