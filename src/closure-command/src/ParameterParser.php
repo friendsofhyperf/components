@@ -11,10 +11,13 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ClosureCommand;
 
 use Closure;
+use Hyperf\Context\Context;
 use Hyperf\Contract\NormalizerInterface;
 use Hyperf\Di\ClosureDefinitionCollectorInterface;
 use Hyperf\Di\MethodDefinitionCollectorInterface;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Console\Input\Input;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ParameterParser
 {
@@ -84,6 +87,8 @@ class ParameterParser
             if ($value === null) {
                 if ($definition->getMeta('defaultValueAvailable')) {
                     $injections[] = $definition->getMeta('defaultValue');
+                } elseif (in_array($definition->getName(), [Input::class, SymfonyStyle::class]) && Context::has($definition->getName())) {
+                    $injections[] = Context::get($definition->getName());
                 } elseif ($this->container->has($definition->getName())) {
                     $injections[] = $this->container->get($definition->getName());
                 } elseif ($definition->allowsNull()) {
