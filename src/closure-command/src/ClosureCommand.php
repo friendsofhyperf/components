@@ -14,6 +14,8 @@ use Closure;
 use Hyperf\Command\Command;
 use Hyperf\Context\Context;
 use Psr\Container\ContainerInterface;
+use Symfony\Component\Console\Input\Input;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 class ClosureCommand extends Command
 {
