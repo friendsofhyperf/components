@@ -18,6 +18,8 @@ php bin/hyperf.php vendor:publish friendsofhyperf/closure-command
 
 ## Usage
 
+- Define ClosureCommand
+
 ```php
 // config/console.php
 
@@ -37,4 +39,21 @@ Console::command('foo:bar', function() {
 command('whoami', function () {
     $this->info('Your are friend of hyperf');
 })->describe('Who am I');
+```
+
+- Define AnnotationCommand
+
+```php
+use FriendsOfHyperf\ClosureCommand\Annotation\Command;
+use Hyperf\Contract\StdoutLoggerInterface;
+
+class Foo
+{
+    #[Command(signature: 'foo:bar {--bar=1}', description: 'Test foo::bar')]
+    public function bar($bar)
+    {
+        app(StdoutLoggerInterface::class)->info('$bar:' . $bar);
+        app(StdoutLoggerInterface::class)->warning('foo::bar executed.');
+    }
+}
 ```
