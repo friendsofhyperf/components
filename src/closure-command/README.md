@@ -46,13 +46,13 @@ command('whoami', function () {
 ```php
 use FriendsOfHyperf\ClosureCommand\Annotation\Command;
 use Hyperf\Contract\StdoutLoggerInterface;
-use Symfony\Component\Console\Input\Input;
-use Symfony\Component\Console\Style\SymfonyStyle;
+use FriendsOfHyperf\ClosureCommand\Input;
+use FriendsOfHyperf\ClosureCommand\Output;
 
 class Foo
 {
     #[Command(signature: 'foo:bar {--bar=1}', description: 'Test foo::bar')]
-    public function bar($bar, Input $input, SymfonyStyle $output)
+    public function bar($bar, Input $input, Output $output)
     {
         $output->info('$bar:' . $bar);
         $output->warning('foo::bar executed.');

@@ -13,8 +13,6 @@ namespace FriendsOfHyperf\ClosureCommand;
 use Hyperf\Command\Command;
 use Hyperf\Context\Context;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\Console\Input\Input;
-use Symfony\Component\Console\Style\SymfonyStyle;
 
 class AnnotationCommand extends Command
 {
@@ -31,7 +29,7 @@ class AnnotationCommand extends Command
     public function handle()
     {
         Context::set(Input::class, $this->input);
-        Context::set(SymfonyStyle::class, $this->output);
+        Context::set(Output::class, $this->output);
 
         $inputs = array_merge($this->input->getArguments(), $this->input->getOptions());
         $parameters = $this->parameterParser->parseMethodParameters($this->class, $this->method, $inputs);
