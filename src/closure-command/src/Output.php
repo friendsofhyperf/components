@@ -20,6 +20,8 @@ class Output
 {
     public function __call($name, $arguments)
     {
-        return Context::get(static::class)->{$name}(...$arguments);
+        if (Context::has(static::class)) {
+            return Context::get(static::class)->{$name}(...$arguments);
+        }
     }
 }
