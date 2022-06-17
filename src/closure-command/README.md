@@ -46,14 +46,16 @@ command('whoami', function () {
 ```php
 use FriendsOfHyperf\ClosureCommand\Annotation\Command;
 use Hyperf\Contract\StdoutLoggerInterface;
+use FriendsOfHyperf\ClosureCommand\Input;
+use FriendsOfHyperf\ClosureCommand\Output;
 
 class Foo
 {
     #[Command(signature: 'foo:bar {--bar=1}', description: 'Test foo::bar')]
-    public function bar($bar)
+    public function bar($bar, Input $input, Output $output)
     {
-        app(StdoutLoggerInterface::class)->info('$bar:' . $bar);
-        app(StdoutLoggerInterface::class)->warning('foo::bar executed.');
+        $output->info('$bar:' . $bar);
+        $output->warning('foo::bar executed.');
     }
 }
 ```
