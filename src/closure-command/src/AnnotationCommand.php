@@ -15,21 +15,14 @@ use Psr\Container\ContainerInterface;
 
 class AnnotationCommand extends Command
 {
-    private string $class;
-
-    private string $method;
-
     private ParameterParser $parameterParser;
 
-    public function __construct(ContainerInterface $container, string $signature, string $class, string $method, string $description = '')
+    public function __construct(private ContainerInterface $container, protected ?string $signature, private string $class, private string $method, string $description = '')
     {
-        $this->signature = $signature;
-        $this->description = $description;
-        $this->class = $class;
-        $this->method = $method;
         $this->parameterParser = $container->get(ParameterParser::class);
 
         parent::__construct();
+        parent::setDescription($description);
     }
 
     public function handle()
@@ -37,6 +30,6 @@ class AnnotationCommand extends Command
         $inputs = array_merge($this->input->getArguments(), $this->input->getOptions());
         $parameters = $this->parameterParser->parseMethodParameters($this->class, $this->method, $inputs);
 
-        return \call($this->class, $parameters);
+        return \call([$this->container->get($this->class), $this->method], $parameters);
     }
 }
