@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\ClosureCommand;
 use Closure;
 use Hyperf\Contract\NormalizerInterface;
 use Hyperf\Di\ClosureDefinitionCollectorInterface;
+use Hyperf\Di\MethodDefinitionCollectorInterface;
 use Psr\Container\ContainerInterface;
 
 class ParameterParser
@@ -32,12 +33,22 @@ class ParameterParser
      */
     private $closureDefinitionCollector;
 
+    /**
+     * @var MethodDefinitionCollectorInterface
+     */
+    private $methodDefinitionCollector;
+
     public function __construct(ContainerInterface $container)
     {
         $this->container = $container;
         $this->normalizer = $this->container->get(NormalizerInterface::class);
+
         if ($this->container->has(ClosureDefinitionCollectorInterface::class)) {
             $this->closureDefinitionCollector = $this->container->get(ClosureDefinitionCollectorInterface::class);
+        }
+
+        if ($this->container->has(MethodDefinitionCollectorInterface::class)) {
+            $this->methodDefinitionCollector = $this->container->get(MethodDefinitionCollectorInterface::class);
         }
     }
 
@@ -55,6 +66,12 @@ class ParameterParser
         return $this->getInjections($definitions, 'Closure', $arguments);
     }
 
+    public function parseMethodParameters(string $class, string $method, array $arguments): array
+    {
+        $definitions = $this->methodDefinitionCollector->getParameters($class, $method);
+        return $this->getInjections($definitions, "{$class}::{$method}", $arguments);
+    }
+
     /**
      * @throws GlobalInvalidArgumentException
      */
@@ -67,10 +84,10 @@ class ParameterParser
             if ($value === null) {
                 if ($definition->getMeta('defaultValueAvailable')) {
                     $injections[] = $definition->getMeta('defaultValue');
-                } elseif ($definition->allowsNull()) {
-                    $injections[] = null;
                 } elseif ($this->container->has($definition->getName())) {
                     $injections[] = $this->container->get($definition->getName());
+                } elseif ($definition->allowsNull()) {
+                    $injections[] = null;
                 } else {
                     throw new \InvalidArgumentException("Parameter '{$definition->getMeta('name')}' "
                         . "of {$callableName} should not be null");
