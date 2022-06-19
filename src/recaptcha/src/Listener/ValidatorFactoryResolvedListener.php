@@ -13,11 +13,27 @@ namespace FriendsOfHyperf\ReCaptcha\Listener;
 use FriendsOfHyperf\ReCaptcha\ReCaptchaManager;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Contract\RequestInterface;
-use Hyperf\Utils\ApplicationContext;
 use Hyperf\Validation\Event\ValidatorFactoryResolved;
+use Psr\Container\ContainerInterface;
 
 class ValidatorFactoryResolvedListener implements ListenerInterface
 {
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
+
+    /**
+     * @var ReCaptchaManager
+     */
+    protected $manager;
+
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+        $this->manager = $container->get(ReCaptchaManager::class);
+    }
+
     public function listen(): array
     {
         return [
@@ -35,7 +51,7 @@ class ValidatorFactoryResolvedListener implements ListenerInterface
         $validatorFactory->extend('recaptcha', function ($attribute, $value, $parameters, $validator) {
             [$action, $score, $hostname, $version] = [$parameters[0] ?? '', (float) $parameters[1] ?? 0.34, $parameters[2] ?? '', $parameters[3] ?? 'v3'];
 
-            $recaptcha = ReCaptchaManager::get($version);
+            $recaptcha = $this->manager->get($version);
 
             if ($action) {
                 $recaptcha->setExpectedAction($action);
@@ -50,7 +66,7 @@ class ValidatorFactoryResolvedListener implements ListenerInterface
             }
 
             /** @var RequestInterface $request */
-            $request = ApplicationContext::getContainer()->get(RequestInterface::class);
+            $request = $this->container->get(RequestInterface::class);
 
             return $recaptcha->verify($value, $request->server('remote_addr'))->isSuccess();
         });
