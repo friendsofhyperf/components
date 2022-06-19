@@ -27,16 +27,6 @@ abstract class ReCaptchaMiddleware implements MiddlewareInterface
     protected $container;
 
     /**
-     * @var RequestInterface
-     */
-    protected $request;
-
-    /**
-     * @var HttpResponse
-     */
-    protected $response;
-
-    /**
      * @var string
      */
     protected $version = 'v3';
@@ -62,15 +52,33 @@ abstract class ReCaptchaMiddleware implements MiddlewareInterface
     protected $inputName = 'g-recaptcha-response';
 
     /**
+     * @var RequestInterface
+     */
+    protected $request;
+
+    /**
+     * @var HttpResponse
+     */
+    protected $response;
+
+    /**
+     * @var int
+     */
+    protected $responseCode = 401;
+
+    /**
      * @var string
      */
-    protected $message = 'Google ReCaptcha Verify Fails';
+    protected $responseMessage = 'Google ReCaptcha Verify Fails';
 
-    public function __construct(ContainerInterface $container, HttpResponse $response, RequestInterface $request)
-    {
+    public function __construct(
+        ContainerInterface $container,
+        HttpResponse $response,
+        RequestInterface $request
+    ) {
         $this->container = $container;
-        $this->response = $response;
         $this->request = $request;
+        $this->response = $response;
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
@@ -89,10 +97,10 @@ abstract class ReCaptchaMiddleware implements MiddlewareInterface
             $recaptcha->setExpectedHostname($this->hostname);
         }
 
-        if ($recaptcha->verify($this->request->input($this->inputName, ''), $this->request->server('remote_addr'))) {
+        if ($recaptcha->verify($this->request->input($this->inputName, ''), $this->request->server('remote_addr'))->isSuccess()) {
             return $handler->handle($request);
         }
 
-        return $this->response->withStatus(401, $this->message);
+        return $this->response->withStatus($this->responseCode, $this->responseMessage);
     }
 }

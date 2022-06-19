@@ -52,7 +52,7 @@ class ValidatorFactoryResolvedListener implements ListenerInterface
             /** @var RequestInterface $request */
             $request = ApplicationContext::getContainer()->get(RequestInterface::class);
 
-            return $recaptcha->verify($value, $request->server('remote_addr'));
+            return $recaptcha->verify($value, $request->server('remote_addr'))->isSuccess();
         });
     }
 }
