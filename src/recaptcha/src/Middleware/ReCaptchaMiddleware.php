@@ -71,6 +71,11 @@ abstract class ReCaptchaMiddleware implements MiddlewareInterface
      */
     protected $responseMessage = 'Google ReCaptcha Verify Fails';
 
+    /**
+     * @var ReCaptchaManager
+     */
+    protected $manager;
+
     public function __construct(
         ContainerInterface $container,
         HttpResponse $response,
@@ -79,11 +84,12 @@ abstract class ReCaptchaMiddleware implements MiddlewareInterface
         $this->container = $container;
         $this->request = $request;
         $this->response = $response;
+        $this->manager = $container->get(ReCaptchaManager::class);
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $recaptcha = ReCaptchaManager::get($this->version);
+        $recaptcha = $this->manager->get($this->version);
 
         if ($this->action) {
             $recaptcha->setExpectedAction($this->action);

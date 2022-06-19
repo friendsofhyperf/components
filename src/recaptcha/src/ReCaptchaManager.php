@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ReCaptcha;
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Utils\ApplicationContext;
 use ReCaptcha\ReCaptcha;
 use RuntimeException;
 use TypeError;
@@ -21,7 +20,17 @@ class ReCaptchaManager
     /**
      * @var ReCaptcha[]
      */
-    protected static $recaptchas = [];
+    protected $container = [];
+
+    /**
+     * @var ConfigInterface
+     */
+    protected $config;
+
+    public function __construct(ConfigInterface $config)
+    {
+        $this->config = $config;
+    }
 
     /**
      * @param string $version
@@ -29,23 +38,20 @@ class ReCaptchaManager
      * @throws RuntimeException
      * @return ReCaptcha
      */
-    public static function get(string $version = null)
+    public function get(?string $version = null)
     {
-        if (isset(self::$recaptchas[$version])) {
-            return self::$recaptchas[$version];
+        if (isset($this->container[$version])) {
+            return $this->container[$version];
         }
 
-        /** @var ConfigInterface $config */
-        $config = ApplicationContext::getContainer()->get(ConfigInterface::class);
-
-        if (! $config->has('recaptcha')) {
+        if (! $this->config->has('recaptcha')) {
             throw new RuntimeException('Not publish yet, please run \'php bin/hyperf.php vendor:publish friendsofhyperf/recaptcha\'');
         }
 
-        $version = $version ?? $config->get('recaptcha.default', 'v3');
+        $version = $version ?? $this->config->get('recaptcha.default', 'v3');
 
-        return self::$recaptchas[$version] = make(ReCaptcha::class, [
-            'secret' => $config->get('recaptcha.' . $version . '.secret_key', ''),
+        return $this->container[$version] = make(ReCaptcha::class, [
+            'secret' => $this->config->get(sprintf('recaptcha.%s.secret_key', $version), ''),
         ]);
     }
 }
