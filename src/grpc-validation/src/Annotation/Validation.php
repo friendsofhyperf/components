@@ -16,7 +16,12 @@ use Hyperf\Di\Annotation\AbstractAnnotation;
 #[Attribute(Attribute::TARGET_METHOD)]
 class Validation extends AbstractAnnotation
 {
-    public function __construct(public array $rules = [], public array $messages = [], public string $formRequest = '', public string $scene = '', public bool $resolve = true)
-    {
+    public function __construct(
+        public array $rules = [],
+        public array $messages = [],
+        public string $formRequest = '',
+        public string $scene = '',
+        public bool $resolve = true
+    ) {
     }
 }

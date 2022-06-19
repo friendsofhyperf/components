@@ -16,28 +16,11 @@ use Hyperf\Di\Annotation\AbstractAnnotation;
 #[Attribute(Attribute::TARGET_PROPERTY)]
 class Lock extends AbstractAnnotation
 {
-    /**
-     * @var string
-     */
-    public $name;
-
-    /**
-     * @var string
-     */
-    public $seconds = 0;
-
-    /**
-     * @var string
-     */
-    public $owner;
-
-    /**
-     * @var string
-     */
-    public $driver = 'default';
-
-    public function __construct($value = null)
-    {
-        parent::__construct($value);
+    public function __construct(
+        public string $name,
+        public int $seconds = 0,
+        public string $owner = '',
+        public string $driver = 'default'
+    ) {
     }
 }
