@@ -34,7 +34,7 @@ git commit
 git push origin my-feature
 ```
 
-## Create pull merge
+## Create pull request
 
 1. Open https://github.com/friendsofhyperf/components
 
