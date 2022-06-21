@@ -38,4 +38,4 @@ git push origin my-feature
 
 1. Open https://github.com/friendsofhyperf/components
 
-2. Click "Compare" and "Pull request"
+2. Click "Compare & pull request"
