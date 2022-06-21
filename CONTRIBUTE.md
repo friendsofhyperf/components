@@ -23,7 +23,7 @@ git checkout -b feature/my-feature
 
 ```shell
 git fetch upstream
-git rebase upstream/3.x
+git rebase upstream/2.x
 ```
 
 ## Push commit
