@@ -19,4 +19,14 @@ class Command extends AbstractAnnotation
     public function __construct(public string $signature = '', public string $description = '')
     {
     }
+
+    public function collectMethod(string $className, ?string $target): void
+    {
+        CommandCollector::set($className . '@' . $target, [
+            'class' => $className,
+            'method' => $target,
+            'signature' => $this->signature,
+            'description' => $this->description,
+        ]);
+    }
 }

@@ -10,6 +10,8 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ClosureCommand;
 
+use FriendsOfHyperf\ClosureCommand\Annotation\CommandCollector;
+
 class ConfigProvider
 {
     public function __invoke(): array
@@ -22,6 +24,9 @@ class ConfigProvider
                 'scan' => [
                     'paths' => [
                         __DIR__,
+                    ],
+                    'collectors' => [
+                        CommandCollector::class,
                     ],
                 ],
             ],

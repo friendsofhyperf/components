@@ -10,12 +10,11 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ClosureCommand\Listener;
 
-use FriendsOfHyperf\ClosureCommand\Annotation\Command;
+use FriendsOfHyperf\ClosureCommand\Annotation\CommandCollector;
 use FriendsOfHyperf\ClosureCommand\AnnotationCommand;
 use FriendsOfHyperf\ClosureCommand\Console;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
-use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
@@ -65,10 +64,10 @@ class RegisterCommandListener implements ListenerInterface
 
     private function registerAnnotationCommands(): void
     {
-        $methods = AnnotationCollector::getMethodsByAnnotation(Command::class);
+        $commands = CommandCollector::list();
 
-        foreach ($methods as $method) {
-            $reflector = new ReflectionMethod($method['class'], $method['method']);
+        foreach ($commands as $commandId => $metadata) {
+            $reflector = new ReflectionMethod($metadata['class'], $metadata['method']);
 
             if (! $reflector->isPublic()) {
                 continue;
@@ -76,13 +75,11 @@ class RegisterCommandListener implements ListenerInterface
 
             $command = new AnnotationCommand(
                 $this->container,
-                $method['annotation']->signature,
-                $method['class'],
-                $method['method'],
-                $method['annotation']->description
+                $metadata['signature'],
+                $metadata['class'],
+                $metadata['method'],
+                $metadata['description'] ?? ''
             );
-
-            $commandId = sprintf('%s@%s', $method['class'], $method['method']);
 
             $this->container->set($commandId, $command);
             $this->appendConfig('commands', $commandId);
