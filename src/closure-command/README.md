@@ -51,11 +51,18 @@ use FriendsOfHyperf\ClosureCommand\Output;
 
 class Foo
 {
+    #[Inject()]
+    protected Input $input;
+
+    #[Inject()]
+    protected Output $output;
+
     #[Command(signature: 'foo:bar {--bar=1}', description: 'Test foo::bar')]
-    public function bar($bar, Input $input, Output $output)
+    public function bar($bar)
     {
-        $output->info('$bar:' . $bar);
-        $output->warning('foo::bar executed.');
+        $this->output->info('$bar:' . $this->input->getOption('bar'));
+        $this->output->info('$bar:' . $bar);
+        $this->output->info('foo::bar executed.');
     }
 }
 ```
