@@ -44,37 +44,45 @@ command('whoami', function () {
 - Define AnnotationCommand
 
 ```php
+<?php
+
+namespace App\Service;
+
 use FriendsOfHyperf\ClosureCommand\Annotation\Command;
-use Hyperf\Contract\StdoutLoggerInterface;
-use FriendsOfHyperf\ClosureCommand\Input;
 use FriendsOfHyperf\ClosureCommand\Output;
+use Hyperf\Di\Annotation\Inject;
 
-#[Command(signature: 'foo')]
-#[Command(signature: 'foo:test', handle: 'test')]
-class Foo
+#[Command(signature: 'foo:bar1', handle: 'bar1', description: 'The description of foo:bar1 command.')]
+#[Command(signature: 'foo', description: 'The description of foo command.')]
+class FooService
 {
-    #[Inject()]
-    protected Input $input;
-
     #[Inject()]
     protected Output $output;
 
-    #[Command(signature: 'foo:bar {--bar=1}', description: 'Test foo::bar')]
+    #[Command(signature: 'foo:bar {--bar=1 : Bar Value}', description: 'The description of foo:bar command.')]
     public function bar($bar)
     {
-        $this->output->info('$bar:' . $this->input->getOption('bar'));
-        $this->output->info('$bar:' . $bar);
-        $this->output->info('foo::bar executed.');
+        $this->output->info('Bar Value: ' . $bar);
+
+        return $bar;
     }
 
-    public function test()
+    public function bar1()
     {
-        $this->output->info(__METHOD__):
+        $this->output->info(__METHOD__);
     }
 
     public function handle()
     {
-        $this->output->info(__METHOD__):
+        $this->output->info(__METHOD__);
     }
 }
+```
+
+Run `php bin/hyperf.php`
+
+```shell
+foo
+  foo:bar                   The description of foo:bar command.
+  foo:bar1                  The description of foo:bar1 command.
 ```
