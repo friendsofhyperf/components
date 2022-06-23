@@ -49,6 +49,8 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use FriendsOfHyperf\ClosureCommand\Input;
 use FriendsOfHyperf\ClosureCommand\Output;
 
+#[Command(signature: 'foo')]
+#[Command(signature: 'foo:test', handle: 'test')]
 class Foo
 {
     #[Inject()]
@@ -63,6 +65,16 @@ class Foo
         $this->output->info('$bar:' . $this->input->getOption('bar'));
         $this->output->info('$bar:' . $bar);
         $this->output->info('foo::bar executed.');
+    }
+
+    public function test()
+    {
+        $this->output->info(__METHOD__):
+    }
+
+    public function handle()
+    {
+        $this->output->info(__METHOD__):
     }
 }
 ```

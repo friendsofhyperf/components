@@ -11,12 +11,12 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ClosureCommand\Annotation;
 
 use Attribute;
-use Hyperf\Di\Annotation\AbstractAnnotation;
+use Hyperf\Di\Annotation\AbstractMultipleAnnotation;
 
-#[Attribute(Attribute::TARGET_METHOD)]
-class Command extends AbstractAnnotation
+#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
+class Command extends AbstractMultipleAnnotation
 {
-    public function __construct(public string $signature = '', public string $description = '')
+    public function __construct(public string $signature = '', public string $description = '', public ?string $handle = null)
     {
     }
 
@@ -28,5 +28,12 @@ class Command extends AbstractAnnotation
             'signature' => $this->signature,
             'description' => $this->description,
         ]);
+    }
+
+    public function collectClass(string $className): void
+    {
+        $target = $this->handle ?? 'handle';
+
+        $this->collectMethod($className, $target);
     }
 }
