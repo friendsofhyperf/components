@@ -45,7 +45,7 @@ class RedisLock extends AbstractLock
             return $this->store->set($this->name, $this->owner, ['NX', 'EX' => $this->seconds]) == true;
         }
 
-        return $this->store->setNX($this->name, $this->owner) === 1;
+        return $this->store->setNX($this->name, $this->owner) === true;
     }
 
     /**
