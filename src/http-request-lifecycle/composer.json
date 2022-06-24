@@ -24,7 +24,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.0-dev"
+            "3.x-dev": "3.0-dev"
         },
         "hyperf": {
             "config": "FriendsOfHyperf\\HttpRequestLifeCycle\\ConfigProvider"
