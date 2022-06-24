@@ -22,6 +22,9 @@
         }
     },
     "extra": {
+        "branch-alias": {
+            "dev-master": "3.0-dev"
+        },
         "hyperf": {
             "config": "FriendsOfHyperf\\Http\\Client\\ConfigProvider"
         }
