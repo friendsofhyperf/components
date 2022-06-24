@@ -36,6 +36,9 @@
         "voku/portable-ascii": "Required to use (^1.4|^1.5)"
     },
     "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        },
         "hyperf": {
             "config": "FriendsOfHyperf\\Macros\\ConfigProvider"
         }

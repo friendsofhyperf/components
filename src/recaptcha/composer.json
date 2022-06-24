@@ -24,6 +24,9 @@
         }
     },
     "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        },
         "hyperf": {
             "config": "FriendsOfHyperf\\ReCaptcha\\ConfigProvider"
         }
