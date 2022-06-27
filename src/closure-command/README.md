@@ -33,8 +33,4 @@ Console::command('inspire', function () {
 Console::command('foo:bar', function() {
     $this->info('Command foo:bar executed.');
 })->describe('Description of command foo::bar');
-
-command('whoami', function () {
-    $this->info('Your are friend of hyperf');
-})->describe('Who am I');
 ```

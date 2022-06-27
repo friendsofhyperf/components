@@ -17,9 +17,6 @@
         "hyperf/event": "~2.2.0"
     },
     "autoload": {
-        "files": [
-            "src/functions.php"
-        ],
         "psr-4": {
             "FriendsOfHyperf\\ClosureCommand\\": "src/"
         }

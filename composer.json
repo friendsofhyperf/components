@@ -76,7 +76,6 @@
     },
     "autoload": {
         "files": [
-            "src/closure-command/src/functions.php",
             "src/encryption/src/helpers.php",
             "src/exception-event/src/helpers.php",
             "src/helpers/src/helpers.php",
