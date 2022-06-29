@@ -28,6 +28,7 @@ use Hyperf\Utils\Traits\Macroable;
  * @method static PendingRequest contentType(string $contentType)
  * @method static PendingRequest dd()
  * @method static PendingRequest dump()
+ * @method static PendingRequest maxRedirects(int $max)
  * @method static PendingRequest retry(int $times, int $sleep = 0, ?callable $when = null)
  * @method static PendingRequest sink(resource|string $to)
  * @method static PendingRequest stub(callable $callback)
