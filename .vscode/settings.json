@@ -19,6 +19,8 @@
     "cSpell.words": [
         "autoloader",
         "friendsofphp",
-        "nesbot"
+        "nesbot",
+        "protobuf",
+        "recaptcha"
     ],
 }
