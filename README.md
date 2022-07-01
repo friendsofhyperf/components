@@ -5,7 +5,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/components)](https://packagist.org/packages/friendsofhyperf/components)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/components)](https://github.com/friendsofhyperf/components)
 
-## Packages
+## Components
 
 |Repository|Version|Downloads|
 |--|--|--|
