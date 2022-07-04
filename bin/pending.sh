@@ -8,7 +8,7 @@ REPOS=$@
 function cleanup()
 {
     local REPO=$1
-    local FILES="src/$REPO/.git src/$REPO/.vscode src/$REPO/.github src/$REPO/vendor/ src/$REPO/.gitignore src/$REPO/.php-cs-fixer.php src/$REPO/.phpunit* src/$REPO/composer.lock src/$REPO/phpunit.* src/$REPO/phpstan* src/$REPO/.phpstorm.meta*"
+    local FILES="src/$REPO/.git src/$REPO/.vscode src/$REPO/.github src/$REPO/vendor/ src/$REPO/.gitignore src/$REPO/.php-cs-fixer.php src/$REPO/.phpunit* src/$REPO/composer.lock src/$REPO/phpunit.* src/$REPO/phpstan* src/$REPO/.phpstorm.meta* src/$REPO/pint.json"
 
     for FILE in $FILES; do
         echo "Removing ${FILE}"

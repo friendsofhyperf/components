@@ -1,0 +1,36 @@
+{
+    "name": "friendsofhyperf/confd",
+    "description": "The confd component for Hyperf.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
+    "require": {
+        "hyperf/command": "~3.0.0",
+        "hyperf/config-center": "~3.0.0",
+        "hyperf/di": "~3.0.0",
+        "hyperf/etcd": "~3.0.0",
+        "hyperf/event": "~3.0.0",
+        "hyperf/framework": "~3.0.0",
+        "hyperf/utils": "~3.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Confd\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "branch-alias": {
+            "3.x-dev": "3.0-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Confd\\ConfigProvider"
+        }
+    }
+}

@@ -18,6 +18,7 @@
     "php-cs-fixer.documentFormattingProvider": true,
     "cSpell.words": [
         "autoloader",
+        "confd",
         "friendsofphp",
         "nesbot",
         "protobuf",
