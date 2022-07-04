@@ -13,6 +13,7 @@
     },
     "require": {
         "hyperf/config": "~3.0.0",
+        "hyperf/http-server": "~3.0.0",
         "hyperf/logger": "~3.0.0",
         "hyperf/utils": "~3.0.0",
         "nesbot/carbon": "^2.0"
