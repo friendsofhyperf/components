@@ -28,7 +28,7 @@
             "3.x-dev": "3.0-dev"
         },
         "hyperf": {
-            "config": "FriendsOfHyperf\\AccessLog\\ConfigProvider"
+            "config": "FriendsOfHyperf\\HttpLogger\\ConfigProvider"
         }
     },
     "suggest": {
