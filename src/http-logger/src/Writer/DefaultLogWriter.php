@@ -26,13 +26,15 @@ class DefaultLogWriter implements LogWriter
     {
         $group = (string) $this->config->get('http_logger.log_channel', 'default');
         $level = (string) $this->config->get('http_logger.log_level', 'info');
-        $message = $this->formatMessage($this->getContext($request, $response));
+        $message = $this->formatMessage($request, $response);
 
         $this->loggerFactory->get($group)->log($level, $message);
     }
 
-    public function formatMessage(array $context = []): string
+    public function formatMessage(ServerRequestInterface $request, ResponseInterface $response): string
     {
+        $context = $this->getContext($request, $response);
+
         return preg_replace_callback('/%(\w+)%/', function ($matches) use ($context) {
             return $context[$matches[1]] ?? '-';
         }, (string) $this->config->get('http_logger.log_format', ''));
