@@ -12,4 +12,7 @@ namespace FriendsOfHyperf\Confd\Event;
 
 class ConfigChanged
 {
+    public function __construct(public array $changes = [])
+    {
+    }
 }

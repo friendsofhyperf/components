@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Confd\Command;
 
 use FriendsOfHyperf\Confd\Confd;
-use FriendsOfHyperf\Confd\DotEnv\Writer;
+use FriendsOfHyperf\Confd\Writer\EnvWriter;
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Contract\ConfigInterface;
@@ -56,9 +56,9 @@ class EnvCommand extends HyperfCommand
         $this->logger->info($path . ' is updated.');
     }
 
-    public function makeWriter(string $path): Writer
+    public function makeWriter(string $path): EnvWriter
     {
-        return make(Writer::class, [
+        return make(EnvWriter::class, [
             'path' => $path,
         ]);
     }

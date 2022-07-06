@@ -49,8 +49,8 @@ class Confd
                     break;
                 }
 
-                if ($this->driver->isChanged()) {
-                    $eventDispatcher->dispatch(new ConfigChanged());
+                if ($changes = $this->driver->getChanges()) {
+                    $eventDispatcher->dispatch(new ConfigChanged($changes));
                 }
             }
         });

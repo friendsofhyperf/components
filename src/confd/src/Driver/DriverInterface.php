@@ -14,5 +14,5 @@ interface DriverInterface
 {
     public function fetch(): array;
 
-    public function isChanged(): bool;
+    public function getChanges(): array;
 }
