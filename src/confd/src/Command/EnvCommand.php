@@ -23,7 +23,7 @@ class EnvCommand extends HyperfCommand
 {
     protected ?string $signature = 'confd:env {--E|env-path= : Path of .env.}';
 
-    protected string $description = 'Upgrade .env from etcd.';
+    protected string $description = 'Upgrade .env by confd.';
 
     protected ConfigInterface $config;
 

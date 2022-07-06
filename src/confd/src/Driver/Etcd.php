@@ -48,13 +48,11 @@ class Etcd implements DriverInterface
     {
         $namespace = (string) $this->config->get('confd.drivers.etcd.namespace', '');
         $watches = (array) $this->config->get('confd.drivers.etcd.watches', []);
-
         $kvs = (array) ($this->client->fetchByPrefix($namespace)['kvs'] ?? []);
         $values = collect($kvs)
             ->filter(fn ($kv) => in_array($kv['key'], $watches))
             ->mapWithKeys(fn ($kv) => [$kv['key'] => $kv['value']])
             ->toArray();
-
         $changes = array_diff($values, $this->origins);
 
         return tap($changes, function ($changes) use ($values) {
