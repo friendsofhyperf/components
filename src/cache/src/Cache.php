@@ -17,6 +17,7 @@ use FriendsOfHyperf\Cache\Event\CacheMissed;
 use FriendsOfHyperf\Cache\Event\KeyForgotten;
 use FriendsOfHyperf\Cache\Event\KeyWritten;
 use Hyperf\Cache\Driver\DriverInterface;
+use Hyperf\Macroable\Macroable;
 use Hyperf\Utils\InteractsWithTime;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -24,6 +25,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 class Cache implements CacheInterface
 {
     use InteractsWithTime;
+    use Macroable;
 
     /**
      * @var DriverInterface

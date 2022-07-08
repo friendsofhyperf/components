@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Tests\Facade;
 
+use FriendsOfHyperf\Cache\Cache;
 use FriendsOfHyperf\Facade\Log;
 use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Logger\LoggerFactory;
@@ -52,5 +53,12 @@ class FacadeTest extends TestCase
 
         $this->assertInstanceOf(\Psr\Log\LoggerInterface::class, Log::channel('hyperf', 'default'));
         // $this->assertEmpty(Log::info('test'));
+    }
+
+    public function testCacheMacroable()
+    {
+        Cache::macro('test', fn () => null);
+
+        $this->assertTrue(Cache::hasMacro('test'));
     }
 }
