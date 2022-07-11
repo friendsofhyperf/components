@@ -14,4 +14,5 @@ use Hyperf\Di\MetadataCollector;
 
 class CommandCollector extends MetadataCollector
 {
+    protected static array $container = [];
 }
