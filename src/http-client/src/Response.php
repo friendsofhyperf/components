@@ -102,7 +102,7 @@ class Response implements ArrayAccess
     /**
      * Get the JSON decoded body of the response as an object.
      *
-     * @return object
+     * @return array|object
      */
     public function object()
     {
@@ -167,7 +167,7 @@ class Response implements ArrayAccess
      */
     public function effectiveUri()
     {
-        return optional($this->transferStats)->getEffectiveUri();
+        return $this->transferStats?->getEffectiveUri();
     }
 
     /**
@@ -281,7 +281,7 @@ class Response implements ArrayAccess
      */
     public function handlerStats()
     {
-        return optional($this->transferStats)->getHandlerStats() ?? [];
+        return $this->transferStats?->getHandlerStats() ?? [];
     }
 
     /**
@@ -309,7 +309,7 @@ class Response implements ArrayAccess
     /**
      * Create an exception if a server or client error occurred.
      *
-     * @return null|\RequestException
+     * @return null|\FriendsOfHyperf\Http\Client\RequestException
      */
     public function toException()
     {
@@ -322,7 +322,7 @@ class Response implements ArrayAccess
      * Throw an exception if a server or client error occurred.
      *
      * @param null|\Closure $callback
-     * @throws RequestException
+     * @throws \FriendsOfHyperf\Http\Client\RequestException
      * @return $this
      */
     public function throw()
@@ -344,7 +344,7 @@ class Response implements ArrayAccess
      * Throw an exception if a server or client error occurred and the given condition evaluates to true.
      *
      * @param bool $condition
-     * @throws RequestException
+     * @throws \FriendsOfHyperf\Http\Client\RequestException
      * @return $this
      */
     public function throwIf($condition)
@@ -356,10 +356,8 @@ class Response implements ArrayAccess
      * Determine if the given offset exists.
      *
      * @param string $offset
-     * @return bool
      */
-    #[\ReturnTypeWillChange]
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->json()[$offset]);
     }
@@ -368,10 +366,8 @@ class Response implements ArrayAccess
      * Get the value for a given offset.
      *
      * @param string $offset
-     * @return mixed
      */
-    #[\ReturnTypeWillChange]
-    public function offsetGet($offset)
+    public function offsetGet($offset): mixed
     {
         return $this->json()[$offset];
     }
@@ -384,8 +380,7 @@ class Response implements ArrayAccess
      *
      * @throws \LogicException
      */
-    #[\ReturnTypeWillChange]
-    public function offsetSet($offset, $value)
+    public function offsetSet($offset, $value): void
     {
         throw new LogicException('Response data may not be mutated using array access.');
     }
@@ -397,8 +392,7 @@ class Response implements ArrayAccess
      *
      * @throws \LogicException
      */
-    #[\ReturnTypeWillChange]
-    public function offsetUnset($offset)
+    public function offsetUnset($offset): void
     {
         throw new LogicException('Response data may not be mutated using array access.');
     }

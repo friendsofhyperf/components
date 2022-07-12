@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Http\Client;
 
 use Closure;
+use FriendsOfHyperf\Contracts\Events\Dispatcher;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Response as Psr7Response;
 use GuzzleHttp\TransferStats;
@@ -31,10 +32,12 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  * @method PendingRequest baseUrl(string $url)
  * @method PendingRequest beforeSending(callable $callback)
  * @method PendingRequest bodyFormat(string $format)
+ * @method PendingRequest connectTimeout(int $seconds)
  * @method PendingRequest contentType(string $contentType)
  * @method PendingRequest dd()
  * @method PendingRequest dump()
- * @method PendingRequest retry(int $times, int $sleep = 0, ?callable $when = null)
+ * @method PendingRequest maxRedirects(int $max)
+ * @method PendingRequest retry(int $times, int $sleepMilliseconds = 0, ?callable $when = null, bool $throw = true)
  * @method PendingRequest sink(resource|string $to)
  * @method PendingRequest stub(callable $callback)
  * @method PendingRequest timeout(int $seconds)
@@ -49,6 +52,9 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  * @method PendingRequest withUserAgent(string $userAgent)
  * @method PendingRequest withoutRedirecting()
  * @method PendingRequest withoutVerifying()
+ * @method PendingRequest throw(callable $callback = null)
+ * @method PendingRequest throwIf($condition)
+ * @method PendingRequest throwUnless($condition)
  * @method array pool(callable $callback)
  * @method Response delete(string $url, array $data = [])
  * @method Response get(string $url, null|array|string $query = null)
@@ -102,6 +108,13 @@ class Factory
     protected $responseSequences = [];
 
     /**
+     * Indicates that an exception should be thrown if any request is not faked.
+     *
+     * @var bool
+     */
+    protected $preventStrayRequests = false;
+
+    /**
      * Create a new factory instance.
      */
     public function __construct(EventDispatcherInterface $dispatcher = null)
@@ -125,14 +138,14 @@ class Factory
         }
 
         return tap($this->newPendingRequest(), function ($request) {
-            $request->stub($this->stubCallbacks);
+            $request->stub($this->stubCallbacks)->preventStrayRequests($this->preventStrayRequests);
         })->{$method}(...$parameters);
     }
 
     /**
      * Create a new response instance for use during stubbing.
      *
-     * @param array|string $body
+     * @param null|array|string $body
      * @param int $status
      * @param array $headers
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -225,7 +238,7 @@ class Factory
      * Stub the given URL using the given callback.
      *
      * @param string $url
-     * @param callable|\GuzzleHttp\Promise\PromiseInterface|\Response $callback
+     * @param callable|\GuzzleHttp\Promise\PromiseInterface|Response $callback
      * @return $this
      */
     public function stubUrl($url, $callback)
@@ -239,6 +252,29 @@ class Factory
                         ? $callback($request, $options)
                         : $callback;
         });
+    }
+
+    /**
+     * Indicate that an exception should not be thrown if any request is not faked.
+     *
+     * @param bool $prevent
+     * @return $this
+     */
+    public function preventStrayRequests($prevent = true)
+    {
+        $this->preventStrayRequests = $prevent;
+
+        return $this;
+    }
+
+    /**
+     * Indicate that an exception should not be thrown if any request is not faked.
+     *
+     * @return $this
+     */
+    public function allowStrayRequests()
+    {
+        return $this->preventStrayRequests(false);
     }
 
     /**
