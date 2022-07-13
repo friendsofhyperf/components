@@ -18,29 +18,14 @@ use Psr\Container\ContainerInterface;
 
 class ParameterParser
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private NormalizerInterface $normalizer;
 
-    /**
-     * @var NormalizerInterface
-     */
-    private $normalizer;
+    private ?ClosureDefinitionCollectorInterface $closureDefinitionCollector = null;
 
-    /**
-     * @var ClosureDefinitionCollectorInterface
-     */
-    private $closureDefinitionCollector;
+    private ?MethodDefinitionCollectorInterface $methodDefinitionCollector = null;
 
-    /**
-     * @var MethodDefinitionCollectorInterface
-     */
-    private $methodDefinitionCollector;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(private ContainerInterface $container)
     {
-        $this->container = $container;
         $this->normalizer = $this->container->get(NormalizerInterface::class);
 
         if ($this->container->has(ClosureDefinitionCollectorInterface::class)) {
@@ -68,6 +53,10 @@ class ParameterParser
 
     public function parseMethodParameters(string $class, string $method, array $arguments): array
     {
+        if (! $this->methodDefinitionCollector) {
+            return [];
+        }
+
         $definitions = $this->methodDefinitionCollector->getParameters($class, $method);
         return $this->getInjections($definitions, "{$class}::{$method}", $arguments);
     }
