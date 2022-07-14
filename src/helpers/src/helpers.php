@@ -380,6 +380,18 @@ if (! function_exists('preg_replace_array')) {
     }
 }
 
+if (! function_exists('resolve')) {
+    /**
+     * Resolve a service from the container.
+     *
+     * @return mixed|\Psr\Container\ContainerInterface
+     */
+    function resolve(string $abstract, array $parameters = [])
+    {
+        return di($abstract, $parameters);
+    }
+}
+
 if (! function_exists('request')) {
     /**
      * Get an instance of the current request or an input item from the request.
