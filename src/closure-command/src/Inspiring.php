@@ -51,6 +51,23 @@ class Inspiring
             'Breathing in, I calm body and mind. Breathing out, I smile. - Thich Nhat Hanh',
             'Life is available only in the present moment. - Thich Nhat Hanh',
             'The best way to take care of the future is to take care of the present moment. - Thich Nhat Hanh',
-        ])->random();
+        ])->map(fn ($quote) => static::formatForConsole($quote))->random();
+    }
+
+    /**
+     * Formats the given quote for a pretty console output.
+     *
+     * @param string $quote
+     * @return string
+     */
+    protected static function formatForConsole($quote)
+    {
+        [$text, $author] = str($quote)->explode('-');
+
+        return sprintf(
+            "\n  <options=bold>“ %s ”</>\n  <fg=gray>— %s</>\n",
+            trim($text),
+            trim($author),
+        );
     }
 }
