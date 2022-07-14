@@ -10,8 +10,11 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Macros\Foundation\UuidContainer;
 use Hyperf\Utils\Str;
+use League\CommonMark\Environment\Environment;
+use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
+use League\CommonMark\Extension\InlinesOnly\InlinesOnlyExtension;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
-use League\CommonMark\MarkdownConverterInterface;
+use League\CommonMark\MarkdownConverter;
 use Ramsey\Uuid\Codec\TimestampFirstCombCodec;
 use Ramsey\Uuid\Generator\CombGenerator;
 use Ramsey\Uuid\Uuid;
@@ -129,10 +132,22 @@ if (! Str::hasMacro('lcfirst')) {
 
 if (! Str::hasMacro('markdown')) {
     Str::macro('markdown', function ($string, array $options = []) {
-        /** @var MarkdownConverterInterface $converter */
         $converter = new GithubFlavoredMarkdownConverter($options);
 
-        return (string) $converter->convertToHtml($string);
+        return (string) $converter->convert($string);
+    });
+}
+
+if (! Str::hasMacro('inlineMarkdown')) {
+    Str::macro('inlineMarkdown', function ($string, array $options = []) {
+        $environment = new Environment($options);
+
+        $environment->addExtension(new GithubFlavoredMarkdownExtension());
+        $environment->addExtension(new InlinesOnlyExtension());
+
+        $converter = new MarkdownConverter($environment);
+
+        return (string) $converter->convert($string);
     });
 }
 

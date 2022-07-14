@@ -87,6 +87,15 @@ class Stringable
     }
 
     /**
+     * Convert inline Markdown into HTML.
+     *
+     * @return static
+     */
+    public function inlineMarkdown(array $options = [])
+    {
+    }
+
+    /**
      * Append a new line to the string.
      *
      * @param int $count

@@ -66,6 +66,12 @@ if (! Stringable::hasMacro('markdown')) {
     });
 }
 
+if (! Stringable::hasMacro('inlineMarkdown')) {
+    Stringable::macro('inlineMarkdown', function (array $options = []) {
+        return new static(Str::inlineMarkdown($this->value, $options));
+    });
+}
+
 if (! Stringable::hasMacro('newLine')) {
     Stringable::macro('newLine', function ($count = 1) {
         return $this->append(str_repeat(PHP_EOL, $count));

@@ -114,6 +114,16 @@ class Str
     }
 
     /**
+     * Converts inline Markdown into HTML.
+     *
+     * @param string $string
+     * @return string
+     */
+    public static function inlineMarkdown($string, array $options = [])
+    {
+    }
+
+    /**
      * Generate a time-ordered UUID (version 4).
      *
      * @return \Ramsey\Uuid\UuidInterface
