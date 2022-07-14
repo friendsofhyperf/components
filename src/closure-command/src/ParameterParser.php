@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\ClosureCommand;
 use Closure;
 use Hyperf\Contract\NormalizerInterface;
 use Hyperf\Di\ClosureDefinitionCollectorInterface;
+use Hyperf\Utils\Str;
 use Psr\Container\ContainerInterface;
 
 class ParameterParser
@@ -63,14 +64,14 @@ class ParameterParser
         $injections = [];
 
         foreach ($definitions ?? [] as $pos => $definition) {
-            $value = $arguments[$pos] ?? $arguments[$definition->getMeta('name')] ?? null;
+            $value = $arguments[$pos] ?? $arguments[$definition->getMeta('name')] ?? $arguments[Str::snake($definition->getMeta('name'), '-')] ?? null;
             if ($value === null) {
                 if ($definition->getMeta('defaultValueAvailable')) {
                     $injections[] = $definition->getMeta('defaultValue');
-                } elseif ($definition->allowsNull()) {
-                    $injections[] = null;
                 } elseif ($this->container->has($definition->getName())) {
                     $injections[] = $this->container->get($definition->getName());
+                } elseif ($definition->allowsNull()) {
+                    $injections[] = null;
                 } else {
                     throw new \InvalidArgumentException("Parameter '{$definition->getMeta('name')}' "
                         . "of {$callableName} should not be null");
