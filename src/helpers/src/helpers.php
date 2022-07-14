@@ -10,7 +10,8 @@ declare(strict_types=1);
  */
 if (! function_exists('app')) {
     /**
-     * @throws TypeError
+     * Get the available container instance.
+     *
      * @return mixed|\Psr\Container\ContainerInterface
      */
     function app(string $abstract = null, array $parameters = [])
@@ -146,7 +147,8 @@ if (! function_exists('class_namespace')) {
 
 if (! function_exists('di')) {
     /**
-     * @throws TypeError
+     * Get the available container instance.
+     *
      * @return mixed|\Psr\Container\ContainerInterface
      */
     function di(string $abstract = null, array $parameters = [])
@@ -377,6 +379,18 @@ if (! function_exists('preg_replace_array')) {
                 return array_shift($replacements);
             }
         }, $subject);
+    }
+}
+
+if (! function_exists('resolve')) {
+    /**
+     * Resolve a service from the container.
+     *
+     * @return mixed|\Psr\Container\ContainerInterface
+     */
+    function resolve(string $abstract, array $parameters = [])
+    {
+        return di($abstract, $parameters);
     }
 }
 
