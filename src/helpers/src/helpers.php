@@ -386,10 +386,14 @@ if (! function_exists('resolve')) {
     /**
      * Resolve a service from the container.
      *
-     * @return mixed|\Psr\Container\ContainerInterface
+     * @return Closure|mixed|\Psr\Container\ContainerInterface
      */
-    function resolve(string $abstract, array $parameters = [])
+    function resolve(string|callable $abstract, array $parameters = [])
     {
+        if (is_callable($abstract)) {
+            return Closure::fromCallable($abstract);
+        }
+
         return di($abstract, $parameters);
     }
 }
