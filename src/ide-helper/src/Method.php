@@ -213,9 +213,9 @@ class Method
                 } elseif (is_null($default)) {
                     $default = 'null';
                 } elseif (is_int($default)) {
-                    // $default = $default;
+                // $default = $default;
                 } elseif (is_resource($default)) {
-                    // skip to not fail
+                // skip to not fail
                 } else {
                     $default = "'" . trim($default) . "'";
                 }
@@ -368,7 +368,3 @@ class Method
         }
     }
 }
-
-
-
-

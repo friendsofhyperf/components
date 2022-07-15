@@ -15,10 +15,4 @@ jobs:
       - name: Run PHP CS Fixer
         uses: docker://oskarstark/php-cs-fixer-ga
         with:
-          # args: --config=.php-cs-fixer.php --allow-risky=yes
           args: src --config=.php-cs-fixer.php --dry-run
-
-      # - name: Commit changes
-      #   uses: stefanzweifel/git-auto-commit-action@v4
-      #   with:
-      #     commit_message: Fix styling
