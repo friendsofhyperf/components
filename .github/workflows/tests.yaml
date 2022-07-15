@@ -28,5 +28,5 @@ jobs:
           composer analyse src
       - name: Run Test Cases
         run: |
-          # vendor/bin/php-cs-fixer fix src --dry-run
+          vendor/bin/php-cs-fixer fix src --dry-run
           composer test
