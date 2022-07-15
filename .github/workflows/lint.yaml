@@ -1,0 +1,15 @@
+
+on: [push, pull_request]
+
+name: check & fix styling
+
+jobs:
+  php-cs-fixer:
+    name: php-cs-fixer
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: PHP-CS-Fixer
+      uses: docker://oskarstark/php-cs-fixer-ga
+      with:
+        args: src --config=.php-cs-fixer.php --diff --dry-run
