@@ -1,7 +1,8 @@
 # friendsofhyperf/components
 
 [![Latest Test](https://github.com/friendsofhyperf/components/workflows/tests/badge.svg)](https://github.com/friendsofhyperf/components/actions)
-[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/components)](https://packagist.org/packages/friendsofhyperf/components)
+[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/components/v/stable.svg)](https://packagist.org/packages/friendsofhyperf/components)
+[![Latest Unstable Version](https://poser.pugx.org/friendsofhyperf/components/v/unstable.svg)](https://packagist.org/packages/friendsofhyperf/components)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/components)](https://packagist.org/packages/friendsofhyperf/components)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/components)](https://github.com/friendsofhyperf/components)
 
