@@ -149,7 +149,7 @@ class Model extends HyperfCommand
                 } elseif (is_null($default)) {
                     $default = 'null';
                 } elseif (is_int($default)) {
-                // $default = $default;
+                    // $default = $default;
                 } else {
                     $default = "'" . trim($default) . "'";
                 }
