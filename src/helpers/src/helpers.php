@@ -11,10 +11,14 @@ declare(strict_types=1);
 if (! function_exists('app')) {
     /**
      * @throws TypeError
-     * @return mixed|\Psr\Container\ContainerInterface
+     * @return Closure|mixed|\Psr\Container\ContainerInterface
      */
     function app(string $abstract = null, array $parameters = [])
     {
+        if (is_callable($abstract)) {
+            return Closure::fromCallable($abstract);
+        }
+
         return di($abstract, $parameters);
     }
 }

@@ -779,13 +779,13 @@ class PendingRequest
 
                 throw new ConnectionException($e->getMessage(), 0, $e);
             }
-            }, $this->retryDelay ?? 100, function ($exception) use (&$shouldRetry) {
-                $result = $shouldRetry ?? ($this->retryWhenCallback ? call_user_func($this->retryWhenCallback, $exception, $this) : true);
+        }, $this->retryDelay ?? 100, function ($exception) use (&$shouldRetry) {
+            $result = $shouldRetry ?? ($this->retryWhenCallback ? call_user_func($this->retryWhenCallback, $exception, $this) : true);
 
-                $shouldRetry = null;
+            $shouldRetry = null;
 
-                return $result;
-            });
+            return $result;
+        });
     }
 
     /**
