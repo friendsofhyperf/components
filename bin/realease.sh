@@ -16,6 +16,7 @@ then
     exit 1
 fi
 
+NOW=$(date +%s)
 RELEASE_BRANCH="3.x"
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 BASEPATH=$(cd `dirname $0`; cd ../src/; pwd)
@@ -91,3 +92,7 @@ do
         fi
     )
 done
+
+TIME=$(echo "$(date +%s) - $NOW" | bc)
+
+printf "Execution time: %f seconds" $TIME
