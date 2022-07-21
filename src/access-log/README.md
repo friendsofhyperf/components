@@ -11,7 +11,7 @@ Access log component for hyperf.
 - Request
 
 ```bash
-composer require "friendsofhyperf/access-log:^0.2"
+composer require "friendsofhyperf/access-log:^2.0"
 ```
 
 - Publish
