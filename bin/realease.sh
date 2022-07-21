@@ -84,7 +84,9 @@ do
         git clone $REMOTE_URL .
         git checkout "$RELEASE_BRANCH";
 
-        git tag $VERSION
-        git push origin --tags
+        if [[ $(git log --pretty="%d" -n 1 | grep tag --count) -eq 0 ]]; then
+            git tag $VERSION
+            git push origin --tags
+        fi
     )
 done
