@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ClosureCommand;
 
 use Hyperf\Utils\Collection;
+use Hyperf\Utils\Str;
 
 class Inspiring
 {
@@ -69,7 +70,7 @@ class Inspiring
      */
     protected static function formatForConsole($quote)
     {
-        [$text, $author] = str($quote)->explode('-');
+        [$text, $author] = Str::of($quote)->explode('-');
 
         return sprintf(
             "\n  <options=bold>“ %s ”</>\n  <fg=gray>— %s</>\n",
