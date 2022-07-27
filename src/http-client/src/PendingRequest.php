@@ -823,7 +823,7 @@ class PendingRequest
     {
         $handler = null;
 
-        if (Coroutine::inCoroutine()) {
+        if (extension_loaded('swoole') && Coroutine::inCoroutine()) {
             $handler = new CoroutineHandler();
         }
 
