@@ -15,7 +15,7 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\CodeGen\Project;
 use Psr\Container\ContainerInterface;
-use Symfony\Component\Console\Command\Command as BasCommand;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -25,7 +25,7 @@ use Symfony\Component\Console\Output\OutputInterface;
  * @Command
  */
 #[Command]
-class GeneratorCommand extends BasCommand
+class GeneratorCommand extends SymfonyCommand
 {
     /**
      * @var InputInterface
