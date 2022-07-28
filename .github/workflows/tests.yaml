@@ -28,7 +28,7 @@ jobs:
           composer analyse src
       - name: Setup Service
         run: |
-          docker run -d -p 80:80 kennethreitz/httpbin
+          docker -d run -p 80:80 kennethreitz/httpbin
           curl http://localhost
       - name: Run Test Cases
         run: |
