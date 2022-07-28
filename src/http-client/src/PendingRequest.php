@@ -490,6 +490,42 @@ class PendingRequest
     }
 
     /**
+     * Specify the connect timeout (in seconds) for the request.
+     *
+     * @return $this
+     */
+    public function connectTimeout(int $seconds)
+    {
+        return tap($this, function () use ($seconds) {
+            $this->options['connect_timeout'] = $seconds;
+        });
+    }
+
+    /**
+     * A callable that is invoked when the HTTP headers of the response have been received but the body has not yet begun to download.
+     *
+     * @return $this
+     */
+    public function onHeaders(callable $callback)
+    {
+        return tap($this, function () use ($callback) {
+            $this->options['on_headers'] = $callback;
+        });
+    }
+
+    /**
+     * The callback is invoked with transfer statistics about the request, the response received, or the error encountered. Included in the data is the total amount of time taken to send the request.
+     *
+     * @return $this
+     */
+    public function onStats(callable $callback)
+    {
+        return tap($this, function () use ($callback) {
+            $this->options['on_stats'] = $callback;
+        });
+    }
+
+    /**
      * Specify the number of times the request should be attempted.
      *
      * @return $this
