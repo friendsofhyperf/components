@@ -10,8 +10,6 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Http\Client;
 
-use Hyperf\Macroable\Macroable;
-
 /**
  * @method static \GuzzleHttp\Promise\PromiseInterface response($body = null, $status = 200, $headers = [])
  * @method static Factory fake($callback = null)
@@ -71,10 +69,6 @@ use Hyperf\Macroable\Macroable;
  */
 class Http
 {
-    use Macroable {
-        __call as macroCall;
-    }
-
     public static function __callStatic($name, $arguments)
     {
         return make(Factory::class)->{$name}(...$arguments);
