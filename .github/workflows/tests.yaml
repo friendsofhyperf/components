@@ -26,6 +26,10 @@ jobs:
       - name: Run Analyse
         run: |
           composer analyse src
+      - name: Setup Service
+        run: |
+          docker run -p 80:80 kennethreitz/httpbin
+          curl http://localhost
       - name: Run Test Cases
         run: |
           vendor/bin/php-cs-fixer fix src --dry-run
