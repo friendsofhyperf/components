@@ -526,6 +526,18 @@ class PendingRequest
     }
 
     /**
+     * Defines a function to invoke when transfer progress is made.
+     *
+     * @return $this
+     */
+    public function progress(callable $callback)
+    {
+        return tap($this, function () use ($callback) {
+            $this->options['progress'] = $callback;
+        });
+    }
+
+    /**
      * Specify the number of times the request should be attempted.
      *
      * @return $this
