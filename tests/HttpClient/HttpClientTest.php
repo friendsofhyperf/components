@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Tests\HttpClient;
 use FriendsOfHyperf\Http\Client\Http;
 use FriendsOfHyperf\Http\Client\RequestException;
 use FriendsOfHyperf\Tests\TestCase;
+use Psr\Http\Message\ResponseInterface;
 
 /**
  * @internal
@@ -132,4 +133,36 @@ class HttpClientTest extends TestCase
 
     //     $this->assertTrue($response->failed());
     // }
+
+    public function testSink()
+    {
+        try {
+            $sink = '/tmp/tmp.jpg';
+            Http::sink($sink)
+                ->accept('image/jpeg')
+                ->get('http://httpbin.org/image');
+            $this->assertFileExists($sink);
+        } finally {
+            @unlink($sink);
+        }
+    }
+
+    public function testOnHeaders()
+    {
+        Http::onHeaders(function (ResponseInterface $response) {
+            $this->assertGreaterThan(0, $response->getHeaderLine('Content-Length'));
+        })
+            ->accept('image/jpeg')
+            ->get('http://httpbin.org/image');
+    }
+
+    public function testProgress()
+    {
+        Http::progress(function ($downloadTotal, $downloaded, $uploadTotal, $uploaded) {
+            $this->assertGreaterThanOrEqual(0, $downloadTotal);
+            $this->assertGreaterThanOrEqual(0, $downloaded);
+        })
+            ->accept('image/jpeg')
+            ->get('http://httpbin.org/image');
+    }
 }
