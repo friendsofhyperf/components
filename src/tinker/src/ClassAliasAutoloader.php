@@ -69,11 +69,8 @@ class ClassAliasAutoloader
 
     /**
      * Register a new alias loader instance.
-     *
-     * @param string $classMapPath
-     * @return static
      */
-    public static function register(Shell $shell, $classMapPath, array $includedAliases = [], array $excludedAliases = [])
+    public static function register(Shell $shell, string $classMapPath, array $includedAliases = [], array $excludedAliases = []): static
     {
         return tap(
             new static($shell, $classMapPath, $includedAliases, $excludedAliases),
@@ -85,10 +82,8 @@ class ClassAliasAutoloader
 
     /**
      * Find the closest class by name.
-     *
-     * @param string $class
      */
-    public function aliasClass($class)
+    public function aliasClass(string $class)
     {
         if (str_contains($class, '\\')) {
             return;
@@ -113,11 +108,8 @@ class ClassAliasAutoloader
 
     /**
      * Whether a class may be aliased.
-     *
-     * @param string $class
-     * @param string $path
      */
-    public function isAliasable($class, $path)
+    public function isAliasable(string $class, string $path)
     {
         if (! str_contains($class, '\\')) {
             return false;
