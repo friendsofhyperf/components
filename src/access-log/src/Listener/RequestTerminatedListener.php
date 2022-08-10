@@ -18,14 +18,8 @@ use Hyperf\Event\Contract\ListenerInterface;
 #[Listener]
 class RequestTerminatedListener implements ListenerInterface
 {
-    /**
-     * @var Handler
-     */
-    protected $handler;
-
-    public function __construct(Handler $handler)
+    public function __construct(protected Handler $handler)
     {
-        $this->handler = $handler;
     }
 
     public function listen(): array
