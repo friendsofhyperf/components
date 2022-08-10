@@ -16,19 +16,15 @@ interface Encrypter
      * Encrypt the given value.
      *
      * @param mixed $value
-     * @param bool $serialize
      * @throws \Friendsofhyperf\Encryption\Contract\EncryptException
-     * @return string
      */
-    public function encrypt($value, $serialize = true);
+    public function encrypt($value, bool $serialize = true): string;
 
     /**
      * Decrypt the given value.
      *
-     * @param string $payload
-     * @param bool $unserialize
      * @throws \Friendsofhyperf\Encryption\Contract\DecryptException
      * @return mixed
      */
-    public function decrypt($payload, $unserialize = true);
+    public function decrypt(string $payload, bool $unserialize = true);
 }

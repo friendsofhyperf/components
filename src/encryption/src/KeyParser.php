@@ -16,12 +16,10 @@ class KeyParser
 {
     /**
      * Parse the encryption key.
-     *
-     * @return string
      */
-    public function parseKey(array $config)
+    public function parseKey(array $config): string
     {
-        if (Str::startsWith($key = $this->key($config), $prefix = 'base64:')) {
+        if (str_starts_with($key = $this->key($config), $prefix = 'base64:')) {
             $key = base64_decode(Str::after($key, $prefix));
         }
 
@@ -32,9 +30,8 @@ class KeyParser
      * Extract the encryption key from the given configuration.
      *
      * @throws \RuntimeException
-     * @return string
      */
-    protected function key(array $config)
+    protected function key(array $config): string
     {
         return tap($config['key'] ?? '', function ($key) {
             if (empty($key)) {

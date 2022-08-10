@@ -19,25 +19,9 @@ use RuntimeException;
 class Encrypter implements EncrypterContract, StringEncrypter
 {
     /**
-     * The encryption key.
-     *
-     * @var string
-     */
-    protected $key;
-
-    /**
-     * The algorithm used for encryption.
-     *
-     * @var string
-     */
-    protected $cipher;
-
-    /**
      * The supported cipher algorithms and their properties.
-     *
-     * @var array
      */
-    private static $supportedCiphers = [
+    private static array $supportedCiphers = [
         'aes-128-cbc' => ['size' => 16, 'aead' => false],
         'aes-256-cbc' => ['size' => 32, 'aead' => false],
         'aes-128-gcm' => ['size' => 16, 'aead' => true],
@@ -47,33 +31,21 @@ class Encrypter implements EncrypterContract, StringEncrypter
     /**
      * Create a new encrypter instance.
      *
-     * @param string $key
-     * @param string $cipher
-     *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
-    public function __construct($key, $cipher = 'AES-128-CBC')
+    public function __construct(protected string $key, protected string $cipher = 'AES-128-CBC')
     {
-        $key = (string) $key;
-
         if (! static::supported($key, $cipher)) {
             $ciphers = implode(', ', array_keys(self::$supportedCiphers));
 
             throw new RuntimeException("Unsupported cipher or incorrect key length. Supported ciphers are: {$ciphers}.");
         }
-
-        $this->key = $key;
-        $this->cipher = $cipher;
     }
 
     /**
      * Determine if the given key and cipher combination is valid.
-     *
-     * @param string $key
-     * @param string $cipher
-     * @return bool
      */
-    public static function supported($key, $cipher)
+    public static function supported(string $key, string $cipher): bool
     {
         if (! isset(self::$supportedCiphers[strtolower($cipher)])) {
             return false;
@@ -84,11 +56,8 @@ class Encrypter implements EncrypterContract, StringEncrypter
 
     /**
      * Create a new encryption key for the given cipher.
-     *
-     * @param string $cipher
-     * @return string
      */
-    public static function generateKey($cipher)
+    public static function generateKey(string $cipher): string
     {
         return random_bytes(self::$supportedCiphers[strtolower($cipher)]['size'] ?? 32);
     }
@@ -97,11 +66,9 @@ class Encrypter implements EncrypterContract, StringEncrypter
      * Encrypt the given value.
      *
      * @param mixed $value
-     * @param bool $serialize
      * @throws \Friendsofhyperf\Encryption\Contract\EncryptException
-     * @return string
      */
-    public function encrypt($value, $serialize = true)
+    public function encrypt($value, bool $serialize = true): string
     {
         $iv = random_bytes(openssl_cipher_iv_length(strtolower($this->cipher)));
         $value = \openssl_encrypt(
@@ -134,11 +101,9 @@ class Encrypter implements EncrypterContract, StringEncrypter
     /**
      * Encrypt a string without serialization.
      *
-     * @param string $value
      * @throws \Friendsofhyperf\Encryption\Contract\EncryptException
-     * @return string
      */
-    public function encryptString($value)
+    public function encryptString(string $value): string
     {
         return $this->encrypt($value, false);
     }
@@ -146,12 +111,10 @@ class Encrypter implements EncrypterContract, StringEncrypter
     /**
      * Decrypt the given value.
      *
-     * @param string $payload
-     * @param bool $unserialize
      * @throws \Friendsofhyperf\Encryption\Contract\DecryptException
      * @return mixed
      */
-    public function decrypt($payload, $unserialize = true)
+    public function decrypt(string $payload, bool $unserialize = true)
     {
         $payload = $this->getJsonPayload((string) $payload);
         $iv = base64_decode($payload['iv']);
@@ -183,21 +146,17 @@ class Encrypter implements EncrypterContract, StringEncrypter
     /**
      * Decrypt the given string without unserialization.
      *
-     * @param string $payload
      * @throws \Friendsofhyperf\Encryption\Contract\DecryptException
-     * @return string
      */
-    public function decryptString($payload)
+    public function decryptString(string $payload): string
     {
         return $this->decrypt($payload, false);
     }
 
     /**
      * Get the encryption key.
-     *
-     * @return string
      */
-    public function getKey()
+    public function getKey(): string
     {
         return $this->key;
     }
@@ -207,9 +166,8 @@ class Encrypter implements EncrypterContract, StringEncrypter
      *
      * @param string $iv
      * @param mixed $value
-     * @return string
      */
-    protected function hash($iv, $value)
+    protected function hash($iv, $value): string
     {
         return hash_hmac('sha256', $iv . $value, $this->key);
     }
@@ -217,11 +175,9 @@ class Encrypter implements EncrypterContract, StringEncrypter
     /**
      * Get the JSON array from the given payload.
      *
-     * @param string $payload
      * @throws \Friendsofhyperf\Encryption\Contract\DecryptException
-     * @return array
      */
-    protected function getJsonPayload($payload)
+    protected function getJsonPayload(string $payload): array
     {
         $payload = json_decode(base64_decode($payload), true);
 
@@ -243,9 +199,8 @@ class Encrypter implements EncrypterContract, StringEncrypter
      * Verify that the encryption payload is valid.
      *
      * @param mixed $payload
-     * @return bool
      */
-    protected function validPayload($payload)
+    protected function validPayload($payload): bool
     {
         return is_array($payload) && isset($payload['iv'], $payload['value'], $payload['mac'])
             && strlen(base64_decode($payload['iv'], true)) === openssl_cipher_iv_length(strtolower($this->cipher));
@@ -253,10 +208,8 @@ class Encrypter implements EncrypterContract, StringEncrypter
 
     /**
      * Determine if the MAC for the given payload is valid.
-     *
-     * @return bool
      */
-    protected function validMac(array $payload)
+    protected function validMac(array $payload): bool
     {
         return hash_equals(
             $this->hash($payload['iv'], $payload['value']),

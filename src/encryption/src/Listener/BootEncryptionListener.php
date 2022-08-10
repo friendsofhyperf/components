@@ -24,26 +24,8 @@ use Psr\Container\ContainerInterface;
 #[Listener]
 class BootEncryptionListener implements ListenerInterface
 {
-    /**
-     * @var ConfigInterface
-     */
-    private $config;
-
-    /**
-     * @var KeyParser
-     */
-    private $parser;
-
-    /**
-     * @var \Hyperf\Contract\ContainerInterface
-     */
-    private $container;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(private ContainerInterface $container, private ConfigInterface $config, private KeyParser $parser)
     {
-        $this->config = $container->get(ConfigInterface::class);
-        $this->parser = $container->get(KeyParser::class);
-        $this->container = $container;
     }
 
     public function listen(): array
