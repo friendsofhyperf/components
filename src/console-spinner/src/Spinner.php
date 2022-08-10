@@ -22,11 +22,10 @@ class Spinner
 
     protected ProgressBar $progressBar;
 
-    protected int $step;
+    protected int $step = 0;
 
     public function __construct(SymfonyStyle $output, int $max = 0, ?array $chars = null)
     {
-        $this->step = 0;
         $this->chars = $chars ?? $this->chars;
         $this->progressBar = $output->createProgressBar($max);
         $this->progressBar->setBarCharacter('✔');
