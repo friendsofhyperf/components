@@ -179,7 +179,7 @@ class Encrypter implements EncrypterContract, StringEncrypter
      */
     protected function getJsonPayload(string $payload): array
     {
-        $payload = json_decode(base64_decode($payload), true);
+        $payload = json_decode(base64_decode($payload), true, 512, JSON_THROW_ON_ERROR);
 
         // If the payload is not valid JSON or does not have the proper keys set we will
         // assume it is invalid and bail out of the routine since we will not be able
