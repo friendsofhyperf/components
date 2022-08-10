@@ -16,25 +16,18 @@ use FriendsOfHyperf\Http\Client\Response;
 class ResponseReceived
 {
     /**
-     * The request instance.
-     *
-     * @var Request
-     */
-    public $request;
-
-    /**
-     * The response instance.
-     *
-     * @var Response
-     */
-    public $response;
-
-    /**
      * Create a new event instance.
      */
-    public function __construct(Request $request, Response $response)
+    public function __construct(
+        /**
+         * The request instance.
+         */
+        public Request $request,
+        /**
+         * The response instance.
+         */
+        public Response $response
+    )
     {
-        $this->request = $request;
-        $this->response = $response;
     }
 }
