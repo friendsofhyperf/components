@@ -18,10 +18,8 @@ class TinkerCaster
 {
     /**
      * Application methods to include in the presenter.
-     *
-     * @var array
      */
-    private static $appProperties = [
+    private static array $appProperties = [
         'configurationIsCached',
         'environment',
         'environmentFile',
@@ -71,9 +69,8 @@ class TinkerCaster
      * Get an array representing the properties of a collection.
      *
      * @param \Hyperf\Utils\Collection $collection
-     * @return array
      */
-    public static function castCollection($collection)
+    public static function castCollection($collection): array
     {
         return [
             Caster::PREFIX_VIRTUAL . 'all' => $collection->all(),
@@ -84,9 +81,8 @@ class TinkerCaster
      * Get an array representing the properties of an html string.
      *
      * @param \Hyperf\ViewEngine\HtmlString $htmlString
-     * @return array
      */
-    public static function castHtmlString($htmlString)
+    public static function castHtmlString($htmlString): array
     {
         return [
             Caster::PREFIX_VIRTUAL . 'html' => $htmlString->toHtml(),
@@ -97,9 +93,8 @@ class TinkerCaster
      * Get an array representing the properties of a fluent string.
      *
      * @param \Hyperf\Utils\Stringable $stringable
-     * @return array
      */
-    public static function castStringable($stringable)
+    public static function castStringable($stringable): array
     {
         return [
             Caster::PREFIX_VIRTUAL . 'value' => (string) $stringable,
@@ -110,9 +105,8 @@ class TinkerCaster
      * Get an array representing the properties of a model.
      *
      * @param \Hyperf\DbConnection\Model\Model $model
-     * @return array
      */
-    public static function castModel($model)
+    public static function castModel($model): array
     {
         $attributes = array_merge(
             $model->getAttributes(),
@@ -159,7 +153,7 @@ class TinkerCaster
      * @throws ReflectionException
      * @return string[]
      */
-    public static function castRedis($redis)
+    public static function castRedis($redis): array
     {
         $refObject = new \ReflectionObject($redis);
         $refProperty = $refObject->getProperty('poolName');

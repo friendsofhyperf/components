@@ -29,28 +29,17 @@ class TinkerCommand extends HyperfCommand
 {
     /**
      * Commands to include in the tinker shell.
-     *
-     * @var array
+     * @var string[]
      */
-    protected $commandWhitelist = [
+    protected array $commandWhitelist = [
         'migrate',
     ];
-
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * @var ConfigInterface
-     */
-    protected $config;
 
     /**
      * Default casters.
      * @var string[]
      */
-    protected $defaultCasters = [
+    protected array $defaultCasters = [
         'Hyperf\DbConnection\Model\Model' => 'FriendsOfHyperf\Tinker\TinkerCaster::castModel',
         'Hyperf\Redis\Redis' => 'FriendsOfHyperf\Tinker\TinkerCaster::castRedis',
         'Hyperf\Utils\Collection' => 'FriendsOfHyperf\Tinker\TinkerCaster::castCollection',
@@ -59,11 +48,8 @@ class TinkerCommand extends HyperfCommand
         'Symfony\Component\Console\Application' => 'FriendsOfHyperf\Tinker\TinkerCaster::castApplication',
     ];
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(protected ContainerInterface $container, protected ConfigInterface $config)
     {
-        $this->container = $container;
-        $this->config = $container->get(ConfigInterface::class);
-
         parent::__construct('tinker');
     }
 
@@ -124,7 +110,7 @@ class TinkerCommand extends HyperfCommand
      * @throws CommandNotFoundException
      * @return SymfonyCommand[]
      */
-    protected function getCommands()
+    protected function getCommands(): array
     {
         $commands = [];
 
@@ -145,10 +131,8 @@ class TinkerCommand extends HyperfCommand
 
     /**
      * Get an array of Hyperf tailored casters.
-     *
-     * @return array
      */
-    protected function getCasters()
+    protected function getCasters(): array
     {
         return array_merge($this->defaultCasters, (array) $this->config->get('tinker.casters', []));
     }

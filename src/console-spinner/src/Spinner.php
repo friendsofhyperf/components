@@ -18,20 +18,11 @@ use Symfony\Component\Console\Style\SymfonyStyle;
  */
 class Spinner
 {
-    /**
-     * @var array
-     */
-    protected $chars = ['⠏', '⠛', '⠹', '⢸', '⣰', '⣤', '⣆', '⡇'];
+    protected array $chars = ['⠏', '⠛', '⠹', '⢸', '⣰', '⣤', '⣆', '⡇'];
 
-    /**
-     * @var ProgressBar
-     */
-    protected $progressBar;
+    protected ProgressBar $progressBar;
 
-    /**
-     * @var int
-     */
-    protected $step;
+    protected int $step;
 
     public function __construct(SymfonyStyle $output, int $max = 0, ?array $chars = null)
     {
@@ -51,15 +42,12 @@ class Spinner
         return call_user_func_array([$this->progressBar, $name], $arguments);
     }
 
-    /**
-     * @return ProgressBar
-     */
-    public function getOriginalProgressBar()
+    public function getOriginalProgressBar(): ProgressBar
     {
         return $this->progressBar;
     }
 
-    public function advance(int $step = 1)
+    public function advance(int $step = 1): void
     {
         $this->step += $step;
         $this->progressBar->setProgressCharacter($this->chars[$this->step % count($this->chars)]);

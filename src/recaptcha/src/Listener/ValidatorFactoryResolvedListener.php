@@ -18,20 +18,8 @@ use Psr\Container\ContainerInterface;
 
 class ValidatorFactoryResolvedListener implements ListenerInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
-
-    /**
-     * @var ReCaptchaManager
-     */
-    protected $manager;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(protected ContainerInterface $container, protected ReCaptchaManager $manager)
     {
-        $this->container = $container;
-        $this->manager = $container->get(ReCaptchaManager::class);
     }
 
     public function listen(): array

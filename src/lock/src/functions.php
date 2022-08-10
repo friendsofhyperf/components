@@ -16,9 +16,8 @@ if (! function_exists('lock')) {
     /**
      * @throws TypeError
      * @throws InvalidArgumentException
-     * @return LockFactory|LockInterface
      */
-    function lock(string $name = null, int $seconds = 0, ?string $owner = null, string $driver = 'default')
+    function lock(string $name = null, int $seconds = 0, ?string $owner = null, string $driver = 'default'): LockFactory|LockInterface
     {
         /** @var LockFactory $factory */
         $factory = ApplicationContext::getContainer()->get(LockFactory::class);

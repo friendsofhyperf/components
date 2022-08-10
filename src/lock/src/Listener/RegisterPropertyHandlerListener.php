@@ -17,19 +17,12 @@ use Hyperf\Di\ReflectionManager;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
-use Psr\Container\ContainerInterface;
 
 #[Listener]
 class RegisterPropertyHandlerListener implements ListenerInterface
 {
-    /**
-     * @var LockFactory
-     */
-    private $lockFactory;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(private LockFactory $lockFactory)
     {
-        $this->lockFactory = $container->get(LockFactory::class);
     }
 
     /**

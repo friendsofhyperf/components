@@ -21,69 +21,27 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 abstract class ReCaptchaMiddleware implements MiddlewareInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    protected $container;
+    protected string $version = 'v3';
 
-    /**
-     * @var string
-     */
-    protected $version = 'v3';
+    protected string $action;
 
-    /**
-     * @var string
-     */
-    protected $action;
+    protected float $score = 0.34;
 
-    /**
-     * @var float
-     */
-    protected $score = 0.34;
+    protected string $hostname;
 
-    /**
-     * @var string
-     */
-    protected $hostname;
+    protected string $inputName = 'g-recaptcha-response';
 
-    /**
-     * @var string
-     */
-    protected $inputName = 'g-recaptcha-response';
+    protected int $responseCode = 401;
 
-    /**
-     * @var RequestInterface
-     */
-    protected $request;
+    protected string $responseMessage = 'Google ReCaptcha Verify Fails';
 
-    /**
-     * @var HttpResponse
-     */
-    protected $response;
-
-    /**
-     * @var int
-     */
-    protected $responseCode = 401;
-
-    /**
-     * @var string
-     */
-    protected $responseMessage = 'Google ReCaptcha Verify Fails';
-
-    /**
-     * @var ReCaptchaManager
-     */
-    protected $manager;
+    protected ReCaptchaManager $manager;
 
     public function __construct(
-        ContainerInterface $container,
-        HttpResponse $response,
-        RequestInterface $request
+        protected ContainerInterface $container,
+        protected HttpResponse $response,
+        protected RequestInterface $request
     ) {
-        $this->container = $container;
-        $this->request = $request;
-        $this->response = $response;
         $this->manager = $container->get(ReCaptchaManager::class);
     }
 

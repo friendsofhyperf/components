@@ -12,19 +12,8 @@ namespace FriendsOfHyperf\Cache\Event;
 
 class CacheHit extends CacheEvent
 {
-    /**
-     * @var mixed
-     */
-    public $value;
-
-    /**
-     * @param string $key
-     * @param mixed $value
-     */
-    public function __construct($key, $value)
+    public function __construct(string $key, public $value)
     {
         parent::__construct($key);
-
-        $this->value = $value;
     }
 }

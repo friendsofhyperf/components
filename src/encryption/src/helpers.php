@@ -12,11 +12,9 @@ if (! function_exists('decrypt')) {
     /**
      * Decrypt the given value.
      *
-     * @param string $value
-     * @param bool $unserialize
      * @return mixed
      */
-    function decrypt($value, $unserialize = true)
+    function decrypt(string $value, bool $unserialize = true)
     {
         return \Hyperf\Utils\ApplicationContext::getContainer()
             ->get(\Friendsofhyperf\Encryption\Encrypter::class)
@@ -29,10 +27,8 @@ if (! function_exists('encrypt')) {
      * Encrypt the given value.
      *
      * @param mixed $value
-     * @param bool $serialize
-     * @return string
      */
-    function encrypt($value, $serialize = true)
+    function encrypt($value, bool $serialize = true): string
     {
         return \Hyperf\Utils\ApplicationContext::getContainer()
             ->get(\Friendsofhyperf\Encryption\Encrypter::class)

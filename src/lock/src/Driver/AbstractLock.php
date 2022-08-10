@@ -20,37 +20,28 @@ abstract class AbstractLock implements LockInterface
 
     /**
      * The name of the lock.
-     *
-     * @var string
      */
-    protected $name;
+    protected string $name;
 
     /**
      * The number of seconds the lock should be maintained.
-     * @var int
      */
-    protected $seconds;
+    protected int $seconds;
 
     /**
      * The scope identifier of this lock.
-     * @var string
      */
-    protected $owner;
+    protected string $owner;
 
     /**
      * The number of milliseconds to wait before re-attempting to acquire a lock while blocking.
-     * @var int
      */
-    protected $sleepMilliseconds = 250;
+    protected int $sleepMilliseconds = 250;
 
     /**
      * Create a new lock instance.
-     *
-     * @param string $name
-     * @param int $seconds
-     * @param null|string $owner
      */
-    public function __construct($name, $seconds, $owner = null)
+    public function __construct(string $name, int $seconds, ?string $owner = null)
     {
         if (is_null($owner)) {
             $owner = Str::random();
@@ -63,22 +54,19 @@ abstract class AbstractLock implements LockInterface
 
     /**
      * Attempt to acquire the lock.
-     * @return bool
      */
-    abstract public function acquire();
+    abstract public function acquire(): bool;
 
     /**
      * Release the lock.
-     * @return bool
      */
-    abstract public function release();
+    abstract public function release(): bool;
 
     /**
      * Attempt to acquire the lock.
-     * @param null|callable $callback
      * @return mixed
      */
-    public function get($callback = null)
+    public function get(?callable $callback = null)
     {
         $result = $this->acquire();
 
@@ -95,12 +83,9 @@ abstract class AbstractLock implements LockInterface
 
     /**
      * Attempt to acquire the lock for the given number of seconds.
-     * @param int $seconds
-     * @param null|callable $callback
      * @throws LockTimeoutException
-     * @return bool
      */
-    public function block($seconds, $callback = null)
+    public function block(int $seconds, ?callable $callback = null): bool
     {
         $starting = $this->currentTime();
 
@@ -125,9 +110,8 @@ abstract class AbstractLock implements LockInterface
 
     /**
      * Returns the current owner of the lock.
-     * @return string
      */
-    public function owner()
+    public function owner(): string
     {
         return $this->owner;
     }
@@ -137,7 +121,7 @@ abstract class AbstractLock implements LockInterface
      * @param int $milliseconds
      * @return $this
      */
-    public function betweenBlockedAttemptsSleepFor($milliseconds)
+    public function betweenBlockedAttemptsSleepFor($milliseconds): self
     {
         $this->sleepMilliseconds = $milliseconds;
 
@@ -146,15 +130,13 @@ abstract class AbstractLock implements LockInterface
 
     /**
      * Returns the owner value written into the driver for this lock.
-     * @return string
      */
     abstract protected function getCurrentOwner();
 
     /**
      * Determines whether this lock is allowed to release the lock in the driver.
-     * @return bool
      */
-    protected function isOwnedByCurrentProcess()
+    protected function isOwnedByCurrentProcess(): bool
     {
         return $this->getCurrentOwner() === $this->owner;
     }

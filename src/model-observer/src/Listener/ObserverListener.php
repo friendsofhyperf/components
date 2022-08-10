@@ -33,14 +33,8 @@ use Psr\Container\ContainerInterface;
 #[Listener]
 class ObserverListener implements ListenerInterface
 {
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(private ContainerInterface $container)
     {
-        $this->container = $container;
     }
 
     public function listen(): array

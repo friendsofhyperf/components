@@ -417,7 +417,7 @@ class Model extends HyperfCommand
         if ($methods) {
             sort($methods);
             foreach ($methods as $method) {
-                if (Str::startsWith($method, 'get') && Str::endsWith(
+                if (str_starts_with($method, 'get') && str_ends_with(
                     $method,
                     'Attribute'
                 ) && $method !== 'getAttribute'
@@ -429,7 +429,7 @@ class Model extends HyperfCommand
                         $type = $this->getReturnTypeFromDocBlock($reflection);
                         $this->setProperty($name, $type, true, null);
                     }
-                } elseif (Str::startsWith($method, 'set') && Str::endsWith(
+                } elseif (str_starts_with($method, 'set') && str_ends_with(
                     $method,
                     'Attribute'
                 ) && $method !== 'setAttribute'
@@ -439,7 +439,7 @@ class Model extends HyperfCommand
                     if (! empty($name)) {
                         $this->setProperty($name, null, null, true);
                     }
-                } elseif (Str::startsWith($method, 'scope') && $method !== 'scopeQuery') {
+                } elseif (str_starts_with($method, 'scope') && $method !== 'scopeQuery') {
                     // Magic set<name>Attribute
                     $name = Str::camel(substr($method, 5));
                     if (! empty($name)) {
@@ -455,9 +455,7 @@ class Model extends HyperfCommand
                     $builder = get_class($model->newModelQuery());
 
                     $this->setMethod($method, "\\{$builder}|\\" . $reflection->getName());
-                } elseif (! method_exists('Hyperf\DbConnection\Model\Model', $method)
-                          && ! Str::startsWith($method, 'get')
-                ) {
+                } elseif (! method_exists('Hyperf\DbConnection\Model\Model', $method) && ! str_starts_with($method, 'get')) {
                     $reflection = new \ReflectionMethod($model, $method);
 
                     if ($returnType = $reflection->getReturnType()) {

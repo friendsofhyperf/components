@@ -17,23 +17,14 @@ use Hyperf\DbConnection\Db;
 
 class DatabaseLock extends AbstractLock
 {
-    /**
-     * @var ConnectionInterface
-     */
-    protected $connection;
+    protected ConnectionInterface $connection;
 
-    /**
-     * @var string
-     */
-    protected $table;
+    protected string $table;
 
     /**
      * Create a new lock instance.
-     * @param string $name
-     * @param int $seconds
-     * @param null|string $owner
      */
-    public function __construct($name, $seconds, $owner = null, array $constructor = [])
+    public function __construct(string $name, int $seconds, ?string $owner = null, array $constructor = [])
     {
         parent::__construct($name, $seconds, $owner);
 
@@ -43,9 +34,8 @@ class DatabaseLock extends AbstractLock
 
     /**
      * Attempt to acquire the lock.
-     * @return bool
      */
-    public function acquire()
+    public function acquire(): bool
     {
         $acquired = false;
 
@@ -75,9 +65,8 @@ class DatabaseLock extends AbstractLock
 
     /**
      * Release the lock.
-     * @return bool
      */
-    public function release()
+    public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
             $this->connection->table($this->table)
@@ -94,7 +83,7 @@ class DatabaseLock extends AbstractLock
     /**
      * Releases this lock in disregard of ownership.
      */
-    public function forceRelease()
+    public function forceRelease(): void
     {
         $this->connection->table($this->table)
             ->where('key', $this->name)
@@ -103,9 +92,8 @@ class DatabaseLock extends AbstractLock
 
     /**
      * Get the UNIX timestamp indicating when the lock should expire.
-     * @return int
      */
-    protected function expiresAt()
+    protected function expiresAt(): int
     {
         return $this->seconds > 0 ? time() + $this->seconds : Carbon::now()->addDays(1)->getTimestamp();
     }

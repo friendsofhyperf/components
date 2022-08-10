@@ -16,7 +16,7 @@ use Hyperf\Di\Annotation\AbstractAnnotation;
 #[Attribute(Attribute::TARGET_CLASS)]
 class Observer extends AbstractAnnotation
 {
-    public function __construct(public string $model = '', public int $priority = 0)
+    public function __construct(public ?string $model = null, public int $priority = 0)
     {
     }
 }

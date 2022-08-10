@@ -21,9 +21,8 @@ trait Spinnerable
 {
     /**
      * @throws TypeError
-     * @return Spinner
      */
-    protected function spinner(int $max = 0)
+    protected function spinner(int $max = 0): Spinner
     {
         /** @var ConfigInterface $config */
         $config = ApplicationContext::getContainer()->get(ConfigInterface::class);

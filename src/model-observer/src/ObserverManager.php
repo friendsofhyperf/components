@@ -16,19 +16,17 @@ use SplPriorityQueue;
 
 class ObserverManager
 {
-    /**
-     * @var array
-     */
-    private static $container = [];
+    private static array $container = [];
 
     public static function register(): void
     {
         /** @var SplPriorityQueue[] $queues */
         $queues = [];
+        /** @var array<string,Observer> */
         $classes = AnnotationCollector::getClassesByAnnotation(Observer::class);
 
         foreach ($classes as $class => $property) {
-            $model = $property->model ?? null;
+            $model = $property->model;
 
             if (! $model || ! class_exists($model)) {
                 continue;

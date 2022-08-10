@@ -20,26 +20,8 @@ use Psr\Log\LoggerInterface;
 
 class Handler
 {
-    /**
-     * @var ConfigInterface
-     */
-    protected $config;
-
-    /**
-     * @var LoggerInterface
-     */
-    protected $logger;
-
-    /**
-     * @var AccessLogFormatter
-     */
-    protected $formatter;
-
-    public function __construct(ConfigInterface $config, LoggerInterface $logger, AccessLogFormatter $formatter)
+    public function __construct(protected ConfigInterface $config, protected LoggerInterface $logger, protected AccessLogFormatter $formatter)
     {
-        $this->config = $config;
-        $this->logger = $logger;
-        $this->formatter = $formatter;
     }
 
     /**
