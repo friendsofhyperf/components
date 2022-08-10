@@ -15,19 +15,7 @@ use Psr\Http\Message\ServerRequestInterface;
 
 abstract class AbstractEvent
 {
-    /**
-     * @var null|ServerRequestInterface
-     */
-    public $request;
-
-    /**
-     * @var null|ResponseInterface
-     */
-    public $response;
-
-    public function __construct($request, $response)
+    public function __construct(public ?ServerRequestInterface $request, public ?ResponseInterface $response)
     {
-        $this->request = $request;
-        $this->response = $response;
     }
 }
