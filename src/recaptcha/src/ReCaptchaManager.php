@@ -20,16 +20,10 @@ class ReCaptchaManager
     /**
      * @var ReCaptcha[]
      */
-    protected $container = [];
+    protected array $container = [];
 
-    /**
-     * @var ConfigInterface
-     */
-    protected $config;
-
-    public function __construct(ConfigInterface $config)
+    public function __construct(protected ConfigInterface $config)
     {
-        $this->config = $config;
     }
 
     /**
