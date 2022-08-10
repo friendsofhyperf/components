@@ -13,25 +13,12 @@ namespace FriendsOfHyperf\Cache\Event;
 class KeyWritten extends CacheEvent
 {
     /**
-     * @var mixed
-     */
-    public $value;
-
-    /**
-     * @var null|int
-     */
-    public $seconds;
-
-    /**
      * @param string $key
      * @param mixed $value
      * @param null|int $seconds
      */
-    public function __construct($key, $value, $seconds = null)
+    public function __construct($key, public $value, public ?int $seconds = null)
     {
         parent::__construct($key);
-
-        $this->value = $value;
-        $this->seconds = $seconds;
     }
 }

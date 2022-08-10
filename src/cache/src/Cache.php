@@ -19,7 +19,6 @@ use FriendsOfHyperf\Cache\Event\KeyWritten;
 use Hyperf\Cache\Driver\DriverInterface;
 use Hyperf\Macroable\Macroable;
 use Hyperf\Utils\InteractsWithTime;
-use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Cache implements CacheInterface
@@ -27,20 +26,8 @@ class Cache implements CacheInterface
     use InteractsWithTime;
     use Macroable;
 
-    /**
-     * @var DriverInterface
-     */
-    protected $cacheDriver;
-
-    /**
-     * @var EventDispatcherInterface
-     */
-    private $eventDispatcher;
-
-    public function __construct(ContainerInterface $container, DriverInterface $driver)
+    public function __construct(protected DriverInterface $cacheDriver, protected EventDispatcherInterface $eventDispatcher)
     {
-        $this->cacheDriver = $driver;
-        $this->eventDispatcher = $container->get(EventDispatcherInterface::class);
     }
 
     public function add($key, $value, $ttl = null): bool

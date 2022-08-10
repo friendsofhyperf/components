@@ -11,33 +11,22 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Cache;
 
 use Hyperf\Cache\CacheManager as HyperfCacheManager;
-use Psr\Container\ContainerInterface;
 
 class CacheManager
 {
     /**
      * @var CacheInterface[]
      */
-    protected $drivers = [];
+    protected array $drivers = [];
 
-    /**
-     * @var HyperfCacheManager
-     */
-    protected $cacheManager;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(protected HyperfCacheManager $cacheManager)
     {
-        $this->cacheManager = $container->get(HyperfCacheManager::class);
     }
 
     public function get(string $name): CacheInterface
     {
-        if (! isset($this->drivers[$name]) || ! $this->drivers[$name] instanceof CacheInterface) {
-            $this->drivers[$name] = make(Cache::class, [
-                'driver' => $this->cacheManager->getDriver($name),
-            ]);
-        }
-
-        return $this->drivers[$name];
+        return $this->drivers[$name] ?? $this->drivers[$name] = make(Cache::class, [
+            'driver' => $this->cacheManager->getDriver($name),
+        ]);
     }
 }
