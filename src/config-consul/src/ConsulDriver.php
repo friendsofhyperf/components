@@ -10,8 +10,8 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ConfigConsul;
 
-use FriendsOfHyperf\ConfigConsul\Packer\Base64Packer;
 use Hyperf\ConfigCenter\AbstractDriver;
+use Hyperf\Contract\PackerInterface;
 use Hyperf\Utils\Packer\JsonPacker;
 use Psr\Container\ContainerInterface;
 
@@ -21,15 +21,9 @@ class ConsulDriver extends AbstractDriver
 
     protected ContainerInterface $container;
 
-    /**
-     * @var Base64Packer
-     */
-    protected $packer;
+    protected PackerInterface $packer;
 
-    /**
-     * @var array
-     */
-    protected $mapping;
+    protected array $mapping;
 
     public function __construct(ContainerInterface $container)
     {

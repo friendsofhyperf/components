@@ -16,15 +16,9 @@ use Psr\Container\ContainerInterface;
 
 class Client implements ClientInterface
 {
-    /**
-     * @var KVInterface
-     */
-    private $client;
+    private KVInterface $client;
 
-    /**
-     * @var ConfigInterface
-     */
-    private $config;
+    private ConfigInterface $config;
 
     public function __construct(ContainerInterface $container)
     {
