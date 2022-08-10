@@ -15,17 +15,14 @@ use FriendsOfHyperf\Http\Client\Request;
 class RequestSending
 {
     /**
-     * The request instance.
-     *
-     * @var Request
-     */
-    public $request;
-
-    /**
      * Create a new event instance.
      */
-    public function __construct(Request $request)
+    public function __construct(
+        /**
+         * The request instance.
+         */
+        public Request $request
+    )
     {
-        $this->request = $request;
     }
 }
