@@ -19,7 +19,7 @@ class Lock extends AbstractAnnotation
     public function __construct(
         public string $name,
         public int $seconds = 0,
-        public string $owner = '',
+        public ?string $owner = null,
         public string $driver = 'default'
     ) {
     }

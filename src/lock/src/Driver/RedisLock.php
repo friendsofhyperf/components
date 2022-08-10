@@ -23,11 +23,8 @@ class RedisLock extends AbstractLock
 
     /**
      * Create a new lock instance.
-     * @param string $name
-     * @param int $seconds
-     * @param null|string $owner
      */
-    public function __construct($name, $seconds, $owner = null, array $constructor = [])
+    public function __construct(string $name, int $seconds, ?string $owner = null, array $constructor = [])
     {
         parent::__construct($name, $seconds, $owner);
 
@@ -37,9 +34,8 @@ class RedisLock extends AbstractLock
 
     /**
      * Attempt to acquire the lock.
-     * @return bool
      */
-    public function acquire()
+    public function acquire(): bool
     {
         if ($this->seconds > 0) {
             return $this->store->set($this->name, $this->owner, ['NX', 'EX' => $this->seconds]) == true;
@@ -50,9 +46,8 @@ class RedisLock extends AbstractLock
 
     /**
      * Release the lock.
-     * @return bool
      */
-    public function release()
+    public function release(): bool
     {
         return (bool) $this->store->eval(LuaScripts::releaseLock(), [$this->name, $this->owner], 1);
     }
@@ -60,7 +55,7 @@ class RedisLock extends AbstractLock
     /**
      * Releases this lock in disregard of ownership.
      */
-    public function forceRelease()
+    public function forceRelease(): void
     {
         $this->store->del($this->name);
     }

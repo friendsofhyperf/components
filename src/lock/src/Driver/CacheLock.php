@@ -17,18 +17,13 @@ class CacheLock extends AbstractLock
 {
     /**
      * The cache store implementation.
-     *
-     * @var CacheInterface
      */
-    protected $store;
+    protected CacheInterface $store;
 
     /**
      * Create a new lock instance.
-     * @param string $name
-     * @param int $seconds
-     * @param null|string $owner
      */
-    public function __construct($name, $seconds, $owner = null, array $constructor = [])
+    public function __construct(string $name, int $seconds, ?string $owner = null, array $constructor = [])
     {
         parent::__construct($name, $seconds, $owner);
 
@@ -37,9 +32,8 @@ class CacheLock extends AbstractLock
 
     /**
      * Attempt to acquire the lock.
-     * @return bool
      */
-    public function acquire()
+    public function acquire(): bool
     {
         if ($this->store->has($this->name)) {
             return false;
@@ -50,9 +44,8 @@ class CacheLock extends AbstractLock
 
     /**
      * Release the lock.
-     * @return bool
      */
-    public function release()
+    public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
             return $this->store->delete($this->name);
@@ -64,14 +57,14 @@ class CacheLock extends AbstractLock
     /**
      * Releases this lock regardless of ownership.
      */
-    public function forceRelease()
+    public function forceRelease(): void
     {
         $this->store->delete($this->name);
     }
 
     /**
      * Returns the owner value written into the driver for this lock.
-     * @return mixed
+     * @return string
      */
     protected function getCurrentOwner()
     {

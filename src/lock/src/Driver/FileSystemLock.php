@@ -16,17 +16,13 @@ class FileSystemLock extends AbstractLock
 {
     /**
      * The FileSystem factory implementation.
-     * @var FileSystemDriver
      */
-    protected $store;
+    protected FileSystemDriver $store;
 
     /**
      * Create a new lock instance.
-     * @param string $name
-     * @param int $seconds
-     * @param null|string $owner
      */
-    public function __construct($name, $seconds, $owner = null, array $constructor = [])
+    public function __construct(string $name, int $seconds, ?string $owner = null, array $constructor = [])
     {
         parent::__construct($name, $seconds, $owner);
 
@@ -36,9 +32,8 @@ class FileSystemLock extends AbstractLock
 
     /**
      * Attempt to acquire the lock.
-     * @return bool
      */
-    public function acquire()
+    public function acquire(): bool
     {
         if ($this->store->has($this->name)) {
             return false;
@@ -49,9 +44,8 @@ class FileSystemLock extends AbstractLock
 
     /**
      * Release the lock.
-     * @return bool
      */
-    public function release()
+    public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
             return $this->store->delete($this->name);
@@ -63,7 +57,7 @@ class FileSystemLock extends AbstractLock
     /**
      * Releases this lock in disregard of ownership.
      */
-    public function forceRelease()
+    public function forceRelease(): void
     {
         $this->store->delete($this->name);
     }
