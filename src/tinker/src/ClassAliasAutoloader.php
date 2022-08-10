@@ -10,54 +10,36 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Tinker;
 
-use Hyperf\Utils\Str;
+use Hyperf\Utils\Collection;
 use Psy\Shell;
 
 class ClassAliasAutoloader
 {
     /**
-     * The shell instance.
-     *
-     * @var \Psy\Shell
-     */
-    protected $shell;
-
-    /**
      * All of the discovered classes.
-     *
-     * @var array
      */
-    protected $classes = [];
+    protected array $classes = [];
 
     /**
      * Path to the vendor directory.
-     *
-     * @var string
      */
-    protected $vendorPath;
+    protected string $vendorPath;
 
     /**
      * Explicitly included namespaces/classes.
-     *
-     * @var \Illuminate\Support\Collection
      */
-    protected $includedAliases;
+    protected Collection $includedAliases;
 
     /**
      * Excluded namespaces/classes.
-     *
-     * @var \Illuminate\Support\Collection
      */
-    protected $excludedAliases;
+    protected Collection $excludedAliases;
 
     /**
      * Create a new alias loader instance.
-     *
-     * @param string $classMapPath
      */
-    public function __construct(Shell $shell, $classMapPath, array $includedAliases = [], array $excludedAliases = [])
+    public function __construct(protected Shell $shell, string $classMapPath, array $includedAliases = [], array $excludedAliases = [])
     {
-        $this->shell = $shell;
         $this->vendorPath = dirname(dirname($classMapPath));
         $this->includedAliases = collect($includedAliases);
         $this->excludedAliases = collect($excludedAliases);
@@ -108,7 +90,7 @@ class ClassAliasAutoloader
      */
     public function aliasClass($class)
     {
-        if (Str::contains($class, '\\')) {
+        if (str_contains($class, '\\')) {
             return;
         }
 
@@ -137,22 +119,22 @@ class ClassAliasAutoloader
      */
     public function isAliasable($class, $path)
     {
-        if (! Str::contains($class, '\\')) {
+        if (! str_contains($class, '\\')) {
             return false;
         }
 
         if (! $this->includedAliases->filter(function ($alias) use ($class) {
-            return Str::startsWith($class, $alias);
+            return str_starts_with($class, $alias);
         })->isEmpty()) {
             return true;
         }
 
-        if (Str::startsWith($path, $this->vendorPath)) {
+        if (str_starts_with($path, $this->vendorPath)) {
             return false;
         }
 
         if (! $this->excludedAliases->filter(function ($alias) use ($class) {
-            return Str::startsWith($class, $alias);
+            return str_starts_with($class, $alias);
         })->isEmpty()) {
             return false;
         }
