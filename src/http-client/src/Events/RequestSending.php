@@ -22,7 +22,6 @@ class RequestSending
          * The request instance.
          */
         public Request $request
-    )
-    {
+    ) {
     }
 }

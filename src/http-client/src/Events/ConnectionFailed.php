@@ -22,7 +22,6 @@ class ConnectionFailed
          * The request instance.
          */
         public Request $request
-    )
-    {
+    ) {
     }
 }

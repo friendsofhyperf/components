@@ -31,6 +31,6 @@ class AccessLogFormatter implements FormatterInterface
     {
         $context = (array) ($record['context'] ?? []);
 
-        return preg_replace_callback('/%(\w+)%/', fn($matches) => $context[$matches[1]] ?? '-', self::SIMPLE_FORMAT);
+        return preg_replace_callback('/%(\w+)%/', fn ($matches) => $context[$matches[1]] ?? '-', self::SIMPLE_FORMAT);
     }
 }

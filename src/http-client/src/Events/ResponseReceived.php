@@ -27,7 +27,6 @@ class ResponseReceived
          * The response instance.
          */
         public Response $response
-    )
-    {
+    ) {
     }
 }
