@@ -26,7 +26,7 @@ class Cache implements CacheInterface
     use InteractsWithTime;
     use Macroable;
 
-    public function __construct(protected DriverInterface $cacheDriver, protected EventDispatcherInterface $eventDispatcher)
+    public function __construct(protected DriverInterface $driver, protected EventDispatcherInterface $eventDispatcher)
     {
     }
 
@@ -41,12 +41,12 @@ class Cache implements CacheInterface
 
     public function flush(): bool
     {
-        return $this->cacheDriver->clear();
+        return $this->driver->clear();
     }
 
     public function forever($key, $value): bool
     {
-        $result = $this->cacheDriver->set($key, $value);
+        $result = $this->driver->set($key, $value);
 
         if ($result) {
             if ($this->eventDispatcher) {
@@ -59,7 +59,7 @@ class Cache implements CacheInterface
 
     public function forget($key): bool
     {
-        return tap($this->cacheDriver->delete($key), function () use ($key) {
+        return tap($this->driver->delete($key), function () use ($key) {
             if ($this->eventDispatcher) {
                 $this->eventDispatcher->dispatch(new KeyForgotten($key));
             }
@@ -68,7 +68,7 @@ class Cache implements CacheInterface
 
     public function has($key): bool
     {
-        return $this->cacheDriver->has($key);
+        return $this->driver->has($key);
     }
 
     public function missing($key): bool
@@ -92,7 +92,7 @@ class Cache implements CacheInterface
             return $this->forget($key);
         }
 
-        $result = $this->cacheDriver->set($key, $value, $seconds);
+        $result = $this->driver->set($key, $value, $seconds);
 
         if ($result) {
             if ($this->eventDispatcher) {
@@ -115,7 +115,7 @@ class Cache implements CacheInterface
             return $this->deleteMultiple(array_keys($values));
         }
 
-        $result = $this->cacheDriver->setMultiple($values, $seconds);
+        $result = $this->driver->setMultiple($values, $seconds);
 
         if ($result) {
             foreach ($values as $key => $value) {
@@ -156,7 +156,7 @@ class Cache implements CacheInterface
             return $this->many($key);
         }
 
-        $value = $this->cacheDriver->get($key);
+        $value = $this->driver->get($key);
 
         $callbacks = [];
 
@@ -183,7 +183,7 @@ class Cache implements CacheInterface
 
     public function many(array $keys)
     {
-        $values = $this->cacheDriver->getMultiple($keys);
+        $values = $this->driver->getMultiple($keys);
 
         foreach ($values as $key => $value) {
             if ($this->eventDispatcher) {
@@ -234,7 +234,7 @@ class Cache implements CacheInterface
 
     protected function deleteMultiple(array $keys)
     {
-        $result = $this->cacheDriver->deleteMultiple($keys);
+        $result = $this->driver->deleteMultiple($keys);
 
         if ($result) {
             foreach ($keys as $key) {
@@ -249,7 +249,7 @@ class Cache implements CacheInterface
 
     protected function putManyForever(array $values)
     {
-        $result = $this->cacheDriver->setMultiple($values);
+        $result = $this->driver->setMultiple($values);
 
         if ($result) {
             foreach ($values as $key => $value) {
