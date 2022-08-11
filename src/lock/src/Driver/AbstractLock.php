@@ -19,16 +19,6 @@ abstract class AbstractLock implements LockInterface
     use InteractsWithTime;
 
     /**
-     * The name of the lock.
-     */
-    protected string $name;
-
-    /**
-     * The number of seconds the lock should be maintained.
-     */
-    protected int $seconds;
-
-    /**
      * The scope identifier of this lock.
      */
     protected string $owner;
@@ -41,15 +31,9 @@ abstract class AbstractLock implements LockInterface
     /**
      * Create a new lock instance.
      */
-    public function __construct(string $name, int $seconds, ?string $owner = null)
+    public function __construct(protected string $name, protected int $seconds, ?string $owner = null)
     {
-        if (is_null($owner)) {
-            $owner = Str::random();
-        }
-
-        $this->name = $name;
-        $this->owner = $owner;
-        $this->seconds = $seconds;
+        $this->owner = $owner ?? Str::random();
     }
 
     /**

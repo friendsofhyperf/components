@@ -67,7 +67,7 @@ class ObserverListener implements ListenerInterface
         }
 
         $model = $event->getModel();
-        $modelClass = get_class($model);
+        $modelClass = $model::class;
         $method = $event->getMethod();
         $observers = ObserverManager::get($modelClass);
 

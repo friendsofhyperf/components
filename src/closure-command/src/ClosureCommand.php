@@ -17,20 +17,11 @@ use Psr\Container\ContainerInterface;
 
 class ClosureCommand extends Command
 {
-    /**
-     * @var Closure
-     */
-    protected $closure;
+    private ParameterParser $parameterParser;
 
-    /**
-     * @var ParameterParser
-     */
-    private $parameterParser;
-
-    public function __construct(ContainerInterface $container, string $signature, Closure $closure)
+    public function __construct(ContainerInterface $container, string $signature, protected Closure $closure)
     {
         $this->signature = $signature;
-        $this->closure = $closure;
         $this->parameterParser = $container->get(ParameterParser::class);
 
         parent::__construct();
@@ -47,10 +38,7 @@ class ClosureCommand extends Command
         return \call($this->closure->bindTo($this, $this), $parameters);
     }
 
-    /**
-     * @return $this
-     */
-    public function describe(string $description)
+    public function describe(string $description): self
     {
         $this->setDescription($description);
 

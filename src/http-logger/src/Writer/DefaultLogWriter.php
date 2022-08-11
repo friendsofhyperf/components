@@ -35,9 +35,7 @@ class DefaultLogWriter implements LogWriter
     {
         $context = $this->getContext($request, $response);
 
-        return preg_replace_callback('/%(\w+)%/', function ($matches) use ($context) {
-            return $context[$matches[1]] ?? '-';
-        }, (string) $this->config->get('http_logger.log_format', ''));
+        return preg_replace_callback('/%(\w+)%/', fn ($matches) => $context[$matches[1]] ?? '-', (string) $this->config->get('http_logger.log_format', ''));
     }
 
     protected function getContext(ServerRequestInterface $request, ResponseInterface $response): array

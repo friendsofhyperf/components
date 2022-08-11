@@ -58,7 +58,7 @@ class TinkerCaster
                 if (! is_null($val)) {
                     $results[Caster::PREFIX_VIRTUAL . $property] = $val;
                 }
-            } catch (Exception $e) {
+            } catch (Exception) {
             }
         }
 
@@ -119,9 +119,7 @@ class TinkerCaster
 
         $hidden = array_flip($model->getHidden());
 
-        $appends = (function () {
-            return array_combine($this->appends, $this->appends);
-        })->bindTo($model, $model)();
+        $appends = (fn () => array_combine($this->appends, $this->appends))->bindTo($model, $model)();
 
         foreach ($appends as $appended) {
             $attributes[$appended] = $model->{$appended};

@@ -43,7 +43,7 @@ class RegisterCommandListener implements ListenerInterface
         $this->registerClosureCommands();
         $this->registerAnnotationCommands();
 
-        $this->logger->debug(sprintf('[closure-command] Commands registered by %s', __CLASS__));
+        $this->logger->debug(sprintf('[closure-command] Commands registered by %s', self::class));
     }
 
     private function registerClosureCommands(): void

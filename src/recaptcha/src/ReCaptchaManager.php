@@ -42,7 +42,7 @@ class ReCaptchaManager
             throw new RuntimeException('Not publish yet, please run \'php bin/hyperf.php vendor:publish friendsofhyperf/recaptcha\'');
         }
 
-        $version = $version ?? $this->config->get('recaptcha.default', 'v3');
+        $version ??= $this->config->get('recaptcha.default', 'v3');
 
         return $this->container[$version] = make(ReCaptcha::class, [
             'secret' => $this->config->get(sprintf('recaptcha.%s.secret_key', $version), ''),

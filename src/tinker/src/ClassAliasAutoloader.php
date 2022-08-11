@@ -40,7 +40,7 @@ class ClassAliasAutoloader
      */
     public function __construct(protected Shell $shell, string $classMapPath, array $includedAliases = [], array $excludedAliases = [])
     {
-        $this->vendorPath = dirname(dirname($classMapPath));
+        $this->vendorPath = dirname($classMapPath, 2);
         $this->includedAliases = collect($includedAliases);
         $this->excludedAliases = collect($excludedAliases);
 
@@ -115,9 +115,7 @@ class ClassAliasAutoloader
             return false;
         }
 
-        if (! $this->includedAliases->filter(function ($alias) use ($class) {
-            return str_starts_with($class, $alias);
-        })->isEmpty()) {
+        if (! $this->includedAliases->filter(fn ($alias) => str_starts_with($class, $alias))->isEmpty()) {
             return true;
         }
 
@@ -125,9 +123,7 @@ class ClassAliasAutoloader
             return false;
         }
 
-        if (! $this->excludedAliases->filter(function ($alias) use ($class) {
-            return str_starts_with($class, $alias);
-        })->isEmpty()) {
+        if (! $this->excludedAliases->filter(fn ($alias) => str_starts_with($class, $alias))->isEmpty()) {
             return false;
         }
 

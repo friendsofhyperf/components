@@ -43,7 +43,7 @@ class ValidationAspect extends AbstractAspect
             && $protobufMessage
             && $data = $this->serializeToJsonArray($protobufMessage)
         ) {
-            Context::set(get_class($protobufMessage), $data);
+            Context::set($protobufMessage::class, $data);
             $validator = $this->validatorFactory->make($data, $rules, $messages);
             Context::set(ValidatorInterface::class, $validator);
 
@@ -98,7 +98,7 @@ class ValidationAspect extends AbstractAspect
     {
         try {
             return json_decode($message->serializeToJsonString(), true, flags: JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
+        } catch (\JsonException) {
             return null;
         }
     }
