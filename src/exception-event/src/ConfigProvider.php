@@ -10,22 +10,23 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ExceptionEvent;
 
+use FriendsOfHyperf\ExceptionEvent\Aspect\ExceptionHandlerDispatcherAspect;
+
 class ConfigProvider
 {
     public function __invoke(): array
     {
         return [
-            'dependencies' => [],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
+            // 'annotations' => [
+            //     'scan' => [
+            //         'paths' => [
+            //             __DIR__,
+            //         ],
+            //     ],
+            // ],
+            'aspects' => [
+                ExceptionHandlerDispatcherAspect::class,
             ],
-            'commands' => [],
-            'listeners' => [],
-            'publish' => [],
         ];
     }
 }

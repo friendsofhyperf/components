@@ -14,11 +14,9 @@ use FriendsOfHyperf\Lock\Annotation\Lock;
 use FriendsOfHyperf\Lock\LockFactory;
 use Hyperf\Di\Definition\PropertyHandlerManager;
 use Hyperf\Di\ReflectionManager;
-use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 
-#[Listener]
 class RegisterPropertyHandlerListener implements ListenerInterface
 {
     public function __construct(private LockFactory $lockFactory)

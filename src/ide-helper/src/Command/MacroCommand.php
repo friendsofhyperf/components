@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\IdeHelper\Command;
 
 use Barryvdh\Reflection\DocBlock;
-use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Macroable\Macroable;
@@ -21,8 +20,7 @@ use Psr\Container\ContainerInterface;
 use Swoole\Coroutine\System;
 use Throwable;
 
-#[Command]
-class Macro extends HyperfCommand
+class MacroCommand extends HyperfCommand
 {
     protected ?string $signature = 'ide-helper:macro {--N|name=_ide_helper_macros.php : Name of IDE Helper.}';
 

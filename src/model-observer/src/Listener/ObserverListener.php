@@ -26,11 +26,9 @@ use Hyperf\Database\Model\Events\Saved;
 use Hyperf\Database\Model\Events\Saving;
 use Hyperf\Database\Model\Events\Updated;
 use Hyperf\Database\Model\Events\Updating;
-use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
 
-#[Listener]
 class ObserverListener implements ListenerInterface
 {
     public function __construct(private ContainerInterface $container)

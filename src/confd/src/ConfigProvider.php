@@ -10,19 +10,26 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Confd;
 
+use FriendsOfHyperf\Confd\Command\EnvCommand;
+use FriendsOfHyperf\Confd\Listener\WatchOnBootListener;
+
 class ConfigProvider
 {
     public function __invoke()
     {
         return [
-            'dependencies' => [
+            // 'annotations' => [
+            //     'scan' => [
+            //         'paths' => [
+            //             __DIR__,
+            //         ],
+            //     ],
+            // ],
+            'commands' => [
+                EnvCommand::class,
             ],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
+            'listeners' => [
+                WatchOnBootListener::class,
             ],
             'publish' => [
                 [

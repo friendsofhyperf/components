@@ -10,6 +10,8 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\AccessLog;
 
+use FriendsOfHyperf\AccessLog\Listener\RequestTerminatedListener;
+
 class ConfigProvider
 {
     public function __invoke(): array
@@ -17,19 +19,19 @@ class ConfigProvider
         defined('BASE_PATH') or define('BASE_PATH', '');
 
         return [
+            // 'annotations' => [
+            //     'scan' => [
+            //         'paths' => [
+            //             __DIR__,
+            //         ],
+            //     ],
+            // ],
             'dependencies' => [
                 Handler::class => HandlerFactory::class,
             ],
-            'aspects' => [],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
+            'listeners' => [
+                RequestTerminatedListener::class,
             ],
-            'commands' => [],
-            'listeners' => [],
             'publish' => [
                 [
                     'id' => 'config',

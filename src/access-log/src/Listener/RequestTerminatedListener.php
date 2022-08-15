@@ -12,10 +12,8 @@ namespace FriendsOfHyperf\AccessLog\Listener;
 
 use FriendsOfHyperf\AccessLog\Handler;
 use FriendsOfHyperf\HttpRequestLifeCycle\Events\RequestTerminated;
-use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 
-#[Listener]
 class RequestTerminatedListener implements ListenerInterface
 {
     public function __construct(protected Handler $handler)
