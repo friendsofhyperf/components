@@ -15,7 +15,6 @@ use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Composer\Autoload\ClassMapGenerator;
-use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Database\Model\Relations\Relation;
@@ -25,8 +24,7 @@ use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use Symfony\Component\Console\Output\OutputInterface;
 
-#[Command]
-class Model extends HyperfCommand
+class ModelCommand extends HyperfCommand
 {
     protected ?string $signature = 'ide-helper:model {--I|ignore= : What prefix that you want the Model set.} {--N|name=_ide_helper_models.php : Name of IDE Helper.}';
 

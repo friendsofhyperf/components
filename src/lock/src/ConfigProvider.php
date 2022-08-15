@@ -10,6 +10,9 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Lock;
 
+use FriendsOfHyperf\Lock\Annotation\LockAspect;
+use FriendsOfHyperf\Lock\Listener\RegisterPropertyHandlerListener;
+
 class ConfigProvider
 {
     public function __invoke(): array
@@ -17,16 +20,19 @@ class ConfigProvider
         defined('BASE_PATH') or define('BASE_PATH', '');
 
         return [
-            'dependencies' => [],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
+            // 'annotations' => [
+            //     'scan' => [
+            //         'paths' => [
+            //             __DIR__,
+            //         ],
+            //     ],
+            // ],
+            'listeners' => [
+                RegisterPropertyHandlerListener::class,
             ],
-            'commands' => [],
-            'listeners' => [],
+            'aspects' => [
+                LockAspect::class,
+            ],
             'publish' => [
                 [
                     'id' => 'config',

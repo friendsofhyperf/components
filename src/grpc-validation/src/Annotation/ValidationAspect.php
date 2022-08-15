@@ -15,14 +15,12 @@ use Google\Protobuf\Internal\GPBDecodeException;
 use Google\Protobuf\Internal\Message;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ValidatorInterface;
-use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Hyperf\Validation\Request\FormRequest;
 use Psr\Container\ContainerInterface;
 
-#[Aspect()]
 class ValidationAspect extends AbstractAspect
 {
     public array $annotations = [

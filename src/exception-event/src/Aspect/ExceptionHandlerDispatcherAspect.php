@@ -12,7 +12,6 @@ namespace FriendsOfHyperf\ExceptionEvent\Aspect;
 
 use FriendsOfHyperf\ExceptionEvent\Event\ExceptionDispatched;
 use Hyperf\Context\Context;
-use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -20,7 +19,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
-#[Aspect]
 class ExceptionHandlerDispatcherAspect extends AbstractAspect
 {
     public array $classes = [

@@ -15,13 +15,11 @@ use FriendsOfHyperf\ClosureCommand\AnnotationCommand;
 use FriendsOfHyperf\ClosureCommand\Console;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
-use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Psr\Container\ContainerInterface;
 use ReflectionMethod;
 
-#[Listener]
 class RegisterCommandListener implements ListenerInterface
 {
     /**

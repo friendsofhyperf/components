@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ClosureCommand;
 
 use FriendsOfHyperf\ClosureCommand\Annotation\CommandCollector;
+use FriendsOfHyperf\ClosureCommand\Listener\RegisterCommandListener;
 
 class ConfigProvider
 {
@@ -19,19 +20,18 @@ class ConfigProvider
         defined('BASE_PATH') or define('BASE_PATH', '');
 
         return [
-            'dependencies' => [],
             'annotations' => [
                 'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
+                    // 'paths' => [
+                    //     __DIR__,
+                    // ],
                     'collectors' => [
                         CommandCollector::class,
                     ],
                 ],
             ],
-            'commands' => [],
             'listeners' => [
+                RegisterCommandListener::class,
             ],
             'publish' => [
                 [

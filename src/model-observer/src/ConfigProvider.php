@@ -10,6 +10,10 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ModelObserver;
 
+use FriendsOfHyperf\ModelObserver\Generator\GeneratorCommand;
+use FriendsOfHyperf\ModelObserver\Listener\ObserverListener;
+use FriendsOfHyperf\ModelObserver\Listener\RegisterObserverListener;
+
 class ConfigProvider
 {
     public function __invoke(): array
@@ -17,17 +21,20 @@ class ConfigProvider
         defined('BASE_PATH') or define('BASE_PATH', '');
 
         return [
-            'dependencies' => [],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
+            // 'annotations' => [
+            //     'scan' => [
+            //         'paths' => [
+            //             __DIR__,
+            //         ],
+            //     ],
+            // ],
+            'commands' => [
+                GeneratorCommand::class,
             ],
-            'commands' => [],
-            'listeners' => [],
-            'publish' => [],
+            'listeners' => [
+                ObserverListener::class,
+                RegisterObserverListener::class,
+            ],
         ];
     }
 }

@@ -12,13 +12,11 @@ namespace FriendsOfHyperf\Confd\Command;
 
 use FriendsOfHyperf\Confd\Confd;
 use FriendsOfHyperf\Confd\Writer\EnvWriter;
-use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Container\ContainerInterface;
 
-#[Command()]
 class EnvCommand extends HyperfCommand
 {
     protected ?string $signature = 'confd:env {--E|env-path= : Path of .env.}';

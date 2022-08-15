@@ -15,19 +15,16 @@ class ConfigProvider
     public function __invoke(): array
     {
         return [
+            // 'annotations' => [
+            //     'scan' => [
+            //         'paths' => [
+            //             __DIR__,
+            //         ],
+            //     ],
+            // ],
             'dependencies' => [
                 CacheInterface::class => CacheFactory::class,
             ],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
-            ],
-            'commands' => [],
-            'listeners' => [],
-            'publish' => [],
         ];
     }
 }
