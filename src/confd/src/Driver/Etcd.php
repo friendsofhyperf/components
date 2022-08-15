@@ -55,8 +55,12 @@ class Etcd implements DriverInterface
             ->toArray();
         $changes = array_diff($values, $this->origins);
 
+        if (! $this->origins) { // Return [] when first run.
+            return tap([], fn () => $this->origins = $values);
+        }
+
         return tap($changes, function ($changes) use ($values) {
-            if ($this->origins && $changes) {
+            if ($changes) {
                 $this->logger->debug('[confd#etcd] Config changed.');
             }
 
