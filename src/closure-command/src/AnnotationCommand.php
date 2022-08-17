@@ -34,6 +34,6 @@ class AnnotationCommand extends Command
         $inputs = array_merge($this->input->getArguments(), $this->input->getOptions());
         $parameters = $this->parameterParser->parseMethodParameters($this->class, $this->method, $inputs);
 
-        return \call([$this->container->get($this->class), $this->method], $parameters);
+        return (fn ($method) => $this->{$method}(...$parameters))->call($this->container->get($this->class), $this->method);
     }
 }

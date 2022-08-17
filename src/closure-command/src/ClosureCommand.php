@@ -35,7 +35,7 @@ class ClosureCommand extends Command
         $inputs = array_merge($this->input->getArguments(), $this->input->getOptions());
         $parameters = $this->parameterParser->parseClosureParameters($this->closure, $inputs);
 
-        return \call($this->closure->bindTo($this, $this), $parameters);
+        return $this->closure->call($this, ...$parameters);
     }
 
     public function describe(string $description): self

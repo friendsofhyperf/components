@@ -18,7 +18,6 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Psr\Container\ContainerInterface;
-use ReflectionMethod;
 
 class RegisterCommandListener implements ListenerInterface
 {
@@ -65,12 +64,6 @@ class RegisterCommandListener implements ListenerInterface
         $commands = CommandCollector::list();
 
         foreach ($commands as $commandId => $metadata) {
-            $reflector = new ReflectionMethod($metadata['class'], $metadata['method']);
-
-            if (! $reflector->isPublic()) {
-                continue;
-            }
-
             $command = new AnnotationCommand(
                 $this->container,
                 $metadata['signature'],
