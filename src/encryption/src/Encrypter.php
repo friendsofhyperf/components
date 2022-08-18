@@ -66,7 +66,7 @@ class Encrypter implements EncrypterContract, StringEncrypter
      * Encrypt the given value.
      *
      * @param mixed $value
-     * @throws \Friendsofhyperf\Encryption\Contract\EncryptException
+     * @throws EncryptException
      */
     public function encrypt($value, bool $serialize = true): string
     {
@@ -101,7 +101,7 @@ class Encrypter implements EncrypterContract, StringEncrypter
     /**
      * Encrypt a string without serialization.
      *
-     * @throws \Friendsofhyperf\Encryption\Contract\EncryptException
+     * @throws EncryptException
      */
     public function encryptString(string $value): string
     {
@@ -111,7 +111,7 @@ class Encrypter implements EncrypterContract, StringEncrypter
     /**
      * Decrypt the given value.
      *
-     * @throws \Friendsofhyperf\Encryption\Contract\DecryptException
+     * @throws DecryptException
      * @return mixed
      */
     public function decrypt(string $payload, bool $unserialize = true)
@@ -146,7 +146,7 @@ class Encrypter implements EncrypterContract, StringEncrypter
     /**
      * Decrypt the given string without unserialization.
      *
-     * @throws \Friendsofhyperf\Encryption\Contract\DecryptException
+     * @throws DecryptException
      */
     public function decryptString(string $payload): string
     {
@@ -175,7 +175,7 @@ class Encrypter implements EncrypterContract, StringEncrypter
     /**
      * Get the JSON array from the given payload.
      *
-     * @throws \Friendsofhyperf\Encryption\Contract\DecryptException
+     * @throws DecryptException
      */
     protected function getJsonPayload(string $payload): array
     {

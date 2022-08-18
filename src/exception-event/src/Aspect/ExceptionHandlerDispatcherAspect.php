@@ -14,6 +14,7 @@ use FriendsOfHyperf\ExceptionEvent\Event\ExceptionDispatched;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Hyperf\ExceptionHandler\ExceptionHandlerDispatcher;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -22,7 +23,7 @@ use Throwable;
 class ExceptionHandlerDispatcherAspect extends AbstractAspect
 {
     public array $classes = [
-        'Hyperf\\ExceptionHandler\\ExceptionHandlerDispatcher::dispatch',
+        ExceptionHandlerDispatcher::class . '::dispatch',
     ];
 
     public function __construct(protected EventDispatcherInterface $eventDispatcher)
@@ -32,6 +33,7 @@ class ExceptionHandlerDispatcherAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($responseHandled) use ($proceedingJoinPoint) {
+            /** @var null|Throwable $exception */
             $exception = $proceedingJoinPoint->getArguments()[0][0] ?? null;
             $request = Context::get(ServerRequestInterface::class);
             $response = Context::get(ResponseInterface::class);

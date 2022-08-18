@@ -23,15 +23,8 @@ class EnvCommand extends HyperfCommand
 
     protected string $description = 'Upgrade .env by confd.';
 
-    protected ConfigInterface $config;
-
-    protected StdoutLoggerInterface $logger;
-
-    public function __construct(protected ContainerInterface $container)
+    public function __construct(protected ContainerInterface $container, protected ConfigInterface $config, protected StdoutLoggerInterface $logger)
     {
-        $this->config = $container->get(ConfigInterface::class);
-        $this->logger = $container->get(StdoutLoggerInterface::class);
-
         parent::__construct();
     }
 
@@ -56,8 +49,6 @@ class EnvCommand extends HyperfCommand
 
     public function makeWriter(string $path): EnvWriter
     {
-        return make(EnvWriter::class, [
-            'path' => $path,
-        ]);
+        return make(EnvWriter::class, compact('path'));
     }
 }

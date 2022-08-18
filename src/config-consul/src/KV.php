@@ -14,35 +14,17 @@ use Hyperf\Utils\Str;
 
 class KV
 {
-    /**
-     * @var string
-     */
-    public $lockIndex;
+    public ?string $lockIndex = null;
 
-    /**
-     * @var string
-     */
-    public $key;
+    public ?string $key = null;
 
-    /**
-     * @var string
-     */
-    public $value;
+    public ?string $value = null;
 
-    /**
-     * @var string
-     */
-    public $flags;
+    public ?string $flags = null;
 
-    /**
-     * @var int
-     */
-    public $createIndex;
+    public ?int $createIndex = null;
 
-    /**
-     * @var int
-     */
-    public $modifyIndex;
+    public ?int $modifyIndex = null;
 
     public function __construct($data)
     {
@@ -54,7 +36,7 @@ class KV
         }
         $this->lockIndex = $data['LockIndex'] ?? null;
         $this->flags = $data['Flags'] ?? null;
-        $this->createIndex = $data['createIndex'] ?? null;
+        $this->createIndex = $data['CreateIndex'] ?? null;
         $this->modifyIndex = $data['ModifyIndex'] ?? null;
     }
 

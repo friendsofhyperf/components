@@ -25,34 +25,26 @@ class Console
      */
     protected static $commands = [];
 
-    /**
-     * @return ClosureCommand
-     */
-    public static function command(string $signature, Closure $command)
+    public static function command(string $signature, Closure $command): ClosureCommand
     {
-        $handler = make(ClosureCommand::class, [
+        return tap(make(ClosureCommand::class, [
             'signature' => $signature,
             'closure' => $command,
-        ]);
-        $handlerId = spl_object_hash($handler);
-
-        self::$commands[$handlerId] = $handler;
-
-        return $handler;
+        ]), static function ($handler) {
+            $handlerId = spl_object_hash($handler);
+            self::$commands[$handlerId] = $handler;
+        });
     }
 
     /**
      * @return ClosureCommand[]
      */
-    public static function getCommands()
+    public static function getCommands(): array
     {
         return self::$commands;
     }
 
-    /**
-     * @return int
-     */
-    public static function call(string $command, array $arguments = [])
+    public static function call(string $command, array $arguments = []): int
     {
         $arguments['command'] = $command;
 

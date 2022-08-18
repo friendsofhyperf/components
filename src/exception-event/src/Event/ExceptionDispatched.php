@@ -20,10 +20,7 @@ class ExceptionDispatched
     {
     }
 
-    /**
-     * @return Throwable
-     */
-    public function getThrowable()
+    public function getThrowable(): Throwable
     {
         return $this->throwable;
     }

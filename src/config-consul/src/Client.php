@@ -12,18 +12,11 @@ namespace FriendsOfHyperf\ConfigConsul;
 
 use FriendsOfHyperf\ConfigConsul\Consul\KVInterface;
 use Hyperf\Contract\ConfigInterface;
-use Psr\Container\ContainerInterface;
 
 class Client implements ClientInterface
 {
-    private KVInterface $client;
-
-    private ConfigInterface $config;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(private KVInterface $client, private ConfigInterface $config)
     {
-        $this->client = $container->get(KVInterface::class);
-        $this->config = $container->get(ConfigInterface::class);
     }
 
     public function pull(): array
