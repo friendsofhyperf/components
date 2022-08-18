@@ -241,6 +241,18 @@ class Stringable
     }
 
     /**
+     * Execute the given callback if the string is not an exact match with the given value.
+     *
+     * @param string $value
+     * @param callable $callback
+     * @param null|callable $default
+     * @return static
+     */
+    public function whenNotExactly($value, $callback, $default = null)
+    {
+    }
+
+    /**
      * Execute the given callback if the string matches a given pattern.
      *
      * @param array|string $pattern

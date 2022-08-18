@@ -234,6 +234,25 @@ class StringableTest extends TestCase
         }));
     }
 
+    public function testWhenNotExactly()
+    {
+        $this->assertSame(
+            'Iron Man',
+            (string) $this->stringable('Tony')->whenNotExactly('Tony Stark', function ($stringable) {
+                return 'Iron Man';
+            })
+        );
+
+        $this->assertSame(
+            'Swing and a miss...!',
+            (string) $this->stringable('Tony Stark')->whenNotExactly('Tony Stark', function ($stringable) {
+                return 'Iron Man';
+            }, function ($stringable) {
+                return 'Swing and a miss...!';
+            })
+        );
+    }
+
     public function testWhenIs()
     {
         $this->assertSame('Winner: /', (string) $this->stringable('/')->whenIs('/', function ($stringable) {
