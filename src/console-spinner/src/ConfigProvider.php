@@ -27,7 +27,7 @@ class ConfigProvider
             'publish' => [
                 [
                     'id' => 'config',
-                    'description' => 'config file of console-spinner.',
+                    'description' => 'The configuration file of console-spinner.',
                     'source' => __DIR__ . '/../publish/console_spinner.php',
                     'destination' => BASE_PATH . '/config/autoload/console_spinner.php',
                 ],

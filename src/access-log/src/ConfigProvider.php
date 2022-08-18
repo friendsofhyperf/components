@@ -35,7 +35,7 @@ class ConfigProvider
             'publish' => [
                 [
                     'id' => 'config',
-                    'description' => 'config file of package.',
+                    'description' => 'The configuration file of access-log.',
                     'source' => __DIR__ . '/../publish/access_log.php',
                     'destination' => BASE_PATH . '/config/autoload/access_log.php',
                 ],

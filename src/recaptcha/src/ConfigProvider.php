@@ -33,7 +33,7 @@ class ConfigProvider
             'publish' => [
                 [
                     'id' => 'config',
-                    'description' => 'config file.',
+                    'description' => 'The configuration file of recaptcha.',
                     'source' => __DIR__ . '/../publish/recaptcha.php',
                     'destination' => BASE_PATH . '/config/autoload/recaptcha.php',
                 ],

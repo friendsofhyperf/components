@@ -36,7 +36,7 @@ class ConfigProvider
             'publish' => [
                 [
                     'id' => 'config',
-                    'description' => 'The config for Encryption.',
+                    'description' => 'The configuration file for encryption.',
                     'source' => __DIR__ . '/../publish/encryption.php',
                     'destination' => BASE_PATH . '/config/autoload/encryption.php',
                 ],

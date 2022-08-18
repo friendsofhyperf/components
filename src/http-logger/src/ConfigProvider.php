@@ -36,7 +36,7 @@ class ConfigProvider
             'publish' => [
                 [
                     'id' => 'config',
-                    'description' => 'config file of package.',
+                    'description' => 'The configuration file of http-logger.',
                     'source' => __DIR__ . '/../publish/http_logger.php',
                     'destination' => BASE_PATH . '/config/autoload/http_logger.php',
                 ],

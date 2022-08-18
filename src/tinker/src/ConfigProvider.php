@@ -33,7 +33,7 @@ class ConfigProvider
             'publish' => [
                 [
                     'id' => 'config',
-                    'description' => 'The config for Tinker.',
+                    'description' => 'The configuration file for tinker.',
                     'source' => __DIR__ . '/../publish/tinker.php',
                     'destination' => BASE_PATH . '/config/autoload/tinker.php',
                 ],
