@@ -163,6 +163,13 @@ if (! Stringable::hasMacro('whenExactly')) {
     });
 }
 
+if (! Stringable::hasMacro('whenNotExactly')) {
+    Stringable::macro('whenNotExactly', function ($needles, $callback, $default = null) {
+        /* @var Stringable $this */
+        return $this->when(! $this->exactly($needles), $callback, $default);
+    });
+}
+
 if (! Stringable::hasMacro('whenIs')) {
     Stringable::macro('whenIs', function ($pattern, $callback, $default = null) {
         /* @var Stringable $this */
