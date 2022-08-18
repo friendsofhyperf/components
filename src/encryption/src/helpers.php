@@ -8,6 +8,9 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
+use Friendsofhyperf\Encryption\Encrypter;
+use Hyperf\Utils\ApplicationContext;
+
 if (! function_exists('decrypt')) {
     /**
      * Decrypt the given value.
@@ -16,8 +19,8 @@ if (! function_exists('decrypt')) {
      */
     function decrypt(string $value, bool $unserialize = true)
     {
-        return \Hyperf\Utils\ApplicationContext::getContainer()
-            ->get(\Friendsofhyperf\Encryption\Encrypter::class)
+        return ApplicationContext::getContainer()
+            ->get(Encrypter::class)
             ->decrypt($value, $unserialize);
     }
 }
@@ -30,8 +33,8 @@ if (! function_exists('encrypt')) {
      */
     function encrypt($value, bool $serialize = true): string
     {
-        return \Hyperf\Utils\ApplicationContext::getContainer()
-            ->get(\Friendsofhyperf\Encryption\Encrypter::class)
+        return ApplicationContext::getContainer()
+            ->get(Encrypter::class)
             ->encrypt($value, $serialize);
     }
 }

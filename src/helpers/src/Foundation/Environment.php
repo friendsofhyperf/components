@@ -17,14 +17,9 @@ class Environment
 {
     use Macroable;
 
-    /**
-     * @var string
-     */
-    protected $env;
-
-    public function __construct()
+    public function __construct(protected ?string $env = null)
     {
-        $this->env = env('APP_ENV');
+        $this->env = $env ?? env('APP_ENV');
     }
 
     /**
@@ -46,50 +41,40 @@ class Environment
 
     /**
      * Determine if the application is in the local environment.
-     *
-     * @return bool
      */
-    public function isLocal()
+    public function isLocal(): bool
     {
         return $this->environment('local');
     }
 
     /**
      * Determine if the application is in the dev environment.
-     *
-     * @return bool
      */
-    public function isDev()
+    public function isDev(): bool
     {
         return $this->environment('dev');
     }
 
     /**
      * Determine if the application is in the develop environment.
-     *
-     * @return bool
      */
-    public function isDevelop()
+    public function isDevelop(): bool
     {
         return $this->environment('develop');
     }
 
     /**
      * Determine if the application is in the production environment.
-     *
-     * @return bool
      */
-    public function isProduction()
+    public function isProduction(): bool
     {
         return $this->environment('production');
     }
 
     /**
      * Determine if the application is in the production environment.
-     *
-     * @return bool
      */
-    public function isOnline()
+    public function isOnline(): bool
     {
         return $this->environment('online');
     }

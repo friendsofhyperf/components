@@ -22,20 +22,11 @@ use ReflectionFunction;
 
 class ClosureJob extends Job
 {
-    /**
-     * @var string
-     */
-    public $class;
+    public string $class;
 
-    /**
-     * @var string
-     */
-    public $method;
+    public string $method;
 
-    /**
-     * @var SerializableClosure
-     */
-    protected $closure;
+    protected SerializableClosure $closure;
 
     public function __construct(Closure $closure, int $maxAttempts = 0)
     {
@@ -49,10 +40,13 @@ class ClosureJob extends Job
 
     public function handle()
     {
-        $closure = $this->closure->getClosure();
-        $parameters = $this->parseClosureParameters($closure, []);
+        // $closure = $this->closure->getClosure();
+        // $parameters = $this->parseClosureParameters($closure, []);
 
-        call($closure, $parameters);
+        // call($closure, $parameters);
+
+        $parameters = $this->parseClosureParameters($this->closure->getClosure(), []);
+        $this->closure->__invoke(...$parameters);
     }
 
     protected function getContainer(): ContainerInterface

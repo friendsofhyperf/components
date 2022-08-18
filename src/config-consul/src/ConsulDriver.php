@@ -19,8 +19,6 @@ class ConsulDriver extends AbstractDriver
 {
     protected string $driverName = 'consul';
 
-    protected ContainerInterface $container;
-
     protected PackerInterface $packer;
 
     protected array $mapping;
