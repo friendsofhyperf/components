@@ -22,6 +22,7 @@ use Hyperf\Utils\Filesystem\Filesystem;
 use Hyperf\Utils\Str;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
+use ReflectionMethod;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ModelCommand extends HyperfCommand
@@ -30,78 +31,29 @@ class ModelCommand extends HyperfCommand
 
     protected string $description = 'Generate a new Model IDE Helper file.';
 
-    /**
-     * @var bool
-     */
-    protected $writeModelMagicWhere = true;
+    protected bool $writeModelMagicWhere = true;
 
-    /**
-     * @var array
-     */
-    protected $properties = [];
+    protected array $properties = [];
 
-    /**
-     * @var array
-     */
-    protected $methods = [];
+    protected array $methods = [];
 
-    /**
-     * @var bool
-     */
-    protected $write = false;
+    protected bool $write = false;
 
-    /**
-     * @var bool
-     */
-    protected $reset = true;
+    protected bool $reset = true;
 
-    /**
-     * @var bool
-     */
-    protected $keepText;
+    protected bool $keepText;
 
-    /**
-     * @var array
-     */
-    private $ignore = [];
+    private array $ignore = [];
 
-    /**
-     * @var string[]
-     */
-    private $dirs = ['app'];
+    private array $dirs = ['app'];
 
-    /**
-     * @var ContainerInterface
-     */
-    private $container;
+    private string $dateClass = '\Carbon\Carbon';
 
-    /**
-     * @var ConfigInterface
-     */
-    private $config;
+    private array $nullableColumns = [];
 
-    /**
-     * @var string
-     */
-    private $dateClass;
-
-    /**
-     * @var array
-     */
-    private $nullableColumns;
-
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(protected ContainerInterface $container, protected Filesystem $filesystem, protected ConfigInterface $config)
     {
         parent::__construct();
-        $this->container = $container;
-        $this->filesystem = $this->container->get(Filesystem::class);
-        $this->config = $container->get(ConfigInterface::class);
-        $this->dateClass = '\Carbon\Carbon';
     }
 
     /**
@@ -116,24 +68,15 @@ class ModelCommand extends HyperfCommand
         $this->filesystem->put($filename, $content);
     }
 
-    protected function configure()
-    {
-        parent::configure();
-        $this->setDescription($this->description);
-    }
-
     /**
      * Get the parameters and format them correctly.
-     *
-     * @param $method
-     * @return array
      */
-    protected function getParameters($method)
+    protected function getParameters(ReflectionMethod $method): array
     {
         // Loop through the default values for parameters, and make the correct output string
         $params = [];
         $paramsWithDefault = [];
-        /** @var \ReflectionParameter $param */
+
         foreach ($method->getParameters() as $param) {
             $paramClass = $param->getDeclaringClass();
             $paramStr = (! is_null($paramClass) ? '\\' . $paramClass->getName() . ' ' : '') . '$' . $param->getName();
@@ -155,6 +98,7 @@ class ModelCommand extends HyperfCommand
             }
             $paramsWithDefault[] = $paramStr;
         }
+
         return $paramsWithDefault;
     }
 
@@ -163,7 +107,7 @@ class ModelCommand extends HyperfCommand
         return $this->input->getOption($key) ?? $default;
     }
 
-    protected function generateDocs($loadModels)
+    protected function generateDocs($loadModels): string
     {
         $output = "<?php
 // @formatter:off
@@ -241,9 +185,8 @@ class ModelCommand extends HyperfCommand
         return $output;
     }
 
-    protected function loadModels()
+    protected function loadModels(): array
     {
-        defined('BASE_PATH') or define('BASE_PATH', __DIR__);
         $models = [];
 
         foreach ($this->dirs as $dir) {
@@ -317,15 +260,12 @@ class ModelCommand extends HyperfCommand
 
     /**
      * Returns the override type for the give type.
-     *
-     * @param string $type
-     * @return string
      */
-    protected function getTypeOverride($type)
+    protected function getTypeOverride(string $type): string
     {
         $typeOverrides = $this->config->get('ide-helper.model.type_overrides', []);
 
-        return isset($typeOverrides[$type]) ? $typeOverrides[$type] : $type;
+        return $typeOverrides[$type] ?? $type;
     }
 
     /**
@@ -344,11 +284,13 @@ class ModelCommand extends HyperfCommand
 
         $platformName = $databasePlatform->getName();
         $customTypes = $this->config->get("ide-helper.model.custom_db_types.{$platformName}", []);
+
         foreach ($customTypes as $yourTypeName => $doctrineTypeName) {
             $databasePlatform->registerDoctrineTypeMapping($yourTypeName, $doctrineTypeName);
         }
 
         $database = null;
+
         if (strpos($table, '.')) {
             [$database, $table] = explode('.', $table);
         }
@@ -412,6 +354,7 @@ class ModelCommand extends HyperfCommand
     protected function getPropertiesFromMethods($model)
     {
         $methods = get_class_methods($model);
+
         if ($methods) {
             sort($methods);
             foreach ($methods as $method) {
@@ -558,15 +501,7 @@ class ModelCommand extends HyperfCommand
         }
     }
 
-    /**
-     * @param string $name
-     * @param null|string $type
-     * @param null|bool $read
-     * @param null|bool $write
-     * @param null|string $comment
-     * @param bool $nullable
-     */
-    protected function setProperty($name, $type = null, $read = null, $write = null, $comment = '', $nullable = false)
+    protected function setProperty(string $name, ?string $type = null, ?bool $read = null, ?bool $write = null, ?string $comment = '', bool $nullable = false)
     {
         if (! isset($this->properties[$name])) {
             $this->properties[$name] = [];
@@ -590,7 +525,7 @@ class ModelCommand extends HyperfCommand
         }
     }
 
-    protected function setMethod($name, $type = '', $arguments = [])
+    protected function setMethod(string $name, string $type = '', array $arguments = [])
     {
         $methods = array_change_key_case($this->methods, CASE_LOWER);
 
@@ -602,10 +537,9 @@ class ModelCommand extends HyperfCommand
     }
 
     /**
-     * @param string $class
      * @return string
      */
-    protected function createPhpDocs($class)
+    protected function createPhpDocs(string $class)
     {
         $reflection = new ReflectionClass($class);
         $namespace = $reflection->getNamespaceName();
@@ -703,20 +637,15 @@ class ModelCommand extends HyperfCommand
         return "namespace {$namespace}{\n{$docComment}\n\t{$keyword}class {$classname} extends \\Eloquent {}\n}\n\n";
     }
 
-    /**
-     * @return bool
-     */
-    protected function hasCamelCaseModelProperties()
+    protected function hasCamelCaseModelProperties(): bool
     {
-        return $this->config->get('ide-helper.model.camel_case_properties', false);
+        return (bool) $this->config->get('ide-helper.model.camel_case_properties', false);
     }
 
     /**
      * Get method return type based on it DocBlock comment.
-     *
-     * @return null|string
      */
-    protected function getReturnTypeFromDocBlock(\ReflectionMethod $reflection)
+    protected function getReturnTypeFromDocBlock(ReflectionMethod $reflection): ?string
     {
         $type = null;
         $phpdoc = new DocBlock($reflection);
@@ -759,10 +688,8 @@ class ModelCommand extends HyperfCommand
 
     /**
      * Check if the foreign key of the relation is nullable.
-     *
-     * @return bool
      */
-    private function isRelationForeignKeyNullable(Relation $relation)
+    private function isRelationForeignKeyNullable(Relation $relation): bool
     {
         $reflectionObj = new \ReflectionObject($relation);
         if (! $reflectionObj->hasProperty('foreignKey')) {
@@ -779,9 +706,8 @@ class ModelCommand extends HyperfCommand
      *
      * @see http://laravel.com/docs/eloquent-collections#custom-collections
      * @param string $className
-     * @return string
      */
-    private function getCollectionClass($className)
+    private function getCollectionClass($className): string
     {
         // Return something in the very very unlikely scenario the model doesn't
         // have a newCollection() method.
@@ -794,10 +720,7 @@ class ModelCommand extends HyperfCommand
         return '\\' . get_class($model->newCollection());
     }
 
-    /**
-     * @return string
-     */
-    private function getClassKeyword(ReflectionClass $reflection)
+    private function getClassKeyword(ReflectionClass $reflection): string
     {
         if ($reflection->isFinal()) {
             $keyword = 'final ';

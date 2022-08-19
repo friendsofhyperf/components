@@ -14,32 +14,23 @@ use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Hyperf\Database\Model\Builder as EloquentBuilder;
 use Hyperf\Utils\Collection;
+use ReflectionClass;
+use ReflectionFunctionAbstract;
 
 class Macro extends Method
 {
     /**
      * Macro constructor.
-     *
-     * @param \ReflectionFunctionAbstract $method
-     * @param string $alias
-     * @param \ReflectionClass $class
-     * @param null $methodName
-     * @param array $interfaces
      */
-    public function __construct(
-        $method,
-        $alias,
-        $class,
-        $methodName = null,
-        $interfaces = []
-    ) {
+    public function __construct(ReflectionFunctionAbstract $method, string $alias, ReflectionClass $class, ?string $methodName = null, array $interfaces = [])
+    {
         parent::__construct($method, $alias, $class, $methodName, $interfaces);
     }
 
     /**
      * @param \ReflectionFunctionAbstract $method
      */
-    protected function initPhpDoc($method)
+    protected function initPhpDoc($method): void
     {
         $this->phpdoc = new DocBlock($method);
 
@@ -71,7 +62,7 @@ class Macro extends Method
         }
     }
 
-    protected function addLocationToPhpDoc()
+    protected function addLocationToPhpDoc(): void
     {
         $enclosingClass = $this->method->getClosureScopeClass();
 
@@ -92,7 +83,7 @@ class Macro extends Method
     /**
      * @param \ReflectionFunctionAbstract $method
      */
-    protected function initClassDefinedProperties($method, \ReflectionClass $class)
+    protected function initClassDefinedProperties($method, ReflectionClass $class): void
     {
         $this->namespace = $class->getNamespaceName();
         $this->declaringClassName = '\\' . ltrim($class->name, '\\');
