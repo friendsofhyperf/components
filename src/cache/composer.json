@@ -21,9 +21,6 @@
         }
     },
     "extra": {
-        "branch-alias": {
-            "3.x-dev": "3.0-dev"
-        },
         "hyperf": {
             "config": "FriendsOfHyperf\\Cache\\ConfigProvider"
         }
