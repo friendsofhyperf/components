@@ -76,9 +76,11 @@ class ObserverListener implements ListenerInterface
 
             $observer = $this->container->get($observerClass);
 
-            if (is_callable([$observer, $method])) {
-                $observer->{$method}($model);
+            if (! is_callable([$observer, $method])) {
+                continue;
             }
+
+            $observer->{$method}($model);
         }
     }
 }
