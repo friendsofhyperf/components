@@ -23,6 +23,7 @@
         "Macroable",
         "nesbot",
         "protobuf",
-        "recaptcha"
+        "recaptcha",
+        "stringable"
     ],
 }

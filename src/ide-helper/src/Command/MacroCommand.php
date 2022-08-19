@@ -17,6 +17,9 @@ use Hyperf\Macroable\Macroable;
 use Hyperf\Utils\Filesystem\Filesystem;
 use Hyperf\Utils\Str;
 use Psr\Container\ContainerInterface;
+use ReflectionNamedType;
+use ReflectionParameter;
+use ReflectionUnionType;
 use Swoole\Coroutine\System;
 use Throwable;
 
@@ -26,21 +29,9 @@ class MacroCommand extends HyperfCommand
 
     protected string $description = 'Generate a new Macros IDE Helper file.';
 
-    /**
-     * @var Filesystem
-     */
-    private $filesystem;
-
-    /**
-     * @var ConfigInterface
-     */
-    private $config;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(protected ContainerInterface $container, protected Filesystem $filesystem, protected ConfigInterface $config)
     {
         parent::__construct();
-        $this->filesystem = $container->get(Filesystem::class);
-        $this->config = $container->get(ConfigInterface::class);
     }
 
     public function handle()
@@ -162,16 +153,10 @@ class MacroCommand extends HyperfCommand
         $this->info("A new helper file was written to {$filename}");
     }
 
-    protected function configure()
-    {
-        parent::configure();
-        $this->setDescription($this->description);
-    }
-
     /**
      * parse parameters.
      */
-    private function prepareParameter(\ReflectionParameter $parameter): string
+    private function prepareParameter(ReflectionParameter $parameter): string
     {
         $parameterString = trim(optional($parameter->getType())->getName() . ' $' . $parameter->getName());
 
@@ -179,13 +164,31 @@ class MacroCommand extends HyperfCommand
             if ($parameter->isVariadic()) {
                 $parameterString = '...' . $parameterString;
             } else {
-                $defaultValue = $parameter->isArray() ? '[]' : ($parameter->getDefaultValue() ?? 'null');
-                $defaultValue = preg_replace('/\s+/', ' ', var_export($defaultValue, 1));
+                $defaultValue = $this->isArray($parameter) ? '[]' : ($parameter->getDefaultValue() ?? 'null');
+                $defaultValue = preg_replace('/\s+/', ' ', var_export($defaultValue, true));
                 $parameterString .= sprintf(' = %s', $defaultValue);
             }
         }
 
         return $parameterString;
+    }
+
+    /**
+     * Checks if the parameter expects an array.
+     */
+    private function isArray(ReflectionParameter $reflectionParameter): bool
+    {
+        $reflectionType = $reflectionParameter->getType();
+
+        if (! $reflectionType) {
+            return false;
+        }
+
+        $types = $reflectionType instanceof ReflectionUnionType
+            ? $reflectionType->getTypes()
+            : [$reflectionType];
+
+        return in_array('array', array_map(fn (ReflectionNamedType $t) => $t->getName(), $types));
     }
 
     private function dumpAutoload()

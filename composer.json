@@ -82,9 +82,9 @@
     },
     "autoload": {
         "files": [
-            "src/encryption/src/helpers.php",
-            "src/exception-event/src/helpers.php",
-            "src/helpers/src/helpers.php",
+            "src/encryption/src/functions.php",
+            "src/exception-event/src/functions.php",
+            "src/helpers/src/functions.php",
             "src/lock/src/functions.php",
             "src/macros/src/arr.php",
             "src/macros/src/collection.php",

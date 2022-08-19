@@ -36,7 +36,7 @@ class ConfigProvider
             'publish' => [
                 [
                     'id' => 'config',
-                    'description' => 'config file of closure-command.',
+                    'description' => 'The console route file of closure-command.',
                     'source' => __DIR__ . '/../publish/console.php',
                     'destination' => BASE_PATH . '/config/console.php',
                 ],

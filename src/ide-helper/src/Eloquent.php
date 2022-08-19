@@ -12,7 +12,7 @@ namespace FriendsOfHyperf\IdeHelper;
 
 class Eloquent
 {
-    public static function make()
+    public static function make(): string
     {
         $alias = new Alias('\\Hyperf\\DbConnection\\Model\\Model', 'Eloquent');
         $alias->addClass('\\Hyperf\\Database\\Model\\Builder');
@@ -20,6 +20,7 @@ class Eloquent
 
         $block = "namespace { \r\n";
         $block .= "  class Eloquent extends \\Hyperf\\DbConnection\\Model\\Model { \r\n";
+
         foreach ($alias->getMethods() as $method) {
             $return = $method->shouldReturn() ? 'return ' : '';
             $block .= '    ' . trim($method->getDocComment('    ')) . "\r\n";
@@ -30,7 +31,9 @@ class Eloquent
             $block .= "        {$return} {$method->getRootMethodCall()}; \r\n";
             $block .= "     } \r\n";
         }
+
         $block .= "  } \r\n}";
+
         return $block;
     }
 }
