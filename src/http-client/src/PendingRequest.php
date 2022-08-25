@@ -869,10 +869,8 @@ class PendingRequest
     {
         $handler = null;
 
-        if (extension_loaded('swoole') && Coroutine::inCoroutine()) { // run in swoole
-            if (! (defined('SWOOLE_HOOK_NATIVE_CURL') && \Swoole\Runtime::getHookFlags() & SWOOLE_HOOK_NATIVE_CURL)) { // not support native curl
-                $handler = new CoroutineHandler();
-            }
+        if (extension_loaded('swoole') && Coroutine::inCoroutine()) {
+            $handler = new CoroutineHandler();
         }
 
         return $this->pushHandlers(HandlerStack::create($handler));

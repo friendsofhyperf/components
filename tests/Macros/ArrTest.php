@@ -93,10 +93,10 @@ class ArrTest extends TestCase
     public function testSortByMany()
     {
         $unsorted = [
-            ['name' => 'John', 'age' => 8, 'meta' => ['key' => 3]],
+            ['name' => 'John', 'age' => 8,  'meta' => ['key' => 3]],
             ['name' => 'John', 'age' => 10, 'meta' => ['key' => 5]],
             ['name' => 'Dave', 'age' => 10, 'meta' => ['key' => 3]],
-            ['name' => 'John', 'age' => 8, 'meta' => ['key' => 2]],
+            ['name' => 'John', 'age' => 8,  'meta' => ['key' => 2]],
         ];
 
         // sort using keys
@@ -107,8 +107,8 @@ class ArrTest extends TestCase
         ]));
         $this->assertEquals([
             ['name' => 'Dave', 'age' => 10, 'meta' => ['key' => 3]],
-            ['name' => 'John', 'age' => 8, 'meta' => ['key' => 2]],
-            ['name' => 'John', 'age' => 8, 'meta' => ['key' => 3]],
+            ['name' => 'John', 'age' => 8,  'meta' => ['key' => 2]],
+            ['name' => 'John', 'age' => 8,  'meta' => ['key' => 3]],
             ['name' => 'John', 'age' => 10, 'meta' => ['key' => 5]],
         ], $sorted);
 
@@ -121,8 +121,8 @@ class ArrTest extends TestCase
         $this->assertEquals([
             ['name' => 'Dave', 'age' => 10, 'meta' => ['key' => 3]],
             ['name' => 'John', 'age' => 10, 'meta' => ['key' => 5]],
-            ['name' => 'John', 'age' => 8, 'meta' => ['key' => 2]],
-            ['name' => 'John', 'age' => 8, 'meta' => ['key' => 3]],
+            ['name' => 'John', 'age' => 8,  'meta' => ['key' => 2]],
+            ['name' => 'John', 'age' => 8,  'meta' => ['key' => 3]],
         ], $sortedWithOrder);
 
         // sort using callable
@@ -138,8 +138,8 @@ class ArrTest extends TestCase
         $this->assertEquals([
             ['name' => 'Dave', 'age' => 10, 'meta' => ['key' => 3]],
             ['name' => 'John', 'age' => 10, 'meta' => ['key' => 5]],
-            ['name' => 'John', 'age' => 8, 'meta' => ['key' => 2]],
-            ['name' => 'John', 'age' => 8, 'meta' => ['key' => 3]],
+            ['name' => 'John', 'age' => 8,  'meta' => ['key' => 2]],
+            ['name' => 'John', 'age' => 8,  'meta' => ['key' => 3]],
         ], $sortedWithCallable);
     }
 
