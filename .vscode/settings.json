@@ -8,7 +8,7 @@
     "php-cs-fixer.executablePathWindows": "php-cs-fixer.bat",
     "php-cs-fixer.onsave": true,
     "php-cs-fixer.rules": "@PSR2",
-    "php-cs-fixer.config": ".php-cs-fixer.php,.php-cs-fixer.dist.php",
+    "php-cs-fixer.config": ".php-cs-fixer.php;.php-cs-fixer.dist.php",
     "php-cs-fixer.allowRisky": false,
     "php-cs-fixer.pathMode": "override",
     "php-cs-fixer.exclude": [],
