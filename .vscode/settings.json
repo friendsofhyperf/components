@@ -4,7 +4,7 @@
         "editor.formatOnSave": true,
         "editor.defaultFormatter": "junstyle.php-cs-fixer",
     },
-    "php-cs-fixer.executablePath": "${workspaceFolder}/vendor/bin/php-cs-fixer",
+    "php-cs-fixer.executablePath": "php-cs-fixer",
     "php-cs-fixer.executablePathWindows": "php-cs-fixer.bat",
     "php-cs-fixer.onsave": true,
     "php-cs-fixer.rules": "@PSR2",
