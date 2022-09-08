@@ -23,8 +23,8 @@ interface Encrypter
     /**
      * Decrypt the given value.
      *
-     * @throws \Friendsofhyperf\Encryption\Contract\DecryptException
      * @return mixed
+     * @throws \Friendsofhyperf\Encryption\Contract\DecryptException
      */
     public function decrypt(string $payload, bool $unserialize = true);
 }

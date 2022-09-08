@@ -49,8 +49,8 @@ class ResponseSequence
     /**
      * Get the next response in the sequence.
      *
-     * @throws \OutOfBoundsException
      * @return mixed
+     * @throws \OutOfBoundsException
      */
     public function __invoke()
     {

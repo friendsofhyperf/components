@@ -36,8 +36,8 @@ trait Spinnerable
 
     /**
      * @param array|Countable|int $totalSteps
-     * @throws TypeError
      * @return mixed
+     * @throws TypeError
      */
     protected function withSpinner($totalSteps, Closure $callback, string $message = '')
     {

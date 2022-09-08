@@ -111,8 +111,8 @@ class Encrypter implements EncrypterContract, StringEncrypter
     /**
      * Decrypt the given value.
      *
-     * @throws DecryptException
      * @return mixed
+     * @throws DecryptException
      */
     public function decrypt(string $payload, bool $unserialize = true)
     {

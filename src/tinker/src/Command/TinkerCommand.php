@@ -104,9 +104,9 @@ class TinkerCommand extends HyperfCommand
     }
 
     /**
+     * @return SymfonyCommand[]
      * @throws LogicException
      * @throws CommandNotFoundException
-     * @return SymfonyCommand[]
      */
     protected function getCommands(): array
     {
