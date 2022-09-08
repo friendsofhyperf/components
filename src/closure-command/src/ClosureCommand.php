@@ -11,15 +11,12 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ClosureCommand;
 
 use Closure;
-use FriendsOfHyperf\CommandSignals\Traits\InteractsWithSignals;
 use Hyperf\Command\Command;
 use Hyperf\Context\Context;
 use Psr\Container\ContainerInterface;
 
 class ClosureCommand extends Command
 {
-    use InteractsWithSignals;
-
     private ParameterParser $parameterParser;
 
     public function __construct(ContainerInterface $container, string $signature, protected Closure $closure)
