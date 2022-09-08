@@ -28,9 +28,9 @@ class ReCaptchaManager
 
     /**
      * @param string $version
+     * @return ReCaptcha
      * @throws TypeError
      * @throws RuntimeException
-     * @return ReCaptcha
      */
     public function get(?string $version = null)
     {

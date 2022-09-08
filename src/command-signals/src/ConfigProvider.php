@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 /**
- * This file is part of command-signals.
+ * This file is part of friendsofhyperf/components.
  *
- * @link     https://github.com/friendsofhyperf/command-signals
- * @document https://github.com/friendsofhyperf/command-signals/blob/main/README.md
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\CommandSignals;

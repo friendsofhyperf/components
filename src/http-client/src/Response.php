@@ -322,8 +322,8 @@ class Response implements ArrayAccess
      * Throw an exception if a server or client error occurred.
      *
      * @param null|\Closure $callback
-     * @throws \FriendsOfHyperf\Http\Client\RequestException
      * @return $this
+     * @throws \FriendsOfHyperf\Http\Client\RequestException
      */
     public function throw()
     {
@@ -344,8 +344,8 @@ class Response implements ArrayAccess
      * Throw an exception if a server or client error occurred and the given condition evaluates to true.
      *
      * @param bool $condition
-     * @throws \FriendsOfHyperf\Http\Client\RequestException
      * @return $this
+     * @throws \FriendsOfHyperf\Http\Client\RequestException
      */
     public function throwIf($condition)
     {
