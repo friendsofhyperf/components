@@ -10,12 +10,15 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ClosureCommand;
 
+use FriendsOfHyperf\CommandSignals\Traits\InteractsWithSignals;
 use Hyperf\Command\Command;
 use Hyperf\Context\Context;
 use Psr\Container\ContainerInterface;
 
 class AnnotationCommand extends Command
 {
+    use InteractsWithSignals;
+
     private ParameterParser $parameterParser;
 
     public function __construct(private ContainerInterface $container, protected ?string $signature, private string $class, private string $method, string $description = '')
