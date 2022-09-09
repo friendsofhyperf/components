@@ -26,26 +26,27 @@ class ObserverManager
         $classes = AnnotationCollector::getClassesByAnnotation(Observer::class);
 
         foreach ($classes as $class => $property) {
-            $model = $property->model;
+            $models = (array) $property->model;
+            $priority = $property->priority;
 
-            if (! $model || ! class_exists($model)) {
-                continue;
+            foreach ($models as $model) {
+                if (! $model || ! class_exists($model)) {
+                    continue;
+                }
+
+                $queues[$model] ??= new SplPriorityQueue();
+
+                $queues[$model]->insert($class, $priority);
             }
-
-            if (! isset($queues[$model])) {
-                $queues[$model] = new SplPriorityQueue();
-            }
-
-            $queues[$model]->insert($class, $property->priority);
         }
 
-        foreach ($queues as $class => $queue) {
-            if (! isset(self::$container[$class])) {
-                self::$container[$class] = [];
+        foreach ($queues as $model => $queue) {
+            if (! isset(self::$container[$model])) {
+                self::$container[$model] = [];
             }
 
             foreach ($queue as $observer) {
-                self::$container[$class][] = $observer;
+                self::$container[$model][] = $observer;
             }
         }
     }
