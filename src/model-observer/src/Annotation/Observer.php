@@ -18,7 +18,6 @@ class Observer extends AbstractAnnotation
 {
     /**
      * @param string|string[] $model
-     * @param int $priority
      */
     public function __construct(public string|array $model, public int $priority = 0)
     {
