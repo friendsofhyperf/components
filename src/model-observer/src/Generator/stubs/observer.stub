@@ -7,7 +7,7 @@ namespace %NAMESPACE%;
 use FriendsOfHyperf\ModelObserver\Annotation\Observer;
 use %USE_MODEL%;
 
-#[Observer(%MODEL%::class)]
+#[Observer(model: %MODEL%::class)]
 class %CLASS%
 {
     // public function creating(%MODEL% $model)
