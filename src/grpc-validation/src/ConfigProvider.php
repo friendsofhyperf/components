@@ -16,16 +16,7 @@ class ConfigProvider
 {
     public function __invoke(): array
     {
-        defined('BASE_PATH') or define('BASE_PATH', __DIR__ . '/../../../');
-
         return [
-            // 'annotations' => [
-            //     'scan' => [
-            //         'paths' => [
-            //             __DIR__,
-            //         ],
-            //     ],
-            // ],
             'aspects' => [
                 ValidationAspect::class,
             ],

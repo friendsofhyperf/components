@@ -22,9 +22,6 @@ class ConfigProvider
         return [
             'annotations' => [
                 'scan' => [
-                    // 'paths' => [
-                    //     __DIR__,
-                    // ],
                     'collectors' => [
                         CommandCollector::class,
                     ],
