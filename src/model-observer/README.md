@@ -18,7 +18,7 @@ composer require friendsofhyperf/model-observer
 php bin/hyperf.php gen:observer TestObserver --model="App\\Model\\User"
 ```
 
-- Custom
+- Single binding
 
 ```php
 namespace App\Observer;
@@ -26,7 +26,7 @@ namespace App\Observer;
 use App\Model\User;
 use FriendsOfHyperf\ModelObserver\Annotation\Observer;
 
-#[Observer(User::class)]
+#[Observer(model: User::class)]
 class FooObserver
 {
     public function creating(User $model)
@@ -35,6 +35,32 @@ class FooObserver
     }
 
     public function created(User $model)
+    {
+        // do sth...
+    }
+
+    // another events
+}
+```
+
+- Multiple binding
+
+```php
+namespace App\Observer;
+
+use App\Model\Post;
+use App\Model\User;
+use FriendsOfHyperf\ModelObserver\Annotation\Observer;
+
+#[Observer(model: [User::class, Post::class])]
+class FooObserver
+{
+    public function creating($model)
+    {
+        // do sth...
+    }
+
+    public function created($model)
     {
         // do sth...
     }
