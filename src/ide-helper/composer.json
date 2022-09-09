@@ -28,9 +28,6 @@
         "doctrine/dbal": "Required to rename columns (^2.5|^3.0)."
     },
     "extra": {
-        "branch-alias": {
-            "3.x-dev": "3.0-dev"
-        },
         "hyperf": {
             "config": "FriendsOfHyperf\\IdeHelper\\ConfigProvider"
         }
