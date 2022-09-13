@@ -91,7 +91,7 @@ class PendingRequest
     /**
      * The transfer stats for the request.
      *
-     * @var \GuzzleHttp\TransferStats|null
+     * @var null|\GuzzleHttp\TransferStats
      */
     protected $transferStats;
 
