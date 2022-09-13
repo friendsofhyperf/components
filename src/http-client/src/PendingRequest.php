@@ -84,14 +84,14 @@ class PendingRequest
     /**
      * The request cookies.
      *
-     * @var array
+     * @var \GuzzleHttp\Cookie\CookieJar
      */
     protected $cookies;
 
     /**
      * The transfer stats for the request.
      *
-     * \GuzzleHttp\TransferStats
+     * @var null|\GuzzleHttp\TransferStats
      */
     protected $transferStats;
 
