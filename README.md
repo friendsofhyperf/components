@@ -4,7 +4,7 @@
 
 The most popular components for Hyperf.
 
-## Components
+## Repositories
 
 |Repository|Stable Version|Latest Unstable Version|Total Downloads|Monthly Downloads|Daily Downloads|
 |--|--|--|--|--|--|
