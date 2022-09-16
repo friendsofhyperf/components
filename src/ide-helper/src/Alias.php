@@ -419,8 +419,8 @@ class Alias
     /**
      * @param $macro_func
      *
-     * @throws \ReflectionException
      * @return \ReflectionFunctionAbstract
+     * @throws \ReflectionException
      */
     protected function getMacroFunction($macro_func)
     {
