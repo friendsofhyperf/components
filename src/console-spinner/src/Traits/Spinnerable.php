@@ -20,8 +20,8 @@ use TypeError;
 trait Spinnerable
 {
     /**
-     * @throws TypeError
      * @return Spinner
+     * @throws TypeError
      */
     protected function spinner(int $max = 0)
     {
@@ -37,8 +37,8 @@ trait Spinnerable
 
     /**
      * @param array|Countable|int $totalSteps
-     * @throws TypeError
      * @return mixed
+     * @throws TypeError
      */
     protected function withSpinner($totalSteps, Closure $callback, string $message = '')
     {

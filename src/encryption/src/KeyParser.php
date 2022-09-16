@@ -31,8 +31,8 @@ class KeyParser
     /**
      * Extract the encryption key from the given configuration.
      *
-     * @throws \RuntimeException
      * @return string
+     * @throws \RuntimeException
      */
     protected function key(array $config)
     {

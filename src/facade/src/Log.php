@@ -28,8 +28,8 @@ class Log extends Facade
     /**
      * @param string $name
      * @param string $group
-     * @throws TypeError
      * @return \Psr\Log\LoggerInterface
+     * @throws TypeError
      */
     public static function channel($name = 'hyperf', $group = 'default')
     {
