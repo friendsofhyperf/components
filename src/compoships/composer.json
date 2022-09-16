@@ -25,15 +25,10 @@
       "FriendsOfHyperf\\Compoships\\": "src"
     }
   },
-  "autoload-dev": {
-    "psr-4": {
-      "FriendsOfHyperf\\Compoships\\Tests\\": "tests"
-    }
-  },
   "extra": {
-      "hyperf": {
-          "config": "FriendsOfHyperf\\Compoships\\ConfigProvider"
-      }
+    "hyperf": {
+      "config": "FriendsOfHyperf\\Compoships\\ConfigProvider"
+    }
   },
   "minimum-stability": "dev",
   "prefer-stable": true,
