@@ -1,0 +1,34 @@
+{
+    "name": "friendsofhyperf/pretty-console",
+    "description": "The pretty console component for Hyperf.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
+    "require": {
+        "friendsofhyperf/helpers": "^3.0",
+        "hyperf/contract": "~3.0.0",
+        "nunomaduro/termwind": "^1.13"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\PrettyConsole\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\PrettyConsole\\ConfigProvider"
+        }
+    }
+}

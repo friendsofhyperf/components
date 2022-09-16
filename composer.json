@@ -42,13 +42,14 @@
         "hyperf/view": "~3.0.0",
         "league/commonmark": "^1.3|^2.0.2",
         "nesbot/carbon": "^2.0",
+        "nunomaduro/termwind": "^1.13",
         "opis/closure": "^3.1",
         "psy/psysh": "^0.10.0|^0.11.0",
         "ramsey/uuid": "^4.0",
         "symfony/console": "^5.3|^6.0",
         "symfony/process": "^5.3|^6.0",
-        "symfony/var-dumper": "^5.3|^6.0",
-        "symfony/uid": "^5.3|^6.0"
+        "symfony/uid": "^5.3|^6.0",
+        "symfony/var-dumper": "^5.3|^6.0"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
@@ -66,6 +67,7 @@
         "friendsofhyperf/cache": "*",
         "friendsofhyperf/closure-command": "*",
         "friendsofhyperf/command-signals": "*",
+        "friendsofhyperf/compoships": "*",
         "friendsofhyperf/confd": "*",
         "friendsofhyperf/config-consul": "*",
         "friendsofhyperf/console-spinner": "*",
@@ -81,6 +83,7 @@
         "friendsofhyperf/lock": "*",
         "friendsofhyperf/macros": "*",
         "friendsofhyperf/model-observer": "*",
+        "friendsofhyperf/pretty-console": "*",
         "friendsofhyperf/recaptcha": "*",
         "friendsofhyperf/tinker": "*"
     },
@@ -101,6 +104,7 @@
             "FriendsOfHyperf\\Cache\\": "src/cache/src/",
             "FriendsOfHyperf\\ClosureCommand\\": "src/closure-command/src/",
             "FriendsOfHyperf\\CommandSignals\\": "src/command-signals/src/",
+            "FriendsOfHyperf\\Compoships\\": "src/compoships/src/",
             "FriendsOfHyperf\\Confd\\": "src/confd/src/",
             "FriendsOfHyperf\\ConfigConsul\\": "src/config-consul/src/",
             "FriendsOfHyperf\\ConsoleSpinner\\": "src/console-spinner/src/",
@@ -115,6 +119,7 @@
             "FriendsOfHyperf\\Lock\\": "src/lock/src/",
             "FriendsOfHyperf\\Macros\\": "src/macros/src/",
             "FriendsOfHyperf\\ModelObserver\\": "src/model-observer/src/",
+            "FriendsOfHyperf\\PrettyConsole\\": "src/pretty-console/src/",
             "FriendsOfHyperf\\ReCaptcha\\": "src/recaptcha/src/",
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
             "Friendsofhyperf\\Encryption\\": "src/encryption/src/"
@@ -132,6 +137,7 @@
                 "FriendsOfHyperf\\Cache\\ConfigProvider",
                 "FriendsOfHyperf\\ClosureCommand\\ConfigProvider",
                 "FriendsOfHyperf\\CommandSignals\\ConfigProvider",
+                "FriendsOfHyperf\\Compoships\\ConfigProvider",
                 "FriendsOfHyperf\\Confd\\ConfigProvider",
                 "FriendsOfHyperf\\ConfigConsul\\ConfigProvider",
                 "FriendsOfHyperf\\ConsoleSpinner\\ConfigProvider",
@@ -145,6 +151,7 @@
                 "FriendsOfHyperf\\Lock\\ConfigProvider",
                 "FriendsOfHyperf\\Macros\\ConfigProvider",
                 "FriendsOfHyperf\\ModelObserver\\ConfigProvider",
+                "FriendsOfHyperf\\PrettyConsole\\ConfigProvider",
                 "FriendsOfHyperf\\ReCaptcha\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
                 "Friendsofhyperf\\Encryption\\ConfigProvider"
