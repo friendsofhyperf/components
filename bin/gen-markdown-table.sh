@@ -37,14 +37,19 @@ function php_version_require() {
     echo "[![PHP Version Require](https://poser.pugx.org/friendsofhyperf/$1/require/php)](https://packagist.org/packages/friendsofhyperf/$1)"
 }
 
+function license() {
+    echo "[![License](https://poser.pugx.org/friendsofhyperf/$1/license)](https://packagist.org/packages/friendsofhyperf/$1)"
+}
+
 echo "# friendsofhyperf/components"
 echo 
-printf "%s %s %s %s %s %s\n" \
+printf "%s %s %s %s %s %s %s\n" \
     "$(github_actions components)" \
     "$(latest_stable_version components)" \
     "$(total_downloads components)" \
     "$(latest_unstable_version components)" \
     "$(monthly_downloads components)" \
+    "$(license components)" \
     "$(php_version_require components)"
 echo
 echo "The most popular components for Hyperf."
