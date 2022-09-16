@@ -20,26 +20,12 @@
   "require": {
     "hyperf/database": "~2.2.0"
   },
-  "require-dev": {
-    "ext-sqlite3": "*",
-    "friendsofphp/php-cs-fixer": "^3.0",
-    "phpstan/phpstan": "^1.0",
-    "phpunit/phpunit": "^9.5"
-  },
   "autoload": {
     "psr-4": {
       "FriendsOfHyperf\\Compoships\\": "src"
     }
   },
-  "autoload-dev": {
-    "psr-4": {
-      "FriendsOfHyperf\\Compoships\\Tests\\": "tests"
-    }
-  },
   "extra": {
-      "branch-alias": {
-          "0.x-dev": "0.1-dev"
-      },
       "hyperf": {
           "config": "FriendsOfHyperf\\Compoships\\ConfigProvider"
       }
@@ -51,9 +37,5 @@
     "awobaz/eloquent-auto-append": "Automatically append accessors to model serialization",
     "awobaz/blade-active": "Blade directives for the Laravel 'Active' package",
     "awobaz/syntactic": "Syntactic sugar for named and indexed parameters call."
-  },
-  "scripts": {
-      "analyse": "phpstan analyse --memory-limit 4096M -l 0 -c phpstan.neon ./src",
-      "cs-fix": "php-cs-fixer fix $1"
   }
 }
