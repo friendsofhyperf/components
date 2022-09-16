@@ -84,6 +84,16 @@ class Str
     }
 
     /**
+     * Determine if a given string is a valid ULID.
+     *
+     * @param string $value
+     * @return bool
+     */
+    public static function isUlid($value)
+    {
+    }
+
+    /**
      * Determine if a given string is a valid UUID.
      *
      * @param string $value
@@ -207,6 +217,15 @@ class Str
      * @return array
      */
     public static function ucsplit($string)
+    {
+    }
+
+    /**
+     * Generate a ULID.
+     *
+     * @return \Symfony\Component\Uid\Ulid
+     */
+    public static function ulid()
     {
     }
 

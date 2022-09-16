@@ -164,6 +164,11 @@ class StrTest extends TestCase
         $this->assertSame('мама мыла раму', Str::lcfirst('Мама мыла раму'));
     }
 
+    public function testUlid()
+    {
+        $this->assertTrue(Str::isUlid((string) Str::ulid()));
+    }
+
     public function testUuid()
     {
         $this->assertInstanceOf(UuidInterface::class, Str::uuid());
