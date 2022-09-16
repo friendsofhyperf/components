@@ -49,7 +49,7 @@ printf "%s %s %s %s %s %s\n" \
 echo
 echo "The most popular components for Hyperf."
 echo 
-echo "## Components"
+echo "## Repositories"
 echo
 echo "|Repository|Stable Version|Latest Unstable Version|Total Downloads|Monthly Downloads|Daily Downloads|"
 echo "|--|--|--|--|--|--|"
