@@ -19,6 +19,7 @@ use Ramsey\Uuid\Codec\TimestampFirstCombCodec;
 use Ramsey\Uuid\Generator\CombGenerator;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidFactory;
+use Symfony\Component\Uid\Ulid;
 use voku\helper\ASCII;
 
 if (! Str::hasMacro('betweenFirst')) {
@@ -124,6 +125,16 @@ if (! Str::hasMacro('isUuid')) {
     });
 }
 
+if (! Str::hasMacro('isUlid')) {
+    Str::macro('isUlid', function ($value) {
+        if (! is_string($value)) {
+            return false;
+        }
+
+        return Ulid::isValid($value);
+    });
+}
+
 if (! Str::hasMacro('lcfirst')) {
     Str::macro('lcfirst', function ($string) {
         return Str::lower(Str::substr($string, 0, 1)) . Str::substr($string, 1);
@@ -221,6 +232,12 @@ if (! Str::hasMacro('createUuidsNormally')) {
 if (! Str::hasMacro('ucsplit')) {
     Str::macro('ucsplit', function ($string) {
         return preg_split('/(?=\p{Lu})/u', $string, -1, PREG_SPLIT_NO_EMPTY);
+    });
+}
+
+if (! Str::hasMacro('ulid')) {
+    Str::macro('ulid', function () {
+        return new Ulid();
     });
 }
 
