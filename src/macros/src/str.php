@@ -131,7 +131,15 @@ if (! Str::hasMacro('isUlid')) {
             return false;
         }
 
-        return Ulid::isValid($value);
+        if (26 !== \strlen($value)) {
+            return false;
+        }
+
+        if (26 !== strspn($value, '0123456789ABCDEFGHJKMNPQRSTVWXYZabcdefghjkmnpqrstvwxyz')) {
+            return false;
+        }
+
+        return $value[0] <= '7';
     });
 }
 
