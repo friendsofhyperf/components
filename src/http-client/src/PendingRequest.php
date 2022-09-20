@@ -54,6 +54,13 @@ class PendingRequest
     protected $client;
 
     /**
+     * The Guzzle HTTP handler.
+     *
+     * @var callable
+     */
+    protected $handler;
+
+    /**
      * The base URL for the request.
      *
      * @var string
@@ -841,9 +848,7 @@ class PendingRequest
      */
     public function buildClient()
     {
-        return $this->requestsReusableClient()
-               ? $this->getReusableClient()
-               : $this->createClient($this->buildHandlerStack());
+        return $this->client ?? $this->createClient($this->buildHandlerStack());
     }
 
     /**
@@ -867,13 +872,11 @@ class PendingRequest
      */
     public function buildHandlerStack()
     {
-        $handler = null;
-
         if (extension_loaded('swoole') && Coroutine::inCoroutine()) {
-            $handler = new CoroutineHandler();
+            $this->setHandler(new CoroutineHandler());
         }
 
-        return $this->pushHandlers(HandlerStack::create($handler));
+        return $this->pushHandlers(HandlerStack::create($this->handler));
     }
 
     /**
@@ -1077,9 +1080,7 @@ class PendingRequest
      */
     public function setHandler($handler)
     {
-        $this->client = $this->createClient(
-            $this->pushHandlers(HandlerStack::create($handler))
-        );
+        $this->handler = $handler;
 
         return $this;
     }
