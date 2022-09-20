@@ -131,11 +131,11 @@ if (! Str::hasMacro('isUlid')) {
             return false;
         }
 
-        if (26 !== \strlen($value)) {
+        if (\strlen($value) !== 26) {
             return false;
         }
 
-        if (26 !== strspn($value, '0123456789ABCDEFGHJKMNPQRSTVWXYZabcdefghjkmnpqrstvwxyz')) {
+        if (strspn($value, '0123456789ABCDEFGHJKMNPQRSTVWXYZabcdefghjkmnpqrstvwxyz') !== 26) {
             return false;
         }
 
