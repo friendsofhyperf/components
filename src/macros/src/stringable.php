@@ -125,7 +125,7 @@ if (! Stringable::hasMacro('ucsplit')) {
 
 if (! Stringable::hasMacro('wrap')) {
     Stringable::macro('wrap', function ($before, $after = null) {
-        return new static($before . $this->value . ($after ?: $before));
+        return new static(Str::wrap($this->value, $before, $after));
     });
 }
 

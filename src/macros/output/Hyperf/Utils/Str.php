@@ -218,4 +218,16 @@ class Str
     public static function wordCount($string)
     {
     }
+
+    /**
+     * Wrap the string with the given strings.
+     *
+     * @param string $before
+     * @param null|string $after
+     * @param mixed $value
+     * @return string
+     */
+    public static function wrap($value, $before, $after = null)
+    {
+    }
 }
