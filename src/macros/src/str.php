@@ -262,3 +262,9 @@ if (! Str::hasMacro('wordCount')) {
         return str_word_count($string);
     });
 }
+
+if (! Str::hasMacro('wrap')) {
+    Str::macro('wrap', function ($value, $before, $after = null) {
+        return $before . $value . ($after ??= $before);
+    });
+}

@@ -301,4 +301,10 @@ class StrTest extends TestCase
     {
         $this->assertSame($expected, Str::transliterate($value, '?', true));
     }
+
+    public function testWrap()
+    {
+        $this->assertEquals('"value"', Str::wrap('value', '"'));
+        $this->assertEquals('foo-bar-baz', Str::wrap('-bar-', 'foo', 'baz'));
+    }
 }
