@@ -83,6 +83,7 @@
         "friendsofhyperf/lock": "*",
         "friendsofhyperf/macros": "*",
         "friendsofhyperf/model-observer": "*",
+        "friendsofhyperf/model-uid-addon": "*",
         "friendsofhyperf/pretty-console": "*",
         "friendsofhyperf/recaptcha": "*",
         "friendsofhyperf/tinker": "*"
@@ -97,7 +98,9 @@
             "src/macros/src/collection.php",
             "src/macros/src/request.php",
             "src/macros/src/str.php",
-            "src/macros/src/stringable.php"
+            "src/macros/src/stringable.php",
+            "src/model-uid-addon/macros/blueprint.php",
+            "src/model-uid-addon/macros/str.php"
         ],
         "psr-4": {
             "FriendsOfHyperf\\AccessLog\\": "src/access-log/src/",
@@ -119,6 +122,7 @@
             "FriendsOfHyperf\\Lock\\": "src/lock/src/",
             "FriendsOfHyperf\\Macros\\": "src/macros/src/",
             "FriendsOfHyperf\\ModelObserver\\": "src/model-observer/src/",
+            "FriendsOfHyperf\\ModelUidAddon\\": "src/model-uid-addon/src/",
             "FriendsOfHyperf\\PrettyConsole\\": "src/pretty-console/src/",
             "FriendsOfHyperf\\ReCaptcha\\": "src/recaptcha/src/",
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
@@ -151,6 +155,7 @@
                 "FriendsOfHyperf\\Lock\\ConfigProvider",
                 "FriendsOfHyperf\\Macros\\ConfigProvider",
                 "FriendsOfHyperf\\ModelObserver\\ConfigProvider",
+                "FriendsOfHyperf\\ModelUidAddon\\ConfigProvider",
                 "FriendsOfHyperf\\PrettyConsole\\ConfigProvider",
                 "FriendsOfHyperf\\ReCaptcha\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
