@@ -6,16 +6,20 @@
 parameters:
   excludePaths:
     - 'src/macros/output/*'
+    - 'src/model-uid-addon/output/*'
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     # - '#Unsafe usage of new static\(\)#'
     -
       message: '#Undefined variable: \$this#'
       paths:
+        - src/closure-command/publish/console.php
         - src/macros/src/collection.php
         - src/macros/src/stringable.php
         - src/macros/src/request.php
-        - src/closure-command/publish/console.php
+        - src/model-uid-addon/macros/str.php
+        - src/model-uid-addon/macros/blueprint.php
+        - src/tinker/src/TinkerCaster.php
     -
       message: '#Calling static::\w+\(\) outside of class scope#'
       path: src/macros/src/collection.php
@@ -24,12 +28,6 @@ parameters:
       paths:
         - src/macros/src/collection.php
         - src/macros/src/stringable.php
-    - 
-      message: '#Call to an undefined static method Hyperf\\Utils\\Arr::hasMacro\(\).#'
-      path: src/macros/src/arr.php
-    - 
-      message: '#Call to an undefined static method Hyperf\\Utils\\Arr::macro\(\).#'
-      path: src/macros/src/arr.php
     - 
       message: '#Accessing static::\$\w+Cache outside of class scope.#'
       path: src/macros/src/str.php
@@ -40,9 +38,5 @@ parameters:
     - '#Access to an undefined property FriendsOfHyperf\\Http\\Client\\Response::\$\w+\.#'
     - '#Function GuzzleHttp\\Psr7\\get_message_body_summary not found.#'
     - '#.*should either be compatible with ArrayAccess::offset\w+.*#'
-    - 
-      message: '#Undefined variable: \$this#'
-      paths:
-        - src/tinker/src/TinkerCaster.php
     - '#Unsafe usage of new static\(\)\.#'
     
