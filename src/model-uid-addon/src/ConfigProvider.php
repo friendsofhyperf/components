@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 /**
- * This file is part of model-uid-addon.
+ * This file is part of friendsofhyperf/components.
  *
- * @link     https://github.com/friendsofhyperf/model-uid-addon
- * @document https://github.com/friendsofhyperf/model-uid-addon/blob/main/README.md
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\ModelUidAddon;
