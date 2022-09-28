@@ -216,25 +216,6 @@ if (! function_exists('dispatch')) {
     }
 }
 
-if (! function_exists('dispatch_now')) {
-    /**
-     * @param \Hyperf\AsyncQueue\JobInterface $job
-     * @return mixed
-     * @throws TypeError
-     * @throws InvalidDriverException
-     * @throws InvalidArgumentException
-     * @deprecated 0.2.0
-     */
-    function dispatch_now($job)
-    {
-        if ($job instanceof \Hyperf\AsyncQueue\JobInterface) {
-            return $job->handle();
-        }
-
-        throw new \InvalidArgumentException('Not Support job type.');
-    }
-}
-
 if (! function_exists('environment')) {
     /**
      * @param mixed $environments
