@@ -153,6 +153,24 @@ class Request
     }
 
     /**
+     * Merge new input into the current request's input array.
+     *
+     * @return $this
+     */
+    public function merge(array $input)
+    {
+    }
+
+    /**
+     * Merge new input into the request's input, but only when that key is missing from the request.
+     *
+     * @return $this
+     */
+    public function mergeIfMissing(array $input)
+    {
+    }
+
+    /**
      * Determine if the request is missing a given input item key.
      *
      * @param array|string $key
