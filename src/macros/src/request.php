@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 use Carbon\Carbon;
+use Hyperf\Context\Context;
 use Hyperf\HttpServer\Request;
 use Hyperf\Utils\Arr;
 use Hyperf\Utils\Str;
@@ -151,6 +152,20 @@ if (class_exists(Request::class)) {
             /** @var Request $this */
             $https = $this->getServerParams('HTTPS')[0] ?? null;
             return ($https ? 'https' : 'http') . '://' . $this->httpHost();
+        });
+    }
+
+    if (! Request::hasMacro('merge')) {
+        Request::macro('merge', function (array $input) {
+            Context::override($this->contextkeys['parsedData'], fn ($inputs) => array_replace((array) $inputs, $input));
+
+            return $this;
+        });
+    }
+
+    if (! Request::hasMacro('mergeIfMissing')) {
+        Request::macro('mergeIfMissing', function (array $input) {
+            return $this->merge(collect($input)->filter(fn ($value, $key) => $this->missing($key))->toArray());
         });
     }
 

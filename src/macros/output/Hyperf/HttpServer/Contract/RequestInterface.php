@@ -8,18 +8,16 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace Hyperf\HttpServer;
+namespace Hyperf\HttpServer\Contract;
 
-class Request
+interface RequestInterface
 {
     /**
      * Get an array of all of the files on the request.
      *
      * @return array
      */
-    public function allFiles()
-    {
-    }
+    public function allFiles();
 
     /**
      * Determine if the request contains a non-empty value for any of the given inputs.
@@ -27,9 +25,7 @@ class Request
      * @param array|string $keys
      * @return bool
      */
-    public function anyFilled($keys)
-    {
-    }
+    public function anyFilled($keys);
 
     /**
      * Retrieve input as a boolean value.
@@ -40,9 +36,7 @@ class Request
      * @param bool $default
      * @return bool
      */
-    public function boolean($key = null, $default = false)
-    {
-    }
+    public function boolean($key = null, $default = false);
 
     /**
      * Retrieve input from the request as a collection.
@@ -50,9 +44,7 @@ class Request
      * @param null|array|string $key
      * @return \Hyperf\Utils\Collection
      */
-    public function collect($key = null)
-    {
-    }
+    public function collect($key = null);
 
     /**
      * Retrieve input from the request as a Carbon instance.
@@ -62,9 +54,7 @@ class Request
      * @param null|string $tz
      * @return null|\Carbon\Carbon
      */
-    public function date($key, $format = null, $tz = null)
-    {
-    }
+    public function date($key, $format = null, $tz = null);
 
     /**
      * Get all of the input except for a specified array of items.
@@ -72,9 +62,7 @@ class Request
      * @param array|mixed $keys
      * @return array
      */
-    public function except($keys)
-    {
-    }
+    public function except($keys);
 
     /**
      * Determine if the request contains a non-empty value for an input item.
@@ -82,9 +70,7 @@ class Request
      * @param array|string $key
      * @return bool
      */
-    public function filled($key)
-    {
-    }
+    public function filled($key);
 
     /**
      * Determine if the request contains any of the given inputs.
@@ -92,9 +78,7 @@ class Request
      * @param array|string $keys
      * @return bool
      */
-    public function hasAny($keys)
-    {
-    }
+    public function hasAny($keys);
 
     /**
      * Determine if the given input key is an empty string for "has".
@@ -102,9 +86,7 @@ class Request
      * @param string $key
      * @return bool
      */
-    public function isEmptyString($key)
-    {
-    }
+    public function isEmptyString($key);
 
     /**
      * Determine if the request contains an empty value for an input item.
@@ -112,45 +94,49 @@ class Request
      * @param array|string $key
      * @return bool
      */
-    public function isNotFilled($key)
-    {
-    }
+    public function isNotFilled($key);
 
     /**
      * Get the keys for all of the input and files.
      *
      * @return array
      */
-    public function keys()
-    {
-    }
+    public function keys();
 
     /**
      * Get the host name.
      *
      * @return string
      */
-    public function host()
-    {
-    }
+    public function host();
 
     /**
      * Get the HTTP host being requested.
      *
      * @return string
      */
-    public function httpHost()
-    {
-    }
+    public function httpHost();
 
     /**
      * Get the scheme and HTTP host.
      *
      * @return string
      */
-    public function schemeAndHttpHost()
-    {
-    }
+    public function schemeAndHttpHost();
+
+    /**
+     * Merge new input into the current request's input array.
+     *
+     * @return $this
+     */
+    public function merge(array $input);
+
+    /**
+     * Merge new input into the request's input, but only when that key is missing from the request.
+     *
+     * @return $this
+     */
+    public function mergeIfMissing(array $input);
 
     /**
      * Determine if the request is missing a given input item key.
@@ -158,9 +144,7 @@ class Request
      * @param array|string $key
      * @return bool
      */
-    public function missing($key)
-    {
-    }
+    public function missing($key);
 
     /**
      * Get a subset containing the provided keys with values from the input data.
@@ -168,9 +152,7 @@ class Request
      * @param array|mixed $keys
      * @return array
      */
-    public function only($keys)
-    {
-    }
+    public function only($keys);
 
     /**
      * Apply the callback if the request contains a non-empty value for the given input item key.
@@ -178,9 +160,7 @@ class Request
      * @param string $key
      * @return $this|mixed
      */
-    public function whenFilled($key, callable $callback, callable $default = null)
-    {
-    }
+    public function whenFilled($key, callable $callback, callable $default = null);
 
     /**
      * Apply the callback if the request contains the given input item key.
@@ -188,16 +168,12 @@ class Request
      * @param string $key
      * @return $this|mixed
      */
-    public function whenHas($key, callable $callback, callable $default = null)
-    {
-    }
+    public function whenHas($key, callable $callback, callable $default = null);
 
     /**
      * Determine if the request is sending JSON.
      *
      * @return bool
      */
-    public function isJson()
-    {
-    }
+    public function isJson();
 }
