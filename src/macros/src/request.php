@@ -157,7 +157,7 @@ if (class_exists(Request::class)) {
 
     if (! Request::hasMacro('merge')) {
         Request::macro('merge', function (array $input) {
-            Context::override($this->contextkeys['parsedData'], fn ($inputs) => array_replace($inputs, $input));
+            Context::override($this->contextkeys['parsedData'], fn ($inputs) => array_replace((array) $inputs, $input));
 
             return $this;
         });
