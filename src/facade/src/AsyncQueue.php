@@ -21,12 +21,10 @@ class AsyncQueue extends Facade
 {
     /**
      * Push a job to the queue.
-     * @param int $delay
-     * @param string $queue
      * @return bool
      * @throws InvalidDriverException
      */
-    public static function push(JobInterface $job, $delay = 0, $queue = 'default')
+    public static function push(JobInterface $job, int $delay = 0, string $queue = 'default')
     {
         return self::get($queue)->push($job, $delay);
     }
