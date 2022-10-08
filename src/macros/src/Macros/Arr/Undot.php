@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Macros\Arr;
+namespace FriendsOfHyperf\Macros\Macros\Arr;
 
 use Hyperf\Utils\Arr;
 
@@ -16,7 +16,7 @@ class Undot
 {
     public function __invoke()
     {
-        return static function ($array) {
+        return function ($array) {
             $results = [];
 
             foreach ($array as $key => $value) {

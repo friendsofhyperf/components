@@ -8,17 +8,14 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Macros\Arr;
+namespace FriendsOfHyperf\Macros\Macros\Arr;
 
-use Hyperf\Utils\Collection;
+use Hyperf\Utils\Arr;
 
-class PrependKeysWith
+class IsList
 {
     public function __invoke()
     {
-        return static fn ($array, $prependWith) => Collection::make($array)
-            ->mapWithKeys(function ($item, $key) use ($prependWith) {
-                return [$prependWith . $key => $item];
-            })->all();
+        return fn ($array) => ! Arr::isAssoc($array);
     }
 }

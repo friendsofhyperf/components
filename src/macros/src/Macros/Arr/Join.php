@@ -8,13 +8,13 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Macros\Arr;
+namespace FriendsOfHyperf\Macros\Macros\Arr;
 
 class Join
 {
     public function __invoke()
     {
-        return static function ($array, $glue, $finalGlue = '') {
+        return function ($array, $glue, $finalGlue = '') {
             if ($finalGlue === '') {
                 return implode($glue, $array);
             }

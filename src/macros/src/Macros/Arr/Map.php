@@ -8,14 +8,17 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Macros\Arr;
+namespace FriendsOfHyperf\Macros\Macros\Arr;
 
-use Hyperf\Utils\Arr;
-
-class IsList
+class Map
 {
     public function __invoke()
     {
-        return static fn ($array) => ! Arr::isAssoc($array);
+        return function (array $array, callable $callback) {
+            $keys = array_keys($array);
+            $items = array_map($callback, $array, $keys);
+
+            return array_combine($keys, $items);
+        };
     }
 }

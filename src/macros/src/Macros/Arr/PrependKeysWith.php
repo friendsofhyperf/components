@@ -8,17 +8,17 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Macros\Arr;
+namespace FriendsOfHyperf\Macros\Macros\Arr;
 
-class Map
+use Hyperf\Utils\Collection;
+
+class PrependKeysWith
 {
     public function __invoke()
     {
-        return static function (array $array, callable $callback) {
-            $keys = array_keys($array);
-            $items = array_map($callback, $array, $keys);
-
-            return array_combine($keys, $items);
-        };
+        return fn ($array, $prependWith) => Collection::make($array)
+            ->mapWithKeys(function ($item, $key) use ($prependWith) {
+                return [$prependWith . $key => $item];
+            })->all();
     }
 }

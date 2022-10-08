@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Macros\Arr;
+namespace FriendsOfHyperf\Macros\Macros\Arr;
 
 use Hyperf\Utils\Arr;
 
@@ -16,7 +16,7 @@ class SortByMany
 {
     public function __invoke()
     {
-        return static function ($array, $comparisons = []) {
+        return function ($array, $comparisons = []) {
             usort($array, function ($a, $b) use ($comparisons) {
                 foreach ($comparisons as $cmp) {
                     // destruct comparison array to variables

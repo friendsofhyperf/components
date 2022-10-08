@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Macros\Arr;
+namespace FriendsOfHyperf\Macros\Macros\Arr;
 
 use Hyperf\Utils\Collection;
 
@@ -16,6 +16,6 @@ class KeyBy
 {
     public function __invoke()
     {
-        return static fn ($array, $keyBy) => Collection::make($array)->keyBy($keyBy)->all();
+        return fn ($array, $keyBy) => Collection::make($array)->keyBy($keyBy)->all();
     }
 }
