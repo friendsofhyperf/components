@@ -20,11 +20,7 @@
     },
     "autoload": {
         "files": [
-            "src/arr.php",
-            "src/collection.php",
-            "src/request.php",
-            "src/str.php",
-            "src/stringable.php"
+            "src/autoload.php"
         ],
         "psr-4": {
             "FriendsOfHyperf\\Macros\\": "src/"
