@@ -17,8 +17,6 @@ class WhenStartsWith
 {
     public function __invoke()
     {
-        return function ($needles, $callback, $default = null) {
-            return $this->when($this->startsWith($needles), $callback, $default);
-        };
+        return fn ($needles, $callback, $default = null) => $this->when($this->startsWith($needles), $callback, $default);
     }
 }

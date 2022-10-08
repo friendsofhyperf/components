@@ -19,9 +19,7 @@ class Reverse
 {
     public function __invoke()
     {
-        return function () {
-            /* @phpstan-ignore-next-line */
-            return new static(Str::reverse($this->value));
-        };
+        /* @phpstan-ignore-next-line */
+        return fn () => new static(Str::reverse($this->value));
     }
 }

@@ -17,9 +17,7 @@ class WhenIsUuid
 {
     public function __invoke()
     {
-        return function ($callback, $default = null) {
-            /* @phpstan-ignore-next-line */
-            return $this->when($this->isUuid(), $callback, $default);
-        };
+        /* @phpstan-ignore-next-line */
+        return fn ($callback, $default = null) => $this->when($this->isUuid(), $callback, $default);
     }
 }

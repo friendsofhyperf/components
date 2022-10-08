@@ -17,9 +17,7 @@ class Value
 {
     public function __invoke()
     {
-        return function () {
-            /* @phpstan-ignore-next-line */
-            return $this->toString();
-        };
+        /* @phpstan-ignore-next-line */
+        return fn () => $this->toString();
     }
 }

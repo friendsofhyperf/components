@@ -17,8 +17,6 @@ class WhenContainsAll
 {
     public function __invoke()
     {
-        return function (array $needles, $callback, $default = null) {
-            return $this->when($this->containsAll($needles), $callback, $default);
-        };
+        return fn (array $needles, $callback, $default = null) => $this->when($this->containsAll($needles), $callback, $default);
     }
 }

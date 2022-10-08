@@ -19,9 +19,7 @@ class Lcfirst
 {
     public function __invoke()
     {
-        return function () {
-            /* @phpstan-ignore-next-line */
-            return new static(Str::lcfirst($this->value));
-        };
+        /* @phpstan-ignore-next-line */
+        return fn () => new static(Str::lcfirst($this->value));
     }
 }

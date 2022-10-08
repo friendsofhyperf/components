@@ -19,9 +19,7 @@ class IsJson
 {
     public function __invoke()
     {
-        return function () {
-            /* @phpstan-ignore-next-line */
-            return Str::isJson($this->value);
-        };
+        /* @phpstan-ignore-next-line */
+        return fn () => Str::isJson($this->value);
     }
 }

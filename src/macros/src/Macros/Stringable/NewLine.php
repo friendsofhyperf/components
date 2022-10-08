@@ -17,8 +17,6 @@ class NewLine
 {
     public function __invoke()
     {
-        return function ($count = 1) {
-            return $this->append(str_repeat(PHP_EOL, $count));
-        };
+        return fn ($count = 1) => $this->append(str_repeat(PHP_EOL, $count));
     }
 }

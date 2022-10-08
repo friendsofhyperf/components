@@ -17,8 +17,6 @@ class Test
 {
     public function __invoke()
     {
-        return function ($pattern) {
-            return $this->match($pattern)->isNotEmpty();
-        };
+        return fn ($pattern) => $this->match($pattern)->isNotEmpty();
     }
 }

@@ -17,8 +17,6 @@ class WhenIs
 {
     public function __invoke()
     {
-        return function ($pattern, $callback, $default = null) {
-            return $this->when($this->is($pattern), $callback, $default);
-        };
+        return fn ($pattern, $callback, $default = null) => $this->when($this->is($pattern), $callback, $default);
     }
 }

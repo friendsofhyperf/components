@@ -17,8 +17,6 @@ class WhenEndsWith
 {
     public function __invoke()
     {
-        return function ($needles, $callback, $default = null) {
-            return $this->when($this->endsWith($needles), $callback, $default);
-        };
+        return fn ($needles, $callback, $default = null) => $this->when($this->endsWith($needles), $callback, $default);
     }
 }
