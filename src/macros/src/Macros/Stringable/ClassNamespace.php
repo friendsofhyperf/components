@@ -10,6 +10,8 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Macros\Macros\Stringable;
 
+use Hyperf\Utils\Str;
+
 /**
  * @mixin \Illuminate\Support\Stringable
  */
@@ -18,6 +20,6 @@ class ClassNamespace
     public function __invoke()
     {
         /* @phpstan-ignore-next-line */
-        return fn () => new static(class_basename($this->value));
+        return fn () => new static(Str::classNamespace($this->value));
     }
 }
