@@ -17,13 +17,6 @@ class PipeThrough
 {
     public function __invoke()
     {
-        return function ($pipes) {
-            return static::make($pipes)->reduce(
-                function ($carry, $pipe) {
-                    return $pipe($carry);
-                },
-                $this,
-            );
-        };
+        return fn ($pipes) => static::make($pipes)->reduce(fn ($carry, $pipe) => $pipe($carry), $this);
     }
 }

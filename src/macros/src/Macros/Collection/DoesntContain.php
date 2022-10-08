@@ -17,8 +17,6 @@ class DoesntContain
 {
     public function __invoke()
     {
-        return function ($key, $operator = null, $value = null) {
-            return ! $this->contains(...func_get_args());
-        };
+        return fn ($key, $operator = null, $value = null) => ! $this->contains(...func_get_args());
     }
 }

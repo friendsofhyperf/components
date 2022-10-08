@@ -20,11 +20,7 @@ class Sliding
         return function ($size = 2, $step = 1) {
             $chunks = (int) floor(($this->count() - $size) / $step) + 1;
 
-            return static::times($chunks, function ($number) use ($size, $step) {
-                /** @var Collection $items */
-                $items = $this;
-                return $items->slice(($number - 1) * $step, $size);
-            });
+            return static::times($chunks, fn ($number) => $this->slice(($number - 1) * $step, $size));
         };
     }
 }

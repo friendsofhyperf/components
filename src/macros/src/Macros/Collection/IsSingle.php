@@ -17,12 +17,6 @@ class IsSingle
 {
     public function __invoke()
     {
-        return function () {
-            if ($this->count() === 1) {
-                return true;
-            }
-
-            return false;
-        };
+        return fn () => $this->count() === 1;
     }
 }

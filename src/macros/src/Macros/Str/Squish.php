@@ -14,8 +14,6 @@ class Squish
 {
     public function __invoke()
     {
-        return static function ($value) {
-            return preg_replace('~(\s|\x{3164})+~u', ' ', preg_replace('~^[\s﻿]+|[\s﻿]+$~u', '', $value));
-        };
+        return static fn ($value) => preg_replace('~(\s|\x{3164})+~u', ' ', preg_replace('~^[\s﻿]+|[\s﻿]+$~u', '', $value));
     }
 }

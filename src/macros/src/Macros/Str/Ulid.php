@@ -16,8 +16,6 @@ class Ulid
 {
     public function __invoke()
     {
-        return static function () {
-            return new SymfonyUlid();
-        };
+        return static fn () => new SymfonyUlid();
     }
 }

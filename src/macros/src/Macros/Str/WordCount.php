@@ -14,8 +14,6 @@ class WordCount
 {
     public function __invoke()
     {
-        return static function ($string) {
-            return str_word_count($string);
-        };
+        return static fn ($string) => str_word_count($string);
     }
 }

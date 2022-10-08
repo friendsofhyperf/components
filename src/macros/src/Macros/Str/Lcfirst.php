@@ -16,8 +16,6 @@ class Lcfirst
 {
     public function __invoke()
     {
-        return static function ($string) {
-            return Str::lower(Str::substr($string, 0, 1)) . Str::substr($string, 1);
-        };
+        return static fn ($string) => Str::lower(Str::substr($string, 0, 1)) . Str::substr($string, 1);
     }
 }

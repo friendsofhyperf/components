@@ -14,8 +14,6 @@ class Swap
 {
     public function __invoke()
     {
-        return static function (array $map, $subject) {
-            return str_replace(array_keys($map), array_values($map), $subject);
-        };
+        return static fn (array $map, $subject) => str_replace(array_keys($map), array_values($map), $subject);
     }
 }

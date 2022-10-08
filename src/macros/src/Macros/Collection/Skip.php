@@ -17,8 +17,6 @@ class Skip
 {
     public function __invoke()
     {
-        return function ($count) {
-            return $this->slice($count);
-        };
+        return fn ($count) => $this->slice($count);
     }
 }

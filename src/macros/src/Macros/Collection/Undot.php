@@ -20,8 +20,6 @@ class Undot
 {
     public function __invoke()
     {
-        return function () {
-            return new Collection(Arr::undot($this->all()));
-        };
+        return fn () => new Collection(Arr::undot($this->all()));
     }
 }
