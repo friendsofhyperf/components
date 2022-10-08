@@ -94,11 +94,7 @@
             "src/exception-event/src/functions.php",
             "src/helpers/src/functions.php",
             "src/lock/src/functions.php",
-            "src/macros/src/arr.php",
-            "src/macros/src/collection.php",
-            "src/macros/src/request.php",
-            "src/macros/src/str.php",
-            "src/macros/src/stringable.php",
+            "src/macros/src/autoload.php",
             "src/model-uid-addon/macros/blueprint.php",
             "src/model-uid-addon/macros/str.php"
         ],
