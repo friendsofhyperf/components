@@ -12,6 +12,9 @@ namespace FriendsOfHyperf\Macros\Macros\Stringable;
 
 use Hyperf\Utils\Str;
 
+/**
+ * @mixin \Illuminate\Support\Stringable
+ */
 class IsJson
 {
     public function __invoke()

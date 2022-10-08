@@ -12,6 +12,9 @@ namespace FriendsOfHyperf\Macros\Macros\Stringable;
 
 use FriendsOfHyperf\Macros\Foundation\HtmlString;
 
+/**
+ * @mixin \Illuminate\Support\Stringable
+ */
 class ToHtmlString
 {
     public function __invoke()

@@ -10,6 +10,9 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Macros\Macros\Stringable;
 
+/**
+ * @mixin \Illuminate\Support\Stringable
+ */
 class ToString
 {
     public function __invoke()

@@ -12,6 +12,9 @@ namespace FriendsOfHyperf\Macros\Macros\Stringable;
 
 use Hyperf\Utils\Str;
 
+/**
+ * @mixin \Illuminate\Support\Stringable
+ */
 class SubstrReplace
 {
     public function __invoke()
