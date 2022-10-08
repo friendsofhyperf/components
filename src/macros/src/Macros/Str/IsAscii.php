@@ -16,6 +16,6 @@ class IsAscii
 {
     public function __invoke()
     {
-        return static fn ($value) => ASCII::is_ascii((string) $value);
+        return fn ($value) => ASCII::is_ascii((string) $value);
     }
 }

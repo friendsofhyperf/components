@@ -16,7 +16,7 @@ class Markdown
 {
     public function __invoke()
     {
-        return static function ($string, array $options = []) {
+        return function ($string, array $options = []) {
             $converter = new GithubFlavoredMarkdownConverter($options);
 
             return (string) $converter->convert($string);

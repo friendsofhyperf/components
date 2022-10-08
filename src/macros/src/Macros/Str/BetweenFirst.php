@@ -16,7 +16,7 @@ class BetweenFirst
 {
     public function __invoke()
     {
-        return static function ($subject, $from, $to) {
+        return function ($subject, $from, $to) {
             if ($from === '' || $to === '') {
                 return $subject;
             }

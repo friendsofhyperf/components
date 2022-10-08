@@ -16,6 +16,6 @@ class Transliterate
 {
     public function __invoke()
     {
-        return static fn ($string, $unknown = '?', $strict = false) => ASCII::to_transliterate($string, $unknown, $strict);
+        return fn ($string, $unknown = '?', $strict = false) => ASCII::to_transliterate($string, $unknown, $strict);
     }
 }

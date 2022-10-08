@@ -14,7 +14,7 @@ class FlushCache
 {
     public function __invoke()
     {
-        return static function () {
+        return function () {
             /* @phpstan-ignore-next-line */
             static::$snakeCache = [];
             /* @phpstan-ignore-next-line */

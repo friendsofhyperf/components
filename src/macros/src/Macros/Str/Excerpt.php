@@ -16,7 +16,7 @@ class Excerpt
 {
     public function __invoke()
     {
-        return static function ($text, $phrase = '', $options = []) {
+        return function ($text, $phrase = '', $options = []) {
             $radius = $options['radius'] ?? 100;
             $omission = $options['omission'] ?? '...';
 

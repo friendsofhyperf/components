@@ -16,7 +16,7 @@ class IsJson
 {
     public function __invoke()
     {
-        return static function ($value) {
+        return function ($value) {
             if (! is_string($value)) {
                 return false;
             }

@@ -16,7 +16,7 @@ class Headline
 {
     public function __invoke()
     {
-        return static function ($value) {
+        return function ($value) {
             $parts = explode(' ', $value);
 
             $parts = count($parts) > 1

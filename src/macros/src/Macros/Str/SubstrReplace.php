@@ -14,7 +14,7 @@ class SubstrReplace
 {
     public function __invoke()
     {
-        return static function ($string, $replace, $offset = 0, $length = null) {
+        return function ($string, $replace, $offset = 0, $length = null) {
             if ($length === null) {
                 $length = strlen($string);
             }

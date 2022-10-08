@@ -19,7 +19,7 @@ class InlineMarkdown
 {
     public function __invoke()
     {
-        return static function ($string, array $options = []) {
+        return function ($string, array $options = []) {
             $environment = new Environment($options);
 
             $environment->addExtension(new GithubFlavoredMarkdownExtension());

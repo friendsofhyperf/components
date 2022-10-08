@@ -14,6 +14,6 @@ class Reverse
 {
     public function __invoke()
     {
-        return static fn ($value) => implode(array_reverse(mb_str_split($value)));
+        return fn ($value) => implode(array_reverse(mb_str_split($value)));
     }
 }

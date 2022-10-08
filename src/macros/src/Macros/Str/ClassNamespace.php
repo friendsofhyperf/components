@@ -14,7 +14,7 @@ class ClassNamespace
 {
     public function __invoke()
     {
-        return static function ($value) {
+        return function ($value) {
             if ($pos = strrpos($value, '\\')) {
                 return substr($value, 0, $pos);
             }

@@ -19,7 +19,7 @@ class OrderedUuid
 {
     public function __invoke()
     {
-        return static function () {
+        return function () {
             if (UuidContainer::$uuidFactory) {
                 return call_user_func(UuidContainer::$uuidFactory);
             }

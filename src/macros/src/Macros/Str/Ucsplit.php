@@ -14,6 +14,6 @@ class Ucsplit
 {
     public function __invoke()
     {
-        return static fn ($string) => preg_split('/(?=\p{Lu})/u', $string, -1, PREG_SPLIT_NO_EMPTY);
+        return fn ($string) => preg_split('/(?=\p{Lu})/u', $string, -1, PREG_SPLIT_NO_EMPTY);
     }
 }

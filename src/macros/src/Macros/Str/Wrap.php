@@ -14,6 +14,6 @@ class Wrap
 {
     public function __invoke()
     {
-        return static fn ($value, $before, $after = null) => $before . $value . ($after ??= $before);
+        return fn ($value, $before, $after = null) => $before . $value . ($after ??= $before);
     }
 }

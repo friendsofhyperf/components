@@ -16,6 +16,6 @@ class CreateUuidsNormally
 {
     public function __invoke()
     {
-        return static fn () => UuidContainer::$uuidFactory = null;
+        return fn () => UuidContainer::$uuidFactory = null;
     }
 }

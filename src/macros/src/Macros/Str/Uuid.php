@@ -17,7 +17,7 @@ class Uuid
 {
     public function __invoke()
     {
-        return static fn () => UuidContainer::$uuidFactory
+        return fn () => UuidContainer::$uuidFactory
                         ? call_user_func(UuidContainer::$uuidFactory)
                         : RamseyUuid::uuid4();
     }
