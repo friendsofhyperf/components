@@ -18,6 +18,7 @@ class Scan
     public function __invoke()
     {
         return function ($format) {
+            /* @phpstan-ignore-next-line */
             return collect(sscanf($this->value, $format));
         };
     }

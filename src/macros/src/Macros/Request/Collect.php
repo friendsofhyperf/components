@@ -22,6 +22,7 @@ class Collect
                 return $this->all();
             }
 
+            /* @phpstan-ignore-next-line */
             return collect(is_array($key) ? $this->only($key) : $this->input($key));
         };
     }

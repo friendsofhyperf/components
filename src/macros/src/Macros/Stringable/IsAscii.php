@@ -20,6 +20,7 @@ class IsAscii
     public function __invoke()
     {
         return function () {
+            /* @phpstan-ignore-next-line */
             return Str::isAscii($this->value);
         };
     }

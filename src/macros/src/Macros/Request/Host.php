@@ -17,8 +17,7 @@ class Host
 {
     public function __invoke()
     {
-        return function () {
-            return $this->getHttpHost();
-        };
+        /* @phpstan-ignore-next-line */
+        return fn () => $this->getHttpHost();
     }
 }

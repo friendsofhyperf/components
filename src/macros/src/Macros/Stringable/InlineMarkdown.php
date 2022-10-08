@@ -20,6 +20,7 @@ class InlineMarkdown
     public function __invoke()
     {
         return function (array $options = []) {
+            /* @phpstan-ignore-next-line */
             return new static(Str::inlineMarkdown($this->value, $options));
         };
     }

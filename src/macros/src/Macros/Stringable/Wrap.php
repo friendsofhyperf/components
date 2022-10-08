@@ -20,6 +20,7 @@ class Wrap
     public function __invoke()
     {
         return function ($before, $after = null) {
+            /* @phpstan-ignore-next-line */
             return new static(Str::wrap($this->value, $before, $after));
         };
     }

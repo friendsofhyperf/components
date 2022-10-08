@@ -17,8 +17,7 @@ class ClassNamespace
 {
     public function __invoke()
     {
-        return function () {
-            return new static(class_basename($this->value));
-        };
+        /* @phpstan-ignore-next-line */
+        return fn () => new static(class_basename($this->value));
     }
 }

@@ -20,6 +20,7 @@ class SubstrReplace
     public function __invoke()
     {
         return function ($replace, $offset = 0, $length = null) {
+            /* @phpstan-ignore-next-line */
             return new static(Str::substrReplace($this->value, $replace, $offset, $length));
         };
     }

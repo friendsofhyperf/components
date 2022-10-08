@@ -22,8 +22,8 @@ class FirstOrFail
     {
         return function ($key = null, $operator = null, $value = null) {
             $args = func_get_args();
-            /** @var Collection $this */
             $placeholder = new stdClass();
+            /** @phpstan-ignore-next-line */
             $item = $this->when(func_num_args() > 0, function ($collection) use ($args) {
                 return $collection->where(...$args);
             })->first(null, $placeholder);

@@ -19,8 +19,7 @@ class Excerpt
 {
     public function __invoke()
     {
-        return function ($phrase = '', $options = []) {
-            return Str::excerpt($this->value, $phrase, $options);
-        };
+        /* @phpstan-ignore-next-line */
+        return fn ($phrase = '', $options = []) => Str::excerpt($this->value, $phrase, $options);
     }
 }

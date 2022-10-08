@@ -20,6 +20,7 @@ class Markdown
     public function __invoke()
     {
         return function (array $options = []) {
+            /* @phpstan-ignore-next-line */
             return new static(Str::markdown($this->value, $options));
         };
     }

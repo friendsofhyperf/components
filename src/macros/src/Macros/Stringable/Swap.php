@@ -18,6 +18,7 @@ class Swap
     public function __invoke()
     {
         return function (array $map) {
+            /* @phpstan-ignore-next-line */
             return new static(strtr($this->value, $map));
         };
     }

@@ -20,6 +20,7 @@ class Date
     public function __invoke()
     {
         return function (string $key, $format = null, $tz = null) {
+            /* @phpstan-ignore-next-line */
             if ($this->isNotFilled($key)) {
                 return null;
             }

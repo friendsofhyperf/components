@@ -20,7 +20,7 @@ class Ucsplit
     public function __invoke()
     {
         return function () {
-            /* @var Stringable $this */
+            /* @phpstan-ignore-next-line */
             return collect(Str::ucsplit($this->value));
         };
     }

@@ -19,8 +19,7 @@ class Headline
 {
     public function __invoke()
     {
-        return function () {
-            return new static(Str::headline($this->value));
-        };
+        /* @phpstan-ignore-next-line */
+        return fn () => new static(Str::headline($this->value));
     }
 }

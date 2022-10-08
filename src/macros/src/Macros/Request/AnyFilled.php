@@ -21,6 +21,7 @@ class AnyFilled
             $keys = is_array($keys) ? $keys : func_get_args();
 
             foreach ($keys as $key) {
+                /* @phpstan-ignore-next-line */
                 if ($this->filled($key)) {
                     return true;
                 }

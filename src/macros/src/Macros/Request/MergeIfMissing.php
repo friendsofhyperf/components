@@ -17,8 +17,7 @@ class MergeIfMissing
 {
     public function __invoke()
     {
-        return function (array $input) {
-            return $this->merge(collect($input)->filter(fn ($value, $key) => $this->missing($key))->toArray());
-        };
+        /* @phpstan-ignore-next-line */
+        return fn (array $input) => $this->merge(collect($input)->filter(fn ($value, $key) => $this->missing($key))->toArray());
     }
 }

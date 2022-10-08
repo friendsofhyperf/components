@@ -19,6 +19,7 @@ class SchemeAndHttpHost
     {
         return function () {
             $https = $this->getServerParams('HTTPS')[0] ?? null;
+            /* @phpstan-ignore-next-line */
             return ($https ? 'https' : 'http') . '://' . $this->httpHost();
         };
     }

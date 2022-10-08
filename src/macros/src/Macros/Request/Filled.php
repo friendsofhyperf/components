@@ -21,6 +21,7 @@ class Filled
             $keys = is_array($key) ? $key : func_get_args();
 
             foreach ($keys as $value) {
+                /* @phpstan-ignore-next-line */
                 if ($this->isEmptyString($value)) {
                     return false;
                 }

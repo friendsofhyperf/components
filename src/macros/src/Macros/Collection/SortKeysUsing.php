@@ -15,6 +15,7 @@ class SortKeysUsing
     public function __invoke()
     {
         return function (callable $callback) {
+            /** @phpstan-ignore-next-line */
             $items = $this->items;
 
             uksort($items, $callback);

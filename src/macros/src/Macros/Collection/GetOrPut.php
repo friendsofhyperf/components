@@ -18,10 +18,13 @@ class GetOrPut
     public function __invoke()
     {
         return function ($key, $value) {
+            /* @phpstan-ignore-next-line */
             if (array_key_exists($key, $this->items)) {
+                /* @phpstan-ignore-next-line */
                 return $this->items[$key];
             }
 
+            /* @phpstan-ignore-next-line */
             $this->offsetSet($key, $value = value($value));
 
             return $value;

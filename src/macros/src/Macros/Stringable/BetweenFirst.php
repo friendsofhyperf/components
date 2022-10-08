@@ -19,6 +19,7 @@ class BetweenFirst
 {
     public function __invoke()
     {
+        /* @phpstan-ignore-next-line */
         return fn ($from, $to) => new static(Str::betweenFirst($this->value, $from, $to));
     }
 }

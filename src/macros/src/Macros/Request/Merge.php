@@ -17,6 +17,7 @@ class Merge
     public function __invoke()
     {
         return function (array $input) {
+            /* @phpstan-ignore-next-line */
             Context::override($this->contextkeys['parsedData'], fn ($inputs) => array_replace((array) $inputs, $input));
 
             return $this;

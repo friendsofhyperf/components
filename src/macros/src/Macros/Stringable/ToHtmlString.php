@@ -20,6 +20,7 @@ class ToHtmlString
     public function __invoke()
     {
         return function () {
+            /* @phpstan-ignore-next-line */
             return new HtmlString($this->value);
         };
     }

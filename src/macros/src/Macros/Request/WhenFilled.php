@@ -18,6 +18,7 @@ class WhenFilled
     public function __invoke()
     {
         return function ($key, callable $callback, callable $default = null) {
+            /* @phpstan-ignore-next-line */
             if ($this->filled($key)) {
                 return $callback(data_get($this->all(), $key)) ?: $this;
             }

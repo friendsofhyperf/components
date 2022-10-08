@@ -20,6 +20,7 @@ class IsUuid
     public function __invoke()
     {
         return function () {
+            /* @phpstan-ignore-next-line */
             return Str::isUuid($this->value);
         };
     }

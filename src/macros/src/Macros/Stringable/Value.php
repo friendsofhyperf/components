@@ -18,6 +18,7 @@ class Value
     public function __invoke()
     {
         return function () {
+            /* @phpstan-ignore-next-line */
             return $this->toString();
         };
     }

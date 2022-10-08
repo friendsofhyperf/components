@@ -18,7 +18,7 @@ class WhenIsAscii
     public function __invoke()
     {
         return function ($callback, $default = null) {
-            /* @var Stringable $this */
+            /* @phpstan-ignore-next-line */
             return $this->when($this->isAscii(), $callback, $default);
         };
     }
