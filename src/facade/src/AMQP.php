@@ -14,7 +14,7 @@ use Hyperf\Amqp\Message\ProducerMessageInterface;
 use Hyperf\Amqp\Producer as Accessor;
 
 /**
- * @method static produce(ProducerMessageInterface $producerMessage, bool $confirm = false, int $timeout = 5)
+ * @method static bool produce(ProducerMessageInterface $producerMessage, bool $confirm = false, int $timeout = 5)
  */
 class AMQP extends Facade
 {
