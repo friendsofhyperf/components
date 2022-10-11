@@ -63,3 +63,23 @@ lock('foo', 10)->block(5, function () {
     // Lock acquired after waiting maximum of 5 seconds...
 });
 ```
+
+Using by annotation
+
+```php
+use FriendsOfHyperf\Lock\Annotation\Lock;
+use FriendsOfHyperf\Lock\Driver\LockInterface;
+
+class Foo
+{
+    #[Lock(name:"foo", seconds:10)]
+    protected LockInterface $lock;
+
+    public function bar()
+    {
+        $this->lock->get(function () {
+            // Lock acquired indefinitely and automatically released...
+        });
+    }
+}
+```

@@ -59,3 +59,23 @@ lock('foo', 10)->block(5, function () {
     // 等待最多5秒后获取的锁...
 });
 ```
+
+注解方式
+
+```php
+use FriendsOfHyperf\Lock\Annotation\Lock;
+use FriendsOfHyperf\Lock\Driver\LockInterface;
+
+class Foo
+{
+    #[Lock(name:"foo", seconds:10)]
+    protected LockInterface $lock;
+
+    public function bar()
+    {
+        $this->lock->get(function () {
+            // 获取无限期锁并自动释放...
+        });
+    }
+}
+```
