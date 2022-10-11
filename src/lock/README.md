@@ -72,7 +72,7 @@ use FriendsOfHyperf\Lock\Driver\LockInterface;
 
 class Foo
 {
-    #[Lock()]
+    #[Lock(name:"foo", seconds:10)]
     protected LockInterface $lock;
 
     public function bar()
