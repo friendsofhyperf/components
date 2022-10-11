@@ -22,15 +22,15 @@ foreach (Composer::getLoader()->getClassMap() as $class => $path) {
         continue;
     }
 
-    if (str_ends_with($class, 'Macro')) {
-        $class = substr($class, 0, -5);
+    $name = lcfirst(class_basename($class));
+
+    if (str_ends_with($name, 'Macro')) {
+        $name = substr($name, 0, -5);
     }
 
-    if (! $class) {
+    if (! $name) {
         continue;
     }
-
-    $name = lcfirst(class_basename($class));
 
     match (true) {
         str_starts_with($class, $namespace . '\\Arr\\') => ! Arr::hasMacro($name) && Arr::macro($name, (new $class())()),
