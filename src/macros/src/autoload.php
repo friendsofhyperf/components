@@ -24,6 +24,14 @@ foreach (Composer::getLoader()->getClassMap() as $class => $path) {
 
     $name = lcfirst(class_basename($class));
 
+    if (str_ends_with($name, 'Macro')) {
+        $name = substr($name, 0, -5);
+    }
+
+    if (! $name) {
+        continue;
+    }
+
     match (true) {
         str_starts_with($class, $namespace . '\\Arr\\') => ! Arr::hasMacro($name) && Arr::macro($name, (new $class())()),
         str_starts_with($class, $namespace . '\\Collection\\') => ! Collection::hasMacro($name) && Collection::macro($name, (new $class())()),

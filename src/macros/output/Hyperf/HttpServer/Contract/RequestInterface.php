@@ -139,4 +139,48 @@ interface RequestInterface
      * Determine if the request is sending JSON.
      */
     public function isJson(): bool;
+
+    /**
+     * Retrieve input from the request as an enum.
+     *
+     * @template TEnum
+     *
+     * @param string $key
+     * @param class-string<TEnum> $enumClass
+     * @return null|TEnum
+     */
+    public function enum($key, $enumClass);
+
+    /**
+     * Determine if the request contains a given input item key.
+     *
+     * @param array|string $key
+     */
+    public function exists($key): bool;
+
+    /**
+     * Retrieve input from the request as a Stringable instance.
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return \Hyperf\Utils\Stringable
+     */
+    public function str($key, $default = null);
+
+    /**
+     * Retrieve input from the request as a Stringable instance.
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return \Hyperf\Utils\Stringable
+     */
+    public function string($key, $default = null);
+
+    /**
+     * Retrieve input as an integer value.
+     *
+     * @param string $key
+     * @param int $default
+     */
+    public function integer($key, $default = 0): int;
 }
