@@ -22,6 +22,14 @@ foreach (Composer::getLoader()->getClassMap() as $class => $path) {
         continue;
     }
 
+    if (str_ends_with($class, 'Macro')) {
+        $class = substr($class, 0, -5);
+    }
+
+    if (! $class) {
+        continue;
+    }
+
     $name = lcfirst(class_basename($class));
 
     match (true) {
