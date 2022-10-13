@@ -13,12 +13,14 @@ namespace FriendsOfHyperf\Lock\Annotation;
 use Attribute;
 use Hyperf\Di\Annotation\AbstractAnnotation;
 
-#[Attribute(Attribute::TARGET_PROPERTY)]
+#[Attribute(Attribute::TARGET_PROPERTY | Attribute::TARGET_METHOD)]
 class Lock extends AbstractAnnotation
 {
     public function __construct(
         public string $name,
         public int $seconds = 0,
+        public ?int $block = null,
+        public mixed $failCallback = null,
         public ?string $owner = null,
         public string $driver = 'default'
     ) {
