@@ -213,6 +213,7 @@ trait HasRelationships
     /**
      * Validate the related model for Compoships compatibility.
      *
+     * @param mixed $related
      * @throws InvalidUsageException
      */
     private function validateRelatedModel($related)
