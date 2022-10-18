@@ -15,4 +15,5 @@ namespace FriendsOfHyperf\Macros\Macros\Request;
  */
 class StringMacro extends Str
 {
+    public string $name = 'string';
 }

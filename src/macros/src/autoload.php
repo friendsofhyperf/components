@@ -22,10 +22,12 @@ foreach (Composer::getLoader()->getClassMap() as $class => $path) {
         continue;
     }
 
-    $name = lcfirst(class_basename($class));
+    $instance = new $class();
 
-    if (str_ends_with($name, 'Macro')) {
-        $name = substr($name, 0, -5);
+    if (property_exists($instance, 'name')) {
+        $name = $instance->name;
+    } else {
+        $name = lcfirst(class_basename($class));
     }
 
     if (! $name) {
@@ -33,11 +35,11 @@ foreach (Composer::getLoader()->getClassMap() as $class => $path) {
     }
 
     match (true) {
-        str_starts_with($class, $namespace . '\\Arr\\') => ! Arr::hasMacro($name) && Arr::macro($name, (new $class())()),
-        str_starts_with($class, $namespace . '\\Collection\\') => ! Collection::hasMacro($name) && Collection::macro($name, (new $class())()),
-        str_starts_with($class, $namespace . '\\Request\\') => ! Request::hasMacro($name) && Request::macro($name, (new $class())()),
-        str_starts_with($class, $namespace . '\\Str\\') => ! Str::hasMacro($name) && Str::macro($name, (new $class())()),
-        str_starts_with($class, $namespace . '\\Stringable\\') => ! Stringable::hasMacro($name) && Stringable::macro($name, (new $class())()),
+        str_starts_with($class, $namespace . '\\Arr\\') => ! Arr::hasMacro($name) && Arr::macro($name, $instance()),
+        str_starts_with($class, $namespace . '\\Collection\\') => ! Collection::hasMacro($name) && Collection::macro($name, $instance()),
+        str_starts_with($class, $namespace . '\\Request\\') => ! Request::hasMacro($name) && Request::macro($name, $instance()),
+        str_starts_with($class, $namespace . '\\Str\\') => ! Str::hasMacro($name) && Str::macro($name, $instance()),
+        str_starts_with($class, $namespace . '\\Stringable\\') => ! Stringable::hasMacro($name) && Stringable::macro($name, $instance()),
         default => null
     };
 }

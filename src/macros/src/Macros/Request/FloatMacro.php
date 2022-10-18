@@ -15,6 +15,8 @@ namespace FriendsOfHyperf\Macros\Macros\Request;
  */
 class FloatMacro
 {
+    public string $name = 'float';
+
     public function __invoke()
     {
         return fn ($key, $default = null) => (float) $this->input($key, $default);
