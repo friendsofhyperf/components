@@ -4,6 +4,7 @@
         "autoloader",
         "Bledsoe",
         "confd",
+        "contextkeys",
         "Encrypter",
         "friendsofphp",
         "Gerould",
@@ -20,6 +21,8 @@
         "recaptcha",
         "stringable",
         "swow",
-        "Thich"
+        "Thich",
+        "ucsplit",
+        "undot"
     ]
 }
