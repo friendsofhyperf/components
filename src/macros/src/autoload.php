@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
+use FriendsOfHyperf\Macros\ArrMacros;
 use Hyperf\HttpServer\Request;
 use Hyperf\Utils\Arr;
 use Hyperf\Utils\Collection;
@@ -35,7 +36,7 @@ foreach (Composer::getLoader()->getClassMap() as $class => $path) {
     }
 
     match (true) {
-        str_starts_with($class, $namespace . '\\Arr\\') => ! Arr::hasMacro($name) && Arr::macro($name, $instance()),
+        // str_starts_with($class, $namespace . '\\Arr\\') => ! Arr::hasMacro($name) && Arr::macro($name, $instance()),
         str_starts_with($class, $namespace . '\\Collection\\') => ! Collection::hasMacro($name) && Collection::macro($name, $instance()),
         str_starts_with($class, $namespace . '\\Request\\') => ! Request::hasMacro($name) && Request::macro($name, $instance()),
         str_starts_with($class, $namespace . '\\Str\\') => ! Str::hasMacro($name) && Str::macro($name, $instance()),
@@ -43,3 +44,5 @@ foreach (Composer::getLoader()->getClassMap() as $class => $path) {
         default => null
     };
 }
+
+Arr::mixin(new ArrMacros());
