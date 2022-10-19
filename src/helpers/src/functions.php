@@ -194,25 +194,17 @@ if (! function_exists('dispatch')) {
             $job = new \FriendsOfHyperf\Helpers\Foundation\AsyncQueue\ClosureJob($job, (int) ($arguments[2] ?? 0));
         }
 
-        if ($job instanceof \Hyperf\AsyncQueue\JobInterface) {
-            /** @var \Hyperf\AsyncQueue\Driver\DriverInterface $driver */
-            $driver = di(\Hyperf\AsyncQueue\Driver\DriverFactory::class)->get((string) ($arguments[0] ?? $job->queue ?? 'default'));
-            return $driver->push($job, (int) ($arguments[1] ?? $job->delay ?? 0));
-        }
-
-        if ($job instanceof \Hyperf\Amqp\Message\ProducerMessageInterface) {
-            /** @var \Hyperf\Amqp\Producer $producer */
-            $producer = di(\Hyperf\Amqp\Producer::class);
-            return $producer->produce($job, ...$arguments);
-        }
-
-        if ($job instanceof \longlang\phpkafka\Producer\ProduceMessage) {
-            /** @var \Hyperf\Kafka\Producer $producer */
-            $producer = di(\Hyperf\Kafka\ProducerManager::class)->getProducer((string) ($arguments[0] ?? 'default'));
-            return $producer->sendBatch([$job]);
-        }
-
-        throw new \InvalidArgumentException('Not Support job type.');
+        return match (true) {
+            $job instanceof \Hyperf\AsyncQueue\JobInterface => di(\Hyperf\AsyncQueue\Driver\DriverFactory::class)
+                ->get((string) ($arguments[0] ?? $job->queue ?? 'default'))
+                ->push($job, (int) ($arguments[1] ?? $job->delay ?? 0)),
+            $job instanceof \Hyperf\Amqp\Message\ProducerMessageInterface => di(\Hyperf\Amqp\Producer::class)
+                ->produce($job, ...$arguments),
+            $job instanceof \longlang\phpkafka\Producer\ProduceMessage => di(\Hyperf\Kafka\ProducerManager::class)
+                ->getProducer((string) ($arguments[0] ?? 'default'))
+                ->sendBatch([$job]),
+            default => throw new \InvalidArgumentException('Not Support job type.')
+        };
     }
 }
 
