@@ -200,7 +200,8 @@ if (! function_exists('dispatch')) {
                 ->push($job, (int) ($arguments[1] ?? $job->delay ?? 0)),
             $job instanceof \Hyperf\Amqp\Message\ProducerMessageInterface => di(\Hyperf\Amqp\Producer::class)
                 ->produce($job, ...$arguments),
-            $job instanceof \longlang\phpkafka\Producer\ProduceMessage => di(\Hyperf\Kafka\ProducerManager::class)->getProducer((string) ($arguments[0] ?? 'default'))
+            $job instanceof \longlang\phpkafka\Producer\ProduceMessage => di(\Hyperf\Kafka\ProducerManager::class)
+                ->getProducer((string) ($arguments[0] ?? 'default'))
                 ->sendBatch([$job]),
             default => throw new \InvalidArgumentException('Not Support job type.')
         };
