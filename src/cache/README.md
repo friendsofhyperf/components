@@ -26,11 +26,9 @@ use Hyperf\Di\Annotation\Inject;
 
 class IndexController
 {
-    /**
-     * @Inject
-     * @var CacheInterface
-     */
-    private $cache;
+   
+    #[Inject]
+    private CacheInterface $cache;
 
     public function index()
     {
