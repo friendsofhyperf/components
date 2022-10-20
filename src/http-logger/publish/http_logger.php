@@ -13,7 +13,9 @@ return [
 
     'log_writer' => \FriendsOfHyperf\HttpLogger\Writer\DefaultLogWriter::class,
 
-    'log_channel' => env('HTTP_LOGGER_LOG_CHANNEL', 'default'),
+    'log_group' => env('HTTP_LOGGER_LOG_GROUP', 'default'),
+
+    'log_name' => env('HTTP_LOGGER_LOG_NAME', 'http'),
 
     'log_level' => env('HTTP_LOGGER_LOG_LEVEL', 'info'),
 

@@ -24,11 +24,12 @@ class DefaultLogWriter implements LogWriter
 
     public function logRequest(ServerRequestInterface $request, ResponseInterface $response): void
     {
-        $group = (string) $this->config->get('http_logger.log_channel', 'default');
+        $group = (string) $this->config->get('http_logger.log_group', 'default');
+        $name = (string) $this->config->get('http_logger.log_name', 'http');
         $level = (string) $this->config->get('http_logger.log_level', 'info');
         $message = $this->formatMessage($request, $response);
 
-        $this->loggerFactory->get($group)->log($level, $message);
+        $this->loggerFactory->get($name, $group)->log($level, $message);
     }
 
     public function formatMessage(ServerRequestInterface $request, ResponseInterface $response): string
