@@ -15,7 +15,7 @@
         "friendsofhyperf/macros": "^3.0",
         "hyperf/macroable": "~3.0.0",
         "hyperf/utils": "~3.0.0",
-        "opis/closure": "^3.6",
+        "laravel/serializable-closure": "^1.0",
         "nesbot/carbon": "^2.0"
     },
     "suggest": {

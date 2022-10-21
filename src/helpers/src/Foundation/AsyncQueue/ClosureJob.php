@@ -16,7 +16,7 @@ use Hyperf\Contract\NormalizerInterface;
 use Hyperf\Di\ClosureDefinitionCollectorInterface;
 use Hyperf\Utils\ApplicationContext;
 use InvalidArgumentException as GlobalInvalidArgumentException;
-use Opis\Closure\SerializableClosure;
+use Laravel\SerializableClosure\SerializableClosure;
 use Psr\Container\ContainerInterface;
 use ReflectionFunction;
 
