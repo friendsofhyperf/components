@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\AsyncTask;
 
 use Closure;
+use FriendsOfHyperf\AsyncTask\Process\AsyncTaskConsumer;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Process\ProcessCollector;
 use Hyperf\Utils\ApplicationContext;
@@ -50,11 +51,11 @@ abstract class Task implements TaskInterface
         $maxAttempts && $task->setMaxAttempts($maxAttempts);
         $retryAfter && $task->setRetryAfter($retryAfter);
 
+        $container = ApplicationContext::getContainer();
+        $processName = $container->get(AsyncTaskConsumer::class)->name ?? '';
         $message = new TaskMessage($task);
 
-        $processes = ProcessCollector::all();
-
-        if ($processes) {
+        if ($processes = ProcessCollector::get($processName)) {
             $string = serialize($message);
             /** @var \Swoole\Process $process */
             foreach ($processes as $process) {
