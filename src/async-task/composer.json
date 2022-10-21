@@ -1,0 +1,36 @@
+{
+    "name": "friendsofhyperf/async-task",
+    "description": "The async task for Hyperf.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
+    "require": {
+        "hyperf/di": "~3.0.0",
+        "hyperf/event": "~3.0.0",
+        "hyperf/logger": "~3.0.0",
+        "hyperf/process": "~3.0.0",
+        "hyperf/utils": "~3.0.0",
+        "laravel/serializable-closure": "1.x-dev"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\AsyncTask\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\AsyncTask\\ConfigProvider"
+        }
+    }
+}

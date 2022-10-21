@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * This file is part of friendsofhyperf/components.
+ *
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @contact  huangdijia@gmail.com
+ */
+namespace FriendsOfHyperf\AsyncTask\Event;
+
+use FriendsOfHyperf\AsyncTask\TaskMessage;
+use Throwable;
+
+class RetryHandle extends Event
+{
+    public function __construct(TaskMessage $message, protected ?Throwable $throwable)
+    {
+        parent::__construct($message);
+    }
+
+    public function getThrowable(): ?Throwable
+    {
+        return $this->throwable;
+    }
+}
