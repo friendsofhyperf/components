@@ -1,4 +1,4 @@
-# closure-command
+# Async Task
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/async-task)](https://packagist.org/packages/friendsofhyperf/async-task)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/async-task)](https://packagist.org/packages/friendsofhyperf/async-task)
@@ -17,5 +17,5 @@ use FriendsOfHyperf\AsyncTask\Task;
 
 Task::deliver(new FooTask());
 
-Task::deliver(new FooTask(), 5);
+Task::deliver(fn () => var_dump(111));
 ```
