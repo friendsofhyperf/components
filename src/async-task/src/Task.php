@@ -18,11 +18,11 @@ use Hyperf\Utils\ApplicationContext;
 
 abstract class Task implements TaskInterface
 {
-    protected int $delay;
+    protected int $delay = 0;
 
-    protected int $maxAttempts;
+    protected int $maxAttempts = 0;
 
-    protected int $retryAfter;
+    protected int $retryAfter = 0;
 
     abstract public function handle(): void;
 
@@ -31,14 +31,29 @@ abstract class Task implements TaskInterface
         $this->delay = $delay;
     }
 
+    public function getDelay(): int
+    {
+        return $this->delay;
+    }
+
     public function setMaxAttempts(int $maxAttempts): void
     {
         $this->maxAttempts = $maxAttempts;
     }
 
+    public function getMaxAttempts(): int
+    {
+        return $this->maxAttempts;
+    }
+
     public function setRetryAfter(int $retryAfter): void
     {
         $this->retryAfter = $retryAfter;
+    }
+
+    public function getRetryAfter(): int
+    {
+        return $this->retryAfter;
     }
 
     public static function deliver(TaskInterface|Closure $task, ?int $delay = null, ?int $maxAttempts = null, ?int $retryAfter = null): void
