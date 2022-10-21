@@ -10,22 +10,12 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\AsyncTask;
 
-use FriendsOfHyperf\AsyncTask\Listener\TaskHandleListener;
-use FriendsOfHyperf\AsyncTask\Process\AsyncTaskConsumer;
-
 class ConfigProvider
 {
     public function __invoke()
     {
         defined('BASE_PATH') or define('BASE_PATH', dirname(__DIR__, 3));
 
-        return [
-            'listeners' => [
-                TaskHandleListener::class,
-            ],
-            'processes' => [
-                AsyncTaskConsumer::class,
-            ],
-        ];
+        return [];
     }
 }
