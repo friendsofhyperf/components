@@ -15,6 +15,14 @@ composer require friendsofhyperf/async-task
 ```php
 use FriendsOfHyperf\AsyncTask\Task;
 
+class FooTask extends Task
+{
+    public function handle():void
+    {
+        var_dump('foo');
+    }
+}
+
 Task::deliver(new FooTask());
 
 Task::deliver(fn () => var_dump(111));
