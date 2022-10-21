@@ -23,16 +23,16 @@ class TaskMessage
 
     public function getDelay(): int
     {
-        return (int) ($this->task->delay ?? 0);
+        return $this->task->getDelay();
     }
 
     public function getMaxAttempts(): int
     {
-        return (int) ($this->task->maxAttempts ?? 0);
+        return $this->task->getMaxAttempts();
     }
 
     public function getRetryAfter(): int
     {
-        return (int) ($this->task->retryAfter ?? 0);
+        return $this->task->getRetryAfter();
     }
 }

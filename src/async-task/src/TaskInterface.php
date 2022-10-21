@@ -14,9 +14,15 @@ interface TaskInterface
 {
     public function setDelay(int $delay): void;
 
+    public function getDelay(): int;
+
     public function setMaxAttempts(int $maxAttempts): void;
 
+    public function getMaxAttempts(): int;
+
     public function setRetryAfter(int $retryAfter): void;
+
+    public function getRetryAfter(): int;
 
     public function handle(): void;
 }
