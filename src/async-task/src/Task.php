@@ -81,12 +81,11 @@ abstract class Task implements TaskInterface
         }
 
         $string = serialize($message);
+        $rand = array_rand($processes);
+        $result = $processes[$rand]->exportSocket()->send($string, 10);
 
-        foreach ($processes as $process) {
-            $result = $process->exportSocket()->send($string, 10);
-            if ($result === false) {
-                $logger->error('Configuration synchronization failed. Please restart the server.');
-            }
+        if ($result === false) {
+            $logger->error('Configuration synchronization failed. Please restart the server.');
         }
     }
 }
