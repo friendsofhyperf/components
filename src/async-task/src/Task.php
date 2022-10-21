@@ -72,14 +72,20 @@ abstract class Task implements TaskInterface
         $logger = $container->get(StdoutLoggerInterface::class);
         $consumerName = $container->get(AsyncTaskConsumer::class)->name ?? '';
 
-        if ($processes = ProcessCollector::get($consumerName)) {
-            $string = serialize($message);
-            /** @var \Swoole\Process $process */
-            foreach ($processes as $process) {
-                $result = $process->exportSocket()->send($string, 10);
-                if ($result === false) {
-                    $logger->error('Configuration synchronization failed. Please restart the server.');
-                }
+        /** @var \Swoole\Process[] $processes */
+        $processes = ProcessCollector::get($consumerName);
+
+        if (! $processes) {
+            $logger->warning(sprintf('Async task consumer [%s] is not running.', $consumerName));
+            return;
+        }
+
+        $string = serialize($message);
+
+        foreach ($processes as $process) {
+            $result = $process->exportSocket()->send($string, 10);
+            if ($result === false) {
+                $logger->error('Configuration synchronization failed. Please restart the server.');
             }
         }
     }
