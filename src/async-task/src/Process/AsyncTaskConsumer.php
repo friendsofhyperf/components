@@ -28,6 +28,9 @@ use Throwable;
 
 class AsyncTaskConsumer extends AbstractProcess
 {
+    /**
+     * Cannot change the name of the process.
+     */
     public string $name = 'async-task-consumer';
 
     public function __construct(ContainerInterface $container, protected StdoutLoggerInterface $logger)
