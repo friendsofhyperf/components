@@ -76,7 +76,7 @@ class AsyncTaskConsumer extends AbstractProcess
                             });
                         }
                     }
-                } catch (\Throwable $exception) {
+                } catch (Throwable $exception) {
                     $this->logThrowable($exception);
                     if ($exception instanceof SocketAcceptException) {
                         // TODO: Reconnect the socket.
@@ -88,10 +88,11 @@ class AsyncTaskConsumer extends AbstractProcess
         });
 
         CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
-
-        $this->logger->warning(__CLASS__ . ' exit.');
     }
 
+    /**
+     * override.
+     */
     protected function listen(Channel $quit)
     {
     }
@@ -104,7 +105,7 @@ class AsyncTaskConsumer extends AbstractProcess
         beginning:
         try {
             return $callback(++$attempts, $e ?? null);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             if (--$times < 0) {
                 throw $e;
             }

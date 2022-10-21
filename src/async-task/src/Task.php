@@ -51,17 +51,19 @@ abstract class Task implements TaskInterface
         $maxAttempts && $task->setMaxAttempts($maxAttempts);
         $retryAfter && $task->setRetryAfter($retryAfter);
 
-        $container = ApplicationContext::getContainer();
-        $processName = $container->get(AsyncTaskConsumer::class)->name ?? '';
         $message = new TaskMessage($task);
 
-        if ($processes = ProcessCollector::get($processName)) {
+        $container = ApplicationContext::getContainer();
+        $logger = $container->get(StdoutLoggerInterface::class);
+        $consumerName = $container->get(AsyncTaskConsumer::class)->name ?? '';
+
+        if ($processes = ProcessCollector::get($consumerName)) {
             $string = serialize($message);
             /** @var \Swoole\Process $process */
             foreach ($processes as $process) {
                 $result = $process->exportSocket()->send($string, 10);
                 if ($result === false) {
-                    ApplicationContext::getContainer()->get(StdoutLoggerInterface::class)->error('Configuration synchronization failed. Please restart the server.');
+                    $logger->error('Configuration synchronization failed. Please restart the server.');
                 }
             }
         }

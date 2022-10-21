@@ -21,7 +21,7 @@ class TaskMessage
         return $this->task;
     }
 
-    public function getDelay(): float
+    public function getDelay(): int
     {
         return (int) ($this->task->delay ?? 0);
     }
