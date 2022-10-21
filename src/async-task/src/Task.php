@@ -66,8 +66,6 @@ abstract class Task implements TaskInterface
         $maxAttempts && $task->setMaxAttempts($maxAttempts);
         $retryAfter && $task->setRetryAfter($retryAfter);
 
-        $message = new TaskMessage($task);
-
         $container = ApplicationContext::getContainer();
         $logger = $container->get(StdoutLoggerInterface::class);
         $consumerName = $container->get(AsyncTaskConsumer::class)->name ?? '';
@@ -80,6 +78,7 @@ abstract class Task implements TaskInterface
             return;
         }
 
+        $message = new TaskMessage($task);
         $string = serialize($message);
         $rand = array_rand($processes);
         $result = $processes[$rand]->exportSocket()->send($string, 10);
