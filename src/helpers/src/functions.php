@@ -182,7 +182,7 @@ if (! function_exists('di')) {
 
 if (! function_exists('dispatch')) {
     /**
-     * @param Closure|\Hyperf\Amqp\Message\ProducerMessageInterface|\Hyperf\AsyncQueue\JobInterface|\longlang\phpkafka\Producer\ProduceMessage $job
+     * @param Closure|\FriendsOfHyperf\AsyncTask\TaskInterface|\Hyperf\Amqp\Message\ProducerMessageInterface|\Hyperf\AsyncQueue\JobInterface|\longlang\phpkafka\Producer\ProduceMessage $job
      * @return bool
      * @throws TypeError
      * @throws InvalidDriverException
@@ -203,6 +203,7 @@ if (! function_exists('dispatch')) {
             $job instanceof \longlang\phpkafka\Producer\ProduceMessage => di(\Hyperf\Kafka\ProducerManager::class)
                 ->getProducer((string) ($arguments[0] ?? 'default'))
                 ->sendBatch([$job]),
+            $job instanceof \FriendsOfHyperf\AsyncTask\TaskInterface => \FriendsOfHyperf\AsyncTask\Task::deliver($job, ...$arguments),
             default => throw new \InvalidArgumentException('Not Support job type.')
         };
     }
