@@ -24,6 +24,29 @@ if (! function_exists('app')) {
     }
 }
 
+if (! function_exists('array_is_list')) {
+    /**
+     * Determine if the given value is a list of items.
+     * @return bool return true if the array keys are 0 .. count($array)-1 in that order. For other arrays, it returns false. For non-arrays, it throws a TypeError.
+     */
+    function array_is_list(array $array): bool
+    {
+        if ($array === [] || $array === array_values($array)) {
+            return true;
+        }
+
+        $nextKey = -1;
+
+        foreach ($array as $k => $v) {
+            if ($k !== ++$nextKey) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
 if (! function_exists('blank')) {
     /**
      * Determine if the given value is "blank".
@@ -60,8 +83,8 @@ if (! function_exists('cache')) {
      * If an array is passed, we'll assume you want to put to the cache.
      *
      * @param  dynamic  key|key,default|data,expiration|null
-     * @return mixed|\Psr\SimpleCache\CacheInterface
      * @throws \Exception
+     * @return mixed|\Psr\SimpleCache\CacheInterface
      */
     function cache()
     {
@@ -89,9 +112,9 @@ if (! function_exists('cache')) {
 if (! function_exists('call_command')) {
     /**
      * Call command quickly.
-     * @return int
      * @throws TypeError
      * @throws Exception
+     * @return int
      */
     function call_command(string $command, array $arguments = [])
     {
@@ -183,10 +206,10 @@ if (! function_exists('di')) {
 if (! function_exists('dispatch')) {
     /**
      * @param Closure|\FriendsOfHyperf\AsyncTask\TaskInterface|\Hyperf\Amqp\Message\ProducerMessageInterface|\Hyperf\AsyncQueue\JobInterface|\longlang\phpkafka\Producer\ProduceMessage $job
-     * @return bool
      * @throws TypeError
      * @throws InvalidDriverException
      * @throws InvalidArgumentException
+     * @return bool
      */
     function dispatch($job, ...$arguments)
     {
@@ -212,8 +235,8 @@ if (! function_exists('dispatch')) {
 if (! function_exists('environment')) {
     /**
      * @param mixed $environments
-     * @return bool|\FriendsOfHyperf\Helpers\Foundation\Environment
      * @throws TypeError
+     * @return bool|\FriendsOfHyperf\Helpers\Foundation\Environment
      */
     function environment(...$environments)
     {
@@ -271,8 +294,8 @@ if (! function_exists('info')) {
 if (! function_exists('logger')) {
     /**
      * @param null|string $message
-     * @return \Psr\Log\LoggerInterface|void
      * @throws TypeError
+     * @return \Psr\Log\LoggerInterface|void
      */
     function logger($message = null, array $context = [], bool $backtrace = false)
     {
@@ -293,8 +316,8 @@ if (! function_exists('logs')) {
     /**
      * @param string $name
      * @param string $group
-     * @return \Psr\Log\LoggerInterface
      * @throws TypeError
+     * @return \Psr\Log\LoggerInterface
      */
     function logs($name = 'hyperf', $group = 'default')
     {
@@ -381,8 +404,8 @@ if (! function_exists('request')) {
      * Get an instance of the current request or an input item from the request.
      * @param null|array|string $key
      * @param mixed $default
-     * @return array|\Hyperf\HttpServer\Contract\RequestInterface|mixed
      * @throws TypeError
+     * @return array|\Hyperf\HttpServer\Contract\RequestInterface|mixed
      */
     function request($key = null, $default = null)
     {
@@ -508,8 +531,8 @@ if (! function_exists('throw_if')) {
      * @param mixed $condition
      * @param string|\Throwable $exception
      * @param array ...$parameters
-     * @return mixed
      * @throws \Throwable
+     * @return mixed
      */
     function throw_if($condition, $exception, ...$parameters)
     {
@@ -532,8 +555,8 @@ if (! function_exists('throw_unless')) {
      * @param mixed $condition
      * @param string|\Throwable $exception
      * @param array ...$parameters
-     * @return mixed
      * @throws \Throwable
+     * @return mixed
      */
     function throw_unless($condition, $exception, ...$parameters)
     {
@@ -552,8 +575,8 @@ if (! function_exists('throw_unless')) {
 if (! function_exists('validator')) {
     /**
      * Create a new Validator instance.
-     * @return \Hyperf\Contract\ValidatorInterface|\Hyperf\Validation\Contract\ValidatorFactoryInterface
      * @throws TypeError
+     * @return \Hyperf\Contract\ValidatorInterface|\Hyperf\Validation\Contract\ValidatorFactoryInterface
      */
     function validator(array $data = [], array $rules = [], array $messages = [], array $customAttributes = [])
     {
