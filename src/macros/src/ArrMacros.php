@@ -20,7 +20,7 @@ class ArrMacros
 {
     public function isList()
     {
-        return fn ($array) => array_is_list($array);
+        return fn ($array) => ! Arr::isAssoc($array);
     }
 
     public function join()
