@@ -87,4 +87,16 @@ abstract class Task implements TaskInterface
             $logger->error('Configuration synchronization failed. Please restart the server.');
         }
     }
+
+    public static function deliverIf($condition, TaskInterface|Closure $task, ?int $delay = null, ?int $maxAttempts = null, ?int $retryAfter = null): void
+    {
+        if ($condition) {
+            static::deliver($task, $delay, $maxAttempts, $retryAfter);
+        }
+    }
+
+    public static function deliverUnless($condition, TaskInterface|Closure $task, ?int $delay = null, ?int $maxAttempts = null, ?int $retryAfter = null): void
+    {
+        static::deliverIf(! $condition, $task, $delay, $maxAttempts, $retryAfter);
+    }
 }
