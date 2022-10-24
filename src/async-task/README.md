@@ -13,9 +13,10 @@ composer require friendsofhyperf/async-task
 ## Usage
 
 ```php
+use FriendsOfHyperf\AsyncTask\AbstractTask;
 use FriendsOfHyperf\AsyncTask\Task;
 
-class FooTask extends Task
+class FooTask extends AbstractTask
 {
     public function handle():void
     {
