@@ -14,7 +14,7 @@ use Closure;
 use Laravel\SerializableClosure\SerializableClosure;
 use ReflectionFunction;
 
-class ClosureTask extends Task
+class ClosureTask extends AbstractTask
 {
     public string $class;
 
