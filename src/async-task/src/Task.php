@@ -13,49 +13,11 @@ namespace FriendsOfHyperf\AsyncTask;
 use Closure;
 use Swoole\Server;
 
-abstract class Task implements TaskInterface
+class Task
 {
     public static ?Server $server;
 
     public static ?int $workerId;
-
-    protected int $delay = 0;
-
-    protected int $maxAttempts = 0;
-
-    protected int $retryAfter = 0;
-
-    abstract public function handle(): void;
-
-    public function setDelay(int $delay): void
-    {
-        $this->delay = $delay;
-    }
-
-    public function getDelay(): int
-    {
-        return $this->delay;
-    }
-
-    public function setMaxAttempts(int $maxAttempts): void
-    {
-        $this->maxAttempts = $maxAttempts;
-    }
-
-    public function getMaxAttempts(): int
-    {
-        return $this->maxAttempts;
-    }
-
-    public function setRetryAfter(int $retryAfter): void
-    {
-        $this->retryAfter = $retryAfter;
-    }
-
-    public function getRetryAfter(): int
-    {
-        return $this->retryAfter;
-    }
 
     public static function deliver(TaskInterface|Closure $task, ?int $delay = null, ?int $maxAttempts = null, ?int $retryAfter = null): void
     {
