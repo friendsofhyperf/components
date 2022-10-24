@@ -10,31 +10,6 @@
 composer require friendsofhyperf/async-task
 ```
 
-## Adds process
-
-```php
-// config/autoload/processes.php
-return [
-    'processes' => [
-        // ...
-        Hyperf\AsyncTask\Process\TaskConsumerProcess::class,
-    ],
-];
-```
-
-## Adds listener
-
-```php
-// config/autoload/listeners.php
-
-return [
-    'listeners' => [
-        // ...
-        Hyperf\AsyncTask\Listener\TaskHandledListener::class,
-    ],
-];
-```
-
 ## Usage
 
 ```php

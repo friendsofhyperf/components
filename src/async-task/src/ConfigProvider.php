@@ -16,6 +16,12 @@ class ConfigProvider
     {
         defined('BASE_PATH') or define('BASE_PATH', dirname(__DIR__, 3));
 
-        return [];
+        return [
+            'listeners' => [
+                Listener\BindServerAndWorkerIdListener::class,
+                Listener\OnPipeMessageListener::class,
+                Listener\TaskHandleListener::class,
+            ],
+        ];
     }
 }

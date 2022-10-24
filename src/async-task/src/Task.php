@@ -11,13 +11,14 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\AsyncTask;
 
 use Closure;
-use FriendsOfHyperf\AsyncTask\Process\AsyncTaskConsumer;
-use Hyperf\Contract\StdoutLoggerInterface;
-use Hyperf\Process\ProcessCollector;
-use Hyperf\Utils\ApplicationContext;
+use Swoole\Server;
 
 abstract class Task implements TaskInterface
 {
+    public static ?Server $server;
+
+    public static ?int $workerId;
+
     protected int $delay = 0;
 
     protected int $maxAttempts = 0;
@@ -66,25 +67,19 @@ abstract class Task implements TaskInterface
         $maxAttempts && $task->setMaxAttempts($maxAttempts);
         $retryAfter && $task->setRetryAfter($retryAfter);
 
-        $container = ApplicationContext::getContainer();
-        $logger = $container->get(StdoutLoggerInterface::class);
-        $consumerName = $container->get(AsyncTaskConsumer::class)->name ?? '';
+        if (self::$server instanceof Server) {
+            $message = new TaskMessage($task);
+            $workerCount = self::$server->setting['worker_num'] + (self::$server->setting['task_worker_num'] ?? 0) - 1;
 
-        /** @var \Swoole\Process[] $processes */
-        $processes = ProcessCollector::get($consumerName);
+            for ($workerId = 0; $workerId <= $workerCount; ++$workerId) {
+                if ($workerId == self::$workerId) {
+                    continue;
+                }
 
-        if (! $processes) {
-            $logger->warning(sprintf('Async task consumer [%s] is not running.', $consumerName));
-            return;
-        }
+                self::$server->sendMessage($message, $workerId);
 
-        $message = new TaskMessage($task);
-        $string = serialize($message);
-        $rand = array_rand($processes);
-        $result = $processes[$rand]->exportSocket()->send($string, 10);
-
-        if ($result === false) {
-            $logger->error('Configuration synchronization failed. Please restart the server.');
+                break;
+            }
         }
     }
 
