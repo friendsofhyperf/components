@@ -32,8 +32,10 @@ class Task
         if (self::$server instanceof Server) {
             $message = new TaskMessage($task);
             $workerCount = self::$server->setting['worker_num'] + (self::$server->setting['task_worker_num'] ?? 0) - 1;
+            $workers = range(0, $workerCount);
+            shuffle($workers);
 
-            for ($workerId = 0; $workerId <= $workerCount; ++$workerId) {
+            foreach ($workers as $workerId) {
                 if ($workerId == self::$workerId) {
                     continue;
                 }
