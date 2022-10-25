@@ -15,12 +15,12 @@ use Throwable;
 
 class FailedHandle extends Event
 {
-    public function __construct(TaskMessage $message, protected Throwable $throwable)
+    public function __construct(TaskMessage $message, protected ?Throwable $throwable)
     {
         parent::__construct($message);
     }
 
-    public function getThrowable(): Throwable
+    public function getThrowable(): ?Throwable
     {
         return $this->throwable;
     }
