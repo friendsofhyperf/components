@@ -40,9 +40,12 @@ class TaskHandleListener implements ListenerInterface
         ];
     }
 
+    /**
+     * @param FailedHandle $event
+     */
     public function process(object $event): void
     {
-        if ($event instanceof Event && $event->getMessage()->task()) {
+        if ($event instanceof Event) {
             $task = $event->getMessage()->task();
             $taskClass = get_class($task);
 
