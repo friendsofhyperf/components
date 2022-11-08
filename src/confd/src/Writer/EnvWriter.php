@@ -10,6 +10,11 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Confd\Writer;
 
+use InvalidArgumentException;
+use LogicException;
+
+use const LOCK_EX;
+
 /**
  * MirazMac\DotEnv\Writer.
  *
@@ -45,12 +50,12 @@ class EnvWriter implements WriterInterface
      * Constructs a new instance.
      *
      * @param string $path The environment path
-     * @throws \LogicException If the file is missing
+     * @throws LogicException If the file is missing
      */
     public function __construct(string $path)
     {
         if (! is_file($path)) {
-            throw new \LogicException("No file exists at: {$path}");
+            throw new LogicException("No file exists at: {$path}");
         }
 
         $this->path = $path;
@@ -67,7 +72,7 @@ class EnvWriter implements WriterInterface
      *                         in double quotes is determined automatically.
      *                         However, you may wish to force quote a value
      *
-     * @throws \InvalidArgumentException If a new key contains invalid characters
+     * @throws InvalidArgumentException If a new key contains invalid characters
      */
     public function set(string $key, string $value, bool $forceQuote = false): self
     {
@@ -82,7 +87,7 @@ class EnvWriter implements WriterInterface
         } else {
             // otherwise append to the end
             if (! $this->isValidName($key)) {
-                throw new \InvalidArgumentException("Failed to add new key `{$key}`. As it contains invalid characters, please use only ASCII letters, digits and underscores only.");
+                throw new InvalidArgumentException("Failed to add new key `{$key}`. As it contains invalid characters, please use only ASCII letters, digits and underscores only.");
             }
 
             $this->content .= PHP_EOL . "{$key}={$value}" . PHP_EOL;
@@ -175,7 +180,7 @@ class EnvWriter implements WriterInterface
             return true;
         }
 
-        return file_put_contents($this->path, $this->content, \LOCK_EX) !== false ?? true;
+        return file_put_contents($this->path, $this->content, LOCK_EX) !== false ?? true;
     }
 
     /**

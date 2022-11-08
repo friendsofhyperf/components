@@ -50,7 +50,7 @@ class Factory
      * @param string $method
      * @param array $parameters
      * @return mixed
-     * @throws \InvalidArgumentException
+     * @throws InvalidArgumentException
      */
     public function __call($method, $parameters)
     {

@@ -20,6 +20,7 @@ use ReflectionClass;
 use ReflectionException;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
+use Throwable;
 
 class Method
 {
@@ -60,7 +61,7 @@ class Method
             $this->normalizeParams($this->phpdoc);
             $this->normalizeReturn($this->phpdoc);
             $this->normalizeDescription($this->phpdoc);
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
         }
 
         // Get the parameters, including formatted default values

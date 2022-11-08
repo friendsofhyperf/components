@@ -257,7 +257,7 @@ class Request implements ArrayAccess
      * @param string $offset
      * @param mixed $value
      *
-     * @throws \LogicException
+     * @throws LogicException
      */
     public function offsetSet($offset, $value): void
     {
@@ -269,7 +269,7 @@ class Request implements ArrayAccess
      *
      * @param string $offset
      *
-     * @throws \LogicException
+     * @throws LogicException
      */
     public function offsetUnset($offset): void
     {

@@ -10,6 +10,8 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Macros\Exceptions;
 
-class ItemNotFoundException extends \RuntimeException
+use RuntimeException;
+
+class ItemNotFoundException extends RuntimeException
 {
 }

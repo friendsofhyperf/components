@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Http\Client;
 
 use ArrayAccess;
+use Closure;
 use Hyperf\Macroable\Macroable;
 use Hyperf\Utils\Collection;
 use LogicException;
@@ -321,7 +322,7 @@ class Response implements ArrayAccess
     /**
      * Throw an exception if a server or client error occurred.
      *
-     * @param null|\Closure $callback
+     * @param null|Closure $callback
      * @return $this
      * @throws \FriendsOfHyperf\Http\Client\RequestException
      */
@@ -378,7 +379,7 @@ class Response implements ArrayAccess
      * @param string $offset
      * @param mixed $value
      *
-     * @throws \LogicException
+     * @throws LogicException
      */
     public function offsetSet($offset, $value): void
     {
@@ -390,7 +391,7 @@ class Response implements ArrayAccess
      *
      * @param string $offset
      *
-     * @throws \LogicException
+     * @throws LogicException
      */
     public function offsetUnset($offset): void
     {

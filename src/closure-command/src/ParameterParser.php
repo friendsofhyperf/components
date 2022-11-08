@@ -15,6 +15,7 @@ use Hyperf\Contract\NormalizerInterface;
 use Hyperf\Di\ClosureDefinitionCollectorInterface;
 use Hyperf\Di\MethodDefinitionCollectorInterface;
 use Hyperf\Utils\Str;
+use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 
 class ParameterParser
@@ -79,7 +80,7 @@ class ParameterParser
                 } elseif ($definition->allowsNull()) {
                     $injections[] = null;
                 } else {
-                    throw new \InvalidArgumentException("Parameter '{$definition->getMeta('name')}' "
+                    throw new InvalidArgumentException("Parameter '{$definition->getMeta('name')}' "
                         . "of {$callableName} should not be null");
                 }
             } else {

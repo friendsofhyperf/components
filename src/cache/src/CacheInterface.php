@@ -11,13 +11,15 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Cache;
 
 use Closure;
+use DateInterval;
+use DateTimeInterface;
 
 interface CacheInterface
 {
     /**
      * @param string $key
      * @param mixed $value
-     * @param null|\DateInterval|\DateTimeInterface|int $ttl
+     * @param null|DateInterval|DateTimeInterface|int $ttl
      */
     public function add($key, $value, $ttl = null): bool;
 
@@ -47,7 +49,7 @@ interface CacheInterface
     /**
      * @param array|string $key
      * @param mixed $value
-     * @param null|\DateInterval|\DateTimeInterface|int $ttl
+     * @param null|DateInterval|DateTimeInterface|int $ttl
      */
     public function put($key, $value, $ttl = null): bool;
 
@@ -86,7 +88,7 @@ interface CacheInterface
     public function pull(string $key, $default = null);
 
     /**
-     * @param \DateInterval|\DateTimeInterface|int $ttl
+     * @param DateInterval|DateTimeInterface|int $ttl
      * @param string $key
      * @return mixed
      */

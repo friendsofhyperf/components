@@ -11,10 +11,11 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\GrpcValidation\Annotation;
 
 use Hyperf\GrpcServer\Exception\GrpcException;
+use Throwable;
 
 class ValidationException extends GrpcException
 {
-    public function __construct(string $message, int $code = 422, \Throwable $previous = null)
+    public function __construct(string $message, int $code = 422, Throwable $previous = null)
     {
         parent::__construct($message, $code, $previous);
     }

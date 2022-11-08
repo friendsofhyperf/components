@@ -16,6 +16,7 @@ use Hyperf\Database\Model\Builder as EloquentBuilder;
 use Hyperf\Utils\Collection;
 use ReflectionClass;
 use ReflectionFunctionAbstract;
+use ReflectionMethod;
 
 class Macro extends Method
 {
@@ -28,7 +29,7 @@ class Macro extends Method
     }
 
     /**
-     * @param \ReflectionFunctionAbstract $method
+     * @param ReflectionFunctionAbstract $method
      */
     protected function initPhpDoc($method): void
     {
@@ -66,9 +67,9 @@ class Macro extends Method
     {
         $enclosingClass = $this->method->getClosureScopeClass();
 
-        /** @var \ReflectionMethod $enclosingMethod */
+        /** @var ReflectionMethod $enclosingMethod */
         $enclosingMethod = Collection::make($enclosingClass->getMethods())
-            ->first(function (\ReflectionMethod $method) {
+            ->first(function (ReflectionMethod $method) {
                 return $method->getStartLine() <= $this->method->getStartLine()
                     && $method->getEndLine() >= $this->method->getEndLine();
             });
@@ -81,7 +82,7 @@ class Macro extends Method
     }
 
     /**
-     * @param \ReflectionFunctionAbstract $method
+     * @param ReflectionFunctionAbstract $method
      */
     protected function initClassDefinedProperties($method, ReflectionClass $class): void
     {

@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Friendsofhyperf\Encryption;
 
 use Hyperf\Utils\Str;
+use RuntimeException;
 
 class KeyParser
 {
@@ -29,7 +30,7 @@ class KeyParser
     /**
      * Extract the encryption key from the given configuration.
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     protected function key(array $config): string
     {

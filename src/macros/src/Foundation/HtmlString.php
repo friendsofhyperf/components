@@ -11,8 +11,9 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Macros\Foundation;
 
 use FriendsOfHyperf\Macros\Contract\Htmlable;
+use Stringable;
 
-class HtmlString implements Htmlable, \Stringable
+class HtmlString implements Htmlable, Stringable
 {
     /**
      * Create a new HTML string instance.

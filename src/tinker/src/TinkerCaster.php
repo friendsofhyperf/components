@@ -12,6 +12,7 @@ namespace FriendsOfHyperf\Tinker;
 
 use Exception;
 use ReflectionException;
+use ReflectionObject;
 use Symfony\Component\VarDumper\Caster\Caster;
 
 class TinkerCaster
@@ -153,7 +154,7 @@ class TinkerCaster
      */
     public static function castRedis($redis): array
     {
-        $refObject = new \ReflectionObject($redis);
+        $refObject = new ReflectionObject($redis);
         $refProperty = $refObject->getProperty('poolName');
         $refProperty->setAccessible(true);
 

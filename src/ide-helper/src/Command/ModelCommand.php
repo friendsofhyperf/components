@@ -23,7 +23,11 @@ use Hyperf\Utils\Str;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionObject;
+use SplFileObject;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 class ModelCommand extends HyperfCommand
 {
@@ -174,7 +178,7 @@ class ModelCommand extends HyperfCommand
                     $output .= $this->createPhpDocs($name);
                     $ignore[] = $name;
                     $this->nullableColumns = [];
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     $this->error('Exception: ' . $e->getMessage() .
                                  "\nCould not analyze class {$name}.\n\nTrace:\n" .
                                  $e->getTraceAsString());
@@ -366,7 +370,7 @@ class ModelCommand extends HyperfCommand
                     // Magic get<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
                     if (! empty($name)) {
-                        $reflection = new \ReflectionMethod($model, $method);
+                        $reflection = new ReflectionMethod($model, $method);
                         $type = $this->getReturnTypeFromDocBlock($reflection);
                         $this->setProperty($name, $type, true, null);
                     }
@@ -384,23 +388,23 @@ class ModelCommand extends HyperfCommand
                     // Magic set<name>Attribute
                     $name = Str::camel(substr($method, 5));
                     if (! empty($name)) {
-                        $reflection = new \ReflectionMethod($model, $method);
+                        $reflection = new ReflectionMethod($model, $method);
                         $args = $this->getParameters($reflection);
                         // Remove the first ($query) argument
                         array_shift($args);
                         $this->setMethod($name, '\Hyperf\Database\Model\Builder|\\' . $reflection->class, $args);
                     }
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
-                    $reflection = new \ReflectionClass($model);
+                    $reflection = new ReflectionClass($model);
 
                     $builder = get_class($model->newModelQuery());
 
                     $this->setMethod($method, "\\{$builder}|\\" . $reflection->getName());
                 } elseif (! method_exists('Hyperf\DbConnection\Model\Model', $method) && ! str_starts_with($method, 'get')) {
-                    $reflection = new \ReflectionMethod($model, $method);
+                    $reflection = new ReflectionMethod($model, $method);
 
                     if ($returnType = $reflection->getReturnType()) {
-                        $type = $returnType instanceof \ReflectionNamedType
+                        $type = $returnType instanceof ReflectionNamedType
                             ? $returnType->getName()
                             : (string) $returnType;
                     } else {
@@ -408,7 +412,7 @@ class ModelCommand extends HyperfCommand
                         $type = (string) $this->getReturnTypeFromDocBlock($reflection);
                     }
 
-                    $file = new \SplFileObject($reflection->getFileName());
+                    $file = new SplFileObject($reflection->getFileName());
                     $file->seek($reflection->getStartLine() - 1);
 
                     $code = '';
@@ -437,7 +441,7 @@ class ModelCommand extends HyperfCommand
                         $search = '$this->' . $relation . '(';
                         if (stripos($code, $search) || ltrim($impl, '\\') === ltrim((string) $type, '\\')) {
                             // Resolve the relation's model to a Relation object.
-                            $methodReflection = new \ReflectionMethod($model, $method);
+                            $methodReflection = new ReflectionMethod($model, $method);
                             if ($methodReflection->getNumberOfParameters()) {
                                 continue;
                             }
@@ -691,7 +695,7 @@ class ModelCommand extends HyperfCommand
      */
     private function isRelationForeignKeyNullable(Relation $relation): bool
     {
-        $reflectionObj = new \ReflectionObject($relation);
+        $reflectionObj = new ReflectionObject($relation);
         if (! $reflectionObj->hasProperty('foreignKey')) {
             return false;
         }

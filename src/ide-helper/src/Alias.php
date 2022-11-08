@@ -15,10 +15,13 @@ use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
 use Closure;
+use Exception;
+use PDOException;
 use ReflectionClass;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
+use Stringable;
 
 class Alias
 {
@@ -294,13 +297,13 @@ class Alias
             $this->root = $root;
 
             // When the database connection is not set, some classes will be skipped
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $this->error(
                 'PDOException: ' . $e->getMessage() .
                 "\nPlease configure your database connection correctly, or use the sqlite memory driver (-M)." .
                 " Skipping {$facade}."
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error('Exception: ' . $e->getMessage() . "\nSkipping {$facade}.");
         }
     }
@@ -328,8 +331,8 @@ class Alias
             if ((! class_exists($className) && ! interface_exists($className)) || ! method_exists($className, $name)) {
                 continue;
             }
-            $method = new \ReflectionMethod($className, $name);
-            $class = new \ReflectionClass($className);
+            $method = new ReflectionMethod($className, $name);
+            $class = new ReflectionClass($className);
 
             if (! in_array($magic, $this->usedMethods)) {
                 if ($class !== $this->root) {
@@ -346,9 +349,9 @@ class Alias
     protected function detectMethods(): void
     {
         foreach ($this->classes as $class) {
-            $reflection = new \ReflectionClass($class);
+            $reflection = new ReflectionClass($class);
 
-            $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+            $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
             if ($methods) {
                 foreach ($methods as $method) {
                     if (! in_array($method->name, $this->usedMethods)) {
@@ -428,7 +431,7 @@ class Alias
     /**
      * Output an error.
      *
-     * @param string|\Stringable $string
+     * @param string|Stringable $string
      */
     protected function error($string)
     {
