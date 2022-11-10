@@ -10,6 +10,8 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Macros\Exceptions;
 
-class MultipleItemsFoundException extends \RuntimeException
+use RuntimeException;
+
+class MultipleItemsFoundException extends RuntimeException
 {
 }

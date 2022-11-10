@@ -15,6 +15,7 @@ use Hyperf\Utils\Arr;
 use Hyperf\Utils\Str;
 use Hyperf\Utils\Traits\Macroable;
 use LogicException;
+use ReturnTypeWillChange;
 
 class Request implements ArrayAccess
 {
@@ -238,7 +239,7 @@ class Request implements ArrayAccess
      * @param string $offset
      * @return bool
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->data()[$offset]);
@@ -250,7 +251,7 @@ class Request implements ArrayAccess
      * @param string $offset
      * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->data()[$offset];
@@ -262,9 +263,9 @@ class Request implements ArrayAccess
      * @param string $offset
      * @param mixed $value
      *
-     * @throws \LogicException
+     * @throws LogicException
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         throw new LogicException('Request data may not be mutated using array access.');
@@ -275,9 +276,9 @@ class Request implements ArrayAccess
      *
      * @param string $offset
      *
-     * @throws \LogicException
+     * @throws LogicException
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         throw new LogicException('Request data may not be mutated using array access.');

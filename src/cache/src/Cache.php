@@ -11,6 +11,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Cache;
 
 use Carbon\Carbon;
+use Closure;
+use DateInterval;
 use DateTimeInterface;
 use FriendsOfHyperf\Cache\Event\CacheHit;
 use FriendsOfHyperf\Cache\Event\CacheMissed;
@@ -212,7 +214,7 @@ class Cache implements CacheInterface
         });
     }
 
-    public function remember($key, $ttl, \Closure $callback)
+    public function remember($key, $ttl, Closure $callback)
     {
         $value = $this->get($key);
 
@@ -225,7 +227,7 @@ class Cache implements CacheInterface
         return $value;
     }
 
-    public function rememberForever($key, \Closure $callback)
+    public function rememberForever($key, Closure $callback)
     {
         $value = $this->get($key);
 
@@ -238,7 +240,7 @@ class Cache implements CacheInterface
         return $value;
     }
 
-    public function sear($key, \Closure $callback)
+    public function sear($key, Closure $callback)
     {
         return $this->rememberForever($key, $callback);
     }
@@ -276,7 +278,7 @@ class Cache implements CacheInterface
     /**
      * Calculate the number of seconds for the given TTL.
      *
-     * @param \DateInterval|\DateTimeInterface|int $ttl
+     * @param DateInterval|DateTimeInterface|int $ttl
      * @return int
      */
     protected function getSeconds($ttl)

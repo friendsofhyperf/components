@@ -50,7 +50,7 @@ class Encrypter implements EncrypterContract, StringEncrypter
      * @param string $key
      * @param string $cipher
      *
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public function __construct($key, $cipher = 'AES-128-CBC')
     {

@@ -18,6 +18,9 @@ use Hyperf\Macroable\Macroable;
 use Hyperf\Utils\Filesystem\Filesystem;
 use Hyperf\Utils\Str;
 use Psr\Container\ContainerInterface;
+use ReflectionClass;
+use ReflectionFunction;
+use ReflectionParameter;
 use Swoole\Coroutine\System;
 use Throwable;
 
@@ -80,7 +83,7 @@ class Macro extends HyperfCommand
             })
             ->mapWithKeys(function ($path, $class) {
                 try {
-                    $reflection = new \ReflectionClass($class);
+                    $reflection = new ReflectionClass($class);
                     $traits = array_keys($reflection->getTraits() ?? []);
 
                     if (empty($traits) || ! in_array(Macroable::class, $traits)) {
@@ -111,7 +114,7 @@ class Macro extends HyperfCommand
                     $phpDoc->setText($class);
 
                     foreach ($macros as $name => $closure) {
-                        $macro = new \ReflectionFunction($closure);
+                        $macro = new ReflectionFunction($closure);
 
                         $params = join(', ', array_map([$this, 'prepareParameter'], $macro->getParameters()));
                         $doc = $macro->getDocComment();
@@ -182,7 +185,7 @@ class Macro extends HyperfCommand
     /**
      * parse parameters.
      */
-    private function prepareParameter(\ReflectionParameter $parameter): string
+    private function prepareParameter(ReflectionParameter $parameter): string
     {
         $parameterString = trim(optional($parameter->getType())->getName() . ' $' . $parameter->getName());
 

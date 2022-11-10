@@ -14,15 +14,18 @@ use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Hyperf\Database\Model\Builder as EloquentBuilder;
 use Hyperf\Utils\Collection;
+use ReflectionClass;
+use ReflectionFunctionAbstract;
+use ReflectionMethod;
 
 class Macro extends Method
 {
     /**
      * Macro constructor.
      *
-     * @param \ReflectionFunctionAbstract $method
+     * @param ReflectionFunctionAbstract $method
      * @param string $alias
-     * @param \ReflectionClass $class
+     * @param ReflectionClass $class
      * @param null $methodName
      * @param array $interfaces
      */
@@ -37,7 +40,7 @@ class Macro extends Method
     }
 
     /**
-     * @param \ReflectionFunctionAbstract $method
+     * @param ReflectionFunctionAbstract $method
      */
     protected function initPhpDoc($method)
     {
@@ -75,9 +78,9 @@ class Macro extends Method
     {
         $enclosingClass = $this->method->getClosureScopeClass();
 
-        /** @var \ReflectionMethod $enclosingMethod */
+        /** @var ReflectionMethod $enclosingMethod */
         $enclosingMethod = Collection::make($enclosingClass->getMethods())
-            ->first(function (\ReflectionMethod $method) {
+            ->first(function (ReflectionMethod $method) {
                 return $method->getStartLine() <= $this->method->getStartLine()
                     && $method->getEndLine() >= $this->method->getEndLine();
             });
@@ -90,9 +93,9 @@ class Macro extends Method
     }
 
     /**
-     * @param \ReflectionFunctionAbstract $method
+     * @param ReflectionFunctionAbstract $method
      */
-    protected function initClassDefinedProperties($method, \ReflectionClass $class)
+    protected function initClassDefinedProperties($method, ReflectionClass $class)
     {
         $this->namespace = $class->getNamespaceName();
         $this->declaringClassName = '\\' . ltrim($class->name, '\\');

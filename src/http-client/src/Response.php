@@ -11,9 +11,11 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Http\Client;
 
 use ArrayAccess;
+use Closure;
 use Hyperf\Utils\Collection;
 use Hyperf\Utils\Traits\Macroable;
 use LogicException;
+use ReturnTypeWillChange;
 
 class Response implements ArrayAccess
 {
@@ -321,7 +323,7 @@ class Response implements ArrayAccess
     /**
      * Throw an exception if a server or client error occurred.
      *
-     * @param null|\Closure $callback
+     * @param null|Closure $callback
      * @return $this
      * @throws RequestException
      */
@@ -358,7 +360,7 @@ class Response implements ArrayAccess
      * @param string $offset
      * @return bool
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetExists($offset)
     {
         return isset($this->json()[$offset]);
@@ -370,7 +372,7 @@ class Response implements ArrayAccess
      * @param string $offset
      * @return mixed
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetGet($offset)
     {
         return $this->json()[$offset];
@@ -382,9 +384,9 @@ class Response implements ArrayAccess
      * @param string $offset
      * @param mixed $value
      *
-     * @throws \LogicException
+     * @throws LogicException
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetSet($offset, $value)
     {
         throw new LogicException('Response data may not be mutated using array access.');
@@ -395,9 +397,9 @@ class Response implements ArrayAccess
      *
      * @param string $offset
      *
-     * @throws \LogicException
+     * @throws LogicException
      */
-    #[\ReturnTypeWillChange]
+    #[ReturnTypeWillChange]
     public function offsetUnset($offset)
     {
         throw new LogicException('Response data may not be mutated using array access.');

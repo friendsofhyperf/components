@@ -28,7 +28,7 @@ abstract class Facade
      * @param string $method
      * @param array $args
      * @return mixed
-     * @throws \RuntimeException
+     * @throws RuntimeException
      */
     public static function __callStatic($method, $args)
     {
