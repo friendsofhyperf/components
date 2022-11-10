@@ -12,6 +12,7 @@ namespace FriendsOfHyperf\Tests\Helpers;
 
 use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Utils\Stringable;
+use ReflectionClass;
 use stdClass;
 
 /**
@@ -81,11 +82,11 @@ class HelpersTest extends TestCase
         $this->assertTrue($stringable->isEmpty());
 
         $strAccessor = str();
-        $this->assertTrue((new \ReflectionClass($strAccessor))->isAnonymous());
+        $this->assertTrue((new ReflectionClass($strAccessor))->isAnonymous());
         $this->assertSame($strAccessor->limit('string-value', 3), 'str...');
 
         $strAccessor = str();
-        $this->assertTrue((new \ReflectionClass($strAccessor))->isAnonymous());
+        $this->assertTrue((new ReflectionClass($strAccessor))->isAnonymous());
         $this->assertSame((string) $strAccessor, '');
     }
 }

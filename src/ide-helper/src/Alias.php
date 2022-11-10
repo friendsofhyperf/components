@@ -15,7 +15,13 @@ use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag\MethodTag;
 use Closure;
+use Exception;
+use PDOException;
 use ReflectionClass;
+use ReflectionException;
+use ReflectionFunction;
+use ReflectionFunctionAbstract;
+use ReflectionMethod;
 
 class Alias
 {
@@ -56,7 +62,7 @@ class Alias
      * @param string $facade
      * @param array $magicMethods
      * @param array $interfaces
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function __construct($alias, $facade, $magicMethods = [], $interfaces = [])
     {
@@ -319,13 +325,13 @@ class Alias
             $this->root = $root;
 
             // When the database connection is not set, some classes will be skipped
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             $this->error(
                 'PDOException: ' . $e->getMessage() .
                 "\nPlease configure your database connection correctly, or use the sqlite memory driver (-M)." .
                 " Skipping {$facade}."
             );
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error('Exception: ' . $e->getMessage() . "\nSkipping {$facade}.");
         }
     }
@@ -354,8 +360,8 @@ class Alias
             if ((! class_exists($className) && ! interface_exists($className)) || ! method_exists($className, $name)) {
                 continue;
             }
-            $method = new \ReflectionMethod($className, $name);
-            $class = new \ReflectionClass($className);
+            $method = new ReflectionMethod($className, $name);
+            $class = new ReflectionClass($className);
 
             if (! in_array($magic, $this->usedMethods)) {
                 if ($class !== $this->root) {
@@ -372,9 +378,9 @@ class Alias
     protected function detectMethods()
     {
         foreach ($this->classes as $class) {
-            $reflection = new \ReflectionClass($class);
+            $reflection = new ReflectionClass($class);
 
-            $methods = $reflection->getMethods(\ReflectionMethod::IS_PUBLIC);
+            $methods = $reflection->getMethods(ReflectionMethod::IS_PUBLIC);
             if ($methods) {
                 foreach ($methods as $method) {
                     if (! in_array($method->name, $this->usedMethods)) {
@@ -417,22 +423,21 @@ class Alias
     }
 
     /**
-     * @param $macro_func
-     *
-     * @return \ReflectionFunctionAbstract
-     * @throws \ReflectionException
+     * @param mixed $macro_func
+     * @return ReflectionFunctionAbstract
+     * @throws ReflectionException
      */
     protected function getMacroFunction($macro_func)
     {
         if (is_array($macro_func) && is_callable($macro_func)) {
-            return new \ReflectionMethod($macro_func[0], $macro_func[1]);
+            return new ReflectionMethod($macro_func[0], $macro_func[1]);
         }
 
         if (is_object($macro_func) && is_callable($macro_func) && ! $macro_func instanceof Closure) {
-            return new \ReflectionMethod($macro_func, '__invoke');
+            return new ReflectionMethod($macro_func, '__invoke');
         }
 
-        return new \ReflectionFunction($macro_func);
+        return new ReflectionFunction($macro_func);
     }
 
     /**

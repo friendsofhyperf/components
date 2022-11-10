@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Http\Client;
 
+use Closure;
 use Exception;
 use FriendsOfHyperf\Http\Client\Events\ConnectionFailed;
 use FriendsOfHyperf\Http\Client\Events\RequestSending;
@@ -109,7 +110,7 @@ class PendingRequest
     /**
      * A callback to run when throwing if a server or client error occurs.
      *
-     * @var \Closure
+     * @var Closure
      */
     protected $throwCallback;
 
@@ -767,7 +768,7 @@ class PendingRequest
      * Send the request to the given URL.
      *
      * @return Response
-     * @throws \Exception
+     * @throws Exception
      */
     public function send(string $method, string $url, array $options = [])
     {
@@ -903,7 +904,7 @@ class PendingRequest
     /**
      * Build the before sending handler.
      *
-     * @return \Closure
+     * @return Closure
      */
     public function buildBeforeSendingHandler()
     {
@@ -917,7 +918,7 @@ class PendingRequest
     /**
      * Build the recorder handler.
      *
-     * @return \Closure
+     * @return Closure
      */
     public function buildRecorderHandler()
     {
@@ -940,7 +941,7 @@ class PendingRequest
     /**
      * Build the stub handler.
      *
-     * @return \Closure
+     * @return Closure
      */
     public function buildStubHandler()
     {
@@ -1114,7 +1115,7 @@ class PendingRequest
      * Send a request either synchronously or asynchronously.
      *
      * @return \GuzzleHttp\Promise\PromiseInterface|\Psr\Http\Message\MessageInterface
-     * @throws \Exception
+     * @throws Exception
      */
     protected function sendRequest(string $method, string $url, array $options = [])
     {
@@ -1198,7 +1199,7 @@ class PendingRequest
      * Get the sink stub handler callback.
      *
      * @param string $sink
-     * @return \Closure
+     * @return Closure
      */
     protected function sinkStubHandler($sink)
     {

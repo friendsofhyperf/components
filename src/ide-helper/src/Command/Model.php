@@ -23,7 +23,13 @@ use Hyperf\Utils\Filesystem\Filesystem;
 use Hyperf\Utils\Str;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
+use ReflectionMethod;
+use ReflectionNamedType;
+use ReflectionObject;
+use ReflectionParameter;
+use SplFileObject;
 use Symfony\Component\Console\Output\OutputInterface;
+use Throwable;
 
 /**
  * @Command
@@ -136,7 +142,7 @@ class Model extends HyperfCommand
     /**
      * Get the parameters and format them correctly.
      *
-     * @param $method
+     * @param mixed $method
      * @return array
      */
     protected function getParameters($method)
@@ -144,7 +150,7 @@ class Model extends HyperfCommand
         // Loop through the default values for parameters, and make the correct output string
         $params = [];
         $paramsWithDefault = [];
-        /** @var \ReflectionParameter $param */
+        /** @var ReflectionParameter $param */
         foreach ($method->getParameters() as $param) {
             $paramClass = $param->getDeclaringClass();
             $paramStr = (! is_null($paramClass) ? '\\' . $paramClass->getName() . ' ' : '') . '$' . $param->getName();
@@ -241,7 +247,7 @@ class Model extends HyperfCommand
                     $output .= $this->createPhpDocs($name);
                     $ignore[] = $name;
                     $this->nullableColumns = [];
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     $this->error('Exception: ' . $e->getMessage() .
                                  "\nCould not analyze class {$name}.\n\nTrace:\n" .
                                  $e->getTraceAsString());
@@ -434,7 +440,7 @@ class Model extends HyperfCommand
                     // Magic get<name>Attribute
                     $name = Str::snake(substr($method, 3, -9));
                     if (! empty($name)) {
-                        $reflection = new \ReflectionMethod($model, $method);
+                        $reflection = new ReflectionMethod($model, $method);
                         $type = $this->getReturnTypeFromDocBlock($reflection);
                         $this->setProperty($name, $type, true, null);
                     }
@@ -452,14 +458,14 @@ class Model extends HyperfCommand
                     // Magic set<name>Attribute
                     $name = Str::camel(substr($method, 5));
                     if (! empty($name)) {
-                        $reflection = new \ReflectionMethod($model, $method);
+                        $reflection = new ReflectionMethod($model, $method);
                         $args = $this->getParameters($reflection);
                         // Remove the first ($query) argument
                         array_shift($args);
                         $this->setMethod($name, '\Hyperf\Database\Model\Builder|\\' . $reflection->class, $args);
                     }
                 } elseif (in_array($method, ['query', 'newQuery', 'newModelQuery'])) {
-                    $reflection = new \ReflectionClass($model);
+                    $reflection = new ReflectionClass($model);
 
                     $builder = get_class($model->newModelQuery());
 
@@ -467,10 +473,10 @@ class Model extends HyperfCommand
                 } elseif (! method_exists('Hyperf\DbConnection\Model\Model', $method)
                           && ! Str::startsWith($method, 'get')
                 ) {
-                    $reflection = new \ReflectionMethod($model, $method);
+                    $reflection = new ReflectionMethod($model, $method);
 
                     if ($returnType = $reflection->getReturnType()) {
-                        $type = $returnType instanceof \ReflectionNamedType
+                        $type = $returnType instanceof ReflectionNamedType
                             ? $returnType->getName()
                             : (string) $returnType;
                     } else {
@@ -478,7 +484,7 @@ class Model extends HyperfCommand
                         $type = (string) $this->getReturnTypeFromDocBlock($reflection);
                     }
 
-                    $file = new \SplFileObject($reflection->getFileName());
+                    $file = new SplFileObject($reflection->getFileName());
                     $file->seek($reflection->getStartLine() - 1);
 
                     $code = '';
@@ -507,7 +513,7 @@ class Model extends HyperfCommand
                         $search = '$this->' . $relation . '(';
                         if (stripos($code, $search) || ltrim($impl, '\\') === ltrim((string) $type, '\\')) {
                             // Resolve the relation's model to a Relation object.
-                            $methodReflection = new \ReflectionMethod($model, $method);
+                            $methodReflection = new ReflectionMethod($model, $method);
                             if ($methodReflection->getNumberOfParameters()) {
                                 continue;
                             }
@@ -729,7 +735,7 @@ class Model extends HyperfCommand
      *
      * @return null|string
      */
-    protected function getReturnTypeFromDocBlock(\ReflectionMethod $reflection)
+    protected function getReturnTypeFromDocBlock(ReflectionMethod $reflection)
     {
         $type = null;
         $phpdoc = new DocBlock($reflection);
@@ -777,7 +783,7 @@ class Model extends HyperfCommand
      */
     private function isRelationForeignKeyNullable(Relation $relation)
     {
-        $reflectionObj = new \ReflectionObject($relation);
+        $reflectionObj = new ReflectionObject($relation);
         if (! $reflectionObj->hasProperty('foreignKey')) {
             return false;
         }

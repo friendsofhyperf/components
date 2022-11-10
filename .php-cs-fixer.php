@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/1.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/2.x/README.md
  * @contact  huangdijia@gmail.com
  */
 $header = <<<'EOF'
@@ -37,6 +37,11 @@ return (new PhpCsFixer\Config())
         ],
         'concat_space' => [
             'spacing' => 'one',
+        ],
+        'global_namespace_import' => [
+            'import_classes' => true,
+            'import_constants' => true,
+            'import_functions' => null,
         ],
         'blank_line_before_statement' => [
             'statements' => [

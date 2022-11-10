@@ -16,7 +16,10 @@ use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Barryvdh\Reflection\DocBlock\Tag\ParamTag;
 use Barryvdh\Reflection\DocBlock\Tag\ReturnTag;
+use Exception;
+use ReflectionClass;
 use ReflectionException;
+use ReflectionFunctionAbstract;
 use ReflectionMethod;
 
 class Method
@@ -48,9 +51,9 @@ class Method
     protected $root;
 
     /**
-     * @param \ReflectionFunctionAbstract|ReflectionMethod $method
+     * @param ReflectionFunctionAbstract|ReflectionMethod $method
      * @param string $alias
-     * @param \ReflectionClass $class
+     * @param ReflectionClass $class
      * @param null|string $methodName
      * @param array $interfaces
      */
@@ -73,7 +76,7 @@ class Method
             $this->normalizeParams($this->phpdoc);
             $this->normalizeReturn($this->phpdoc);
             $this->normalizeDescription($this->phpdoc);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
         }
 
         // Get the parameters, including formatted default values
@@ -239,7 +242,7 @@ class Method
     /**
      * @param ReflectionMethod $method
      */
-    protected function initClassDefinedProperties($method, \ReflectionClass $class)
+    protected function initClassDefinedProperties($method, ReflectionClass $class)
     {
         $declaringClass = $method->getDeclaringClass();
         $this->namespace = $declaringClass->getNamespaceName();

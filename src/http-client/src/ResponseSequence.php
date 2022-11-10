@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Http\Client;
 
+use Closure;
 use Hyperf\Utils\Traits\Macroable;
 use OutOfBoundsException;
 
@@ -50,7 +51,7 @@ class ResponseSequence
      * Get the next response in the sequence.
      *
      * @return mixed
-     * @throws \OutOfBoundsException
+     * @throws OutOfBoundsException
      */
     public function __invoke()
     {
@@ -122,7 +123,7 @@ class ResponseSequence
     /**
      * Make the sequence return a default response when it is empty.
      *
-     * @param \Closure|\GuzzleHttp\Promise\PromiseInterface $response
+     * @param Closure|\GuzzleHttp\Promise\PromiseInterface $response
      * @return $this
      */
     public function whenEmpty($response)
