@@ -1,6 +1,10 @@
 name: tests
 
-on: [push, pull_request]
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 2 * * *'
 
 jobs:
   ci:
@@ -11,6 +15,7 @@ jobs:
         os: [ubuntu-latest]
         php-version: ['8.0', '8.1']
       max-parallel: 4
+      fail-fast: false
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -23,10 +28,9 @@ jobs:
           coverage: none
       - name: Setup Packages
         run: composer update -o
+      - name: Run Cs Fixer
+        run: vendor/bin/php-cs-fixer fix src --dry-run
       - name: Run Analyse
-        run: |
-          composer analyse src
+        run: composer analyse src
       - name: Run Test Cases
-        run: |
-          vendor/bin/php-cs-fixer fix src --dry-run
-          composer test
+        run: composer test
