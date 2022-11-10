@@ -70,6 +70,10 @@ class TinkerCommand extends HyperfCommand
             $this->getCasters()
         );
 
+        if ($this->input->getOption('execute')) {
+            $config->setRawOutput(true);
+        }
+
         $shell = new Shell($config);
 
         $shell->addCommands($this->getCommands());
