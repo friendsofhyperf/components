@@ -22,11 +22,11 @@ class Str
     }
 
     /**
-     * Generate a time-ordered UUID (version 4).
+     * Generate a time-ordered UUID (version 7).
      *
      * @return \Ramsey\Uuid\UuidInterface
      */
-    public static function orderedUuid()
+    public static function uuid()
     {
     }
 }
