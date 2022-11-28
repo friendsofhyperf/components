@@ -26,7 +26,7 @@ class Str
      *
      * @return \Ramsey\Uuid\UuidInterface
      */
-    public static function uuid()
+    public static function orderedUuid()
     {
     }
 }

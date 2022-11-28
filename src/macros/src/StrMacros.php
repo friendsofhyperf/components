@@ -18,6 +18,7 @@ use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\Extension\InlinesOnly\InlinesOnlyExtension;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\MarkdownConverter;
+use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\Uuid as RamseyUuid;
 use Symfony\Component\Uid\Ulid as SymfonyUlid;
 use voku\helper\ASCII;
@@ -199,7 +200,7 @@ class StrMacros
     public function orderedUuid()
     {
         return function () {
-            return Str::uuid();
+            return Uuid::uuid7();
         };
     }
 
@@ -248,7 +249,7 @@ class StrMacros
     {
         return fn () => UuidContainer::$uuidFactory
             ? call_user_func(UuidContainer::$uuidFactory)
-            : RamseyUuid::uuid7();
+            : RamseyUuid::uuid4();
     }
 
     public function wordCount()

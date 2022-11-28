@@ -18,8 +18,8 @@ if (! Str::hasMacro('ulid')) {
     });
 }
 
-if (! Str::hasMacro('uuid')) {
-    Str::macro('uuid', function () {
+if (! Str::hasMacro('orderedUuid')) {
+    Str::macro('orderedUuid', function () {
         return Uuid::uuid7();
     });
 }
