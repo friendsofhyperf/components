@@ -230,7 +230,7 @@ class Str
     }
 
     /**
-     * Generate a UUID (version 7).
+     * Generate a UUID (version 4).
      *
      * @return \Ramsey\Uuid\UuidInterface
      */
