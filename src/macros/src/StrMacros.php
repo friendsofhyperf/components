@@ -18,10 +18,7 @@ use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\Extension\InlinesOnly\InlinesOnlyExtension;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\MarkdownConverter;
-use Ramsey\Uuid\Codec\TimestampFirstCombCodec;
-use Ramsey\Uuid\Generator\CombGenerator;
 use Ramsey\Uuid\Uuid as RamseyUuid;
-use Ramsey\Uuid\UuidFactory;
 use Symfony\Component\Uid\Ulid as SymfonyUlid;
 use voku\helper\ASCII;
 
@@ -202,22 +199,7 @@ class StrMacros
     public function orderedUuid()
     {
         return function () {
-            if (UuidContainer::$uuidFactory) {
-                return call_user_func(UuidContainer::$uuidFactory);
-            }
-
-            $factory = new UuidFactory();
-
-            $factory->setRandomGenerator(new CombGenerator(
-                $factory->getRandomGenerator(),
-                $factory->getNumberConverter()
-            ));
-
-            $factory->setCodec(new TimestampFirstCombCodec(
-                $factory->getUuidBuilder()
-            ));
-
-            return $factory->uuid4();
+            return Str::uuid();
         };
     }
 
@@ -266,7 +248,7 @@ class StrMacros
     {
         return fn () => UuidContainer::$uuidFactory
             ? call_user_func(UuidContainer::$uuidFactory)
-            : RamseyUuid::uuid4();
+            : RamseyUuid::uuid7();
     }
 
     public function wordCount()

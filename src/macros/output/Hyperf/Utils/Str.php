@@ -134,7 +134,7 @@ class Str
     }
 
     /**
-     * Generate a time-ordered UUID (version 4).
+     * Generate a time-ordered UUID (version 7).
      *
      * @return \Ramsey\Uuid\UuidInterface
      */
@@ -230,7 +230,7 @@ class Str
     }
 
     /**
-     * Generate a UUID (version 4).
+     * Generate a UUID (version 7).
      *
      * @return \Ramsey\Uuid\UuidInterface
      */

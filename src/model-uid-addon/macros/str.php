@@ -9,9 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 use Hyperf\Utils\Str;
-use Ramsey\Uuid\Codec\TimestampFirstCombCodec;
-use Ramsey\Uuid\Generator\CombGenerator;
-use Ramsey\Uuid\UuidFactory;
+use Ramsey\Uuid\Uuid;
 use Symfony\Component\Uid\Ulid;
 
 if (! Str::hasMacro('ulid')) {
@@ -20,19 +18,8 @@ if (! Str::hasMacro('ulid')) {
     });
 }
 
-if (! Str::hasMacro('orderedUuid')) {
-    Str::macro('orderedUuid', function () {
-        $factory = new UuidFactory();
-
-        $factory->setRandomGenerator(new CombGenerator(
-            $factory->getRandomGenerator(),
-            $factory->getNumberConverter()
-        ));
-
-        $factory->setCodec(new TimestampFirstCombCodec(
-            $factory->getUuidBuilder()
-        ));
-
-        return $factory->uuid4();
+if (! Str::hasMacro('uuid')) {
+    Str::macro('uuid', function () {
+        return Uuid::uuid7();
     });
 }
