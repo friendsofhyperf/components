@@ -87,6 +87,7 @@
         "friendsofhyperf/model-uid-addon": "*",
         "friendsofhyperf/pretty-console": "*",
         "friendsofhyperf/recaptcha": "*",
+        "friendsofhyperf/sentry": "*",
         "friendsofhyperf/tinker": "*"
     },
     "autoload": {
@@ -123,6 +124,7 @@
             "FriendsOfHyperf\\ModelUidAddon\\": "src/model-uid-addon/src/",
             "FriendsOfHyperf\\PrettyConsole\\": "src/pretty-console/src/",
             "FriendsOfHyperf\\ReCaptcha\\": "src/recaptcha/src/",
+            "FriendsOfHyperf\\Sentry\\": "src/sentry/src/",
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
             "Friendsofhyperf\\Encryption\\": "src/encryption/src/"
         }
@@ -157,6 +159,7 @@
                 "FriendsOfHyperf\\ModelUidAddon\\ConfigProvider",
                 "FriendsOfHyperf\\PrettyConsole\\ConfigProvider",
                 "FriendsOfHyperf\\ReCaptcha\\ConfigProvider",
+                "FriendsOfHyperf\\Sentry\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
                 "Friendsofhyperf\\Encryption\\ConfigProvider"
             ]

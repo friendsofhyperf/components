@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * This file is part of friendsofhyperf/sentry.
+ *
+ * @link     https://github.com/friendsofhyperf/sentry
+ * @document https://github.com/friendsofhyperf/sentry/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ */
+return [
+    'dsn' => env('SENTRY_DSN', ''),
+
+    // capture release as git sha
+    // 'release' => trim(exec('git --git-dir ' . base_path('.git') . ' log --pretty="%h" -n1 HEAD')),
+
+    'environment' => env('APP_ENV'),
+
+    // @see: https://docs.sentry.io/platforms/php/configuration/options/#send-default-pii
+    'send_default_pii' => false,
+
+    'breadcrumbs' => [
+        'sql_queries' => true,
+        'sql_bindings' => true,
+        'sql_transaction' => true,
+        'redis' => true,
+        'guzzle' => true,
+        'logs' => true,
+    ],
+
+    'integrations' => [],
+];

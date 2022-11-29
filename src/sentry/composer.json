@@ -1,0 +1,35 @@
+{
+    "name": "friendsofhyperf/sentry",
+    "description": "The sentry component for Hyperf.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "php",
+        "hyperf",
+        "sentry"
+    ],
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Sentry\\": "src/"
+        }
+    },
+    "require": {
+        "hyperf/command": "~3.0.0",
+        "hyperf/database": "~3.0.0",
+        "hyperf/di": "~3.0.0",
+        "hyperf/event": "~3.0.0",
+        "hyperf/exception-handler": "~3.0.0",
+        "hyperf/framework": "~3.0.0",
+        "hyperf/logger": "~3.0.0",
+        "sentry/sdk": "^3.0"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Sentry\\ConfigProvider"
+        }
+    }
+}
