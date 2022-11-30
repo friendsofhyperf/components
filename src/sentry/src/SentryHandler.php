@@ -49,20 +49,10 @@ class SentryHandler extends AbstractProcessingHandler
     protected ?FormatterInterface $batchFormatter = null;
 
     /**
-     * Indicates if we should report exceptions, if `false` this handler will ignore records with an exception set in the context.
-     */
-    private bool $reportExceptions;
-
-    /**
-     * Indicates if we should use the formatted message instead of just the message.
-     */
-    private bool $useFormattedMessage;
-
-    /**
      * @param int $level The minimum logging level at which this handler will be triggered
      * @param bool $bubble Whether the messages that are handled can bubble up the stack or not
      */
-    public function __construct($level = Logger::DEBUG, bool $bubble = true, bool $reportExceptions = true, bool $useFormattedMessage = false)
+    public function __construct($level = Logger::DEBUG, bool $bubble = true, protected bool $reportExceptions = true, protected bool $useFormattedMessage = false)
     {
         parent::__construct($level, $bubble);
 
@@ -75,8 +65,6 @@ class SentryHandler extends AbstractProcessingHandler
             $this->release = $release;
         }
         $this->hub = $container->get(HubInterface::class);
-        $this->reportExceptions = $reportExceptions;
-        $this->useFormattedMessage = $useFormattedMessage;
     }
 
     /**

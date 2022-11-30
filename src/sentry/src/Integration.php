@@ -20,6 +20,8 @@ use Sentry\Tracing\Span;
 use function Sentry\addBreadcrumb;
 use function Sentry\configureScope;
 
+use const SWOOLE_VERSION;
+
 class Integration implements IntegrationInterface
 {
     private static ?string $transaction = null;
@@ -34,6 +36,19 @@ class Integration implements IntegrationInterface
 
             if (! $self instanceof self) {
                 return $event;
+            }
+
+            if (defined('\SWOOLE_VERSION')) {
+                $event->setContext('swoole', [
+                    'version' => SWOOLE_VERSION,
+                ]);
+            }
+
+            if (defined('\Swow\Extension::VERSION')) {
+                $event->setContext('swow', [
+                    /* @phpstan-ignore-next-line */
+                    'version' => \Swow\Extension::VERSION,
+                ]);
             }
 
             if (empty($event->getTransaction())) {

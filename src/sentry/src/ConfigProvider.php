@@ -17,12 +17,18 @@ class ConfigProvider
         defined('BASE_PATH') or define('BASE_PATH', '');
 
         return [
-            'dependencies' => [
-                \Sentry\ClientBuilderInterface::class => Factory\ClientBuilderFactory::class,
-                \Sentry\State\HubInterface::class => Factory\HubFactory::class,
+            'aspects' => [
+                Aspect\HttpClientAspect::class,
+                Aspect\LoggerAspect::class,
+                Aspect\RedisAspect::class,
+                Aspect\SingletonAspect::class,
             ],
             'commands' => [
                 Command\TestCommand::class,
+            ],
+            'dependencies' => [
+                \Sentry\ClientBuilderInterface::class => Factory\ClientBuilderFactory::class,
+                \Sentry\State\HubInterface::class => Factory\HubFactory::class,
             ],
             'listeners' => [
                 Listener\InitHubListener::class,
@@ -32,12 +38,6 @@ class ConfigProvider
                 'class_map' => [
                     \Sentry\SentrySdk::class => __DIR__ . '/../class_map/SentrySdk.php',
                 ],
-            ],
-            'aspects' => [
-                Aspect\HttpClientAspect::class,
-                Aspect\LoggerAspect::class,
-                Aspect\RedisAspect::class,
-                Aspect\SingletonAspect::class,
             ],
             'publish' => [
                 [

@@ -19,7 +19,7 @@ use Throwable;
 
 class SentryExceptionHandler extends ExceptionHandler
 {
-    public function __construct(protected ContainerInterface $container, protected StdoutLoggerInterface $logger)
+    public function __construct(protected ContainerInterface $container)
     {
     }
 
@@ -35,7 +35,7 @@ class SentryExceptionHandler extends ExceptionHandler
 
                 $hub->getClient()->flush();
             } catch (Throwable $e) {
-                $this->logger->error((string) $e);
+                $this->container->get(StdoutLoggerInterface::class)->error((string) $e);
             }
         });
 
