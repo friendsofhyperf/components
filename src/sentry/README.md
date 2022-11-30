@@ -57,3 +57,21 @@ return [
 ];
 
 ```
+
+## Annotation
+
+```php
+<?php
+namespace App;
+
+use FriendsOfHyperf\Sentry\Annotation\Breadcrumb;
+
+class Foo
+{
+    #[Breadcrumb(category: 'foo')]
+    public function bar($a = 1, $b = 2)
+    {
+        return __METHOD__;
+    }
+}
+```
