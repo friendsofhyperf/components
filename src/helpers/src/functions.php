@@ -47,6 +47,19 @@ if (! function_exists('array_is_list')) {
     }
 }
 
+if (! function_exists('base_path')) {
+    /**
+     * Get the path to the base of the install.
+     *
+     * @param string $path
+     * @return string
+     */
+    function base_path($path = '')
+    {
+        return BASE_PATH . ($path ? '/' . $path : $path);
+    }
+}
+
 if (! function_exists('blank')) {
     /**
      * Determine if the given value is "blank".
