@@ -30,34 +30,34 @@ class LoggerAspect extends AbstractAspect
     {
     }
 
-        public function process(ProceedingJoinPoint $proceedingJoinPoint)
-        {
-            return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-                if (! $this->config->get('sentry.breadcrumbs.logs', false)) {
-                    return;
-                }
+    public function process(ProceedingJoinPoint $proceedingJoinPoint)
+    {
+        return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
+            if (! $this->config->get('sentry.breadcrumbs.logs', false)) {
+                return;
+            }
 
-                $level = $proceedingJoinPoint->arguments['keys']['level'];
-                $level = $level instanceof UnitEnum ? (int) $level->value : (int) $level;
-                $message = $proceedingJoinPoint->arguments['keys']['message'];
-                $context = $proceedingJoinPoint->arguments['keys']['context'];
-                /** @var null|DateTimeImmutable $datetime */
-                $datetime = $proceedingJoinPoint->arguments['keys']['datetime'];
+            $level = $proceedingJoinPoint->arguments['keys']['level'];
+            $level = $level instanceof UnitEnum ? (int) $level->value : (int) $level;
+            $message = $proceedingJoinPoint->arguments['keys']['message'];
+            $context = $proceedingJoinPoint->arguments['keys']['context'];
+            /** @var null|DateTimeImmutable $datetime */
+            $datetime = $proceedingJoinPoint->arguments['keys']['datetime'];
 
-                if (isset($context['no_aspect']) && $context['no_aspect'] === true) {
-                    return;
-                }
+            if (isset($context['no_aspect']) && $context['no_aspect'] === true) {
+                return;
+            }
 
-                Integration::addBreadcrumb(new Breadcrumb(
-                    (string) $this->getLogLevel($level),
-                    Breadcrumb::TYPE_DEFAULT,
-                    'log.' . Logger::getLevelName($level),
-                    $message,
-                    $context,
-                    $datetime?->getTimestamp()
-                ));
-            });
-        }
+            Integration::addBreadcrumb(new Breadcrumb(
+                (string) $this->getLogLevel($level),
+                Breadcrumb::TYPE_DEFAULT,
+                'log.' . Logger::getLevelName($level),
+                $message,
+                $context,
+                $datetime?->getTimestamp()
+            ));
+        });
+    }
 
     /**
      * Translates Monolog log levels to Sentry Severity.
