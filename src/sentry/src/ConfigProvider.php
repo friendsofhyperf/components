@@ -18,6 +18,7 @@ class ConfigProvider
 
         return [
             'aspects' => [
+                Aspect\BreadcrumbAspect::class,
                 Aspect\HttpClientAspect::class,
                 Aspect\LoggerAspect::class,
                 Aspect\RedisAspect::class,
