@@ -10,7 +10,6 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ModelObserver;
 
-use FriendsOfHyperf\ModelObserver\Generator\GeneratorCommand;
 use FriendsOfHyperf\ModelObserver\Listener\ObserverListener;
 use FriendsOfHyperf\ModelObserver\Listener\RegisterObserverListener;
 
@@ -20,7 +19,7 @@ class ConfigProvider
     {
         return [
             'commands' => [
-                GeneratorCommand::class,
+                Command\GeneratorCommand::class,
             ],
             'listeners' => [
                 ObserverListener::class,
