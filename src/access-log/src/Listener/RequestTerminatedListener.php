@@ -12,13 +12,8 @@ namespace FriendsOfHyperf\AccessLog\Listener;
 
 use FriendsOfHyperf\AccessLog\Handler;
 use FriendsOfHyperf\HttpRequestLifeCycle\Events\RequestTerminated;
-use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 
-/**
- * @Listener
- */
-#[Listener]
 class RequestTerminatedListener implements ListenerInterface
 {
     /**

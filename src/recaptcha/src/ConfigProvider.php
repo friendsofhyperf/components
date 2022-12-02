@@ -20,21 +20,13 @@ class ConfigProvider
             'dependencies' => [
                 ReCaptchaManager::class => ReCaptchaManager::class,
             ],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
-            ],
-            'commands' => [],
             'listeners' => [
                 Listener\ValidatorFactoryResolvedListener::class => PHP_INT_MIN,
             ],
             'publish' => [
                 [
                     'id' => 'config',
-                    'description' => 'config file.',
+                    'description' => 'The config of recaptcha.',
                     'source' => __DIR__ . '/../publish/recaptcha.php',
                     'destination' => BASE_PATH . '/config/autoload/recaptcha.php',
                 ],

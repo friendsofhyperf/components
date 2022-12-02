@@ -1,9 +1,10 @@
 {
     "words": [
-    "autoloader",
-    "friendsofphp",
-    "nesbot",
-    "protobuf",
-    "recaptcha"
-]
+        "autoloader",
+        "Encrypter",
+        "friendsofphp",
+        "nesbot",
+        "protobuf",
+        "recaptcha"
+    ]
 }

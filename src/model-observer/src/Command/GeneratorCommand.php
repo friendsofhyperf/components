@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/2.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\ModelObserver\Generator;
+namespace FriendsOfHyperf\ModelObserver\Command;
 
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Contract\ConfigInterface;
@@ -21,10 +21,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-/**
- * @Command
- */
-#[Command]
 class GeneratorCommand extends SymfonyCommand
 {
     /**

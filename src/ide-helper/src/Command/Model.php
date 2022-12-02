@@ -15,7 +15,6 @@ use Barryvdh\Reflection\DocBlock\Context;
 use Barryvdh\Reflection\DocBlock\Serializer as DocBlockSerializer;
 use Barryvdh\Reflection\DocBlock\Tag;
 use Composer\Autoload\ClassMapGenerator;
-use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Database\Model\Relations\Relation;
@@ -31,10 +30,6 @@ use SplFileObject;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
 
-/**
- * @Command
- */
-#[Command]
 class Model extends HyperfCommand
 {
     /**

@@ -11,7 +11,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\IdeHelper\Command;
 
 use Barryvdh\Reflection\DocBlock;
-use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Macroable\Macroable;
@@ -24,10 +23,6 @@ use ReflectionParameter;
 use Swoole\Coroutine\System;
 use Throwable;
 
-/**
- * @Command
- */
-#[Command]
 class Macro extends HyperfCommand
 {
     /**

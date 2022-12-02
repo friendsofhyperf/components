@@ -18,16 +18,6 @@ class ConfigProvider
             'dependencies' => [
                 CacheInterface::class => CacheFactory::class,
             ],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
-            ],
-            'commands' => [],
-            'listeners' => [],
-            'publish' => [],
         ];
     }
 }
