@@ -8,9 +8,8 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\ModelObserver\Generator;
+namespace FriendsOfHyperf\ModelObserver\Command;
 
-use Hyperf\Command\Annotation\Command;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\CodeGen\Project;
