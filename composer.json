@@ -72,6 +72,7 @@
         "friendsofhyperf/lock": "*",
         "friendsofhyperf/macros": "*",
         "friendsofhyperf/model-observer": "*",
+        "friendsofhyperf/monolog-hook": "*",
         "friendsofhyperf/recaptcha": "*",
         "friendsofhyperf/tinker": "*"
     },
@@ -102,6 +103,7 @@
             "FriendsOfHyperf\\Lock\\": "src/lock/src/",
             "FriendsOfHyperf\\Macros\\": "src/macros/src/",
             "FriendsOfHyperf\\ModelObserver\\": "src/model-observer/src/",
+            "FriendsOfHyperf\\MonologHook\\": "src/monolog-hook/src/",
             "FriendsOfHyperf\\ReCaptcha\\": "src/recaptcha/src/",
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
             "Friendsofhyperf\\Encryption\\": "src/encryption/src/"
@@ -130,6 +132,7 @@
                 "FriendsOfHyperf\\Lock\\ConfigProvider",
                 "FriendsOfHyperf\\Macros\\ConfigProvider",
                 "FriendsOfHyperf\\ModelObserver\\ConfigProvider",
+                "FriendsOfHyperf\\MonologHook\\ConfigProvider",
                 "FriendsOfHyperf\\ReCaptcha\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
                 "Friendsofhyperf\\Encryption\\ConfigProvider"
