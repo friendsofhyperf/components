@@ -24,9 +24,6 @@
     "extra": {
         "branch-alias": {
             "2.x-dev": "2.0-dev"
-        },
-        "hyperf": {
-            "config": "FriendsOfHyperf\\Http\\Client\\ConfigProvider"
         }
     }
 }

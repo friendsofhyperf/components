@@ -21,17 +21,6 @@ class ConfigProvider
                 \Hyperf\HttpServer\Server::class => HttpServer::class,
                 \Hyperf\GrpcServer\Server::class => GrpcServer::class,
             ],
-            'aspects' => [],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
-            ],
-            'commands' => [],
-            'listeners' => [],
-            'publish' => [],
         ];
     }
 }

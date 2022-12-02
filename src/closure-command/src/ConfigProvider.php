@@ -17,21 +17,13 @@ class ConfigProvider
         defined('BASE_PATH') or define('BASE_PATH', '');
 
         return [
-            'dependencies' => [],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
-            ],
-            'commands' => [],
             'listeners' => [
+                Listener\RegisterCommandListener::class,
             ],
             'publish' => [
                 [
                     'id' => 'config',
-                    'description' => 'config file of closure-command.',
+                    'description' => 'The config of closure-command.',
                     'source' => __DIR__ . '/../publish/console.php',
                     'destination' => BASE_PATH . '/config/console.php',
                 ],

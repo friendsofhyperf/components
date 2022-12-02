@@ -15,18 +15,9 @@ class ConfigProvider
     public function __invoke(): array
     {
         return [
-            'dependencies' => [
-            ],
             'commands' => [
                 Command\Model::class,
                 Command\Macro::class,
-            ],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
             ],
         ];
     }

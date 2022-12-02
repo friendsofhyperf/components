@@ -21,14 +21,9 @@ class ConfigProvider
             'dependencies' => [
                 Encrypter::class => EncrypterFactory::class,
             ],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
+            'listeners' => [
+                Listener\BootEncryptionListener::class,
             ],
-            'commands' => [],
             'publish' => [
                 [
                     'id' => 'config',

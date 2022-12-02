@@ -20,20 +20,13 @@ class ConfigProvider
             'dependencies' => [
                 Handler::class => HandlerFactory::class,
             ],
-            'aspects' => [],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
+            'listeners' => [
+                Listener\RequestTerminatedListener::class,
             ],
-            'commands' => [],
-            'listeners' => [],
             'publish' => [
                 [
                     'id' => 'config',
-                    'description' => 'config file of package.',
+                    'description' => 'The config of access_log.',
                     'source' => __DIR__ . '/../publish/access_log.php',
                     'destination' => BASE_PATH . '/config/autoload/access_log.php',
                 ],

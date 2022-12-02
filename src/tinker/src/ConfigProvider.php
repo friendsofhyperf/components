@@ -18,18 +18,13 @@ class ConfigProvider
         defined('BASE_PATH') or define('BASE_PATH', '');
 
         return [
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
+            'commands' => [
+                Command\TinkerCommand::class,
             ],
-            'commands' => [],
             'publish' => [
                 [
                     'id' => 'config',
-                    'description' => 'The config for Tinker.',
+                    'description' => 'The config for tinker.',
                     'source' => __DIR__ . '/../publish/tinker.php',
                     'destination' => BASE_PATH . '/config/autoload/tinker.php',
                 ],
