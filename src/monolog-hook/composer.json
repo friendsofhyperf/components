@@ -1,0 +1,27 @@
+{
+    "name": "friendsofhyperf/monolog-hook",
+    "description": "The hook for Monolog in Hyperf.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [{
+        "name": "Huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\MonologHook\\": "src/"
+        }
+    },
+    "require": {
+        "hyperf/logger": "~3.0.0"
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\MonologHook\\ConfigProvider"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}
