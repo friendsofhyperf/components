@@ -17,7 +17,6 @@ use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\AbstractProcessingHandler;
 use Monolog\Logger;
-use Monolog\LogRecord;
 use Sentry\Breadcrumb;
 use Sentry\Event;
 use Sentry\Severity;
@@ -203,7 +202,7 @@ class SentryHandler extends AbstractProcessingHandler
      * {@inheritdoc}
      * @suppress PhanTypeMismatchArgument
      */
-    protected function write(array|LogRecord $record): void
+    protected function write(array $record): void
     {
         $exception = $record['context']['exception'] ?? null;
         $isException = $exception instanceof Throwable;
