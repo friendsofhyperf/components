@@ -18,7 +18,6 @@ use Monolog\DateTimeImmutable;
 use Monolog\Logger;
 use Sentry\Breadcrumb;
 use Sentry\Severity;
-use UnitEnum;
 
 class LoggerAspect extends AbstractAspect
 {
@@ -41,7 +40,7 @@ class LoggerAspect extends AbstractAspect
             }
 
             $level = $proceedingJoinPoint->arguments['keys']['level'];
-            $level = $level instanceof UnitEnum ? (int) $level->value : (int) $level;
+            $level = (int) $level;
             $message = $proceedingJoinPoint->arguments['keys']['message'];
             $context = $proceedingJoinPoint->arguments['keys']['context'];
             /** @var null|DateTimeImmutable $datetime */
