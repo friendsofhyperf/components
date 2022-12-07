@@ -767,8 +767,8 @@ class PendingRequest
     /**
      * Send the request to the given URL.
      *
-     * @throws Exception
      * @return Response
+     * @throws Exception
      */
     public function send(string $method, string $url, array $options = [])
     {
@@ -1114,8 +1114,8 @@ class PendingRequest
     /**
      * Send a request either synchronously or asynchronously.
      *
-     * @throws Exception
      * @return \GuzzleHttp\Promise\PromiseInterface|\Psr\Http\Message\MessageInterface
+     * @throws Exception
      */
     protected function sendRequest(string $method, string $url, array $options = [])
     {

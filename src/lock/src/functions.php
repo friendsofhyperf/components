@@ -14,9 +14,9 @@ use Hyperf\Utils\ApplicationContext;
 
 if (! function_exists('lock')) {
     /**
+     * @return LockFactory|LockInterface
      * @throws TypeError
      * @throws InvalidArgumentException
-     * @return LockFactory|LockInterface
      */
     function lock(string $name = null, int $seconds = 0, ?string $owner = null, string $driver = 'default')
     {

@@ -16,8 +16,8 @@ interface StringEncrypter
      * Encrypt a string without serialization.
      *
      * @param string $value
-     * @throws \Friendsofhyperf\Encryption\Contract\EncryptException
      * @return string
+     * @throws \Friendsofhyperf\Encryption\Contract\EncryptException
      */
     public function encryptString($value);
 
@@ -25,8 +25,8 @@ interface StringEncrypter
      * Decrypt the given string without unserialization.
      *
      * @param string $payload
-     * @throws \Friendsofhyperf\Encryption\Contract\DecryptException
      * @return string
+     * @throws \Friendsofhyperf\Encryption\Contract\DecryptException
      */
     public function decryptString($payload);
 }
