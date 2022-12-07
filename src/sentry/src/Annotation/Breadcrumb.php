@@ -14,6 +14,10 @@ use Attribute;
 use Hyperf\Di\Annotation\AbstractAnnotation;
 use Sentry\Breadcrumb as SentryBreadcrumb;
 
+/**
+ * @Annotation
+ * @Target("METHOD")
+ */
 #[Attribute(Attribute::TARGET_METHOD)]
 class Breadcrumb extends AbstractAnnotation
 {
