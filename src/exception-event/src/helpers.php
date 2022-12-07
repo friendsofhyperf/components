@@ -46,8 +46,8 @@ if (! function_exists('report_if')) {
      * @param mixed $condition
      * @param string|Throwable $exception
      * @param array ...$parameters
-     * @return mixed
      * @throws TypeError
+     * @return mixed
      */
     function report_if($condition, $exception = 'RuntimeException', ...$parameters)
     {
@@ -68,8 +68,8 @@ if (! function_exists('report_unless')) {
      * @param mixed $condition
      * @param string|Throwable $exception
      * @param array ...$parameters
-     * @return mixed
      * @throws TypeError
+     * @return mixed
      */
     function report_unless($condition, $exception = 'RuntimeException', ...$parameters)
     {

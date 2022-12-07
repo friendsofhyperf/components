@@ -157,8 +157,8 @@ class TinkerCaster
      * Get an array representing the properties of a redis.
      *
      * @param \Hyperf\Redis\Redis $redis
-     * @return string[]
      * @throws ReflectionException
+     * @return string[]
      */
     public static function castRedis($redis)
     {

@@ -217,8 +217,8 @@ class GeneratorCommand extends SymfonyCommand
     }
 
     /**
-     * @return string
      * @throws InvalidArgumentException
+     * @return string
      */
     protected function getModelInput()
     {

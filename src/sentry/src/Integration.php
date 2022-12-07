@@ -16,15 +16,16 @@ use Sentry\Integration\IntegrationInterface;
 use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Sentry\Tracing\Span;
-
 use function Sentry\addBreadcrumb;
 use function Sentry\configureScope;
-
 use const SWOOLE_VERSION;
 
 class Integration implements IntegrationInterface
 {
-    private static ?string $transaction = null;
+    /**
+     * @var null|string
+     */
+    private static $transaction;
 
     /**
      * {@inheritdoc}

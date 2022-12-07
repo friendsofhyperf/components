@@ -17,8 +17,8 @@ interface Encrypter
      *
      * @param mixed $value
      * @param bool $serialize
-     * @return string
      * @throws \Friendsofhyperf\Encryption\Contract\EncryptException
+     * @return string
      */
     public function encrypt($value, $serialize = true);
 
@@ -27,8 +27,8 @@ interface Encrypter
      *
      * @param string $payload
      * @param bool $unserialize
-     * @return mixed
      * @throws \Friendsofhyperf\Encryption\Contract\DecryptException
+     * @return mixed
      */
     public function decrypt($payload, $unserialize = true);
 }

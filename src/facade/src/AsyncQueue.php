@@ -23,8 +23,8 @@ class AsyncQueue extends Facade
      * Push a job to the queue.
      * @param int $delay
      * @param string $queue
-     * @return bool
      * @throws InvalidDriverException
+     * @return bool
      */
     public static function push(JobInterface $job, $delay = 0, $queue = 'default')
     {

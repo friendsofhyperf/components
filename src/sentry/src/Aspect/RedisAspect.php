@@ -23,7 +23,10 @@ class RedisAspect implements AroundInterface
         RedisConnection::class . '::__call',
     ];
 
-    protected ConfigInterface $config;
+    /**
+     * @var ConfigInterface
+     */
+    protected $config;
 
     public function __construct(ConfigInterface $config)
     {

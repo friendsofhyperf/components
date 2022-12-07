@@ -14,7 +14,7 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "php": "^7.4|~8.0.0",
+        "php": "^7.3|~8.0.0",
         "barryvdh/reflection-docblock": "^2.0",
         "composer/composer": "^1.0|^2.0",
         "google/recaptcha": "^1.2",

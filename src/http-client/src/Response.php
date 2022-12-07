@@ -324,8 +324,8 @@ class Response implements ArrayAccess
      * Throw an exception if a server or client error occurred.
      *
      * @param null|Closure $callback
-     * @return $this
      * @throws RequestException
+     * @return $this
      */
     public function throw()
     {
@@ -346,8 +346,8 @@ class Response implements ArrayAccess
      * Throw an exception if a server or client error occurred and the given condition evaluates to true.
      *
      * @param bool $condition
-     * @return $this
      * @throws RequestException
+     * @return $this
      */
     public function throwIf($condition)
     {

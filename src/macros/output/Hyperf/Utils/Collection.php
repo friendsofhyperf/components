@@ -31,8 +31,8 @@ class Collection
      * @param string $key
      * @param mixed $operator
      * @param mixed $value
-     * @return mixed
      * @throws ItemNotFoundException
+     * @return mixed
      */
     public function firstOrFail($key = null, $operator = null, $value = null)
     {
@@ -105,9 +105,9 @@ class Collection
      * @param string $key
      * @param mixed $operator
      * @param mixed $value
-     * @return mixed
      * @throws ItemNotFoundException
      * @throws MultipleItemsFoundException
+     * @return mixed
      */
     public function sole($key = null, $operator = null, $value = null)
     {

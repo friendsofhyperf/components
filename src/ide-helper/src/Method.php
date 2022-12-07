@@ -346,8 +346,8 @@ class Method
 
     /**
      * @param ReflectionMethod $reflectionMethod
-     * @return DocBlock
      * @throws ReflectionException
+     * @return DocBlock
      */
     protected function getInheritDoc($reflectionMethod)
     {

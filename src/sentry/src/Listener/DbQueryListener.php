@@ -21,7 +21,10 @@ use Sentry\Breadcrumb;
 
 class DbQueryListener implements ListenerInterface
 {
-    protected ConfigInterface $config;
+    /**
+     * @var ConfigInterface
+     */
+    protected $config;
 
     public function __construct(ConfigInterface $config)
     {

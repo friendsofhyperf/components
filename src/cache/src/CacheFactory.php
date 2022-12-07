@@ -17,9 +17,9 @@ use TypeError;
 class CacheFactory
 {
     /**
-     * @return CacheInterface
      * @throws TypeError
      * @throws InvalidArgumentException
+     * @return CacheInterface
      */
     public function __invoke(ContainerInterface $container)
     {

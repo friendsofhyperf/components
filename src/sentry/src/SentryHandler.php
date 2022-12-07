@@ -28,19 +28,21 @@ class SentryHandler extends AbstractProcessingHandler
 {
     /**
      * The current application environment (staging|preprod|prod).
+     * @var string
      */
-    protected string $environment;
+    protected $environment;
 
     /**
-     * Should represent the current version of the calling
-     *             software. Can be any string (git commit, version number).
+     * Should represent the current version of the calling software. Can be any string (git commit, version number).
+     * @var string
      */
-    protected string $release;
+    protected $release;
 
     /**
      * The hub object that sends the message to the server.
+     * @var HubInterface
      */
-    protected HubInterface $hub;
+    protected $hub;
 
     /**
      *  The formatter to use for the logs generated via handleBatch().
@@ -48,9 +50,15 @@ class SentryHandler extends AbstractProcessingHandler
      */
     protected $batchFormatter;
 
-    protected bool $reportExceptions = true;
+    /**
+     * @var bool
+     */
+    protected $reportExceptions = true;
 
-    protected bool $useFormattedMessage = false;
+    /**
+     * @var bool
+     */
+    protected $useFormattedMessage = false;
 
     /**
      * @param int $level The minimum logging level at which this handler will be triggered

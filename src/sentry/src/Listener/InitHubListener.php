@@ -17,7 +17,10 @@ use Sentry\State\HubInterface;
 
 class InitHubListener implements ListenerInterface
 {
-    protected ContainerInterface $container;
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
 
     public function __construct(ContainerInterface $container)
     {
