@@ -44,7 +44,7 @@ class LoggerAspect extends AbstractAspect
             $message = $proceedingJoinPoint->arguments['keys']['message'];
             $context = $proceedingJoinPoint->arguments['keys']['context'];
             /** @var null|DateTimeImmutable $datetime */
-            $datetime = $proceedingJoinPoint->arguments['keys']['datetime'];
+            $datetime = $proceedingJoinPoint->arguments['keys']['datetime'] ?? DateTimeImmutable::createFromFormat(DATE_RFC3339,date(DATE_RFC3339));
 
             if (isset($context['no_aspect']) && $context['no_aspect'] === true) {
                 return;
