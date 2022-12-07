@@ -56,7 +56,9 @@ class HubFactory
             });
         });
 
-        return tap(new Hub($clientBuilder->getClient()), fn ($hub) => SentrySdk::setCurrentHub($hub));
+        return tap(new Hub($clientBuilder->getClient()), function ($hub) {
+            return SentrySdk::setCurrentHub($hub);
+        });
     }
 
     protected function resolveIntegrationsFromUserConfig(ContainerInterface $container): array

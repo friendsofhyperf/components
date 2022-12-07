@@ -33,6 +33,8 @@ class SingletonAspect extends AbstractAspect
             $key .= '#' . $args[0];
         }
 
-        return Context::getOrSet($key, fn () => $proceedingJoinPoint->process());
+        return Context::getOrSet($key, function () use ($proceedingJoinPoint) {
+            return $proceedingJoinPoint->process();
+        });
     }
 }
