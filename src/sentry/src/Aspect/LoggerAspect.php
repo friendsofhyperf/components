@@ -44,7 +44,7 @@ class LoggerAspect extends AbstractAspect
             $message = $proceedingJoinPoint->arguments['keys']['message'];
             $context = $proceedingJoinPoint->arguments['keys']['context'];
             /** @var null|DateTimeImmutable $datetime */
-            $datetime = $proceedingJoinPoint->arguments['keys']['datetime'];
+            $datetime = $proceedingJoinPoint->arguments['keys']['datetime'] ?? null;
 
             if (isset($context['no_aspect']) && $context['no_aspect'] === true) {
                 return;
@@ -68,7 +68,8 @@ class LoggerAspect extends AbstractAspect
     {
         return [
             Logger::DEBUG => Severity::debug(),
-            Logger::NOTICE, Logger::INFO => Severity::info(),
+            Logger::NOTICE => Severity::info(),
+            Logger::INFO => Severity::info(),
             Logger::WARNING => Severity::warning(),
             Logger::ALERT => Severity::fatal(),
             Logger::EMERGENCY => Severity::fatal(),
