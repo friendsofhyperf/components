@@ -56,7 +56,7 @@ class LoggerAspect extends AbstractAspect
                 'log.' . Logger::getLevelName($level),
                 $message,
                 $context,
-                $datetime?->getTimestamp()
+                optional($datetime)->getTimestamp()
             ));
         });
     }
