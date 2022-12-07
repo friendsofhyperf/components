@@ -21,10 +21,10 @@
         "hyperf/amqp": "~2.2.0",
         "hyperf/async-queue": "~2.2.0",
         "hyperf/cache": "~2.2.0",
-        "hyperf/config-center": "~2.2.0",
-        "hyperf/db-connection": "~2.2.0",
         "hyperf/command": "~2.2.0",
+        "hyperf/config-center": "~2.2.0",
         "hyperf/consul": "~2.2.0",
+        "hyperf/db-connection": "~2.2.0",
         "hyperf/di": "~2.2.0",
         "hyperf/filesystem": "~2.2.0",
         "hyperf/framework": "~2.2.0",
@@ -41,6 +41,7 @@
         "opis/closure": "^3.1",
         "psy/psysh": "^0.10.0|^0.11.0",
         "ramsey/uuid": "^4.0",
+        "sentry/sdk": "3.0",
         "symfony/console": "^5.3|^6.0",
         "symfony/process": "^5.3|^6.0",
         "symfony/var-dumper": "^5.3|^6.0"
@@ -74,6 +75,7 @@
         "friendsofhyperf/model-observer": "*",
         "friendsofhyperf/monolog-hook": "*",
         "friendsofhyperf/recaptcha": "*",
+        "friendsofhyperf/sentry": "*",
         "friendsofhyperf/tinker": "*"
     },
     "autoload": {
@@ -105,6 +107,7 @@
             "FriendsOfHyperf\\ModelObserver\\": "src/model-observer/src/",
             "FriendsOfHyperf\\MonologHook\\": "src/monolog-hook/src/",
             "FriendsOfHyperf\\ReCaptcha\\": "src/recaptcha/src/",
+            "FriendsOfHyperf\\Sentry\\": "src/sentry/src/",
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
             "Friendsofhyperf\\Encryption\\": "src/encryption/src/"
         }
@@ -127,13 +130,13 @@
                 "FriendsOfHyperf\\Facade\\ConfigProvider",
                 "FriendsOfHyperf\\Helpers\\ConfigProvider",
                 "FriendsOfHyperf\\HttpRequestLifeCycle\\ConfigProvider",
-                "FriendsOfHyperf\\Http\\Client\\ConfigProvider",
                 "FriendsOfHyperf\\IdeHelper\\ConfigProvider",
                 "FriendsOfHyperf\\Lock\\ConfigProvider",
                 "FriendsOfHyperf\\Macros\\ConfigProvider",
                 "FriendsOfHyperf\\ModelObserver\\ConfigProvider",
                 "FriendsOfHyperf\\MonologHook\\ConfigProvider",
                 "FriendsOfHyperf\\ReCaptcha\\ConfigProvider",
+                "FriendsOfHyperf\\Sentry\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
                 "Friendsofhyperf\\Encryption\\ConfigProvider"
             ]
