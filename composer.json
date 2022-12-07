@@ -75,6 +75,7 @@
         "friendsofhyperf/model-observer": "*",
         "friendsofhyperf/monolog-hook": "*",
         "friendsofhyperf/recaptcha": "*",
+        "friendsofhyperf/sentry": "*",
         "friendsofhyperf/tinker": "*"
     },
     "autoload": {
@@ -106,6 +107,7 @@
             "FriendsOfHyperf\\ModelObserver\\": "src/model-observer/src/",
             "FriendsOfHyperf\\MonologHook\\": "src/monolog-hook/src/",
             "FriendsOfHyperf\\ReCaptcha\\": "src/recaptcha/src/",
+            "FriendsOfHyperf\\Sentry\\": "src/sentry/src/",
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
             "Friendsofhyperf\\Encryption\\": "src/encryption/src/"
         }
@@ -128,13 +130,13 @@
                 "FriendsOfHyperf\\Facade\\ConfigProvider",
                 "FriendsOfHyperf\\Helpers\\ConfigProvider",
                 "FriendsOfHyperf\\HttpRequestLifeCycle\\ConfigProvider",
-                "FriendsOfHyperf\\Http\\Client\\ConfigProvider",
                 "FriendsOfHyperf\\IdeHelper\\ConfigProvider",
                 "FriendsOfHyperf\\Lock\\ConfigProvider",
                 "FriendsOfHyperf\\Macros\\ConfigProvider",
                 "FriendsOfHyperf\\ModelObserver\\ConfigProvider",
                 "FriendsOfHyperf\\MonologHook\\ConfigProvider",
                 "FriendsOfHyperf\\ReCaptcha\\ConfigProvider",
+                "FriendsOfHyperf\\Sentry\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
                 "Friendsofhyperf\\Encryption\\ConfigProvider"
             ]
