@@ -43,12 +43,16 @@ class DbQueryListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        match (true) {
-            $event instanceof QueryExecuted => $this->queryExecutedHandler($event),
-            $event instanceof TransactionBeginning => $this->transactionHandler($event),
-            $event instanceof TransactionCommitted => $this->transactionHandler($event),
-            $event instanceof TransactionRolledBack => $this->transactionHandler($event),
-        };
+        switch (true) {
+            case $event instanceof QueryExecuted: $this->queryExecutedHandler($event);
+                break;
+            case $event instanceof TransactionBeginning: $this->transactionHandler($event);
+                break;
+            case $event instanceof TransactionCommitted: $this->transactionHandler($event);
+                break;
+            case $event instanceof TransactionRolledBack: $this->transactionHandler($event);
+                break;
+        }
     }
 
     /**

@@ -67,13 +67,14 @@ class LoggerAspect extends AbstractAspect
      */
     protected function getLogLevel(int $logLevel): Severity
     {
-        return match ($logLevel) {
+        return [
             Logger::DEBUG => Severity::debug(),
             Logger::NOTICE, Logger::INFO => Severity::info(),
             Logger::WARNING => Severity::warning(),
-            Logger::ALERT, Logger::EMERGENCY, Logger::CRITICAL => Severity::fatal(),
+            Logger::ALERT => Severity::fatal(),
+            Logger::EMERGENCY => Severity::fatal(),
+            Logger::CRITICAL => Severity::fatal(),
             Logger::ERROR => Severity::error(),
-            default => Severity::error(),
-        };
+        ][$logLevel] ?? Severity::error();
     }
 }

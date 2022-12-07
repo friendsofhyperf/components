@@ -45,8 +45,9 @@ class SentryHandler extends AbstractProcessingHandler
 
     /**
      *  The formatter to use for the logs generated via handleBatch().
+     * @var null|FormatterInterface
      */
-    protected ?FormatterInterface $batchFormatter = null;
+    protected $batchFormatter;
 
     protected bool $reportExceptions = true;
 

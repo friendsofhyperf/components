@@ -51,25 +51,23 @@ class BreadcrumbAspect extends AbstractAspect
 
     protected function getLevel($level)
     {
-        return match ($level) {
+        return [
             Breadcrumb::LEVEL_DEBUG => Breadcrumb::LEVEL_DEBUG,
             Breadcrumb::LEVEL_INFO => Breadcrumb::LEVEL_INFO,
             Breadcrumb::LEVEL_WARNING => Breadcrumb::LEVEL_WARNING,
             Breadcrumb::LEVEL_ERROR => Breadcrumb::LEVEL_ERROR,
             Breadcrumb::LEVEL_FATAL => Breadcrumb::LEVEL_FATAL,
-            default => Breadcrumb::LEVEL_INFO,
-        };
+        ][$level] ?? Breadcrumb::LEVEL_INFO;
     }
 
     protected function getType($type)
     {
-        return match ($type) {
+        return [
             Breadcrumb::TYPE_DEFAULT => Breadcrumb::TYPE_DEFAULT,
             Breadcrumb::TYPE_HTTP => Breadcrumb::TYPE_HTTP,
             Breadcrumb::TYPE_USER => Breadcrumb::TYPE_USER,
             Breadcrumb::TYPE_NAVIGATION => Breadcrumb::TYPE_NAVIGATION,
             Breadcrumb::TYPE_ERROR => Breadcrumb::TYPE_ERROR,
-            default => Breadcrumb::TYPE_DEFAULT,
-        };
+        ][$type] ?? Breadcrumb::TYPE_DEFAULT;
     }
 }
