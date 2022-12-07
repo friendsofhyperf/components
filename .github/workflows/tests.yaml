@@ -25,7 +25,13 @@ jobs:
       - name: Setup Packages
         run: composer update -o
       - name: Run Cs Fixer
-        run: vendor/bin/php-cs-fixer fix src --dry-run
+        run: |
+          if [ _${{ matrix.php-version }} = '_v7.3' ]
+          then
+            echo "skip php-cs-fixer"
+          else
+            vendor/bin/php-cs-fixer fix src --dry-run
+          fi
       - name: Run Analyse
         run: composer analyse src
       - name: Run Test Cases
