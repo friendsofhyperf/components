@@ -25,7 +25,10 @@ class LoggerAspect extends AbstractAspect
         Logger::class . '::addRecord',
     ];
 
-    protected ConfigInterface $config;
+    /**
+     * @var ConfigInterface
+     */
+    protected $config;
 
     public function __construct(ConfigInterface $config)
     {

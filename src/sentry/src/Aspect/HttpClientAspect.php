@@ -23,7 +23,10 @@ class HttpClientAspect implements AroundInterface
         Client::class . '::requestAsync',
     ];
 
-    protected ConfigInterface $config;
+    /**
+     * @var ConfigInterface
+     */
+    protected $config;
 
     public function __construct(ConfigInterface $config)
     {

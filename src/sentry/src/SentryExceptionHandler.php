@@ -19,7 +19,10 @@ use Throwable;
 
 class SentryExceptionHandler extends ExceptionHandler
 {
-    protected ContainerInterface $container;
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
 
     public function __construct(ContainerInterface $container)
     {

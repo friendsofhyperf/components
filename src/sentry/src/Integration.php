@@ -24,7 +24,10 @@ use const SWOOLE_VERSION;
 
 class Integration implements IntegrationInterface
 {
-    private static ?string $transaction = null;
+    /**
+     * @var null|string
+     */
+    private static $transaction;
 
     /**
      * {@inheritdoc}

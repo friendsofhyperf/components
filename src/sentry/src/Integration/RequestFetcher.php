@@ -16,7 +16,10 @@ use Sentry\Integration\RequestFetcherInterface;
 
 class RequestFetcher implements RequestFetcherInterface
 {
-    private ContainerInterface $container;
+    /**
+     * @var ContainerInterface
+     */
+    private $container;
 
     public function __construct(ContainerInterface $container)
     {

@@ -26,7 +26,10 @@ class TestCommand extends HyperfCommand
 
     protected $description = 'Generate a test event and send it to Sentry.';
 
-    protected ContainerInterface $container;
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
 
     public function __construct(ContainerInterface $container)
     {

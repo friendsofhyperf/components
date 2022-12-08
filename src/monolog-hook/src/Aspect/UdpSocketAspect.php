@@ -32,7 +32,7 @@ class UdpSocketAspect extends AbstractAspect
 
             /** @var string $chunk */
             $chunk = $proceedingJoinPoint->arguments['keys']['chunk'] ?? '';
-            [$ip, $port] = (fn () => [$this->ip, $this->port])->call($proceedingJoinPoint->getInstance());
+            [$ip, $port] = (function () { return [$this->ip, $this->port]; })->call($proceedingJoinPoint->getInstance());
 
             $socket = new Client(SWOOLE_SOCK_UDP);
             $socket->connect($ip, $port, 0.5);

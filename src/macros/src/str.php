@@ -225,6 +225,6 @@ if (! Str::hasMacro('wordCount')) {
 
 if (! Str::hasMacro('wrap')) {
     Str::macro('wrap', function ($value, $before, $after = null) {
-        return $before . $value . ($after ??= $before);
+        return $before . $value . ($after ?? $before);
     });
 }
