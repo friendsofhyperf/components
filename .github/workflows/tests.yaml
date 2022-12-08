@@ -26,7 +26,7 @@ jobs:
         run: composer update -o
       - name: Run Cs Fixer
         run: |
-          if [ _${{ matrix.php-version }} = '_v7.3' ]
+          if [ _${{ matrix.php-version }} = '_7.3' ]
           then
             echo "skip php-cs-fixer"
           else
