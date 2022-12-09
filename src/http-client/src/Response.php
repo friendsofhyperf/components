@@ -23,6 +23,20 @@ class Response implements ArrayAccess
     }
 
     /**
+     * The request cookies.
+     *
+     * @var \GuzzleHttp\Cookie\CookieJar
+     */
+    public $cookies;
+
+    /**
+     * The transfer stats for the request.
+     *
+     * \GuzzleHttp\TransferStats|null
+     */
+    public $transferStats;
+
+    /**
      * The underlying PSR response.
      *
      * @var \Psr\Http\Message\ResponseInterface
