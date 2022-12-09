@@ -29,7 +29,12 @@ jobs:
       - name: Setup Packages
         run: composer update -o
       - name: Run Cs Fixer
-        run: vendor/bin/php-cs-fixer fix src --dry-run
+        run: |
+          if [ "${{ matrix.php-version }}" = "_8.2" ]; then
+            PHP_CS_FIXER_IGNORE_ENV=true php vendor/bin/php-cs-fixer fix src --dry-run
+          else
+            vendor/bin/php-cs-fixer fix src --dry-run
+          fi
       - name: Run Analyse
         run: composer analyse src
       - name: Run Test Cases
