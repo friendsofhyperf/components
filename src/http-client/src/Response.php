@@ -32,7 +32,7 @@ class Response implements ArrayAccess
     /**
      * The transfer stats for the request.
      *
-     * \GuzzleHttp\TransferStats|null
+     * @var null|\GuzzleHttp\TransferStats
      */
     public $transferStats;
 
