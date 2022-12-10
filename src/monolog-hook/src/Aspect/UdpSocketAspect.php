@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\MonologHook\Aspect;
 
+use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Engine\Socket;
@@ -34,12 +35,11 @@ class UdpSocketAspect extends AbstractAspect
             $chunk = $proceedingJoinPoint->arguments['keys']['chunk'] ?? '';
             [$ip, $port] = (fn () => [$this->ip, $this->port])->call($proceedingJoinPoint->getInstance());
 
-            $socket = new Socket(AF_INET, SOCK_DGRAM, SOL_UDP);
-            $socket->connect($ip, $port, 0.5);
-
-            defer(function () use ($socket) {
-                $socket->close();
-            });
+            $key = sprintf('%s_%s_%s_%s', $proceedingJoinPoint->className, 'Socket', $ip, $port);
+            $socket = Context::getOrSet($key, fn () => tap(new Socket(AF_INET, SOCK_DGRAM, SOL_UDP), function (Socket $socket) use ($ip, $port) {
+                $socket->connect($ip, $port, 0.5);
+                defer(fn () => $socket->isClosed() || $socket->close());
+            }));
 
             $socket->send($chunk);
 
