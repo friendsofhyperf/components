@@ -12,6 +12,7 @@ namespace FriendsOfHyperf\Tests\HttpClient;
 
 use FriendsOfHyperf\Http\Client\Http;
 use FriendsOfHyperf\Http\Client\RequestException;
+use FriendsOfHyperf\Http\Client\Response;
 use FriendsOfHyperf\Tests\TestCase;
 use Psr\Http\Message\ResponseInterface;
 
@@ -164,5 +165,52 @@ class HttpClientTest extends TestCase
         })
             ->accept('image/jpeg')
             ->get('http://httpbin.org/image');
+    }
+
+    public function testRequestExceptionIsThrownIfTheThrowIfClosureOnThePendingRequestReturnsTrue()
+    {
+        $exception = null;
+
+        $hitThrowCallback = false;
+
+        try {
+            Http::throwIf(function ($response) {
+                $this->assertInstanceOf(Response::class, $response);
+                $this->assertSame(403, $response->status());
+
+                return true;
+            }, function ($response, $e) use (&$hitThrowCallback) {
+                $this->assertInstanceOf(Response::class, $response);
+                $this->assertSame(403, $response->status());
+
+                $this->assertInstanceOf(RequestException::class, $e);
+                $hitThrowCallback = true;
+            })
+                ->get('http://httpbin.org/status/403');
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNotNull($exception);
+        $this->assertInstanceOf(RequestException::class, $exception);
+        $this->assertTrue($hitThrowCallback);
+    }
+
+    public function testRequestExceptionIsNotThrownIfTheThrowIfClosureOnThePendingRequestReturnsFalse()
+    {
+        $hitThrowCallback = false;
+
+        $response = Http::throwIf(function ($response) {
+            $this->assertInstanceOf(Response::class, $response);
+            $this->assertSame(403, $response->status());
+
+            return false;
+        }, function ($response, $e) use (&$hitThrowCallback) {
+            $hitThrowCallback = true;
+        })
+            ->get('http://httpbin.org/status/403');
+
+        $this->assertSame(403, $response->status());
+        $this->assertFalse($hitThrowCallback);
     }
 }
