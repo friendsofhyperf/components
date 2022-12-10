@@ -358,13 +358,13 @@ class Response implements ArrayAccess
     /**
      * Throw an exception if a server or client error occurred and the given condition evaluates to true.
      *
-     * @param bool $condition
+     * @param bool|Closure $condition
      * @return $this
      * @throws \FriendsOfHyperf\Http\Client\RequestException
      */
     public function throwIf($condition)
     {
-        return $condition ? $this->throw() : $this;
+        return value($condition, $this) ? $this->throw(func_get_args()[1] ?? null) : $this;
     }
 
     /**
