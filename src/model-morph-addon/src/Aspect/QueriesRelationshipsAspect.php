@@ -13,11 +13,9 @@ namespace FriendsOfHyperf\ModelMorphAddon\Aspect;
 use Hyperf\Database\Model\Concerns\QueriesRelationships;
 use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\Relation;
-use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 
-#[Aspect()]
 class QueriesRelationshipsAspect extends AbstractAspect
 {
     public $classes = [

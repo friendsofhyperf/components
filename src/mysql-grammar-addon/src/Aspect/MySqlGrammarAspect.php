@@ -10,14 +10,9 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\MySqlGrammarAddon\Aspect;
 
-use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 
-/**
- * @Aspect
- */
-#[Aspect()]
 class MySqlGrammarAspect extends AbstractAspect
 {
     /**

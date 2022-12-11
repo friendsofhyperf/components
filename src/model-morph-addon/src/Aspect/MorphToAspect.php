@@ -12,14 +12,9 @@ namespace FriendsOfHyperf\ModelMorphAddon\Aspect;
 
 use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\MorphTo;
-use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 
-/**
- * 临时解决方案.
- */
-#[Aspect()]
 class MorphToAspect extends AbstractAspect
 {
     public $classes = [
