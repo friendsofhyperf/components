@@ -9,7 +9,7 @@
 ## Installation
 
 ```shell
-composer require friendsofhyperf/model-morph-addon:^1.0
+composer require friendsofhyperf/model-morph-addon
 ```
 
 ## Before
