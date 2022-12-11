@@ -1,0 +1,44 @@
+{
+    "name": "friendsofhyperf/mysql-grammar-addon",
+    "description": "The MySqlGrammar addon for Hyperf.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
+    "require": {
+        "hyperf/database": "~2.2.0",
+        "hyperf/di": "~2.2.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "phpstan/phpstan": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\MySqlGrammarAddon\\": "src"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "0.x-dev": "0.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\MySqlGrammarAddon\\ConfigProvider"
+        }
+    },
+    "minimum-stability": "dev",
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    },
+    "scripts": {
+        "analyse": "phpstan analyse --memory-limit 4096M -l 0 -c phpstan.neon ./src",
+        "cs-fix": "php-cs-fixer fix $1"
+    }
+}
