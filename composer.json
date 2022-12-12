@@ -92,7 +92,8 @@
         "friendsofhyperf/pretty-console": "*",
         "friendsofhyperf/recaptcha": "*",
         "friendsofhyperf/sentry": "*",
-        "friendsofhyperf/tinker": "*"
+        "friendsofhyperf/tinker": "*",
+        "friendsofhyperf/validated-dto": "*"
     },
     "autoload": {
         "files": [
@@ -133,6 +134,7 @@
             "FriendsOfHyperf\\ReCaptcha\\": "src/recaptcha/src/",
             "FriendsOfHyperf\\Sentry\\": "src/sentry/src/",
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
+            "FriendsOfHyperf\\ValidatedDTO\\": "src/validated-dto/src/",
             "Friendsofhyperf\\Encryption\\": "src/encryption/src/"
         }
     },
@@ -171,6 +173,7 @@
                 "FriendsOfHyperf\\ReCaptcha\\ConfigProvider",
                 "FriendsOfHyperf\\Sentry\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
+                "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider",
                 "Friendsofhyperf\\Encryption\\ConfigProvider"
             ]
         }
