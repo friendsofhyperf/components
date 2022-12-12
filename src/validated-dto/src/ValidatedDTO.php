@@ -23,21 +23,14 @@ abstract class ValidatedDTO
 {
     protected array $validatedData = [];
 
+    protected ValidatorInterface $validator;
+
     /**
      * @throws ValidationException
      */
-    public function __construct(array $data)
+    public function __construct(protected array $data)
     {
-        $validator = ApplicationContext::getContainer()
-            ->get(ValidatorFactoryInterface::class)
-            ->make(
-                $data,
-                $this->rules(),
-                $this->messages(),
-                $this->attributes()
-            );
-
-        $validator->fails() ? $this->failedValidation($validator) : $this->passedValidation($validator);
+        $this->isValidated() ? $this->passedValidation() : $this->failedValidation();
     }
 
     public function __get(string $name): mixed
@@ -154,12 +147,26 @@ abstract class ValidatedDTO
         return [];
     }
 
+    protected function isValidated(): bool
+    {
+        $this->validator = ApplicationContext::getContainer()
+            ->get(ValidatorFactoryInterface::class)
+            ->make(
+                $this->data,
+                $this->rules(),
+                $this->messages(),
+                $this->attributes()
+            );
+
+        return ! $this->validator->fails();
+    }
+
     /**
      * Handles a passed validation attempt.
      */
-    protected function passedValidation(ValidatorInterface $validator): void
+    protected function passedValidation(): void
     {
-        $this->validatedData = $validator->validated();
+        $this->validatedData = $this->validator->validated();
 
         foreach ($this->defaults() as $key => $value) {
             if (! in_array($key, array_keys($this->rules()))) {
@@ -175,9 +182,9 @@ abstract class ValidatedDTO
      *
      * @throws ValidationException
      */
-    protected function failedValidation(ValidatorInterface $validator): void
+    protected function failedValidation(): void
     {
-        throw new ValidationException($validator);
+        throw new ValidationException($this->validator);
     }
 
     /**
