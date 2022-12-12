@@ -1,0 +1,350 @@
+# Validated DTO
+
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/validated-dto)](https://packagist.org/packages/friendsofhyperf/validated-dto)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/validated-dto)](https://packagist.org/packages/friendsofhyperf/validated-dto)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/validated-dto)](https://github.com/friendsofhyperf/validated-dto)
+
+The Data Transfer Objects with validation for Hyperf applications. Forked from [laravel-validated-dto](https://github.com/WendellAdriel/laravel-validated-dto)
+
+## Installation
+
+```shell
+composer require friendsofhyperf/validated-dto
+```
+
+## Generating DTO
+
+You can create `DTO` using the `gen:dto` command:
+
+```shell
+php bin/hyperf.php gen:dto UserDTO
+```
+
+The `DTO` are going to be created inside `app/DTO`.
+
+## Defining Validation Rules
+
+You can validate data in the same way you validate `Request` data:
+
+```php
+<?php
+
+namespace App\DTO;
+
+class UserDTO extends ValidatedDTO
+{
+    /**
+     * @return array
+     */
+    protected function rules(): array
+    {
+        return [
+            'name'     => ['required', 'string'],
+            'email'    => ['required', 'email'],
+            'password' => ['required'],
+        ];
+    }
+}
+```
+
+## Creating DTO instances
+
+You can create a `DTO` instance on many ways:
+
+### From arrays
+
+```php
+$dto = new UserDTO([
+    'name' => 'Deeka Wong',
+    'email' => 'deeka@example.com',
+    'password' => 'D3Crft!@1b2A'
+]);
+```
+
+### From JSON strings
+
+```php
+$dto = UserDTO::fromJson('{"name": "Deeka Wong", "email": "deeka@example.com", "password": "D3Crft!@1b2A"}');
+```
+
+### From Request objects
+
+```php
+public function store(RequestInterface $request): JsonResponse
+{
+    $dto = UserDTO::fromRequest($request);
+}
+```
+
+### From Model
+
+```php
+$user = new User([
+    'name' => 'Deeka Wong',
+    'email' => 'deeka@example.com',
+    'password' => 'D3Crft!@1b2A'
+]);
+
+$dto = UserDTO::fromModel($user);
+```
+
+Beware that the fields in the `$hidden` property of the `Model` won't be used for the `DTO`.
+
+### From Artisan Commands
+
+You have three ways of creating a `DTO` instance from an `Artisan Command`:
+
+#### From the Command Arguments
+
+```php
+<?php
+
+use App\DTO\UserDTO;
+use Hyperf\Command\Command;
+
+class CreateUserCommand extends Command
+{
+    protected ?string $signature = 'create:user {name} {email} {password}';
+
+    protected string $description = 'Create a new User';
+
+    /**
+     * Execute the console command.
+     *
+     * @return int
+     *
+     * @throws ValidationException
+     */
+    public function handle()
+    {
+        $dto = UserDTO::fromCommandArguments($this);
+    }
+}
+```
+
+#### From the Command Options
+
+```php
+<?php
+
+use App\DTO\UserDTO;
+use Hyperf\Command\Command;
+
+class CreateUserCommand extends Command
+{
+    protected ?string $signature = 'create:user { --name= : The user name }
+                                        { --email= : The user email }
+                                        { --password= : The user password }';
+
+    protected string $description = 'Create a new User';
+
+    /**
+     * Execute the console command.
+     *
+     * @return int
+     *
+     * @throws ValidationException
+     */
+    public function handle()
+    {
+        $dto = UserDTO::fromCommandOptions($this);
+    }
+}
+```
+
+#### From the Command Arguments and Options
+
+```php
+<?php
+
+use App\DTO\UserDTO;
+use Hyperf\Command\Command;
+
+class CreateUserCommand extends Command
+{
+    protected ?string $signature = 'create:user {name}
+                                        { --email= : The user email }
+                                        { --password= : The user password }';
+
+    protected string $description = 'Create a new User';
+
+    /**
+     * Execute the console command.
+     *
+     * @return int
+     *
+     * @throws ValidationException
+     */
+    public function handle()
+    {
+        $dto = UserDTO::fromCommand($this);
+    }
+}
+```
+
+## Accessing DTO data
+
+After you create your `DTO` instance, you can access any properties like an `object`:
+
+```php
+$dto = new UserDTO([
+    'name' => 'Deeka Wong',
+    'email' => 'deeka@example.com',
+    'password' => 'D3Crft!@1b2A'
+]);
+
+$dto->name; // 'Deeka Wong'
+$dto->email; // 'deeka@example.com'
+$dto->password; // 'D3Crft!@1b2A'
+```
+
+If you pass properties that are not listed in the `rules` method of your `DTO`, this data will be ignored and won't be available in your `DTO`:
+
+```php
+$dto = new UserDTO([
+    'name' => 'Deeka Wong',
+    'email' => 'deeka@example.com',
+    'password' => 'D3Crft!@1b2A',
+    'username' => 'john_doe', 
+]);
+
+$dto->username; // THIS WON'T BE AVAILABLE IN YOUR DTO
+```
+
+## Defining Default Values
+
+Sometimes we can have properties that are optional and that can have default values. You can define the default values for
+your `DTO` properties in the `defaults` function:
+
+```php
+<?php
+
+namespace App\DTO;
+
+use Hyperf\Utils\Str;
+
+class UserDTO extends ValidatedDTO
+{
+    /**
+     * @return array
+     */
+    protected function rules(): array
+    {
+        return [
+            'name'     => ['required', 'string'],
+            'email'    => ['required', 'email'],
+            'username' => ['sometimes', 'string'],
+            'password' => ['required'],
+        ];
+    }
+    
+    /**
+     * Defines the default values for the properties of the DTO.
+     *
+     * @return array
+     */
+    protected function defaults(): array
+    {
+        return [
+            'username' => Str::snake($this->name),
+        ];
+    }
+}
+```
+
+With the `DTO` definition above you could run:
+
+```php
+$dto = new UserDTO([
+    'name' => 'Deeka Wong',
+    'email' => 'deeka@example.com',
+    'password' => 'D3Crft!@1b2A'
+]);
+
+$dto->username; // 'deeka_wong'
+```
+
+## Converting DTO data
+
+You can convert your DTO to some formats:
+
+### To array
+
+```php
+$dto = new UserDTO([
+    'name' => 'Deeka Wong',
+    'email' => 'deeka@example.com',
+    'password' => 'D3Crft!@1b2A',
+]);
+
+$dto->toArray();
+// [
+//     "name" => "Deeka Wong",
+//     "email" => "deeka@example.com",
+//     "password" => "D3Crft!@1b2A",
+// ]
+```
+
+### To JSON string
+
+```php
+$dto = new UserDTO([
+    'name' => 'Deeka Wong',
+    'email' => 'deeka@example.com',
+    'password' => 'D3Crft!@1b2A',
+]);
+
+$dto->toJson();
+// '{"name":"Deeka Wong","email":"deeka@example.com","password":"D3Crft!@1b2A"}'
+
+$dto->toJson(true); // YOU CAN CALL IT LIKE THIS TO PRETTY PRINT YOUR JSON
+// {
+//     "name": "Deeka Wong",
+//     "email": "deeka@example.com",
+//     "password": "D3Crft!@1b2A"
+// }
+```
+
+### To Eloquent Model
+
+```php
+$dto = new UserDTO([
+    'name' => 'Deeka Wong',
+    'email' => 'deeka@example.com',
+    'password' => 'D3Crft!@1b2A',
+]);
+
+$dto->toModel(\App\Model\User::class);
+// App\Model\User {#3776
+//     name: "Deeka Wong",
+//     email: "deeka@example.com",
+//     password: "D3Crft!@1b2A",
+// }
+
+```
+
+## Customizing Error Messages, Attributes and Exceptions
+
+You can define custom messages and attributes implementing the `messages` and `attributes` methods:
+
+```php
+/**
+ * Defines the custom messages for validator errors.
+ *
+ * @return array
+ */
+public function messages(): array
+{
+    return [];
+}
+
+/**
+ * Defines the custom attributes for validator errors.
+ *
+ * @return array
+ */
+public function attributes(): array
+{
+    return [];
+}
+```

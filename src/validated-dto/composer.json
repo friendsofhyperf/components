@@ -1,0 +1,30 @@
+{
+    "name": "friendsofhyperf/validated-dto",
+    "description": "The Data Transfer Objects with validation for Hyperf.",
+    "type": "library",
+    "keywords": ["hyperf", "dto", "data transfer object", "validation"],
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\ValidatedDTO\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Deeka Wong",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "^8.0",
+        "hyperf/validation": "~3.0.0",
+        "hyperf/utils": "~3.0.0"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider"
+        }
+    }
+}

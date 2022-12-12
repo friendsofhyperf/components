@@ -12,13 +12,8 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "php": ">=8.0",
         "hyperf/database": "~3.0.0",
         "hyperf/di": "~3.0.0"
-    },
-    "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.0",
-        "phpstan/phpstan": "^1.0"
     },
     "autoload": {
         "psr-4": {
@@ -26,9 +21,6 @@
         }
     },
     "extra": {
-        "branch-alias": {
-            "dev-main": "1.0-dev"
-        },
         "hyperf": {
             "config": "FriendsOfHyperf\\ModelMorphAddon\\ConfigProvider"
         }
@@ -37,9 +29,5 @@
     "config": {
         "sort-packages": true,
         "optimize-autoloader": true
-    },
-    "scripts": {
-        "analyse": "phpstan analyse --memory-limit 4096M -l 0 -c phpstan.neon ./src",
-        "cs-fix": "php-cs-fixer fix $1"
     }
 }
