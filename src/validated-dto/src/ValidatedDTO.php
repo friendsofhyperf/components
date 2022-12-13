@@ -10,7 +10,6 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ValidatedDTO;
 
-use Hyperf\Context\Context;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Database\Model\Model;
 use Hyperf\Utils\ApplicationContext;
@@ -40,7 +39,7 @@ abstract class ValidatedDTO
      */
     public function __construct(protected array $data, ?string $scene = null)
     {
-        $currentRules = $this->rules;
+        $rules = $this->rules;
 
         if ($scene) {
             if (! isset($this->scenes[$scene])) {
@@ -48,17 +47,19 @@ abstract class ValidatedDTO
             }
 
             $keys = $this->scenes[$scene] ?? null;
-            $currentRules = Arr::only($this->rules, $keys);
+            $rules = Arr::only($this->rules, $keys);
         }
 
-        $validator = $this->getValidatorFactory()->make(
-            $data,
-            $currentRules,
-            $this->messages,
-            $this->attributes
-        );
+        $validator = ApplicationContext::getContainer()
+            ->get(ValidatorFactoryInterface::class)
+            ->make(
+                $data,
+                $rules,
+                $this->messages,
+                $this->attributes
+            );
 
-        ! $validator->fails() ? $this->passedValidation($validator, $currentRules) : $this->failedValidation($validator);
+        ! $validator->fails() ? $this->passedValidation($validator, $rules) : $this->failedValidation($validator);
     }
 
     public function __get(string $name): mixed
@@ -88,17 +89,6 @@ abstract class ValidatedDTO
     public function toModel(string $model): Model
     {
         return new $model($this->validatedData);
-    }
-
-    /**
-     * Get or creates a ValidatorFactory.
-     */
-    public function getValidatorFactory(): ValidatorFactoryInterface
-    {
-        return Context::getOrSet(
-            __CLASS__ . ':validatorFactory',
-            fn () => ApplicationContext::getContainer()->get(ValidatorFactoryInterface::class)
-        );
     }
 
     /**
