@@ -6,40 +6,18 @@ use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
 
 class %CLASS% extends ValidatedDTO
 {
-    /**
-     * Defines the custom messages for validator errors.
-     *
-     * @return array
-     */
-    public function messages(): array
-    {
-        return [];
-    }
+    protected array $rules = [];
 
-    /**
-     * Defines the custom attributes for validator errors.
-     *
-     * @return array
-     */
-    public function attributes(): array
-    {
-        return [];
-    }
+    protected array $messages = [];
+
+    protected array $attributes = [];
+
+    protected array $scenes = [];
 
     /**
      * Defines the default values for the properties of the DTO.
      */
     protected function defaults(): array
-    {
-        return [];
-    }
-
-    /**
-     * Defines the validation rules for the DTO.
-     *
-     * @return array
-     */
-    protected function rules(): array
     {
         return [];
     }
