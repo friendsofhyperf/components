@@ -35,17 +35,14 @@ class DTOTest extends TestCase
 
         Context::set(
             ValidatedDTO::class . ':validatorFactory',
-            m::mock(ValidatorFactoryInterface::class)
-                ->shouldReceive('make')
-                ->andReturn(
-                    m::mock(ValidatorInterface::class)
-                        ->shouldReceive('fails')
-                        ->andReturn(false)
-                        ->shouldReceive('validated')
-                        ->andReturn($data)
-                        ->getMock()
-                )
-                ->getMock()
+            m::mock(ValidatorFactoryInterface::class, function ($mock) use ($data) {
+                $mock->shouldReceive('make')->andReturn(
+                    m::mock(ValidatorInterface::class, function ($mock) use ($data) {
+                        $mock->shouldReceive('fails')->andReturn(false);
+                        $mock->shouldReceive('validated')->andReturn($data);
+                    })
+                );
+            })
         );
 
         $dto = UserDTO::fromArray($data);
@@ -65,20 +62,17 @@ class DTOTest extends TestCase
 
         Context::set(
             ValidatedDTO::class . ':validatorFactory',
-            m::mock(ValidatorFactoryInterface::class)
-                ->shouldReceive('make')
-                ->andReturn(
-                    m::mock(ValidatorInterface::class)
-                        ->shouldReceive('fails')
-                        ->andReturn(false)
-                        ->shouldReceive('validated')
-                        ->andReturn(
+            m::mock(ValidatorFactoryInterface::class, function ($mock) use ($data) {
+                $mock->shouldReceive('make')->andReturn(
+                    m::mock(ValidatorInterface::class, function ($mock) use ($data) {
+                        $mock->shouldReceive('fails')->andReturn(false);
+                        $mock->shouldReceive('validated')->andReturn(
                             Arr::only($data, ['foo']),
                             Arr::only($data, ['bar'])
-                        )
-                        ->getMock()
-                )
-                ->getMock()
+                        );
+                    })
+                );
+            })
         );
 
         $dto = FooDTO::fromArray($data, 'foo');
