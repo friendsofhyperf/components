@@ -12,11 +12,12 @@ namespace FriendsOfHyperf\Tests\ValidatedDTO;
 
 use FriendsOfHyperf\Tests\TestCase;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
-use Hyperf\Context\Context;
 use Hyperf\Contract\ValidatorInterface;
+use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Arr;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Mockery as m;
+use Psr\Container\ContainerInterface;
 
 /**
  * @internal
@@ -33,19 +34,12 @@ class DTOTest extends TestCase
     {
         $data = ['name' => 'Hyperf', 'age' => 18];
 
-        Context::set(
-            ValidatedDTO::class . ':validatorFactory',
-            m::mock(ValidatorFactoryInterface::class)
-                ->shouldReceive('make')
-                ->andReturn(
-                    m::mock(ValidatorInterface::class)
-                        ->shouldReceive('fails')
-                        ->andReturn(false)
-                        ->shouldReceive('validated')
-                        ->andReturn($data)
-                        ->getMock()
-                )
-                ->getMock()
+        ApplicationContext::setContainer(
+            m::mock(ContainerInterface::class, [
+                'get' => m::mock(ValidatorFactoryInterface::class, [
+                    'make' => m::mock(ValidatorInterface::class, ['fails' => false, 'validated' => $data]),
+                ]),
+            ])
         );
 
         $dto = UserDTO::fromArray($data);
@@ -63,22 +57,18 @@ class DTOTest extends TestCase
     {
         $data = ['foo' => 'Foo', 'bar' => 'Bar'];
 
-        Context::set(
-            ValidatedDTO::class . ':validatorFactory',
-            m::mock(ValidatorFactoryInterface::class)
-                ->shouldReceive('make')
-                ->andReturn(
-                    m::mock(ValidatorInterface::class)
-                        ->shouldReceive('fails')
-                        ->andReturn(false)
-                        ->shouldReceive('validated')
-                        ->andReturn(
-                            Arr::only($data, ['foo']),
-                            Arr::only($data, ['bar'])
-                        )
-                        ->getMock()
-                )
-                ->getMock()
+        ApplicationContext::setContainer(
+            m::mock(ContainerInterface::class, [
+                'get' => m::mock(ValidatorFactoryInterface::class, [
+                    'make' => m::mock(ValidatorInterface::class, function ($mock) use ($data) {
+                        $mock->shouldReceive('fails')->andReturn(false)
+                            ->shouldReceive('validated')->andReturn(
+                                Arr::only($data, ['foo']),
+                                Arr::only($data, ['bar'])
+                            );
+                    }),
+                ]),
+            ]),
         );
 
         $dto = FooDTO::fromArray($data, 'foo');

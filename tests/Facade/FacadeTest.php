@@ -15,7 +15,7 @@ use FriendsOfHyperf\Facade\Log;
 use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Utils\ApplicationContext;
-use Mockery;
+use Mockery as m;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -31,28 +31,16 @@ class FacadeTest extends TestCase
 
     public function testLog()
     {
-        /** @var ContainerInterface|\Mockery\LegacyMockInterface|\Mockery\MockInterface $container */
-        $container = Mockery::mock(ContainerInterface::class)
-            ->shouldReceive('get')
-            ->with(LoggerFactory::class)
-            ->andReturn(
-                Mockery::mock(LoggerFactory::class)
-                    ->shouldReceive('get')
-                    ->with('hyperf', 'default')
-                    ->andReturn(
-                        Mockery::mock(\Psr\Log\LoggerInterface::class)
-                            ->shouldReceive('info')
-                            ->with('test')
-                            ->getMock()
-                    )
-                    ->getMock()
-            )
-            ->getMock();
-
-        ApplicationContext::setContainer($container);
+        ApplicationContext::setContainer(
+            m::mock(ContainerInterface::class)->allows()->get(LoggerFactory::class)->andReturn(
+                m::mock(LoggerFactory::class)->allows()->get('hyperf', 'default')->andReturn(
+                    m::mock(\Psr\Log\LoggerInterface::class)->allows()->info('test')->getMock()
+                )->getMock()
+            )->getMock()
+        );
 
         $this->assertInstanceOf(\Psr\Log\LoggerInterface::class, Log::channel('hyperf', 'default'));
-        // $this->assertEmpty(Log::info('test'));
+        $this->assertEmpty(Log::info('test'));
     }
 
     public function testCacheMacroable()
