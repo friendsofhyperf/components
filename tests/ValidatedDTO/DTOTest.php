@@ -12,11 +12,11 @@ namespace FriendsOfHyperf\Tests\ValidatedDTO;
 
 use FriendsOfHyperf\Tests\TestCase;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
-use Hyperf\Utils\ApplicationContext;
+use Hyperf\Context\Context;
+use Hyperf\Contract\ValidatorInterface;
+use Hyperf\Utils\Arr;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
-use Hyperf\Validation\Validator;
 use Mockery as m;
-use Psr\Container\ContainerInterface;
 
 /**
  * @internal
@@ -24,62 +24,92 @@ use Psr\Container\ContainerInterface;
  */
 class DTOTest extends TestCase
 {
-    public function testValidate()
+    public function tearDown(): void
+    {
+        m::close();
+    }
+
+    public function testBaseValidate()
     {
         $data = ['name' => 'Hyperf', 'age' => 18];
-        $rules = [
-            'name' => 'required|string',
-            'age' => 'required|integer',
-        ];
 
-        self::mockValidator($data, $rules);
+        Context::set(
+            ValidatedDTO::class . ':validatorFactory',
+            m::mock(ValidatorFactoryInterface::class)
+                ->shouldReceive('make')
+                ->andReturn(
+                    m::mock(ValidatorInterface::class)
+                        ->shouldReceive('fails')
+                        ->andReturn(false)
+                        ->shouldReceive('validated')
+                        ->andReturn($data)
+                        ->getMock()
+                )
+                ->getMock()
+        );
 
-        $dto = new class($data, $rules) extends ValidatedDTO {
-            public function __construct(array $data, protected array $rules = [])
-            {
-                parent::__construct($data);
-            }
+        $dto = UserDTO::fromArray($data);
 
-            protected function rules(): array
-            {
-                return $this->rules;
-            }
+        $this->assertSame('Hyperf', $dto->name);
+        $this->assertSame(18, $dto->age);
 
-            public function defaults(): array
-            {
-                return [];
-            }
-        };
+        $dto = UserDTO::fromJson(json_encode($data));
 
         $this->assertSame('Hyperf', $dto->name);
         $this->assertSame(18, $dto->age);
     }
 
-    protected static function mockValidator($data = [], $rules = [])
+    public function testValidateWithScene()
     {
-        $validator = m::mock(Validator::class)
-            ->shouldReceive('fails')
-            ->andReturn(false)
-            ->shouldReceive('validated')
-            ->andReturn($data)
-            ->getMock();
+        $data = ['foo' => 'Foo', 'bar' => 'Bar'];
 
-        $factory = m::mock(ValidatorFactoryInterface::class)
-            ->shouldReceive('make')
-            ->with($data, $rules, [], [])
-            ->andReturn(
-                $validator
-            )
-            ->getMock();
+        Context::set(
+            ValidatedDTO::class . ':validatorFactory',
+            m::mock(ValidatorFactoryInterface::class)
+                ->shouldReceive('make')
+                ->andReturn(
+                    m::mock(ValidatorInterface::class)
+                        ->shouldReceive('fails')
+                        ->andReturn(false)
+                        ->shouldReceive('validated')
+                        ->andReturn(
+                            Arr::only($data, ['foo']),
+                            Arr::only($data, ['bar'])
+                        )
+                        ->getMock()
+                )
+                ->getMock()
+        );
 
-        $container = m::mock(ContainerInterface::class)
-            ->shouldReceive('get')
-            ->with(ValidatorFactoryInterface::class)
-            ->andReturn(
-                $factory
-            )
-            ->getMock();
+        $dto = FooDTO::fromArray($data, 'foo');
 
-        ApplicationContext::setContainer($container);
+        $this->assertSame('Foo', $dto->foo);
+        $this->assertNull($dto->bar);
+
+        $dto = FooDTO::fromArray($data, 'bar');
+
+        $this->assertNull($dto->foo);
+        $this->assertSame('Bar', $dto->bar);
     }
+}
+
+class UserDTO extends ValidatedDTO
+{
+    protected array $rules = [
+        'name' => 'required|string',
+        'age' => 'required|integer',
+    ];
+}
+
+class FooDTO extends ValidatedDTO
+{
+    protected array $rules = [
+        'foo' => 'required|string',
+        'bar' => 'required|string',
+    ];
+
+    protected array $scenes = [
+        'foo' => ['foo'],
+        'bar' => ['bar'],
+    ];
 }

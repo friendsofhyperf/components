@@ -10,101 +10,60 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ValidatedDTO;
 
-use FriendsOfHyperf\ValidatedDTO\Exception\InvalidJsonException;
-use Hyperf\Command\Command;
+use Hyperf\Context\Context;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Database\Model\Model;
 use Hyperf\Utils\ApplicationContext;
+use Hyperf\Utils\Arr;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Hyperf\Validation\ValidationException;
-use Psr\Http\Message\RequestInterface;
+use InvalidArgumentException;
 
 abstract class ValidatedDTO
 {
-    protected array $validatedData = [];
+    use Traits\InteractsWithIO;
 
-    protected ValidatorInterface $validator;
+    protected array $rules = [];
+
+    protected array $messages = [];
+
+    protected array $attributes = [];
+
+    protected array $scenes = [];
+
+    protected ?array $currentRules = null;
+
+    protected array $validatedData = [];
 
     /**
      * @throws ValidationException
      */
-    public function __construct(protected array $data)
+    public function __construct(protected array $data, ?string $scene = null)
     {
-        $this->isValidated() ? $this->passedValidation() : $this->failedValidation();
+        $currentRules = $this->rules;
+
+        if ($scene) {
+            if (! isset($this->scenes[$scene])) {
+                throw new InvalidArgumentException(sprintf('Scene [%s] is not defined.', $scene));
+            }
+
+            $keys = $this->scenes[$scene] ?? null;
+            $currentRules = Arr::only($this->rules, $keys);
+        }
+
+        $validator = $this->getValidatorFactory()->make(
+            $data,
+            $currentRules,
+            $this->messages,
+            $this->attributes
+        );
+
+        ! $validator->fails() ? $this->passedValidation($validator, $currentRules) : $this->failedValidation($validator);
     }
 
     public function __get(string $name): mixed
     {
         return $this->validatedData[$name] ?? null;
-    }
-
-    /**
-     * Creates a DTO instance from a valid JSON string.
-     *
-     * @throws InvalidJsonException|ValidationException
-     */
-    public static function fromJson(string $json): ValidatedDTO
-    {
-        $jsonDecoded = json_decode($json, true);
-
-        if (! is_array($jsonDecoded)) {
-            throw new InvalidJsonException();
-        }
-
-        return new static($jsonDecoded);
-    }
-
-    /**
-     * Creates a DTO instance from a Request.
-     * @param \Hyperf\HttpServer\Contract\RequestInterface $request
-     * @throws ValidationException
-     */
-    public static function fromRequest(RequestInterface $request): ValidatedDTO
-    {
-        return new static($request->all());
-    }
-
-    /**
-     * Creates a DTO instance from the given model.
-     *
-     * @throws ValidationException
-     */
-    public static function fromModel(Model $model): ValidatedDTO
-    {
-        return new static($model->toArray());
-    }
-
-    /**
-     * Creates a DTO instance from the given command arguments.
-     *
-     * @throws ValidationException
-     */
-    public static function fromCommandArguments(Command $command): ValidatedDTO
-    {
-        return new static((fn () => $this->input->getArguments())->call($command));
-    }
-
-    /**
-     * Creates a DTO instance from the given command options.
-     *
-     * @throws ValidationException
-     */
-    public static function fromCommandOptions(Command $command): ValidatedDTO
-    {
-        return new static((fn () => $this->input->getOptions())->call($command));
-    }
-
-    /**
-     * Creates a DTO instance from the given command arguments and options.
-     *
-     * @throws ValidationException
-     */
-    public static function fromCommand(Command $command): ValidatedDTO
-    {
-        return new static(array_merge(
-            (fn () => $this->input->getArguments())->call($command),
-            (fn () => $this->input->getOptions())->call($command)
-        ));
     }
 
     /**
@@ -132,44 +91,25 @@ abstract class ValidatedDTO
     }
 
     /**
-     * Defines the custom messages for validator errors.
+     * Get or creates a ValidatorFactory.
      */
-    public function messages(): array
+    public function getValidatorFactory(): ValidatorFactoryInterface
     {
-        return [];
-    }
-
-    /**
-     * Defines the custom attributes for validator errors.
-     */
-    public function attributes(): array
-    {
-        return [];
-    }
-
-    protected function isValidated(): bool
-    {
-        $this->validator = ApplicationContext::getContainer()
-            ->get(ValidatorFactoryInterface::class)
-            ->make(
-                $this->data,
-                $this->rules(),
-                $this->messages(),
-                $this->attributes()
-            );
-
-        return ! $this->validator->fails();
+        return Context::getOrSet(
+            __CLASS__ . ':validatorFactory',
+            fn () => ApplicationContext::getContainer()->get(ValidatorFactoryInterface::class)
+        );
     }
 
     /**
      * Handles a passed validation attempt.
      */
-    protected function passedValidation(): void
+    protected function passedValidation(ValidatorInterface $validator, array $rules = []): void
     {
-        $this->validatedData = $this->validator->validated();
+        $this->validatedData = $validator->validated();
 
         foreach ($this->defaults() as $key => $value) {
-            if (! in_array($key, array_keys($this->rules()))) {
+            if (! in_array($key, array_keys($rules))) {
                 continue;
             }
 
@@ -182,18 +122,16 @@ abstract class ValidatedDTO
      *
      * @throws ValidationException
      */
-    protected function failedValidation(): void
+    protected function failedValidation(ValidatorInterface $validator): void
     {
-        throw new ValidationException($this->validator);
+        throw new ValidationException($validator);
     }
 
     /**
      * Defines the default values for the properties of the DTO.
      */
-    abstract protected function defaults(): array;
-
-    /**
-     * Defines the validation rules for the DTO.
-     */
-    abstract protected function rules(): array;
+    protected function defaults(): array
+    {
+        return [];
+    }
 }
