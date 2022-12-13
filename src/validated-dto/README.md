@@ -33,17 +33,11 @@ namespace App\DTO;
 
 class UserDTO extends ValidatedDTO
 {
-    /**
-     * @return array
-     */
-    protected function rules(): array
-    {
-        return [
-            'name'     => ['required', 'string'],
-            'email'    => ['required', 'email'],
-            'password' => ['required'],
-        ];
-    }
+    protected array $rules = [
+        'name'     => ['required', 'string'],
+        'email'    => ['required', 'email'],
+        'password' => ['required'],
+    ];
 }
 ```
 
@@ -54,7 +48,7 @@ You can create a `DTO` instance on many ways:
 ### From arrays
 
 ```php
-$dto = new UserDTO([
+$dto = UserDTO::fromArray([
     'name' => 'Deeka Wong',
     'email' => 'deeka@example.com',
     'password' => 'D3Crft!@1b2A'
@@ -187,7 +181,7 @@ class CreateUserCommand extends Command
 After you create your `DTO` instance, you can access any properties like an `object`:
 
 ```php
-$dto = new UserDTO([
+$dto = UserDTO::fromArray([
     'name' => 'Deeka Wong',
     'email' => 'deeka@example.com',
     'password' => 'D3Crft!@1b2A'
@@ -198,10 +192,10 @@ $dto->email; // 'deeka@example.com'
 $dto->password; // 'D3Crft!@1b2A'
 ```
 
-If you pass properties that are not listed in the `rules` method of your `DTO`, this data will be ignored and won't be available in your `DTO`:
+If you pass properties that are not listed in the `rules` property of your `DTO`, this data will be ignored and won't be available in your `DTO`:
 
 ```php
-$dto = new UserDTO([
+$dto = UserDTO::fromArray([
     'name' => 'Deeka Wong',
     'email' => 'deeka@example.com',
     'password' => 'D3Crft!@1b2A',
@@ -228,15 +222,12 @@ class UserDTO extends ValidatedDTO
     /**
      * @return array
      */
-    protected function rules(): array
-    {
-        return [
-            'name'     => ['required', 'string'],
-            'email'    => ['required', 'email'],
-            'username' => ['sometimes', 'string'],
-            'password' => ['required'],
-        ];
-    }
+    protected array $rules = [
+        'name'     => ['required', 'string'],
+        'email'    => ['required', 'email'],
+        'username' => ['sometimes', 'string'],
+        'password' => ['required'],
+    ];
     
     /**
      * Defines the default values for the properties of the DTO.
@@ -255,7 +246,7 @@ class UserDTO extends ValidatedDTO
 With the `DTO` definition above you could run:
 
 ```php
-$dto = new UserDTO([
+$dto = UserDTO::fromArray([
     'name' => 'Deeka Wong',
     'email' => 'deeka@example.com',
     'password' => 'D3Crft!@1b2A'
@@ -271,7 +262,7 @@ You can convert your DTO to some formats:
 ### To array
 
 ```php
-$dto = new UserDTO([
+$dto = UserDTO::fromArray([
     'name' => 'Deeka Wong',
     'email' => 'deeka@example.com',
     'password' => 'D3Crft!@1b2A',
@@ -288,7 +279,7 @@ $dto->toArray();
 ### To JSON string
 
 ```php
-$dto = new UserDTO([
+$dto = UserDTO::fromArray([
     'name' => 'Deeka Wong',
     'email' => 'deeka@example.com',
     'password' => 'D3Crft!@1b2A',
@@ -308,7 +299,7 @@ $dto->toJson(true); // YOU CAN CALL IT LIKE THIS TO PRETTY PRINT YOUR JSON
 ### To Eloquent Model
 
 ```php
-$dto = new UserDTO([
+$dto = UserDTO::fromArray([
     'name' => 'Deeka Wong',
     'email' => 'deeka@example.com',
     'password' => 'D3Crft!@1b2A',
@@ -325,26 +316,16 @@ $dto->toModel(\App\Model\User::class);
 
 ## Customizing Error Messages, Attributes and Exceptions
 
-You can define custom messages and attributes implementing the `messages` and `attributes` methods:
+You can define custom messages and attributes implementing the `messages` and `attributes` properties in your `DTO` class:
 
 ```php
 /**
  * Defines the custom messages for validator errors.
- *
- * @return array
  */
-public function messages(): array
-{
-    return [];
-}
+protected array $messages() = [];
 
 /**
  * Defines the custom attributes for validator errors.
- *
- * @return array
  */
-public function attributes(): array
-{
-    return [];
-}
+protected array $attributes = [];
 ```
