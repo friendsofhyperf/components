@@ -26,18 +26,23 @@ class DTOTest extends TestCase
 {
     public function testValidate()
     {
-        self::mockValidator(['name' => 'Hyperf', 'age' => 18], [
+        $data = ['name' => 'Hyperf', 'age' => 18];
+        $rules = [
             'name' => 'required|string',
             'age' => 'required|integer',
-        ]);
+        ];
 
-        $dto = new class(['name' => 'Hyperf', 'age' => 18]) extends ValidatedDTO {
+        self::mockValidator($data, $rules);
+
+        $dto = new class($data, $rules) extends ValidatedDTO {
+            public function __construct(array $data, protected array $rules = [])
+            {
+                parent::__construct($data);
+            }
+
             protected function rules(): array
             {
-                return [
-                    'name' => 'required|string',
-                    'age' => 'required|integer',
-                ];
+                return $this->rules;
             }
 
             public function defaults(): array
