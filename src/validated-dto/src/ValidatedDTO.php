@@ -22,16 +22,6 @@ abstract class ValidatedDTO
 {
     use Traits\InteractsWithIO;
 
-    protected array $rules = [];
-
-    protected array $messages = [];
-
-    protected array $attributes = [];
-
-    protected array $scenes = [];
-
-    protected ?array $currentRules = null;
-
     protected array $validatedData = [];
 
     /**
@@ -39,15 +29,15 @@ abstract class ValidatedDTO
      */
     public function __construct(protected array $data, ?string $scene = null)
     {
-        $rules = $this->rules;
+        $rules = $this->rules();
 
         if ($scene) {
-            if (! isset($this->scenes[$scene])) {
+            if (! isset($this->scenes()[$scene])) {
                 throw new InvalidArgumentException(sprintf('Scene [%s] is not defined.', $scene));
             }
 
-            $keys = $this->scenes[$scene] ?? null;
-            $rules = Arr::only($this->rules, $keys);
+            $keys = $this->scenes()[$scene] ?? null;
+            $rules = Arr::only($rules, $keys);
         }
 
         $validator = ApplicationContext::getContainer()
@@ -55,8 +45,8 @@ abstract class ValidatedDTO
             ->make(
                 $data,
                 $rules,
-                $this->messages,
-                $this->attributes
+                $this->messages(),
+                $this->attributes()
             );
 
         ! $validator->fails() ? $this->passedValidation($validator, $rules) : $this->failedValidation($validator);
@@ -115,6 +105,32 @@ abstract class ValidatedDTO
     protected function failedValidation(ValidatorInterface $validator): void
     {
         throw new ValidationException($validator);
+    }
+
+    /**
+     * Defines the default values for the properties of the DTO.
+     */
+    abstract protected function rules(): array;
+
+    /**
+     * Defines the custom messages for validator errors.
+     */
+    protected function messages(): array
+    {
+        return [];
+    }
+
+    /**
+     * Defines the custom attributes for validator errors.
+     */
+    protected function attributes(): array
+    {
+        return [];
+    }
+
+    protected function scenes(): array
+    {
+        return [];
     }
 
     /**

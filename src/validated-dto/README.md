@@ -33,11 +33,14 @@ namespace App\DTO;
 
 class UserDTO extends ValidatedDTO
 {
-    protected array $rules = [
-        'name'     => ['required', 'string'],
-        'email'    => ['required', 'email'],
-        'password' => ['required'],
-    ];
+    protected function rules(): array
+    {
+        return [
+            'name'     => ['required', 'string'],
+            'email'    => ['required', 'email'],
+            'password' => ['required'],
+        ];
+    }
 }
 ```
 
@@ -192,7 +195,7 @@ $dto->email; // 'deeka@example.com'
 $dto->password; // 'D3Crft!@1b2A'
 ```
 
-If you pass properties that are not listed in the `rules` property of your `DTO`, this data will be ignored and won't be available in your `DTO`:
+If you pass properties that are not listed in the `rules` method of your `DTO`, this data will be ignored and won't be available in your `DTO`:
 
 ```php
 $dto = UserDTO::fromArray([
@@ -219,21 +222,16 @@ use Hyperf\Utils\Str;
 
 class UserDTO extends ValidatedDTO
 {
-    /**
-     * @return array
-     */
-    protected array $rules = [
-        'name'     => ['required', 'string'],
-        'email'    => ['required', 'email'],
-        'username' => ['sometimes', 'string'],
-        'password' => ['required'],
-    ];
-    
-    /**
-     * Defines the default values for the properties of the DTO.
-     *
-     * @return array
-     */
+    protected function rules(): array
+    {
+        return [
+            'name'     => ['required', 'string'],
+            'email'    => ['required', 'email'],
+            'username' => ['sometimes', 'string'],
+            'password' => ['required'],
+        ];
+    }
+
     protected function defaults(): array
     {
         return [
@@ -316,16 +314,20 @@ $dto->toModel(\App\Model\User::class);
 
 ## Customizing Error Messages, Attributes and Exceptions
 
-You can define custom messages and attributes implementing the `messages` and `attributes` properties in your `DTO` class:
+You can define custom messages and attributes implementing the `messages` and `attributes` methods in your `DTO` class:
 
 ```php
 /**
  * Defines the custom messages for validator errors.
  */
-protected array $messages() = [];
+protected function messages() {
+    return [];
+}
 
 /**
  * Defines the custom attributes for validator errors.
  */
-protected array $attributes = [];
+protected function attributes() {
+    return [];
+}
 ```

@@ -6,17 +6,26 @@ use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
 
 class %CLASS% extends ValidatedDTO
 {
-    protected array $rules = [];
+    protected function rules(): array
+    {
+        return [];
+    }
 
-    protected array $messages = [];
+    protected function messages(): array
+    {
+        return [];
+    }
 
-    protected array $attributes = [];
+    protected function attributes(): array
+    {
+        return [];
+    }
 
-    protected array $scenes = [];
+    protected function scenes(): array
+    {
+        return [];
+    }
 
-    /**
-     * Defines the default values for the properties of the DTO.
-     */
     protected function defaults(): array
     {
         return [];
