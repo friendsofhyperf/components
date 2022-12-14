@@ -32,11 +32,10 @@ abstract class ValidatedDTO
         $rules = $this->rules();
 
         if ($scene) {
-            if (! isset($this->scenes()[$scene])) {
-                throw new InvalidArgumentException(sprintf('Scene [%s] is not defined.', $scene));
+            if (! $this->hasScene($scene) || ! $keys = $this->getSceneKeys($scene)) {
+                throw new InvalidArgumentException(sprintf('Scene [%s] is not defined or empty.', $scene));
             }
 
-            $keys = $this->scenes()[$scene] ?? null;
             $rules = Arr::only($rules, $keys);
         }
 
@@ -105,6 +104,16 @@ abstract class ValidatedDTO
     protected function failedValidation(ValidatorInterface $validator): void
     {
         throw new ValidationException($validator);
+    }
+
+    protected function hasScene(string $scene): bool
+    {
+        return isset($this->scenes()[$scene]);
+    }
+
+    protected function getSceneKeys(string $scene): array
+    {
+        return $this->scenes()[$scene] ?? [];
     }
 
     /**
