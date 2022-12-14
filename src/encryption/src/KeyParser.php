@@ -36,7 +36,7 @@ class KeyParser
     {
         return tap($config['key'] ?? '', function ($key) {
             if (empty($key)) {
-                throw new MissingKeyException();
+                throw new Exception\MissingKeyException();
             }
         });
     }
