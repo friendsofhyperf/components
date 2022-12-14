@@ -10,10 +10,10 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Tinker;
 
-use Exception;
 use ReflectionException;
 use ReflectionObject;
 use Symfony\Component\VarDumper\Caster\Caster;
+use Throwable;
 
 class TinkerCaster
 {
@@ -59,7 +59,7 @@ class TinkerCaster
                 if (! is_null($val)) {
                     $results[Caster::PREFIX_VIRTUAL . $property] = $val;
                 }
-            } catch (Exception) {
+            } catch (Throwable) {
             }
         }
 
