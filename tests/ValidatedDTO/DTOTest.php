@@ -85,21 +85,30 @@ class DTOTest extends TestCase
 
 class UserDTO extends ValidatedDTO
 {
-    protected array $rules = [
-        'name' => 'required|string',
-        'age' => 'required|integer',
-    ];
+    protected function rules(): array
+    {
+        return [
+            'name' => 'required|string',
+            'age' => 'required|integer',
+        ];
+    }
 }
 
 class FooDTO extends ValidatedDTO
 {
-    protected array $rules = [
-        'foo' => 'required|string',
-        'bar' => 'required|string',
-    ];
+    protected function rules(): array
+    {
+        return [
+            'foo' => 'required|string',
+            'bar' => 'required|string',
+        ];
+    }
 
-    protected array $scenes = [
-        'foo' => ['foo'],
-        'bar' => ['bar'],
-    ];
+    protected function scenes(): array
+    {
+        return [
+            'foo' => ['foo'],
+            'bar' => ['bar'],
+        ];
+    }
 }
