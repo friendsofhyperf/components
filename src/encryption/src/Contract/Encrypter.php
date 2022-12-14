@@ -27,4 +27,11 @@ interface Encrypter
      * @throws \Friendsofhyperf\Encryption\Contract\DecryptException
      */
     public function decrypt(string $payload, bool $unserialize = true);
+
+    /**
+     * Get the encryption key that the encrypter is currently using.
+     *
+     * @return string
+     */
+    public function getKey();
 }
