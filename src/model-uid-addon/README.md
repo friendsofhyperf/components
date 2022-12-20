@@ -17,7 +17,7 @@ composer require friendsofhyperf/model-uid-addon
 # ulid
 composer require symfony/uid
 # uuid
-composer require ramsey/uuid
+composer require ramsey/uuid:^4.7
 ```
 
 ## Usage

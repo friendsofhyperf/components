@@ -45,7 +45,7 @@
         "nesbot/carbon": "^2.0",
         "nunomaduro/termwind": "^1.13",
         "psy/psysh": "^0.10.0|^0.11.0",
-        "ramsey/uuid": "^4.0",
+        "ramsey/uuid": "^4.7",
         "sentry/sdk": "^3.0",
         "symfony/console": "^5.3|^6.0",
         "symfony/process": "^5.3|^6.0",
