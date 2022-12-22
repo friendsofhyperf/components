@@ -10,40 +10,37 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\MonologHook\Aspect;
 
+use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Utils\Coroutine;
 use Monolog\Handler\SyslogUdp\UdpSocket;
-use Swoole\Coroutine\Client;
 
 class UdpSocketAspect extends AbstractAspect
 {
     public $classes = [
-        UdpSocket::class . '::send',
-        UdpSocket::class . '::close',
+        UdpSocket::class . '::getSocket',
     ];
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         if (Coroutine::inCoroutine()) {
-            if ($proceedingJoinPoint->methodName == 'close') {
-                return;
-            }
+            [$ip, $port] = (function () {
+                return [$this->ip, $this->port];
+            })->call($proceedingJoinPoint->getInstance());
 
-            /** @var string $chunk */
-            $chunk = $proceedingJoinPoint->arguments['keys']['chunk'] ?? '';
-            [$ip, $port] = (function () { return [$this->ip, $this->port]; })->call($proceedingJoinPoint->getInstance());
+            $key = sprintf('%s_%s_%s_%s', $proceedingJoinPoint->className, 'Socket', $ip, $port);
+            return Context::getOrSet($key, function () use ($port) {
+                $domain = AF_INET;
+                $protocol = SOL_UDP;
+                // Check if we are using unix sockets.
+                if ($port === 0) {
+                    $domain = AF_UNIX;
+                    $protocol = IPPROTO_IP;
+                }
 
-            $socket = new Client(SWOOLE_SOCK_UDP);
-            $socket->connect($ip, $port, 0.5);
-
-            defer(function () use ($socket) {
-                $socket->close();
+                return socket_create($domain, SOCK_DGRAM, $protocol);
             });
-
-            $socket->send($chunk);
-
-            return;
         }
 
         return $proceedingJoinPoint->process();
