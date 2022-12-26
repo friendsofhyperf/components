@@ -10,6 +10,9 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ValidatedDTO;
 
+use FriendsOfHyperf\ValidatedDTO\Casting\Castable;
+use FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException;
+use FriendsOfHyperf\ValidatedDTO\Exception\MissingCastTypeException;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Database\Model\Model;
 use Hyperf\Utils\ApplicationContext;
@@ -23,6 +26,8 @@ abstract class ValidatedDTO
     use Traits\InteractsWithIO;
 
     protected array $validatedData = [];
+
+    protected bool $requireCasting;
 
     /**
      * @throws ValidationException
@@ -86,13 +91,29 @@ abstract class ValidatedDTO
     protected function passedValidation(ValidatorInterface $validator, array $rules = []): void
     {
         $this->validatedData = $validator->validated();
+        $casts = $this->casts();
 
         foreach ($this->defaults() as $key => $value) {
             if (! in_array($key, array_keys($rules))) {
                 continue;
             }
 
-            $this->validatedData[$key] = $value;
+            if (! array_key_exists($key, $casts)) {
+                if ($this->requireCasting) {
+                    throw new MissingCastTypeException($key);
+                }
+
+                $this->validatedData[$key] = $value;
+
+                continue;
+            }
+
+            if (! $casts[$key] instanceof Castable) {
+                throw new CastTargetException($key);
+            }
+
+            $formatted = $casts[$key]->cast($key, $value);
+            $this->validatedData[$key] = $formatted;
         }
     }
 
@@ -149,4 +170,13 @@ abstract class ValidatedDTO
     {
         return [];
     }
+
+     /**
+      * Defines the type casting for the properties of the DTO.
+      * @return array<string,Castable>
+      */
+     protected function casts(): array
+     {
+         return [];
+     }
 }

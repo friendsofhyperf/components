@@ -30,4 +30,9 @@ class %CLASS% extends ValidatedDTO
     {
         return [];
     }
+
+    protected function casts(): array
+    {
+        return [];
+    }
 }
