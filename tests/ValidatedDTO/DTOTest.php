@@ -11,10 +11,12 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Tests\ValidatedDTO;
 
 use FriendsOfHyperf\Tests\TestCase;
+use FriendsOfHyperf\ValidatedDTO\Casting\StringCast;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Arr;
+use Hyperf\Utils\Stringable;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
@@ -81,6 +83,27 @@ class DTOTest extends TestCase
         $this->assertNull($dto->foo);
         $this->assertSame('Bar', $dto->bar);
     }
+
+    public function testValidateWithCasting()
+    {
+        $data = ['foo' => new Stringable('Foo'), 'bar' => 'Bar'];
+
+        ApplicationContext::setContainer(
+            m::mock(ContainerInterface::class, [
+                'get' => m::mock(ValidatorFactoryInterface::class, [
+                    'make' => m::mock(ValidatorInterface::class, function ($mock) use ($data) {
+                        $mock->shouldReceive('fails')->andReturn(false)
+                            ->shouldReceive('validated')->andReturn($data);
+                    }),
+                ]),
+            ]),
+        );
+
+        $dto = FooDTO::fromArray($data, 'foo');
+
+        $this->assertSame($data['foo'], $dto->foo);
+        $this->assertSame('Bar', $dto->bar);
+    }
 }
 
 class UserDTO extends ValidatedDTO
@@ -109,6 +132,25 @@ class FooDTO extends ValidatedDTO
         return [
             'foo' => ['foo'],
             'bar' => ['bar'],
+        ];
+    }
+}
+
+class BarDTO extends ValidatedDTO
+{
+    protected function rules(): array
+    {
+        return [
+            'foo' => 'required|string',
+            'bar' => 'required|string',
+        ];
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'foo' => new StringCast(),
+            'bar' => new StringCast(),
         ];
     }
 }
