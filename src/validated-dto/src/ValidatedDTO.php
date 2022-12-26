@@ -91,19 +91,22 @@ abstract class ValidatedDTO
     protected function passedValidation(ValidatorInterface $validator, array $rules = []): void
     {
         $this->validatedData = $validator->validated();
-        $casts = $this->casts();
 
         foreach ($this->defaults() as $key => $value) {
             if (! in_array($key, array_keys($rules))) {
                 continue;
             }
 
+            $this->validatedData[$key] = $value;
+        }
+
+        $casts = $this->casts();
+
+        foreach ($this->validatedData as $key => $value) {
             if (! array_key_exists($key, $casts)) {
                 if ($this->requireCasting) {
                     throw new MissingCastTypeException($key);
                 }
-
-                $this->validatedData[$key] = $value;
 
                 continue;
             }
