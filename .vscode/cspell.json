@@ -4,6 +4,7 @@
         "autoloader",
         "backoff",
         "Bledsoe",
+        "Castable",
         "confd",
         "contextkeys",
         "Deeka",
