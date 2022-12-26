@@ -86,7 +86,10 @@ class DTOTest extends TestCase
 
     public function testValidateWithCasting()
     {
-        $data = ['foo' => new Stringable('Foo'), 'bar' => 'Bar'];
+        $data = [
+            'foo' => new Stringable('Foo'),
+            'bar' => new Stringable('Bar'),
+        ];
 
         ApplicationContext::setContainer(
             m::mock(ContainerInterface::class, [
@@ -99,9 +102,9 @@ class DTOTest extends TestCase
             ]),
         );
 
-        $dto = FooDTO::fromArray($data, 'foo');
+        $dto = BarDTO::fromArray($data);
 
-        $this->assertSame($data['foo'], $dto->foo);
+        $this->assertSame('Foo', $dto->foo);
         $this->assertSame('Bar', $dto->bar);
     }
 }
