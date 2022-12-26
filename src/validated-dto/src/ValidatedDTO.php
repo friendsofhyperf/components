@@ -27,7 +27,7 @@ abstract class ValidatedDTO
 
     protected array $validatedData = [];
 
-    protected bool $requireCasting;
+    protected bool $requireCasting = false;
 
     /**
      * @throws ValidationException
