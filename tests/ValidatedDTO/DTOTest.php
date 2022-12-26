@@ -94,10 +94,10 @@ class DTOTest extends TestCase
         ApplicationContext::setContainer(
             m::mock(ContainerInterface::class, [
                 'get' => m::mock(ValidatorFactoryInterface::class, [
-                    'make' => m::mock(ValidatorInterface::class, function ($mock) use ($data) {
-                        $mock->shouldReceive('fails')->andReturn(false)
-                            ->shouldReceive('validated')->andReturn($data);
-                    }),
+                    'make' => m::mock(ValidatorInterface::class, [
+                        'fails' => false,
+                        'validated' => $data,
+                    ]),
                 ]),
             ]),
         );
