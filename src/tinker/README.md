@@ -4,6 +4,8 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/tinker)](https://packagist.org/packages/friendsofhyperf/tinker)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/tinker)](https://github.com/friendsofhyperf/tinker)
 
+The Powerful REPL for Hyperf.
+
 ## Installation
 
 ```bash

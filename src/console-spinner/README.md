@@ -4,6 +4,8 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/console-spinner)](https://packagist.org/packages/friendsofhyperf/console-spinner)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/console-spinner)](https://github.com/friendsofhyperf/console-spinner)
 
+The progress bar component For Hyperf.
+
 ## Installation
 
 ```bash

@@ -1,8 +1,6 @@
 # Compoships
 
-[![Latest Test](https://github.com/friendsofhyperf/compoships/workflows/tests/badge.svg)](https://github.com/friendsofhyperf/compoships/actions)
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/compoships/v/stable.svg)](https://packagist.org/packages/friendsofhyperf/compoships)
-[![Latest Unstable Version](https://poser.pugx.org/friendsofhyperf/compoships/v/unstable.svg)](https://packagist.org/packages/friendsofhyperf/compoships)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/compoships)](https://packagist.org/packages/friendsofhyperf/compoships)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/compoships)](https://github.com/friendsofhyperf/compoships)
 
@@ -32,7 +30,7 @@ class User extends Model
 The recommended way to install **Compoships** is through [Composer](http://getcomposer.org/)
 
 ```bash
-composer require friendsofhyperf/compoships:^1.0
+composer require friendsofhyperf/compoships
 ```
 
 ## Usage
@@ -49,7 +47,7 @@ If for some reasons you can't derive your models from `FriendsOfHyperf\Compoship
 
 ### Syntax
 
-... and now we can define a relationship from a model *A* to another model *B* by matching two or more columns (by passing an array of columns instead of a string). 
+... and now we can define a relationship from a model *A* to another model *B* by matching two or more columns (by passing an array of columns instead of a string).
 
 ```php
 namespace App;

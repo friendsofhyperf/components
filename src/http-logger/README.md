@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/http-logger)](https://packagist.org/packages/friendsofhyperf/http-logger)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/http-logger)](https://github.com/friendsofhyperf/http-logger)
 
-Http logger component for hyperf.
+The http logger component for Hyperf.
 
 ## Installation
 

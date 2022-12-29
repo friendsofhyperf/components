@@ -4,6 +4,8 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/model-observer)](https://packagist.org/packages/friendsofhyperf/model-observer)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/model-observer)](https://github.com/friendsofhyperf/model-observer)
 
+The model observer component for Hyperf.
+
 ## Installation
 
 ```bash

@@ -1,6 +1,6 @@
 {
     "name": "friendsofhyperf/helpers",
-    "description": "The commonly used functions for hyperf.",
+    "description": "The commonly used functions for Hyperf.",
     "type": "library",
     "license": "MIT",
     "authors": [{

@@ -4,6 +4,8 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/config-consul)](https://packagist.org/packages/friendsofhyperf/config-consul)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/config-consul)](https://github.com/friendsofhyperf/config-consul)
 
+The consul config component for Hyperf.
+
 ## Installation
 
 ~~~base

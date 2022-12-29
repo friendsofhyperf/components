@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/recaptcha)](https://packagist.org/packages/friendsofhyperf/recaptcha)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/recaptcha)](https://github.com/friendsofhyperf/recaptcha)
 
-The Google recaptcha for Hyperf.
+The Google recaptcha component for Hyperf.
 
 ## Installation
 

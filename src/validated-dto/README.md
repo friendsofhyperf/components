@@ -129,9 +129,7 @@ use Hyperf\Command\Command;
 
 class CreateUserCommand extends Command
 {
-    protected ?string $signature = 'create:user { --name= : The user name }
-                                        { --email= : The user email }
-                                        { --password= : The user password }';
+    protected ?string $signature = 'create:user { --name= : The user name } { --email= : The user email } { --password= : The user password }';
 
     protected string $description = 'Create a new User';
 
@@ -139,7 +137,6 @@ class CreateUserCommand extends Command
      * Execute the console command.
      *
      * @return int
-     *
      * @throws ValidationException
      */
     public function handle()

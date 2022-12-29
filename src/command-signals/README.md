@@ -5,6 +5,8 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/command-signals)](https://packagist.org/packages/friendsofhyperf/command-signals)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/command-signals)](https://github.com/friendsofhyperf/command-signals)
 
+The signals component for Hyperf Command.
+
 ## Requirements
 
 - PHP >= 8.0

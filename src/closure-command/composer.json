@@ -1,6 +1,6 @@
 {
     "name": "friendsofhyperf/closure-command",
-    "description": "The command component for Hyperf.",
+    "description": "The closure command component for Hyperf.",
     "type": "library",
     "license": "MIT",
     "authors": [{

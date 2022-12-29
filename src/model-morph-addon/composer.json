@@ -1,6 +1,6 @@
 {
     "name": "friendsofhyperf/model-morph-addon",
-    "description": "The Model morph addon for Hyperf.",
+    "description": "The model morph addon for Hyperf.",
     "type": "library",
     "license": "MIT",
     "authors": [{
