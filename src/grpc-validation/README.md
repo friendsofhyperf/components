@@ -4,6 +4,8 @@
 [![Total Downloads](https://poser.pugx.org/friendsofhyperf/grpc-validation/d/total.png)](https://packagist.org/packages/friendsofhyperf/grpc-validation)
 [![GitHub license](https://img.shields.io/github/license/friendsofhyperf/grpc-validation)](https://github.com/friendsofhyperf/grpc-validation)
 
+The GRPC validation component for Hyperf.
+
 ## Installation
 
 ~~~base

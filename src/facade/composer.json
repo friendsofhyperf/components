@@ -1,6 +1,6 @@
 {
     "name": "friendsofhyperf/facade",
-    "description": "The facade component for Hyperf.",
+    "description": "The commonly used facades for Hyperf.",
     "type": "library",
     "license": "MIT",
     "authors": [{

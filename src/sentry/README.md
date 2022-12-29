@@ -1,9 +1,10 @@
 # Sentry
 
-[![Latest Test](https://github.com/friendsofhyperf/sentry/workflows/tests/badge.svg)](https://github.com/friendsofhyperf/sentry/actions)
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/friendsofhyperf/sentry.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/sentry)
+[![Latest Version](https://img.shields.io/packagist/v/friendsofhyperf/sentry.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/sentry)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/sentry.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/sentry)
 [![GitHub license](https://img.shields.io/github/license/friendsofhyperf/sentry)](https://github.com/friendsofhyperf/sentry)
+
+The sentry component for Hyperf.
 
 ## Installation
 

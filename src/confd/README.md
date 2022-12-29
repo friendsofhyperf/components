@@ -4,6 +4,8 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/confd)](https://packagist.org/packages/friendsofhyperf/confd)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/confd)](https://github.com/friendsofhyperf/confd)
 
+The confd component for Hyperf.
+
 ## Requirements
 
 - PHP >= 8.0
@@ -12,7 +14,7 @@
 ## Installation
 
 ```shell
-composer require friendsofhyperf/confd:^3.0
+composer require friendsofhyperf/confd
 ```
 
 ## Command

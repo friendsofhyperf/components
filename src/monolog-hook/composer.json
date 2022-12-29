@@ -1,6 +1,6 @@
 {
     "name": "friendsofhyperf/monolog-hook",
-    "description": "The hook for Monolog in Hyperf.",
+    "description": "The monolog hook for Hyperf.",
     "type": "library",
     "license": "MIT",
     "authors": [{

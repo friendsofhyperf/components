@@ -5,6 +5,8 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/pretty-console)](https://packagist.org/packages/friendsofhyperf/pretty-console)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/pretty-console)](https://github.com/friendsofhyperf/pretty-console)
 
+The pretty console component for Hyperf.
+
 [![image](https://user-images.githubusercontent.com/5457236/178333036-b11abb56-ba70-4c0d-a2f6-79afe3a0a78c.png)](#)
 
 ## Installation

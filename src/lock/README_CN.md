@@ -7,7 +7,7 @@ Hyperf 原子锁组件。[English Document](README.md)
 - Request
 
 ```bash
-composer require "friendsofhyperf/lock"
+composer require friendsofhyperf/lock
 ```
 
 - Publish

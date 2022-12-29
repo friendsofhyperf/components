@@ -4,6 +4,8 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/encryption)](https://packagist.org/packages/friendsofhyperf/encryption)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/encryption)](https://github.com/friendsofhyperf/encryption)
 
+The encryption component for Hyperf.
+
 ## Installation
 
 ```bash
