@@ -59,9 +59,7 @@ class Cache implements CacheInterface
 
     public function forget($key): bool
     {
-        return tap($this->driver->delete($key), function () use ($key) {
-            $this->event(new KeyForgotten($key));
-        });
+        return tap($this->driver->delete($key), fn () => $this->event(new KeyForgotten($key)));
     }
 
     public function has($key): bool
@@ -124,24 +122,12 @@ class Cache implements CacheInterface
 
     public function decrement($key, $value = 1)
     {
-        return with((int) $this->get($key, 0) - (int) $value, function ($value) use ($key) {
-            if (! $this->put($key, $value)) {
-                return false;
-            }
-
-            return $value;
-        });
+        return with((int) $this->get($key, 0) - (int) $value, fn ($value) => ! $this->put($key, $value) ? false : $value);
     }
 
     public function increment($key, $value = 1)
     {
-        return with((int) $this->get($key, 0) + (int) $value, function ($value) use ($key) {
-            if (! $this->put($key, $value)) {
-                return false;
-            }
-
-            return $value;
-        });
+        return with((int) $this->get($key, 0) + (int) $value, fn ($value) => ! $this->put($key, $value) ? false : $value);
     }
 
     public function get($key, $default = null)
@@ -152,21 +138,13 @@ class Cache implements CacheInterface
 
         $value = $this->driver->get($key);
 
-        $callbacks = [];
-
         if (is_null($value)) {
-            $callbacks[] = function () use ($key) {
-                $this->event(new CacheMissed($key));
-            };
+            $this->event(new CacheMissed($key));
 
             $value = value($default);
         } else {
-            $callbacks[] = function () use ($key, $value) {
-                $this->event(new CacheHit($key, $value));
-            };
+            $this->event(new CacheHit($key, $value));
         }
-
-        parallel($callbacks);
 
         return $value;
     }
