@@ -28,7 +28,7 @@ class Cache implements CacheInterface
     use InteractsWithTime;
     use Macroable;
 
-    public function __construct(protected DriverInterface $driver, protected EventDispatcherInterface $eventDispatcher)
+    public function __construct(protected DriverInterface $driver, protected ?EventDispatcherInterface $eventDispatcher = null)
     {
     }
 
