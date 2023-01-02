@@ -185,15 +185,31 @@ class Cache implements CacheInterface
 
     public function many(array $keys)
     {
-        $values = $this->driver->getMultiple($keys);
+        $values = $this->driver
+            ->getMultiple(
+                collect($keys)
+                    ->map(fn ($value, $key) => is_string($key) ? $key : $value)
+                    ->values()
+                    ->all()
+            );
 
-        foreach ($values as $key => $value) {
-            if ($this->eventDispatcher) {
-                $this->eventDispatcher->dispatch(new CacheHit($key, $value));
-            }
+        return collect($values)
+            ->map(fn ($value, $key) => $this->handleManyResult($keys, $key, $value))
+            ->all();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getMultiple($keys, $default = null): iterable
+    {
+        $defaults = [];
+
+        foreach ($keys as $key) {
+            $defaults[$key] = $default;
         }
 
-        return $values;
+        return $this->many($defaults);
     }
 
     public function pull($key, $default = null)
@@ -234,7 +250,15 @@ class Cache implements CacheInterface
         return $this->rememberForever($key, $callback);
     }
 
-    protected function deleteMultiple(array $keys)
+    /**
+     * {@inheritdoc}
+     */
+    public function setMultiple($values, $ttl = null): bool
+    {
+        return $this->putMany(is_array($values) ? $values : iterator_to_array($values), $ttl);
+    }
+
+    public function deleteMultiple(array $keys)
     {
         $result = $this->driver->deleteMultiple($keys);
 
@@ -247,6 +271,33 @@ class Cache implements CacheInterface
         }
 
         return true;
+    }
+
+    /**
+     * Handle a result for the "many" method.
+     *
+     * @param array $keys
+     * @param string $key
+     * @param mixed $value
+     * @return mixed
+     */
+    protected function handleManyResult($keys, $key, $value)
+    {
+        // If we could not find the cache value, we will fire the missed event and get
+        // the default value for this cache value. This default could be a callback
+        // so we will execute the value function which will resolve it if needed.
+        if (is_null($value)) {
+            $this->event(new CacheMissed($key));
+
+            return isset($keys[$key]) ? value($keys[$key]) : null;
+        }
+
+        // If we found a valid value we will fire the "hit" event and return the value
+        // back from this function. The "hit" event gives developers an opportunity
+        // to listen for every possible cache "hit" throughout this applications.
+        $this->event(new CacheHit($key, $value));
+
+        return $value;
     }
 
     protected function putManyForever(array $values)
