@@ -51,9 +51,7 @@ class Cache implements CacheInterface
         $result = $this->driver->set($key, $value);
 
         if ($result) {
-            if ($this->eventDispatcher) {
-                $this->eventDispatcher->dispatch(new KeyWritten($key, $value));
-            }
+            $this->event(new KeyWritten($key, $value));
         }
 
         return $result;
@@ -62,9 +60,7 @@ class Cache implements CacheInterface
     public function forget($key): bool
     {
         return tap($this->driver->delete($key), function () use ($key) {
-            if ($this->eventDispatcher) {
-                $this->eventDispatcher->dispatch(new KeyForgotten($key));
-            }
+            $this->event(new KeyForgotten($key));
         });
     }
 
@@ -97,9 +93,7 @@ class Cache implements CacheInterface
         $result = $this->driver->set($key, $value, $seconds);
 
         if ($result) {
-            if ($this->eventDispatcher) {
-                $this->eventDispatcher->dispatch(new KeyWritten($key, $value, $seconds));
-            }
+            $this->event(new KeyWritten($key, $value, $seconds));
         }
 
         return $result;
@@ -121,9 +115,7 @@ class Cache implements CacheInterface
 
         if ($result) {
             foreach ($values as $key => $value) {
-                if ($this->eventDispatcher) {
-                    $this->eventDispatcher->dispatch(new KeyWritten($key, $value, $seconds));
-                }
+                $this->event(new KeyWritten($key, $value, $seconds));
             }
         }
 
@@ -164,17 +156,13 @@ class Cache implements CacheInterface
 
         if (is_null($value)) {
             $callbacks[] = function () use ($key) {
-                if ($this->eventDispatcher) {
-                    $this->eventDispatcher->dispatch(new CacheMissed($key));
-                }
+                $this->event(new CacheMissed($key));
             };
 
             $value = value($default);
         } else {
             $callbacks[] = function () use ($key, $value) {
-                if ($this->eventDispatcher) {
-                    $this->eventDispatcher->dispatch(new CacheHit($key, $value));
-                }
+                $this->event(new CacheHit($key, $value));
             };
         }
 
@@ -260,17 +248,15 @@ class Cache implements CacheInterface
 
     public function deleteMultiple(array $keys)
     {
-        $result = $this->driver->deleteMultiple($keys);
+        $result = true;
 
-        if ($result) {
-            foreach ($keys as $key) {
-                if ($this->eventDispatcher) {
-                    $this->eventDispatcher->dispatch(new KeyForgotten($key));
-                }
+        foreach ($keys as $key) {
+            if (! $this->forget($key)) {
+                $result = false;
             }
         }
 
-        return true;
+        return $result;
     }
 
     /**
@@ -306,9 +292,7 @@ class Cache implements CacheInterface
 
         if ($result) {
             foreach ($values as $key => $value) {
-                if ($this->eventDispatcher) {
-                    $this->eventDispatcher->dispatch(new KeyWritten($key, $value));
-                }
+                $this->event(new KeyWritten($key, $value));
             }
         }
 
@@ -330,5 +314,15 @@ class Cache implements CacheInterface
         }
 
         return (int) $duration > 0 ? $duration : 0;
+    }
+
+    /**
+     * Fire an event for this cache instance.
+     *
+     * @param object $event
+     */
+    protected function event($event)
+    {
+        $this->eventDispatcher?->dispatch($event);
     }
 }
