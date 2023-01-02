@@ -40,7 +40,6 @@ interface CacheInterface
      * Determine if an item exists in the cache.
      *
      * @param string $key
-     * @param array|string $key
      */
     public function has($key): bool;
 
