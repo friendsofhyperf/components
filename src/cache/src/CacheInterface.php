@@ -37,11 +37,16 @@ interface CacheInterface
     public function forget($key): bool;
 
     /**
+     * Determine if an item exists in the cache.
+     *
      * @param string $key
+     * @param array|string $key
      */
     public function has($key): bool;
 
     /**
+     * Determine if an item doesn't exist in the cache.
+     *
      * @param string $key
      */
     public function missing($key): bool;
@@ -70,9 +75,13 @@ interface CacheInterface
     public function increment($key, $value = 1);
 
     /**
+     * Retrieve an item from the cache by key.
+     *
+     * @template TCacheValue
+     *
      * @param array|string $key
-     * @param null|mixed $default
-     * @return mixed
+     * @param  TCacheValue|(\Closure(): TCacheValue)  $default
+     * @return (TCacheValue is null ? mixed : TCacheValue)
      */
     public function get($key, $default = null);
 
@@ -82,27 +91,47 @@ interface CacheInterface
     public function many(array $keys);
 
     /**
-     * @param null|mixed $default
-     * @return mixed
+     * Retrieve an item from the cache and delete it.
+     *
+     * @template TCacheValue
+     *
+     * @param array|string $key
+     * @param TCacheValue|(\Closure(): TCacheValue)  $default
+     * @return (TCacheValue is null ? mixed : TCacheValue)
      */
     public function pull(string $key, $default = null);
 
     /**
-     * @param DateInterval|DateTimeInterface|int $ttl
+     * Get an item from the cache, or execute the given Closure and store the result.
+     *
+     * @template TCacheValue
+     *
      * @param string $key
-     * @return mixed
+     * @param null|DateInterval|DateTimeInterface|int $ttl
+     * @param  \Closure(): TCacheValue  $callback
+     * @return TCacheValue
      */
     public function remember($key, $ttl, Closure $callback);
 
     /**
+     * Get an item from the cache, or execute the given Closure and store the result forever.
+     *
+     * @template TCacheValue
+     *
      * @param string $key
-     * @return mixed
+     * @param  \Closure(): TCacheValue  $callback
+     * @return TCacheValue
      */
     public function rememberForever($key, Closure $callback);
 
     /**
+     * Get an item from the cache, or execute the given Closure and store the result forever.
+     *
+     * @template TCacheValue
+     *
      * @param string $key
-     * @return mixed
+     * @param  \Closure(): TCacheValue  $callback
+     * @return TCacheValue
      */
     public function sear($key, Closure $callback);
 }
