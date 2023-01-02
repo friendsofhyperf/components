@@ -15,22 +15,26 @@ use FriendsOfHyperf\Cache\CacheManager;
 use Hyperf\Utils\ApplicationContext;
 
 /**
- * @method static bool add($key, $value, $ttl = null);
- * @method static bool flush();
- * @method static bool forever($key, $value);
- * @method static bool forget($key);
- * @method static bool has($key);
- * @method static bool missing($key);
- * @method static bool put($key, $value, $ttl = null);
- * @method static bool putMany(array $values, $ttl = null);
- * @method static bool|int decrement($key, $value = 1);
- * @method static bool|int increment($key, $value = 1);
- * @method static mixed get($key, $default = null);
- * @method static array many(array $keys);
- * @method static mixed pull(string $key, $default = null);
- * @method static mixed remember($key, $ttl, Closure $callback);
- * @method static mixed rememberForever($key, Closure $callback);
- * @method static mixed sear($key, Closure $callback);
+ * @method static bool add(string $key, mixed $value, null|\DateInterval|\DateTimeInterface|int $ttl = null)
+ * @method static bool delete(string $key)
+ * @method static bool deleteMultiple(iterable<string> $keys)
+ * @method static bool flush()
+ * @method static bool forever(string $key, mixed $value)
+ * @method static bool forget(string $key)
+ * @method static iterable getMultiple(iterable<string> $keys, mixed $default = null)
+ * @method static bool has(string $key)
+ * @method static bool missing(string $key)
+ * @method static bool put(array|string $key, mixed $value, null|\DateInterval|\DateTimeInterface|int $ttl = null)
+ * @method static bool putMany(array $values, null|\DateInterval|\DateTimeInterface|int $ttl = null)
+ * @method static bool|int decrement(string $key, mixed $value = 1)
+ * @method static bool|int increment(string $key, mixed $value = 1)
+ * @method static (TCacheValue get(array|string $key, TCacheValue|(\Closure(): TCacheValue) $default = null)
+ * @method static array many(array $keys)
+ * @method static (TCacheValue pull(array|string $key, TCacheValue|(\Closure(): TCacheValue) $default = null)
+ * @method static TCacheValue remember(string $key, null|\Closure|\DateInterval|\DateTimeInterface|int $ttl, \Closure(): TCacheValue $callback)
+ * @method static TCacheValue rememberForever(string $key, \Closure(): TCacheValue $callback)
+ * @method static TCacheValue sear(string $key, \Closure(): TCacheValue $callback)
+ * @method static bool setMultiple(iterable $values, null|\DateInterval|int $ttl = null)
  * @see \FriendsOfHyperf\Cache\Cache
  * @see \FriendsOfHyperf\Cache\CacheInterface
  */
