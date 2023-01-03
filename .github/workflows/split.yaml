@@ -1,0 +1,33 @@
+name: Split Repos
+
+on:
+  workflow_dispatch:
+    inputs:
+      event:
+        description: 'Input your event'
+        required: false
+        default: ''
+
+jobs:
+  split:
+    if: github.repository == 'friendsofhyperf/components'
+    runs-on: ubuntu-latest
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.ID_ED25519_PRIV }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+      - name: Setup Private Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+      - name: Split And Push
+        run: |
+          git config pull.rebase true
+          git config --global user.email "huangdijia@gmail.com"
+          git config --global user.name "Deeka Wong"
+          ./bin/split-linux.sh
