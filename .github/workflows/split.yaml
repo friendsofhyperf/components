@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       event:
-        description: 'Input your event'
+        description: 'Input repo name to split, e.g. access-log, cache, etc.'
         required: false
         default: ''
 
@@ -30,4 +30,9 @@ jobs:
           git config pull.rebase true
           git config --global user.email "huangdijia@gmail.com"
           git config --global user.name "Deeka Wong"
-          ./bin/split.sh
+
+          if [ -z "${{ github.event.inputs.repo }}" ]; then
+            ./bin/split.sh
+          else
+            ./bin/split.sh ${{ github.event.inputs.repo }}
+          fi
