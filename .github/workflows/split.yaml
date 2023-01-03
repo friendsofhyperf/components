@@ -1,4 +1,4 @@
-name: Split Repos
+name: Split Repositories
 
 on:
   workflow_dispatch:
