@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/access-log)](https://packagist.org/packages/friendsofhyperf/access-log)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/access-log)](https://github.com/friendsofhyperf/access-log)
 
-The access log component for hyperf.
+The access log component for Hyperf.
 
 ## Installation
 

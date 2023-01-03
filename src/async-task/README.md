@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/async-task)](https://packagist.org/packages/friendsofhyperf/async-task)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/async-task)](https://github.com/friendsofhyperf/async-task)
 
-The async task component for hyperf.
+The async task component for Hyperf.
 
 ## Installation
 
