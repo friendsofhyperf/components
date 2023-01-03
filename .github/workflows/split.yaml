@@ -13,18 +13,19 @@ jobs:
     if: github.repository == 'friendsofhyperf/components'
     runs-on: ubuntu-latest
     env:
-      SSH_PRIVATE_KEY: ${{ secrets.ID_ED25519_PRIV }}
+      # SSH_PRIVATE_KEY: ${{ secrets.ID_ED25519_PRIV }}
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
-      - name: Setup Private Key
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+      # - name: Setup Private Key
+      #   run: |
+      #     mkdir -p ~/.ssh
+      #     echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+      #     chmod 600 ~/.ssh/id_rsa
+      #     echo "StrictHostKeyChecking no" >> ~/.ssh/config
       - name: Split And Push
         run: |
           git config pull.rebase true
