@@ -3,8 +3,8 @@ name: Split Repositories
 on:
   workflow_dispatch:
     inputs:
-      event:
-        description: 'Input your event'
+      repo:
+        description: 'Input repo'
         required: false
         default: ''
 
@@ -30,4 +30,4 @@ jobs:
           git config pull.rebase true
           git config --global user.email "huangdijia@gmail.com"
           git config --global user.name "Deeka Wong"
-          ./bin/split.sh
+          ./bin/split.sh ${{ github.event.inputs.repo || '' }}
