@@ -25,7 +25,7 @@ jobs:
           echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           echo "StrictHostKeyChecking no" >> ~/.ssh/config
-      - name: Split And Push
+      - name: Release
         run: |
           git config pull.rebase true
           git config --global user.email "huangdijia@gmail.com"
