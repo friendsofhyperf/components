@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/http-client)](https://packagist.org/packages/friendsofhyperf/http-client)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/http-client)](https://github.com/friendsofhyperf/http-client)
 
-HTTP Client for Hyperf, from Laravel.
+The http client component for Hyperf, based on Guzzle.
 
 ## Installation
 

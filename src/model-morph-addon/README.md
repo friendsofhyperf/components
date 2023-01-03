@@ -6,6 +6,8 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/model-morph-addon)](https://packagist.org/packages/friendsofhyperf/model-morph-addon)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/model-morph-addon)](https://github.com/friendsofhyperf/model-morph-addon)
 
+The model morph addon for Hyperf.
+
 ## Installation
 
 ```shell

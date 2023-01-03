@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/ide-helper)](https://packagist.org/packages/friendsofhyperf/ide-helper)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/ide-helper)](https://github.com/friendsofhyperf/ide-helper)
 
-IDE Helper for Hyperf.
+The IDE Helper for Hyperf.
 
 ## Installation
 

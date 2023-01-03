@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/facade)](https://packagist.org/packages/friendsofhyperf/facade)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/facade)](https://github.com/friendsofhyperf/facade)
 
-The commonly used facades for hyperf.
+The commonly used facades for Hyperf.
 
 ## Installation
 

@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/helpers)](https://packagist.org/packages/friendsofhyperf/helpers)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/helpers)](https://github.com/friendsofhyperf/helpers)
 
-The commonly used functions for hyperf.
+The commonly used functions for Hyperf.
 
 ## Installation
 

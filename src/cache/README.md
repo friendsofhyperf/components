@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/cache)](https://packagist.org/packages/friendsofhyperf/cache)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/cache)](https://github.com/friendsofhyperf/cache)
 
-Yet Another Hyperf Cache
+The cache component for Hyperf.
 
 ## Installation
 
