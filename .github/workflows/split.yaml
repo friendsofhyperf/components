@@ -13,7 +13,7 @@ jobs:
     if: github.repository == 'friendsofhyperf/components'
     runs-on: ubuntu-latest
     env:
-      SSH_PRIVATE_KEY: ${{ secrets.SPLIT_PRIVATE_KEY }}
+      SSH_PRIVATE_KEY: ${{ secrets.ID_ED25519_PRIV }}
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -28,6 +28,6 @@ jobs:
       - name: Split And Push
         run: |
           git config pull.rebase true
-          git config --global user.email "group@hyperf.io"
-          git config --global user.name "Hyperf Developers"
+          git config --global user.email "huangdijia@gmail.com"
+          git config --global user.name "Deeka Wong"
           ./bin/split-linux.sh
