@@ -9,7 +9,7 @@ on:
         default: ''
 
 jobs:
-  split:
+  release:
     if: github.repository == 'friendsofhyperf/components'
     runs-on: ubuntu-latest
     env:
