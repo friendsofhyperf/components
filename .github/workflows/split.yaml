@@ -3,7 +3,7 @@ name: Split Repositories
 on:
   workflow_dispatch:
     inputs:
-      event:
+      repo:
         description: 'Input repo name to split, e.g. access-log, cache, etc.'
         required: false
         default: ''
