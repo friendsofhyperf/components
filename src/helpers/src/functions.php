@@ -8,17 +8,49 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
+use Carbon\Carbon;
+use FriendsOfHyperf\AsyncTask\Task as AsyncTask;
+use FriendsOfHyperf\AsyncTask\TaskInterface as AsyncTaskInterface;
+use FriendsOfHyperf\Helpers\Foundation\AsyncQueue\ClosureJob;
+use FriendsOfHyperf\Helpers\Foundation\Environment;
+use Hyperf\Amqp\Message\ProducerMessageInterface;
+use Hyperf\Amqp\Producer;
+use Hyperf\AsyncQueue\Driver\DriverFactory;
+use Hyperf\AsyncQueue\JobInterface;
+use Hyperf\Contract\ApplicationInterface;
+use Hyperf\Contract\SessionInterface;
+use Hyperf\Contract\ValidatorInterface;
+use Hyperf\HttpMessage\Cookie\Cookie;
+use Hyperf\HttpMessage\Cookie\CookieJarInterface;
+use Hyperf\HttpMessage\Stream\SwooleStream;
+use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\HttpServer\Contract\ResponseInterface;
+use Hyperf\Kafka\ProducerManager;
+use Hyperf\Logger\LoggerFactory;
+use Hyperf\Utils\ApplicationContext;
+use Hyperf\Utils\Str;
+use Hyperf\Utils\Stringable;
+use Hyperf\Validation\Contract\ValidatorFactoryInterface;
+use longlang\phpkafka\Producer\ProduceMessage;
+use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
+use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\CacheInterface;
+use Symfony\Component\Console\Input\ArrayInput;
+use Symfony\Component\Console\Output\NullOutput;
+
 if (! function_exists('app')) {
     /**
      * Get the available container instance.
      *
      * @template T
      *
-     * @param class-string<T> $abstract
+     * @param callable|class-string<T> $abstract
      *
-     * @return Closure|\Psr\Container\ContainerInterface|T
+     * @return Closure|ContainerInterface|T
      */
-    function app(string $abstract = null, array $parameters = [])
+    function app(string|callable $abstract = null, array $parameters = [])
     {
         if (is_callable($abstract)) {
             return Closure::fromCallable($abstract);
@@ -54,11 +86,8 @@ if (! function_exists('array_is_list')) {
 if (! function_exists('base_path')) {
     /**
      * Get the path to the base of the install.
-     *
-     * @param string $path
-     * @return string
      */
-    function base_path($path = '')
+    function base_path(string $path = ''): string
     {
         return BASE_PATH . ($path ? '/' . $path : $path);
     }
@@ -69,9 +98,8 @@ if (! function_exists('blank')) {
      * Determine if the given value is "blank".
      *
      * @param mixed $value
-     * @return bool
      */
-    function blank($value)
+    function blank($value): bool
     {
         if (is_null($value)) {
             return true;
@@ -100,13 +128,16 @@ if (! function_exists('cache')) {
      * If an array is passed, we'll assume you want to put to the cache.
      *
      * @param  dynamic  key|key,default|data,expiration|null
-     * @return mixed|\Psr\SimpleCache\CacheInterface
+     * @param null|string $key
+     * @param null|mixed $value
+     * @param null|DateInterval|DateTimeInterface|int $ttl
+     * @return CacheInterface|mixed
      * @throws \Exception
      */
     function cache()
     {
         $arguments = func_get_args();
-        $cache = di(\Psr\SimpleCache\CacheInterface::class);
+        $cache = di(CacheInterface::class);
 
         if (empty($arguments)) {
             return $cache;
@@ -129,18 +160,17 @@ if (! function_exists('cache')) {
 if (! function_exists('call_command')) {
     /**
      * Call command quickly.
-     * @return int
      * @throws TypeError
      * @throws Exception
      */
-    function call_command(string $command, array $arguments = [])
+    function call_command(string $command, array $arguments = []): int
     {
         $arguments['command'] = $command;
-        $input = new \Symfony\Component\Console\Input\ArrayInput($arguments);
-        $output = new \Symfony\Component\Console\Output\NullOutput();
+        $input = new ArrayInput($arguments);
+        $output = new NullOutput();
 
         /** @var \Symfony\Component\Console\Application $application */
-        $application = di(\Hyperf\Contract\ApplicationInterface::class);
+        $application = di(ApplicationInterface::class);
         $application->setAutoExit(false);
 
         return $application->run($input, $output);
@@ -151,26 +181,17 @@ if (! function_exists('cookie')) {
     /**
      * Create a new cookie instance.
      *
-     * @param null|string $name
-     * @param null|string $value
-     * @param int $minutes
-     * @param null|string $path
-     * @param null|string $domain
-     * @param null|bool $secure
-     * @param bool $httpOnly
-     * @param bool $raw
-     * @param null|string $sameSite
-     * @return \Hyperf\HttpMessage\Cookie\Cookie|\Hyperf\HttpMessage\Cookie\CookieJarInterface
+     * @return Cookie|CookieJarInterface
      */
-    function cookie($name = null, $value = null, $minutes = 0, $path = null, $domain = null, $secure = null, $httpOnly = true, $raw = false, $sameSite = null)
+    function cookie(?string $name = null, string $value = null, int $minutes = 0, string $path = null, string $domain = null, bool $secure = false, bool $httpOnly = true, bool $raw = false, ?string $sameSite = null)
     {
         if (is_null($name)) {
-            return di(\Hyperf\HttpMessage\Cookie\CookieJarInterface::class);
+            return di(CookieJarInterface::class);
         }
 
         $time = ($minutes == 0) ? 0 : $minutes * 60;
 
-        return new \Hyperf\HttpMessage\Cookie\Cookie($name, $value, $time, $path, $domain, $secure, $httpOnly, $raw, $sameSite);
+        return new Cookie($name, $value, $time, $path, $domain, $secure, $httpOnly, $raw, $sameSite);
     }
 }
 
@@ -179,13 +200,12 @@ if (! function_exists('class_namespace')) {
      * Get the class "namespace" of the given object / class.
      *
      * @param object|string $class
-     * @return string
      */
-    function class_namespace($class)
+    function class_namespace($class): string
     {
         $class = is_object($class) ? get_class($class) : $class;
 
-        return \Hyperf\Utils\Str::classNamespace($class);
+        return Str::classNamespace($class);
     }
 }
 
@@ -197,13 +217,13 @@ if (! function_exists('di')) {
      *
      * @param class-string<T> $abstract
      *
-     * @return \Psr\Container\ContainerInterface|T
+     * @return ContainerInterface|T
      */
     function di(string $abstract = null, array $parameters = [])
     {
-        if (\Hyperf\Utils\ApplicationContext::hasContainer()) {
+        if (ApplicationContext::hasContainer()) {
             /** @var \Hyperf\Contract\ContainerInterface $container */
-            $container = \Hyperf\Utils\ApplicationContext::getContainer();
+            $container = ApplicationContext::getContainer();
 
             if (is_null($abstract)) {
                 return $container;
@@ -226,7 +246,7 @@ if (! function_exists('di')) {
 
 if (! function_exists('dispatch')) {
     /**
-     * @param Closure|\FriendsOfHyperf\AsyncTask\TaskInterface|\Hyperf\Amqp\Message\ProducerMessageInterface|\Hyperf\AsyncQueue\JobInterface|\longlang\phpkafka\Producer\ProduceMessage $job
+     * @param AsyncTaskInterface|Closure|JobInterface|ProduceMessage|ProducerMessageInterface $job
      * @return bool
      * @throws TypeError
      * @throws InvalidDriverException
@@ -235,19 +255,19 @@ if (! function_exists('dispatch')) {
     function dispatch($job, ...$arguments)
     {
         if ($job instanceof Closure) {
-            $job = new \FriendsOfHyperf\Helpers\Foundation\AsyncQueue\ClosureJob($job, (int) ($arguments[2] ?? 0));
+            $job = new ClosureJob($job, (int) ($arguments[2] ?? 0));
         }
 
         return match (true) {
-            $job instanceof \Hyperf\AsyncQueue\JobInterface => di(\Hyperf\AsyncQueue\Driver\DriverFactory::class)
+            $job instanceof JobInterface => di(DriverFactory::class)
                 ->get((string) ($arguments[0] ?? $job->queue ?? 'default'))
                 ->push($job, (int) ($arguments[1] ?? $job->delay ?? 0)),
-            $job instanceof \Hyperf\Amqp\Message\ProducerMessageInterface => di(\Hyperf\Amqp\Producer::class)
+            $job instanceof ProducerMessageInterface => di(Producer::class)
                 ->produce($job, ...$arguments),
-            $job instanceof \longlang\phpkafka\Producer\ProduceMessage => di(\Hyperf\Kafka\ProducerManager::class)
+            $job instanceof ProduceMessage => di(ProducerManager::class)
                 ->getProducer((string) ($arguments[0] ?? 'default'))
                 ->sendBatch([$job]),
-            $job instanceof \FriendsOfHyperf\AsyncTask\TaskInterface => \FriendsOfHyperf\AsyncTask\Task::deliver($job, ...$arguments),
+            $job instanceof AsyncTaskInterface => AsyncTask::deliver($job, ...$arguments),
             default => throw new \InvalidArgumentException('Not Support job type.')
         };
     }
@@ -256,12 +276,12 @@ if (! function_exists('dispatch')) {
 if (! function_exists('environment')) {
     /**
      * @param mixed $environments
-     * @return bool|\FriendsOfHyperf\Helpers\Foundation\Environment
+     * @return bool|Environment
      * @throws TypeError
      */
     function environment(...$environments)
     {
-        $environment = di(\FriendsOfHyperf\Helpers\Foundation\Environment::class);
+        $environment = di(Environment::class);
 
         if (count($environments) > 0) {
             return $environment->environment(...$environments);
@@ -275,11 +295,15 @@ if (! function_exists('event')) {
     /**
      * Dispatch an event and call the listeners.
      *
-     * @return object
+     * @template T of object
+     *
+     * @param T $event
+     *
+     * @return T
      */
     function event(object $event)
     {
-        return di(\Psr\EventDispatcher\EventDispatcherInterface::class)->dispatch($event);
+        return di(EventDispatcherInterface::class)->dispatch($event);
     }
 }
 
@@ -288,9 +312,8 @@ if (! function_exists('filled')) {
      * Determine if a value is "filled".
      *
      * @param mixed $value
-     * @return bool
      */
-    function filled($value)
+    function filled($value): bool
     {
         return ! blank($value);
     }
@@ -298,7 +321,7 @@ if (! function_exists('filled')) {
 
 if (! function_exists('info')) {
     /**
-     * @param string $message
+     * @param string|\Stringable $message
      * @throws TypeError
      */
     function info($message, array $context = [], bool $backtrace = false)
@@ -314,8 +337,8 @@ if (! function_exists('info')) {
 
 if (! function_exists('logger')) {
     /**
-     * @param null|string $message
-     * @return \Psr\Log\LoggerInterface|void
+     * @param null|string|\Stringable $message
+     * @return LoggerInterface|void
      * @throws TypeError
      */
     function logger($message = null, array $context = [], bool $backtrace = false)
@@ -335,14 +358,11 @@ if (! function_exists('logger')) {
 
 if (! function_exists('logs')) {
     /**
-     * @param string $name
-     * @param string $group
-     * @return \Psr\Log\LoggerInterface
      * @throws TypeError
      */
-    function logs($name = 'hyperf', $group = 'default')
+    function logs(string $name = 'hyperf', string $group = 'default'): LoggerInterface
     {
-        return di(\Hyperf\Logger\LoggerFactory::class)->get($name, $group);
+        return di(LoggerFactory::class)->get($name, $group);
     }
 }
 
@@ -350,12 +370,11 @@ if (! function_exists('now')) {
     /**
      * Create a new Carbon instance for the current time.
      *
-     * @param null|\DateTimeZone|string $tz
-     * @return \Carbon\Carbon
+     * @param null|DateTimeZone|string $tz
      */
-    function now($tz = null)
+    function now($tz = null): Carbon
     {
-        return \Carbon\Carbon::now($tz);
+        return Carbon::now($tz);
     }
 }
 
@@ -363,12 +382,14 @@ if (! function_exists('object_get')) {
     /**
      * Get an item from an object using "dot" notation.
      *
-     * @param object $object
+     * @template T of object
+     *
+     * @param T $object
      * @param null|string $key
      * @param mixed $default
-     * @return mixed
+     * @return mixed|T
      */
-    function object_get($object, $key, $default = null)
+    function object_get($object, $key = '', $default = null)
     {
         if (is_null($key) || trim($key) == '') {
             return $object;
@@ -389,12 +410,8 @@ if (! function_exists('object_get')) {
 if (! function_exists('preg_replace_array')) {
     /**
      * Replace a given pattern with each value in the array in sequentially.
-     *
-     * @param string $pattern
-     * @param string $subject
-     * @return string
      */
-    function preg_replace_array($pattern, array $replacements, $subject)
+    function preg_replace_array(string $pattern, array $replacements, string $subject): string
     {
         return preg_replace_callback($pattern, function () use (&$replacements) {
             foreach ($replacements as $key => $value) {
@@ -410,9 +427,9 @@ if (! function_exists('resolve')) {
      *
      * @template T
      *
-     * @param class-string<T> $abstract
+     * @param callable|class-string<T> $abstract
      *
-     * @return Closure|\Psr\Container\ContainerInterface|T
+     * @return Closure|ContainerInterface|T
      */
     function resolve(string|callable $abstract, array $parameters = [])
     {
@@ -429,13 +446,12 @@ if (! function_exists('request')) {
      * Get an instance of the current request or an input item from the request.
      * @param null|array|string $key
      * @param mixed $default
-     * @return array|\Hyperf\HttpServer\Contract\RequestInterface|mixed
+     * @return array|mixed|RequestInterface
      * @throws TypeError
      */
     function request($key = null, $default = null)
     {
-        /** @var \Hyperf\HttpServer\Contract\RequestInterface $request */
-        $request = di(\Hyperf\HttpServer\Contract\RequestInterface::class);
+        $request = di(RequestInterface::class);
 
         if (is_null($key)) {
             return $request;
@@ -455,12 +471,12 @@ if (! function_exists('response')) {
      *
      * @param null|array|string $content
      * @param int $status
-     * @return \Hyperf\HttpServer\Contract\ResponseInterface|\Psr\Http\Message\ResponseInterface
+     * @return PsrResponseInterface|ResponseInterface
      */
     function response($content = '', $status = 200, array $headers = [])
     {
-        /** @var \Hyperf\HttpServer\Contract\ResponseInterface|\Psr\Http\Message\ResponseInterface $response */
-        $response = di(\Hyperf\HttpServer\Contract\ResponseInterface::class);
+        /** @var PsrResponseInterface|ResponseInterface $response */
+        $response = di(ResponseInterface::class);
 
         if (func_num_args() === 0) {
             return $response;
@@ -472,7 +488,7 @@ if (! function_exists('response')) {
         }
 
         return tap(
-            $response->withBody(new \Hyperf\HttpMessage\Stream\SwooleStream((string) $content))
+            $response->withBody(new SwooleStream((string) $content))
                 ->withStatus($status),
             function ($response) use ($headers) {
                 foreach ($headers as $name => $value) {
@@ -491,11 +507,11 @@ if (! function_exists('session')) {
      *
      * @param null|array|string $key
      * @param mixed $default
-     * @return \Hyperf\Contract\SessionInterface|mixed
+     * @return mixed|SessionInterface
      */
     function session($key = null, $default = null)
     {
-        $session = di(\Hyperf\Contract\SessionInterface::class);
+        $session = di(SessionInterface::class);
 
         if (is_null($key)) {
             return $session;
@@ -514,7 +530,7 @@ if (! function_exists('str')) {
      * Get a new stringable object from the given string.
      *
      * @param null|string $string
-     * @return \Hyperf\Utils\Stringable
+     * @return mixed|Stringable
      */
     function str($string = null)
     {
@@ -522,7 +538,7 @@ if (! function_exists('str')) {
             return new class() {
                 public function __call($method, $parameters)
                 {
-                    return \Hyperf\Utils\Str::$method(...$parameters);
+                    return Str::$method(...$parameters);
                 }
 
                 public function __toString()
@@ -532,7 +548,7 @@ if (! function_exists('str')) {
             };
         }
 
-        return \Hyperf\Utils\Str::of($string);
+        return Str::of($string);
     }
 }
 
@@ -541,11 +557,10 @@ if (! function_exists('today')) {
      * Create a new Carbon instance for the current date.
      *
      * @param null|\DateTimeZone|string $tz
-     * @return \Carbon\Carbon
      */
-    function today($tz = null)
+    function today($tz = null): Carbon
     {
-        return \Carbon\Carbon::today($tz);
+        return Carbon::today($tz);
     }
 }
 
@@ -553,10 +568,12 @@ if (! function_exists('throw_if')) {
     /**
      * Throw the given exception if the given condition is true.
      *
-     * @param mixed $condition
+     * @template T
+     *
+     * @param T $condition
      * @param string|\Throwable $exception
      * @param array ...$parameters
-     * @return mixed
+     * @return T
      * @throws \Throwable
      */
     function throw_if($condition, $exception, ...$parameters)
@@ -577,10 +594,12 @@ if (! function_exists('throw_unless')) {
     /**
      * Throw the given exception unless the given condition is true.
      *
-     * @param mixed $condition
+     * @template T
+     *
+     * @param T $condition
      * @param string|\Throwable $exception
      * @param array ...$parameters
-     * @return mixed
+     * @return T
      * @throws \Throwable
      */
     function throw_unless($condition, $exception, ...$parameters)
@@ -600,13 +619,12 @@ if (! function_exists('throw_unless')) {
 if (! function_exists('validator')) {
     /**
      * Create a new Validator instance.
-     * @return \Hyperf\Contract\ValidatorInterface|\Hyperf\Validation\Contract\ValidatorFactoryInterface
+     * @return ValidatorFactoryInterface|ValidatorInterface
      * @throws TypeError
      */
     function validator(array $data = [], array $rules = [], array $messages = [], array $customAttributes = [])
     {
-        /** @var \Hyperf\Validation\Contract\ValidatorFactoryInterface $factory */
-        $factory = di(\Hyperf\Validation\Contract\ValidatorFactoryInterface::class);
+        $factory = di(ValidatorFactoryInterface::class);
 
         if (func_num_args() === 0) {
             return $factory;
@@ -638,8 +656,8 @@ if (! function_exists('get_client_ip')) {
      */
     function get_client_ip(): string
     {
-        /** @var \Hyperf\HttpServer\Contract\RequestInterface $request */
-        $request = di(\Hyperf\HttpServer\Contract\RequestInterface::class);
+        /** @var RequestInterface $request */
+        $request = di(RequestInterface::class);
         return $request->getHeaderLine('x-real-ip') ?: $request->server('remote_addr');
     }
 }
