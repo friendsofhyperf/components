@@ -47,6 +47,7 @@
         "psy/psysh": "^0.10.0|^0.11.0",
         "ramsey/uuid": "^4.7",
         "sentry/sdk": "^3.0",
+        "spatie/once": "^3.0",
         "symfony/console": "^5.3|^6.0",
         "symfony/process": "^5.3|^6.0",
         "symfony/uid": "^5.3|^6.0",
@@ -88,6 +89,7 @@
         "friendsofhyperf/model-uid-addon": "*",
         "friendsofhyperf/monolog-hook": "*",
         "friendsofhyperf/mysql-grammar-addon": "*",
+        "friendsofhyperf/once": "*",
         "friendsofhyperf/pretty-console": "*",
         "friendsofhyperf/recaptcha": "*",
         "friendsofhyperf/sentry": "*",
@@ -114,7 +116,6 @@
             "FriendsOfHyperf\\Confd\\": "src/confd/src/",
             "FriendsOfHyperf\\ConfigConsul\\": "src/config-consul/src/",
             "FriendsOfHyperf\\ConsoleSpinner\\": "src/console-spinner/src/",
-            "Friendsofhyperf\\Encryption\\": "src/encryption/src/",
             "FriendsOfHyperf\\ExceptionEvent\\": "src/exception-event/src/",
             "FriendsOfHyperf\\Facade\\": "src/facade/src/",
             "FriendsOfHyperf\\GrpcValidation\\": "src/grpc-validation/src/",
@@ -130,11 +131,13 @@
             "FriendsOfHyperf\\ModelUidAddon\\": "src/model-uid-addon/src/",
             "FriendsOfHyperf\\MonologHook\\": "src/monolog-hook/src/",
             "FriendsOfHyperf\\MySqlGrammarAddon\\": "src/mysql-grammar-addon/src/",
+            "FriendsOfHyperf\\Once\\": "src/once/src/",
             "FriendsOfHyperf\\PrettyConsole\\": "src/pretty-console/src/",
             "FriendsOfHyperf\\ReCaptcha\\": "src/recaptcha/src/",
             "FriendsOfHyperf\\Sentry\\": "src/sentry/src/",
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
-            "FriendsOfHyperf\\ValidatedDTO\\": "src/validated-dto/src/"
+            "FriendsOfHyperf\\ValidatedDTO\\": "src/validated-dto/src/",
+            "Friendsofhyperf\\Encryption\\": "src/encryption/src/"
         }
     },
     "autoload-dev": {
@@ -154,7 +157,6 @@
                 "FriendsOfHyperf\\Confd\\ConfigProvider",
                 "FriendsOfHyperf\\ConfigConsul\\ConfigProvider",
                 "FriendsOfHyperf\\ConsoleSpinner\\ConfigProvider",
-                "Friendsofhyperf\\Encryption\\ConfigProvider",
                 "FriendsOfHyperf\\ExceptionEvent\\ConfigProvider",
                 "FriendsOfHyperf\\Facade\\ConfigProvider",
                 "FriendsOfHyperf\\GrpcValidation\\ConfigProvider",
@@ -169,11 +171,13 @@
                 "FriendsOfHyperf\\ModelUidAddon\\ConfigProvider",
                 "FriendsOfHyperf\\MonologHook\\ConfigProvider",
                 "FriendsOfHyperf\\MySqlGrammarAddon\\ConfigProvider",
+                "FriendsOfHyperf\\Once\\ConfigProvider",
                 "FriendsOfHyperf\\PrettyConsole\\ConfigProvider",
                 "FriendsOfHyperf\\ReCaptcha\\ConfigProvider",
                 "FriendsOfHyperf\\Sentry\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
-                "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider"
+                "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider",
+                "Friendsofhyperf\\Encryption\\ConfigProvider"
             ]
         }
     },
