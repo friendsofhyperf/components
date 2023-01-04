@@ -8,17 +8,25 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
+use Carbon\Carbon;
+use Hyperf\Logger\LoggerFactory;
+use Hyperf\Utils\Str;
+use Hyperf\Utils\Stringable;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
+use Psr\SimpleCache\CacheInterface;
+
 if (! function_exists('app')) {
     /**
      * Get the available container instance.
      *
      * @template T
      *
-     * @param class-string<T> $abstract
+     * @param callable|class-string<T> $abstract
      *
-     * @return Closure|\Psr\Container\ContainerInterface|T
+     * @return Closure|ContainerInterface|T
      */
-    function app(string $abstract = null, array $parameters = [])
+    function app(string|callable $abstract = null, array $parameters = [])
     {
         if (is_callable($abstract)) {
             return Closure::fromCallable($abstract);
@@ -54,11 +62,8 @@ if (! function_exists('array_is_list')) {
 if (! function_exists('base_path')) {
     /**
      * Get the path to the base of the install.
-     *
-     * @param string $path
-     * @return string
      */
-    function base_path($path = '')
+    function base_path(string $path = ''): string
     {
         return BASE_PATH . ($path ? '/' . $path : $path);
     }
@@ -69,9 +74,8 @@ if (! function_exists('blank')) {
      * Determine if the given value is "blank".
      *
      * @param mixed $value
-     * @return bool
      */
-    function blank($value)
+    function blank($value): bool
     {
         if (is_null($value)) {
             return true;
@@ -100,13 +104,16 @@ if (! function_exists('cache')) {
      * If an array is passed, we'll assume you want to put to the cache.
      *
      * @param  dynamic  key|key,default|data,expiration|null
-     * @return mixed|\Psr\SimpleCache\CacheInterface
+     * @param null|string $key
+     * @param null|mixed $value
+     * @param null|DateInterval|DateTimeInterface|int $ttl
+     * @return CacheInterface|mixed
      * @throws \Exception
      */
     function cache()
     {
         $arguments = func_get_args();
-        $cache = di(\Psr\SimpleCache\CacheInterface::class);
+        $cache = di(CacheInterface::class);
 
         if (empty($arguments)) {
             return $cache;
@@ -129,11 +136,10 @@ if (! function_exists('cache')) {
 if (! function_exists('call_command')) {
     /**
      * Call command quickly.
-     * @return int
      * @throws TypeError
      * @throws Exception
      */
-    function call_command(string $command, array $arguments = [])
+    function call_command(string $command, array $arguments = []): int
     {
         $arguments['command'] = $command;
         $input = new \Symfony\Component\Console\Input\ArrayInput($arguments);
@@ -151,18 +157,9 @@ if (! function_exists('cookie')) {
     /**
      * Create a new cookie instance.
      *
-     * @param null|string $name
-     * @param null|string $value
-     * @param int $minutes
-     * @param null|string $path
-     * @param null|string $domain
-     * @param null|bool $secure
-     * @param bool $httpOnly
-     * @param bool $raw
-     * @param null|string $sameSite
      * @return \Hyperf\HttpMessage\Cookie\Cookie|\Hyperf\HttpMessage\Cookie\CookieJarInterface
      */
-    function cookie($name = null, $value = null, $minutes = 0, $path = null, $domain = null, $secure = null, $httpOnly = true, $raw = false, $sameSite = null)
+    function cookie(?string $name = null, string $value = null, int $minutes = 0, string $path = null, string $domain = null, bool $secure = false, bool $httpOnly = true, bool $raw = false, ?string $sameSite = null)
     {
         if (is_null($name)) {
             return di(\Hyperf\HttpMessage\Cookie\CookieJarInterface::class);
@@ -179,9 +176,8 @@ if (! function_exists('class_namespace')) {
      * Get the class "namespace" of the given object / class.
      *
      * @param object|string $class
-     * @return string
      */
-    function class_namespace($class)
+    function class_namespace($class): string
     {
         $class = is_object($class) ? get_class($class) : $class;
 
@@ -197,7 +193,7 @@ if (! function_exists('di')) {
      *
      * @param class-string<T> $abstract
      *
-     * @return \Psr\Container\ContainerInterface|T
+     * @return ContainerInterface|T
      */
     function di(string $abstract = null, array $parameters = [])
     {
@@ -275,7 +271,11 @@ if (! function_exists('event')) {
     /**
      * Dispatch an event and call the listeners.
      *
-     * @return object
+     * @template T of object
+     *
+     * @param T $event
+     *
+     * @return T
      */
     function event(object $event)
     {
@@ -288,9 +288,8 @@ if (! function_exists('filled')) {
      * Determine if a value is "filled".
      *
      * @param mixed $value
-     * @return bool
      */
-    function filled($value)
+    function filled($value): bool
     {
         return ! blank($value);
     }
@@ -298,7 +297,7 @@ if (! function_exists('filled')) {
 
 if (! function_exists('info')) {
     /**
-     * @param string $message
+     * @param string|\Stringable $message
      * @throws TypeError
      */
     function info($message, array $context = [], bool $backtrace = false)
@@ -314,7 +313,7 @@ if (! function_exists('info')) {
 
 if (! function_exists('logger')) {
     /**
-     * @param null|string $message
+     * @param null|string|\Stringable $message
      * @return \Psr\Log\LoggerInterface|void
      * @throws TypeError
      */
@@ -335,14 +334,11 @@ if (! function_exists('logger')) {
 
 if (! function_exists('logs')) {
     /**
-     * @param string $name
-     * @param string $group
-     * @return \Psr\Log\LoggerInterface
      * @throws TypeError
      */
-    function logs($name = 'hyperf', $group = 'default')
+    function logs(string $name = 'hyperf', string $group = 'default'): LoggerInterface
     {
-        return di(\Hyperf\Logger\LoggerFactory::class)->get($name, $group);
+        return di(LoggerFactory::class)->get($name, $group);
     }
 }
 
@@ -350,12 +346,11 @@ if (! function_exists('now')) {
     /**
      * Create a new Carbon instance for the current time.
      *
-     * @param null|\DateTimeZone|string $tz
-     * @return \Carbon\Carbon
+     * @param null|DateTimeZone|string $tz
      */
-    function now($tz = null)
+    function now($tz = null): Carbon
     {
-        return \Carbon\Carbon::now($tz);
+        return Carbon::now($tz);
     }
 }
 
@@ -363,12 +358,14 @@ if (! function_exists('object_get')) {
     /**
      * Get an item from an object using "dot" notation.
      *
-     * @param object $object
+     * @template T of object
+     *
+     * @param T $object
      * @param null|string $key
      * @param mixed $default
-     * @return mixed
+     * @return mixed|T
      */
-    function object_get($object, $key, $default = null)
+    function object_get($object, $key = '', $default = null)
     {
         if (is_null($key) || trim($key) == '') {
             return $object;
@@ -389,12 +386,8 @@ if (! function_exists('object_get')) {
 if (! function_exists('preg_replace_array')) {
     /**
      * Replace a given pattern with each value in the array in sequentially.
-     *
-     * @param string $pattern
-     * @param string $subject
-     * @return string
      */
-    function preg_replace_array($pattern, array $replacements, $subject)
+    function preg_replace_array(string $pattern, array $replacements, string $subject): string
     {
         return preg_replace_callback($pattern, function () use (&$replacements) {
             foreach ($replacements as $key => $value) {
@@ -410,9 +403,9 @@ if (! function_exists('resolve')) {
      *
      * @template T
      *
-     * @param class-string<T> $abstract
+     * @param callable|class-string<T> $abstract
      *
-     * @return Closure|\Psr\Container\ContainerInterface|T
+     * @return Closure|ContainerInterface|T
      */
     function resolve(string|callable $abstract, array $parameters = [])
     {
@@ -514,7 +507,7 @@ if (! function_exists('str')) {
      * Get a new stringable object from the given string.
      *
      * @param null|string $string
-     * @return \Hyperf\Utils\Stringable
+     * @return mixed|Stringable
      */
     function str($string = null)
     {
@@ -522,7 +515,7 @@ if (! function_exists('str')) {
             return new class() {
                 public function __call($method, $parameters)
                 {
-                    return \Hyperf\Utils\Str::$method(...$parameters);
+                    return Str::$method(...$parameters);
                 }
 
                 public function __toString()
@@ -532,7 +525,7 @@ if (! function_exists('str')) {
             };
         }
 
-        return \Hyperf\Utils\Str::of($string);
+        return Str::of($string);
     }
 }
 
@@ -541,11 +534,10 @@ if (! function_exists('today')) {
      * Create a new Carbon instance for the current date.
      *
      * @param null|\DateTimeZone|string $tz
-     * @return \Carbon\Carbon
      */
-    function today($tz = null)
+    function today($tz = null): Carbon
     {
-        return \Carbon\Carbon::today($tz);
+        return Carbon::today($tz);
     }
 }
 
@@ -553,10 +545,12 @@ if (! function_exists('throw_if')) {
     /**
      * Throw the given exception if the given condition is true.
      *
-     * @param mixed $condition
+     * @template T
+     *
+     * @param T $condition
      * @param string|\Throwable $exception
      * @param array ...$parameters
-     * @return mixed
+     * @return T
      * @throws \Throwable
      */
     function throw_if($condition, $exception, ...$parameters)
@@ -577,10 +571,12 @@ if (! function_exists('throw_unless')) {
     /**
      * Throw the given exception unless the given condition is true.
      *
-     * @param mixed $condition
+     * @template T
+     *
+     * @param T $condition
      * @param string|\Throwable $exception
      * @param array ...$parameters
-     * @return mixed
+     * @return T
      * @throws \Throwable
      */
     function throw_unless($condition, $exception, ...$parameters)
