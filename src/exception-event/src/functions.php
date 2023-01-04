@@ -43,10 +43,12 @@ if (class_exists('Hyperf\Utils\ApplicationContext') && ! function_exists('report
 
 if (! function_exists('report_if')) {
     /**
-     * @param mixed $condition
+     * @template T
+     *
+     * @param T $condition
      * @param string|Throwable $exception
      * @param array ...$parameters
-     * @return mixed
+     * @return T
      * @throws TypeError
      */
     function report_if($condition, $exception = 'RuntimeException', ...$parameters)
@@ -65,10 +67,12 @@ if (! function_exists('report_if')) {
 
 if (! function_exists('report_unless')) {
     /**
-     * @param mixed $condition
+     * @template T
+     *
+     * @param T $condition
      * @param string|Throwable $exception
      * @param array ...$parameters
-     * @return mixed
+     * @return T
      * @throws TypeError
      */
     function report_unless($condition, $exception = 'RuntimeException', ...$parameters)
