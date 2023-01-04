@@ -12,7 +12,11 @@ if (! function_exists('app')) {
     /**
      * Get the available container instance.
      *
-     * @return Closure|mixed|\Psr\Container\ContainerInterface
+     * @template T
+     *
+     * @param class-string<T> $abstract
+     *
+     * @return Closure|\Psr\Container\ContainerInterface|T
      */
     function app(string $abstract = null, array $parameters = [])
     {
@@ -189,7 +193,11 @@ if (! function_exists('di')) {
     /**
      * Get the available container instance.
      *
-     * @return mixed|\Psr\Container\ContainerInterface
+     * @template T
+     *
+     * @param class-string<T> $abstract
+     *
+     * @return \Psr\Container\ContainerInterface|T
      */
     function di(string $abstract = null, array $parameters = [])
     {
@@ -400,7 +408,11 @@ if (! function_exists('resolve')) {
     /**
      * Resolve a service from the container.
      *
-     * @return Closure|mixed|\Psr\Container\ContainerInterface
+     * @template T
+     *
+     * @param class-string<T> $abstract
+     *
+     * @return Closure|\Psr\Container\ContainerInterface|T
      */
     function resolve(string|callable $abstract, array $parameters = [])
     {
