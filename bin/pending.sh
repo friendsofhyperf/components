@@ -23,6 +23,9 @@ function pending()
     echo "Copying .github to ${REPO}"
     cp -rf bin/stubs/.github src/$REPO
 
+    echo "Copying .gitattributes to ${REPO}"
+    cp -rf bin/stubs/.gitattributes src/$REPO
+
     echo "Copying LICENSE to ${REPO}"
     cp -rf ./LICENSE src/$REPO
     return
