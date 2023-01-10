@@ -14,6 +14,7 @@ use FriendsOfHyperf\Confd\Confd;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\MainWorkerStart;
+use Hyperf\Server\Event\MainCoroutineServerStart;
 
 class WatchOnBootListener implements ListenerInterface
 {
@@ -25,9 +26,13 @@ class WatchOnBootListener implements ListenerInterface
     {
         return [
             MainWorkerStart::class,
+            MainCoroutineServerStart::class,
         ];
     }
 
+    /**
+     * @param MainCoroutineServerStart|MainWorkerStart $event
+     */
     public function process(object $event): void
     {
         $this->confd->watch();
