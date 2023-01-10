@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\AsyncTask\Listener;
 use FriendsOfHyperf\AsyncTask\Task;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\AfterWorkerStart;
+use Hyperf\Server\Event\MainCoroutineServerStart;
 
 class BindServerAndWorkerIdListener implements ListenerInterface
 {
@@ -20,15 +21,16 @@ class BindServerAndWorkerIdListener implements ListenerInterface
     {
         return [
             AfterWorkerStart::class,
+            MainCoroutineServerStart::class,
         ];
     }
 
     /**
-     * @param AfterWorkerStart $event
+     * @param AfterWorkerStart|MainCoroutineServerStart $event
      */
     public function process(object $event): void
     {
         Task::$server = $event->server;
-        Task::$workerId = $event->workerId;
+        Task::$workerId = $event->workerId ?? 0;
     }
 }

@@ -12,6 +12,7 @@ namespace FriendsOfHyperf\Sentry\Listener;
 
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\AfterWorkerStart;
+use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
 use Sentry\State\HubInterface;
 
@@ -25,11 +26,12 @@ class InitHubListener implements ListenerInterface
     {
         return [
             AfterWorkerStart::class,
+            MainCoroutineServerStart::class,
         ];
     }
 
     /**
-     * @param AfterWorkerStart $event
+     * @param AfterWorkerStart|MainCoroutineServerStart $event
      */
     public function process(object $event): void
     {
