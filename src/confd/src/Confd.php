@@ -14,9 +14,7 @@ use FriendsOfHyperf\Confd\Driver\DriverInterface;
 use FriendsOfHyperf\Confd\Driver\Etcd;
 use FriendsOfHyperf\Confd\Event\ConfigChanged;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Coordinator\Constants;
-use Hyperf\Coordinator\CoordinatorManager;
-use Hyperf\Utils\Coroutine;
+use Hyperf\Coordinator\Timer;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
@@ -24,11 +22,20 @@ class Confd
 {
     private DriverInterface $driver;
 
+    private Timer $timer;
+
+    private EventDispatcherInterface $eventDispatcher;
+
+    private int $interval;
+
     public function __construct(private ContainerInterface $container, private ConfigInterface $config)
     {
         $driver = $this->config->get('confd.default', 'etcd');
         $class = $this->config->get(sprintf('confd.drivers.%s.driver', $driver), Etcd::class);
         $this->driver = $container->get($class);
+        $this->interval = (int) $this->config->get('confd.interval', 1);
+        $this->eventDispatcher = $this->container->get(EventDispatcherInterface::class);
+        $this->timer = new Timer();
     }
 
     public function fetch(): array
@@ -38,20 +45,9 @@ class Confd
 
     public function watch(): void
     {
-        Coroutine::create(function () {
-            $eventDispatcher = $this->container->get(EventDispatcherInterface::class);
-            $interval = (int) $this->config->get('confd.interval', 1);
-
-            while (true) {
-                $isWorkerExited = CoordinatorManager::until(Constants::WORKER_EXIT)->yield($interval);
-
-                if ($isWorkerExited) {
-                    break;
-                }
-
-                if ($changes = $this->driver->getChanges()) {
-                    $eventDispatcher->dispatch(new ConfigChanged($changes));
-                }
+        $this->timer->tick($this->interval, function () {
+            if ($changes = $this->driver->getChanges()) {
+                $this->eventDispatcher->dispatch(new ConfigChanged($changes));
             }
         });
     }
