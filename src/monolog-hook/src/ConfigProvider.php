@@ -16,6 +16,7 @@ class ConfigProvider
     {
         return [
             'aspects' => [
+                Aspect\RedisHandlerAspect::class,
                 Aspect\UdpSocketAspect::class,
             ],
         ];
