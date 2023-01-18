@@ -106,6 +106,12 @@ class HttpClientTest extends TestCase
         $this->assertTrue($response->forbidden());
     }
 
+    public function testNotFound()
+    {
+        $response = Http::get('http://httpbin.org/status/404');
+        $this->assertTrue($response->notFound());
+    }
+
     public function testBasicAuth()
     {
         $user = 'admin';
