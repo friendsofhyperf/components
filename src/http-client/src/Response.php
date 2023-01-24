@@ -334,7 +334,7 @@ class Response implements ArrayAccess
     /**
      * Create an exception if a server or client error occurred.
      *
-     * @return null|\FriendsOfHyperf\Http\Client\RequestException
+     * @return null|RequestException
      */
     public function toException()
     {
@@ -348,7 +348,7 @@ class Response implements ArrayAccess
      *
      * @param null|Closure $callback
      * @return $this
-     * @throws \FriendsOfHyperf\Http\Client\RequestException
+     * @throws RequestException
      */
     public function throw()
     {
@@ -370,11 +370,71 @@ class Response implements ArrayAccess
      *
      * @param bool|Closure $condition
      * @return $this
-     * @throws \FriendsOfHyperf\Http\Client\RequestException
+     * @throws RequestException
      */
     public function throwIf($condition)
     {
         return value($condition, $this) ? $this->throw(func_get_args()[1] ?? null) : $this;
+    }
+
+    /**
+     * Throw an exception if the response status code matches the given code.
+     *
+     * @param callable|int $statusCode
+     * @return $this
+     *
+     * @throws RequestException
+     */
+    public function throwIfStatus($statusCode)
+    {
+        if (is_callable($statusCode)
+            && $statusCode($this->status(), $this)) {
+            return $this->throw();
+        }
+
+        return $this->status() === $statusCode ? $this->throw() : $this;
+    }
+
+    /**
+     * Throw an exception unless the response status code matches the given code.
+     *
+     * @param callable|int $statusCode
+     * @return $this
+     *
+     * @throws RequestException
+     */
+    public function throwUnlessStatus($statusCode)
+    {
+        if (is_callable($statusCode)
+            && ! $statusCode($this->status(), $this)) {
+            return $this->throw();
+        }
+
+        return $this->status() === $statusCode ? $this : $this->throw();
+    }
+
+    /**
+     * Throw an exception if the response status code is a 4xx level code.
+     *
+     * @return $this
+     *
+     * @throws RequestException
+     */
+    public function throwIfClientError()
+    {
+        return $this->clientError() ? $this->throw() : $this;
+    }
+
+    /**
+     * Throw an exception if the response status code is a 5xx level code.
+     *
+     * @return $this
+     *
+     * @throws RequestException
+     */
+    public function throwIfServerError()
+    {
+        return $this->serverError() ? $this->throw() : $this;
     }
 
     /**

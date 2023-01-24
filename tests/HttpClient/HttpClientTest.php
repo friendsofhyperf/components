@@ -219,4 +219,181 @@ class HttpClientTest extends TestCase
         $this->assertSame(403, $response->status());
         $this->assertFalse($hitThrowCallback);
     }
+
+    public function testRequestExceptionIsThrownIfStatusCodeIsSatisfied()
+    {
+        $exception = null;
+
+        try {
+            Http::get('http://httpbin.org/status/400')->throwIfStatus(400);
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNotNull($exception);
+        $this->assertInstanceOf(RequestException::class, $exception);
+    }
+
+    public function testRequestExceptionIsThrownIfStatusCodeIsSatisfiedWithClosure()
+    {
+        $exception = null;
+
+        try {
+            Http::get('http://httpbin.org/status/400')->throwIfStatus(fn ($status) => $status === 400);
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNotNull($exception);
+        $this->assertInstanceOf(RequestException::class, $exception);
+    }
+
+    public function testRequestExceptionIsNotThrownIfStatusCodeIsNotSatisfied()
+    {
+        $exception = null;
+
+        try {
+            Http:// get('http://httpbin.org/status/500')->throwIfStatus(500);
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNull($exception);
+    }
+
+    public function testRequestExceptionIsThrownUnlessStatusCodeIsSatisfied()
+    {
+        $exception = null;
+
+        try {
+            Http:// get('http://httpbin.org/status/400')->throwUnlessStatus(500);
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNotNull($exception);
+        $this->assertInstanceOf(RequestException::class, $exception);
+
+        $exception = null;
+
+        try {
+            Http::get('http://httpbin.org/status/400')->throwUnlessStatus(fn ($status) => $status === 500);
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNotNull($exception);
+        $this->assertInstanceOf(RequestException::class, $exception);
+
+        $exception = null;
+
+        try {
+            Http::get('http://httpbin.org/status/408')->throwUnlessStatus(500);
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNotNull($exception);
+        $this->assertInstanceOf(RequestException::class, $exception);
+
+        $exception = null;
+
+        try {
+            Http::get('http://httpbin.org/status/500')->throwUnlessStatus(500);
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNull($exception);
+    }
+
+    public function testRequestExceptionIsThrownIfIsClientError()
+    {
+        $exception = null;
+
+        try {
+            Http::get('http://httpbin.org/status/400')->throwIfClientError();
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNotNull($exception);
+        $this->assertInstanceOf(RequestException::class, $exception);
+
+        $exception = null;
+
+        try {
+            Http::get('http://httpbin.org/status/408')->throwIfClientError();
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNotNull($exception);
+        $this->assertInstanceOf(RequestException::class, $exception);
+
+        $exception = null;
+
+        try {
+            Http::get('http://httpbin.org/status/500')->throwIfClientError();
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNull($exception);
+
+        $exception = null;
+
+        try {
+            Http::get('http://httpbin.org/status/504')->throwIfClientError();
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNull($exception);
+    }
+
+    public function testRequestExceptionIsThrownIfIsServerError()
+    {
+        $exception = null;
+
+        try {
+            Http::get('http://httpbin.org/status/400')->throwIfServerError();
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNull($exception);
+
+        $exception = null;
+
+        try {
+            Http::get('http://httpbin.org/status/408')->throwIfServerError();
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNull($exception);
+
+        $exception = null;
+
+        try {
+            Http::get('http://httpbin.org/status/500')->throwIfServerError();
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNotNull($exception);
+        $this->assertInstanceOf(RequestException::class, $exception);
+
+        $exception = null;
+
+        try {
+            Http::get('http://httpbin.org/status/504')->throwIfServerError();
+        } catch (RequestException $e) {
+            $exception = $e;
+        }
+
+        $this->assertNotNull($exception);
+        $this->assertInstanceOf(RequestException::class, $exception);
+    }
 }
