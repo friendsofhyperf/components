@@ -103,6 +103,11 @@ class ArrMacros
         };
     }
 
+    public static function sortDesc()
+    {
+        return fn ($array, $callback = null) => Collection::make($array)->sortByDesc($callback)->all();
+    }
+
     public function undot()
     {
         return function ($array) {
