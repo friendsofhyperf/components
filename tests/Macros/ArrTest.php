@@ -143,6 +143,32 @@ class ArrTest extends TestCase
         ], $sortedWithCallable);
     }
 
+    public function testSortDesc()
+    {
+        $unsorted = [
+            ['name' => 'Chair'],
+            ['name' => 'Desk'],
+        ];
+
+        $expected = [
+            ['name' => 'Desk'],
+            ['name' => 'Chair'],
+        ];
+
+        $sorted = array_values(Arr::sortDesc($unsorted));
+        $this->assertEquals($expected, $sorted);
+
+        // sort with closure
+        $sortedWithClosure = array_values(Arr::sortDesc($unsorted, function ($value) {
+            return $value['name'];
+        }));
+        $this->assertEquals($expected, $sortedWithClosure);
+
+        // sort with dot notation
+        $sortedWithDotNotation = array_values(Arr::sortDesc($unsorted, 'name'));
+        $this->assertEquals($expected, $sortedWithDotNotation);
+    }
+
     public function testUndot()
     {
         $array = Arr::undot([

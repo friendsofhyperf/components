@@ -80,6 +80,17 @@ class Arr
     }
 
     /**
+     * Sort the array in descending order using the given callback or "dot" notation.
+     *
+     * @param array $array
+     * @param null|array|callable|string $callback
+     * @return array
+     */
+    public static function sortDesc($array, $callback = null)
+    {
+    }
+
+    /**
      * Convert a flatten "dot" notation array into an expanded array.
      *
      * @param array|iterable $array
