@@ -266,7 +266,7 @@ class HttpClientTest extends TestCase
         $exception = null;
 
         try {
-            Http:// get('http://httpbin.org/status/400')->throwUnlessStatus(500);
+            Http::get('http://httpbin.org/status/400')->throwUnlessStatus(500);
         } catch (RequestException $e) {
             $exception = $e;
         }
