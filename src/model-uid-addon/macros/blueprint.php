@@ -12,32 +12,24 @@ use Hyperf\Database\Schema\Blueprint;
 use Hyperf\Database\Schema\ForeignIdColumnDefinition;
 
 if (! Blueprint::hasMacro('ulid')) {
-    Blueprint::macro('ulid', function ($column = 'ulid', $length = 26) {
-        return $this->char($column, $length);
-    });
+    Blueprint::macro('ulid', fn ($column = 'ulid', $length = 26) => $this->char($column, $length));
 }
 
 if (! Blueprint::hasMacro('foreignUlid')) {
-    Blueprint::macro('foreignUlid', function ($column, $length = 26) {
-        return $this->addColumnDefinition(new ForeignIdColumnDefinition($this, [
-            'type' => 'char',
-            'name' => $column,
-            'length' => $length,
-        ]));
-    });
+    Blueprint::macro('foreignUlid', fn ($column, $length = 26) => $this->addColumnDefinition(new ForeignIdColumnDefinition($this, [
+        'type' => 'char',
+        'name' => $column,
+        'length' => $length,
+    ])));
 }
 
 if (! Blueprint::hasMacro('uuid')) {
-    Blueprint::macro('uuid', function ($column = 'uuid') {
-        return $this->addColumn('uuid', $column);
-    });
+    Blueprint::macro('uuid', fn ($column = 'uuid') => $this->addColumn('uuid', $column));
 }
 
 if (! Blueprint::hasMacro('foreignUuid')) {
-    Blueprint::macro('foreignUuid', function ($column, $length = 26) {
-        return $this->addColumnDefinition(new ForeignIdColumnDefinition($this, [
-            'type' => 'uuid',
-            'name' => $column,
-        ]));
-    });
+    Blueprint::macro('foreignUuid', fn ($column) => $this->addColumnDefinition(new ForeignIdColumnDefinition($this, [
+        'type' => 'uuid',
+        'name' => $column,
+    ])));
 }

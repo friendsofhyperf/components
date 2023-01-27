@@ -13,13 +13,9 @@ use Ramsey\Uuid\Uuid;
 use Symfony\Component\Uid\Ulid;
 
 if (! Str::hasMacro('ulid')) {
-    Str::macro('ulid', function () {
-        return new Ulid();
-    });
+    Str::macro('ulid', fn () => new Ulid());
 }
 
 if (! Str::hasMacro('orderedUuid')) {
-    Str::macro('orderedUuid', function () {
-        return Uuid::uuid7();
-    });
+    Str::macro('orderedUuid', fn () => Uuid::uuid7());
 }
