@@ -39,7 +39,7 @@ class Blueprint
      * @param null|int $length
      * @return ColumnDefinition
      */
-    public function ulid($column = 'uuid', $length = 26)
+    public function ulid($column = 'ulid', $length = 26)
     {
     }
 
