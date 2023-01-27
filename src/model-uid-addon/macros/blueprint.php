@@ -28,7 +28,7 @@ if (! Blueprint::hasMacro('uuid')) {
 }
 
 if (! Blueprint::hasMacro('foreignUuid')) {
-    Blueprint::macro('foreignUuid', fn ($column, $length = 26) => $this->addColumnDefinition(new ForeignIdColumnDefinition($this, [
+    Blueprint::macro('foreignUuid', fn ($column) => $this->addColumnDefinition(new ForeignIdColumnDefinition($this, [
         'type' => 'uuid',
         'name' => $column,
     ])));
