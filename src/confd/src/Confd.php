@@ -24,8 +24,6 @@ class Confd
 
     private Timer $timer;
 
-    private EventDispatcherInterface $eventDispatcher;
-
     private int $interval;
 
     public function __construct(private ContainerInterface $container, private ConfigInterface $config)
@@ -34,7 +32,6 @@ class Confd
         $class = $this->config->get(sprintf('confd.drivers.%s.driver', $driver), Etcd::class);
         $this->driver = $container->get($class);
         $this->interval = (int) $this->config->get('confd.interval', 1);
-        $this->eventDispatcher = $this->container->get(EventDispatcherInterface::class);
         $this->timer = new Timer();
     }
 
@@ -47,7 +44,7 @@ class Confd
     {
         $this->timer->tick($this->interval, function () {
             if ($changes = $this->driver->getChanges()) {
-                $this->eventDispatcher->dispatch(new ConfigChanged($changes));
+                $this->container->get(EventDispatcherInterface::class)->dispatch(new ConfigChanged($changes));
             }
         });
     }
