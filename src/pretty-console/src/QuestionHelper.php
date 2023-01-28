@@ -26,11 +26,8 @@ class QuestionHelper extends SymfonyQuestionHelper
     protected function writePrompt(OutputInterface $output, Question $question)
     {
         $text = OutputFormatter::escapeTrailingBackslash($question->getQuestion());
-
         $text = $this->ensureEndsWithPunctuation($text);
-
         $text = "  <fg=default;options=bold>{$text}</></>";
-
         $default = $question->getDefault();
 
         if ($question->isMultiline()) {

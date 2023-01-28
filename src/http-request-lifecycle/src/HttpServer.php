@@ -59,6 +59,7 @@ class HttpServer extends \Hyperf\HttpServer\Server
             if (! isset($psr7Response)) {
                 return;
             }
+
             if (isset($psr7Request) && $psr7Request->getMethod() === 'HEAD') {
                 $this->responseEmitter->emit($psr7Response, $response, false);
             } else {
