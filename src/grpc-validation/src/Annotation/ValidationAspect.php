@@ -19,6 +19,7 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Hyperf\Validation\Request\FormRequest;
+use JsonException;
 use Psr\Container\ContainerInterface;
 
 class ValidationAspect extends AbstractAspect
@@ -56,7 +57,7 @@ class ValidationAspect extends AbstractAspect
     protected function getValidationRules(ProceedingJoinPoint $proceedingJoinPoint): array
     {
         $metadata = $proceedingJoinPoint->getAnnotationMetadata();
-        /** @var Validation $annotation */
+        /** @var null|Validation $annotation */
         $annotation = $metadata->method[Validation::class] ?? null;
 
         if (! $annotation) {
@@ -96,7 +97,7 @@ class ValidationAspect extends AbstractAspect
     {
         try {
             return json_decode($message->serializeToJsonString(), true, flags: JSON_THROW_ON_ERROR);
-        } catch (\JsonException) {
+        } catch (JsonException) {
             return null;
         }
     }
