@@ -15,10 +15,11 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\MainWorkerStart;
 use Hyperf\Server\Event\MainCoroutineServerStart;
+use Psr\Container\ContainerInterface;
 
 class WatchOnBootListener implements ListenerInterface
 {
-    public function __construct(private Confd $confd, private StdoutLoggerInterface $logger)
+    public function __construct(private ContainerInterface $container, private StdoutLoggerInterface $logger)
     {
     }
 
@@ -35,7 +36,7 @@ class WatchOnBootListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        $this->confd->watch();
+        $this->container->get(Confd::class)->watch();
         $this->logger->debug('[confd] Start watching.');
     }
 }
