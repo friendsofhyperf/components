@@ -160,7 +160,7 @@ class StrMacros
                 return false;
             }
 
-            if (\strlen($value) !== 26) {
+            if (strlen($value) !== 26) {
                 return false;
             }
 
@@ -199,9 +199,7 @@ class StrMacros
 
     public function orderedUuid()
     {
-        return function () {
-            return Uuid::uuid7();
-        };
+        return fn () => Uuid::uuid7();
     }
 
     public function reverse()

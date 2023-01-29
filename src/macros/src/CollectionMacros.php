@@ -32,9 +32,7 @@ class CollectionMacros
             $args = func_get_args();
             $placeholder = new stdClass();
             /** @phpstan-ignore-next-line */
-            $item = $this->when(func_num_args() > 0, function ($collection) use ($args) {
-                return $collection->where(...$args);
-            })->first(null, $placeholder);
+            $item = $this->when(func_num_args() > 0, fn ($collection) => $collection->where(...$args))->first(null, $placeholder);
 
             if ($item === $placeholder) {
                 throw new ItemNotFoundException();
