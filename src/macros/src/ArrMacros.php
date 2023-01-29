@@ -61,10 +61,7 @@ class ArrMacros
 
     public function prependKeysWith()
     {
-        return fn ($array, $prependWith) => Collection::make($array)
-            ->mapWithKeys(function ($item, $key) use ($prependWith) {
-                return [$prependWith . $key => $item];
-            })->all();
+        return fn ($array, $prependWith) => Collection::make($array)->mapWithKeys(fn ($item, $key) => [$prependWith . $key => $item])->all();
     }
 
     public function sortByMany()

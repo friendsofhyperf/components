@@ -97,7 +97,6 @@ class RequestMacros
     {
         return function ($keys) {
             $keys = is_array($keys) ? $keys : func_get_args();
-
             $results = $this->all();
 
             Arr::forget($results, $keys);
@@ -223,20 +222,14 @@ class RequestMacros
 
     public function missing()
     {
-        return function ($key) {
-            $keys = is_array($key) ? $key : func_get_args();
-
-            return ! $this->has($keys);
-        };
+        return fn ($key) => ! $this->has(is_array($key) ? $key : func_get_args());
     }
 
     public function only()
     {
         return function ($keys) {
             $results = [];
-
             $input = $this->all();
-
             $placeholder = new stdClass();
 
             foreach (is_array($keys) ? $keys : func_get_args() as $key) {
