@@ -180,9 +180,7 @@ class Cache implements CacheInterface
 
     public function pull($key, $default = null)
     {
-        return tap($this->get($key), function () use ($key) {
-            $this->forget($key);
-        });
+        return tap($this->get($key), fn () => $this->forget($key));
     }
 
     public function remember($key, $ttl, Closure $callback)

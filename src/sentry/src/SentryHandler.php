@@ -77,9 +77,7 @@ class SentryHandler extends AbstractProcessingHandler
         // filter records based on their level
         $records = array_filter(
             $records,
-            function ($record) use ($level) {
-                return $record['level'] >= $level;
-            }
+            fn ($record) => $record['level'] >= $level
         );
 
         if (! $records) {
