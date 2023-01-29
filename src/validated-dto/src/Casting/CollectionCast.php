@@ -24,8 +24,6 @@ class CollectionCast implements Castable
         $value = $arrayCast->cast($property, $value);
 
         return Collection::make($value)
-            ->when(! is_null($this->type), function ($collection) use ($property) {
-                return $collection->map(fn ($item) => $this->type->cast($property, $item));
-            });
+            ->when(! is_null($this->type), fn ($collection) => $collection->map(fn ($item) => $this->type->cast($property, $item)));
     }
 }
