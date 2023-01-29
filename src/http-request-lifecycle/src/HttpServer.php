@@ -49,9 +49,7 @@ class HttpServer extends \Hyperf\HttpServer\Server
             // Delegate the exception to exception handler.
             $psr7Response = $this->exceptionHandlerDispatcher->dispatch($throwable, $this->exceptionHandlers);
         } finally {
-            defer(function () use ($eventDispatcher, $psr7Request, $psr7Response) {
-                $eventDispatcher->dispatch(new RequestTerminated($psr7Request, $psr7Response));
-            });
+            defer(fn () => $eventDispatcher->dispatch(new RequestTerminated($psr7Request, $psr7Response)));
 
             $eventDispatcher->dispatch(new RequestHandled($psr7Request, $psr7Response));
 
