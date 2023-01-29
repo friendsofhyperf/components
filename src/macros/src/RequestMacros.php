@@ -133,13 +133,7 @@ class RequestMacros
 
     public function hasAny()
     {
-        return function ($keys) {
-            $keys = is_array($keys) ? $keys : func_get_args();
-
-            $input = $this->all();
-
-            return Arr::hasAny($input, $keys);
-        };
+        return fn ($keys) => Arr::hasAny($this->all(), is_array($keys) ? $keys : func_get_args());
     }
 
     public function host()
@@ -150,18 +144,7 @@ class RequestMacros
 
     public function httpHost()
     {
-        return function () {
-            if ($host = $this->getHeader('HOST')[0] ?? null) {
-                return $host;
-            }
-            if ($host = $this->getServerParams('SERVER_NAME')[0] ?? null) {
-                return $host;
-            }
-            if ($host = $this->getServerParams('SERVER_ADDR')[0] ?? null) {
-                return $host;
-            }
-            return '';
-        };
+        return fn () => $this->getHeader('HOST')[0] ?? $this->getServerParams('SERVER_NAME')[0] ?? $this->getServerParams('SERVER_ADDR')[0] ?? '';
     }
 
     public function integer()

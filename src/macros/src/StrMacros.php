@@ -75,15 +75,15 @@ class StrMacros
             $startStr = ltrim($matches[1]);
             $start = Str::of(mb_substr($matches[1], max(mb_strlen($startStr, 'UTF-8') - $radius, 0), $radius, 'UTF-8'))->ltrim();
             $start = $start->unless(
-                (function ($startWithRadius) use ($startStr) { return $startWithRadius->exactly($startStr); })($start),
-                function ($startWithRadius) use ($omission) { return $startWithRadius->prepend($omission); },
+                (fn ($startWithRadius) => $startWithRadius->exactly($startStr))($start),
+                fn ($startWithRadius) => $startWithRadius->prepend($omission),
             );
 
             $endStr = rtrim($matches[3]);
             $end = Str::of(mb_substr($endStr, 0, $radius, 'UTF-8'))->rtrim();
             $end = $end->unless(
-                (function ($endWithRadius) use ($endStr) { return $endWithRadius->exactly($endStr); })($end),
-                function ($endWithRadius) use ($omission) { return $endWithRadius->append($omission); },
+                (fn ($endWithRadius) => $endWithRadius->exactly($endStr))($end),
+                fn ($endWithRadius) => $endWithRadius->append($omission),
             );
 
             return $start->append($matches[2], $end)->__toString();
@@ -190,11 +190,7 @@ class StrMacros
 
     public function markdown()
     {
-        return function ($string, array $options = []) {
-            $converter = new GithubFlavoredMarkdownConverter($options);
-
-            return (string) $converter->convert($string);
-        };
+        return fn ($string, array $options = []) => (string) (new GithubFlavoredMarkdownConverter($options))->convert($string);
     }
 
     public function orderedUuid()
