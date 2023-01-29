@@ -73,9 +73,7 @@ abstract class Component
 
         include __DIR__ . "/../../resources/views/components/{$view}.php";
 
-        return tap(ob_get_contents(), function () {
-            ob_end_clean();
-        });
+        return tap(ob_get_contents(), fn () => ob_end_clean());
     }
 
     /**

@@ -28,11 +28,7 @@ class HttpLogger implements MiddlewareInterface
     {
         $response = $handler->handle($request);
 
-        Coroutine::defer(function () use ($request, $response) {
-            if ($this->logProfile->shouldLogRequest($request)) {
-                $this->logWriter->logRequest($request, $response);
-            }
-        });
+        Coroutine::defer(fn () => $this->logProfile->shouldLogRequest($request) && $this->logWriter->logRequest($request, $response));
 
         return $response;
     }

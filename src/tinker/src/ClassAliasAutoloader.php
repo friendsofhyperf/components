@@ -74,9 +74,7 @@ class ClassAliasAutoloader
     {
         return tap(
             new static($shell, $classMapPath, $includedAliases, $excludedAliases),
-            function ($loader) {
-                spl_autoload_register([$loader, 'aliasClass']);
-            }
+            fn ($loader) => spl_autoload_register([$loader, 'aliasClass'])
         );
     }
 

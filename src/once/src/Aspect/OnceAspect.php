@@ -41,8 +41,6 @@ class OnceAspect extends AbstractAspect
             return $cache->get($object, $hash);
         }
 
-        return tap($proceedingJoinPoint->process(), function ($result) use ($cache, $object, $hash) {
-            $cache->set($object, $hash, $result);
-        });
+        return tap($proceedingJoinPoint->process(), fn ($result) => $cache->set($object, $hash, $result));
     }
 }
