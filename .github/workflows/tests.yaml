@@ -32,7 +32,7 @@ jobs:
         run: |
             vendor/bin/php-cs-fixer fix src --dry-run
         if: matrix.php != '8.2'
-      - name: Run Cs Fixer on PHP ${{ matrix.php }}
+      - name: Run Cs Fixer on PHP with PHP_CS_FIXER_IGNORE_ENV
         run: |
             PHP_CS_FIXER_IGNORE_ENV=true php vendor/bin/php-cs-fixer fix src --dry-run
         if: matrix.php == '8.2'
