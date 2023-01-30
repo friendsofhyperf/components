@@ -82,6 +82,24 @@ class CollectionMacros
         return fn () => $this->count() === 1;
     }
 
+    public function intersectUsing()
+    {
+        /* @phpstan-ignore-next-line */
+        return fn ($items, callable $callback) => new static(array_uintersect($this->items, $this->getArrayableItems($items), $callback));
+    }
+
+    public function intersectAssoc()
+    {
+        /* @phpstan-ignore-next-line */
+        return fn ($items) => new static(array_intersect_assoc($this->items, $this->getArrayableItems($items)));
+    }
+
+    public function intersectAssocUsing()
+    {
+        /* @phpstan-ignore-next-line */
+        return fn ($items, callable $callback) => new static(array_intersect_uassoc($this->items, $this->getArrayableItems($items), $callback));
+    }
+
     public function pipeThrough()
     {
         return fn ($pipes) => static::make($pipes)->reduce(fn ($carry, $pipe) => $pipe($carry), $this);
