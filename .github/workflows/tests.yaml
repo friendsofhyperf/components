@@ -8,12 +8,12 @@ on:
 
 jobs:
   ci:
-    name: Test on PHP ${{ matrix.php-version }}
+    name: Test on PHP ${{ matrix.php }}
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
         os: [ubuntu-latest]
-        php-version: ['8.0', '8.1', '8.2']
+        php: ['8.0', '8.1', '8.2']
       max-parallel: 4
       fail-fast: false
     steps:
@@ -22,19 +22,18 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: ${{ matrix.php-version }}
+          php-version: ${{ matrix.php }}
           extensions: redis, pdo, pdo_mysql, bcmath, swoole
           tools: phpize
           coverage: none
       - name: Setup Packages
         run: composer update -o
       - name: Run Cs Fixer
-        run: |
-          if [ "${{ matrix.php-version }}" = "8.2" ]; then
-            PHP_CS_FIXER_IGNORE_ENV=true php vendor/bin/php-cs-fixer fix src --dry-run
-          else
-            vendor/bin/php-cs-fixer fix src --dry-run
-          fi
+        run: vendor/bin/php-cs-fixer fix src --dry-run
+        if: matrix.php != '8.2'
+      - name: Run Cs Fixer (IGNORE_ENV)
+        run: PHP_CS_FIXER_IGNORE_ENV=true php vendor/bin/php-cs-fixer fix src --dry-run
+        if: matrix.php == '8.2'
       - name: Run Analyse
         run: composer analyse src
       - name: Run Test Cases

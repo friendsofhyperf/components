@@ -10,6 +10,8 @@ declare(strict_types=1);
  */
 namespace Hyperf\Utils;
 
+use Hyperf\Contract\Arrayable;
+
 class Collection
 {
     /**
@@ -65,6 +67,38 @@ class Collection
      * @return bool
      */
     public function isSingle()
+    {
+    }
+
+    /**
+     * Intersect the collection with the given items, using the callback.
+     *
+     * @param Arrayable<array-key, TValue>|iterable<array-key, TValue> $items
+     * @param callable(TValue, TValue): int $callback
+     * @return static
+     */
+    public function intersectUsing($items, callable $callback)
+    {
+    }
+
+    /**
+     * Intersect the collection with the given items with additional index check.
+     *
+     * @param Arrayable<TKey, TValue>|iterable<TKey, TValue> $items
+     * @return static
+     */
+    public function intersectAssoc($items)
+    {
+    }
+
+    /**
+     * Intersect the collection with the given items with additional index check, using the callback.
+     *
+     * @param Arrayable<array-key, TValue>|iterable<array-key, TValue> $items
+     * @param callable(TValue, TValue): int $callback
+     * @return static
+     */
+    public function intersectAssocUsing($items, callable $callback)
     {
     }
 
