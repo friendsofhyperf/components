@@ -58,7 +58,7 @@ class Task
                 break;
             }
         } else {
-            self::execute($message);
+            go(static fn () => self::execute($message));
         }
     }
 
