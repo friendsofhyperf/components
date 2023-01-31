@@ -6,6 +6,9 @@ on:
   schedule:
     - cron: '0 2 * * *'
 
+env:
+  PHP_CS_FIXER_IGNORE_ENV: 1
+
 jobs:
   ci:
     name: Test on PHP ${{ matrix.php }}
@@ -30,10 +33,10 @@ jobs:
         run: composer update -o
       - name: Run Cs Fixer
         run: vendor/bin/php-cs-fixer fix src --dry-run
-        if: matrix.php != '8.2'
-      - name: Run Cs Fixer (IGNORE_ENV)
-        run: PHP_CS_FIXER_IGNORE_ENV=true php vendor/bin/php-cs-fixer fix src --dry-run
-        if: matrix.php == '8.2'
+        # if: matrix.php != '8.2'
+      # - name: Run Cs Fixer (IGNORE_ENV)
+      #   run: PHP_CS_FIXER_IGNORE_ENV=true php vendor/bin/php-cs-fixer fix src --dry-run
+      #   if: matrix.php == '8.2'
       - name: Run Analyse
         run: composer analyse src
       - name: Run Test Cases
