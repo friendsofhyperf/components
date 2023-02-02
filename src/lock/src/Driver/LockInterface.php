@@ -21,7 +21,7 @@ interface LockInterface
     /**
      * Attempt to acquire the lock for the given number of seconds.
      */
-    public function block(int $seconds, ?callable $callback = null): bool;
+    public function block(int $seconds, ?callable $callback = null);
 
     /**
      * Release the lock.
