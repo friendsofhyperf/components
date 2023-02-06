@@ -18,6 +18,7 @@ use LogicException;
 
 class Response implements ArrayAccess
 {
+    use Concerns\DeterminesStatusCode;
     use Macroable {
         __call as macroCall;
     }
@@ -196,16 +197,6 @@ class Response implements ArrayAccess
     }
 
     /**
-     * Determine if the response code was "OK".
-     *
-     * @return bool
-     */
-    public function ok()
-    {
-        return $this->status() === 200;
-    }
-
-    /**
      * Determine if the response was a redirect.
      *
      * @return bool
@@ -213,36 +204,6 @@ class Response implements ArrayAccess
     public function redirect()
     {
         return $this->status() >= 300 && $this->status() < 400;
-    }
-
-    /**
-     * Determine if the response was a 401 "Unauthorized" response.
-     *
-     * @return bool
-     */
-    public function unauthorized()
-    {
-        return $this->status() === 401;
-    }
-
-    /**
-     * Determine if the response was a 403 "Forbidden" response.
-     *
-     * @return bool
-     */
-    public function forbidden()
-    {
-        return $this->status() === 403;
-    }
-
-    /**
-     * Determine if the response was a 404 "Not Found" response.
-     *
-     * @return bool
-     */
-    public function notFound()
-    {
-        return $this->status() === 404;
     }
 
     /**
