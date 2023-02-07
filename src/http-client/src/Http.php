@@ -43,6 +43,7 @@ namespace FriendsOfHyperf\Http\Client;
  * @method static PendingRequest withMiddleware(callable $middleware)
  * @method static PendingRequest withOptions(array $options)
  * @method static PendingRequest withToken(string $token, string $type = 'Bearer')
+ * @method static PendingRequest withUrlParameters(array $parameters = [])
  * @method static PendingRequest withUserAgent(string $userAgent)
  * @method static PendingRequest withoutRedirecting()
  * @method static PendingRequest withoutVerifying()

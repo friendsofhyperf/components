@@ -19,6 +19,7 @@
         "composer/composer": "^1.0|^2.0",
         "google/protobuf": "^3.21",
         "google/recaptcha": "^1.2",
+        "guzzlehttp/uri-template": "^1.0",
         "hyperf/amqp": "~3.0.0",
         "hyperf/async-queue": "~3.0.0",
         "hyperf/cache": "~3.0.0",

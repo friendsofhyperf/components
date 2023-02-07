@@ -12,6 +12,7 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
+        "guzzlehttp/uri-template": "^1.0",
         "hyperf/guzzle": "~3.0.0",
         "hyperf/macroable": "~3.0.0",
         "symfony/var-dumper": "^5.3|^6.0"
