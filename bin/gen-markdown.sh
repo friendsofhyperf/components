@@ -43,12 +43,9 @@ function license() {
 
 echo "# friendsofhyperf/components"
 echo 
-printf "%s %s %s %s %s %s %s\n" \
+printf "%s %s %s %s\n" \
     "$(github_actions components)" \
     "$(latest_stable_version components)" \
-    "$(total_downloads components)" \
-    "$(latest_unstable_version components)" \
-    "$(monthly_downloads components)" \
     "$(license components)" \
     "$(php_version_require components)"
 echo
@@ -56,15 +53,13 @@ echo "The most popular components for Hyperf."
 echo 
 echo "## Repositories"
 echo
-echo "|Repository|Stable Version|Latest Unstable Version|Total Downloads|Monthly Downloads|Daily Downloads|"
-echo "|--|--|--|--|--|--|"
+echo "|Repository|Stable Version|Total Downloads|Monthly Downloads|"
+echo "|--|--|--|--|"
 
 for REPO in ${REPOS}; do
-    printf "|%s|%s|%s|%s|%s|%s|\n" \
+    printf "|%s|%s|%s|%s|\n" \
         "$(repository ${REPO})" \
         "$(latest_stable_version ${REPO})" \
-        "$(latest_unstable_version ${REPO})" \
         "$(total_downloads ${REPO})" \
-        "$(monthly_downloads ${REPO})" \
-        "$(daily_downloads ${REPO})"
+        "$(monthly_downloads ${REPO})"
 done
