@@ -14,4 +14,10 @@ composer require friendsofhyperf/http-client:^3.0
 
 ## Usage
 
+```php
+use FriendsOfHyperf\HttpClient\Http;
+
+$response = Http::get('https://example.com');
+```
+
 see https://laravel.com/docs/9.x/http-client
