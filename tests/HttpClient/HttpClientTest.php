@@ -396,4 +396,16 @@ class HttpClientTest extends TestCase
         $this->assertNotNull($exception);
         $this->assertInstanceOf(RequestException::class, $exception);
     }
+
+    public function testItCanSubstituteUrlParams(): void
+    {
+        $response = Http::withUrlParameters([
+            'endpoint' => 'https://laravel.com',
+            'page' => 'docs',
+            'version' => '9.x',
+            'thing' => 'validation',
+        ])->get('{+endpoint}/{page}/{version}/{thing}');
+
+        $this->assertEquals('https://laravel.com/docs/9.x/validation', (string) $response->transferStats->getEffectiveUri());
+    }
 }
