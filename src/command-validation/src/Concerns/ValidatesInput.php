@@ -55,7 +55,7 @@ trait ValidatesInput
         $container = ApplicationContext::getContainer();
 
         $validator = $container->get(ValidatorFactoryInterface::class)->make(
-            array_merge($this->arguments(), $this->options()),
+            array_merge($this->input->getArguments(), $this->input->getOptions()),
             $rules,
             $this->messages(),
             $this->attributes()

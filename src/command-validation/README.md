@@ -40,7 +40,14 @@ class FooCommand extends HyperfCommand
         $this->info(sprintf('Hello %s.', $this->input->getArgument('name')));
     }
 
-    public function messages(): array
+    public function rules(): array
+    {
+        return [
+            'name' => 'required',
+        ];
+    }
+
+    protected function messages(): array
     {
         return [
             'name.required' => 'The name is required.',

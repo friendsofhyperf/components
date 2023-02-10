@@ -18,7 +18,7 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 
 class ValidationAspect extends AbstractAspect
 {
-    public array $annotations = [
+    public array $classes = [
         Command::class . '::execute',
     ];
 
