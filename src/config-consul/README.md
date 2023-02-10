@@ -8,13 +8,13 @@ The consul config component for Hyperf.
 
 ## Installation
 
-~~~base
-composer require friendsofhyperf/config-consul
-~~~
+```shell
+composer require friendsofhyperf/config-consul:^3.0
+```
 
 ## Configure
 
-~~~php
+```php
 // config/autoload/config_center.php
 
 return [
@@ -34,4 +34,8 @@ return [
         ],
     ],
 ];
-~~~
+```
+
+## Sponsor
+
+If you like this project, Buy me a cup of coffee. [ [Alipay](https://hdj.me/images/alipay.jpg) | [WePay](https://hdj.me/images/wechat-pay.jpg) ]

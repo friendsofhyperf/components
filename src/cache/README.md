@@ -67,3 +67,7 @@ CacheManager::get('co')->remember($key, $ttl=60, function() {
 ## Methods
 
 Likes [Laravel-Cache](https://laravel.com/docs/8.x/cache)
+
+## Sponsor
+
+If you like this project, Buy me a cup of coffee. [ [Alipay](https://hdj.me/images/alipay.jpg) | [WePay](https://hdj.me/images/wechat-pay.jpg) ]

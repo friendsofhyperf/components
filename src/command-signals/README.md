@@ -73,3 +73,7 @@ $ hyperf foo
 Received signal 15, exiting...
 [1]    51936 terminated  php bin/hyperf.php foo
 ```
+
+## Sponsor
+
+If you like this project, Buy me a cup of coffee. [ [Alipay](https://hdj.me/images/alipay.jpg) | [WePay](https://hdj.me/images/wechat-pay.jpg) ]
