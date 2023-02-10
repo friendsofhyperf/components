@@ -64,3 +64,9 @@ for REPO in ${REPOS}; do
         "$(monthly_downloads ${REPO})" \
         "$(daily_downloads ${REPO})"
 done
+
+echo
+
+echo "## Sponsor"
+echo
+echo "If you like them, Buy me a cup of coffee. [ [Alipay](https://hdj.me/images/alipay.jpg) | [WePay](https://hdj.me/images/wechat-pay.jpg) ]"
