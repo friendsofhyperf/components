@@ -4,7 +4,7 @@
 [![Total Downloads](https://poser.pugx.org/friendsofhyperf/command-validation/d/total.png)](https://packagist.org/packages/friendsofhyperf/command-validation)
 [![GitHub license](https://img.shields.io/github/license/friendsofhyperf/command-validation)](https://github.com/friendsofhyperf/command-validation)
 
-The GRPC validation component for Hyperf.
+The command validation component for Hyperf.
 
 ## Installation
 
