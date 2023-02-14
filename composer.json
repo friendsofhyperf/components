@@ -59,6 +59,8 @@
         "hyperf/etcd": "~3.0.0",
         "hyperf/ide-helper": "~3.0.0",
         "hyperf/nacos": "~3.0.0",
+        "hyperf/paginator": "~3.0.0",
+        "hyperf/scout": "~3.0.0",
         "mockery/mockery": "^1.0",
         "phpstan/phpstan": "^1.0",
         "phpunit/phpunit": "^9.5",
