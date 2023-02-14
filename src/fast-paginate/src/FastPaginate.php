@@ -90,11 +90,8 @@ class FastPaginate
 
     protected function paginate(string $paginationMethod, Closure $paginatorOutput)
     {
-        return function ($perPage = null, $columns = ['*'], $pageName = 'page', $page = null) use (
-            $paginationMethod,
-            $paginatorOutput
-        ) {
-            /** @var \Hyperf\Database\Query\Builder $this */
+        return function ($perPage = null, $columns = ['*'], $pageName = 'page', $page = null) use ($paginationMethod, $paginatorOutput) {
+            /** @var \Hyperf\Database\Model\Builder $this */
             $base = $this->getQuery();
             // Havings and groups don't work well with this paradigm, because we are
             // counting on each row of the inner query to return a primary key
