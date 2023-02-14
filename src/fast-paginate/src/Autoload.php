@@ -11,8 +11,8 @@ declare(strict_types=1);
 use FriendsOfHyperf\FastPaginate\BuilderMixin;
 use FriendsOfHyperf\FastPaginate\RelationMixin;
 use FriendsOfHyperf\FastPaginate\ScoutMixin;
-use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Relations\Relation;
+use Hyperf\Database\Query\Builder;
 
 Builder::mixin(new BuilderMixin());
 Relation::mixin(new RelationMixin());
