@@ -20,7 +20,7 @@
     },
     "autoload": {
         "files": [
-            "src/autoload.php"
+            "src/Functions.php"
         ],
         "psr-4": {
             "FriendsOfHyperf\\Macros\\": "src/"

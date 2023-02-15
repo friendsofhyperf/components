@@ -14,6 +14,10 @@ class ConfigProvider
 {
     public function __invoke(): array
     {
-        return [];
+        return [
+            'listeners' => [
+                Listener\RegisterMixinListener::class,
+            ],
+        ];
     }
 }
