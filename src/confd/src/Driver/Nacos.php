@@ -10,7 +10,6 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Confd\Driver;
 
-use Hyperf\ConfigNacos\Client;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Nacos\Application;
