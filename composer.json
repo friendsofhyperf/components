@@ -106,7 +106,7 @@
             "src/exception-event/src/functions.php",
             "src/helpers/src/functions.php",
             "src/lock/src/functions.php",
-            "src/macros/src/autoload.php",
+            "src/macros/src/Functions.php",
             "src/model-uid-addon/macros/blueprint.php",
             "src/model-uid-addon/macros/str.php"
         ],

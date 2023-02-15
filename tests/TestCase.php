@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Tests;
 
+use FriendsOfHyperf\Macros\Listener\RegisterMixinListener;
 use Mockery;
 
 /**
@@ -21,6 +22,11 @@ class TestCase extends \PHPUnit\Framework\TestCase
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
+    }
+
+    protected function setUp(): void
+    {
+        (new RegisterMixinListener())->process((object) []);
     }
 
     protected function tearDown(): void
