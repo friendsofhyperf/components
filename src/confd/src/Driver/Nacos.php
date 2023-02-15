@@ -15,20 +15,21 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Nacos\Application;
 use Hyperf\Nacos\Config;
+use Hyperf\Utils\Codec\Json;
+use Hyperf\Utils\Codec\Xml;
 use Psr\Container\ContainerInterface;
 
 class Nacos implements DriverInterface
 {
-    private Application $nacosClient;
-
-    private Client $client;
+    private Application $client;
 
     private array $origins = [];
 
     public function __construct(private ContainerInterface $container, private ConfigInterface $config, private StdoutLoggerInterface $logger)
     {
-        $this->nacosClient = make(Application::class, ['config' => new Config($this->getNacosClientConfig())]);
-        $this->client = $container->get(Client::class);
+        $this->client = make(Application::class, [
+            'config' => $this->pendingNacosConfig(),
+        ]);
     }
 
     /**
@@ -83,31 +84,26 @@ class Nacos implements DriverInterface
         });
     }
 
-    /**
-     * pull fresh config from nacos server.
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Hyperf\Utils\Exception\InvalidArgumentException
-     */
-    private function pullConfig(array $listenerConfig): array|string
+    protected function decode(string $body, ?string $type = null): mixed
     {
-        $dataId = $listenerConfig['data_id'];
-        $group = $listenerConfig['group'];
-        $tenant = $listenerConfig['tenant'] ?? null;
-        $type = $listenerConfig['type'] ?? null;
-
-        $response = $this->nacosClient->config->get($dataId, $group, $tenant);
-        if ($response->getStatusCode() !== 200) {
-            $this->logger->error(sprintf('The config of %s.%s.%s read failed from Nacos.', $group, $tenant, $dataId));
-            return [];
+        $type = strtolower((string) $type);
+        switch ($type) {
+            case 'json':
+                return Json::decode($body);
+            case 'yml':
+            case 'yaml':
+                return yaml_parse($body);
+            case 'xml':
+                return Xml::toArray($body);
+            default:
+                return $body;
         }
-
-        return $this->client->decode((string) $response->getBody(), $type);
     }
 
     /**
      * get nacos client config from confd setting.
      */
-    private function getNacosClientConfig(): array
+    protected function pendingNacosConfig(): Config
     {
         $clientConfig = $this->config->get('confd.drivers.nacos.client', []);
 
@@ -117,11 +113,32 @@ class Nacos implements DriverInterface
             $baseUri = sprintf('http://%s:%d', $clientConfig['host'] ?? '127.0.0.1', $clientConfig['port'] ?? 8848);
         }
 
-        return [
+        return new Config([
             'base_uri' => $baseUri,
             'username' => $clientConfig['username'] ?? null,
             'password' => $clientConfig['password'] ?? null,
             'guzzle_config' => $clientConfig['guzzle']['config'] ?? null,
-        ];
+        ]);
+    }
+
+    /**
+     * pull fresh config from nacos server.
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \Hyperf\Utils\Exception\InvalidArgumentException
+     */
+    protected function pullConfig(array $listenerConfig): array|string
+    {
+        $dataId = $listenerConfig['data_id'];
+        $group = $listenerConfig['group'];
+        $tenant = $listenerConfig['tenant'] ?? null;
+        $type = $listenerConfig['type'] ?? null;
+        $response = $this->client->config->get($dataId, $group, $tenant);
+
+        if ($response->getStatusCode() !== 200) {
+            $this->logger->error(sprintf('The config of %s.%s.%s read failed from Nacos.', $group, $tenant, $dataId));
+            return [];
+        }
+
+        return $this->decode((string) $response->getBody(), $type);
     }
 }
