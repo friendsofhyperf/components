@@ -54,7 +54,7 @@ User::first()->posts()->fastPaginate();
 
 ## A Favor
 
-If this helps you, please [tweet at me](https://twitter.com/aarondfrancis) with before and after times! I'd love to know :D
+If this helps you, please [start me](https://github.com/friendsofhyperf/fast-paginate) with before and after times! I'd love to know :D
 
 Some community results so far:
 * [30 seconds --> 250ms](https://twitter.com/mdavis1982/status/1482429071288066054)
