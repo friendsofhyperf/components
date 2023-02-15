@@ -53,7 +53,7 @@ class Etcd implements DriverInterface
             ->filter(fn ($kv) => in_array($kv['key'], $watches))
             ->mapWithKeys(fn ($kv) => [$kv['key'] => $kv['value']])
             ->toArray();
-        $changes = array_diff($values, $this->origins);
+        $changes = array_diff_assoc($values, $this->origins);
 
         if (! $this->origins) { // Return [] when first run.
             return tap([], fn () => $this->origins = $values);

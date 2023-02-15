@@ -15,11 +15,14 @@ The confd component for Hyperf.
 
 ```shell
 composer require friendsofhyperf/confd
+composer require friendsofhyperf/etcd
+# or
+composer require friendsofhyperf/nacos
 ```
 
 ## Command
 
-Fetch configs from etcd/consul and upgrade `.env`.
+Fetch configs from etcd/nacos and upgrade `.env`.
 
 ```shell
 php bin/hyperf.php confd:env
@@ -62,6 +65,7 @@ class ConfigChangedListener implements ListenerInterface
 ## Support
 
 - [x] Etcd
+- [x] Nacos
 - [ ] Consul
 
 ## Sponsor

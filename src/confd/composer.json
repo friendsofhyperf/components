@@ -11,7 +11,6 @@
         "hyperf/command": "~3.0.0",
         "hyperf/config-center": "~3.0.0",
         "hyperf/di": "~3.0.0",
-        "hyperf/etcd": "~3.0.0",
         "hyperf/event": "~3.0.0",
         "hyperf/framework": "~3.0.0",
         "hyperf/utils": "~3.0.0"
@@ -29,5 +28,9 @@
         "hyperf": {
             "config": "FriendsOfHyperf\\Confd\\ConfigProvider"
         }
+    },
+    "suggest": {
+        "hyperf/nacos": "For nacos driver.",
+        "hyperf/etcd": "For etcd driver."
     }
 }
