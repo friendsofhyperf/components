@@ -1,6 +1,6 @@
 # Fast Paginate for Hyperf
 
-> Fork from https://github.com/hammerstone/fast-paginate
+> Fork from https://github.com/hammerstonedev/fast-paginate
 
 ## About
 
