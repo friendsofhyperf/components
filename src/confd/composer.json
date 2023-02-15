@@ -30,7 +30,7 @@
         }
     },
     "suggest": {
-        "hyperf/nacos": "For nacos config center.",
-        "hyperf/etcd": "For etcd config center."
+        "hyperf/nacos": "For nacos driver.",
+        "hyperf/etcd": "For etcd driver."
     }
 }
