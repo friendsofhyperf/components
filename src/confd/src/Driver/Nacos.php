@@ -26,7 +26,7 @@ class Nacos implements DriverInterface
 
     public function __construct(private ContainerInterface $container, private ConfigInterface $config, private StdoutLoggerInterface $logger)
     {
-        $this->client = make(Application::class, [
+        $this->client = make(NacosClient::class, [
             'config' => $this->pendingNacosConfig(),
         ]);
     }
