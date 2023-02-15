@@ -21,7 +21,7 @@ class FastPaginate
 {
     public function fastPaginate()
     {
-        return $this->paginate('paginate', fn (array $items, $paginator) => $this->paginator(
+        return $this->paginate('paginate', fn ($items, $paginator) => $this->paginator(
             $items,
             $paginator->total(),
             $paginator->perPage(),
@@ -32,7 +32,7 @@ class FastPaginate
 
     public function simpleFastPaginate()
     {
-        return $this->paginate('simplePaginate', fn (array $items, $paginator) => $this->simplePaginator(
+        return $this->paginate('simplePaginate', fn ($items, $paginator) => $this->simplePaginator(
             $items,
             $paginator->perPage(),
             $paginator->currentPage(),
@@ -135,7 +135,7 @@ class FastPaginate
             // The $paginator is full of records that are primary keys only. Here,
             // we create a new paginator with all of the *stats* from the index-
             // only paginator, but the *items* from the outer query.
-            $items = $this->simplePaginate($perPage, $columns, $pageName, 1)->items();
+            $items = $this->simplePaginate($perPage, $columns, $pageName, 1)->getCollection();
 
             return Closure::fromCallable($paginatorOutput)->call($this, $items, $paginator);
         };
