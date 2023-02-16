@@ -25,9 +25,6 @@ return [
                 '/mysql/host' => 'DB_HOST',
                 '/mysql/port' => 'DB_PORT',
             ],
-            'watches' => [
-                'DB_HOST',
-            ],
         ],
         'nacos' => [
             'driver' => \FriendsOfHyperf\Confd\Driver\Nacos::class,
@@ -54,13 +51,14 @@ return [
                 'mysql.charset' => 'DB_CHARSET',
                 'redis.port' => 'REDIS_PORT',
             ],
-            'watches' => [
-                'DB_HOST',
-            ],
         ],
     ],
 
     'env_path' => BASE_PATH . '/.env',
 
     'interval' => 1,
+
+    'watches' => [
+        'DB_HOST',
+    ],
 ];

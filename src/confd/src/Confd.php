@@ -13,8 +13,10 @@ namespace FriendsOfHyperf\Confd;
 use FriendsOfHyperf\Confd\Driver\DriverInterface;
 use FriendsOfHyperf\Confd\Driver\Etcd;
 use FriendsOfHyperf\Confd\Event\ConfigChanged;
+use FriendsOfHyperf\Confd\Event\WatchDispatched;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coordinator\Timer;
+use Hyperf\Utils\Arr;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
@@ -44,14 +46,25 @@ class Confd
 
     public function watch(): void
     {
-        $this->timer->tick($this->interval, function () {
+        $watches = (array) $this->config->get('confd.watches', []);
+
+        $this->timer->tick($this->interval, function () use ($watches) {
             $current = $this->driver->fetch();
 
             if ($this->previous && $changes = array_diff_assoc($current, $this->previous)) {
-                $this->container->get(EventDispatcherInterface::class)->dispatch(new ConfigChanged($current, $this->previous, $changes));
+                $this->event(new ConfigChanged($current, $this->previous, $changes));
+
+                if (Arr::has($changes, $watches)) {
+                    $this->event(new WatchDispatched($changes));
+                }
             }
 
             $this->previous = $current;
         });
+    }
+
+    protected function event(object $event): void
+    {
+        $this->container->get(EventDispatcherInterface::class)->dispatch($event);
     }
 }
