@@ -8,9 +8,11 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Confd\Driver;
+namespace FriendsOfHyperf\Confd\Event;
 
-interface DriverInterface
+class WatchDispatched
 {
-    public function fetch(): array;
+    public function __construct(public array $changes)
+    {
+    }
 }
