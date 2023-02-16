@@ -17,9 +17,6 @@ class ConfigProvider
         return [
             'annotations' => [
                 'scan' => [
-                    // 'paths' => [
-                    //     __DIR__,
-                    // ],
                     'class_map' => [
                         'Hyperf\Database\Schema\ForeignIdColumnDefinition' => __DIR__ . '/../class_map/Hyperf/Database/Schema/ForeignIdColumnDefinition.php',
                         'Hyperf\Database\Model\Concerns\HasUlids' => __DIR__ . '/../class_map/Hyperf/Database/Model/Concerns/HasUlids.php',
@@ -29,6 +26,7 @@ class ConfigProvider
             ],
             'listeners' => [
                 Listener\CreatingListener::class,
+                Listener\RegisterMixinListener::class,
             ],
         ];
     }

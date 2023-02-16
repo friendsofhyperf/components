@@ -18,11 +18,7 @@
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\ModelUidAddon\\": "src/"
-        },
-        "files": [
-            "macros/blueprint.php",
-            "macros/str.php"
-        ]
+        }
     },
     "config": {
         "sort-packages": true
