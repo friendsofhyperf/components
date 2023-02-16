@@ -26,7 +26,7 @@ class Nacos implements DriverInterface
 
     public function __construct(private ContainerInterface $container, private ConfigInterface $config, private StdoutLoggerInterface $logger)
     {
-        $this->client = make(Application::class, [
+        $this->client = make(NacosClient::class, [
             'config' => $this->pendingNacosConfig(),
         ]);
     }
@@ -42,8 +42,8 @@ class Nacos implements DriverInterface
         $config = [];
         foreach ($listener as $key => $item) {
             $config = collect($this->pullConfig($item))
-                ->filter(fn ($item, $k) => isset($mapping[$key][$k]))
-                ->mapWithKeys(fn ($item, $k) => [$mapping[$key][$k] => is_array($item) ? implode(',', $item) : $item])
+                ->filter(fn ($item, $k) => isset($mapping[sprintf('%s.%s', $key, $k)]))
+                ->mapWithKeys(fn ($item, $k) => [$mapping[sprintf('%s.%s', $key, $k)] => is_array($item) ? implode(',', $item) : $item])
                 ->merge($config)
                 ->toArray();
         }
@@ -85,18 +85,12 @@ class Nacos implements DriverInterface
 
     protected function decode(string $body, ?string $type = null): mixed
     {
-        $type = strtolower((string) $type);
-        switch ($type) {
-            case 'json':
-                return Json::decode($body);
-            case 'yml':
-            case 'yaml':
-                return yaml_parse($body);
-            case 'xml':
-                return Xml::toArray($body);
-            default:
-                return $body;
-        }
+        return match (strtolower((string) $type)) {
+            'json' => Json::decode($body),
+            'yml', 'yaml' => yaml_parse($body),
+            'xml' => Xml::toArray($body),
+            default => $body
+        };
     }
 
     /**

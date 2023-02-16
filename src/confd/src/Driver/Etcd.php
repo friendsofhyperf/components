@@ -23,7 +23,7 @@ class Etcd implements DriverInterface
 
     public function __construct(private ContainerInterface $container, private ConfigInterface $config, private StdoutLoggerInterface $logger)
     {
-        $this->client = make(KV::class, [
+        $this->client = make(EtcdClient::class, [
             'uri' => (string) $this->config->get('confd.drivers.etcd.client.uri', ''),
             'version' => (string) $this->config->get('confd.drivers.etcd.client.version', 'v3beta'),
             'options' => [

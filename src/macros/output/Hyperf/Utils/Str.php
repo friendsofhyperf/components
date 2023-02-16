@@ -143,6 +143,20 @@ class Str
     }
 
     /**
+     * Generate a random, secure password.
+     *
+     * @param int $length
+     * @param bool $letters
+     * @param bool $numbers
+     * @param bool $symbols
+     * @param bool $spaces
+     * @return string
+     */
+    public static function password($length = 32, $letters = true, $numbers = true, $symbols = true, $spaces = false)
+    {
+    }
+
+    /**
      * Reverse the given string.
      *
      * @return string

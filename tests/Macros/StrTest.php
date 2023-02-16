@@ -215,6 +215,12 @@ class StrTest extends TestCase
         $this->assertSame("<a href=\"https://laravel.com\"><strong>Laravel</strong></a>\n", Str::inlineMarkdown('[**Laravel**](https://laravel.com)'));
     }
 
+    public function testPassword()
+    {
+        $this->assertSame(32, strlen(Str::password()));
+        $this->assertSame(10, strlen(Str::password(10)));
+    }
+
     public function testReverse()
     {
         $this->assertSame('FooBar', Str::reverse('raBooF'));

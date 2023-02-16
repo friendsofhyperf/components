@@ -9,7 +9,6 @@
     }],
     "require": {
         "hyperf/command": "~3.0.0",
-        "hyperf/config-center": "~3.0.0",
         "hyperf/di": "~3.0.0",
         "hyperf/event": "~3.0.0",
         "hyperf/framework": "~3.0.0",

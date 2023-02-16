@@ -8,14 +8,10 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-use Hyperf\Utils\Str;
-use Ramsey\Uuid\Uuid;
-use Symfony\Component\Uid\Ulid;
+namespace FriendsOfHyperf\Confd\Driver;
 
-if (! Str::hasMacro('ulid')) {
-    Str::macro('ulid', fn () => new Ulid());
-}
+use Hyperf\Etcd\V3\KV;
 
-if (! Str::hasMacro('orderedUuid')) {
-    Str::macro('orderedUuid', fn () => Uuid::uuid7());
+class EtcdClient extends KV
+{
 }
