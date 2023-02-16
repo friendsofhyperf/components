@@ -14,6 +14,7 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Nacos\Application;
 use Hyperf\Nacos\Config;
+use Hyperf\Utils\Arr;
 use Hyperf\Utils\Codec\Json;
 use Hyperf\Utils\Codec\Xml;
 use Psr\Container\ContainerInterface;
@@ -22,12 +23,12 @@ class Nacos implements DriverInterface
 {
     private Application $client;
 
-    private array $origins = [];
-
     public function __construct(private ContainerInterface $container, private ConfigInterface $config, private StdoutLoggerInterface $logger)
     {
+        $config = $this->config->get('confd.drivers.nacos.client', []);
+
         $this->client = make(NacosClient::class, [
-            'config' => $this->pendingNacosConfig(),
+            'config' => $this->buildNacosConfig($config),
         ]);
     }
 
@@ -36,51 +37,58 @@ class Nacos implements DriverInterface
      */
     public function fetch(): array
     {
-        $listener = $this->config->get('confd.drivers.nacos.listener_config', []);
+        $listeners = $this->config->get('confd.drivers.nacos.listener_config', []);
         $mapping = (array) $this->config->get('confd.drivers.nacos.mapping', []);
 
-        $config = [];
-        foreach ($listener as $key => $item) {
-            $config = collect($this->pullConfig($item))
-                ->filter(fn ($item, $k) => isset($mapping[sprintf('%s.%s', $key, $k)]))
-                ->mapWithKeys(fn ($item, $k) => [$mapping[sprintf('%s.%s', $key, $k)] => is_array($item) ? implode(',', $item) : $item])
-                ->merge($config)
-                ->toArray();
-        }
-        return $config;
+        $values = collect($listeners)
+            ->map(fn ($options) => $this->pull($options))
+            ->toArray();
+
+        return collect($mapping)
+            ->filter(fn ($envKey, $configKey) => Arr::has($values, $configKey))
+            ->mapWithKeys(fn ($envKey, $configKey) => [$envKey => Arr::get($values, $configKey)])
+            ->toArray();
     }
 
     /**
-     * check watch config is chaged.
+     * get nacos client config from confd setting.
+     */
+    protected function buildNacosConfig(array $config): Config
+    {
+        if (! empty($config['uri'])) {
+            $baseUri = $config['uri'];
+        } else {
+            $baseUri = sprintf('http://%s:%d', $config['host'] ?? '127.0.0.1', $config['port'] ?? 8848);
+        }
+
+        return new Config([
+            'base_uri' => $baseUri,
+            'username' => $config['username'] ?? null,
+            'password' => $config['password'] ?? null,
+            'guzzle_config' => $config['guzzle']['config'] ?? null,
+        ]);
+    }
+
+    /**
+     * pull fresh config from nacos server.
      * @throws \GuzzleHttp\Exception\GuzzleException
      * @throws \Hyperf\Utils\Exception\InvalidArgumentException
      */
-    public function getChanges(): array
+    protected function pull(array $options = []): array|string
     {
-        $watches = (array) $this->config->get('confd.drivers.nacos.watches', []);
+        $dataId = $options['data_id'];
+        $group = $options['group'];
+        $tenant = $options['tenant'] ?? null;
+        $type = $options['type'] ?? null;
 
-        $config = [];
-        foreach ($watches as $item) {
-            $configKey = sprintf('%s.%s.%s', $item['group'], $item['tenant'] ?? 'default', $item['data_id']);
-            $config = collect($this->pullConfig($item))
-                ->mapWithKeys(fn ($value) => [$configKey => is_array($value) ? implode(',', $value) : $value])
-                ->merge($config)
-                ->toArray();
+        $response = $this->client->config->get($dataId, $group, $tenant);
+
+        if ($response->getStatusCode() !== 200) {
+            $this->logger->error(sprintf('The config of %s.%s.%s read failed from Nacos.', $group, $tenant, $dataId));
+            return [];
         }
 
-        if (! $this->origins) { // Return [] when first run.
-            return tap([], fn () => $this->origins = $config);
-        }
-
-        $changes = array_diff_assoc($config, $this->origins);
-
-        return tap($changes, function ($changes) use ($config) {
-            if ($changes) {
-                $this->logger->debug('[confd#nacos] Config changed.');
-            }
-
-            $this->origins = $config;
-        });
+        return $this->decode((string) $response->getBody(), $type);
     }
 
     protected function decode(string $body, ?string $type = null): mixed
@@ -91,47 +99,5 @@ class Nacos implements DriverInterface
             'xml' => Xml::toArray($body),
             default => $body
         };
-    }
-
-    /**
-     * get nacos client config from confd setting.
-     */
-    protected function pendingNacosConfig(): Config
-    {
-        $clientConfig = $this->config->get('confd.drivers.nacos.client', []);
-
-        if (! empty($clientConfig['uri'])) {
-            $baseUri = $clientConfig['uri'];
-        } else {
-            $baseUri = sprintf('http://%s:%d', $clientConfig['host'] ?? '127.0.0.1', $clientConfig['port'] ?? 8848);
-        }
-
-        return new Config([
-            'base_uri' => $baseUri,
-            'username' => $clientConfig['username'] ?? null,
-            'password' => $clientConfig['password'] ?? null,
-            'guzzle_config' => $clientConfig['guzzle']['config'] ?? null,
-        ]);
-    }
-
-    /**
-     * pull fresh config from nacos server.
-     * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Hyperf\Utils\Exception\InvalidArgumentException
-     */
-    protected function pullConfig(array $listenerConfig): array|string
-    {
-        $dataId = $listenerConfig['data_id'];
-        $group = $listenerConfig['group'];
-        $tenant = $listenerConfig['tenant'] ?? null;
-        $type = $listenerConfig['type'] ?? null;
-        $response = $this->client->config->get($dataId, $group, $tenant);
-
-        if ($response->getStatusCode() !== 200) {
-            $this->logger->error(sprintf('The config of %s.%s.%s read failed from Nacos.', $group, $tenant, $dataId));
-            return [];
-        }
-
-        return $this->decode((string) $response->getBody(), $type);
     }
 }

@@ -22,11 +22,11 @@ return [
             'namespace' => '/test',
             'mapping' => [
                 // etcd key => env key
-                '/test/foo' => 'TEST_FOO',
-                '/test/bar' => 'TEST_BAR',
+                '/mysql/host' => 'DB_HOST',
+                '/mysql/port' => 'DB_PORT',
             ],
             'watches' => [
-                '/test/foo',
+                'DB_HOST',
             ],
         ],
         'nacos' => [
@@ -49,16 +49,13 @@ return [
                 ],
             ],
             'mapping' => [
-                'mysql' => ['charset' => 'DB_CHARSET'],
-                'redis' => ['port' => 'REDIS_PORT'],
+                // nacos path => env key
+                'mysql.host' => 'DB_HOST',
+                'mysql.charset' => 'DB_CHARSET',
+                'redis.port' => 'REDIS_PORT',
             ],
             'watches' => [
-                'test' => [
-                    'tenant' => 'framework',
-                    'data_id' => 'test',
-                    'group' => 'DEFAULT_GROUP',
-                    'type' => 'text',
-                ],
+                'DB_HOST',
             ],
         ],
     ],

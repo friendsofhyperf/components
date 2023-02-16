@@ -26,6 +26,8 @@ class Confd
 
     private int $interval;
 
+    private array $previous = [];
+
     public function __construct(private ContainerInterface $container, private ConfigInterface $config)
     {
         $driver = $this->config->get('confd.default', 'etcd');
@@ -43,9 +45,13 @@ class Confd
     public function watch(): void
     {
         $this->timer->tick($this->interval, function () {
-            if ($changes = $this->driver->getChanges()) {
-                $this->container->get(EventDispatcherInterface::class)->dispatch(new ConfigChanged($changes));
+            $current = $this->driver->fetch();
+
+            if ($this->previous && $changes = array_diff_assoc($current, $this->previous)) {
+                $this->container->get(EventDispatcherInterface::class)->dispatch(new ConfigChanged($current, $this->previous, $changes));
             }
+
+            $this->previous = $current;
         });
     }
 }
