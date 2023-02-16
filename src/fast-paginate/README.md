@@ -63,3 +63,7 @@ Some community results so far:
 * [1.1 seconds --> 0.1 seconds](https://twitter.com/max_eckel/status/1483852300414337032)
 * [20 seconds --> 2 seconds](https://twitter.com/1ralphmorris/status/1484242437618941957)
 * [2 seconds --> .2 seconds](https://twitter.com/julioelpoeta/status/1549524738980077568)
+
+## Sponsor
+
+If you like this project, Buy me a cup of coffee. [ [Alipay](https://hdj.me/images/alipay.jpg) | [WePay](https://hdj.me/images/wechat-pay.jpg) ]
