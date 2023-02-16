@@ -8,14 +8,20 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-use Hyperf\Utils\Str;
+namespace FriendsOfHyperf\ModelUidAddon;
+
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Uid\Ulid;
 
-if (! Str::hasMacro('ulid')) {
-    Str::macro('ulid', fn () => new Ulid());
-}
+class StrMixin
+{
+    public function ulid()
+    {
+        return fn () => new Ulid();
+    }
 
-if (! Str::hasMacro('orderedUuid')) {
-    Str::macro('orderedUuid', fn () => Uuid::uuid7());
+    public function orderedUuid()
+    {
+        return fn () => Uuid::uuid7();
+    }
 }
