@@ -55,7 +55,7 @@ class Confd
                 $this->event(new ConfigChanged($current, $this->previous, $changes));
 
                 if (Arr::has($changes, $watches)) {
-                    $this->event(new WatchDispatched($changes));
+                    $this->event(new WatchDispatched((array) Arr::get($changes, $watches)));
                 }
             }
 
