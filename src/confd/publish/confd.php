@@ -28,6 +28,7 @@ return [
         ],
         'nacos' => [
             'driver' => \FriendsOfHyperf\Confd\Driver\Nacos::class,
+            'formatter' => \FriendsOfHyperf\Confd\Formatter\DefaultFormatter::class,
             'client' => [
                 'host' => '127.0.0.1',
                 'port' => 8848,
