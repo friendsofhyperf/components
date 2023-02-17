@@ -39,7 +39,6 @@ class EnvCommand extends HyperfCommand
 
         $writer = $this->makeWriter($path);
         $confd = $this->container->get(Confd::class);
-
         $values = $confd->fetch();
 
         $writer->setValues($values)->write();

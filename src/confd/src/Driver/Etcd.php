@@ -13,13 +13,12 @@ namespace FriendsOfHyperf\Confd\Driver;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Etcd\V3\KV;
+use Hyperf\Utils\Arr;
 use Psr\Container\ContainerInterface;
 
 class Etcd implements DriverInterface
 {
     private KV $client;
-
-    private array $origins = [];
 
     public function __construct(private ContainerInterface $container, private ConfigInterface $config, private StdoutLoggerInterface $logger)
     {
@@ -36,35 +35,14 @@ class Etcd implements DriverInterface
     {
         $namespace = (string) $this->config->get('confd.drivers.etcd.namespace', '');
         $mapping = (array) $this->config->get('confd.drivers.etcd.mapping', []);
-        $kvs = (array) ($this->client->fetchByPrefix($namespace)['kvs'] ?? []);
-
-        return collect($kvs)
+        $kvs = collect((array) ($this->client->fetchByPrefix($namespace)['kvs'] ?? []))
             ->filter(fn ($kv) => isset($mapping[$kv['key']]))
-            ->mapWithKeys(fn ($kv) => [$mapping[$kv['key']] => $kv['value']])
-            ->toArray();
-    }
-
-    public function getChanges(): array
-    {
-        $namespace = (string) $this->config->get('confd.drivers.etcd.namespace', '');
-        $watches = (array) $this->config->get('confd.drivers.etcd.watches', []);
-        $kvs = (array) ($this->client->fetchByPrefix($namespace)['kvs'] ?? []);
-        $values = collect($kvs)
-            ->filter(fn ($kv) => in_array($kv['key'], $watches))
             ->mapWithKeys(fn ($kv) => [$kv['key'] => $kv['value']])
             ->toArray();
-        $changes = array_diff_assoc($values, $this->origins);
 
-        if (! $this->origins) { // Return [] when first run.
-            return tap([], fn () => $this->origins = $values);
-        }
-
-        return tap($changes, function ($changes) use ($values) {
-            if ($changes) {
-                $this->logger->debug('[confd#etcd] Config changed.');
-            }
-
-            $this->origins = $values;
-        });
+        return collect($mapping)
+            ->filter(fn ($envKey, $configKey) => Arr::has($kvs, $configKey))
+            ->mapWithKeys(fn ($envKey, $configKey) => [$envKey => Arr::get($kvs, $configKey)])
+            ->toArray();
     }
 }
