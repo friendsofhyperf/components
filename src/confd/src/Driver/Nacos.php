@@ -39,7 +39,7 @@ class Nacos implements DriverInterface
     {
         $listeners = $this->config->get('confd.drivers.nacos.listener_config', []);
         $mapping = (array) $this->config->get('confd.drivers.nacos.mapping', []);
-        $formatter = $this->config->get('confd.drivers.nacos.formatter', '');
+        $formatter = $this->container->get($this->config->get('confd.drivers.nacos.formatter', ''));
 
         $values = collect($listeners)
             ->map(fn ($options) => $this->pull($options))
@@ -47,7 +47,7 @@ class Nacos implements DriverInterface
 
         return collect($mapping)
             ->filter(fn ($envKey, $configKey) => Arr::has($values, $configKey))
-            ->mapWithKeys(fn ($envKey, $configKey) => [$envKey => Arr::get($values, $configKey)])
+            ->mapWithKeys(fn ($envKey, $configKey) => [$envKey => $formatter->formate(Arr::get($values, $configKey))])
             ->toArray();
     }
 
