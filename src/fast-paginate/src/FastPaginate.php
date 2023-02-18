@@ -21,6 +21,7 @@ class FastPaginate
 {
     public function fastPaginate()
     {
+        /* @phpstan-ignore-next-line */
         return $this->paginate('paginate', fn ($items, $paginator) => $this->paginator(
             $items,
             $paginator->total(),
@@ -32,6 +33,7 @@ class FastPaginate
 
     public function simpleFastPaginate()
     {
+        /* @phpstan-ignore-next-line */
         return $this->paginate('simplePaginate', fn ($items, $paginator) => $this->simplePaginator(
             $items,
             $paginator->perPage(),
@@ -127,8 +129,10 @@ class FastPaginate
             $ids = $paginator->getCollection()->map->getRawOriginal($key)->toArray();
 
             if (in_array($model->getKeyType(), ['int', 'integer'])) {
+                /* @phpstan-ignore-next-line */
                 $this->query->whereIntegerInRaw("{$table}.{$key}", $ids);
             } else {
+                /* @phpstan-ignore-next-line */
                 $this->query->whereIn("{$table}.{$key}", $ids);
             }
 
