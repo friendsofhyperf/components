@@ -10,7 +10,6 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Tests;
 
-use FriendsOfHyperf\Macros\Listener\RegisterMixinListener;
 use Mockery;
 
 /**
@@ -26,7 +25,9 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
     protected function setUp(): void
     {
-        (new RegisterMixinListener())->process((object) []);
+        $bootApplication = (object) [];
+        (new \FriendsOfHyperf\Macros\Listener\RegisterMixinListener())->process($bootApplication);
+        (new \FriendsOfHyperf\FastPaginate\Listener\RegisterMixinListener())->process($bootApplication);
     }
 
     protected function tearDown(): void
