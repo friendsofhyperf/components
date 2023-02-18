@@ -11,13 +11,14 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Tests\FastPaginate;
 
 use Hyperf\Database\Model\Builder;
+use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Database\Model\Relations\Relation;
 
 /**
  * @internal
  * @coversNothing
  */
-class BuilderTest extends \FriendsOfHyperf\Tests\TestCase
+class BuilderTest extends TestCase
 {
     public function testBuilder()
     {
