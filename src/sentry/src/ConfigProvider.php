@@ -35,9 +35,11 @@ class ConfigProvider
                 Listener\InitHubListener::class,
                 Listener\DbQueryListener::class,
             ],
-            'scan' => [
-                'class_map' => [
-                    \Sentry\SentrySdk::class => __DIR__ . '/../class_map/SentrySdk.php',
+            'annotations' => [
+                'scan' => [
+                    'class_map' => [
+                        \Sentry\SentrySdk::class => __DIR__ . '/../class_map/SentrySdk.php',
+                    ],
                 ],
             ],
             'publish' => [
