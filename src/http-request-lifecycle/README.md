@@ -18,7 +18,7 @@ composer require friendsofhyperf/http-request-lifecycle
 <?php
 namespace App\Listener;
 
-use FriendsOfHyperf\HttpRequestLifeCycle\Events\RequestHandled;
+use FriendsOfHyperf\Http\RequestLifeCycle\Events\RequestHandled;
 use Hyperf\Event\Annotation\Listener;
 use Hyperf\Event\Contract\ListenerInterface;
 

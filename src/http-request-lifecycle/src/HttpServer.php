@@ -8,11 +8,11 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\HttpRequestLifeCycle;
+namespace FriendsOfHyperf\Http\RequestLifeCycle;
 
-use FriendsOfHyperf\HttpRequestLifeCycle\Events\RequestHandled;
-use FriendsOfHyperf\HttpRequestLifeCycle\Events\RequestReceived;
-use FriendsOfHyperf\HttpRequestLifeCycle\Events\RequestTerminated;
+use FriendsOfHyperf\Http\RequestLifeCycle\Events\RequestHandled;
+use FriendsOfHyperf\Http\RequestLifeCycle\Events\RequestReceived;
+use FriendsOfHyperf\Http\RequestLifeCycle\Events\RequestTerminated;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\HttpServer\MiddlewareManager;

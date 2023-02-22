@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\AccessLog\Listener;
 
 use FriendsOfHyperf\AccessLog\Handler;
-use FriendsOfHyperf\HttpRequestLifeCycle\Events\RequestTerminated;
+use FriendsOfHyperf\Http\RequestLifeCycle\Events\RequestTerminated;
 use Hyperf\Event\Contract\ListenerInterface;
 
 class RequestTerminatedListener implements ListenerInterface

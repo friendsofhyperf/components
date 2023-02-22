@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\HttpRequestLifeCycle;
+namespace FriendsOfHyperf\Http\RequestLifeCycle;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\GrpcServer\CoreMiddleware;
