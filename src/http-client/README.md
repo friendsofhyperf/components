@@ -15,7 +15,7 @@ composer require friendsofhyperf/http-client:^3.0
 ## Usage
 
 ```php
-use FriendsOfHyperf\HttpClient\Http;
+use FriendsOfHyperf\Http\Client\Http;
 
 $response = Http::get('https://example.com');
 ```
