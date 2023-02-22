@@ -20,12 +20,12 @@
     },
     "autoload": {
         "psr-4": {
-            "FriendsOfHyperf\\HttpLogger\\": "src"
+            "FriendsOfHyperf\\Http\\Logger\\": "src"
         }
     },
     "extra": {
         "hyperf": {
-            "config": "FriendsOfHyperf\\HttpLogger\\ConfigProvider"
+            "config": "FriendsOfHyperf\\Http\\Logger\\ConfigProvider"
         }
     },
     "suggest": {

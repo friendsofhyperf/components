@@ -25,7 +25,7 @@ php bin/hyperf.php vendor:publish friendsofhyperf/http-logger
 ```php
 return [
     'http' => [
-        \FriendsOfHyperf\HttpLogger\Middleware\HttpLogger::class,
+        \FriendsOfHyperf\Http\Logger\Middleware\HttpLogger::class,
     ],
 ];
 ```

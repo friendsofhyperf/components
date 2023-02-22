@@ -8,12 +8,12 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\HttpLogger;
+namespace FriendsOfHyperf\Http\Logger;
 
-use FriendsOfHyperf\HttpLogger\Profile\LogProfile;
-use FriendsOfHyperf\HttpLogger\Profile\ProfileFactory;
-use FriendsOfHyperf\HttpLogger\Writer\LogWriter;
-use FriendsOfHyperf\HttpLogger\Writer\WriterFactory;
+use FriendsOfHyperf\Http\Logger\Profile\LogProfile;
+use FriendsOfHyperf\Http\Logger\Profile\ProfileFactory;
+use FriendsOfHyperf\Http\Logger\Writer\LogWriter;
+use FriendsOfHyperf\Http\Logger\Writer\WriterFactory;
 
 class ConfigProvider
 {
