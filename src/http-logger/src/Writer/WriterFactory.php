@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\HttpLogger\Writer;
+namespace FriendsOfHyperf\Http\Logger\Writer;
 
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;

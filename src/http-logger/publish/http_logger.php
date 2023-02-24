@@ -9,9 +9,9 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 return [
-    'log_profile' => \FriendsOfHyperf\HttpLogger\Profile\DefaultLogProfile::class,
+    'log_profile' => \FriendsOfHyperf\Http\Logger\Profile\DefaultLogProfile::class,
 
-    'log_writer' => \FriendsOfHyperf\HttpLogger\Writer\DefaultLogWriter::class,
+    'log_writer' => \FriendsOfHyperf\Http\Logger\Writer\DefaultLogWriter::class,
 
     'log_group' => env('HTTP_LOGGER_LOG_GROUP', 'default'),
 

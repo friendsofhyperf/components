@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\HttpRequestLifeCycle\Events;
+namespace FriendsOfHyperf\Http\RequestLifeCycle\Events;
 
 class RequestReceived extends AbstractEvent
 {

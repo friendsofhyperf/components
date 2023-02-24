@@ -19,12 +19,12 @@
     },
     "autoload": {
         "psr-4": {
-            "FriendsOfHyperf\\HttpRequestLifeCycle\\": "src"
+            "FriendsOfHyperf\\Http\\RequestLifeCycle\\": "src"
         }
     },
     "extra": {
         "hyperf": {
-            "config": "FriendsOfHyperf\\HttpRequestLifeCycle\\ConfigProvider"
+            "config": "FriendsOfHyperf\\Http\\RequestLifeCycle\\ConfigProvider"
         }
     },
     "config": {

@@ -8,10 +8,10 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\HttpLogger\Middleware;
+namespace FriendsOfHyperf\Http\Logger\Middleware;
 
-use FriendsOfHyperf\HttpLogger\Profile\LogProfile;
-use FriendsOfHyperf\HttpLogger\Writer\LogWriter;
+use FriendsOfHyperf\Http\Logger\Profile\LogProfile;
+use FriendsOfHyperf\Http\Logger\Writer\LogWriter;
 use Hyperf\Utils\Coroutine;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
