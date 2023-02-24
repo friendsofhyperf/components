@@ -10,10 +10,13 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Sentry\Listener;
 
+use FriendsOfHyperf\Http\RequestLifeCycle\Events\RequestReceived;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\AfterWorkerStart;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
+use Sentry\ClientBuilderInterface;
+use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
 
 class InitHubListener implements ListenerInterface
@@ -27,14 +30,20 @@ class InitHubListener implements ListenerInterface
         return [
             AfterWorkerStart::class,
             MainCoroutineServerStart::class,
+            RequestReceived::class,
         ];
     }
 
     /**
-     * @param AfterWorkerStart|MainCoroutineServerStart $event
+     * @param AfterWorkerStart|MainCoroutineServerStart|RequestReceived $event
      */
     public function process(object $event): void
     {
-        $this->container->get(HubInterface::class);
+        SentrySdk::setCurrentHub(
+            tap(
+                make(HubInterface::class),
+                fn ($hub) => $hub->bindClient($this->container->get(ClientBuilderInterface::class)->getClient())
+            )
+        );
     }
 }
