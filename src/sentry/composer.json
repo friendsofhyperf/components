@@ -14,6 +14,7 @@
         }
     },
     "require": {
+        "friendsofhyperf/http-request-lifecycle": "^3.0.19",
         "hyperf/command": "~3.0.0",
         "hyperf/database": "~3.0.0",
         "hyperf/di": "~3.0.0",

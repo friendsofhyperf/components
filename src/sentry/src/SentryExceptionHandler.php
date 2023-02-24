@@ -14,7 +14,7 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Sentry\State\HubInterface;
+use Sentry\SentrySdk;
 use Throwable;
 
 class SentryExceptionHandler extends ExceptionHandler
@@ -30,7 +30,8 @@ class SentryExceptionHandler extends ExceptionHandler
     {
         defer(function () use ($throwable) {
             try {
-                $hub = $this->container->get(HubInterface::class);
+                $hub = SentrySdk::getCurrentHub();
+
                 $hub->captureException($throwable);
 
                 $hub->getClient()->flush();
