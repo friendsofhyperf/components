@@ -15,9 +15,12 @@ use FriendsOfHyperf\Http\RequestLifeCycle\Events\RequestReceived;
 use FriendsOfHyperf\Http\RequestLifeCycle\Events\RequestTerminated;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
+use Hyperf\HttpMessage\Server\Response as Psr7Response;
 use Hyperf\HttpServer\MiddlewareManager;
 use Hyperf\HttpServer\Router\Dispatched;
+use Hyperf\Utils\SafeCaller;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
 class HttpServer extends \Hyperf\HttpServer\Server
@@ -47,14 +50,18 @@ class HttpServer extends \Hyperf\HttpServer\Server
             $psr7Response = $this->dispatcher->dispatch($psr7Request, $middlewares, $this->coreMiddleware);
         } catch (Throwable $throwable) {
             // Delegate the exception to exception handler.
-            $psr7Response = $this->exceptionHandlerDispatcher->dispatch($throwable, $this->exceptionHandlers);
+            $psr7Response = $this->container->get(SafeCaller::class)->call(function () use ($throwable) {
+                return $this->exceptionHandlerDispatcher->dispatch($throwable, $this->exceptionHandlers);
+            }, static function () {
+                return (new Psr7Response())->withStatus(400);
+            });
         } finally {
             defer(fn () => $eventDispatcher->dispatch(new RequestTerminated($psr7Request, $psr7Response)));
 
             $eventDispatcher->dispatch(new RequestHandled($psr7Request, $psr7Response));
 
             // Send the Response to client.
-            if (! isset($psr7Response)) {
+            if (! isset($psr7Response) || ! $psr7Response instanceof ResponseInterface) {
                 return;
             }
 
