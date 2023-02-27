@@ -28,30 +28,32 @@ class HubFactory
         $userIntegrations = $this->resolveIntegrationsFromUserConfig($container);
 
         $options->setIntegrations(static function (array $integrations) use ($options, $userIntegrations) {
-            $allIntegrations = array_merge($integrations, $userIntegrations);
+            if ($options->hasDefaultIntegrations()) {
+                // Remove the default error and fatal exception listeners to let Laravel handle those
+                // itself. These event are still bubbling up through the documented changes in the users
+                // `ExceptionHandler` of their application or through the log channel integration to Sentry
+                $integrations = array_filter($integrations, static function (SdkIntegration\IntegrationInterface $integration): bool {
+                    if ($integration instanceof SdkIntegration\ErrorListenerIntegration) {
+                        return false;
+                    }
 
-            if (! $options->hasDefaultIntegrations()) {
-                return $allIntegrations;
+                    if ($integration instanceof SdkIntegration\ExceptionListenerIntegration) {
+                        return false;
+                    }
+
+                    if ($integration instanceof SdkIntegration\FatalErrorListenerIntegration) {
+                        return false;
+                    }
+
+                    return true;
+                });
             }
 
-            // Remove the default error and fatal exception listeners to let Laravel handle those
-            // itself. These event are still bubbling up through the documented changes in the users
-            // `ExceptionHandler` of their application or through the log channel integration to Sentry
-            return array_filter($allIntegrations, static function (SdkIntegration\IntegrationInterface $integration): bool {
-                if ($integration instanceof SdkIntegration\ErrorListenerIntegration) {
-                    return false;
-                }
+            $integrations[] = make(SdkIntegration\RequestIntegration::class, [
+                'requestFetcher' => make(SdkIntegration\RequestFetcher::class),
+            ]);
 
-                if ($integration instanceof SdkIntegration\ExceptionListenerIntegration) {
-                    return false;
-                }
-
-                if ($integration instanceof SdkIntegration\FatalErrorListenerIntegration) {
-                    return false;
-                }
-
-                return true;
-            });
+            return array_merge($integrations, $userIntegrations);
         });
 
         return tap(new Hub($clientBuilder->getClient()), fn ($hub) => SentrySdk::setCurrentHub($hub));
@@ -59,7 +61,9 @@ class HubFactory
 
     protected function resolveIntegrationsFromUserConfig(ContainerInterface $container): array
     {
-        $integrations = [new Integration()];
+        $integrations = [
+            new Integration(),
+        ];
         $config = $container->get(ConfigInterface::class)->get('sentry', []);
         $userIntegrations = $config['integrations'] ?? [];
 
