@@ -45,6 +45,10 @@ class HubFactory
                         return false;
                     }
 
+                    if ($integration instanceof SdkIntegration\RequestIntegration) {
+                        return false;
+                    }
+
                     return true;
                 });
             }
