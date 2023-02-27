@@ -19,7 +19,7 @@ use stdClass;
 /**
  * @mixin Collection
  */
-class CollectionMacros
+class CollectionMixin
 {
     public function doesntContain()
     {

@@ -10,11 +10,11 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Macros\Listener;
 
-use FriendsOfHyperf\Macros\ArrMacros;
-use FriendsOfHyperf\Macros\CollectionMacros;
-use FriendsOfHyperf\Macros\RequestMacros;
-use FriendsOfHyperf\Macros\StringableMacros;
-use FriendsOfHyperf\Macros\StrMacros;
+use FriendsOfHyperf\Macros\ArrMixin;
+use FriendsOfHyperf\Macros\CollectionMixin;
+use FriendsOfHyperf\Macros\RequestMixin;
+use FriendsOfHyperf\Macros\StringableMixin;
+use FriendsOfHyperf\Macros\StrMixin;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Hyperf\HttpServer\Request;
@@ -37,10 +37,10 @@ class RegisterMixinListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        Arr::mixin(new ArrMacros());
-        Collection::mixin(new CollectionMacros());
-        Request::mixin(new RequestMacros());
-        Str::mixin(new StrMacros());
-        Stringable::mixin(new StringableMacros());
+        Arr::mixin(new ArrMixin());
+        Collection::mixin(new CollectionMixin());
+        Request::mixin(new RequestMixin());
+        Str::mixin(new StrMixin());
+        Stringable::mixin(new StringableMixin());
     }
 }

@@ -60,15 +60,6 @@ class Stringable
     }
 
     /**
-     * Determine if a given string is a valid UUID.
-     *
-     * @return bool
-     */
-    public function isUuid()
-    {
-    }
-
-    /**
      * Make a string's first character lowercase.
      *
      * @return static
@@ -272,6 +263,17 @@ class Stringable
      * @return static
      */
     public function whenIsAscii($callback, $default = null)
+    {
+    }
+
+    /**
+     * Execute the given callback if the string is a valid ULID.
+     *
+     * @param callable $callback
+     * @param null|callable $default
+     * @return static
+     */
+    public function whenIsUlid($callback, $default = null)
     {
     }
 

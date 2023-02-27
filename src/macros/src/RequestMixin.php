@@ -20,7 +20,7 @@ use stdClass;
 /**
  * @mixin Request
  */
-class RequestMacros
+class RequestMixin
 {
     public function allFiles()
     {

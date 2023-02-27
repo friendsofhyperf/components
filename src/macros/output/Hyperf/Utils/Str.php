@@ -84,26 +84,6 @@ class Str
     }
 
     /**
-     * Determine if a given string is a valid ULID.
-     *
-     * @param string $value
-     * @return bool
-     */
-    public static function isUlid($value)
-    {
-    }
-
-    /**
-     * Determine if a given string is a valid UUID.
-     *
-     * @param string $value
-     * @return bool
-     */
-    public static function isUuid($value)
-    {
-    }
-
-    /**
      * Make a string's first character lowercase.
      *
      * @param string $string
@@ -130,15 +110,6 @@ class Str
      * @return string
      */
     public static function inlineMarkdown($string, array $options = [])
-    {
-    }
-
-    /**
-     * Generate a time-ordered UUID (version 7).
-     *
-     * @return \Ramsey\Uuid\UuidInterface
-     */
-    public static function orderedUuid()
     {
     }
 
@@ -231,24 +202,6 @@ class Str
      * @return array
      */
     public static function ucsplit($string)
-    {
-    }
-
-    /**
-     * Generate a ULID.
-     *
-     * @return \Symfony\Component\Uid\Ulid
-     */
-    public static function ulid()
-    {
-    }
-
-    /**
-     * Generate a UUID (version 4).
-     *
-     * @return \Ramsey\Uuid\UuidInterface
-     */
-    public static function uuid()
     {
     }
 

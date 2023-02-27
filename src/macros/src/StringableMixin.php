@@ -17,7 +17,7 @@ use Hyperf\Utils\Stringable;
 /**
  * @mixin Stringable
  */
-class StringableMacros
+class StringableMixin
 {
     public function betweenFirst()
     {
@@ -59,18 +59,6 @@ class StringableMacros
     {
         /* @phpstan-ignore-next-line */
         return fn () => Str::isJson($this->value);
-    }
-
-    public function isUlid()
-    {
-        /* @phpstan-ignore-next-line */
-        return fn () => Str::isUlid($this->value);
-    }
-
-    public function isUuid()
-    {
-        /* @phpstan-ignore-next-line */
-        return fn () => Str::isUuid($this->value);
     }
 
     public function lcfirst()
