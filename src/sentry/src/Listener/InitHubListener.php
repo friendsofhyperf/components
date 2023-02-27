@@ -15,7 +15,6 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\AfterWorkerStart;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
-use Sentry\ClientBuilderInterface;
 use Sentry\State\HubInterface;
 
 class InitHubListener implements ListenerInterface
@@ -38,8 +37,6 @@ class InitHubListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        make(HubInterface::class, [
-            'client' => $this->container->get(ClientBuilderInterface::class)->getClient(),
-        ]);
+        make(HubInterface::class);
     }
 }
