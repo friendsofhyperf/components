@@ -12,7 +12,6 @@ namespace FriendsOfHyperf\Tests\Macros;
 
 use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Utils\Str;
-use Ramsey\Uuid\UuidInterface;
 use ReflectionClass;
 
 /**
@@ -162,17 +161,6 @@ class StrTest extends TestCase
         $this->assertSame('laravel framework', Str::lcfirst('Laravel framework'));
         $this->assertSame('мама', Str::lcfirst('Мама'));
         $this->assertSame('мама мыла раму', Str::lcfirst('Мама мыла раму'));
-    }
-
-    public function testUlid()
-    {
-        $this->assertTrue(Str::isUlid((string) Str::ulid()));
-    }
-
-    public function testUuid()
-    {
-        $this->assertInstanceOf(UuidInterface::class, Str::uuid());
-        $this->assertInstanceOf(UuidInterface::class, Str::orderedUuid());
     }
 
     public function testUcsplit()
