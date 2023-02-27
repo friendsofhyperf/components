@@ -10,13 +10,13 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Sentry\Factory;
 
+use FriendsOfHyperf\Sentry\Integration\RequestFetcher;
 use FriendsOfHyperf\Sentry\Version;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Server\ServerManager;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
-use Sentry\Integration\RequestFetcher;
 use Sentry\Integration\RequestIntegration;
 
 class ClientBuilderFactory
