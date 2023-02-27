@@ -45,6 +45,9 @@ class HubFactory
                         return false;
                     }
 
+                    // We also remove the default request integration so it can be readded
+                    // after with a Laravel specific request fetcher. This way we can resolve
+                    // the request from Laravel instead of constructing it from the global state
                     if ($integration instanceof SdkIntegration\RequestIntegration) {
                         return false;
                     }
