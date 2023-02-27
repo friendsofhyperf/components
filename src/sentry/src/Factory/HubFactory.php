@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Factory;
 
 use FriendsOfHyperf\Sentry\Integration;
+use FriendsOfHyperf\Sentry\Integration\RequestFetcher;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
@@ -24,36 +25,43 @@ class HubFactory
     public function __invoke(ContainerInterface $container)
     {
         $clientBuilder = $container->get(ClientBuilderInterface::class);
-
         $options = $clientBuilder->getOptions();
-
         $userIntegrations = $this->resolveIntegrationsFromUserConfig($container);
 
-        $options->setIntegrations(static function (array $integrations) use ($options, $userIntegrations) {
-            $allIntegrations = array_merge($integrations, $userIntegrations);
+        $options->setIntegrations(static function (array $integrations) use ($options, $userIntegrations, $container) {
+            if ($options->hasDefaultIntegrations()) {
+                // Remove the default error and fatal exception listeners to let Laravel handle those
+                // itself. These event are still bubbling up through the documented changes in the users
+                // `ExceptionHandler` of their application or through the log channel integration to Sentry
+                $integrations = array_filter($integrations, static function (SdkIntegration\IntegrationInterface $integration): bool {
+                    if ($integration instanceof SdkIntegration\ErrorListenerIntegration) {
+                        return false;
+                    }
 
-            if (! $options->hasDefaultIntegrations()) {
-                return $allIntegrations;
+                    if ($integration instanceof SdkIntegration\ExceptionListenerIntegration) {
+                        return false;
+                    }
+
+                    if ($integration instanceof SdkIntegration\FatalErrorListenerIntegration) {
+                        return false;
+                    }
+
+                    // We also remove the default request integration so it can be readded
+                    // after with a Laravel specific request fetcher. This way we can resolve
+                    // the request from Laravel instead of constructing it from the global state
+                    if ($integration instanceof SdkIntegration\RequestIntegration) {
+                        return false;
+                    }
+
+                    return true;
+                });
             }
 
-            // Remove the default error and fatal exception listeners to let Laravel handle those
-            // itself. These event are still bubbling up through the documented changes in the users
-            // `ExceptionHandler` of their application or through the log channel integration to Sentry
-            return array_filter($allIntegrations, static function (SdkIntegration\IntegrationInterface $integration): bool {
-                if ($integration instanceof SdkIntegration\ErrorListenerIntegration) {
-                    return false;
-                }
+            $integrations[] = new SdkIntegration\RequestIntegration(
+                $container->get(RequestFetcher::class)
+            );
 
-                if ($integration instanceof SdkIntegration\ExceptionListenerIntegration) {
-                    return false;
-                }
-
-                if ($integration instanceof SdkIntegration\FatalErrorListenerIntegration) {
-                    return false;
-                }
-
-                return true;
-            });
+            return array_merge($integrations, $userIntegrations);
         });
 
         return tap(new Hub($clientBuilder->getClient()), fn ($hub) => SentrySdk::setCurrentHub($hub));
@@ -61,10 +69,10 @@ class HubFactory
 
     protected function resolveIntegrationsFromUserConfig(ContainerInterface $container): array
     {
-        $integrations = [new Integration()];
-
+        $integrations = [
+            new Integration(),
+        ];
         $config = $container->get(ConfigInterface::class)->get('sentry', []);
-
         $userIntegrations = $config['integrations'] ?? [];
 
         foreach ($userIntegrations as $userIntegration) {

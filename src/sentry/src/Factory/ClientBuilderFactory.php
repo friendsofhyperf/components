@@ -13,39 +13,32 @@ namespace FriendsOfHyperf\Sentry\Factory;
 use FriendsOfHyperf\Sentry\Version;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Logger\LoggerFactory;
-use Hyperf\Server\ServerManager;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
-use Sentry\Integration\RequestFetcher;
-use Sentry\Integration\RequestIntegration;
 
 class ClientBuilderFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $config = $container->get(ConfigInterface::class)->get('sentry', []);
+        $usrConfig = $container->get(ConfigInterface::class)->get('sentry', []);
 
         unset(
-            $config['breadcrumbs'],
-            $config['integrations'],
+            $usrConfig['breadcrumbs'],
+            $usrConfig['integrations'],
         );
-
-        $fetcher = null;
-
-        if (class_exists('Hyperf\Server\ServerManager') && ServerManager::list()) {
-            $fetcher = $container->get(RequestFetcher::class);
-        }
 
         $options = array_merge(
             [
                 'prefixes' => [BASE_PATH],
                 'in_app_exclude' => [BASE_PATH . '/vendor'],
-                'integrations' => [
-                    new RequestIntegration($fetcher),
-                ],
             ],
-            $config
+            $usrConfig
         );
+
+        // When we get no environment from the (user) configuration we default to the Laravel environment
+        if (empty($options['environment'])) {
+            $options['environment'] = env('APP_ENV', 'production');
+        }
 
         return tap(ClientBuilder::create($options), function (ClientBuilder $clientBuilder) use ($container) {
             $clientBuilder->setSdkIdentifier(Version::SDK_IDENTIFIER);

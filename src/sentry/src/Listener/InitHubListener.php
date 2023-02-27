@@ -16,7 +16,6 @@ use Hyperf\Framework\Event\AfterWorkerStart;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilderInterface;
-use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
 
 class InitHubListener implements ListenerInterface
@@ -39,11 +38,8 @@ class InitHubListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        SentrySdk::setCurrentHub(
-            tap(
-                make(HubInterface::class),
-                fn ($hub) => $hub->bindClient($this->container->get(ClientBuilderInterface::class)->getClient())
-            )
-        );
+        make(HubInterface::class, [
+            'client' => $this->container->get(ClientBuilderInterface::class)->getClient(),
+        ]);
     }
 }
