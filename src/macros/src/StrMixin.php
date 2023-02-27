@@ -19,15 +19,12 @@ use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\Extension\InlinesOnly\InlinesOnlyExtension;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\MarkdownConverter;
-use Ramsey\Uuid\Uuid;
-use Ramsey\Uuid\Uuid as RamseyUuid;
-use Symfony\Component\Uid\Ulid as SymfonyUlid;
 use voku\helper\ASCII;
 
 /**
  * @mixin Str
  */
-class StrMacros
+class StrMixin
 {
     public function betweenFirst()
     {
@@ -154,36 +151,6 @@ class StrMacros
         };
     }
 
-    public function isUlid()
-    {
-        return function ($value) {
-            if (! is_string($value)) {
-                return false;
-            }
-
-            if (strlen($value) !== 26) {
-                return false;
-            }
-
-            if (strspn($value, '0123456789ABCDEFGHJKMNPQRSTVWXYZabcdefghjkmnpqrstvwxyz') !== 26) {
-                return false;
-            }
-
-            return $value[0] <= '7';
-        };
-    }
-
-    public function isUuid()
-    {
-        return function ($value) {
-            if (! is_string($value)) {
-                return false;
-            }
-
-            return preg_match('/^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/iD', $value) > 0;
-        };
-    }
-
     public function lcfirst()
     {
         return fn ($string) => Str::lower(Str::substr($string, 0, 1)) . Str::substr($string, 1);
@@ -192,11 +159,6 @@ class StrMacros
     public function markdown()
     {
         return fn ($string, array $options = []) => (string) (new GithubFlavoredMarkdownConverter($options))->convert($string);
-    }
-
-    public function orderedUuid()
-    {
-        return fn () => Uuid::uuid7();
     }
 
     public function password()
@@ -256,18 +218,6 @@ class StrMacros
     public function ucsplit()
     {
         return fn ($string) => preg_split('/(?=\p{Lu})/u', $string, -1, PREG_SPLIT_NO_EMPTY);
-    }
-
-    public function ulid()
-    {
-        return fn () => new SymfonyUlid();
-    }
-
-    public function uuid()
-    {
-        return fn () => UuidContainer::$uuidFactory
-            ? call_user_func(UuidContainer::$uuidFactory)
-            : RamseyUuid::uuid4();
     }
 
     public function wordCount()

@@ -16,7 +16,7 @@ use Hyperf\Utils\Collection;
 /**
  * @mixin Arr
  */
-class ArrMacros
+class ArrMixin
 {
     public function isList()
     {
