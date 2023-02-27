@@ -24,9 +24,7 @@ class HubFactory
     public function __invoke(ContainerInterface $container)
     {
         $clientBuilder = $container->get(ClientBuilderInterface::class);
-
         $options = $clientBuilder->getOptions();
-
         $userIntegrations = $this->resolveIntegrationsFromUserConfig($container);
 
         $options->setIntegrations(static function (array $integrations) use ($options, $userIntegrations) {
@@ -62,9 +60,7 @@ class HubFactory
     protected function resolveIntegrationsFromUserConfig(ContainerInterface $container): array
     {
         $integrations = [new Integration()];
-
         $config = $container->get(ConfigInterface::class)->get('sentry', []);
-
         $userIntegrations = $config['integrations'] ?? [];
 
         foreach ($userIntegrations as $userIntegration) {
