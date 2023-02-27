@@ -11,11 +11,9 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ModelUidAddon\Listener;
 
 use FriendsOfHyperf\ModelUidAddon\BlueprintMixin;
-use FriendsOfHyperf\ModelUidAddon\StrMixin;
 use Hyperf\Database\Schema\Blueprint;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
-use Hyperf\Utils\Str;
 
 class RegisterMixinListener implements ListenerInterface
 {
@@ -28,7 +26,6 @@ class RegisterMixinListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        Str::mixin(new StrMixin());
         Blueprint::mixin(new BlueprintMixin());
     }
 }
