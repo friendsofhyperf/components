@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Factory;
 
 use FriendsOfHyperf\Sentry\Integration;
+use FriendsOfHyperf\Sentry\Integration\RequestFetcher;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
@@ -27,7 +28,7 @@ class HubFactory
         $options = $clientBuilder->getOptions();
         $userIntegrations = $this->resolveIntegrationsFromUserConfig($container);
 
-        $options->setIntegrations(static function (array $integrations) use ($options, $userIntegrations) {
+        $options->setIntegrations(static function (array $integrations) use ($options, $userIntegrations, $container) {
             if ($options->hasDefaultIntegrations()) {
                 // Remove the default error and fatal exception listeners to let Laravel handle those
                 // itself. These event are still bubbling up through the documented changes in the users
@@ -56,9 +57,9 @@ class HubFactory
                 });
             }
 
-            $integrations[] = make(SdkIntegration\RequestIntegration::class, [
-                'requestFetcher' => make(SdkIntegration\RequestFetcher::class),
-            ]);
+            $integrations[] = new SdkIntegration\RequestIntegration(
+                $container->get(RequestFetcher::class)
+            );
 
             return array_merge($integrations, $userIntegrations);
         });
