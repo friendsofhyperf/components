@@ -30,10 +30,6 @@ class SentryExceptionHandler extends ExceptionHandler
     {
         defer(function () use ($throwable) {
             try {
-                if (method_exists($throwable, 'shouldntReport') && $throwable->shouldntReport()) {
-                    return;
-                }
-
                 $hub = SentrySdk::getCurrentHub();
 
                 $hub->captureException($throwable);
@@ -55,6 +51,10 @@ class SentryExceptionHandler extends ExceptionHandler
      */
     public function isValid(Throwable $throwable): bool
     {
+        if (method_exists($throwable, 'shouldntReportSentry') && $throwable->shouldntReportSentry()) {
+            return false;
+        }
+
         return true;
     }
 }
