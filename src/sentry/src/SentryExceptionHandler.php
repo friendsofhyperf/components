@@ -51,6 +51,10 @@ class SentryExceptionHandler extends ExceptionHandler
      */
     public function isValid(Throwable $throwable): bool
     {
+        if (method_exists($throwable, 'shouldntReportSentry') && $throwable->shouldntReportSentry()) {
+            return false;
+        }
+
         return true;
     }
 }
