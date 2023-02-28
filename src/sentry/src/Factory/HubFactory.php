@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Factory;
 use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Integration\RequestFetcher;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Server\ServerManager;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
 use Sentry\ClientBuilderInterface;
@@ -57,9 +58,13 @@ class HubFactory
                 });
             }
 
-            $integrations[] = new SdkIntegration\RequestIntegration(
-                $container->get(RequestFetcher::class)
-            );
+            $requestFetcher = null;
+
+            if (class_exists(ServerManager::class) && ServerManager::list()) {
+                $requestFetcher = $container->get(RequestFetcher::class);
+            }
+
+            $integrations[] = new SdkIntegration\RequestIntegration($requestFetcher);
 
             return array_merge($integrations, $userIntegrations);
         });
