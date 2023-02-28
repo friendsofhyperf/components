@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Sentry;
 
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Psr\Container\ContainerInterface;
@@ -19,8 +20,11 @@ use Throwable;
 
 class SentryExceptionHandler extends ExceptionHandler
 {
+    protected ConfigInterface $config;
+
     public function __construct(protected ContainerInterface $container)
     {
+        $this->config = $container->get(ConfigInterface::class);
     }
 
     /**
@@ -53,6 +57,14 @@ class SentryExceptionHandler extends ExceptionHandler
     {
         if (method_exists($throwable, 'shouldntReportSentry') && $throwable->shouldntReportSentry()) {
             return false;
+        }
+
+        $dontReport = $this->config->get('sentry.dont_report', []);
+
+        foreach ($dontReport as $type) {
+            if ($throwable instanceof $type) {
+                return false;
+            }
         }
 
         return true;

@@ -29,4 +29,6 @@ return [
     ],
 
     'integrations' => [],
+
+    'dont_report' => [],
 ];
