@@ -14,18 +14,18 @@ return [
     // capture release as git sha
     // 'release' => trim(exec('git --git-dir ' . (BASE_PATH . '/.git') . ' log --pretty="%h" -n1 HEAD')),
 
-    'environment' => env('APP_ENV'),
+    'environment' => env('APP_ENV', 'production'),
 
     // @see: https://docs.sentry.io/platforms/php/configuration/options/#send-default-pii
-    'send_default_pii' => false,
+    'send_default_pii' => env('SENTRY_SEND_DEFAULT_PII', false),
 
     'breadcrumbs' => [
-        'sql_queries' => true,
-        'sql_bindings' => true,
-        'sql_transaction' => true,
-        'redis' => true,
-        'guzzle' => true,
-        'logs' => true,
+        'sql_queries' => env('SENTRY_BREADCRUMBS_SQL_QUERIES', true),
+        'sql_bindings' => env('SENTRY_BREADCRUMBS_SQL_BINDINGS', true),
+        'sql_transaction' => env('SENTRY_BREADCRUMBS_SQL_TRANSACTION', true),
+        'redis' => env('SENTRY_BREADCRUMBS_REDIS', true),
+        'guzzle' => env('SENTRY_BREADCRUMBS_GUZZLE', true),
+        'logs' => env('SENTRY_BREADCRUMBS_LOGS', true),
     ],
 
     'integrations' => [],
