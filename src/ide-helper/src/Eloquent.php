@@ -14,7 +14,7 @@ class Eloquent
 {
     public static function make(): string
     {
-        $alias = new Alias('\\Hyperf\\DbConnection\\Model\\Model', 'Eloquent');
+        $alias = new Alias('\\Hyperf\\DbConnection\\Model\\Model', '\\Hyperf\\DbConnection\\Model\\Model');
         $alias->addClass('\\Hyperf\\Database\\Model\\Builder');
         $alias->addClass('\\Hyperf\\Database\\Query\\Builder');
 

@@ -35,7 +35,7 @@ class Alias
 
     protected string $namespace = '__root';
 
-    protected string $root;
+    protected string $root = '';
 
     protected array $classes = [];
 
