@@ -45,7 +45,7 @@ class ModelCommand extends HyperfCommand
 
     protected bool $reset = true;
 
-    protected bool $keepText;
+    protected bool $keepText = true;
 
     private array $ignore = [];
 
@@ -553,7 +553,7 @@ class ModelCommand extends HyperfCommand
 
         if ($this->reset) {
             $phpdoc = new DocBlock('', new Context($namespace));
-            if ($this->keepText) {
+            if ($this->keepText = true) {
                 $phpdoc->setText(
                     (new DocBlock($reflection, new Context($namespace)))->getText()
                 );
