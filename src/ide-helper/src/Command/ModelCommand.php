@@ -553,7 +553,7 @@ class ModelCommand extends HyperfCommand
 
         if ($this->reset) {
             $phpdoc = new DocBlock('', new Context($namespace));
-            if ($this->keepText = true) {
+            if ($this->keepText) {
                 $phpdoc->setText(
                     (new DocBlock($reflection, new Context($namespace)))->getText()
                 );
