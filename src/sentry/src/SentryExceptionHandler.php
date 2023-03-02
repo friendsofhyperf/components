@@ -22,9 +22,12 @@ class SentryExceptionHandler extends ExceptionHandler
 {
     protected ConfigInterface $config;
 
+    protected StdoutLoggerInterface $logger;
+
     public function __construct(protected ContainerInterface $container)
     {
         $this->config = $container->get(ConfigInterface::class);
+        $this->logger = $container->get(StdoutLoggerInterface::class);
     }
 
     /**
@@ -38,9 +41,9 @@ class SentryExceptionHandler extends ExceptionHandler
 
                 $hub->captureException($throwable);
 
-                $hub->getClient()->flush();
+                $hub->getClient()?->flush();
             } catch (Throwable $e) {
-                $this->container->get(StdoutLoggerInterface::class)->error((string) $e);
+                $this->logger->error((string) $e);
             }
         });
 
