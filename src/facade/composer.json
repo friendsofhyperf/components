@@ -12,7 +12,8 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "hyperf/di": "~3.0.0"
+        "hyperf/di": "~3.0.0",
+        "hyperf/utils": "~3.0.0"
     },
     "suggest": {
         "hyperf/amqp": "Required to use (~3.0.0)",
