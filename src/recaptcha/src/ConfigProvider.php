@@ -15,9 +15,7 @@ class ConfigProvider
     public function __invoke(): array
     {
         return [
-            'dependencies' => [
-                ReCaptchaManager::class => ReCaptchaManager::class,
-            ],
+            'dependencies' => [],
             'listeners' => [
                 Listener\ValidatorFactoryResolvedListener::class => PHP_INT_MIN,
             ],
