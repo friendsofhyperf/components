@@ -12,13 +12,16 @@ namespace FriendsOfHyperf\ReCaptcha\Middleware;
 
 use FriendsOfHyperf\ReCaptcha\ReCaptchaManager;
 use Hyperf\HttpServer\Contract\RequestInterface;
-use Hyperf\HttpServer\Contract\ResponseInterface as HttpResponse;
+use Hyperf\HttpServer\Contract\ResponseInterface as HttpResponseInterface;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+/**
+ * @property \Psr\Http\Message\ResponseInterface $response
+ */
 abstract class ReCaptchaMiddleware implements MiddlewareInterface
 {
     protected string $version = 'v3';
@@ -39,8 +42,8 @@ abstract class ReCaptchaMiddleware implements MiddlewareInterface
 
     public function __construct(
         protected ContainerInterface $container,
-        protected HttpResponse $response,
-        protected RequestInterface $request
+        protected RequestInterface $request,
+        protected HttpResponseInterface $response
     ) {
         $this->manager = $container->get(ReCaptchaManager::class);
     }

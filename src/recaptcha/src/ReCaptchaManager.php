@@ -20,7 +20,7 @@ class ReCaptchaManager
     /**
      * @var ReCaptcha[]
      */
-    protected array $container = [];
+    protected array $instances = [];
 
     public function __construct(protected ConfigInterface $config)
     {
@@ -28,14 +28,13 @@ class ReCaptchaManager
 
     /**
      * @param string $version
-     * @return ReCaptcha
      * @throws TypeError
      * @throws RuntimeException
      */
-    public function get(?string $version = null)
+    public function get(?string $version = null): ReCaptcha
     {
-        if (isset($this->container[$version])) {
-            return $this->container[$version];
+        if (isset($this->instances[$version])) {
+            return $this->instances[$version];
         }
 
         if (! $this->config->has('recaptcha')) {
@@ -43,9 +42,10 @@ class ReCaptchaManager
         }
 
         $version ??= $this->config->get('recaptcha.default', 'v3');
+        $secret = $this->config->get(sprintf('recaptcha.%s.secret_key', $version), '');
 
-        return $this->container[$version] = make(ReCaptcha::class, [
-            'secret' => $this->config->get(sprintf('recaptcha.%s.secret_key', $version), ''),
+        return $this->instances[$version] = make(ReCaptcha::class, [
+            'secret' => $secret,
         ]);
     }
 }

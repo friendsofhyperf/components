@@ -37,7 +37,17 @@ class ValidatorFactoryResolvedListener implements ListenerInterface
         $validatorFactory = $event->validatorFactory;
 
         $validatorFactory->extend('recaptcha', function ($attribute, $value, $parameters, $validator) {
-            [$action, $score, $hostname, $version] = [$parameters[0] ?? '', (float) $parameters[1] ?? 0.34, $parameters[2] ?? '', $parameters[3] ?? 'v3'];
+            [
+                $action,
+                $score,
+                $hostname,
+                $version
+            ] = [
+                $parameters[0] ?? '',
+                (float) $parameters[1] ?? 0.34,
+                $parameters[2] ?? '',
+                $parameters[3] ?? 'v3',
+            ];
 
             $recaptcha = $this->manager->get($version);
 
