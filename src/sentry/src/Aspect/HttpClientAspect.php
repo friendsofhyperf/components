@@ -13,11 +13,11 @@ namespace FriendsOfHyperf\Sentry\Aspect;
 use FriendsOfHyperf\Sentry\Integration;
 use GuzzleHttp\Client;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Di\Aop\AroundInterface;
+use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\Breadcrumb;
 
-class HttpClientAspect implements AroundInterface
+class HttpClientAspect extends AbstractAspect
 {
     public array $classes = [
         Client::class . '::requestAsync',
@@ -30,15 +30,23 @@ class HttpClientAspect implements AroundInterface
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $startTime = microtime(true);
+        $instance = $proceedingJoinPoint->getInstance();
         $arguments = $proceedingJoinPoint->arguments;
-        $options = $proceedingJoinPoint->arguments['keys']['options'];
 
-        return tap($proceedingJoinPoint->process(), function ($result) use ($arguments, $options, $startTime) {
+        return tap($proceedingJoinPoint->process(), function ($result) use ($instance, $arguments, $startTime) {
             if (! $this->config->get('sentry.breadcrumbs.guzzle', false)) {
                 return;
             }
 
-            if (isset($options['no_aspect']) && $options['no_aspect'] === true) {
+            $options = $arguments['keys']['options'] ?? [];
+
+            if (($options['no_aspect'] ?? null) === true) {
+                return;
+            }
+
+            $guzzleConfig = (fn () => $this->config)->call($instance);
+
+            if (($guzzleConfig['no_aspect'] ?? null) === true) {
                 return;
             }
 
