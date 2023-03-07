@@ -14,10 +14,9 @@ use FriendsOfHyperf\Sentry\GuzzleAdapter\Client;
 use GuzzleHttp\RequestOptions as GuzzleHttpClientOptions;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Hyperf\Utils\Coroutine;
 use Sentry\HttpClient\HttpClientFactory;
 
-class HttpClientFactoryAspect extends AbstractAspect
+class SentryHttpClientFactoryAspect extends AbstractAspect
 {
     public array $classes = [
         HttpClientFactory::class . '::resolveClient',
@@ -28,23 +27,16 @@ class HttpClientFactoryAspect extends AbstractAspect
         /** @var \Sentry\Options $options */
         $options = $proceedingJoinPoint->arguments['keys']['options'];
 
-        if (
-            extension_loaded('swoole')
-            && Coroutine::inCoroutine()
-            && (\Swoole\Runtime::getHookFlags() & SWOOLE_HOOK_NATIVE_CURL) == 0
-        ) {
-            $guzzleConfig = [
-                GuzzleHttpClientOptions::TIMEOUT => $options->getHttpTimeout(),
-                GuzzleHttpClientOptions::CONNECT_TIMEOUT => $options->getHttpConnectTimeout(),
-            ];
+        $guzzleConfig = [
+            GuzzleHttpClientOptions::TIMEOUT => $options->getHttpTimeout(),
+            GuzzleHttpClientOptions::CONNECT_TIMEOUT => $options->getHttpConnectTimeout(),
+            'no_aspect' => true,
+        ];
 
-            if ($options->getHttpProxy() !== null) {
-                $guzzleConfig[GuzzleHttpClientOptions::PROXY] = $options->getHttpProxy();
-            }
-
-            return Client::createWithConfig($guzzleConfig);
+        if ($options->getHttpProxy() !== null) {
+            $guzzleConfig[GuzzleHttpClientOptions::PROXY] = $options->getHttpProxy();
         }
 
-        return $proceedingJoinPoint->process();
+        return Client::createWithConfig($guzzleConfig);
     }
 }

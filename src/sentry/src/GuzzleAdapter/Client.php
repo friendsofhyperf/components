@@ -17,6 +17,7 @@ use GuzzleHttp\Middleware;
 use Http\Client\HttpAsyncClient;
 use Http\Client\HttpClient;
 use Hyperf\Guzzle\CoroutineHandler;
+use Hyperf\Utils\Coroutine;
 use Psr\Http\Message\RequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
@@ -72,7 +73,15 @@ final class Client implements HttpClient, HttpAsyncClient
      */
     private static function buildClient(array $config = []): GuzzleClient
     {
-        $handlerStack = HandlerStack::create(new CoroutineHandler());
+        if (
+            extension_loaded('swoole')
+            && Coroutine::inCoroutine()
+            && (\Swoole\Runtime::getHookFlags() & SWOOLE_HOOK_NATIVE_CURL) == 0
+        ) {
+            $handlerStack = HandlerStack::create(new CoroutineHandler());
+        } else {
+            $handlerStack = HandlerStack::create(\GuzzleHttp\choose_handler());
+        }
         $handlerStack->push(Middleware::prepareBody(), 'prepare_body');
         $config = array_merge(['handler' => $handlerStack], $config);
 
