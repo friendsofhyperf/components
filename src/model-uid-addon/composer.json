@@ -15,6 +15,9 @@
         "ramsey/uuid": "^4.7",
         "symfony/uid": "^5.0|^6.0"
     },
+    "conflict": {
+        "hyperf/database": ">=3.0.9"
+    },
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\ModelUidAddon\\": "src/"
