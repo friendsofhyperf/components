@@ -34,9 +34,7 @@ final class Client implements HttpClient, HttpAsyncClient
      */
     public function __construct(?ClientInterface $client = null)
     {
-        $client ??= self::buildClient();
-
-        $this->client = $client;
+        $this->client = $client ?? self::buildClient();
     }
 
     /**
