@@ -28,7 +28,11 @@ class HttpClientFactoryAspect extends AbstractAspect
         /** @var \Sentry\Options $options */
         $options = $proceedingJoinPoint->arguments['keys']['options'];
 
-        if (Coroutine::inCoroutine()) {
+        if (
+            extension_loaded('swoole')
+            && Coroutine::inCoroutine()
+            && (\Swoole\Runtime::getHookFlags() & SWOOLE_HOOK_NATIVE_CURL) == 0
+        ) {
             $guzzleConfig = [
                 GuzzleHttpClientOptions::TIMEOUT => $options->getHttpTimeout(),
                 GuzzleHttpClientOptions::CONNECT_TIMEOUT => $options->getHttpConnectTimeout(),
