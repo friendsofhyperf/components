@@ -8,6 +8,8 @@
 
 The ULID/UUID addon for Hyperf Model.
 
+> This feature has been migrated to `hyperf/database`, if you are using `hyperf/database > 3.0.9`, You don't need to install this extension.
+
 ## Installation
 
 - Request
