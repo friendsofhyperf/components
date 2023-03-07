@@ -25,10 +25,7 @@ use Psr\Http\Message\ResponseInterface;
  */
 final class Client implements HttpClient, HttpAsyncClient
 {
-    /**
-     * @var ClientInterface
-     */
-    private $client;
+    private ClientInterface $client;
 
     /**
      * If you pass a Guzzle instance as $client, make sure to configure Guzzle to not
@@ -37,9 +34,7 @@ final class Client implements HttpClient, HttpAsyncClient
      */
     public function __construct(?ClientInterface $client = null)
     {
-        if (! $client) {
-            $client = self::buildClient();
-        }
+        $client ??= self::buildClient();
 
         $this->client = $client;
     }
@@ -49,7 +44,9 @@ final class Client implements HttpClient, HttpAsyncClient
      */
     public static function createWithConfig(array $config): Client
     {
-        return new self(self::buildClient($config));
+        return new self(
+            self::buildClient($config)
+        );
     }
 
     /**

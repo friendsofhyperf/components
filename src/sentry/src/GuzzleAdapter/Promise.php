@@ -24,30 +24,18 @@ use Throwable;
  */
 final class Promise implements HttpPromise
 {
-    /**
-     * @var PromiseInterface
-     */
-    private $promise;
+    private PromiseInterface $promise;
 
     /**
-     * @var string State of the promise
+     *  State of the promise.
      */
-    private $state;
+    private string $state;
 
-    /**
-     * @var ResponseInterface
-     */
-    private $response;
+    private ResponseInterface $response;
 
-    /**
-     * @var HttplugException
-     */
-    private $exception;
+    private HttplugException $exception;
 
-    /**
-     * @var RequestInterface
-     */
-    private $request;
+    private RequestInterface $request;
 
     public function __construct(PromiseInterface $promise, RequestInterface $request)
     {
