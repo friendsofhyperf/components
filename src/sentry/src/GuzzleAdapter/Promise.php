@@ -8,9 +8,9 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Sentry\Factory\GuzzleAdapter;
+namespace FriendsOfHyperf\Sentry\GuzzleAdapter;
 
-use FriendsOfHyperf\Sentry\Factory\GuzzleAdapter\Exception\UnexpectedValueException;
+use FriendsOfHyperf\Sentry\GuzzleAdapter\Exception\UnexpectedValueException;
 use GuzzleHttp\Exception as GuzzleExceptions;
 use GuzzleHttp\Promise\PromiseInterface;
 use Http\Client\Exception as HttplugException;

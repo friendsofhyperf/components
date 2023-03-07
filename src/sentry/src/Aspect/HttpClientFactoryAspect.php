@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Sentry\Aspect;
 
-use FriendsOfHyperf\Sentry\Factory\GuzzleAdapter\Client;
+use FriendsOfHyperf\Sentry\GuzzleAdapter\Client;
 use GuzzleHttp\RequestOptions as GuzzleHttpClientOptions;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
