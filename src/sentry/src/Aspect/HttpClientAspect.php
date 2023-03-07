@@ -30,20 +30,21 @@ class HttpClientAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $startTime = microtime(true);
-        $guzzleInstance = $proceedingJoinPoint->getInstance();
+        $instance = $proceedingJoinPoint->getInstance();
         $arguments = $proceedingJoinPoint->arguments;
-        $options = $proceedingJoinPoint->arguments['keys']['options'];
 
-        return tap($proceedingJoinPoint->process(), function ($result) use ($guzzleInstance, $arguments, $options, $startTime) {
+        return tap($proceedingJoinPoint->process(), function ($result) use ($instance, $arguments, $startTime) {
             if (! $this->config->get('sentry.breadcrumbs.guzzle', false)) {
                 return;
             }
+
+            $options = $arguments['keys']['options'] ?? [];
 
             if (($options['no_aspect'] ?? null) === true) {
                 return;
             }
 
-            $guzzleConfig = (fn () => $this->config)->call($guzzleInstance);
+            $guzzleConfig = (fn () => $this->config)->call($instance);
 
             if (($guzzleConfig['no_aspect'] ?? null) === true) {
                 return;
