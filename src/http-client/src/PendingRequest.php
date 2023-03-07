@@ -906,7 +906,11 @@ class PendingRequest
      */
     public function buildHandlerStack()
     {
-        if (extension_loaded('swoole') && Coroutine::inCoroutine()) {
+        if (
+            extension_loaded('swoole')
+            && Coroutine::inCoroutine()
+            && (\Swoole\Runtime::getHookFlags() & SWOOLE_HOOK_NATIVE_CURL) == 0
+        ) {
             $this->setHandler(new CoroutineHandler());
         }
 
