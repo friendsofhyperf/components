@@ -13,11 +13,11 @@ namespace FriendsOfHyperf\Sentry\Aspect;
 use FriendsOfHyperf\Sentry\Integration;
 use GuzzleHttp\Client;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Di\Aop\AroundInterface;
+use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\Breadcrumb;
 
-class HttpClientAspect implements AroundInterface
+class HttpClientAspect extends AbstractAspect
 {
     public array $classes = [
         Client::class . '::requestAsync',

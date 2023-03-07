@@ -12,12 +12,12 @@ namespace FriendsOfHyperf\Sentry\Aspect;
 
 use FriendsOfHyperf\Sentry\Integration;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Di\Aop\AroundInterface;
+use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Redis\RedisConnection;
 use Sentry\Breadcrumb;
 
-class RedisAspect implements AroundInterface
+class RedisAspect extends AbstractAspect
 {
     public array $classes = [
         RedisConnection::class . '::__call',
