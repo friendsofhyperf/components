@@ -24,6 +24,9 @@
         "hyperf/logger": "~3.0.0",
         "sentry/sdk": "^3.0"
     },
+    "suggest": {
+        "hyperf/guzzle": "Required for Guzzle integration (~3.0.0)."
+    },
     "config": {
         "sort-packages": true
     },
