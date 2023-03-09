@@ -77,6 +77,23 @@ class Foo
 }
 ```
 
+## Fix un-support `native-curl`
+
+- Check
+
+```shell
+php --ri swoole |grep curl
+# curl-native => enabled
+```
+
+- Fix
+
+```php
+composer require php-http/guzzle6-adapter
+# or
+composer require php-http/guzzle7-adapter
+```
+
 ## Sponsor
 
 If you like this project, Buy me a cup of coffee. [ [Alipay](https://hdj.me/images/alipay.jpg) | [WePay](https://hdj.me/images/wechat-pay.jpg) ]
