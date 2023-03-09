@@ -63,6 +63,7 @@
         "hyperf/paginator": "~3.0.0",
         "hyperf/scout": "~3.0.0",
         "mockery/mockery": "^1.0",
+        "php-http/guzzle7-adapter": "^1.0",
         "phpstan/phpstan": "^1.0",
         "phpunit/phpunit": "^9.5",
         "swoole/ide-helper": "dev-master",

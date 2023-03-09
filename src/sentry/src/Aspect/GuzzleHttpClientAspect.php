@@ -17,7 +17,7 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\Breadcrumb;
 
-class HttpClientAspect extends AbstractAspect
+class GuzzleHttpClientAspect extends AbstractAspect
 {
     public array $classes = [
         Client::class . '::requestAsync',
