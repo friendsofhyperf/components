@@ -23,6 +23,7 @@ class ConfigProvider
                 Aspect\LoggerAspect::class,
                 Aspect\RedisAspect::class,
                 Aspect\SingletonAspect::class,
+                Aspect\SentryHttpClientFactoryAspect::class,
             ],
             'commands' => [
                 Command\TestCommand::class,

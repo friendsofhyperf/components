@@ -25,6 +25,9 @@
         "hyperf/logger": "~3.0.0",
         "sentry/sdk": "^3.0"
     },
+    "suggest": {
+        "php-http/guzzle7-adapter": "Required to use the Guzzle transport (^1.0.0)."
+    },
     "config": {
         "sort-packages": true
     },
