@@ -906,13 +906,13 @@ class PendingRequest
      */
     public function buildHandlerStack()
     {
-        // Fix the bug of swoole 4.5.x
-        defined('SWOOLE_HOOK_NATIVE_CURL') or define('SWOOLE_HOOK_NATIVE_CURL', 4096);
-
         if (
             extension_loaded('swoole')
             && Coroutine::inCoroutine()
-            && (\Swoole\Runtime::getHookFlags() & SWOOLE_HOOK_NATIVE_CURL) == 0
+            && (
+                ! defined('SWOOLE_HOOK_NATIVE_CURL') // swoole < 4.6.0
+                || (\Swoole\Runtime::getHookFlags() & SWOOLE_HOOK_NATIVE_CURL) == 0 // unsupported native-curl
+            )
         ) {
             $this->setHandler(new CoroutineHandler());
         }
