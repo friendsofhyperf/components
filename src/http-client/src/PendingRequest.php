@@ -906,6 +906,9 @@ class PendingRequest
      */
     public function buildHandlerStack()
     {
+        // Fix the bug of swoole 4.5.x
+        defined('SWOOLE_HOOK_NATIVE_CURL') or define('SWOOLE_HOOK_NATIVE_CURL', 4096);
+
         if (
             extension_loaded('swoole')
             && Coroutine::inCoroutine()
