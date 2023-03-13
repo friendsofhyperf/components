@@ -57,17 +57,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
             }
 
             $uri = $arguments['keys']['uri'] ?? '';
-            $data['config'] = [];
-            if (isset($guzzleConfig['base_uri'])) {
-                $data['config'] = (string) $guzzleConfig['base_uri'];
-            }
-            if (isset($guzzleConfig['headers'])) {
-                $data['config'] = $guzzleConfig['headers'];
-            }
-            if (isset($guzzleConfig['timeout'])) {
-                $data['config'] = $guzzleConfig['timeout'];
-            }
-
+            $data['config'] = $guzzleConfig;
             $data['method'] = $arguments['keys']['method'] ?? 'GET';
             $data['options'] = $arguments['keys']['options'] ?? [];
             $data['timeMs'] = (microtime(true) - $startTime) * 1000;
