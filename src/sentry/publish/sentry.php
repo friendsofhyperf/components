@@ -30,5 +30,7 @@ return [
 
     'integrations' => [],
 
-    'dont_report' => [],
+    'dont_report' => [
+        Hyperf\Validation\ValidationException::class,
+    ],
 ];
