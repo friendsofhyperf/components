@@ -57,9 +57,9 @@ class GuzzleHttpClientAspect extends AbstractAspect
             }
 
             $uri = $arguments['keys']['uri'] ?? '';
-            $data['request']['method'] = $options['method'] ?? 'GET';
-            $data['request']['headers'] = $options['headers'] ?? [];
-            $data['request']['query'] = $options['query'] ?? [];
+            $data['config'] = $guzzleConfig;
+            $data['request']['method'] = $arguments['keys']['method'] ?? 'GET';
+            $data['request']['options'] = $arguments['keys']['options'] ?? [];
             $data['timeMs'] = (microtime(true) - $startTime) * 1000;
 
             Integration::addBreadcrumb(new Breadcrumb(
