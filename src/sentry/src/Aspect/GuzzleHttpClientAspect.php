@@ -15,11 +15,13 @@ use GuzzleHttp\Client;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Psr\Http\Message\ResponseInterface;
 use Sentry\Breadcrumb;
 
 class GuzzleHttpClientAspect extends AbstractAspect
 {
     public array $classes = [
+        Client::class . '::request',
         Client::class . '::requestAsync',
     ];
 
@@ -32,6 +34,10 @@ class GuzzleHttpClientAspect extends AbstractAspect
         $startTime = microtime(true);
         $instance = $proceedingJoinPoint->getInstance();
         $arguments = $proceedingJoinPoint->arguments;
+
+        if ($proceedingJoinPoint->methodName == 'request') { // Disable the aspect for the requestAsync method.
+            $proceedingJoinPoint->arguments['keys']['options']['no_aspect'] = true;
+        }
 
         return tap($proceedingJoinPoint->process(), function ($result) use ($instance, $arguments, $startTime) {
             if (! $this->config->get('sentry.breadcrumbs.guzzle', false)) {
@@ -60,6 +66,12 @@ class GuzzleHttpClientAspect extends AbstractAspect
             $data['config'] = $guzzleConfig;
             $data['request']['method'] = $arguments['keys']['method'] ?? 'GET';
             $data['request']['options'] = $arguments['keys']['options'] ?? [];
+            if ($result instanceof ResponseInterface) {
+                $data['response']['status'] = $result->getStatusCode();
+                $data['response']['reason'] = $result->getReasonPhrase();
+                $data['response']['headers'] = $result->getHeaders();
+                $data['response']['body'] = $result->getBody()->getContents();
+            }
             $data['timeMs'] = (microtime(true) - $startTime) * 1000;
 
             Integration::addBreadcrumb(new Breadcrumb(
