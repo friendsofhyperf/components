@@ -56,9 +56,11 @@ class HttpServer extends \Hyperf\HttpServer\Server
                 return (new Psr7Response())->withStatus(400);
             });
         } finally {
-            defer(fn () => $eventDispatcher->dispatch(new RequestTerminated($psr7Request, $psr7Response)));
+            if (isset($psr7Request)) {
+                defer(fn () => $eventDispatcher->dispatch(new RequestTerminated($psr7Request, $psr7Response)));
 
-            $eventDispatcher->dispatch(new RequestHandled($psr7Request, $psr7Response));
+                $eventDispatcher->dispatch(new RequestHandled($psr7Request, $psr7Response));
+            }
 
             // Send the Response to client.
             if (! isset($psr7Response) || ! $psr7Response instanceof ResponseInterface) {
