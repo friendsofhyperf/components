@@ -57,14 +57,7 @@ class SentryHttpClientFactoryAspect extends AbstractAspect
      */
     private function createHttpClientWithConfig(string $class, array $config)
     {
-        if (
-            extension_loaded('swoole')
-            && Coroutine::inCoroutine()
-            && (
-                ! defined('SWOOLE_HOOK_NATIVE_CURL') // swoole < 4.6.0
-                || (\Swoole\Runtime::getHookFlags() & SWOOLE_HOOK_NATIVE_CURL) == 0 // unsupported native-curl
-            )
-        ) {
+        if (extension_loaded('swoole') && Coroutine::inCoroutine()) {
             $handlerStack = new HandlerStack(new CoroutineHandler());
         } else {
             $handlerStack = new HandlerStack(Utils::chooseHandler());
