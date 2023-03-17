@@ -70,7 +70,6 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 $data['response']['status'] = $result->getStatusCode();
                 $data['response']['reason'] = $result->getReasonPhrase();
                 $data['response']['headers'] = $result->getHeaders();
-                $data['response']['body'] = $result->getBody()->getContents();
             }
             $data['timeMs'] = (microtime(true) - $startTime) * 1000;
 
