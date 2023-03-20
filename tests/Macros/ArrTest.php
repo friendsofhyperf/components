@@ -12,7 +12,7 @@ use Hyperf\Utils\Arr;
 
 uses(\FriendsOfHyperf\Tests\TestCase::class);
 
-test('testIsList', function () {
+test('test IsList', function () {
     $this->assertTrue(Arr::isList([]));
     $this->assertTrue(Arr::isList([1, 2, 3]));
     $this->assertTrue(Arr::isList(['foo', 2, 3]));
@@ -27,7 +27,7 @@ test('testIsList', function () {
     $this->assertFalse(Arr::isList(['foo' => 'bar', 'baz' => 'qux']));
 });
 
-test('testKeyBy', function () {
+test('test KeyBy', function () {
     $array = [
         ['id' => '123', 'data' => 'abc'],
         ['id' => '345', 'data' => 'def'],
@@ -41,7 +41,7 @@ test('testKeyBy', function () {
     ], Arr::keyBy($array, 'id'));
 });
 
-test('testJoin', function () {
+test('test Join', function () {
     $this->assertSame('a, b, c', Arr::join(['a', 'b', 'c'], ', '));
     $this->assertSame('a, b and c', Arr::join(['a', 'b', 'c'], ', ', ' and '));
     $this->assertSame('a and b', Arr::join(['a', 'b'], ', ', ' and '));
@@ -49,7 +49,7 @@ test('testJoin', function () {
     $this->assertSame('', Arr::join([], ', ', ' and '));
 });
 
-test('testMap', function () {
+test('test Map', function () {
     $data = ['first' => 'taylor', 'last' => 'otwell'];
     $mapped = Arr::map($data, function ($value, $key) {
         return $key . '-' . strrev($value);
@@ -58,7 +58,7 @@ test('testMap', function () {
     $this->assertEquals(['first' => 'taylor', 'last' => 'otwell'], $data);
 });
 
-test('testPrependKeysWith', function () {
+test('test PrependKeysWith', function () {
     $array = [
         'id' => '123',
         'data' => '456',
@@ -78,7 +78,7 @@ test('testPrependKeysWith', function () {
     ], Arr::prependKeysWith($array, 'test.'));
 });
 
-test('testSortByMany', function () {
+test('test SortByMany', function () {
     $unsorted = [
         ['name' => 'John', 'age' => 8, 'meta' => ['key' => 3]],
         ['name' => 'John', 'age' => 10, 'meta' => ['key' => 5]],
@@ -130,7 +130,7 @@ test('testSortByMany', function () {
     ], $sortedWithCallable);
 });
 
-test('testSortDesc', function () {
+test('test SortDesc', function () {
     $unsorted = [
         ['name' => 'Chair'],
         ['name' => 'Desk'],
@@ -155,7 +155,7 @@ test('testSortDesc', function () {
     $this->assertEquals($expected, $sortedWithDotNotation);
 });
 
-test('testUndot', function () {
+test('test Undot', function () {
     $array = Arr::undot([
         'user.name' => 'Taylor',
         'user.age' => 25,
