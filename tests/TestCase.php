@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Tests;
 
+use Hyperf\Utils\Stringable;
 use Mockery as m;
 
 /**
@@ -33,5 +34,10 @@ class TestCase extends \PHPUnit\Framework\TestCase
     protected function tearDown(): void
     {
         m::close();
+    }
+
+    protected function stringable($value = '')
+    {
+        return new Stringable($value);
     }
 }
