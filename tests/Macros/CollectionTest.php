@@ -334,4 +334,204 @@ class CollectionTest extends TestCase
             // [LazyCollection::class],
         ];
     }
+
+    /**
+     * @dataProvider collectionClassProvider
+     * @param mixed $collection
+     */
+    public function testWhenEmpty($collection)
+    {
+        $data = new $collection(['michael', 'tom']);
+
+        $data = $data->whenEmpty(function () {
+            throw new Exception('whenEmpty() should not trigger on a collection with items');
+        });
+
+        $this->assertSame(['michael', 'tom'], $data->toArray());
+
+        $data = new $collection();
+
+        $data = $data->whenEmpty(function ($data) {
+            return $data->concat(['adam']);
+        });
+
+        $this->assertSame(['adam'], $data->toArray());
+    }
+
+    /**
+     * @dataProvider collectionClassProvider
+     * @param mixed $collection
+     */
+    public function testWhenEmptyDefault($collection)
+    {
+        $data = new $collection(['michael', 'tom']);
+
+        $data = $data->whenEmpty(function ($data) {
+            return $data->concat(['adam']);
+        }, function ($data) {
+            return $data->concat(['taylor']);
+        });
+
+        $this->assertSame(['michael', 'tom', 'taylor'], $data->toArray());
+    }
+
+    /**
+     * @dataProvider collectionClassProvider
+     * @param mixed $collection
+     */
+    public function testWhenNotEmpty($collection)
+    {
+        $data = new $collection(['michael', 'tom']);
+
+        $data = $data->whenNotEmpty(function ($data) {
+            return $data->concat(['adam']);
+        });
+
+        $this->assertSame(['michael', 'tom', 'adam'], $data->toArray());
+
+        $data = new $collection();
+
+        $data = $data->whenNotEmpty(function ($data) {
+            return $data->concat(['adam']);
+        });
+
+        $this->assertSame([], $data->toArray());
+    }
+
+    /**
+     * @dataProvider collectionClassProvider
+     * @param mixed $collection
+     */
+    public function testWhenNotEmptyDefault($collection)
+    {
+        $data = new $collection(['michael', 'tom']);
+
+        $data = $data->whenNotEmpty(function ($data) {
+            return $data->concat(['adam']);
+        }, function ($data) {
+            return $data->concat(['taylor']);
+        });
+
+        $this->assertSame(['michael', 'tom', 'adam'], $data->toArray());
+    }
+
+    /**
+     * @dataProvider collectionClassProvider
+     * @param mixed $collection
+     */
+    public function testUnless($collection)
+    {
+        $data = new $collection(['michael', 'tom']);
+
+        $data = $data->unless(false, function ($data) {
+            return $data->concat(['caleb']);
+        });
+
+        $this->assertSame(['michael', 'tom', 'caleb'], $data->toArray());
+
+        $data = new $collection(['michael', 'tom']);
+
+        $data = $data->unless(true, function ($data) {
+            return $data->concat(['caleb']);
+        });
+
+        $this->assertSame(['michael', 'tom'], $data->toArray());
+    }
+
+    /**
+     * @dataProvider collectionClassProvider
+     * @param mixed $collection
+     */
+    public function testUnlessDefault($collection)
+    {
+        $data = new $collection(['michael', 'tom']);
+
+        $data = $data->unless(true, function ($data) {
+            return $data->concat(['caleb']);
+        }, function ($data) {
+            return $data->concat(['taylor']);
+        });
+
+        $this->assertSame(['michael', 'tom', 'taylor'], $data->toArray());
+    }
+
+    /**
+     * @dataProvider collectionClassProvider
+     * @param mixed $collection
+     */
+    public function testUnlessEmpty($collection)
+    {
+        $data = new $collection(['michael', 'tom']);
+
+        $data = $data->unlessEmpty(function ($data) {
+            return $data->concat(['adam']);
+        });
+
+        $this->assertSame(['michael', 'tom', 'adam'], $data->toArray());
+
+        $data = new $collection();
+
+        $data = $data->unlessEmpty(function ($data) {
+            return $data->concat(['adam']);
+        });
+
+        $this->assertSame([], $data->toArray());
+    }
+
+    /**
+     * @dataProvider collectionClassProvider
+     * @param mixed $collection
+     */
+    public function testUnlessEmptyDefault($collection)
+    {
+        $data = new $collection(['michael', 'tom']);
+
+        $data = $data->unlessEmpty(function ($data) {
+            return $data->concat(['adam']);
+        }, function ($data) {
+            return $data->concat(['taylor']);
+        });
+
+        $this->assertSame(['michael', 'tom', 'adam'], $data->toArray());
+    }
+
+    /**
+     * @dataProvider collectionClassProvider
+     * @param mixed $collection
+     */
+    public function testUnlessNotEmpty($collection)
+    {
+        $data = new $collection(['michael', 'tom']);
+
+        $data = $data->unlessNotEmpty(function ($data) {
+            return $data->concat(['adam']);
+        });
+
+        $this->assertSame(['michael', 'tom'], $data->toArray());
+
+        $data = new $collection();
+
+        $data = $data->unlessNotEmpty(function ($data) {
+            return $data->concat(['adam']);
+        });
+
+        $this->assertSame(['adam'], $data->toArray());
+    }
+
+    /**
+     * @dataProvider collectionClassProvider
+     * @param mixed $collection
+     */
+    public function testUnlessNotEmptyDefault($collection)
+    {
+        $data = new $collection(['michael', 'tom']);
+
+        $data = $data->unlessNotEmpty(function ($data) {
+            return $data->concat(['adam']);
+        }, function ($data) {
+            return $data->concat(['taylor']);
+        });
+
+        $this->assertSame(['michael', 'tom', 'taylor'], $data->toArray());
+    }
 }
