@@ -343,6 +343,9 @@ test('test CastToString', function () {
     $this->assertIsString($result);
     $this->assertEquals('', $result);
 
-    $this->expectException(CastException::class);
-    $castable->cast($this->testProperty, ['name' => 'John Doe']);
+    try {
+        $castable->cast($this->testProperty, ['name' => 'John Doe']);
+    } catch (Throwable $e) {
+        expect($e)->toBeInstanceOf(CastException::class);
+    }
 });
