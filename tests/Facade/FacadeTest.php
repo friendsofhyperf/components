@@ -8,45 +8,33 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Tests\Facade;
-
 use FriendsOfHyperf\Cache\Cache;
 use FriendsOfHyperf\Facade\Log;
-use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Utils\ApplicationContext;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
 
-/**
- * @internal
- * @coversNothing
- */
-class FacadeTest extends TestCase
-{
-    public function testExample()
-    {
-        $this->assertTrue(true);
-    }
+afterEach(function () {
+    m::close();
+});
 
-    public function testLog()
-    {
-        ApplicationContext::setContainer(
-            m::mock(ContainerInterface::class)->allows()->get(LoggerFactory::class)->andReturn(
-                m::mock(LoggerFactory::class)->allows()->get('hyperf', 'default')->andReturn(
-                    m::mock(\Psr\Log\LoggerInterface::class)->allows()->info('test')->getMock()
-                )->getMock()
-            )->getMock()
-        );
+test('test Cache Macroable', function () {
+    Cache::macro('test', fn () => null);
 
-        $this->assertInstanceOf(\Psr\Log\LoggerInterface::class, Log::channel('hyperf', 'default'));
-        $this->assertEmpty(Log::info('test'));
-    }
+    expect(Cache::hasMacro('test'))->toBeTrue();
+});
 
-    public function testCacheMacroable()
-    {
-        Cache::macro('test', fn () => null);
+test('test Log Macroable', function () {
+    ApplicationContext::setContainer(
+        mock(ContainerInterface::class)->expect(
+            get: fn () => mock(LoggerFactory::class)->expect(
+                get: fn () => mock(\Psr\Log\LoggerInterface::class)->allows()->info('test')->getMock()
+            )
+        )
+    );
 
-        $this->assertTrue(Cache::hasMacro('test'));
-    }
-}
+    expect(Log::channel('hyperf', 'default'))->toBeInstanceOf(\Psr\Log\LoggerInterface::class);
+
+    expect(Log::info('test'))->toBeEmpty();
+});

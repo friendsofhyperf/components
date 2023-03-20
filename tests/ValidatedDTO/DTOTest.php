@@ -8,9 +8,6 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Tests\ValidatedDTO;
-
-use FriendsOfHyperf\Tests\TestCase;
 use FriendsOfHyperf\ValidatedDTO\Casting\StringCast;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
 use Hyperf\Contract\ValidatorInterface;
@@ -21,93 +18,82 @@ use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
 
-/**
- * @internal
- * @coversNothing
- */
-class DTOTest extends TestCase
-{
-    public function tearDown(): void
-    {
-        m::close();
-    }
+afterEach(function () {
+    m::close();
+});
 
-    public function testBaseValidate()
-    {
-        $data = ['name' => 'Hyperf', 'age' => 18];
+test('test BaseValidate', function () {
+    $data = ['name' => 'Hyperf', 'age' => 18];
 
-        ApplicationContext::setContainer(
-            m::mock(ContainerInterface::class, [
-                'get' => m::mock(ValidatorFactoryInterface::class, [
-                    'make' => m::mock(ValidatorInterface::class, ['fails' => false, 'validated' => $data]),
-                ]),
-            ])
-        );
+    ApplicationContext::setContainer(
+        m::mock(ContainerInterface::class, [
+            'get' => m::mock(ValidatorFactoryInterface::class, [
+                'make' => m::mock(ValidatorInterface::class, ['fails' => false, 'validated' => $data]),
+            ]),
+        ])
+    );
 
-        $dto = UserDTO::fromArray($data);
+    $dto = UserDTO::fromArray($data);
 
-        $this->assertSame('Hyperf', $dto->name);
-        $this->assertSame(18, $dto->age);
+    $this->assertSame('Hyperf', $dto->name);
+    $this->assertSame(18, $dto->age);
 
-        $dto = UserDTO::fromJson(json_encode($data));
+    $dto = UserDTO::fromJson(json_encode($data));
 
-        $this->assertSame('Hyperf', $dto->name);
-        $this->assertSame(18, $dto->age);
-    }
+    $this->assertSame('Hyperf', $dto->name);
+    $this->assertSame(18, $dto->age);
+});
 
-    public function testValidateWithScene()
-    {
-        $data = ['foo' => 'Foo', 'bar' => 'Bar'];
+test('test ValidateWithScene', function () {
+    $data = ['foo' => 'Foo', 'bar' => 'Bar'];
 
-        ApplicationContext::setContainer(
-            m::mock(ContainerInterface::class, [
-                'get' => m::mock(ValidatorFactoryInterface::class, [
-                    'make' => m::mock(ValidatorInterface::class, function ($mock) use ($data) {
-                        $mock->shouldReceive('fails')->andReturn(false)
-                            ->shouldReceive('validated')->andReturn(
-                                Arr::only($data, ['foo']),
-                                Arr::only($data, ['bar'])
-                            );
-                    }),
+    ApplicationContext::setContainer(
+        m::mock(ContainerInterface::class, [
+            'get' => m::mock(ValidatorFactoryInterface::class, [
+                'make' => m::mock(ValidatorInterface::class, function ($mock) use ($data) {
+                    $mock->shouldReceive('fails')->andReturn(false)
+                        ->shouldReceive('validated')->andReturn(
+                            Arr::only($data, ['foo']),
+                            Arr::only($data, ['bar'])
+                        );
+                }),
+            ]),
+        ]),
+    );
+
+    $dto = FooDTO::fromArray($data, 'foo');
+
+    $this->assertSame('Foo', $dto->foo);
+    $this->assertNull($dto->bar);
+
+    $dto = FooDTO::fromArray($data, 'bar');
+
+    $this->assertNull($dto->foo);
+    $this->assertSame('Bar', $dto->bar);
+});
+
+test('test ValidateWithCasting', function () {
+    $data = [
+        'foo' => new Stringable('Foo'),
+        'bar' => new Stringable('Bar'),
+    ];
+
+    ApplicationContext::setContainer(
+        m::mock(ContainerInterface::class, [
+            'get' => m::mock(ValidatorFactoryInterface::class, [
+                'make' => m::mock(ValidatorInterface::class, [
+                    'fails' => false,
+                    'validated' => $data,
                 ]),
             ]),
-        );
+        ]),
+    );
 
-        $dto = FooDTO::fromArray($data, 'foo');
+    $dto = BarDTO::fromArray($data);
 
-        $this->assertSame('Foo', $dto->foo);
-        $this->assertNull($dto->bar);
-
-        $dto = FooDTO::fromArray($data, 'bar');
-
-        $this->assertNull($dto->foo);
-        $this->assertSame('Bar', $dto->bar);
-    }
-
-    public function testValidateWithCasting()
-    {
-        $data = [
-            'foo' => new Stringable('Foo'),
-            'bar' => new Stringable('Bar'),
-        ];
-
-        ApplicationContext::setContainer(
-            m::mock(ContainerInterface::class, [
-                'get' => m::mock(ValidatorFactoryInterface::class, [
-                    'make' => m::mock(ValidatorInterface::class, [
-                        'fails' => false,
-                        'validated' => $data,
-                    ]),
-                ]),
-            ]),
-        );
-
-        $dto = BarDTO::fromArray($data);
-
-        $this->assertSame('Foo', $dto->foo);
-        $this->assertSame('Bar', $dto->bar);
-    }
-}
+    $this->assertSame('Foo', $dto->foo);
+    $this->assertSame('Bar', $dto->bar);
+});
 
 class UserDTO extends ValidatedDTO
 {

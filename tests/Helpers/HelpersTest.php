@@ -8,85 +8,63 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Tests\Helpers;
-
-use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Utils\Stringable;
-use ReflectionClass;
-use stdClass;
 
-/**
- * @internal
- * @coversNothing
- */
-class HelpersTest extends TestCase
-{
-    public function testClassNamespace()
-    {
-        $this->assertSame('Foo\Bar', class_namespace('Foo\Bar\Baz'));
-        $this->assertSame('', class_namespace('Baz'));
-    }
+uses(\FriendsOfHyperf\Tests\TestCase::class);
 
-    public function testObjectGet()
-    {
-        $class = new stdClass();
-        $class->name = new stdClass();
-        $class->name->first = 'Taylor';
+test('test ClassNamespace', function () {
+    $this->assertSame('Foo\Bar', class_namespace('Foo\Bar\Baz'));
+    $this->assertSame('', class_namespace('Baz'));
+});
 
-        $this->assertSame('Taylor', object_get($class, 'name.first'));
-    }
+test('test ObjectGet', function () {
+    $class = new stdClass();
+    $class->name = new stdClass();
+    $class->name->first = 'Taylor';
 
-    public function providesPregReplaceArrayData()
-    {
-        $pointerArray = ['Taylor', 'Otwell'];
+    $this->assertSame('Taylor', object_get($class, 'name.first'));
+});
 
-        next($pointerArray);
+dataset('providesPregReplaceArrayData', function () {
+    $pointerArray = ['Taylor', 'Otwell'];
 
-        return [
-            ['/:[a-z_]+/', ['8:30', '9:00'], 'The event will take place between :start and :end', 'The event will take place between 8:30 and 9:00'],
-            ['/%s/', ['Taylor'], 'Hi, %s', 'Hi, Taylor'],
-            ['/%s/', ['Taylor', 'Otwell'], 'Hi, %s %s', 'Hi, Taylor Otwell'],
-            ['/%s/', [], 'Hi, %s %s', 'Hi,  '],
-            ['/%s/', ['a', 'b', 'c'], 'Hi', 'Hi'],
-            ['//', [], '', ''],
-            ['/%s/', ['a'], '', ''],
-            // The internal pointer of this array is not at the beginning
-            ['/%s/', $pointerArray, 'Hi, %s %s', 'Hi, Taylor Otwell'],
-        ];
-    }
+    next($pointerArray);
 
-    /**
-     * @dataProvider providesPregReplaceArrayData
-     * @param mixed $pattern
-     * @param mixed $replacements
-     * @param mixed $subject
-     * @param mixed $expectedOutput
-     */
-    public function testPregReplaceArray($pattern, $replacements, $subject, $expectedOutput)
-    {
-        $this->assertSame(
-            $expectedOutput,
-            preg_replace_array($pattern, $replacements, $subject)
-        );
-    }
+    return [
+        ['/:[a-z_]+/', ['8:30', '9:00'], 'The event will take place between :start and :end', 'The event will take place between 8:30 and 9:00'],
+        ['/%s/', ['Taylor'], 'Hi, %s', 'Hi, Taylor'],
+        ['/%s/', ['Taylor', 'Otwell'], 'Hi, %s %s', 'Hi, Taylor Otwell'],
+        ['/%s/', [], 'Hi, %s %s', 'Hi,  '],
+        ['/%s/', ['a', 'b', 'c'], 'Hi', 'Hi'],
+        ['//', [], '', ''],
+        ['/%s/', ['a'], '', ''],
+        // The internal pointer of this array is not at the beginning
+        ['/%s/', $pointerArray, 'Hi, %s %s', 'Hi, Taylor Otwell'],
+    ];
+});
 
-    public function testStr()
-    {
-        $stringable = str('string-value');
+test('test PregReplaceArray', function ($pattern, $replacements, $subject, $expectedOutput) {
+    $this->assertSame(
+        $expectedOutput,
+        preg_replace_array($pattern, $replacements, $subject)
+    );
+})->with('providesPregReplaceArrayData');
 
-        $this->assertInstanceOf(Stringable::class, $stringable);
-        $this->assertSame('string-value', (string) $stringable);
+test('test Str', function () {
+    $stringable = str('string-value');
 
-        $stringable = str($name = null);
-        $this->assertInstanceOf(Stringable::class, $stringable);
-        $this->assertTrue($stringable->isEmpty());
+    $this->assertInstanceOf(Stringable::class, $stringable);
+    $this->assertSame('string-value', (string) $stringable);
 
-        $strAccessor = str();
-        $this->assertTrue((new ReflectionClass($strAccessor))->isAnonymous());
-        $this->assertSame($strAccessor->limit('string-value', 3), 'str...');
+    $stringable = str($name = null);
+    $this->assertInstanceOf(Stringable::class, $stringable);
+    $this->assertTrue($stringable->isEmpty());
 
-        $strAccessor = str();
-        $this->assertTrue((new ReflectionClass($strAccessor))->isAnonymous());
-        $this->assertSame((string) $strAccessor, '');
-    }
-}
+    $strAccessor = str();
+    $this->assertTrue((new ReflectionClass($strAccessor))->isAnonymous());
+    $this->assertSame($strAccessor->limit('string-value', 3), 'str...');
+
+    $strAccessor = str();
+    $this->assertTrue((new ReflectionClass($strAccessor))->isAnonymous());
+    $this->assertSame((string) $strAccessor, '');
+});

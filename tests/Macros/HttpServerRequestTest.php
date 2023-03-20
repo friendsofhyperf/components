@@ -8,50 +8,41 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Tests\Macros;
-
-use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Context\Context;
 use Hyperf\HttpServer\Request;
-use Mockery;
+use Mockery as m;
 use Psr\Http\Message\ServerRequestInterface;
 
-/**
- * @internal
- * @coversNothing
- */
-class HttpServerRequestTest extends TestCase
-{
-    protected function tearDown(): void
-    {
-        Mockery::close();
-        Context::set(ServerRequestInterface::class, null);
-        Context::set('http.request.parsedData', null);
-    }
+uses(\FriendsOfHyperf\Tests\TestCase::class);
 
-    public function testOnly()
-    {
-        $psrRequest = Mockery::mock(ServerRequestInterface::class);
-        $psrRequest->shouldReceive('getParsedBody')->andReturn(['id' => 1]);
-        $psrRequest->shouldReceive('getQueryParams')->andReturn([]);
-        Context::set(ServerRequestInterface::class, $psrRequest);
+afterEach(function () {
+    m::close();
+    Context::set(ServerRequestInterface::class, null);
+    Context::set('http.request.parsedData', null);
+});
 
-        $request = new Request();
+test('test Only', function () {
+    $psrRequest = mock(ServerRequestInterface::class)->expect(
+        getParsedBody: fn () => ['id' => 1],
+        getQueryParams: fn () => [],
+    );
+    Context::set(ServerRequestInterface::class, $psrRequest);
 
-        $this->assertSame(1, $request->input('id'));
-        $this->assertSame(['id' => 1], $request->only(['id']));
-    }
+    $request = new Request();
 
-    public function testIsEmptyString()
-    {
-        $psrRequest = Mockery::mock(ServerRequestInterface::class);
-        $psrRequest->shouldReceive('getParsedBody')->andReturn(['id' => 1]);
-        $psrRequest->shouldReceive('getQueryParams')->andReturn([]);
-        Context::set(ServerRequestInterface::class, $psrRequest);
+    expect($request->input('id'))->toBe(1);
+    expect($request->only(['id']))->toBe(['id' => 1]);
+});
 
-        $request = new Request();
+test('test IsEmptyString', function () {
+    $psrRequest = mock(ServerRequestInterface::class)->expect(
+        getParsedBody: fn () => ['id' => 1],
+        getQueryParams: fn () => [],
+    );
+    Context::set(ServerRequestInterface::class, $psrRequest);
 
-        $this->assertTrue($request->isEmptyString('foo'));
-        $this->assertFalse($request->isEmptyString('id'));
-    }
-}
+    $request = new Request();
+
+    expect($request->isEmptyString('foo'))->toBeTrue();
+    expect($request->isEmptyString('id'))->toBeFalse();
+});
