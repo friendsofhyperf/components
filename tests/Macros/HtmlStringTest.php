@@ -13,19 +13,19 @@ use FriendsOfHyperf\Macros\Foundation\HtmlString;
 test('test ToHtml', function () {
     $str = '<h1>foo</h1>';
     $html = new HtmlString('<h1>foo</h1>');
-    $this->assertEquals($str, $html->toHtml());
+    expect($html->toHtml())->toBe($str);
 });
 
 test('test ToString', function () {
     $str = '<h1>foo</h1>';
     $html = new HtmlString('<h1>foo</h1>');
-    $this->assertEquals($str, (string) $html);
+    expect((string) $html)->toBe($str);
 });
 
 test('test IsEmpty', function () {
-    $this->assertTrue((new HtmlString(''))->isEmpty());
+    expect((new HtmlString(''))->isEmpty())->toBeTrue();
 });
 
 test('test IsNotEmpty', function () {
-    $this->assertTrue((new HtmlString('foo'))->isNotEmpty());
+    expect((new HtmlString('foo'))->isNotEmpty())->toBeTrue();
 });
