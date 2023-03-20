@@ -29,6 +29,10 @@ jobs:
           extensions: redis, pdo, pdo_mysql, bcmath, swoole
           tools: phpize
           coverage: none
+      - name: Setup pest-plugin-parallel
+        run: |
+          composer require pestphp/pest-plugin-parallel:^1.2.1
+        if: matrix.php == '8.0'
       - name: Setup Packages
         run: composer update -o
       - name: Run Cs Fixer
@@ -36,4 +40,4 @@ jobs:
       - name: Run Analyse
         run: composer analyse src
       - name: Run Test Cases
-        run: composer test
+        run: php vendor/bin/pest --parallel=4
