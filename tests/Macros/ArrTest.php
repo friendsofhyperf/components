@@ -8,8 +8,6 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Tests\Macros;
-
 use Hyperf\Utils\Arr;
 
 uses(\FriendsOfHyperf\Tests\TestCase::class);
