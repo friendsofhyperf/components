@@ -8,27 +8,17 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Tests\FastPaginate;
-
-use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Relations\Relation;
 
-/**
- * @internal
- * @coversNothing
- */
-class BuilderTest extends TestCase
-{
-    public function testBuilder()
-    {
-        $this->assertTrue(Builder::hasGlobalMacro('fastPaginate'));
-        $this->assertTrue(Builder::hasGlobalMacro('simpleFastPaginate'));
-    }
+uses(\FriendsOfHyperf\Tests\TestCase::class);
 
-    public function testRelation()
-    {
-        $this->assertTrue(Relation::hasMacro('fastPaginate'));
-        $this->assertTrue(Relation::hasMacro('simpleFastPaginate'));
-    }
-}
+test('test Builder', function () {
+    expect(Builder::hasGlobalMacro('fastPaginate'))->toBeTrue();
+    expect(Builder::hasGlobalMacro('simpleFastPaginate'))->toBeTrue();
+});
+
+test('test Relation', function () {
+    expect(Relation::hasMacro('fastPaginate'))->toBeTrue();
+    expect(Relation::hasMacro('simpleFastPaginate'))->toBeTrue();
+});
