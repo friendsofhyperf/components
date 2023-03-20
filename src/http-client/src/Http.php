@@ -10,6 +10,8 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Http\Client;
 
+use Closure;
+
 /**
  * @method static \GuzzleHttp\Promise\PromiseInterface response($body = null, $status = 200, $headers = [])
  * @method static Factory fake($callback = null)
@@ -74,8 +76,113 @@ namespace FriendsOfHyperf\Http\Client;
  */
 class Http
 {
+    /**
+     * The resolved object instances.
+     *
+     * @var array
+     */
+    protected static $resolvedInstance;
+
     public static function __callStatic($name, $arguments)
     {
-        return make(Factory::class)->{$name}(...$arguments);
+        return static::getFacadeRoot()->{$name}(...$arguments);
+    }
+
+    /**
+     * Get the root object behind the facade.
+     *
+     * @return mixed
+     */
+    public static function getFacadeRoot()
+    {
+        return static::resolveFacadeInstance(static::getFacadeAccessor());
+    }
+
+    /**
+     * Register a stub callable that will intercept requests and be able to return stub responses.
+     *
+     * @param array|Closure $callback
+     * @return Factory
+     */
+    public static function fake($callback = null)
+    {
+        return tap(static::getFacadeRoot(), function ($fake) use ($callback) {
+            static::swap($fake->fake($callback));
+        });
+    }
+
+    /**
+     * Register a response sequence for the given URL pattern.
+     *
+     * @return ResponseSequence
+     */
+    public static function fakeSequence(string $urlPattern = '*')
+    {
+        $fake = tap(static::getFacadeRoot(), function ($fake) {
+            static::swap($fake);
+        });
+
+        return $fake->fakeSequence($urlPattern);
+    }
+
+    /**
+     * Indicate that an exception should be thrown if any request is not faked.
+     *
+     * @return Factory
+     */
+    public static function preventStrayRequests()
+    {
+        return tap(static::getFacadeRoot(), function ($fake) {
+            static::swap($fake->preventStrayRequests());
+        });
+    }
+
+    /**
+     * Stub the given URL using the given callback.
+     *
+     * @param string $url
+     * @param callable|\GuzzleHttp\Promise\PromiseInterface|Response $callback
+     * @return Factory
+     */
+    public static function stubUrl($url, $callback)
+    {
+        return tap(static::getFacadeRoot(), function ($fake) use ($url, $callback) {
+            static::swap($fake->stubUrl($url, $callback));
+        });
+    }
+
+    /**
+     * Hotswap the underlying instance behind the facade.
+     *
+     * @param mixed $instance
+     */
+    public static function swap($instance)
+    {
+        static::$resolvedInstance[static::getFacadeAccessor()] = $instance;
+    }
+
+    /**
+     * Get the registered name of the component.
+     *
+     * @return string
+     */
+    protected static function getFacadeAccessor()
+    {
+        return Factory::class;
+    }
+
+    /**
+     * Resolve the facade root instance from the container.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    protected static function resolveFacadeInstance($name)
+    {
+        if (isset(static::$resolvedInstance[$name])) {
+            return static::$resolvedInstance[$name];
+        }
+
+        return static::$resolvedInstance[$name] = make($name);
     }
 }
