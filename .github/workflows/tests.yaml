@@ -31,19 +31,19 @@ jobs:
           coverage: none
       - name: Setup Packages
         run: composer update -o
-        if: ${{ matrix.php }} != '8.0'
+        if: matrix.php != '8.0'
       - name: Setup Packages (PHP 8.0)
         run: |
           composer update -o
           composer r "pestphp/pest-plugin-parallel:^1.2.1" --dev -W
-        if: ${{ matrix.php }} == '8.0'
+        if: matrix.php == '8.0'
       - name: Run Cs Fixer
         run: vendor/bin/php-cs-fixer fix src --dry-run
       - name: Run Analyse
         run: composer analyse src
       - name: Run Test Cases
         run: composer test
-        if: ${{ matrix.php }} != '8.0'
+        if: matrix.php != '8.0'
       - name: Run Test Cases (PHP 8.0)
         run: composer test --parallel --processes=8
-        if: ${{ matrix.php }} == '8.0'
+        if: matrix.php == '8.0'
