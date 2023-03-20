@@ -40,4 +40,4 @@ jobs:
       - name: Run Analyse
         run: composer analyse src
       - name: Run Test Cases
-        run: php vendor/bin/pest --parallel=4
+        run: php vendor/bin/pest --parallel --processes=4
