@@ -175,4 +175,56 @@ class Collection
     public function value($key, $default = null)
     {
     }
+
+    /**
+     * Apply the callback if the collection is empty.
+     *
+     * @template TWhenEmptyReturnType
+     *
+     * @param  (callable($this): TWhenEmptyReturnType)  $callback
+     * @param  (callable($this): TWhenEmptyReturnType)|null  $default
+     * @return $this|TWhenEmptyReturnType
+     */
+    public function whenEmpty(callable $callback, callable $default = null)
+    {
+    }
+
+    /**
+     * Apply the callback if the collection is not empty.
+     *
+     * @template TWhenNotEmptyReturnType
+     *
+     * @param callable($this): TWhenNotEmptyReturnType $callback
+     * @param  (callable($this): TWhenNotEmptyReturnType)|null  $default
+     * @return $this|TWhenNotEmptyReturnType
+     */
+    public function whenNotEmpty(callable $callback, callable $default = null)
+    {
+    }
+
+    /**
+     * Apply the callback unless the collection is empty.
+     *
+     * @template TUnlessEmptyReturnType
+     *
+     * @param callable($this): TUnlessEmptyReturnType $callback
+     * @param  (callable($this): TUnlessEmptyReturnType)|null  $default
+     * @return $this|TUnlessEmptyReturnType
+     */
+    public function unlessEmpty(callable $callback, callable $default = null)
+    {
+    }
+
+    /**
+     * Apply the callback unless the collection is not empty.
+     *
+     * @template TUnlessNotEmptyReturnType
+     *
+     * @param callable($this): TUnlessNotEmptyReturnType $callback
+     * @param  (callable($this): TUnlessNotEmptyReturnType)|null  $default
+     * @return $this|TUnlessNotEmptyReturnType
+     */
+    public function unlessNotEmpty(callable $callback, callable $default = null)
+    {
+    }
 }

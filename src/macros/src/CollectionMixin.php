@@ -166,4 +166,24 @@ class CollectionMixin
             return value($default);
         };
     }
+
+    public function whenEmpty()
+    {
+        return fn (callable $callback, callable $default = null) => $this->when($this->isEmpty(), $callback, $default);
+    }
+
+    public function whenNotEmpty()
+    {
+        return fn (callable $callback, callable $default = null) => $this->when($this->isNotEmpty(), $callback, $default);
+    }
+
+    public function unlessEmpty()
+    {
+        return fn (callable $callback, callable $default = null) => $this->whenNotEmpty($callback, $default);
+    }
+
+    public function unlessNotEmpty()
+    {
+        return fn (callable $callback, callable $default = null) => $this->whenEmpty($callback, $default);
+    }
 }
