@@ -12,28 +12,24 @@ use Hyperf\Utils\Arr;
 
 uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'arr');
 
-test('test is list', function ($item) {
-    expect(Arr::isList($item))->toBeTrue();
+test('test isList', function ($expected, $value) {
+    expect(Arr::isList($value))->toBe($expected);
 })->with([
-    [[]],
-    [[1, 2, 3]],
-    [['foo', 2, 3]],
-    [['foo', 'bar']],
-    [[0 => 'foo', 'bar']],
-    [[0 => 'foo', 1 => 'bar']],
+    [true, []],
+    [true, [1, 2, 3]],
+    [true, ['foo', 2, 3]],
+    [true, ['foo', 'bar']],
+    [true, [0 => 'foo', 'bar']],
+    [true, [0 => 'foo', 1 => 'bar']],
+
+    [false, [1 => 'foo', 'bar']],
+    [false, [1 => 'foo', 0 => 'bar']],
+    [false, [0 => 'foo', 'bar' => 'baz']],
+    [false, [0 => 'foo', 2 => 'bar']],
+    [false, ['foo' => 'bar', 'baz' => 'qux']],
 ]);
 
-test('test not is list', function ($item) {
-    expect(Arr::isList([1 => 'foo', 'bar']))->toBeFalse();
-})->with([
-    [[1 => 'foo', 'bar']],
-    [[1 => 'foo', 0 => 'bar']],
-    [[0 => 'foo', 'bar' => 'baz']],
-    [[0 => 'foo', 2 => 'bar']],
-    [['foo' => 'bar', 'baz' => 'qux']],
-]);
-
-test('test KeyBy', function () {
+test('test keyBy', function () {
     $array = [
         ['id' => '123', 'data' => 'abc'],
         ['id' => '345', 'data' => 'def'],
@@ -47,17 +43,17 @@ test('test KeyBy', function () {
     ]);
 });
 
-test('test Join', function ($expected, $array, $glue, $last = '') {
-    expect(Arr::join($array, $glue, $last))->toBe($expected);
+test('test join', function ($expected, $args) {
+    expect(Arr::join(...$args))->toBe($expected);
 })->with([
-    ['a, b, c', ['a', 'b', 'c'], ', '],
-    ['a, b and c', ['a', 'b', 'c'], ', ', ' and '],
-    ['a and b', ['a', 'b'], ', ', ' and '],
-    ['a', ['a'], ', ', ' and '],
-    ['', [], ', ', ' and '],
+    ['a, b, c', [['a', 'b', 'c'], ', ']],
+    ['a, b and c', [['a', 'b', 'c'], ', ', ' and ']],
+    ['a and b', [['a', 'b'], ', ', ' and ']],
+    ['a', [['a'], ', ', ' and ']],
+    ['', [[], ', ', ' and ']],
 ]);
 
-test('test Map', function () {
+test('test map', function () {
     $data = ['first' => 'taylor', 'last' => 'otwell'];
     $mapped = Arr::map($data, function ($value, $key) {
         return $key . '-' . strrev($value);
@@ -66,7 +62,7 @@ test('test Map', function () {
     expect($data)->toBe(['first' => 'taylor', 'last' => 'otwell']);
 });
 
-test('test PrependKeysWith', function () {
+test('test prependKeysWith', function () {
     $array = [
         'id' => '123',
         'data' => '456',
@@ -86,7 +82,7 @@ test('test PrependKeysWith', function () {
     ]);
 });
 
-test('test SortByMany', function () {
+test('test sortByMany', function () {
     $unsorted = [
         ['name' => 'John', 'age' => 8, 'meta' => ['key' => 3]],
         ['name' => 'John', 'age' => 10, 'meta' => ['key' => 5]],
@@ -135,7 +131,7 @@ test('test SortByMany', function () {
     ]);
 });
 
-test('test SortDesc', function () {
+test('test sortDesc', function () {
     $unsorted = [
         ['name' => 'Chair'],
         ['name' => 'Desk'],
@@ -157,7 +153,7 @@ test('test SortDesc', function () {
     expect(array_values(Arr::sortDesc($unsorted, 'name')))->toBe($expected);
 });
 
-test('test Undot', function () {
+test('test undot', function () {
     expect(Arr::undot([
         'user.name' => 'Taylor',
         'user.age' => 25,

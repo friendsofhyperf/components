@@ -19,7 +19,7 @@ dataset('collectionClassProvider', [
     // [LazyCollection::class],
 ]);
 
-test('test FirstOrFailReturnsFirstItemInCollection', function () {
+test('test firstOrFailReturnsFirstItemInCollection', function () {
     $collection = collect([
         ['name' => 'foo'],
         ['name' => 'bar'],
@@ -30,7 +30,7 @@ test('test FirstOrFailReturnsFirstItemInCollection', function () {
     $this->assertSame(['name' => 'foo'], $collection->firstOrFail('name', 'foo'));
 });
 
-test('test GetOrPut', function () {
+test('test getOrPut', function () {
     $data = new Collection(['name' => 'taylor', 'email' => 'foo']);
 
     $this->assertEquals('taylor', $data->getOrPut('name', null));
@@ -60,7 +60,7 @@ test('test GetOrPut', function () {
     $this->assertEquals('male', $data->get('gender'));
 });
 
-test('test HasAny', function () {
+test('test hasAny', function () {
     $data = collect(['id' => 1, 'first' => 'Hello', 'second' => 'World']);
 
     $this->assertTrue($data->hasAny('first'));
@@ -70,45 +70,45 @@ test('test HasAny', function () {
     $this->assertFalse($data->hasAny(['third', 'fourth']));
 });
 
-test('test IntersectUsingWithNull', function ($collection) {
+test('test intersectUsingWithNull', function ($collection) {
     $collect = new $collection(['green', 'brown', 'blue']);
 
     $this->assertEquals([], $collect->intersectUsing(null, 'strcasecmp')->all());
 })->with('collectionClassProvider');
 
-test('test IntersectUsingCollection', function ($collection) {
+test('test intersectUsingCollection', function ($collection) {
     $collect = new $collection(['green', 'brown', 'blue']);
 
     $this->assertEquals(['green', 'brown'], $collect->intersectUsing(new $collection(['GREEN', 'brown', 'yellow']), 'strcasecmp')->all());
 })->with('collectionClassProvider');
 
-test('test IntersectAssocWithNull', function ($collection) {
+test('test intersectAssocWithNull', function ($collection) {
     $array1 = new $collection(['a' => 'green', 'b' => 'brown', 'c' => 'blue', 'red']);
 
     $this->assertEquals([], $array1->intersectAssoc(null)->all());
 })->with('collectionClassProvider');
 
-test('test IntersectAssocCollection', function ($collection) {
+test('test intersectAssocCollection', function ($collection) {
     $array1 = new $collection(['a' => 'green', 'b' => 'brown', 'c' => 'blue', 'red']);
     $array2 = new $collection(['a' => 'green', 'b' => 'yellow', 'blue', 'red']);
 
     $this->assertEquals(['a' => 'green'], $array1->intersectAssoc($array2)->all());
 })->with('collectionClassProvider');
 
-test('test IntersectAssocUsingWithNull', function ($collection) {
+test('test intersectAssocUsingWithNull', function ($collection) {
     $array1 = new $collection(['a' => 'green', 'b' => 'brown', 'c' => 'blue', 'red']);
 
     $this->assertEquals([], $array1->intersectAssocUsing(null, 'strcasecmp')->all());
 })->with('collectionClassProvider');
 
-test('test IntersectAssocUsingCollection', function ($collection) {
+test('test intersectAssocUsingCollection', function ($collection) {
     $array1 = new $collection(['a' => 'green', 'b' => 'brown', 'c' => 'blue', 'red']);
     $array2 = new $collection(['a' => 'GREEN', 'B' => 'brown', 'yellow', 'red']);
 
     $this->assertEquals(['b' => 'brown'], $array1->intersectAssocUsing($array2, 'strcasecmp')->all());
 })->with('collectionClassProvider');
 
-test('test PipeThrough', function () {
+test('test pipeThrough', function () {
     $data = new Collection([1, 2, 3]);
 
     $result = $data->pipeThrough([
@@ -123,7 +123,7 @@ test('test PipeThrough', function () {
     $this->assertEquals(15, $result);
 });
 
-test('test Sliding', function () {
+test('test sliding', function () {
     // Default parameters: $size = 2, $step = 1
     $this->assertSame([], Collection::times(0)->sliding()->toArray());
     $this->assertSame([], Collection::times(1)->sliding()->toArray());
@@ -178,7 +178,7 @@ test('test Sliding', function () {
     $this->assertInstanceOf(Collection::class, $chunks->skip(1)->first());
 });
 
-test('test Skip', function () {
+test('test skip', function () {
     $data = collect([1, 2, 3, 4, 5, 6]);
 
     // Total items to skip is smaller than collection length
@@ -188,7 +188,7 @@ test('test Skip', function () {
     $this->assertSame([], $data->skip(10)->values()->all());
 });
 
-test('test SoleReturnsFirstItemInCollectionIfOnlyOneExists', function () {
+test('test soleReturnsFirstItemInCollectionIfOnlyOneExists', function () {
     $collection = collect([
         ['name' => 'foo'],
         ['name' => 'bar'],
@@ -199,7 +199,7 @@ test('test SoleReturnsFirstItemInCollectionIfOnlyOneExists', function () {
     $this->assertSame(['name' => 'foo'], $collection->sole('name', 'foo'));
 });
 
-test('test SoleThrowsExceptionIfNoItemsExist', function () {
+test('test soleThrowsExceptionIfNoItemsExist', function () {
     $this->expectException(ItemNotFoundException::class);
 
     $collection = collect([
@@ -210,7 +210,7 @@ test('test SoleThrowsExceptionIfNoItemsExist', function () {
     $collection->where('name', 'INVALID')->sole();
 });
 
-test('test SoleThrowsExceptionIfMoreThanOneItemExists', function () {
+test('test soleThrowsExceptionIfMoreThanOneItemExists', function () {
     $this->expectException(MultipleItemsFoundException::class);
 
     $collection = collect([
@@ -222,13 +222,13 @@ test('test SoleThrowsExceptionIfMoreThanOneItemExists', function () {
     $collection->where('name', 'foo')->sole();
 });
 
-test('test SortKeysUsing', function () {
+test('test sortKeysUsing', function () {
     $data = collect(['B' => 'dayle', 'a' => 'taylor']);
 
     $this->assertSame(['a' => 'taylor', 'B' => 'dayle'], $data->sortKeysUsing('strnatcasecmp')->all());
 });
 
-test('test Undot', function () {
+test('test undot', function () {
     $data = collect([
         'name' => 'Taylor',
         'meta.foo' => 'bar',
@@ -262,7 +262,7 @@ test('test Undot', function () {
     ], $data->all());
 });
 
-test('test Value', function () {
+test('test value', function () {
     $c = collect([['id' => 1, 'name' => 'Hello'], ['id' => 2, 'name' => 'World']]);
 
     $this->assertEquals('Hello', $c->value('name'));
@@ -278,7 +278,7 @@ test('test Value', function () {
     $this->assertEquals('bar', $c->where('id', 2)->value('pivot.value'));
 });
 
-test('test WhenEmpty', function ($collection) {
+test('test whenEmpty', function ($collection) {
     $data = new $collection(['michael', 'tom']);
 
     $data = $data->whenEmpty(function () {
@@ -296,7 +296,7 @@ test('test WhenEmpty', function ($collection) {
     $this->assertSame(['adam'], $data->toArray());
 })->with('collectionClassProvider');
 
-test('test WhenEmptyDefault', function ($collection) {
+test('test whenEmptyDefault', function ($collection) {
     $data = new $collection(['michael', 'tom']);
 
     $data = $data->whenEmpty(function ($data) {
@@ -308,7 +308,7 @@ test('test WhenEmptyDefault', function ($collection) {
     $this->assertSame(['michael', 'tom', 'taylor'], $data->toArray());
 })->with('collectionClassProvider');
 
-test('test WhenNotEmpty', function ($collection) {
+test('test whenNotEmpty', function ($collection) {
     $data = new $collection(['michael', 'tom']);
 
     $data = $data->whenNotEmpty(function ($data) {
@@ -326,7 +326,7 @@ test('test WhenNotEmpty', function ($collection) {
     $this->assertSame([], $data->toArray());
 })->with('collectionClassProvider');
 
-test('test WhenNotEmptyDefault', function ($collection) {
+test('test whenNotEmptyDefault', function ($collection) {
     $data = new $collection(['michael', 'tom']);
 
     $data = $data->whenNotEmpty(function ($data) {
@@ -338,7 +338,7 @@ test('test WhenNotEmptyDefault', function ($collection) {
     $this->assertSame(['michael', 'tom', 'adam'], $data->toArray());
 })->with('collectionClassProvider');
 
-test('test Unless', function ($collection) {
+test('test unless', function ($collection) {
     $data = new $collection(['michael', 'tom']);
 
     $data = $data->unless(false, function ($data) {
@@ -356,7 +356,7 @@ test('test Unless', function ($collection) {
     $this->assertSame(['michael', 'tom'], $data->toArray());
 })->with('collectionClassProvider');
 
-test('test UnlessDefault', function ($collection) {
+test('test unlessDefault', function ($collection) {
     $data = new $collection(['michael', 'tom']);
 
     $data = $data->unless(true, function ($data) {
@@ -368,7 +368,7 @@ test('test UnlessDefault', function ($collection) {
     $this->assertSame(['michael', 'tom', 'taylor'], $data->toArray());
 })->with('collectionClassProvider');
 
-test('test UnlessEmpty', function ($collection) {
+test('test unlessEmpty', function ($collection) {
     $data = new $collection(['michael', 'tom']);
 
     $data = $data->unlessEmpty(function ($data) {
@@ -386,7 +386,7 @@ test('test UnlessEmpty', function ($collection) {
     $this->assertSame([], $data->toArray());
 })->with('collectionClassProvider');
 
-test('test UnlessEmptyDefault', function ($collection) {
+test('test unlessEmptyDefault', function ($collection) {
     $data = new $collection(['michael', 'tom']);
 
     $data = $data->unlessEmpty(function ($data) {
@@ -398,7 +398,7 @@ test('test UnlessEmptyDefault', function ($collection) {
     $this->assertSame(['michael', 'tom', 'adam'], $data->toArray());
 })->with('collectionClassProvider');
 
-test('test UnlessNotEmpty', function ($collection) {
+test('test unlessNotEmpty', function ($collection) {
     $data = new $collection(['michael', 'tom']);
 
     $data = $data->unlessNotEmpty(function ($data) {
@@ -416,7 +416,7 @@ test('test UnlessNotEmpty', function ($collection) {
     $this->assertSame(['adam'], $data->toArray());
 })->with('collectionClassProvider');
 
-test('test UnlessNotEmptyDefault', function ($collection) {
+test('test unlessNotEmptyDefault', function ($collection) {
     $data = new $collection(['michael', 'tom']);
 
     $data = $data->unlessNotEmpty(function ($data) {

@@ -12,22 +12,22 @@ use FriendsOfHyperf\Macros\Foundation\HtmlString;
 
 uses()->group('macros', 'html-string');
 
-test('test ToHtml', function () {
+test('test toHtml', function () {
     $str = '<h1>foo</h1>';
     $html = new HtmlString('<h1>foo</h1>');
     expect($html->toHtml())->toBe($str);
 });
 
-test('test ToString', function () {
+test('test toString', function () {
     $str = '<h1>foo</h1>';
     $html = new HtmlString('<h1>foo</h1>');
     expect((string) $html)->toBe($str);
 });
 
-test('test IsEmpty', function () {
+test('test isEmpty', function () {
     expect((new HtmlString(''))->isEmpty())->toBeTrue();
 });
 
-test('test IsNotEmpty', function () {
+test('test isNotEmpty', function () {
     expect((new HtmlString('foo'))->isNotEmpty())->toBeTrue();
 });

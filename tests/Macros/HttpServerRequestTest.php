@@ -21,7 +21,7 @@ afterEach(function () {
     Context::set('http.request.parsedData', null);
 });
 
-test('test Only', function () {
+test('test only', function () {
     $psrRequest = mock(ServerRequestInterface::class)->expect(
         getParsedBody: fn () => ['id' => 1],
         getQueryParams: fn () => [],
@@ -34,7 +34,7 @@ test('test Only', function () {
     expect($request->only(['id']))->toBe(['id' => 1]);
 });
 
-test('test IsEmptyString', function () {
+test('test isEmptyString', function () {
     $psrRequest = mock(ServerRequestInterface::class)->expect(
         getParsedBody: fn () => ['id' => 1],
         getQueryParams: fn () => [],
