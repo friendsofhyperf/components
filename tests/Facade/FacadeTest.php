@@ -15,6 +15,8 @@ use Hyperf\Utils\ApplicationContext;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
 
+uses()->group('facade');
+
 afterEach(function () {
     m::close();
 });

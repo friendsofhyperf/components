@@ -34,6 +34,8 @@ use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
 
+uses()->group('validated-dto');
+
 beforeEach(function () {
     $this->testProperty = 'test_property';
 });

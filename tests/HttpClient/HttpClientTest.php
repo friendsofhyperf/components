@@ -15,17 +15,17 @@ use FriendsOfHyperf\Http\Client\RequestException;
 use FriendsOfHyperf\Http\Client\Response;
 use Psr\Http\Message\ResponseInterface;
 
+uses()->group('http-client');
+
 beforeEach(function () {
     $this->factory = new Factory();
 });
 
-test('test BuildClient', function () {
-    $client = Http::buildClient();
-
-    $this->assertInstanceOf(\GuzzleHttp\Client::class, $client);
+test('test buildClient', function () {
+    expect(Http::buildClient())->toBeInstanceOf(\GuzzleHttp\Client::class);
 });
 
-test('test Ok', function () {
+test('test ok', function () {
     $this->factory->fake([
         'laravel.com/*' => Http::response('', 200),
     ]);
@@ -33,7 +33,7 @@ test('test Ok', function () {
     $this->assertTrue($response->ok());
 });
 
-test('test Failed', function () {
+test('test failed', function () {
     $this->factory->fake([
         'laravel.com/*' => Http::response('Not Found', 404),
     ]);
@@ -48,7 +48,7 @@ test('test Failed', function () {
     }
 });
 
-test('test Get', function () {
+test('test get', function () {
     $this->factory->fake([
         'laravel.com/*' => Http::response($json = json_encode(['foo' => 'bar']), 200),
     ]);
@@ -61,7 +61,7 @@ test('test Get', function () {
     $this->assertArrayHasKey('foo', $response->json());
 });
 
-test('test Post', function () {
+test('test post', function () {
     $this->factory->fake([
         'laravel.com/*' => Http::response($json = json_encode(['foo' => 'bar']), 200),
     ]);
@@ -73,7 +73,7 @@ test('test Post', function () {
     $this->assertArrayHasKey('foo', $response->json());
 });
 
-test('test CanSendArrayableFormData', function () {
+test('test canSendArrayableFormData', function () {
     $this->factory->fake();
 
     $this->factory->asForm()->post('http://foo.com/form', collect([
@@ -88,7 +88,7 @@ test('test CanSendArrayableFormData', function () {
     });
 });
 
-test('test GetWithArrayableQueryParam', function () {
+test('test getWithArrayableQueryParam', function () {
     $this->factory->fake();
 
     $this->factory->get('http://foo.com/get', collect(['foo' => 'bar']));
@@ -99,7 +99,7 @@ test('test GetWithArrayableQueryParam', function () {
     });
 });
 
-test('test Redirect', function () {
+test('test redirect', function () {
     $this->factory->fake([
         'laravel.com/*' => Http::response('', 300),
     ]);
@@ -107,7 +107,7 @@ test('test Redirect', function () {
     $this->assertTrue($response->redirect());
 });
 
-test('test Reason', function () {
+test('test reason', function () {
     $this->factory->fake([
         'laravel.com/*' => Http::response('', 401),
     ]);
@@ -115,7 +115,7 @@ test('test Reason', function () {
     $this->assertEquals('Unauthorized', $response->reason());
 });
 
-test('test Unauthorized', function () {
+test('test unauthorized', function () {
     $this->factory->fake([
         'laravel.com/*' => Http::response('', 401),
     ]);
@@ -123,7 +123,7 @@ test('test Unauthorized', function () {
     $this->assertTrue($response->unauthorized());
 });
 
-test('test Forbidden', function () {
+test('test forbidden', function () {
     $this->factory->fake([
         'laravel.com/*' => Http::response('', 403),
     ]);
@@ -131,7 +131,7 @@ test('test Forbidden', function () {
     $this->assertTrue($response->forbidden());
 });
 
-test('test NotFound', function () {
+test('test notFound', function () {
     $this->factory->fake([
         'laravel.com/*' => Http::response('', 404),
     ]);
@@ -139,7 +139,7 @@ test('test NotFound', function () {
     $this->assertTrue($response->notFound());
 });
 
-test('test BasicAuth', function () {
+test('test basicAuth', function () {
     $user = 'admin';
     $pass = 'secret';
     $url = 'http://example.com/basic-auth';
@@ -159,7 +159,7 @@ test('test BasicAuth', function () {
     $this->assertFalse($response->ok());
 });
 
-test('test RequestExceptionIsThrownWhenRetriesExhausted', function () {
+test('test requestExceptionIsThrownWhenRetriesExhausted', function () {
     $this->factory->fake([
         '*' => $this->factory->response(['error'], 403),
     ]);
@@ -180,7 +180,7 @@ test('test RequestExceptionIsThrownWhenRetriesExhausted', function () {
     $this->factory->assertSentCount(3);
 });
 
-test('test RequestExceptionIsNotThrownWhenDisabledAndRetriesExhausted', function () {
+test('test requestExceptionIsNotThrownWhenDisabledAndRetriesExhausted', function () {
     $this->factory->fake([
         '*' => $this->factory->response(['error'], 403),
     ]);
@@ -194,7 +194,7 @@ test('test RequestExceptionIsNotThrownWhenDisabledAndRetriesExhausted', function
     $this->factory->assertSentCount(2);
 });
 
-test('test SinkToFile', function () {
+test('test sinkToFile', function () {
     $this->factory->fakeSequence()->push('abc123');
 
     $destination = '/tmp/sunk.txt';
@@ -211,24 +211,26 @@ test('test SinkToFile', function () {
     unlink($destination);
 });
 
-test('test OnHeaders', function () {
-    $this->factory->onHeaders(function (ResponseInterface $response) {
-        $this->assertGreaterThan(0, $response->getHeaderLine('Content-Length'));
-    })
+test('test onHeaders', function () {
+    $this->factory
+        ->onHeaders(function (ResponseInterface $response) {
+            $this->assertGreaterThan(0, $response->getHeaderLine('Content-Length'));
+        })
         ->accept('image/jpeg')
         ->get('http://httpbin.org/image');
 });
 
-test('test Progress', function () {
-    $this->factory->progress(function ($downloadTotal, $downloaded, $uploadTotal, $uploaded) {
-        $this->assertGreaterThanOrEqual(0, $downloadTotal);
-        $this->assertGreaterThanOrEqual(0, $downloaded);
-    })
+test('test progress', function () {
+    $this->factory
+        ->progress(function ($downloadTotal, $downloaded, $uploadTotal, $uploaded) {
+            $this->assertGreaterThanOrEqual(0, $downloadTotal);
+            $this->assertGreaterThanOrEqual(0, $downloaded);
+        })
         ->accept('image/jpeg')
         ->get('http://httpbin.org/image');
 });
 
-test('test RequestExceptionIsThrownIfTheThrowIfClosureOnThePendingRequestReturnsTrue', function () {
+test('test requestExceptionIsThrownIfTheThrowIfClosureOnThePendingRequestReturnsTrue', function () {
     $this->factory->fake([
         'laravel.com/*' => Http::response('', 403),
     ]);
@@ -260,7 +262,7 @@ test('test RequestExceptionIsThrownIfTheThrowIfClosureOnThePendingRequestReturns
     $this->assertTrue($hitThrowCallback);
 });
 
-test('test RequestExceptionIsNotThrownIfTheThrowIfClosureOnThePendingRequestReturnsFalse', function () {
+test('test requestExceptionIsNotThrownIfTheThrowIfClosureOnThePendingRequestReturnsFalse', function () {
     $this->factory->fake([
         'laravel.com/*' => Http::response('', 403),
     ]);
@@ -280,7 +282,7 @@ test('test RequestExceptionIsNotThrownIfTheThrowIfClosureOnThePendingRequestRetu
     $this->assertFalse($hitThrowCallback);
 });
 
-test('test RequestExceptionIsThrownIfStatusCodeIsSatisfied', function () {
+test('test requestExceptionIsThrownIfStatusCodeIsSatisfied', function () {
     $this->factory->fake([
         '*' => $this->factory::response('', 400),
     ]);
@@ -296,7 +298,7 @@ test('test RequestExceptionIsThrownIfStatusCodeIsSatisfied', function () {
     $this->assertNotNull($exception);
     $this->assertInstanceOf(RequestException::class, $exception);
 });
-test('test RequestExceptionIsThrownIfStatusCodeIsSatisfiedWithClosure', function () {
+test('test requestExceptionIsThrownIfStatusCodeIsSatisfiedWithClosure', function () {
     $this->factory->fake([
         '*' => $this->factory::response('', 400),
     ]);
@@ -313,7 +315,7 @@ test('test RequestExceptionIsThrownIfStatusCodeIsSatisfiedWithClosure', function
     $this->assertInstanceOf(RequestException::class, $exception);
 });
 
-test('test RequestExceptionIsNotThrownIfStatusCodeIsNotSatisfied', function () {
+test('test requestExceptionIsNotThrownIfStatusCodeIsNotSatisfied', function () {
     $this->factory->fake([
         '*' => $this->factory::response('', 400),
     ]);
@@ -329,7 +331,7 @@ test('test RequestExceptionIsNotThrownIfStatusCodeIsNotSatisfied', function () {
     $this->assertNull($exception);
 });
 
-test('test RequestExceptionIsThrownUnlessStatusCodeIsSatisfied', function () {
+test('test requestExceptionIsThrownUnlessStatusCodeIsSatisfied', function () {
     $this->factory->fake([
         'http://foo.com/api/400' => $this->factory::response('', 400),
         'http://foo.com/api/408' => $this->factory::response('', 408),
@@ -387,7 +389,7 @@ test('test RequestExceptionIsThrownUnlessStatusCodeIsSatisfied', function () {
 
     $this->assertNull($exception);
 });
-test('test RequestExceptionIsThrownIfIsClientError', function () {
+test('test requestExceptionIsThrownIfIsClientError', function () {
     $this->factory->fake([
         'http://foo.com/api/400' => $this->factory::response('', 400),
         'http://foo.com/api/408' => $this->factory::response('', 408),
@@ -437,7 +439,7 @@ test('test RequestExceptionIsThrownIfIsClientError', function () {
 
     $this->assertNull($exception);
 });
-test('test RequestExceptionIsThrownIfIsServerError', function () {
+test('test requestExceptionIsThrownIfIsServerError', function () {
     $this->factory->fake([
         'http://foo.com/api/400' => $this->factory::response('', 400),
         'http://foo.com/api/408' => $this->factory::response('', 408),
@@ -488,7 +490,7 @@ test('test RequestExceptionIsThrownIfIsServerError', function () {
     $this->assertInstanceOf(RequestException::class, $exception);
 });
 
-test('test ItCanSubstituteUrlParams', function (): void {
+test('test canSubstituteUrlParams', function (): void {
     $this->factory->fake();
 
     $this->factory->withUrlParameters([

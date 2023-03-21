@@ -13,26 +13,26 @@ use FriendsOfHyperf\Tinker\TinkerCaster;
 use Hyperf\Utils\Collection;
 use Hyperf\Utils\Stringable;
 
-test('test CanCastCollection', function () {
-    $caster = new TinkerCaster();
+uses()->group('tinker');
 
-    $result = $caster->castCollection(new Collection(['foo', 'bar']));
-
-    $this->assertSame([['foo', 'bar']], array_values($result));
+beforeEach(function () {
+    $this->caster = new TinkerCaster();
 });
 
-test('test CanCastHtmlString', function () {
-    $caster = new TinkerCaster();
+test('test cast collection', function () {
+    $result = $this->caster->castCollection(new Collection(['foo', 'bar']));
 
-    $result = $caster->castHtmlString(new HtmlString('<p>foo</p>'));
-
-    $this->assertSame(['<p>foo</p>'], array_values($result));
+    expect(array_values($result))->toBeArray()->toBe([['foo', 'bar']]);
 });
 
-test('test CanCastStringable', function () {
-    $caster = new TinkerCaster();
+test('test cast html string', function () {
+    $result = $this->caster->castHtmlString(new HtmlString('<p>foo</p>'));
 
-    $result = $caster->castStringable(new Stringable('test string'));
+    expect(array_values($result))->toBeArray()->toBe(['<p>foo</p>']);
+});
 
-    $this->assertSame(['test string'], array_values($result));
+test('test cast stringable', function () {
+    $result = $this->caster->castStringable(new Stringable('test string'));
+
+    expect(array_values($result))->toBeArray()->toBe(['test string']);
 });

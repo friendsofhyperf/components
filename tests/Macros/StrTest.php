@@ -10,23 +10,25 @@ declare(strict_types=1);
  */
 use Hyperf\Utils\Str;
 
-uses(\FriendsOfHyperf\Tests\TestCase::class);
+uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'str');
 
-test('test StrBetweenFirst', function () {
-    $this->assertSame('abc', Str::betweenFirst('abc', '', 'c'));
-    $this->assertSame('abc', Str::betweenFirst('abc', 'a', ''));
-    $this->assertSame('abc', Str::betweenFirst('abc', '', ''));
-    $this->assertSame('b', Str::betweenFirst('abc', 'a', 'c'));
-    $this->assertSame('b', Str::betweenFirst('dddabc', 'a', 'c'));
-    $this->assertSame('b', Str::betweenFirst('abcddd', 'a', 'c'));
-    $this->assertSame('b', Str::betweenFirst('dddabcddd', 'a', 'c'));
-    $this->assertSame('nn', Str::betweenFirst('hannah', 'ha', 'ah'));
-    $this->assertSame('a', Str::betweenFirst('[a]ab[b]', '[', ']'));
-    $this->assertSame('foo', Str::betweenFirst('foofoobar', 'foo', 'bar'));
-    $this->assertSame('', Str::betweenFirst('foobarbar', 'foo', 'bar'));
-});
+test('test strBetweenFirst', function ($expected, $args) {
+    expect(Str::betweenFirst(...$args))->toBe($expected);
+})->with([
+    ['abc', ['abc', '', 'c']],
+    ['abc', ['abc', 'a', '']],
+    ['abc', ['abc', '', '']],
+    ['b', ['abc', 'a', 'c']],
+    ['b', ['dddabc', 'a', 'c']],
+    ['b', ['abcddd', 'a', 'c']],
+    ['b', ['dddabcddd', 'a', 'c']],
+    ['nn', ['hannah', 'ha', 'ah']],
+    ['a', ['[a]ab[b]', '[', ']']],
+    ['foo', ['foofoobar', 'foo', 'bar']],
+    ['', ['foobarbar', 'foo', 'bar']],
+]);
 
-test('test FlushCache', function () {
+test('test flushCache', function () {
     $reflection = new ReflectionClass(Str::class);
     $property = $reflection->getProperty('snakeCache');
     $property->setAccessible(true);
@@ -41,7 +43,7 @@ test('test FlushCache', function () {
     $this->assertEmpty($property->getValue());
 });
 
-test('test Excerpt', function () {
+test('test excerpt', function () {
     $this->assertSame('...is a beautiful morn...', Str::excerpt('This is a beautiful morning', 'beautiful', ['radius' => 5]));
     $this->assertSame('This is a...', Str::excerpt('This is a beautiful morning', 'this', ['radius' => 5]));
     $this->assertSame('...iful morning', Str::excerpt('This is a beautiful morning', 'morning', ['radius' => 5]));
@@ -96,105 +98,106 @@ test('test Excerpt', function () {
     $this->assertSame('João Antô...', Str::excerpt('João Antônio', 'JOÃO', ['radius' => 5]));
 });
 
-test('test Headline', function () {
-    $this->assertSame('Jefferson Costella', Str::headline('jefferson costella'));
-    $this->assertSame('Jefferson Costella', Str::headline('jefFErson coSTella'));
-    $this->assertSame('Jefferson Costella Uses Laravel', Str::headline('jefferson_costella uses-_Laravel'));
-    $this->assertSame('Jefferson Costella Uses Laravel', Str::headline('jefferson_costella uses__Laravel'));
+test('test headline', function ($expected, $value) {
+    expect(Str::headline($value))->toBe($expected);
+})->with([
+    ['Jefferson Costella', 'jefferson costella'],
+    ['Jefferson Costella', 'jefFErson coSTella'],
+    ['Jefferson Costella Uses Laravel', 'jefferson_costella uses-_Laravel'],
+    ['Jefferson Costella Uses Laravel', 'jefferson_costella uses__Laravel'],
+    ['Laravel P H P Framework', 'laravel_p_h_p_framework'],
+    ['Laravel P H P Framework', 'laravel _p _h _p _framework'],
+    ['Laravel Php Framework', 'laravel_php_framework'],
+    ['Laravel Ph P Framework', 'laravel-phP-framework'],
+    ['Laravel Php Framework', 'laravel  -_-  php   -_-   framework   '],
+    ['Foo Bar', 'fooBar'],
+    ['Foo Bar', 'foo_bar'],
+    ['Foo Bar Baz', 'foo-barBaz'],
+    ['Foo Bar Baz', 'foo-bar_baz'],
+    ['Öffentliche Überraschungen', 'öffentliche-überraschungen'],
+    ['Öffentliche Überraschungen', '-_öffentliche_überraschungen_-'],
+    ['Öffentliche Überraschungen', '-öffentliche überraschungen'],
+    ['Sind Öde Und So', 'sindÖdeUndSo'],
+    ['Orwell 1984', 'orwell 1984'],
+    ['Orwell 1984', 'orwell   1984'],
+    ['Orwell 1984', '-orwell-1984 -'],
+    ['Orwell 1984', ' orwell_- 1984 '],
+]);
 
-    $this->assertSame('Laravel P H P Framework', Str::headline('laravel_p_h_p_framework'));
-    $this->assertSame('Laravel P H P Framework', Str::headline('laravel _p _h _p _framework'));
-    $this->assertSame('Laravel Php Framework', Str::headline('laravel_php_framework'));
-    $this->assertSame('Laravel Ph P Framework', Str::headline('laravel-phP-framework'));
-    $this->assertSame('Laravel Php Framework', Str::headline('laravel  -_-  php   -_-   framework   '));
+test('test isJson', function ($expected, $value) {
+    expect(Str::isJson($value))->toBe($expected);
+})->with([
+    [true, '1'],
+    [true, '[1,2,3]'],
+    [true, '[1,   2,   3]'],
+    [true, '{"first": "John", "last": "Doe"}'],
+    [true, '[{"first": "John", "last": "Doe"}, {"first": "Jane", "last": "Doe"}]'],
+    [false, '1,'],
+    [false, '[1,2,3'],
+    [false, '[1,   2   3]'],
+    [false, '{first: "John"}'],
+    [false, '[{first: "John"}, {first: "Jane"}]'],
+    [false, ''],
+    [false, null],
+    [false, []],
+]);
 
-    $this->assertSame('Foo Bar', Str::headline('fooBar'));
-    $this->assertSame('Foo Bar', Str::headline('foo_bar'));
-    $this->assertSame('Foo Bar Baz', Str::headline('foo-barBaz'));
-    $this->assertSame('Foo Bar Baz', Str::headline('foo-bar_baz'));
+test('test lcfirst', function ($expected, $value) {
+    expect(Str::lcfirst($value))->toBe($expected);
+})->with([
+    ['laravel', 'Laravel'],
+    ['laravel framework', 'Laravel framework'],
+    ['мама', 'Мама'],
+    ['мама мыла раму', 'Мама мыла раму'],
+]);
 
-    $this->assertSame('Öffentliche Überraschungen', Str::headline('öffentliche-überraschungen'));
-    $this->assertSame('Öffentliche Überraschungen', Str::headline('-_öffentliche_überraschungen_-'));
-    $this->assertSame('Öffentliche Überraschungen', Str::headline('-öffentliche überraschungen'));
+test('test ucsplit', function ($expected, $value) {
+    expect(Str::ucsplit($value))->toBe($expected);
+})->with([
+    [['Laravel_p_h_p_framework'], 'Laravel_p_h_p_framework'],
+    [['Laravel_', 'P_h_p_framework'], 'Laravel_P_h_p_framework'],
+    [['laravel', 'P', 'H', 'P', 'Framework'], 'laravelPHPFramework'],
+    [['Laravel-ph', 'P-framework'], 'Laravel-phP-framework'],
+    [['Żółta', 'Łódka'], 'ŻółtaŁódka'],
+    [['sind', 'Öde', 'Und', 'So'], 'sindÖdeUndSo'],
+    [['Öffentliche', 'Überraschungen'], 'ÖffentlicheÜberraschungen'],
+]);
 
-    $this->assertSame('Sind Öde Und So', Str::headline('sindÖdeUndSo'));
-
-    $this->assertSame('Orwell 1984', Str::headline('orwell 1984'));
-    $this->assertSame('Orwell 1984', Str::headline('orwell   1984'));
-    $this->assertSame('Orwell 1984', Str::headline('-orwell-1984 -'));
-    $this->assertSame('Orwell 1984', Str::headline(' orwell_- 1984 '));
-});
-
-test('test IsJson', function () {
-    $this->assertTrue(Str::isJson('1'));
-    $this->assertTrue(Str::isJson('[1,2,3]'));
-    $this->assertTrue(Str::isJson('[1,   2,   3]'));
-    $this->assertTrue(Str::isJson('{"first": "John", "last": "Doe"}'));
-    $this->assertTrue(Str::isJson('[{"first": "John", "last": "Doe"}, {"first": "Jane", "last": "Doe"}]'));
-
-    $this->assertFalse(Str::isJson('1,'));
-    $this->assertFalse(Str::isJson('[1,2,3'));
-    $this->assertFalse(Str::isJson('[1,   2   3]'));
-    $this->assertFalse(Str::isJson('{first: "John"}'));
-    $this->assertFalse(Str::isJson('[{first: "John"}, {first: "Jane"}]'));
-    $this->assertFalse(Str::isJson(''));
-    $this->assertFalse(Str::isJson(null));
-    $this->assertFalse(Str::isJson([]));
-});
-
-test('test Lcfirst', function () {
-    $this->assertSame('laravel', Str::lcfirst('Laravel'));
-    $this->assertSame('laravel framework', Str::lcfirst('Laravel framework'));
-    $this->assertSame('мама', Str::lcfirst('Мама'));
-    $this->assertSame('мама мыла раму', Str::lcfirst('Мама мыла раму'));
-});
-
-test('test Ucsplit', function () {
-    $this->assertSame(['Laravel_p_h_p_framework'], Str::ucsplit('Laravel_p_h_p_framework'));
-    $this->assertSame(['Laravel_', 'P_h_p_framework'], Str::ucsplit('Laravel_P_h_p_framework'));
-    $this->assertSame(['laravel', 'P', 'H', 'P', 'Framework'], Str::ucsplit('laravelPHPFramework'));
-    $this->assertSame(['Laravel-ph', 'P-framework'], Str::ucsplit('Laravel-phP-framework'));
-
-    $this->assertSame(['Żółta', 'Łódka'], Str::ucsplit('ŻółtaŁódka'));
-    $this->assertSame(['sind', 'Öde', 'Und', 'So'], Str::ucsplit('sindÖdeUndSo'));
-    $this->assertSame(['Öffentliche', 'Überraschungen'], Str::ucsplit('ÖffentlicheÜberraschungen'));
-});
-
-test('test IsUuidWithValidUuid', function () {
+test('test isUuidWithValidUuid', function () {
     $this->assertTrue(Str::isUuid(Str::uuid()->__toString()));
 });
 
-test('test IsUuidWithInvalidUuid', function () {
+test('test isUuidWithInvalidUuid', function () {
     $this->assertFalse(Str::isUuid('foo'));
 });
 
-test('test WordCount', function () {
+test('test wordCount', function () {
     $this->assertEquals(2, Str::wordCount('Hello, world!'));
     $this->assertEquals(10, Str::wordCount('Hi, this is my first contribution to the Laravel framework.'));
 });
 
-test('test Markdown', function () {
+test('test markdown', function () {
     $this->assertSame("<p><em>hello world</em></p>\n", Str::markdown('*hello world*'));
     $this->assertSame("<h1>hello world</h1>\n", Str::markdown('# hello world'));
 });
 
-test('test InlineMarkdown', function () {
+test('test inlineMarkdown', function () {
     $this->assertSame("<em>hello world</em>\n", Str::inlineMarkdown('*hello world*'));
     $this->assertSame("<a href=\"https://laravel.com\"><strong>Laravel</strong></a>\n", Str::inlineMarkdown('[**Laravel**](https://laravel.com)'));
 });
 
-test('test Password', function () {
+test('test password', function () {
     $this->assertSame(32, strlen(Str::password()));
     $this->assertSame(10, strlen(Str::password(10)));
 });
 
-test('test Reverse', function () {
+test('test reverse', function () {
     $this->assertSame('FooBar', Str::reverse('raBooF'));
     $this->assertSame('Teniszütő', Str::reverse('őtüzsineT'));
     $this->assertSame('❤MultiByte☆', Str::reverse('☆etyBitluM❤'));
 });
 
-test('test Squish', function () {
+test('test squish', function () {
     $this->assertSame('laravel php framework', Str::squish(' laravel   php  framework '));
     $this->assertSame('laravel php framework', Str::squish("laravel\t\tphp\n\nframework"));
     $this->assertSame('laravel php framework', Str::squish('
@@ -212,13 +215,13 @@ test('test Squish', function () {
     $this->assertSame('laravel php framework', Str::squish('laravelㅤㅤㅤphpㅤframework'));
 });
 
-test('test SubstrReplace', function () {
+test('test substrReplace', function () {
     $this->assertSame('12:00', Str::substrReplace('1200', ':', 2, 0));
     $this->assertSame('The Laravel Framework', Str::substrReplace('The Framework', 'Laravel ', 4, 0));
     $this->assertSame('Laravel – The PHP Framework for Web Artisans', Str::substrReplace('Laravel Framework', '– The PHP Framework for Web Artisans', 8));
 });
 
-test('test SwapKeywords', function (): void {
+test('test swapKeywords', function (): void {
     $this->assertSame(
         'PHP 8 is fantastic',
         Str::swap([
@@ -235,7 +238,7 @@ test('test SwapKeywords', function (): void {
     );
 });
 
-test('test Transliterate', function (string $value, string $expected) {
+test('test transliterate', function (string $value, string $expected) {
     $this->assertSame($expected, Str::transliterate($value));
 })->with('ialCharacterProvider');
 
@@ -250,19 +253,16 @@ dataset('ialCharacterProvider', [
     ['0123456789', '0123456789'],
 ]);
 
-test('test TransliterateOverrideUnknown', function (): void {
+test('test transliterateOverrideUnknown', function (): void {
     $this->assertSame('HHH', Str::transliterate('🎂🚧🏆', 'H'));
     $this->assertSame('Hello', Str::transliterate('🎂', 'Hello'));
 });
 
-/*
- * @dataProvider specialCharacterProvider
- */
-test('test TransliterateStrict', function (string $value, string $expected): void {
+test('test transliterateStrict', function (string $value, string $expected): void {
     $this->assertSame($expected, Str::transliterate($value, '?', true));
 })->with('ialCharacterProvider');
 
-test('test Wrap', function () {
+test('test wrap', function () {
     $this->assertEquals('"value"', Str::wrap('value', '"'));
     $this->assertEquals('foo-bar-baz', Str::wrap('-bar-', 'foo', 'baz'));
 });
