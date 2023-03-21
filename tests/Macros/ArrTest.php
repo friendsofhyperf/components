@@ -12,20 +12,26 @@ use Hyperf\Utils\Arr;
 
 uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'arr');
 
-test('test IsList', function () {
-    $this->assertTrue(Arr::isList([]));
-    $this->assertTrue(Arr::isList([1, 2, 3]));
-    $this->assertTrue(Arr::isList(['foo', 2, 3]));
-    $this->assertTrue(Arr::isList(['foo', 'bar']));
-    $this->assertTrue(Arr::isList([0 => 'foo', 'bar']));
-    $this->assertTrue(Arr::isList([0 => 'foo', 1 => 'bar']));
+test('test is list', function ($item) {
+    expect(Arr::isList($item))->toBeTrue();
+})->with([
+    [[]],
+    [[1, 2, 3]],
+    [['foo', 2, 3]],
+    [['foo', 'bar']],
+    [[0 => 'foo', 'bar']],
+    [[0 => 'foo', 1 => 'bar']],
+]);
 
-    $this->assertFalse(Arr::isList([1 => 'foo', 'bar']));
-    $this->assertFalse(Arr::isList([1 => 'foo', 0 => 'bar']));
-    $this->assertFalse(Arr::isList([0 => 'foo', 'bar' => 'baz']));
-    $this->assertFalse(Arr::isList([0 => 'foo', 2 => 'bar']));
-    $this->assertFalse(Arr::isList(['foo' => 'bar', 'baz' => 'qux']));
-});
+test('test not is list', function ($item) {
+    expect(Arr::isList([1 => 'foo', 'bar']))->toBeFalse();
+})->with([
+    [[1 => 'foo', 'bar']],
+    [[1 => 'foo', 0 => 'bar']],
+    [[0 => 'foo', 'bar' => 'baz']],
+    [[0 => 'foo', 2 => 'bar']],
+    [['foo' => 'bar', 'baz' => 'qux']],
+]);
 
 test('test KeyBy', function () {
     $array = [
@@ -34,28 +40,30 @@ test('test KeyBy', function () {
         ['id' => '498', 'data' => 'hgi'],
     ];
 
-    $this->assertEquals([
+    expect(Arr::keyBy($array, 'id'))->toBe([
         '123' => ['id' => '123', 'data' => 'abc'],
         '345' => ['id' => '345', 'data' => 'def'],
         '498' => ['id' => '498', 'data' => 'hgi'],
-    ], Arr::keyBy($array, 'id'));
+    ]);
 });
 
-test('test Join', function () {
-    $this->assertSame('a, b, c', Arr::join(['a', 'b', 'c'], ', '));
-    $this->assertSame('a, b and c', Arr::join(['a', 'b', 'c'], ', ', ' and '));
-    $this->assertSame('a and b', Arr::join(['a', 'b'], ', ', ' and '));
-    $this->assertSame('a', Arr::join(['a'], ', ', ' and '));
-    $this->assertSame('', Arr::join([], ', ', ' and '));
-});
+test('test Join', function ($expected, $array, $glue, $last = '') {
+    expect(Arr::join($array, $glue, $last))->toBe($expected);
+})->with([
+    ['a, b, c', ['a', 'b', 'c'], ', '],
+    ['a, b and c', ['a', 'b', 'c'], ', ', ' and '],
+    ['a and b', ['a', 'b'], ', ', ' and '],
+    ['a', ['a'], ', ', ' and '],
+    ['', [], ', ', ' and '],
+]);
 
 test('test Map', function () {
     $data = ['first' => 'taylor', 'last' => 'otwell'];
     $mapped = Arr::map($data, function ($value, $key) {
         return $key . '-' . strrev($value);
     });
-    $this->assertEquals(['first' => 'first-rolyat', 'last' => 'last-llewto'], $mapped);
-    $this->assertEquals(['first' => 'taylor', 'last' => 'otwell'], $data);
+    expect($mapped)->toBe(['first' => 'first-rolyat', 'last' => 'last-llewto']);
+    expect($data)->toBe(['first' => 'taylor', 'last' => 'otwell']);
 });
 
 test('test PrependKeysWith', function () {
@@ -68,14 +76,14 @@ test('test PrependKeysWith', function () {
         ],
     ];
 
-    $this->assertEquals([
+    expect(Arr::prependKeysWith($array, 'test.'))->toBe([
         'test.id' => '123',
         'test.data' => '456',
         'test.list' => [1, 2, 3],
         'test.meta' => [
             'key' => 1,
         ],
-    ], Arr::prependKeysWith($array, 'test.'));
+    ]);
 });
 
 test('test SortByMany', function () {
@@ -87,33 +95,31 @@ test('test SortByMany', function () {
     ];
 
     // sort using keys
-    $sorted = array_values(Arr::sortByMany($unsorted, [
+    expect(array_values(Arr::sortByMany($unsorted, [
         'name',
         'age',
         'meta.key',
-    ]));
-    $this->assertEquals([
+    ])))->toBe([
         ['name' => 'Dave', 'age' => 10, 'meta' => ['key' => 3]],
         ['name' => 'John', 'age' => 8, 'meta' => ['key' => 2]],
         ['name' => 'John', 'age' => 8, 'meta' => ['key' => 3]],
         ['name' => 'John', 'age' => 10, 'meta' => ['key' => 5]],
-    ], $sorted);
+    ]);
 
     // sort with order
-    $sortedWithOrder = array_values(Arr::sortByMany($unsorted, [
+    expect(array_values(Arr::sortByMany($unsorted, [
         'name',
         ['age', false],
         ['meta.key', true],
-    ]));
-    $this->assertEquals([
+    ])))->toBe([
         ['name' => 'Dave', 'age' => 10, 'meta' => ['key' => 3]],
         ['name' => 'John', 'age' => 10, 'meta' => ['key' => 5]],
         ['name' => 'John', 'age' => 8, 'meta' => ['key' => 2]],
         ['name' => 'John', 'age' => 8, 'meta' => ['key' => 3]],
-    ], $sortedWithOrder);
+    ]);
 
     // sort using callable
-    $sortedWithCallable = array_values(Arr::sortByMany($unsorted, [
+    expect(array_values(Arr::sortByMany($unsorted, [
         function ($a, $b) {
             return $a['name'] <=> $b['name'];
         },
@@ -121,13 +127,12 @@ test('test SortByMany', function () {
             return $b['age'] <=> $a['age'];
         },
         ['meta.key', true],
-    ]));
-    $this->assertEquals([
+    ])))->toBe([
         ['name' => 'Dave', 'age' => 10, 'meta' => ['key' => 3]],
         ['name' => 'John', 'age' => 10, 'meta' => ['key' => 5]],
         ['name' => 'John', 'age' => 8, 'meta' => ['key' => 2]],
         ['name' => 'John', 'age' => 8, 'meta' => ['key' => 3]],
-    ], $sortedWithCallable);
+    ]);
 });
 
 test('test SortDesc', function () {
@@ -141,39 +146,33 @@ test('test SortDesc', function () {
         ['name' => 'Chair'],
     ];
 
-    $sorted = array_values(Arr::sortDesc($unsorted));
-    $this->assertEquals($expected, $sorted);
+    expect(array_values(Arr::sortDesc($unsorted)))->toBe($expected);
 
     // sort with closure
-    $sortedWithClosure = array_values(Arr::sortDesc($unsorted, function ($value) {
+    expect(array_values(Arr::sortDesc($unsorted, function ($value) {
         return $value['name'];
-    }));
-    $this->assertEquals($expected, $sortedWithClosure);
+    })))->toBe($expected);
 
     // sort with dot notation
-    $sortedWithDotNotation = array_values(Arr::sortDesc($unsorted, 'name'));
-    $this->assertEquals($expected, $sortedWithDotNotation);
+    expect(array_values(Arr::sortDesc($unsorted, 'name')))->toBe($expected);
 });
 
 test('test Undot', function () {
-    $array = Arr::undot([
+    expect(Arr::undot([
         'user.name' => 'Taylor',
         'user.age' => 25,
         'user.languages.0' => 'PHP',
         'user.languages.1' => 'C#',
-    ]);
-    $this->assertEquals(['user' => ['name' => 'Taylor', 'age' => 25, 'languages' => ['PHP', 'C#']]], $array);
+    ]))->toBeArray()->toBe(['user' => ['name' => 'Taylor', 'age' => 25, 'languages' => ['PHP', 'C#']]]);
 
-    $array = Arr::undot([
+    expect(Arr::undot([
         'pagination.previous' => '<<',
         'pagination.next' => '>>',
-    ]);
-    $this->assertEquals(['pagination' => ['previous' => '<<', 'next' => '>>']], $array);
+    ]))->toBeArray()->toBe(['pagination' => ['previous' => '<<', 'next' => '>>']]);
 
-    $array = Arr::undot([
+    expect(Arr::undot([
         'foo',
         'foo.bar' => 'baz',
         'foo.baz' => ['a' => 'b'],
-    ]);
-    $this->assertEquals(['foo', 'foo' => ['bar' => 'baz', 'baz' => ['a' => 'b']]], $array);
+    ]))->toBeArray()->toBe(['foo', 'foo' => ['bar' => 'baz', 'baz' => ['a' => 'b']]]);
 });
