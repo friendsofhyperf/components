@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 use Hyperf\Utils\Arr;
 
-uses(\FriendsOfHyperf\Tests\TestCase::class);
+uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'arr');
 
 test('test IsList', function () {
     $this->assertTrue(Arr::isList([]));

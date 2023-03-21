@@ -11,7 +11,7 @@ declare(strict_types=1);
 use FriendsOfHyperf\Macros\Foundation\HtmlString;
 use Hyperf\Utils\Str;
 
-uses(\FriendsOfHyperf\Tests\TestCase::class);
+uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'stringable');
 
 test('test BetweenFirst', function () {
     $this->assertSame('abc', (string) $this->stringable('abc')->betweenFirst('', 'c'));

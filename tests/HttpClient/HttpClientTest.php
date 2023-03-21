@@ -15,6 +15,8 @@ use FriendsOfHyperf\Http\Client\RequestException;
 use FriendsOfHyperf\Http\Client\Response;
 use Psr\Http\Message\ResponseInterface;
 
+uses()->group('http-client');
+
 beforeEach(function () {
     $this->factory = new Factory();
 });

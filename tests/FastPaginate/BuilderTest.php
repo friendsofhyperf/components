@@ -11,7 +11,7 @@ declare(strict_types=1);
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Relations\Relation;
 
-uses(\FriendsOfHyperf\Tests\TestCase::class);
+uses(\FriendsOfHyperf\Tests\TestCase::class)->group('fast-paginate');
 
 test('test Builder', function () {
     expect(Builder::hasGlobalMacro('fastPaginate'))->toBeTrue();

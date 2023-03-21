@@ -13,6 +13,8 @@ use FriendsOfHyperf\Tinker\TinkerCaster;
 use Hyperf\Utils\Collection;
 use Hyperf\Utils\Stringable;
 
+uses()->group('tinker');
+
 test('test CanCastCollection', function () {
     $caster = new TinkerCaster();
 

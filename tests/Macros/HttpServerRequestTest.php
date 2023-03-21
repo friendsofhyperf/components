@@ -13,7 +13,7 @@ use Hyperf\HttpServer\Request;
 use Mockery as m;
 use Psr\Http\Message\ServerRequestInterface;
 
-uses(\FriendsOfHyperf\Tests\TestCase::class);
+uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'request');
 
 afterEach(function () {
     m::close();

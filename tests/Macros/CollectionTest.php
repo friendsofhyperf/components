@@ -12,7 +12,7 @@ use FriendsOfHyperf\Macros\Exceptions\ItemNotFoundException;
 use FriendsOfHyperf\Macros\Exceptions\MultipleItemsFoundException;
 use Hyperf\Utils\Collection;
 
-uses(\FriendsOfHyperf\Tests\TestCase::class);
+uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'collection');
 
 dataset('collectionClassProvider', [
     [Collection::class],

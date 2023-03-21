@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 use Hyperf\Utils\Str;
 
-uses(\FriendsOfHyperf\Tests\TestCase::class);
+uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'str');
 
 test('test StrBetweenFirst', function () {
     $this->assertSame('abc', Str::betweenFirst('abc', '', 'c'));

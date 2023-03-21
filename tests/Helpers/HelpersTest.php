@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 use Hyperf\Utils\Stringable;
 
-uses(\FriendsOfHyperf\Tests\TestCase::class);
+uses(\FriendsOfHyperf\Tests\TestCase::class)->group('helpers');
 
 test('test ClassNamespace', function () {
     $this->assertSame('Foo\Bar', class_namespace('Foo\Bar\Baz'));

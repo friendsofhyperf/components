@@ -18,6 +18,8 @@ use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
 
+uses()->group('validated-dto');
+
 afterEach(function () {
     m::close();
 });
