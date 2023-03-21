@@ -61,15 +61,19 @@ test('test isJson', function () {
     $this->assertFalse($this->stringable(null)->isJson());
 });
 
-test('test markdown', function () {
-    $this->assertEquals("<p><em>hello world</em></p>\n", $this->stringable('*hello world*')->markdown());
-    $this->assertEquals("<h1>hello world</h1>\n", $this->stringable('# hello world')->markdown());
-});
+test('test markdown', function ($expected, $markdown) {
+    expect((string) $this->stringable($markdown)->markdown())->toBe($expected);
+})->with([
+    ["<p><em>hello world</em></p>\n", '*hello world*'],
+    ["<h1>hello world</h1>\n", '# hello world'],
+]);
 
-test('test inlineMarkdown', function () {
-    $this->assertEquals("<em>hello world</em>\n", $this->stringable('*hello world*')->inlineMarkdown());
-    $this->assertEquals("<a href=\"https://laravel.com\"><strong>Laravel</strong></a>\n", $this->stringable('[**Laravel**](https://laravel.com)')->inlineMarkdown());
-});
+test('test inlineMarkdown', function ($expected, $markdown) {
+    expect((string) $this->stringable($markdown)->inlineMarkdown())->toBe($expected);
+})->with([
+    ["<em>hello world</em>\n", '*hello world*'],
+    ["<a href=\"https://laravel.com\"><strong>Laravel</strong></a>\n", '[**Laravel**](https://laravel.com)'],
+]);
 
 test('test newLine', function () {
     $this->assertSame('Laravel' . PHP_EOL, (string) $this->stringable('Laravel')->newLine());
