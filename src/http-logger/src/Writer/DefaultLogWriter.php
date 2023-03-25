@@ -46,20 +46,20 @@ class DefaultLogWriter implements LogWriter
 
         return [
             'host' => $serverParams['host'] ?? env('APP_NAME', 'hyperf'),
-            'remote_addr' => $request->getHeaderLine('x-real-ip') ?: $serverParams['remote_addr'],
+            'remote_addr' => $request->getHeaderLine('x-real-ip') ?: $serverParams['remote_addr'] ?? '',
             'time_local' => Carbon::now()->format($this->config->get('http_logger.log_time_format', 'd/M/Y:H:i:s O')),
             'request' => sprintf(
                 '%s %s %s',
                 $request->getMethod(),
                 $requestPathWithQueryString,
-                $serverParams['server_protocol']
+                $serverParams['server_protocol'] ?? ''
             ),
             'status' => $response->getStatusCode(),
             'body_bytes_sent' => $response->getBody()->getSize(),
             'http_referer' => $request->getHeaderLine('referer') ?? '-',
             'http_user_agent' => $request->getHeaderLine('user-agent') ?? '-',
             'http_x_forwarded_for' => $request->getHeaderLine('x-forwarded-for') ?? '-',
-            'request_time' => number_format(microtime(true) - $serverParams['request_time_float'], 3, '.', ''),
+            'request_time' => number_format(microtime(true) - ($serverParams['request_time_float'] ?? microtime(true)), 3, '.', ''),
             'upstream_response_time' => '-',
             'upstream_addr' => '-',
         ];
