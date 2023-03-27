@@ -13,6 +13,7 @@ use FriendsOfHyperf\Http\Client\Http;
 use FriendsOfHyperf\Http\Client\Request;
 use FriendsOfHyperf\Http\Client\RequestException;
 use FriendsOfHyperf\Http\Client\Response;
+use GuzzleHttp\TransferStats;
 use Psr\Http\Message\ResponseInterface;
 
 uses()->group('http-client');
@@ -503,4 +504,37 @@ test('test canSubstituteUrlParams', function (): void {
     $this->factory->assertSent(function (FriendsOfHyperf\Http\Client\Request $request) {
         return $request->url() === 'https://laravel.com/docs/9.x/validation';
     });
+});
+
+test('test theTransferStatsAreCustomizable', function () {
+    $onStatsFunctionCalled = false;
+
+    $stats = $this->factory
+        ->withOptions([
+            'on_stats' => function (TransferStats $stats) use (&$onStatsFunctionCalled) {
+                $onStatsFunctionCalled = true;
+            },
+        ])
+        ->get('https://example.com')
+        ->handlerStats();
+
+    $this->assertIsArray($stats);
+    $this->assertNotEmpty($stats);
+    $this->assertTrue($onStatsFunctionCalled);
+});
+
+test('test theTransferStatsAreCustomizableOnFake', function () {
+    $onStatsFunctionCalled = false;
+
+    $this->factory
+        ->fake()
+        ->withOptions([
+            'on_stats' => function (TransferStats $stats) use (&$onStatsFunctionCalled) {
+                $onStatsFunctionCalled = true;
+            },
+        ])
+        ->get('https://foo.bar')
+        ->handlerStats();
+
+    $this->assertTrue($onStatsFunctionCalled);
 });
