@@ -10,13 +10,13 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Macros;
 
-use Hyperf\Collection\Arr;
-use Hyperf\Collection\Collection;
+use Hyperf\Utils\Arr;
+use Hyperf\Utils\Collection;
 
 /**
  * @mixin Arr
  */
-class ArrMixin
+class UtilsArrMixin
 {
     public function isList()
     {

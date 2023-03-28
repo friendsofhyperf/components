@@ -11,11 +11,14 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Macros;
 
 use Carbon\Carbon;
+use Hyperf\Collection\Arr;
 use Hyperf\Context\Context;
 use Hyperf\HttpServer\Request;
-use Hyperf\Utils\Arr;
 use Hyperf\Utils\Str;
 use stdClass;
+
+use function Hyperf\Collection\collect;
+use function Hyperf\Collection\data_get;
 
 /**
  * @mixin Request
@@ -56,7 +59,9 @@ class RequestMixin
             }
 
             /* @phpstan-ignore-next-line */
-            return collect(is_array($key) ? $this->only($key) : $this->input($key));
+            return collect(
+                is_array($key) ? $this->only($key) : $this->input($key)
+            );
         };
     }
 
@@ -200,7 +205,11 @@ class RequestMixin
     public function mergeIfMissing()
     {
         /* @phpstan-ignore-next-line */
-        return fn (array $input) => $this->merge(collect($input)->filter(fn ($value, $key) => $this->missing($key))->toArray());
+        return fn (array $input) => $this->merge(
+            collect($input)
+                ->filter(fn ($value, $key) => $this->missing($key))
+                ->toArray()
+        );
     }
 
     public function missing()
