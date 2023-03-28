@@ -12,8 +12,8 @@ namespace FriendsOfHyperf\Macros;
 
 use FriendsOfHyperf\Macros\Exceptions\ItemNotFoundException;
 use FriendsOfHyperf\Macros\Exceptions\MultipleItemsFoundException;
-use Hyperf\Collection\Arr;
-use Hyperf\Collection\Collection;
+use Hyperf\Utils\Arr;
+use Hyperf\Utils\Collection;
 use stdClass;
 
 use function Hyperf\Collection\data_get;
@@ -22,7 +22,7 @@ use function Hyperf\Collection\value;
 /**
  * @mixin Collection
  */
-class CollectionMixin
+class UtilsCollectionMixin
 {
     public function doesntContain()
     {

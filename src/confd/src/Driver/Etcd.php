@@ -10,11 +10,13 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Confd\Driver;
 
+use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Etcd\V3\KV;
-use Hyperf\Utils\Arr;
 use Psr\Container\ContainerInterface;
+
+use function Hyperf\Collection\collect;
 
 class Etcd implements DriverInterface
 {

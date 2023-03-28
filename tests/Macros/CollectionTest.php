@@ -10,7 +10,9 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Macros\Exceptions\ItemNotFoundException;
 use FriendsOfHyperf\Macros\Exceptions\MultipleItemsFoundException;
-use Hyperf\Utils\Collection;
+use Hyperf\Collection\Collection;
+
+use function Hyperf\Collection\collect;
 
 uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'collection');
 

@@ -15,11 +15,13 @@ use FriendsOfHyperf\Contracts\Events\Dispatcher;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Response as Psr7Response;
 use GuzzleHttp\TransferStats;
+use Hyperf\Collection\Collection;
 use Hyperf\Macroable\Macroable;
-use Hyperf\Utils\Collection;
 use Hyperf\Utils\Str;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Psr\EventDispatcher\EventDispatcherInterface;
+
+use function Hyperf\Collection\collect;
 
 /**
  * @method PendingRequest accept(string $contentType)

@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ClosureCommand;
 
-use Hyperf\Utils\Collection;
+use Hyperf\Collection\Collection;
 use Hyperf\Utils\Str;
 
 class Inspiring

@@ -10,9 +10,9 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\ValidatedDTO\Casting\StringCast;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
+use Hyperf\Collection\Arr;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Utils\ApplicationContext;
-use Hyperf\Utils\Arr;
 use Hyperf\Utils\Stringable;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Mockery as m;

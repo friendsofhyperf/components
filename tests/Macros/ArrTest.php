@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-use Hyperf\Utils\Arr;
+use Hyperf\Collection\Arr;
 
 uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'arr');
 

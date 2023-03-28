@@ -25,6 +25,8 @@ use ReflectionUnionType;
 use Swoole\Coroutine\System;
 use Throwable;
 
+use function Hyperf\Collection\collect;
+
 class MacroCommand extends HyperfCommand
 {
     protected ?string $signature = 'ide-helper:macro {--N|name=_ide_helper_macros.php : Name of IDE Helper.}';

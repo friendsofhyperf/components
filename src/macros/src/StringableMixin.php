@@ -14,6 +14,8 @@ use FriendsOfHyperf\Macros\Foundation\HtmlString;
 use Hyperf\Utils\Str;
 use Hyperf\Utils\Stringable;
 
+use function Hyperf\Collection\collect;
+
 /**
  * @mixin Stringable
  */

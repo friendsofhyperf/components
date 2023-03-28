@@ -39,7 +39,7 @@ interface RequestInterface
      *
      * @param null|array|string $key
      */
-    public function collect(null|array|string $key = null): \Hyperf\Utils\Collection;
+    public function collect(null|array|string $key = null): \Hyperf\Collection\Collection;
 
     /**
      * Retrieve input from the request as a Carbon instance.

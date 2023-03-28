@@ -40,6 +40,8 @@ use Psr\SimpleCache\CacheInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 
+use function Hyperf\Collection\value;
+
 if (! function_exists('app')) {
     /**
      * Get the available container instance.

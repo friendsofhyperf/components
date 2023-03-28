@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Macros;
 
 use FriendsOfHyperf\Macros\Foundation\UuidContainer;
-use Hyperf\Utils\Collection;
+use Hyperf\Collection\Collection;
 use Hyperf\Utils\Str;
 use JsonException;
 use League\CommonMark\Environment\Environment;

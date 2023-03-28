@@ -118,7 +118,7 @@ class Stringable
      * Parse input from a string to a collection, according to a format.
      *
      * @param string $format
-     * @return \Hyperf\Utils\Collection
+     * @return \Hyperf\Collection\Collection
      */
     public function scan($format)
     {
@@ -167,7 +167,7 @@ class Stringable
     /**
      * Split a string by uppercase characters.
      *
-     * @return Collection
+     * @return \Hyperf\Collection\Collection
      */
     public function ucsplit()
     {

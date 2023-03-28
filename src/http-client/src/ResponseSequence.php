@@ -14,6 +14,8 @@ use Closure;
 use Hyperf\Macroable\Macroable;
 use OutOfBoundsException;
 
+use function Hyperf\Collection\value;
+
 class ResponseSequence
 {
     use Macroable;

@@ -23,6 +23,9 @@ use Hyperf\Macroable\Macroable;
 use Hyperf\Utils\InteractsWithTime;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
+use function Hyperf\Collection\collect;
+use function Hyperf\Collection\value;
+
 class Cache implements CacheInterface
 {
     use InteractsWithTime;
