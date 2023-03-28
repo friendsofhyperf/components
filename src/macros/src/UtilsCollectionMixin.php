@@ -16,6 +16,9 @@ use Hyperf\Utils\Arr;
 use Hyperf\Utils\Collection;
 use stdClass;
 
+use function Hyperf\Collection\data_get;
+use function Hyperf\Collection\value;
+
 /**
  * @mixin Collection
  */

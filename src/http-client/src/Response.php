@@ -16,6 +16,9 @@ use Hyperf\Collection\Collection;
 use Hyperf\Macroable\Macroable;
 use LogicException;
 
+use function Hyperf\Collection\data_get;
+use function Hyperf\Collection\value;
+
 class Response implements ArrayAccess
 {
     use Concerns\DeterminesStatusCode;
