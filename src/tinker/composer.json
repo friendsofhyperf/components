@@ -27,7 +27,8 @@
         "psy/psysh": "^0.10.0|^0.11.0"
     },
     "suggest": {
-        "hyperf/utils": "Suggest for using `Hyperf\\Utils\\Collection` and `\\Hyperf\\Utils\\Stringable`."
+        "hyperf/utils": "Suggest for using `Hyperf\\Utils\\Collection` and `\\Hyperf\\Utils\\Stringable`.",
+        "hyperf/view-engine": "Suggest for using `Hyperf\\ViewEngine\\HtmlString`."
     },
     "autoload": {
         "psr-4": {
