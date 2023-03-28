@@ -14,9 +14,9 @@ use FriendsOfHyperf\Confd\Driver\DriverInterface;
 use FriendsOfHyperf\Confd\Driver\Etcd;
 use FriendsOfHyperf\Confd\Event\ConfigChanged;
 use FriendsOfHyperf\Confd\Event\WatchDispatched;
+use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coordinator\Timer;
-use Hyperf\Utils\Arr;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 

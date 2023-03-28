@@ -12,8 +12,8 @@ namespace FriendsOfHyperf\Http\Client;
 
 use ArrayAccess;
 use Closure;
+use Hyperf\Collection\Collection;
 use Hyperf\Macroable\Macroable;
-use Hyperf\Utils\Collection;
 use LogicException;
 
 class Response implements ArrayAccess

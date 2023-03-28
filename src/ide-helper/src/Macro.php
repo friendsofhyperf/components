@@ -12,8 +12,8 @@ namespace FriendsOfHyperf\IdeHelper;
 
 use Barryvdh\Reflection\DocBlock;
 use Barryvdh\Reflection\DocBlock\Tag;
+use Hyperf\Collection\Collection;
 use Hyperf\Database\Model\Builder as EloquentBuilder;
-use Hyperf\Utils\Collection;
 use ReflectionClass;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;

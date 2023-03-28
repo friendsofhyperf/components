@@ -11,8 +11,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Http\Client;
 
 use ArrayAccess;
+use Hyperf\Collection\Arr;
 use Hyperf\Macroable\Macroable;
-use Hyperf\Utils\Arr;
 use LogicException;
 
 class Request implements ArrayAccess

@@ -244,7 +244,7 @@ class ModelCommand extends HyperfCommand
                     $realType = $this->dateClass;
                     break;
                 case 'collection':
-                    $realType = '\Hyperf\Utils\Collection';
+                    $realType = '\Hyperf\Collection\Collection';
                     break;
                 default:
                     $realType = class_exists($type) ? ('\\' . $type) : 'mixed';

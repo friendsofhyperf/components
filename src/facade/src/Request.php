@@ -39,7 +39,7 @@ use Hyperf\HttpServer\Contract\RequestInterface as Accessor;
  * @method static array allFiles()
  * @method static bool anyFilled($keys)
  * @method static bool boolean($key = null, $default = false)
- * @method static \Hyperf\Utils\Collection collect(null|array|string $key = null)
+ * @method static \Hyperf\Collection\Collection collect(null|array|string $key = null)
  * @method static null|\Carbon\Carbon date(string $key, ?string $format = null, ?string $tz = null)
  * @method static array except($keys)
  * @method static bool filled(array|string $key)

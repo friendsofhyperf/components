@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ValidatedDTO\Casting;
 
-use Hyperf\Utils\Collection;
+use Hyperf\Collection\Collection;
 
 class CollectionCast implements Castable
 {
