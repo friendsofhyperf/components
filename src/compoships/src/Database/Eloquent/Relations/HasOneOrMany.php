@@ -16,6 +16,8 @@ use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\Constraint;
 use Hyperf\Database\Query\JoinClause;
 
+use function Hyperf\Collection\collect;
+
 trait HasOneOrMany
 {
     /**

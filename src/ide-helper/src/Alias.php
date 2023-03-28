@@ -23,6 +23,8 @@ use ReflectionFunctionAbstract;
 use ReflectionMethod;
 use Stringable;
 
+use function Hyperf\Collection\collect;
+
 class Alias
 {
     protected string $facade;

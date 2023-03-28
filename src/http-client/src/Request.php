@@ -15,6 +15,8 @@ use Hyperf\Collection\Arr;
 use Hyperf\Macroable\Macroable;
 use LogicException;
 
+use function Hyperf\Collection\collect;
+
 class Request implements ArrayAccess
 {
     use Macroable;

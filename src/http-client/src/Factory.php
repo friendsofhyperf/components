@@ -21,6 +21,8 @@ use Hyperf\Utils\Str;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
+use function Hyperf\Collection\collect;
+
 /**
  * @method PendingRequest accept(string $contentType)
  * @method PendingRequest acceptJson()

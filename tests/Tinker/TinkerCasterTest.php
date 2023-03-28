@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Macros\Foundation\HtmlString;
 use FriendsOfHyperf\Tinker\TinkerCaster;
-use Hyperf\Utils\Collection;
+use Hyperf\Collection\Collection;
 use Hyperf\Utils\Stringable;
 
 uses()->group('tinker');

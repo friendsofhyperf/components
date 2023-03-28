@@ -14,6 +14,8 @@ use Closure;
 use Hyperf\Database\Query\Expression;
 use Hyperf\Paginator\Paginator;
 
+use function Hyperf\Collection\collect;
+
 /**
  * @mixin \Hyperf\Database\Model\Builder
  */

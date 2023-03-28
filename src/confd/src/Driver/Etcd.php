@@ -16,6 +16,8 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Etcd\V3\KV;
 use Psr\Container\ContainerInterface;
 
+use function Hyperf\Collection\collect;
+
 class Etcd implements DriverInterface
 {
     private KV $client;

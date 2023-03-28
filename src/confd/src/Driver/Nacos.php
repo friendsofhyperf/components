@@ -19,6 +19,8 @@ use Hyperf\Utils\Codec\Json;
 use Hyperf\Utils\Codec\Xml;
 use Psr\Container\ContainerInterface;
 
+use function Hyperf\Collection\collect;
+
 class Nacos implements DriverInterface
 {
     private Application $client;

@@ -16,6 +16,8 @@ use FriendsOfHyperf\Http\Client\Response;
 use GuzzleHttp\TransferStats;
 use Psr\Http\Message\ResponseInterface;
 
+use function Hyperf\Collection\collect;
+
 uses()->group('http-client');
 
 beforeEach(function () {

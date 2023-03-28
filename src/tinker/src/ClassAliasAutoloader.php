@@ -13,6 +13,8 @@ namespace FriendsOfHyperf\Tinker;
 use Hyperf\Collection\Collection;
 use Psy\Shell;
 
+use function Hyperf\Collection\collect;
+
 class ClassAliasAutoloader
 {
     /**
