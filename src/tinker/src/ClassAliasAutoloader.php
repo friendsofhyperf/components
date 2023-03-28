@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Tinker;
 
-use Hyperf\Utils\Collection;
+use Hyperf\Collection\Collection;
 use Psy\Shell;
 
 class ClassAliasAutoloader
