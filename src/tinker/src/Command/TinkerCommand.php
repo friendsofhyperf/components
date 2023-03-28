@@ -38,12 +38,13 @@ class TinkerCommand extends HyperfCommand
      * @var string[]
      */
     protected array $defaultCasters = [
-        'Hyperf\DbConnection\Model\Model' => 'FriendsOfHyperf\Tinker\TinkerCaster::castModel',
-        'Hyperf\Redis\Redis' => 'FriendsOfHyperf\Tinker\TinkerCaster::castRedis',
-        'Hyperf\Utils\Collection' => 'FriendsOfHyperf\Tinker\TinkerCaster::castCollection',
-        'Hyperf\Utils\Stringable' => 'FriendsOfHyperf\Tinker\TinkerCaster::castStringable',
-        'Hyperf\ViewEngine\HtmlString' => 'FriendsOfHyperf\Tinker\TinkerCaster::castHtmlString',
-        'Symfony\Component\Console\Application' => 'FriendsOfHyperf\Tinker\TinkerCaster::castApplication',
+        \Hyperf\DbConnection\Model\Model::class => 'FriendsOfHyperf\Tinker\TinkerCaster::castModel',
+        \Hyperf\Redis\Redis::class => 'FriendsOfHyperf\Tinker\TinkerCaster::castRedis',
+        \Hyperf\Utils\Collection::class => 'FriendsOfHyperf\Tinker\TinkerCaster::castCollection',
+        \Hyperf\Collection\Collection::class => 'FriendsOfHyperf\Tinker\TinkerCaster::castCollection',
+        \Hyperf\Utils\Stringable::class => 'FriendsOfHyperf\Tinker\TinkerCaster::castStringable',
+        \Hyperf\ViewEngine\HtmlString::class => 'FriendsOfHyperf\Tinker\TinkerCaster::castHtmlString',
+        \Symfony\Component\Console\Application::class => 'FriendsOfHyperf\Tinker\TinkerCaster::castApplication',
     ];
 
     public function __construct(protected ContainerInterface $container, protected ConfigInterface $config)

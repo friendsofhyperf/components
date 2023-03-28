@@ -69,7 +69,7 @@ class TinkerCaster
     /**
      * Get an array representing the properties of a collection.
      *
-     * @param \Hyperf\Utils\Collection $collection
+     * @param \Hyperf\Collection\Collection|\Hyperf\Utils\Collection $collection
      */
     public static function castCollection($collection): array
     {
