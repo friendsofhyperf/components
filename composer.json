@@ -118,7 +118,7 @@
             "src/encryption/src/Functions.php",
             "src/exception-event/src/Functions.php",
             "src/helpers/src/functions.php",
-            "src/lock/src/functions.php",
+            "src/lock/src/Functions.php",
             "src/macros/src/Functions.php"
         ],
         "psr-4": {

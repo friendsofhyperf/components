@@ -21,7 +21,7 @@
             "FriendsOfHyperf\\Lock\\": "src"
         },
         "files": [
-            "src/functions.php"
+            "src/Functions.php"
         ]
     },
     "extra": {
