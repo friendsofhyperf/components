@@ -15,11 +15,15 @@ use Friendsofhyperf\Encryption\Contract\StringEncrypter;
 use Friendsofhyperf\Encryption\Encrypter;
 use Friendsofhyperf\Encryption\KeyParser;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Di\Container;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Opis\Closure\SerializableClosure;
 use Psr\Container\ContainerInterface;
 
+/**
+ * @property Container $container
+ */
 class BootEncryptionListener implements ListenerInterface
 {
     public function __construct(private ContainerInterface $container, private ConfigInterface $config, private KeyParser $parser)
