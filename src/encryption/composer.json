@@ -23,7 +23,7 @@
             "Friendsofhyperf\\Encryption\\": "src/"
         },
         "files": [
-            "src/functions.php"
+            "src/Functions.php"
         ]
     },
     "require": {
