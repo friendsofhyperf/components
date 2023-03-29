@@ -116,7 +116,7 @@
         "files": [
             "src/async-task/src/Functions.php",
             "src/encryption/src/Functions.php",
-            "src/exception-event/src/functions.php",
+            "src/exception-event/src/Functions.php",
             "src/helpers/src/functions.php",
             "src/lock/src/functions.php",
             "src/macros/src/Functions.php"
