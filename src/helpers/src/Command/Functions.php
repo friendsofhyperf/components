@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Helpers\Command;
 
+use Hyperf\Contract\ApplicationInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 
