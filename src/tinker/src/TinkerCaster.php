@@ -42,9 +42,8 @@ class TinkerCaster
      * Get an array representing the properties of an application.
      *
      * @param \Symfony\Component\Console\Application $app
-     * @return array
      */
-    public static function castApplication($app)
+    public static function castApplication($app): array
     {
         $results = [];
 
