@@ -23,6 +23,7 @@
         "hyperf/amqp": "~3.0.0",
         "hyperf/async-queue": "~3.0.0",
         "hyperf/cache": "~3.0.0",
+        "hyperf/conditionable": "~3.0.0",
         "hyperf/collection": "~3.0.0",
         "hyperf/command": "~3.0.0",
         "hyperf/config-center": "~3.0.0",
