@@ -66,6 +66,7 @@
         "hyperf/nacos": "~3.0.0",
         "hyperf/paginator": "~3.0.0",
         "hyperf/scout": "~3.0.0",
+        "opis/closure": "^3.6",
         "pestphp/pest": "^1.0|^2.0",
         "pestphp/pest-plugin-faker": "^1.0|^2.0",
         "pestphp/pest-plugin-mock": "^1.0|^2.0",
@@ -114,10 +115,10 @@
     "autoload": {
         "files": [
             "src/async-task/src/Functions.php",
-            "src/encryption/src/functions.php",
-            "src/exception-event/src/functions.php",
-            "src/helpers/src/functions.php",
-            "src/lock/src/functions.php",
+            "src/encryption/src/Functions.php",
+            "src/exception-event/src/Functions.php",
+            "src/helpers/src/Functions.php",
+            "src/lock/src/Functions.php",
             "src/macros/src/Functions.php"
         ],
         "psr-4": {

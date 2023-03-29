@@ -17,7 +17,7 @@
     },
     "autoload": {
         "files": [
-            "src/functions.php"
+            "src/Functions.php"
         ],
         "psr-4": {
             "FriendsOfHyperf\\ExceptionEvent\\": "src"

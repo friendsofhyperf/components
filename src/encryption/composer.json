@@ -23,14 +23,16 @@
             "Friendsofhyperf\\Encryption\\": "src/"
         },
         "files": [
-            "src/functions.php"
+            "src/Functions.php"
         ]
     },
     "require": {
         "hyperf/contract": "~3.0.0",
         "hyperf/di": "~3.0.0",
-        "hyperf/event": "~3.0.0",
-        "opis/closure": "^3.6"
+        "hyperf/event": "~3.0.0"
+    },
+    "suggest": {
+        "opis/closure": "For encrypting closures."
     },
     "config": {
         "sort-packages": true
