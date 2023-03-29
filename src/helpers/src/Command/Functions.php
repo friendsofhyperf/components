@@ -26,7 +26,7 @@ function call(string $command, array $arguments = []): int
     $output = new NullOutput();
 
     /** @var \Symfony\Component\Console\Application $application */
-    $application = di(ApplicationInterface::class);
+    $application = \di(ApplicationInterface::class);
     $application->setAutoExit(false);
 
     return $application->run($input, $output);
