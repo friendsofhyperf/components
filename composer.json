@@ -66,6 +66,7 @@
         "hyperf/nacos": "~3.0.0",
         "hyperf/paginator": "~3.0.0",
         "hyperf/scout": "~3.0.0",
+        "opis/closure": "^3.6",
         "pestphp/pest": "^1.0|^2.0",
         "pestphp/pest-plugin-faker": "^1.0|^2.0",
         "pestphp/pest-plugin-mock": "^1.0|^2.0",
