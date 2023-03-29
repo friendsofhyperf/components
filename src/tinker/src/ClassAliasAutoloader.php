@@ -83,7 +83,7 @@ class ClassAliasAutoloader
     /**
      * Find the closest class by name.
      */
-    public function aliasClass(string $class)
+    public function aliasClass(string $class): void
     {
         if (str_contains($class, '\\')) {
             return;
@@ -101,7 +101,7 @@ class ClassAliasAutoloader
     /**
      * Unregister the alias loader instance.
      */
-    public function unregister()
+    public function unregister(): void
     {
         spl_autoload_unregister([$this, 'aliasClass']);
     }
@@ -109,7 +109,7 @@ class ClassAliasAutoloader
     /**
      * Whether a class may be aliased.
      */
-    public function isAliasable(string $class, string $path)
+    public function isAliasable(string $class, string $path): bool
     {
         if (! str_contains($class, '\\')) {
             return false;
