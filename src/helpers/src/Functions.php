@@ -17,7 +17,6 @@ use Hyperf\Amqp\Message\ProducerMessageInterface;
 use Hyperf\Amqp\Producer;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\AsyncQueue\JobInterface;
-use Hyperf\Contract\ApplicationInterface;
 use Hyperf\Contract\SessionInterface;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\HttpMessage\Cookie\Cookie;
@@ -37,8 +36,6 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\NullOutput;
 
 use function Hyperf\Collection\value;
 
@@ -164,18 +161,11 @@ if (! function_exists('call_command')) {
      * Call command quickly.
      * @throws TypeError
      * @throws Exception
+     * @deprecated since 3.1, please use `\FriendsOfHyperf\Helpers\Command\call` instead.
      */
     function call_command(string $command, array $arguments = []): int
     {
-        $arguments['command'] = $command;
-        $input = new ArrayInput($arguments);
-        $output = new NullOutput();
-
-        /** @var \Symfony\Component\Console\Application $application */
-        $application = di(ApplicationInterface::class);
-        $application->setAutoExit(false);
-
-        return $application->run($input, $output);
+        return \FriendsOfHyperf\Helpers\Command\call($command, $arguments);
     }
 }
 
