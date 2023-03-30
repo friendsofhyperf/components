@@ -8,9 +8,17 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
+use Hyperf\Contract\ApplicationInterface;
+use Hyperf\Utils\ApplicationContext;
 use Hyperf\Utils\Stringable;
+use Mockery as m;
+use Psr\Container\ContainerInterface;
 
 uses(\FriendsOfHyperf\Tests\TestCase::class)->group('helpers');
+
+afterEach(function () {
+    m::close();
+});
 
 test('test ClassNamespace', function () {
     $this->assertSame('Foo\Bar', class_namespace('Foo\Bar\Baz'));
@@ -67,4 +75,18 @@ test('test Str', function () {
     $strAccessor = str();
     $this->assertTrue((new ReflectionClass($strAccessor))->isAnonymous());
     $this->assertSame((string) $strAccessor, '');
+});
+
+test('test FriendsOfHyperf\Helpers\Command\call', function () {
+    ApplicationContext::setContainer(
+        mock(ContainerInterface::class)->expect(
+            has: fn () => true,
+            get: fn () => mock(ApplicationInterface::class)->expect(
+                setAutoExit: fn () => null,
+                run: fn () => 0,
+            )
+        )
+    );
+
+    expect(FriendsOfHyperf\Helpers\Command\call('command', ['argument' => 'value']))->toBe(0);
 });
