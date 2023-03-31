@@ -10,6 +10,12 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ConfigConsul\Consul;
 
-interface KVInterface extends \Hyperf\Consul\KVInterface
-{
+class_alias(\Hyperf\Consul\KVInterface::class, KVInterface::class);
+
+if (! class_exists(KVInterface::class, false)) {
+    // @codeCoverageIgnoreStart
+    interface KVInterface extends \Hyperf\Consul\KVInterface
+    {
+    }
+    // @codeCoverageIgnoreEnd
 }
