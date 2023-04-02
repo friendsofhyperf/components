@@ -119,6 +119,7 @@
             "src/exception-event/src/Functions.php",
             "src/helpers/src/Command/Functions.php",
             "src/helpers/src/Functions.php",
+            "src/http-client/src/Functions.php",
             "src/lock/src/Functions.php",
             "src/macros/src/Functions.php"
         ],

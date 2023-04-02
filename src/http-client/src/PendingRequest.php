@@ -144,7 +144,7 @@ class PendingRequest
     /**
      * The number of milliseconds to wait between retries.
      *
-     * @var int
+     * @var Closure|int
      */
     protected $retryDelay = 100;
 
@@ -591,7 +591,7 @@ class PendingRequest
      *
      * @return $this
      */
-    public function retry(int $times, int $sleepMilliseconds = 0, ?callable $when = null, bool $throw = true)
+    public function retry(int $times, Closure|int $sleepMilliseconds = 0, ?callable $when = null, bool $throw = true)
     {
         $this->tries = $times;
         $this->retryDelay = $sleepMilliseconds;
