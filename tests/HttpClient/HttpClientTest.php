@@ -180,7 +180,7 @@ test('test requestExceptionIsThrownWhenRetriesExhausted', function () {
     $this->assertNotNull($exception);
     $this->assertInstanceOf(RequestException::class, $exception);
 
-    $this->factory->assertSentCount(3);
+    $this->factory->assertSentCount(2);
 });
 
 test('test requestExceptionIsNotThrownWhenDisabledAndRetriesExhausted', function () {
@@ -539,4 +539,28 @@ test('test theTransferStatsAreCustomizableOnFake', function () {
         ->handlerStats();
 
     $this->assertTrue($onStatsFunctionCalled);
+});
+
+test('test requestsWillBeWaitingSleepMillisecondsReceivedBeforeRetry', function () {
+    $startTime = microtime(true);
+
+    $this->factory->fake([
+        '*' => $this->factory->sequence()
+            ->push(['error'], 500)
+            ->push(['error'], 500)
+            ->push(['ok'], 200),
+    ]);
+
+    $this->factory
+        ->retry(3, function ($attempt, $exception) {
+            $this->assertInstanceOf(RequestException::class, $exception);
+
+            return $attempt * 100;
+        }, null, true)
+        ->get('http://foo.com/get');
+
+    $this->factory->assertSentCount(3);
+
+    // Make sure was waited 300ms for the first two attempts
+    $this->assertEqualsWithDelta(0.3, microtime(true) - $startTime, 0.03);
 });

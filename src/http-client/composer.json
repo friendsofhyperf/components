@@ -22,7 +22,10 @@
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\Http\\Client\\": "src/"
-        }
+        },
+        "files": [
+            "src/Functions.php"
+        ]
     },
     "extra": {
         "branch-alias": {
