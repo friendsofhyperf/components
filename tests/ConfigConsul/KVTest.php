@@ -26,7 +26,6 @@ function foo(KVInterface $kv): KVInterface
 test('test KVInterface', function () {
     $KVFactory = mock(KVFactory::class)->expect(
         __invoke: function () {
-            interface_exists(\FriendsOfHyperf\ConfigConsul\Consul\KVInterface::class); // !! Trigger autoload
             return m::mock(KV::class);
         }
     );
