@@ -197,23 +197,26 @@ test('test reverse', function () {
     $this->assertSame('❤MultiByte☆', Str::reverse('☆etyBitluM❤'));
 });
 
-test('test squish', function () {
-    $this->assertSame('laravel php framework', Str::squish(' laravel   php  framework '));
-    $this->assertSame('laravel php framework', Str::squish("laravel\t\tphp\n\nframework"));
-    $this->assertSame('laravel php framework', Str::squish('
-            laravel
-            php
-            framework
-        '));
-    $this->assertSame('laravel php framework', Str::squish('   laravel   php   framework   '));
-    $this->assertSame('123', Str::squish('   123    '));
-    $this->assertSame('だ', Str::squish('だ'));
-    $this->assertSame('ム', Str::squish('ム'));
-    $this->assertSame('だ', Str::squish('   だ    '));
-    $this->assertSame('ム', Str::squish('   ム    '));
-    $this->assertSame('ム', Str::squish('﻿   ム ﻿﻿   ﻿'));
-    $this->assertSame('laravel php framework', Str::squish('laravelㅤㅤㅤphpㅤframework'));
-});
+test('test squish', function ($expected, $value) {
+    expect(Str::squish($value))->toBe($expected);
+})->with([
+    ['laravel php framework', ' laravel   php  framework '],
+    ['laravel php framework', "laravel\t\tphp\n\nframework"],
+    ['laravel php framework', '
+        laravel
+        php
+        framework
+    '],
+    ['laravel php framework', 'laravelㅤㅤㅤphpㅤframework'],
+    ['laravel php framework', 'laravelᅠᅠᅠᅠᅠᅠᅠᅠᅠᅠphpᅠᅠframework'],
+    ['laravel php framework', '   laravel   php   framework   '],
+    ['123', '   123    '],
+    ['だ', 'だ'],
+    ['ム', 'ム'],
+    ['だ', '   だ    '],
+    ['ム', '   ム    '],
+    ['ム', '﻿   ム ﻿﻿   ﻿'],
+]);
 
 test('test substrReplace', function () {
     $this->assertSame('12:00', Str::substrReplace('1200', ':', 2, 0));

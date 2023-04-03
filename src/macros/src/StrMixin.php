@@ -191,7 +191,7 @@ class StrMixin
 
     public function squish()
     {
-        return fn ($value) => preg_replace('~(\s|\x{3164})+~u', ' ', preg_replace('~^[\s﻿]+|[\s﻿]+$~u', '', $value));
+        return fn ($value) => preg_replace('~(\s|\x{3164}|\x{1160})+~u', ' ', preg_replace('~^[\s\x{FEFF}]+|[\s\x{FEFF}]+$~u', '', $value));
     }
 
     public function substrReplace()
