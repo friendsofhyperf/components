@@ -191,11 +191,13 @@ test('test password', function () {
     $this->assertSame(10, strlen(Str::password(10)));
 });
 
-test('test reverse', function () {
-    $this->assertSame('FooBar', Str::reverse('raBooF'));
-    $this->assertSame('Teniszütő', Str::reverse('őtüzsineT'));
-    $this->assertSame('❤MultiByte☆', Str::reverse('☆etyBitluM❤'));
-});
+test('test reverse', function ($value, $expected) {
+    expect(Str::reverse($value))->toBe($expected);
+})->with([
+    ['FooBar', 'raBooF'],
+    ['Teniszütő', 'őtüzsineT'],
+    ['❤MultiByte☆', '☆etyBitluM❤'],
+]);
 
 test('test squish', function ($expected, $value) {
     expect(Str::squish($value))->toBe($expected);
@@ -256,10 +258,12 @@ dataset('ialCharacterProvider', [
     ['0123456789', '0123456789'],
 ]);
 
-test('test transliterateOverrideUnknown', function (): void {
-    $this->assertSame('HHH', Str::transliterate('🎂🚧🏆', 'H'));
-    $this->assertSame('Hello', Str::transliterate('🎂', 'Hello'));
-});
+test('test transliterateOverrideUnknown', function ($args, $expected): void {
+    expect(Str::transliterate(...$args))->toBe($expected);
+})->with([
+    [['🎂🚧🏆', 'H'], 'HHH'],
+    [['🎂', 'Hello'], 'Hello'],
+]);
 
 test('test transliterateStrict', function (string $value, string $expected): void {
     $this->assertSame($expected, Str::transliterate($value, '?', true));
