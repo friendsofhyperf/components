@@ -15,12 +15,11 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Guzzle\ClientFactory;
 use Psr\Container\ContainerInterface;
 
+interface_exists(KVInterface::class); // !! Trigger autoload
 class KVFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        interface_exists(KVInterface::class); // !! Trigger autoload
-
         return new KV(function () use ($container) {
             $config = $container->get(ConfigInterface::class);
             $token = $config->get('config_center.drivers.consul.token', '');
