@@ -28,6 +28,6 @@
         "**/.history/**",
         "**/vendor/**/vendor/**",
         "**/vendor/google/crc32/**",
-        "**/vendor/mockery/mockery/library/**",
+        "**/vendor/mockery/mockery/library/helpers.php",
     ]
 }
