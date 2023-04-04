@@ -171,25 +171,33 @@ test('test isUuidWithInvalidUuid', function () {
     $this->assertFalse(Str::isUuid('foo'));
 });
 
-test('test wordCount', function () {
-    $this->assertEquals(2, Str::wordCount('Hello, world!'));
-    $this->assertEquals(10, Str::wordCount('Hi, this is my first contribution to the Laravel framework.'));
-});
+test('test wordCount', function ($expected, $value) {
+    expect(Str::wordCount($value))->toBe($expected);
+})->with([
+    [2, 'Hello, world!'],
+    [10, 'Hi, this is my first contribution to the Laravel framework.'],
+]);
 
-test('test markdown', function () {
-    $this->assertSame("<p><em>hello world</em></p>\n", Str::markdown('*hello world*'));
-    $this->assertSame("<h1>hello world</h1>\n", Str::markdown('# hello world'));
-});
+test('test markdown', function ($expected, $value) {
+    expect(Str::markdown($value))->toBe($expected);
+})->with([
+    ["<p><em>hello world</em></p>\n", '*hello world*'],
+    ["<h1>hello world</h1>\n", '# hello world'],
+]);
 
-test('test inlineMarkdown', function () {
-    $this->assertSame("<em>hello world</em>\n", Str::inlineMarkdown('*hello world*'));
-    $this->assertSame("<a href=\"https://laravel.com\"><strong>Laravel</strong></a>\n", Str::inlineMarkdown('[**Laravel**](https://laravel.com)'));
-});
+test('test inlineMarkdown', function ($expected, $value) {
+    expect(Str::inlineMarkdown($value))->toBe($expected);
+})->with([
+    ["<em>hello world</em>\n", '*hello world*'],
+    ["<a href=\"https://laravel.com\"><strong>Laravel</strong></a>\n", '[**Laravel**](https://laravel.com)'],
+]);
 
-test('test password', function () {
-    $this->assertSame(32, strlen(Str::password()));
-    $this->assertSame(10, strlen(Str::password(10)));
-});
+test('test password', function ($expected, $args) {
+    expect(Str::password(...$args))->toBeString()->toHaveLength($expected);
+})->with([
+    [32, []],
+    [10, [10]],
+]);
 
 test('test reverse', function ($value, $expected) {
     expect(Str::reverse($value))->toBe($expected);
