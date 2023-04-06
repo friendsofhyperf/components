@@ -18,6 +18,7 @@ use LogicException;
 
 use function Hyperf\Collection\data_get;
 use function Hyperf\Collection\value;
+use function Hyperf\Tappable\tap;
 
 class Response implements ArrayAccess
 {

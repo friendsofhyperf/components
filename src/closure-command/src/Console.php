@@ -18,6 +18,8 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 
+use function Hyperf\Tappable\tap;
+
 class Console
 {
     /**

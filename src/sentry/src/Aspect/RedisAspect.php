@@ -17,6 +17,8 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Redis\RedisConnection;
 use Sentry\Breadcrumb;
 
+use function Hyperf\Tappable\tap;
+
 class RedisAspect extends AbstractAspect
 {
     public array $classes = [

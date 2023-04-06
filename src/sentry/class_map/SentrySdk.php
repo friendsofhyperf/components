@@ -14,6 +14,8 @@ use Hyperf\Context\Context;
 use Sentry\State\Hub;
 use Sentry\State\HubInterface;
 
+use function Hyperf\Tappable\tap;
+
 /**
  * @see \Sentry\SentrySdk
  */

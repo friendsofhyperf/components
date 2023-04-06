@@ -20,6 +20,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Throwable;
 
+use function Hyperf\Tappable\tap;
+
 class ExceptionHandlerDispatcherAspect extends AbstractAspect
 {
     public array $classes = [

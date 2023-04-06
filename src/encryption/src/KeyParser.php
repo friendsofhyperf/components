@@ -13,6 +13,8 @@ namespace Friendsofhyperf\Encryption;
 use Hyperf\Utils\Str;
 use RuntimeException;
 
+use function Hyperf\Tappable\tap;
+
 class KeyParser
 {
     /**

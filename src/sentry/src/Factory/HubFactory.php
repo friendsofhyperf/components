@@ -21,6 +21,8 @@ use Sentry\Integration as SdkIntegration;
 use Sentry\SentrySdk;
 use Sentry\State\Hub;
 
+use function Hyperf\Tappable\tap;
+
 class HubFactory
 {
     public function __invoke(ContainerInterface $container)
