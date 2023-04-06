@@ -23,6 +23,6 @@ class CacheFactory
      */
     public function __invoke(ContainerInterface $container)
     {
-        return $container->get(CacheManager::class)->get('default');
+        return $container->get(CacheManager::class)->store('default');
     }
 }
