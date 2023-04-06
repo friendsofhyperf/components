@@ -12,6 +12,8 @@ namespace FriendsOfHyperf\Http\Client;
 
 use Closure;
 
+use function Hyperf\Tappable\tap;
+
 /**
  * @method static \GuzzleHttp\Promise\PromiseInterface response($body = null, $status = 200, $headers = [])
  * @method static Factory fake($callback = null)

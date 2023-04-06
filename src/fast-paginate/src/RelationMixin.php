@@ -13,6 +13,8 @@ namespace FriendsOfHyperf\FastPaginate;
 use Hyperf\Database\Model\Relations\BelongsToMany;
 use Hyperf\Database\Model\Relations\HasManyThrough;
 
+use function Hyperf\Tappable\tap;
+
 /**
  * @mixin \Hyperf\Database\Model\Relations\Relation
  */

@@ -14,6 +14,7 @@ use Hyperf\Collection\Collection;
 use Psy\Shell;
 
 use function Hyperf\Collection\collect;
+use function Hyperf\Tappable\tap;
 
 class ClassAliasAutoloader
 {

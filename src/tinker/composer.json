@@ -24,6 +24,7 @@
         "hyperf/contract": "~3.0.0",
         "hyperf/di": "~3.0.0",
         "hyperf/framework": "~3.0.0",
+        "hyperf/tappable": "~3.0.0",
         "psy/psysh": "^0.10.0|^0.11.0"
     },
     "suggest": {

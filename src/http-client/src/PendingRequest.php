@@ -37,6 +37,7 @@ use RuntimeException;
 use Symfony\Component\VarDumper\VarDumper;
 
 use function Hyperf\Collection\collect;
+use function Hyperf\Tappable\tap;
 
 class PendingRequest
 {

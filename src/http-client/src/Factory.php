@@ -22,6 +22,7 @@ use PHPUnit\Framework\Assert as PHPUnit;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 use function Hyperf\Collection\collect;
+use function Hyperf\Tappable\tap;
 
 /**
  * @method PendingRequest accept(string $contentType)

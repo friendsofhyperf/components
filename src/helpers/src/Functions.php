@@ -38,6 +38,7 @@ use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 
 use function Hyperf\Collection\value;
+use function Hyperf\Tappable\tap;
 
 if (! function_exists('app')) {
     /**

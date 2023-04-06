@@ -16,6 +16,8 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\Breadcrumb;
 
+use function Hyperf\Tappable\tap;
+
 class BreadcrumbAspect extends AbstractAspect
 {
     public array $annotations = [

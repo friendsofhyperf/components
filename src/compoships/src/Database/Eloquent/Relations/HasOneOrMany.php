@@ -17,6 +17,7 @@ use Hyperf\Database\Model\Relations\Constraint;
 use Hyperf\Database\Query\JoinClause;
 
 use function Hyperf\Collection\collect;
+use function Hyperf\Tappable\tap;
 
 trait HasOneOrMany
 {

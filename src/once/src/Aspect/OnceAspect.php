@@ -15,6 +15,8 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Spatie\Once\Cache;
 
+use function Hyperf\Tappable\tap;
+
 class OnceAspect extends AbstractAspect
 {
     public array $annotations = [

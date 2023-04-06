@@ -20,6 +20,8 @@ use Sentry\Breadcrumb;
 use Sentry\Severity;
 use UnitEnum;
 
+use function Hyperf\Tappable\tap;
+
 class LoggerAspect extends AbstractAspect
 {
     public array $classes = [

@@ -18,6 +18,8 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Http\Message\ResponseInterface;
 use Sentry\Breadcrumb;
 
+use function Hyperf\Tappable\tap;
+
 class GuzzleHttpClientAspect extends AbstractAspect
 {
     public array $classes = [
