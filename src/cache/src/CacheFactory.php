@@ -10,19 +10,12 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Cache;
 
-use Hyperf\Cache\Exception\InvalidArgumentException;
 use Psr\Container\ContainerInterface;
-use TypeError;
 
 class CacheFactory
 {
-    /**
-     * @return CacheInterface
-     * @throws TypeError
-     * @throws InvalidArgumentException
-     */
     public function __invoke(ContainerInterface $container)
     {
-        return $container->get(CacheManager::class)->get('default');
+        return $container->get(CacheManager::class)->store('default');
     }
 }

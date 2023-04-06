@@ -8,9 +8,9 @@ The cache component for Hyperf.
 
 ## Installation
 
-- Request
+- Installation
 
-```bash
+```shell
 composer require friendsofhyperf/cache
 ```
 

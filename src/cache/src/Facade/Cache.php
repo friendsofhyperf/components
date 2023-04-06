@@ -47,11 +47,16 @@ class Cache
      */
     public static function __callStatic($name, $arguments)
     {
-        return self::driver()->{$name}(...$arguments);
+        return self::store()->{$name}(...$arguments);
+    }
+
+    public static function store(string $name = 'default'): CacheInterface
+    {
+        return ApplicationContext::getContainer()->get(CacheManager::class)->store($name);
     }
 
     public static function driver(string $name = 'default'): CacheInterface
     {
-        return ApplicationContext::getContainer()->get(CacheManager::class)->get($name);
+        return self::store($name);
     }
 }
