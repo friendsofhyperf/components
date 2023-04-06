@@ -25,6 +25,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 use function Hyperf\Collection\collect;
 use function Hyperf\Collection\value;
+use function Hyperf\Tappable\tap;
 
 class Cache implements CacheInterface
 {
