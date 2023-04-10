@@ -11,12 +11,12 @@ on:
 jobs:
   release:
     if: github.repository == 'friendsofhyperf/components'
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     env:
       SSH_PRIVATE_KEY: ${{ secrets.SPLIT_PRIVATE_KEY }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Setup Private Key
