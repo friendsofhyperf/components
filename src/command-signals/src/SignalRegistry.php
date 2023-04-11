@@ -13,6 +13,8 @@ namespace FriendsOfHyperf\CommandSignals;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Engine\Signal;
 
+use function Hyperf\Coroutine\defer;
+
 class SignalRegistry
 {
     protected array $signalHandlers = [];

@@ -18,6 +18,8 @@ use Psr\Http\Message\ResponseInterface;
 use Sentry\SentrySdk;
 use Throwable;
 
+use function Hyperf\Coroutine\defer;
+
 class SentryExceptionHandler extends ExceptionHandler
 {
     protected ConfigInterface $config;

@@ -23,6 +23,8 @@ use Swoole\Coroutine\Server as CoServer;
 use Swoole\Server;
 use Throwable;
 
+use function Hyperf\Coroutine\go;
+
 class Task
 {
     /**

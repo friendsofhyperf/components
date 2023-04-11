@@ -15,6 +15,8 @@ use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
 use TypeError;
 
+use function Hyperf\Coroutine\defer;
+
 trait InteractsWithSignals
 {
     protected ?SignalRegistry $SignalRegistry = null;

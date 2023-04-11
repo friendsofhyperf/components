@@ -16,6 +16,8 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Monolog\Handler\SyslogUdp\UdpSocket;
 use Swoole\Coroutine\Client;
 
+use function Hyperf\Coroutine\;
+
 class UdpSocketAspect extends AbstractAspect
 {
     public array $classes = [
@@ -37,7 +39,7 @@ class UdpSocketAspect extends AbstractAspect
             $socket = new Client(SWOOLE_SOCK_UDP);
             $socket->connect($ip, $port, 0.5);
 
-            defer(fn () => $socket->close());
+            (fn () => $socket->close());
 
             $socket->send($chunk);
 
