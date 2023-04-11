@@ -11,8 +11,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ClosureCommand;
 
 use Closure;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ApplicationInterface;
-use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;

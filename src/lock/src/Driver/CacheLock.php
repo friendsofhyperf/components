@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Lock\Driver;
 
-use Hyperf\Utils\ApplicationContext;
+use Hyperf\Context\ApplicationContext;
 use Psr\SimpleCache\CacheInterface;
 
 class CacheLock extends AbstractLock

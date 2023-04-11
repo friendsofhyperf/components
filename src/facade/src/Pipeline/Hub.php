@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Facade\Pipeline;
 
 use Closure;
-use Hyperf\Utils\Pipeline;
+use Hyperf\Pipeline\Pipeline;
 use Psr\Container\ContainerInterface;
 
 class Hub implements HubInterface

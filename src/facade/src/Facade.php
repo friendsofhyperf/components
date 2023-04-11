@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Facade;
 
-use Hyperf\Utils\ApplicationContext;
+use Hyperf\Context\ApplicationContext;
 use RuntimeException;
 
 abstract class Facade

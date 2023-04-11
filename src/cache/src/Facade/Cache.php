@@ -12,7 +12,7 @@ namespace FriendsOfHyperf\Cache\Facade;
 
 use FriendsOfHyperf\Cache\CacheInterface;
 use FriendsOfHyperf\Cache\CacheManager;
-use Hyperf\Utils\ApplicationContext;
+use Hyperf\Context\ApplicationContext;
 
 /**
  * @method static bool add(string $key, mixed $value, null|\DateInterval|\DateTimeInterface|int $ttl = null)

@@ -10,9 +10,9 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Facade;
 
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Logger\Logger;
 use Hyperf\Logger\LoggerFactory;
-use Hyperf\Utils\ApplicationContext;
 
 /**
  * @mixin LoggerFactory

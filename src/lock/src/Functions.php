@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Lock\Driver\LockInterface;
 use FriendsOfHyperf\Lock\LockFactory;
-use Hyperf\Utils\ApplicationContext;
+use Hyperf\Context\ApplicationContext;
 
 if (! function_exists('lock')) {
     /**

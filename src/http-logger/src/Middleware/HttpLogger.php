@@ -12,7 +12,7 @@ namespace FriendsOfHyperf\Http\Logger\Middleware;
 
 use FriendsOfHyperf\Http\Logger\Profile\LogProfile;
 use FriendsOfHyperf\Http\Logger\Writer\LogWriter;
-use Hyperf\Utils\Coroutine;
+use Hyperf\Coroutine\Coroutine;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
