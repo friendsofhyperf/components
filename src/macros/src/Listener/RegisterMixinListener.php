@@ -22,8 +22,8 @@ use Hyperf\Collection\Collection;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Hyperf\HttpServer\Request;
-use Hyperf\Utils\Str;
-use Hyperf\Utils\Stringable;
+use Hyperf\Stringable\Str;
+use Hyperf\Stringable\Stringable;
 
 class RegisterMixinListener implements ListenerInterface
 {
