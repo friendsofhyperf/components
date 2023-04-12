@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\AccessLog;
 use Carbon\Carbon;
 use FriendsOfHyperf\AccessLog\Formatter\AccessLogFormatter;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;

@@ -18,10 +18,10 @@ use GuzzleHttp\RequestOptions as GuzzleHttpClientOptions;
 use GuzzleHttp\Utils;
 use Http\Adapter\Guzzle6\Client as Guzzle6HttpClient;
 use Http\Adapter\Guzzle7\Client as Guzzle7HttpClient;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Guzzle\CoroutineHandler;
-use Hyperf\Utils\Coroutine;
 use Sentry\HttpClient\HttpClientFactory;
 
 class SentryHttpClientFactoryAspect extends AbstractAspect

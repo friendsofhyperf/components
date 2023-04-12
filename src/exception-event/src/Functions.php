@@ -9,14 +9,14 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 use FriendsOfHyperf\ExceptionEvent\Event\ExceptionDispatched;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Context\Context;
-use Hyperf\Utils\ApplicationContext;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-if (class_exists('Hyperf\Utils\ApplicationContext') && ! function_exists('report')) {
+if (! function_exists('report')) {
     /**
      * @param string|Throwable $exception
      * @param array ...$arguments

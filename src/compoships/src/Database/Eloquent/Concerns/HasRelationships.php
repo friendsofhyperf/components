@@ -18,7 +18,7 @@ use FriendsOfHyperf\Compoships\Exceptions\InvalidUsageException;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Model;
 use Hyperf\Database\Query\Expression;
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 
 trait HasRelationships
 {

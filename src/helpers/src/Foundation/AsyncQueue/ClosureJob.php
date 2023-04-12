@@ -12,9 +12,9 @@ namespace FriendsOfHyperf\Helpers\Foundation\AsyncQueue;
 
 use Closure;
 use Hyperf\AsyncQueue\Job;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\NormalizerInterface;
 use Hyperf\Di\ClosureDefinitionCollectorInterface;
-use Hyperf\Utils\ApplicationContext;
 use InvalidArgumentException as GlobalInvalidArgumentException;
 use Laravel\SerializableClosure\SerializableClosure;
 use Psr\Container\ContainerInterface;

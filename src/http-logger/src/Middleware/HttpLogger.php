@@ -12,11 +12,12 @@ namespace FriendsOfHyperf\Http\Logger\Middleware;
 
 use FriendsOfHyperf\Http\Logger\Profile\LogProfile;
 use FriendsOfHyperf\Http\Logger\Writer\LogWriter;
-use Hyperf\Utils\Coroutine;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+
+use function Hyperf\Coroutine\defer;
 
 class HttpLogger implements MiddlewareInterface
 {
@@ -28,7 +29,7 @@ class HttpLogger implements MiddlewareInterface
     {
         $response = $handler->handle($request);
 
-        Coroutine::defer(fn () => $this->logProfile->shouldLogRequest($request) && $this->logWriter->logRequest($request, $response));
+        defer(fn () => $this->logProfile->shouldLogRequest($request) && $this->logWriter->logRequest($request, $response));
 
         return $response;
     }

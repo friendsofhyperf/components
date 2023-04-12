@@ -8,9 +8,9 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ApplicationInterface;
-use Hyperf\Utils\ApplicationContext;
-use Hyperf\Utils\Stringable;
+use Hyperf\Stringable\Stringable;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
 

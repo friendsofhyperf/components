@@ -13,7 +13,8 @@
     },
     "require": {
         "hyperf/config": "~3.0.0",
-        "hyperf/utils": "~3.0.0",
+        "hyperf/context": "~3.0.16",
+        "hyperf/stringable": "~3.0.0",
         "nesbot/carbon": "^2.0"
     },
     "autoload": {

@@ -12,7 +12,7 @@ namespace FriendsOfHyperf\Macros;
 
 use FriendsOfHyperf\Macros\Foundation\UuidContainer;
 use Hyperf\Collection\Collection;
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 use JsonException;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;

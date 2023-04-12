@@ -11,8 +11,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\CommandValidation\Concerns;
 
 use FriendsOfHyperf\CommandValidation\ValidationException;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ValidatorInterface;
-use Hyperf\Utils\ApplicationContext;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 
 trait ValidatesInput

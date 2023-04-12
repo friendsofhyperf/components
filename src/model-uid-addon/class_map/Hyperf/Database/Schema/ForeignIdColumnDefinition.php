@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace Hyperf\Database\Schema;
 
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 
 class ForeignIdColumnDefinition extends ColumnDefinition
 {

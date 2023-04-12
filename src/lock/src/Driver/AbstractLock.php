@@ -11,8 +11,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Lock\Driver;
 
 use FriendsOfHyperf\Lock\Exception\LockTimeoutException;
-use Hyperf\Utils\InteractsWithTime;
-use Hyperf\Utils\Str;
+use FriendsOfHyperf\Lock\Traits\InteractsWithTime;
+use Hyperf\Stringable\Str;
 
 abstract class AbstractLock implements LockInterface
 {

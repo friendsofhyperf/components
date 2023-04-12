@@ -23,6 +23,8 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;
 
+use function Hyperf\Coroutine\defer;
+
 class HttpServer extends \Hyperf\HttpServer\Server
 {
     public function onRequest($request, $response): void

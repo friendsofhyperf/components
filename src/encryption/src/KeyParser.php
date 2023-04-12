@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace Friendsofhyperf\Encryption;
 
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 use RuntimeException;
 
 use function Hyperf\Tappable\tap;

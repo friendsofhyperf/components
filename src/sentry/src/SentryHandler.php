@@ -10,8 +10,8 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Sentry;
 
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Utils\ApplicationContext;
 use Monolog\DateTimeImmutable;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\LineFormatter;

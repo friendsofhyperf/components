@@ -15,13 +15,15 @@ use FriendsOfHyperf\AsyncTask\Event\AfterHandle;
 use FriendsOfHyperf\AsyncTask\Event\BeforeHandle;
 use FriendsOfHyperf\AsyncTask\Event\FailedHandle;
 use FriendsOfHyperf\AsyncTask\Event\RetryHandle;
-use Hyperf\Utils\ApplicationContext;
-use Hyperf\Utils\Coroutine;
+use Hyperf\Context\ApplicationContext;
+use Hyperf\Coroutine\Coroutine;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Swoole\Coroutine\Http\Server as CoHttpServer;
 use Swoole\Coroutine\Server as CoServer;
 use Swoole\Server;
 use Throwable;
+
+use function Hyperf\Coroutine\go;
 
 class Task
 {

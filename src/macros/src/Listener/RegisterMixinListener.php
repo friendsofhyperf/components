@@ -15,15 +15,13 @@ use FriendsOfHyperf\Macros\CollectionMixin;
 use FriendsOfHyperf\Macros\RequestMixin;
 use FriendsOfHyperf\Macros\StringableMixin;
 use FriendsOfHyperf\Macros\StrMixin;
-use FriendsOfHyperf\Macros\UtilsArrMixin;
-use FriendsOfHyperf\Macros\UtilsCollectionMixin;
 use Hyperf\Collection\Arr;
 use Hyperf\Collection\Collection;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Hyperf\HttpServer\Request;
-use Hyperf\Utils\Str;
-use Hyperf\Utils\Stringable;
+use Hyperf\Stringable\Str;
+use Hyperf\Stringable\Stringable;
 
 class RegisterMixinListener implements ListenerInterface
 {
@@ -44,13 +42,5 @@ class RegisterMixinListener implements ListenerInterface
         Request::mixin(new RequestMixin());
         Str::mixin(new StrMixin());
         Stringable::mixin(new StringableMixin());
-
-        if (class_exists(\Hyperf\Utils\Arr::class)) {
-            \Hyperf\Utils\Arr::mixin(new UtilsArrMixin());
-        }
-
-        if (class_exists(\Hyperf\Utils\Collection::class)) {
-            \Hyperf\Utils\Collection::mixin(new UtilsCollectionMixin());
-        }
     }
 }

@@ -13,8 +13,9 @@
     },
     "require": {
         "guzzlehttp/uri-template": "^1.0",
-        "hyperf/conditionable": "~3.0.0",
         "hyperf/collection": "~3.0.0",
+        "hyperf/conditionable": "~3.0.0",
+        "hyperf/coroutine": "~3.0.0",
         "hyperf/guzzle": "~3.0.0",
         "hyperf/macroable": "~3.0.0",
         "hyperf/tappable": "~3.0.0",

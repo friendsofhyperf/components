@@ -10,11 +10,13 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\MonologHook\Aspect;
 
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Hyperf\Utils\Coroutine;
 use Monolog\Handler\SyslogUdp\UdpSocket;
 use Swoole\Coroutine\Client;
+
+use function Hyperf\Coroutine\defer;
 
 class UdpSocketAspect extends AbstractAspect
 {

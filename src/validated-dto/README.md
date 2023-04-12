@@ -215,7 +215,7 @@ your `DTO` properties in the `defaults` function:
 
 namespace App\DTO;
 
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 
 class UserDTO extends ValidatedDTO
 {

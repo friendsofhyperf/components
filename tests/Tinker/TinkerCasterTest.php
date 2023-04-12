@@ -11,7 +11,7 @@ declare(strict_types=1);
 use FriendsOfHyperf\Macros\Foundation\HtmlString;
 use FriendsOfHyperf\Tinker\TinkerCaster;
 use Hyperf\Collection\Collection;
-use Hyperf\Utils\Stringable;
+use Hyperf\Stringable\Stringable;
 
 uses()->group('tinker');
 

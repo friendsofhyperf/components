@@ -10,8 +10,8 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Cache\Cache;
 use FriendsOfHyperf\Facade\Log;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Logger\LoggerFactory;
-use Hyperf\Utils\ApplicationContext;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
 

@@ -10,8 +10,10 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\CommandSignals;
 
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Engine\Signal;
-use Hyperf\Utils\Coroutine;
+
+use function Hyperf\Coroutine\defer;
 
 class SignalRegistry
 {

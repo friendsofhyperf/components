@@ -13,8 +13,8 @@ namespace FriendsOfHyperf\ConsoleSpinner\Traits;
 use Closure;
 use Countable;
 use FriendsOfHyperf\ConsoleSpinner\Spinner;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Utils\ApplicationContext;
 use TypeError;
 
 trait Spinnerable

@@ -11,8 +11,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Macros;
 
 use FriendsOfHyperf\Macros\Foundation\HtmlString;
-use Hyperf\Utils\Str;
-use Hyperf\Utils\Stringable;
+use Hyperf\Stringable\Str;
+use Hyperf\Stringable\Stringable;
 
 use function Hyperf\Collection\collect;
 

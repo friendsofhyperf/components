@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Tests;
 
-use Hyperf\Utils\Stringable;
+use Hyperf\Stringable\Stringable;
 use Mockery as m;
 
 /**
