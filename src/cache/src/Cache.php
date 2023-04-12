@@ -18,9 +18,9 @@ use FriendsOfHyperf\Cache\Event\CacheHit;
 use FriendsOfHyperf\Cache\Event\CacheMissed;
 use FriendsOfHyperf\Cache\Event\KeyForgotten;
 use FriendsOfHyperf\Cache\Event\KeyWritten;
+use FriendsOfHyperf\Cache\Traits\InteractsWithTime;
 use Hyperf\Cache\Driver\DriverInterface;
 use Hyperf\Macroable\Macroable;
-use Hyperf\Utils\InteractsWithTime;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 use function Hyperf\Collection\collect;

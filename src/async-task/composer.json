@@ -18,7 +18,6 @@
         "hyperf/event": "~3.0.0",
         "hyperf/framework": "~3.0.0",
         "hyperf/logger": "~3.0.0",
-        "hyperf/utils": "~3.0.0",
         "laravel/serializable-closure": "^1.0"
     },
     "autoload": {

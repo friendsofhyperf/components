@@ -10,23 +10,32 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\AsyncTask;
 
-use Hyperf\Utils\Backoff;
 use Throwable;
 
-function retry(int $times, callable $callback, int $sleep = 0)
+/**
+ * Retry.
+ * @return mixed
+ * @throws Throwable
+ */
+function retry(int $times, callable $callback, int $sleep = 0, callable $when = null)
 {
     $attempts = 0;
-    $backoff = new Backoff($sleep);
 
     beginning:
+    $attempts++;
+    --$times;
+
     try {
-        return $callback(++$attempts, $e ?? null);
+        return $callback($attempts);
     } catch (Throwable $e) {
-        if (--$times < 0) {
+        if ($times < 1 || ($when && ! $when($e))) {
             throw $e;
         }
 
-        $backoff->sleep();
+        if ($sleep) {
+            usleep($sleep * 1000);
+        }
+
         goto beginning;
     }
 }
