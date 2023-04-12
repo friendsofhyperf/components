@@ -163,7 +163,7 @@ interface RequestInterface
      *
      * @param string $key
      * @param mixed $default
-     * @return \Hyperf\Utils\Stringable
+     * @return \Hyperf\Stringable\Stringable
      */
     public function str($key, $default = null);
 
@@ -172,7 +172,7 @@ interface RequestInterface
      *
      * @param string $key
      * @param mixed $default
-     * @return \Hyperf\Utils\Stringable
+     * @return \Hyperf\Stringable\Stringable
      */
     public function string($key, $default = null);
 

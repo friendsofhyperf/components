@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Helpers\Foundation;
 
 use Hyperf\Macroable\Macroable;
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 
 class Environment
 {

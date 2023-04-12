@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 use FriendsOfHyperf\Macros\Foundation\HtmlString;
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 
 uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'stringable');
 

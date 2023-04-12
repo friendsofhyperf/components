@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ClosureCommand;
 
 use Hyperf\Collection\Collection;
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 
 class Inspiring
 {

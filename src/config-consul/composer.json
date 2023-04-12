@@ -10,6 +10,7 @@
     "require": {
         "hyperf/config-center": "~3.0.0",
         "hyperf/consul": "~3.0.0",
+        "hyperf/stringable": "~3.0.0",
         "hyperf/utils": "~3.0.0"
     },
     "autoload": {

@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ModelHashids\Concerns;
 
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 
 trait HashidRouting
 {

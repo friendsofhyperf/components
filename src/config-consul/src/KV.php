@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ConfigConsul;
 
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 
 class KV
 {

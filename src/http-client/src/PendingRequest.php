@@ -29,7 +29,7 @@ use Hyperf\Contract\Arrayable;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Guzzle\CoroutineHandler;
 use Hyperf\Macroable\Macroable;
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 use JsonSerializable;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;

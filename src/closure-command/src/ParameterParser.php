@@ -14,7 +14,7 @@ use Closure;
 use Hyperf\Contract\NormalizerInterface;
 use Hyperf\Di\ClosureDefinitionCollectorInterface;
 use Hyperf\Di\MethodDefinitionCollectorInterface;
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 

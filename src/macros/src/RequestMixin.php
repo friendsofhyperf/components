@@ -14,7 +14,7 @@ use Carbon\Carbon;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\Context;
 use Hyperf\HttpServer\Request;
-use Hyperf\Utils\Str;
+use Hyperf\Stringable\Str;
 use stdClass;
 
 use function Hyperf\Collection\collect;
