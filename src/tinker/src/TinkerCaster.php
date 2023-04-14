@@ -92,7 +92,7 @@ class TinkerCaster
     /**
      * Get an array representing the properties of a fluent string.
      *
-     * @param \Hyperf\Stringable\Stringable $stringable
+     * @param \Hyperf\Stringable\Stringable|\Hyperf\Utils\Stringable $stringable
      */
     public static function castStringable($stringable): array
     {
