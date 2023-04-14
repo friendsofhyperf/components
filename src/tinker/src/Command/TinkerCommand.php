@@ -42,6 +42,7 @@ class TinkerCommand extends HyperfCommand
         'Hyperf\Redis\Redis' => 'FriendsOfHyperf\Tinker\TinkerCaster::castRedis',
         'Hyperf\Utils\Collection' => 'FriendsOfHyperf\Tinker\TinkerCaster::castCollection',
         'Hyperf\Collection\Collection' => 'FriendsOfHyperf\Tinker\TinkerCaster::castCollection',
+        'Hyperf\Utils\Stringable' => 'FriendsOfHyperf\Tinker\TinkerCaster::castStringable',
         'Hyperf\Stringable\Stringable' => 'FriendsOfHyperf\Tinker\TinkerCaster::castStringable',
         'Hyperf\ViewEngine\HtmlString' => 'FriendsOfHyperf\Tinker\TinkerCaster::castHtmlString',
         'Symfony\Component\Console\Application' => 'FriendsOfHyperf\Tinker\TinkerCaster::castApplication',
