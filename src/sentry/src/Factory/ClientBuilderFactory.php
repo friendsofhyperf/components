@@ -12,9 +12,10 @@ namespace FriendsOfHyperf\Sentry\Factory;
 
 use FriendsOfHyperf\Sentry\Version;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Logger\LoggerFactory;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
+
+use function Hyperf\Tappable\tap;
 
 class ClientBuilderFactory
 {
@@ -41,10 +42,9 @@ class ClientBuilderFactory
             $options['environment'] = env('APP_ENV', 'production');
         }
 
-        return tap(ClientBuilder::create($options), function (ClientBuilder $clientBuilder) use ($container) {
+        return tap(ClientBuilder::create($options), function (ClientBuilder $clientBuilder) {
             $clientBuilder->setSdkIdentifier(Version::SDK_IDENTIFIER);
             $clientBuilder->setSdkVersion(Version::SDK_VERSION);
-            $clientBuilder->setLogger($container->get(LoggerFactory::class)->get('sentry'));
         });
     }
 }
