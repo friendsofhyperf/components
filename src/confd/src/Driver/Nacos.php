@@ -10,13 +10,13 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Confd\Driver;
 
+use Hyperf\Codec\Json;
+use Hyperf\Codec\Xml;
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Nacos\Application;
 use Hyperf\Nacos\Config;
-use Hyperf\Utils\Codec\Json;
-use Hyperf\Utils\Codec\Xml;
 use Psr\Container\ContainerInterface;
 
 use function Hyperf\Collection\collect;
@@ -74,7 +74,7 @@ class Nacos implements DriverInterface
     /**
      * pull fresh config from nacos server.
      * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Hyperf\Utils\Exception\InvalidArgumentException
+     * @throws \Hyperf\Codec\Exception\InvalidArgumentException
      */
     protected function pull(array $options = []): array|string
     {
