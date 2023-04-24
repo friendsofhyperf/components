@@ -74,7 +74,7 @@ class Nacos implements DriverInterface
     /**
      * pull fresh config from nacos server.
      * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Hyperf\Utils\Exception\InvalidArgumentException
+     * @throws \Hyperf\Codec\Exception\InvalidArgumentException
      */
     protected function pull(array $options = []): array|string
     {
