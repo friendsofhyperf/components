@@ -12,6 +12,7 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
+        "hyperf/code-parser": "~3.0.0",
         "hyperf/command": "~3.0.0",
         "hyperf/context": "~3.0.16",
         "hyperf/di": "~3.0.0",

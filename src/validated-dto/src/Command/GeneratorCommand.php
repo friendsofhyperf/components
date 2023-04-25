@@ -10,9 +10,9 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ValidatedDTO\Command;
 
+use Hyperf\CodeParser\Project;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Utils\CodeGen\Project;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputArgument;

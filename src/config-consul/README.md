@@ -21,7 +21,7 @@ return [
     'drivers' => [
         'consul' => [
             'driver' => FriendsOfHyperf\ConfigConsul\ConsulDriver::class,
-            'packer' => Hyperf\Utils\Packer\JsonPacker::class,
+            'packer' => Hyperf\Codec\Packer\JsonPacker::class,
             'uri' => env('CONSUL_URI'),
             'namespaces' => [
                 '/application',

@@ -10,9 +10,9 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\ConfigConsul;
 
+use Hyperf\Codec\Packer\JsonPacker;
 use Hyperf\ConfigCenter\AbstractDriver;
 use Hyperf\Contract\PackerInterface;
-use Hyperf\Utils\Packer\JsonPacker;
 use Psr\Container\ContainerInterface;
 
 class ConsulDriver extends AbstractDriver
