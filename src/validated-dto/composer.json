@@ -21,8 +21,7 @@
         "hyperf/collection": "~3.0.0",
         "hyperf/context": "~3.0.16",
         "hyperf/stringable": "~3.0.0",
-        "hyperf/validation": "~3.0.0",
-        "hyperf/utils": "~3.0.0"
+        "hyperf/validation": "~3.0.0"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
