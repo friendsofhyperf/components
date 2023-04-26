@@ -16,6 +16,8 @@ use Hyperf\Logger\LoggerFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
+use function Hyperf\Support\env;
+
 class DefaultLogWriter implements LogWriter
 {
     public function __construct(private LoggerFactory $loggerFactory, private ConfigInterface $config)

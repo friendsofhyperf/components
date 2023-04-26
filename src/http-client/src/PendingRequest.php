@@ -119,7 +119,11 @@ class PendingRequest
      *
      * @var array
      */
-    protected $options = [];
+    protected $options = [
+        'connect_timeout' => 10,
+        'http_errors' => false,
+        'timeout' => 30,
+    ];
 
     /**
      * A callback to run when throwing if a server or client error occurs.
@@ -235,12 +239,6 @@ class PendingRequest
         $this->middleware = new Collection();
 
         $this->asJson();
-
-        $this->options = [
-            'connect_timeout' => 10,
-            'http_errors' => false,
-            'timeout' => 30,
-        ];
 
         $this->beforeSendingCallbacks = collect([function (Request $request, array $options, PendingRequest $pendingRequest) {
             $pendingRequest->request = $request;

@@ -12,6 +12,7 @@
         "hyperf/database": "~3.0.0",
         "hyperf/event": "~3.0.0",
         "hyperf/stringable": "~3.0.0",
+        "hyperf/support": "~3.0.1",
         "ramsey/uuid": "^4.7",
         "symfony/uid": "^5.0|^6.0"
     },

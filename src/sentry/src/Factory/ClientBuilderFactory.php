@@ -15,6 +15,7 @@ use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
 
+use function Hyperf\Support\env;
 use function Hyperf\Tappable\tap;
 
 class ClientBuilderFactory

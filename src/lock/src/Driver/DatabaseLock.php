@@ -15,6 +15,8 @@ use Hyperf\Database\ConnectionInterface;
 use Hyperf\Database\Exception\QueryException;
 use Hyperf\DbConnection\Db;
 
+use function Hyperf\Support\optional;
+
 class DatabaseLock extends AbstractLock
 {
     protected ConnectionInterface $connection;

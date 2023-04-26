@@ -20,6 +20,8 @@ use Hyperf\Database\Model\Model;
 use Hyperf\Database\Query\Expression;
 use Hyperf\Stringable\Str;
 
+use function Hyperf\Support\class_uses_recursive;
+
 trait HasRelationships
 {
     /**

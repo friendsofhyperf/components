@@ -17,6 +17,7 @@
         "hyperf/collection": "~3.0.0",
         "hyperf/macroable": "~3.0.0",
         "hyperf/stringable": "~3.0.0",
+        "hyperf/support": "~3.0.1",
         "nesbot/carbon": "^2.0"
     },
     "autoload": {

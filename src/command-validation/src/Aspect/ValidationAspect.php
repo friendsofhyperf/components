@@ -16,6 +16,8 @@ use Hyperf\Command\Command;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 
+use function Hyperf\Support\class_uses_recursive;
+
 class ValidationAspect extends AbstractAspect
 {
     public array $classes = [

@@ -12,6 +12,8 @@ namespace FriendsOfHyperf\Cache;
 
 use Hyperf\Cache\CacheManager as HyperfCacheManager;
 
+use function Hyperf\Support\make;
+
 class CacheManager
 {
     /**

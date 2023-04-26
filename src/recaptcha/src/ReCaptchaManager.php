@@ -15,6 +15,8 @@ use ReCaptcha\ReCaptcha;
 use RuntimeException;
 use TypeError;
 
+use function Hyperf\Support\make;
+
 class ReCaptchaManager
 {
     /**

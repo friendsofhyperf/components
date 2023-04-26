@@ -14,6 +14,7 @@ use Hyperf\Coroutine\Coroutine;
 use Hyperf\Engine\Signal;
 
 use function Hyperf\Coroutine\defer;
+use function Hyperf\Coroutine\parallel;
 
 class SignalRegistry
 {

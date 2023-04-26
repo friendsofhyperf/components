@@ -23,6 +23,8 @@ use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 
+use function Hyperf\Support\env;
+
 class TinkerCommand extends HyperfCommand
 {
     /**

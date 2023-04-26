@@ -17,6 +17,8 @@ use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
 use Sentry\State\HubInterface;
 
+use function Hyperf\Support\make;
+
 class InitHubListener implements ListenerInterface
 {
     public function __construct(protected ContainerInterface $container)

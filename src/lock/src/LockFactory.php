@@ -15,6 +15,8 @@ use FriendsOfHyperf\Lock\Driver\RedisLock;
 use Hyperf\Contract\ConfigInterface;
 use InvalidArgumentException;
 
+use function Hyperf\Support\make;
+
 class LockFactory
 {
     public function __construct(private ConfigInterface $config)

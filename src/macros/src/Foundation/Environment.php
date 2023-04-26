@@ -12,6 +12,8 @@ namespace FriendsOfHyperf\Macros\Foundation;
 
 use Hyperf\Stringable\Str;
 
+use function Hyperf\Support\env;
+
 class Environment
 {
     /**

@@ -13,6 +13,8 @@ namespace FriendsOfHyperf\Lock\Driver;
 use Hyperf\Redis\RedisProxy;
 use Redis;
 
+use function Hyperf\Support\make;
+
 class RedisLock extends AbstractLock
 {
     /**

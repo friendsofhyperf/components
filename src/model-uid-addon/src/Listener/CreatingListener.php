@@ -15,6 +15,8 @@ use Hyperf\Database\Model\Concerns\HasUuids;
 use Hyperf\Database\Model\Events\Creating;
 use Hyperf\Event\Contract\ListenerInterface;
 
+use function Hyperf\Support\class_uses_recursive;
+
 class CreatingListener implements ListenerInterface
 {
     public function listen(): array

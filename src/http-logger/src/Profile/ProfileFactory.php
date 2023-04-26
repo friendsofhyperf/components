@@ -13,6 +13,8 @@ namespace FriendsOfHyperf\Http\Logger\Profile;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 
+use function Hyperf\Support\make;
+
 class ProfileFactory
 {
     public function __invoke(ContainerInterface $container)
