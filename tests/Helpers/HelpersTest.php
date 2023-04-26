@@ -10,9 +10,13 @@ declare(strict_types=1);
  */
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ApplicationInterface;
-use Hyperf\Stringable\Stringable;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
+
+use function FriendsOfHyperf\Helpers\class_namespace;
+use function FriendsOfHyperf\Helpers\Command\call;
+use function FriendsOfHyperf\Helpers\object_get;
+use function FriendsOfHyperf\Helpers\preg_replace_array;
 
 uses(\FriendsOfHyperf\Tests\TestCase::class)->group('helpers');
 
@@ -58,25 +62,6 @@ test('test PregReplaceArray', function ($pattern, $replacements, $subject, $expe
     );
 })->with('providesPregReplaceArrayData');
 
-test('test Str', function () {
-    $stringable = str('string-value');
-
-    $this->assertInstanceOf(Stringable::class, $stringable);
-    $this->assertSame('string-value', (string) $stringable);
-
-    $stringable = str($name = null);
-    $this->assertInstanceOf(Stringable::class, $stringable);
-    $this->assertTrue($stringable->isEmpty());
-
-    $strAccessor = str();
-    $this->assertTrue((new ReflectionClass($strAccessor))->isAnonymous());
-    $this->assertSame($strAccessor->limit('string-value', 3), 'str...');
-
-    $strAccessor = str();
-    $this->assertTrue((new ReflectionClass($strAccessor))->isAnonymous());
-    $this->assertSame((string) $strAccessor, '');
-});
-
 test('test FriendsOfHyperf\Helpers\Command\call', function () {
     ApplicationContext::setContainer(
         mock(ContainerInterface::class)->expect(
@@ -88,5 +73,5 @@ test('test FriendsOfHyperf\Helpers\Command\call', function () {
         )
     );
 
-    expect(FriendsOfHyperf\Helpers\Command\call('command', ['argument' => 'value']))->toBe(0);
+    expect(call('command', ['argument' => 'value']))->toBe(0);
 });
