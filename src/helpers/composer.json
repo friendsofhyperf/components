@@ -35,6 +35,7 @@
     "autoload": {
         "files": [
             "src/Command/Functions.php",
+            "src/DeprecatedFunctions.php",
             "src/Functions.php"
         ],
         "psr-4": {

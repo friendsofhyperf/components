@@ -14,6 +14,12 @@ use Hyperf\Stringable\Stringable;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
 
+use function FriendsOfHyperf\Helpers\class_namespace;
+use function FriendsOfHyperf\Helpers\Command\call;
+use function FriendsOfHyperf\Helpers\object_get;
+use function FriendsOfHyperf\Helpers\preg_replace_array;
+use function Hyperf\Stringable\str;
+
 uses(\FriendsOfHyperf\Tests\TestCase::class)->group('helpers');
 
 afterEach(function () {
@@ -88,5 +94,5 @@ test('test FriendsOfHyperf\Helpers\Command\call', function () {
         )
     );
 
-    expect(FriendsOfHyperf\Helpers\Command\call('command', ['argument' => 'value']))->toBe(0);
+    expect(call('command', ['argument' => 'value']))->toBe(0);
 });
