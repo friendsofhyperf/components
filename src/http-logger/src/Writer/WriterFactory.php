@@ -13,6 +13,8 @@ namespace FriendsOfHyperf\Http\Logger\Writer;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 
+use function Hyperf\Support\make;
+
 class WriterFactory
 {
     public function __invoke(ContainerInterface $container)

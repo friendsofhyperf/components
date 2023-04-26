@@ -12,6 +12,7 @@
         "hyperf/context": "~3.0.16",
         "hyperf/di": "~3.0.0",
         "hyperf/stringable": "~3.0.0",
+        "hyperf/support": "~3.0.1",
         "hyperf/validation": "~3.0.0"
     },
     "autoload": {

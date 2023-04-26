@@ -18,6 +18,7 @@
         "hyperf/di": "~3.0.0",
         "hyperf/event": "~3.0.0",
         "hyperf/stringable": "~3.0.0",
+        "hyperf/support": "~3.0.1",
         "hyperf/tappable": "~3.0.0"
     },
     "autoload": {

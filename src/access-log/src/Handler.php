@@ -18,6 +18,8 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Log\LoggerInterface;
 
+use function Hyperf\Support\env;
+
 class Handler
 {
     public function __construct(protected ConfigInterface $config, protected LoggerInterface $logger, protected AccessLogFormatter $formatter)

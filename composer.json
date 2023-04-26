@@ -17,7 +17,6 @@
         "php": "^8.0.0",
         "barryvdh/reflection-docblock": "^2.0",
         "composer/composer": "^1.0|^2.0",
-        "friendsofhyperf/rector": "dev-main",
         "google/protobuf": "^3.21",
         "google/recaptcha": "^1.2",
         "guzzlehttp/uri-template": "^1.0",
@@ -48,6 +47,7 @@
         "hyperf/redis": "~3.0.0",
         "hyperf/session": "~3.0.0",
         "hyperf/stringable": "~3.0.0",
+        "hyperf/support": "~3.0.1",
         "hyperf/tappable": "~3.0.0",
         "hyperf/validation": "~3.0.0",
         "hyperf/view": "~3.0.0",
@@ -67,6 +67,7 @@
         "symfony/var-dumper": "^5.3|^6.0"
     },
     "require-dev": {
+        "friendsofhyperf/rector": "dev-main",
         "friendsofphp/php-cs-fixer": "^3.0",
         "hashids/hashids": "^4.1|^5.0",
         "hyperf/etcd": "~3.0.0",

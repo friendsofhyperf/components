@@ -17,6 +17,8 @@ use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 use TypeError;
 
+use function Hyperf\Support\make;
+
 trait Spinnerable
 {
     /**

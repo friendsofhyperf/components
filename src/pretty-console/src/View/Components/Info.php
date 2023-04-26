@@ -12,6 +12,8 @@ namespace FriendsOfHyperf\PrettyConsole\View\Components;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function Hyperf\Support\with;
+
 class Info extends Component
 {
     /**

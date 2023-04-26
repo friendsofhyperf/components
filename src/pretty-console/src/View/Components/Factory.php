@@ -13,6 +13,8 @@ namespace FriendsOfHyperf\PrettyConsole\View\Components;
 use InvalidArgumentException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+use function Hyperf\Support\with;
+
 /**
  * @method void alert(string $string, int $verbosity = \Symfony\Component\Console\Output\OutputInterface::VERBOSITY_NORMAL)
  * @method void bulletList(array $elements, int $verbosity = \Symfony\Component\Console\Output\OutputInterface::VERBOSITY_NORMAL)

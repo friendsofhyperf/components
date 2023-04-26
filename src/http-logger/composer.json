@@ -16,6 +16,7 @@
         "hyperf/coroutine": "~3.0.0",
         "hyperf/http-server": "~3.0.0",
         "hyperf/logger": "~3.0.0",
+        "hyperf/support": "~3.0.1",
         "nesbot/carbon": "^2.0"
     },
     "autoload": {

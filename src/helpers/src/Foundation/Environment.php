@@ -13,6 +13,8 @@ namespace FriendsOfHyperf\Helpers\Foundation;
 use Hyperf\Macroable\Macroable;
 use Hyperf\Stringable\Str;
 
+use function Hyperf\Support\env;
+
 class Environment
 {
     use Macroable;

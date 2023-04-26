@@ -17,6 +17,8 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Container\ContainerInterface;
 
+use function Hyperf\Support\make;
+
 class EnvCommand extends HyperfCommand
 {
     protected ?string $signature = 'confd:env {--E|env-path= : Path of .env.}';

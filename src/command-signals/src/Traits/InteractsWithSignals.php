@@ -16,6 +16,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use TypeError;
 
 use function Hyperf\Coroutine\defer;
+use function Hyperf\Support\make;
 
 trait InteractsWithSignals
 {

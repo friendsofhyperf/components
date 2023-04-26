@@ -20,9 +20,11 @@ use Laravel\SerializableClosure\SerializableClosure;
 use Psr\Container\ContainerInterface;
 use ReflectionFunction;
 
+use function Hyperf\Support\with;
+
 class ClosureJob extends Job
 {
-    public string $class;
+    public string $class = 'Closure';
 
     public string $method;
 
@@ -32,7 +34,6 @@ class ClosureJob extends Job
     {
         $this->closure = new SerializableClosure($closure);
         $this->maxAttempts = $maxAttempts;
-        $this->class = 'Closure';
         $this->method = with(new ReflectionFunction($this->closure->getClosure()), fn ($reflection) => sprintf('%s:%s', str_replace(rtrim(BASE_PATH, '/') . '/', '', $reflection->getFileName()), $reflection->getStartLine()));
     }
 

@@ -12,6 +12,8 @@ namespace FriendsOfHyperf\Lock\Driver;
 
 use Hyperf\Cache\Driver\FileSystemDriver;
 
+use function Hyperf\Support\make;
+
 class FileSystemLock extends AbstractLock
 {
     /**

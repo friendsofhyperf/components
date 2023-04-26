@@ -20,6 +20,7 @@ use Hyperf\Nacos\Config;
 use Psr\Container\ContainerInterface;
 
 use function Hyperf\Collection\collect;
+use function Hyperf\Support\make;
 
 class Nacos implements DriverInterface
 {

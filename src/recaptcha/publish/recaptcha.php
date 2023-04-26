@@ -8,6 +8,8 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
+use function Hyperf\Support\env;
+
 return [
     'default' => 'v3',
     'message' => 'Google ReCaptcha Verify Fails',

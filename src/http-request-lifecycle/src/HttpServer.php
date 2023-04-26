@@ -18,7 +18,7 @@ use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\HttpMessage\Server\Response as Psr7Response;
 use Hyperf\HttpServer\MiddlewareManager;
 use Hyperf\HttpServer\Router\Dispatched;
-use Hyperf\Utils\SafeCaller;
+use Hyperf\Support\SafeCaller;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Throwable;

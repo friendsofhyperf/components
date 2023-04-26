@@ -12,6 +12,7 @@ namespace FriendsOfHyperf\Http\Client;
 
 use Closure;
 
+use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
 
 /**

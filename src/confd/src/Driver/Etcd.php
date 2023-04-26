@@ -17,6 +17,7 @@ use Hyperf\Etcd\V3\KV;
 use Psr\Container\ContainerInterface;
 
 use function Hyperf\Collection\collect;
+use function Hyperf\Support\make;
 
 class Etcd implements DriverInterface
 {

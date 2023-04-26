@@ -19,7 +19,7 @@ use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Database\Model\Relations\Relation;
 use Hyperf\Stringable\Str;
-use Hyperf\Utils\Filesystem\Filesystem;
+use Hyperf\Support\Filesystem\Filesystem;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionMethod;

@@ -14,9 +14,11 @@ use Closure;
 use Laravel\SerializableClosure\SerializableClosure;
 use ReflectionFunction;
 
+use function Hyperf\Support\with;
+
 class ClosureTask extends AbstractTask
 {
-    public string $class;
+    public string $class = 'Closure';
 
     public string $method;
 
@@ -25,7 +27,6 @@ class ClosureTask extends AbstractTask
     public function __construct(Closure $closure)
     {
         $this->closure = new SerializableClosure($closure);
-        $this->class = 'Closure';
         $this->method = with(new ReflectionFunction($this->closure->getClosure()), function ($reflection) {
             return sprintf('%s:%s', str_replace(rtrim(BASE_PATH, '/') . '/', '', $reflection->getFileName()), $reflection->getStartLine());
         });
