@@ -14,6 +14,7 @@ use Closure;
 use Hyperf\Database\Query\Expression;
 use Hyperf\Paginator\Paginator;
 
+use function FriendsOfHyperf\Helpers\filled;
 use function Hyperf\Collection\collect;
 
 /**
@@ -25,7 +26,7 @@ class FastPaginate
     {
         /* @phpstan-ignore-next-line */
         return $this->paginate('paginate', fn ($items, $paginator) => $this->paginator(
-            $items,
+            $this->getModel()->newCollection($items),
             $paginator->total(),
             $paginator->perPage(),
             $paginator->currentPage(),
@@ -37,7 +38,7 @@ class FastPaginate
     {
         /* @phpstan-ignore-next-line */
         return $this->paginate('simplePaginate', fn ($items, $paginator) => $this->simplePaginator(
-            $items,
+            $this->getModel()->newCollection($items),
             $paginator->perPage(),
             $paginator->currentPage(),
             $paginator->getOptions()
@@ -61,6 +62,7 @@ class FastPaginate
         // have to include certain columns in the inner query.
         $orders = collect($base->orders)
             ->pluck('column')
+            ->filter()
             ->map(fn ($column) => $base->grammar->wrap($column));
 
         return collect($base->columns)
@@ -107,6 +109,14 @@ class FastPaginate
             $model = $this->newModelInstance();
             $key = $model->getKeyName();
             $table = $model->getTable();
+
+            // Apparently some databases allow for offset 0 with no limit and some people
+            // use it as a hack to get all records. Since that defeats the purpose of
+            // fast pagination, we'll just return the normal paginator in that case.
+            // https://github.com/hammerstonedev/fast-paginate/issues/39
+            if ($perPage === -1) {
+                return $this->{$paginationMethod}($perPage, $columns, $pageName, $page);
+            }
 
             try {
                 $innerSelectColumns = FastPaginate::getInnerSelectColumns($this);

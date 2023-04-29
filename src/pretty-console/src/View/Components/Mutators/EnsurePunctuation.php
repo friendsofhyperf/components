@@ -10,6 +10,8 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\PrettyConsole\View\Components\Mutators;
 
+use function Hyperf\Stringable\str;
+
 class EnsurePunctuation
 {
     /**

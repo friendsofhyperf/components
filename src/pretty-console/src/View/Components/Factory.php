@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\PrettyConsole\View\Components;
 use InvalidArgumentException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
+use function FriendsOfHyperf\Helpers\throw_unless;
 use function Hyperf\Support\with;
 
 /**
