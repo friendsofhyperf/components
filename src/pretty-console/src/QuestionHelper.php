@@ -18,6 +18,7 @@ use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
 
+use function Hyperf\Stringable\str;
 use function Hyperf\Support\with;
 
 class QuestionHelper extends SymfonyQuestionHelper
