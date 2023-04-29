@@ -14,6 +14,7 @@
         }
     ],
     "require": {
+        "friendsofhyperf/helpers": "^3.0",
         "hyperf/database": "~3.0.0",
         "hyperf/event": "~3.0.0",
         "hyperf/paginator": "~3.0.0",
