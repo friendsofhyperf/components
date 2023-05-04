@@ -105,6 +105,18 @@ class ArrMixin
         return fn ($array, $callback = null) => Collection::make($array)->sortByDesc($callback)->all();
     }
 
+    /**
+     * Recursively sort an array by keys and values in descending order.
+     *
+     * @param array $array
+     * @param int $options
+     * @return array
+     */
+    public function sortRecursiveDesc()
+    {
+        return fn ($array, $options = SORT_REGULAR) => $this->sortRecursive($array, $options, true);
+    }
+
     public function undot()
     {
         return function ($array) {

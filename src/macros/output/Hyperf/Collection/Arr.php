@@ -91,6 +91,17 @@ class Arr
     }
 
     /**
+     * Recursively sort an array by keys and values in descending order.
+     *
+     * @param array $array
+     * @param int $options
+     * @return array
+     */
+    public function sortRecursiveDesc($array, $options = SORT_REGULAR)
+    {
+    }
+
+    /**
      * Convert a flatten "dot" notation array into an expanded array.
      *
      * @param array|iterable $array
