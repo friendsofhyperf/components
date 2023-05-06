@@ -23,6 +23,7 @@
             "FriendsOfHyperf\\Lock\\": "src"
         },
         "files": [
+            "src/DeprecatedFunctions.php",
             "src/Functions.php"
         ]
     },
