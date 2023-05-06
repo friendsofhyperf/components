@@ -8,6 +8,8 @@
         "email": "huangdijia@gmail.com"
     }],
     "require": {
+        "hyperf/di": "~3.0.0",
+        "hyperf/context": "~3.0.0",
         "hyperf/macroable": "~3.0.0",
         "hyperf/stringable": "~3.0.0",
         "hyperf/support": "~3.0.0",
