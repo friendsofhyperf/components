@@ -13,6 +13,7 @@
     },
     "require": {
         "friendsofhyperf/macros": "^3.0",
+        "friendsofhyperf/support": "^3.0",
         "hyperf/context": "~3.0.16",
         "hyperf/macroable": "~3.0.0",
         "hyperf/stringable": "~3.0.0",
