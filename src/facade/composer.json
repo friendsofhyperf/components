@@ -12,9 +12,9 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
+        "friendsofhyperf/support": "^3.0",
         "hyperf/context": "~3.0.16",
-        "hyperf/di": "~3.0.0",
-        "hyperf/pipeline": "~3.0.0"
+        "hyperf/di": "~3.0.0"
     },
     "suggest": {
         "hyperf/amqp": "Required to use (~3.0.0)",

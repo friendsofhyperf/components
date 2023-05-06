@@ -10,11 +10,10 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Facade;
 
-use FriendsOfHyperf\Facade\Pipeline\Hub;
-use Hyperf\Config\Config as Accessor;
+use FriendsOfHyperf\Support\Pipeline\Hub;
 
 /**
- * @mixin Accessor
+ * @mixin Hub
  */
 class Pipeline extends Facade
 {
