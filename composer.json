@@ -132,6 +132,7 @@
             "src/helpers/src/DeprecatedFunctions.php",
             "src/helpers/src/Functions.php",
             "src/http-client/src/Functions.php",
+            "src/lock/src/DeprecatedFunctions.php",
             "src/lock/src/Functions.php",
             "src/macros/src/Functions.php"
         ],
