@@ -8,11 +8,14 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Helpers\Foundation;
+namespace FriendsOfHyperf\Once;
 
-/**
- * @deprecated v3.1, use `\FriendsOfHyperf\Support\Environment` instead.
- */
-class Environment extends \FriendsOfHyperf\Support\Environment
+class ConfigProvider
 {
+    public function __invoke(): array
+    {
+        defined('BASE_PATH') or define('BASE_PATH', '');
+
+        return [];
+    }
 }

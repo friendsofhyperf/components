@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 use Carbon\Carbon;
 use FriendsOfHyperf\AsyncTask\TaskInterface as AsyncTaskInterface;
-use FriendsOfHyperf\Helpers\Foundation\Environment;
+use FriendsOfHyperf\Support\Environment;
 use Hyperf\Amqp\Message\ProducerMessageInterface;
 use Hyperf\AsyncQueue\JobInterface;
 use Hyperf\Contract\SessionInterface;
