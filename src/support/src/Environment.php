@@ -10,11 +10,19 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Support;
 
+use BadMethodCallException;
 use Hyperf\Macroable\Macroable;
 use Hyperf\Stringable\Str;
 
 use function Hyperf\Support\env;
 
+/**
+ * @method bool isLocal()
+ * @method bool isDev()
+ * @method bool isDevelop()
+ * @method bool isProduction()
+ * @method bool isOnline()
+ */
 class Environment
 {
     use Macroable;
@@ -24,11 +32,21 @@ class Environment
         $this->env = $env ?? env('APP_ENV');
     }
 
+    public function __call($method, $parameters = [])
+    {
+        if (Str::startsWith($method, 'is')) {
+            return $this->is(Str::snake(substr($method, 2)));
+        }
+
+        throw new BadMethodCallException(sprintf('Method %s::%s does not exist.', static::class, $method));
+    }
+
     /**
      * Get or check the current application environment.
      *
      * @param array|string $environments
      * @return bool|string
+     * @deprecated v3.1, use `is()` or `get()` instead.
      */
     public function environment(...$environments)
     {
@@ -42,42 +60,21 @@ class Environment
     }
 
     /**
-     * Determine if the application is in the local environment.
+     * Get the current application environment.
      */
-    public function isLocal(): bool
+    public function get(): ?string
     {
-        return $this->environment('local');
+        return $this->env;
     }
 
     /**
-     * Determine if the application is in the dev environment.
+     * check the current application environment.
+     * @param string|string[] $environments
      */
-    public function isDev(): bool
+    public function is(...$environments): bool
     {
-        return $this->environment('dev');
-    }
+        $patterns = is_array($environments[0]) ? $environments[0] : $environments;
 
-    /**
-     * Determine if the application is in the develop environment.
-     */
-    public function isDevelop(): bool
-    {
-        return $this->environment('develop');
-    }
-
-    /**
-     * Determine if the application is in the production environment.
-     */
-    public function isProduction(): bool
-    {
-        return $this->environment('production');
-    }
-
-    /**
-     * Determine if the application is in the production environment.
-     */
-    public function isOnline(): bool
-    {
-        return $this->environment('online');
+        return Str::is($patterns, $this->env);
     }
 }
