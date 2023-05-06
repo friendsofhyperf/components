@@ -32,7 +32,7 @@ class Environment
         $this->env = $env ?? env('APP_ENV');
     }
 
-    public function __call($method, $parameters)
+    public function __call($method, $parameters = [])
     {
         if (Str::startsWith($method, 'is')) {
             return $this->is(Str::snake(substr($method, 2)));
