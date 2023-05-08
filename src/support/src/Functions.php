@@ -8,12 +8,12 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Http\Client;
+namespace FriendsOfHyperf\Support;
 
 use Closure;
 use Exception;
 
-use function Hyperf\Collection\value;
+use function Hyperf\Support\value;
 
 /**
  * Retry an operation a given number of times.
@@ -24,7 +24,6 @@ use function Hyperf\Collection\value;
  * @return mixed
  *
  * @throws Exception
- * @deprecated since 3.1, use `Hyperf\Support\retry` instead.
  */
 function retry($times, callable $callback, $sleepMilliseconds = 0, $when = null)
 {
@@ -52,7 +51,7 @@ function retry($times, callable $callback, $sleepMilliseconds = 0, $when = null)
         $sleepMilliseconds = $backoff[$attempts - 1] ?? $sleepMilliseconds;
 
         if ($sleepMilliseconds) {
-            usleep(value($sleepMilliseconds, $attempts, $e) * 1000);
+            Sleep::usleep(value($sleepMilliseconds, $attempts, $e) * 1000);
         }
 
         goto beginning;

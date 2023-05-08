@@ -36,6 +36,7 @@ use Psr\Http\Message\RequestInterface;
 use RuntimeException;
 use Symfony\Component\VarDumper\VarDumper;
 
+use function FriendsOfHyperf\Support\retry;
 use function Hyperf\Collection\collect;
 use function Hyperf\Tappable\tap;
 

@@ -8,15 +8,16 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-use FriendsOfHyperf\ExceptionEvent\Event\ExceptionDispatched;
-use Hyperf\Context\ApplicationContext;
-use Hyperf\Context\Context;
-use Psr\Container\ContainerInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
+namespace FriendsOfHyperf\ExceptionEvent{
+    use FriendsOfHyperf\ExceptionEvent\Event\ExceptionDispatched;
+    use Hyperf\Context\ApplicationContext;
+    use Hyperf\Context\Context;
+    use Psr\Container\ContainerInterface;
+    use Psr\EventDispatcher\EventDispatcherInterface;
+    use Psr\Http\Message\ResponseInterface;
+    use Psr\Http\Message\ServerRequestInterface;
+    use RuntimeException;
 
-if (! function_exists('report')) {
     /**
      * @param string|Throwable $exception
      * @param array ...$arguments
@@ -39,9 +40,7 @@ if (! function_exists('report')) {
             $eventDispatcher->dispatch(new ExceptionDispatched($exception, $request, $response));
         }
     }
-}
 
-if (! function_exists('report_if')) {
     /**
      * @template T
      *
@@ -63,9 +62,7 @@ if (! function_exists('report_if')) {
 
         return $condition;
     }
-}
 
-if (! function_exists('report_unless')) {
     /**
      * @template T
      *
@@ -86,5 +83,53 @@ if (! function_exists('report_unless')) {
         }
 
         return $condition;
+    }
+}
+
+namespace {
+    if (! function_exists('report')) {
+        /**
+         * @param string|Throwable $exception
+         * @param array ...$arguments
+         * @deprecated since 3.1, use `\FriendsOfHyperf\ExceptionEvent\report` instead.
+         */
+        function report($exception = 'RuntimeException', ...$parameters)
+        {
+            return \FriendsOfHyperf\ExceptionEvent\report($exception, ...$parameters);
+        }
+    }
+
+    if (! function_exists('report_if')) {
+        /**
+         * @template T
+         *
+         * @param T $condition
+         * @param string|Throwable $exception
+         * @param array ...$parameters
+         * @return T
+         * @throws TypeError
+         * @deprecated since 3.1, use `\FriendsOfHyperf\ExceptionEvent\report_if` instead.
+         */
+        function report_if($condition, $exception = 'RuntimeException', ...$parameters)
+        {
+            return \FriendsOfHyperf\ExceptionEvent\report_if($condition, $exception, ...$parameters);
+        }
+    }
+
+    if (! function_exists('report_unless')) {
+        /**
+         * @template T
+         *
+         * @param T $condition
+         * @param string|Throwable $exception
+         * @param array ...$parameters
+         * @return T
+         * @throws TypeError
+         * @deprecated since 3.1, use `\FriendsOfHyperf\ExceptionEvent\report_unless` instead.
+         */
+        function report_unless($condition, $exception = 'RuntimeException', ...$parameters)
+        {
+            return \FriendsOfHyperf\ExceptionEvent\report_unless($condition, $exception, ...$parameters);
+        }
     }
 }

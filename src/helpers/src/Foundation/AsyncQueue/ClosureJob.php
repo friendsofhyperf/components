@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Helpers\Foundation\AsyncQueue;
 
 /**
- * @deprecated v3.1, use `\FriendsOfHyperf\Support\AsyncQueue\ClosureJob` instead.
+ * @deprecated 3.1, use `\FriendsOfHyperf\Support\AsyncQueue\ClosureJob` instead.
  */
 class ClosureJob extends \FriendsOfHyperf\Support\AsyncQueue\ClosureJob
 {

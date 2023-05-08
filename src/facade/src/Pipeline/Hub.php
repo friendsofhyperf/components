@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Facade\Pipeline;
 
 /**
- * @deprecated v3.1, use `\FriendsOfHyperf\Support\Pipeline\Hub` instead.
+ * @deprecated 3.1, use `\FriendsOfHyperf\Support\Pipeline\Hub` instead.
  */
 class Hub extends \FriendsOfHyperf\Support\Pipeline\Hub
 {
