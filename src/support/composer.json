@@ -22,7 +22,10 @@
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\Support\\": "src"
-        }
+        },
+        "files": [
+            "src/Functions.php"
+        ]
     },
     "extra": {
         "hyperf": {
