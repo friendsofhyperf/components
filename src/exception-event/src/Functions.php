@@ -8,18 +8,15 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-
- 
 namespace FriendsOfHyperf\ExceptionEvent{
-
-use RuntimeException;
-use Hyperf\Context\Context;
-use Psr\Container\ContainerInterface;
-use Hyperf\Context\ApplicationContext;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use FriendsOfHyperf\ExceptionEvent\Event\ExceptionDispatched;
+    use FriendsOfHyperf\ExceptionEvent\Event\ExceptionDispatched;
+    use Hyperf\Context\ApplicationContext;
+    use Hyperf\Context\Context;
+    use Psr\Container\ContainerInterface;
+    use Psr\EventDispatcher\EventDispatcherInterface;
+    use Psr\Http\Message\ResponseInterface;
+    use Psr\Http\Message\ServerRequestInterface;
+    use RuntimeException;
 
     /**
      * @param string|Throwable $exception
@@ -101,7 +98,7 @@ namespace {
             return \FriendsOfHyperf\ExceptionEvent\report($exception, ...$parameters);
         }
     }
-    
+
     if (! function_exists('report_if')) {
         /**
          * @template T
@@ -118,7 +115,7 @@ namespace {
             return \FriendsOfHyperf\ExceptionEvent\report_if($condition, $exception, ...$parameters);
         }
     }
-    
+
     if (! function_exists('report_unless')) {
         /**
          * @template T
