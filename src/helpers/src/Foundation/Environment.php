@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Helpers\Foundation;
 
 /**
- * @deprecated v3.1, use `\FriendsOfHyperf\Support\Environment` instead.
+ * @deprecated 3.1, use `\FriendsOfHyperf\Support\Environment` instead.
  */
 class Environment extends \FriendsOfHyperf\Support\Environment
 {

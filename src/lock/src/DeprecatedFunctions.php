@@ -13,7 +13,7 @@ use FriendsOfHyperf\Lock\LockFactory;
 
 if (! function_exists('lock')) {
     /**
-     * @deprecated v3.1, use \FriendsOfHyperf\Lock\lock() instead.
+     * @deprecated 3.1, use `\FriendsOfHyperf\Lock\lock()` instead.
      */
     function lock(string $name = null, int $seconds = 0, ?string $owner = null, string $driver = 'default'): LockFactory|LockInterface
     {
