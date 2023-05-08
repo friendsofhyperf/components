@@ -24,6 +24,7 @@ use function Hyperf\Collection\value;
  * @return mixed
  *
  * @throws Exception
+ * @deprecated since 3.1, use `Hyperf\Support\retry` instead.
  */
 function retry($times, callable $callback, $sleepMilliseconds = 0, $when = null)
 {
