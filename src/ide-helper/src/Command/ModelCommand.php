@@ -25,6 +25,7 @@ use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionObject;
+use ReflectionType;
 use SplFileObject;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
@@ -250,7 +251,6 @@ class ModelCommand extends HyperfCommand
                     $realType = class_exists($type) ? ('\\' . $type) : 'mixed';
                     break;
             }
-
             if (! isset($this->properties[$name])) {
                 continue;
             }
@@ -371,7 +371,7 @@ class ModelCommand extends HyperfCommand
                     $name = Str::snake(substr($method, 3, -9));
                     if (! empty($name)) {
                         $reflection = new ReflectionMethod($model, $method);
-                        $type = $this->getReturnTypeFromDocBlock($reflection);
+                        $type = $this->getReturnType($reflection);
                         $this->setProperty($name, $type, true, null);
                     }
                 } elseif (str_starts_with($method, 'set') && str_ends_with(
@@ -646,6 +646,16 @@ class ModelCommand extends HyperfCommand
         return (bool) $this->config->get('ide-helper.model.camel_case_properties', false);
     }
 
+    protected function getReturnType(ReflectionMethod $reflection): ?string
+    {
+        $type = $this->getReturnTypeFromDocBlock($reflection);
+        if ($type) {
+            return $type;
+        }
+
+        return $this->getReturnTypeFromReflection($reflection);
+    }
+
     /**
      * Get method return type based on it DocBlock comment.
      */
@@ -661,6 +671,52 @@ class ModelCommand extends HyperfCommand
         }
 
         return $type;
+    }
+
+    protected function getReturnTypeFromReflection(ReflectionMethod $reflection): ?string
+    {
+        $returnType = $reflection->getReturnType();
+        if (! $returnType) {
+            return null;
+        }
+
+        $types = $this->extractReflectionTypes($returnType);
+
+        $type = implode('|', $types);
+
+        if ($returnType->allowsNull()) {
+            $type .= '|null';
+        }
+
+        return $type;
+    }
+
+    protected function extractReflectionTypes(ReflectionType $reflection_type)
+    {
+        if ($reflection_type instanceof ReflectionNamedType) {
+            $types[] = $this->getReflectionNamedType($reflection_type);
+        } else {
+            $types = [];
+            foreach ($reflection_type->getTypes() as $named_type) {
+                if ($named_type->getName() === 'null') {
+                    continue;
+                }
+
+                $types[] = $this->getReflectionNamedType($named_type);
+            }
+        }
+
+        return $types;
+    }
+
+    protected function getReflectionNamedType(ReflectionNamedType $paramType): string
+    {
+        $parameterName = $paramType->getName();
+        if (! $paramType->isBuiltin()) {
+            $parameterName = '\\' . $parameterName;
+        }
+
+        return $parameterName;
     }
 
     /**
