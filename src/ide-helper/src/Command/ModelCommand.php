@@ -26,6 +26,7 @@ use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionObject;
 use ReflectionType;
+use ReflectionUnionType;
 use SplFileObject;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
@@ -648,12 +649,7 @@ class ModelCommand extends HyperfCommand
 
     protected function getReturnType(ReflectionMethod $reflection): ?string
     {
-        $type = $this->getReturnTypeFromDocBlock($reflection);
-        if ($type) {
-            return $type;
-        }
-
-        return $this->getReturnTypeFromReflection($reflection);
+        return $this->getReturnTypeFromDocBlock($reflection) ?: $this->getReturnTypeFromReflection($reflection);
     }
 
     /**
@@ -676,34 +672,38 @@ class ModelCommand extends HyperfCommand
     protected function getReturnTypeFromReflection(ReflectionMethod $reflection): ?string
     {
         $returnType = $reflection->getReturnType();
+
         if (! $returnType) {
             return null;
         }
 
         $types = $this->extractReflectionTypes($returnType);
 
-        $type = implode('|', $types);
-
         if ($returnType->allowsNull()) {
-            $type .= '|null';
+            $types[] = 'null';
         }
 
-        return $type;
+        return implode('|', $types);
     }
 
-    protected function extractReflectionTypes(ReflectionType $reflection_type)
+    /**
+     * @return string|string[]
+     */
+    protected function extractReflectionTypes(ReflectionType $reflectionType)
     {
-        if ($reflection_type instanceof ReflectionNamedType) {
-            $types[] = $this->getReflectionNamedType($reflection_type);
-        } else {
-            $types = [];
-            foreach ($reflection_type->getTypes() as $named_type) {
-                if ($named_type->getName() === 'null') {
-                    continue;
-                }
+        if ($reflectionType instanceof ReflectionNamedType) {
+            return $this->getReflectionNamedType($reflectionType);
+        }
 
-                $types[] = $this->getReflectionNamedType($named_type);
+        /** @var ReflectionUnionType $reflectionType */
+        $types = [];
+
+        foreach ($reflectionType->getTypes() as $namedType) {
+            if ($namedType->getName() === 'null') {
+                continue;
             }
+
+            $types[] = $this->getReflectionNamedType($namedType);
         }
 
         return $types;
@@ -712,6 +712,7 @@ class ModelCommand extends HyperfCommand
     protected function getReflectionNamedType(ReflectionNamedType $paramType): string
     {
         $parameterName = $paramType->getName();
+
         if (! $paramType->isBuiltin()) {
             $parameterName = '\\' . $parameterName;
         }
