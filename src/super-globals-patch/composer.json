@@ -1,6 +1,6 @@
 {
-    "name": "friendsofhyperf/mysql-grammar-addon",
-    "description": "The MySqlGrammar addon for Hyperf.",
+    "name": "friendsofhyperf/super-globals-patch",
+    "description": "The super globals patch for Hyperf.",
     "type": "library",
     "license": "MIT",
     "authors": [{
@@ -12,17 +12,17 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "hyperf/database": "~3.0.0",
-        "hyperf/di": "~3.0.0"
+        "friendsofhyperf/http-request-lifecycle": "^3.0",
+        "hyperf/super-globals": "~3.0.0"
     },
     "autoload": {
         "psr-4": {
-            "FriendsOfHyperf\\MySqlGrammarAddon\\": "src"
+            "FriendsOfHyperf\\SuperGlobalsPatch\\": "src"
         }
     },
     "extra": {
         "hyperf": {
-            "config": "FriendsOfHyperf\\MySqlGrammarAddon\\ConfigProvider"
+            "config": "FriendsOfHyperf\\SuperGlobalsPatch\\ConfigProvider"
         }
     },
     "minimum-stability": "dev",

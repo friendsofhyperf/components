@@ -53,16 +53,15 @@ echo "The most popular components for Hyperf."
 echo 
 echo "## Repositories"
 echo
-echo "|Repository|Stable Version|Total Downloads|Monthly Downloads|Daily Downloads|"
-echo "|--|--|--|--|--|"
+echo "|Repository|Stable Version|Total Downloads|Monthly Downloads|"
+echo "|--|--|--|--|"
 
 for REPO in ${REPOS}; do
     printf "|%s|%s|%s|%s|%s|\n" \
         "$(repository ${REPO})" \
         "$(latest_stable_version ${REPO})" \
         "$(total_downloads ${REPO})" \
-        "$(monthly_downloads ${REPO})" \
-        "$(daily_downloads ${REPO})"
+        "$(monthly_downloads ${REPO})"
 done
 
 echo
