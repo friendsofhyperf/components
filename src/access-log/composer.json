@@ -12,9 +12,9 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "friendsofhyperf/http-request-lifecycle": "^3.0.19",
         "hyperf/config": "~3.0.0",
         "hyperf/event": "~3.0.0",
+        "hyperf/http-server": "~3.0.20",
         "hyperf/logger": "~3.0.0",
         "hyperf/stringable": "~3.0.0",
         "hyperf/support": "~3.0.1",

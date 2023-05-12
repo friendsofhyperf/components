@@ -10,9 +10,9 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Sentry\Listener;
 
-use FriendsOfHyperf\Http\RequestLifeCycle\Events\RequestReceived;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\AfterWorkerStart;
+use Hyperf\HttpServer\Event\RequestReceived;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
 use Sentry\State\HubInterface;

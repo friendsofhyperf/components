@@ -33,8 +33,9 @@ class ConfigProvider
                 \Sentry\State\HubInterface::class => Factory\HubFactory::class,
             ],
             'listeners' => [
-                Listener\InitHubListener::class,
+                Listener\CheckIsEnableRequestLifecycleListener::class,
                 Listener\DbQueryListener::class,
+                Listener\InitHubListener::class,
             ],
             'annotations' => [
                 'scan' => [
