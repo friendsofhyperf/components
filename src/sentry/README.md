@@ -12,13 +12,37 @@ The sentry component for Hyperf.
 composer require friendsofhyperf/sentry
 ```
 
-## Publish config file
+## Publish Config File
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/sentry
 ```
 
-## Register exception handler
+## Enable Request Lifecycle
+
+```php
+# config/autoload/server.php
+return [
+    // ...
+    'servers' => [
+        [
+            'name' => 'http',
+            'type' => Server::SERVER_HTTP,
+            'host' => '0.0.0.0',
+            'port' => 9501,
+            'callbacks' => [
+                Event::ON_REQUEST => [Hyperf\HttpServer\Server::class, 'onRequest'],
+            ],
+            'options' => [
+                'enable_request_lifecycle' => true,
+            ],
+        ],
+    ],
+    // ...
+];
+```
+
+## Register ExceptionHandler
 
 ```php
 return [
@@ -31,7 +55,7 @@ return [
 ];
 ```
 
-## Register logger handler
+## Register Logger Handler
 
 ```php
 <?php
