@@ -10,9 +10,9 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\SuperGlobalsPatch\Aspect;
 
-use FriendsOfHyperf\Http\RequestLifeCycle\Events\RequestReceived;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Hyperf\HttpServer\Event\RequestReceived;
 use Hyperf\SuperGlobals\Listener\SuperGlobalsInitializeListener;
 
 class SuperGlobalsInitializeListenerAspect extends AbstractAspect

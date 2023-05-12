@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/http-request-lifecycle)](https://packagist.org/packages/friendsofhyperf/http-request-lifecycle)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/http-request-lifecycle)](https://github.com/friendsofhyperf/http-request-lifecycle)
 
-The http request lifecycle component for Hyperf.
+The http request lifecycle component for Hyperf. This feature has been merged into the official repository (hyperf/http-server, [#5715](https://github.com/hyperf/hyperf/pull/5715)).
 
 ## Installation
 
