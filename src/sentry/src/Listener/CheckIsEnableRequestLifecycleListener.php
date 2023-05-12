@@ -12,7 +12,8 @@ namespace FriendsOfHyperf\Sentry\Listener;
 
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
-use Hyperf\Framework\Event\BootApplication;
+use Hyperf\Framework\Event\MainWorkerStart;
+use Hyperf\Server\Event\MainCoroutineServerStart;
 use Hyperf\Server\Port;
 use Hyperf\Server\ServerFactory;
 use Psr\Container\ContainerInterface;
@@ -26,7 +27,8 @@ class CheckIsEnableRequestLifecycleListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            BootApplication::class,
+            MainWorkerStart::class,
+            MainCoroutineServerStart::class,
         ];
     }
 
