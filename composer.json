@@ -40,7 +40,7 @@
         "hyperf/framework": "~3.0.0",
         "hyperf/grpc-server": "~3.0.0",
         "hyperf/guzzle": "~3.0.0",
-        "hyperf/http-server": "dev-master as 3.0.20",
+        "hyperf/http-server": "~3.0.20",
         "hyperf/kafka": "~3.0.0",
         "hyperf/logger": "~3.0.0",
         "hyperf/macroable": "~3.0.0",
