@@ -3,8 +3,8 @@ name: Release Repositories
 on:
   workflow_dispatch:
     inputs:
-      version:
-        description: 'Input version to release, e.g. v3.0.0 .'
+      tag:
+        description: 'Input tag to release, e.g. v3.0.0 .'
         required: true
         default: ''
 
@@ -31,9 +31,9 @@ jobs:
           git config --global user.email "huangdijia@gmail.com"
           git config --global user.name "Deeka Wong"
 
-          if [ -z "${{ github.event.inputs.version }}" ]; then
-            echo "Please input version."
+          if [ -z "${{ github.event.inputs.tag }}" ]; then
+            echo "Please input tag."
             exit 1
           else
-            ./bin/release.sh ${{ github.event.inputs.version }}
+            ./bin/release.sh ${{ github.event.inputs.tag }}
           fi
