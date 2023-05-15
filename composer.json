@@ -48,7 +48,6 @@
         "hyperf/redis": "~3.0.0",
         "hyperf/session": "~3.0.0",
         "hyperf/stringable": "~3.0.0",
-        "hyperf/super-globals": "~3.0.0",
         "hyperf/support": "~3.0.1",
         "hyperf/tappable": "~3.0.0",
         "hyperf/validation": "~3.0.0",
