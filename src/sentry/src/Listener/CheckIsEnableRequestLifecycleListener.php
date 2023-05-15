@@ -13,10 +13,14 @@ namespace FriendsOfHyperf\Sentry\Listener;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\MainWorkerStart;
+use Hyperf\HttpServer\Event\RequestHandled;
+use Hyperf\HttpServer\Event\RequestReceived;
+use Hyperf\HttpServer\Event\RequestTerminated;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 use Hyperf\Server\Port;
 use Hyperf\Server\ServerFactory;
 use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\ListenerProviderInterface;
 
 class CheckIsEnableRequestLifecycleListener implements ListenerInterface
 {
@@ -34,19 +38,43 @@ class CheckIsEnableRequestLifecycleListener implements ListenerInterface
 
     public function process(object $event): void
     {
+        if (! $this->hasRequestLifecycleListeners()) {
+            return;
+        }
+
+        if ($this->isEnableRequestLifecycle()) {
+            return;
+        }
+
+        $logger = $this->container->get(StdoutLoggerInterface::class);
+        $logger->warning('Sentry: Request lifecycle is not enabled, please set `enable_request_lifecycle` to true in server config.');
+    }
+
+    protected function hasRequestLifecycleListeners(): bool
+    {
+        $listenerProvider = $this->container->get(ListenerProviderInterface::class);
+
+        return (bool) $listenerProvider->getListenersForEvent(new RequestReceived(null, null))
+            || (bool) $listenerProvider->getListenersForEvent(new RequestHandled(null, null))
+            || (bool) $listenerProvider->getListenersForEvent(new RequestTerminated(null, null));
+    }
+
+    protected function isEnableRequestLifecycle(): bool
+    {
+        $serverFactory = $this->container->get(ServerFactory::class);
         /** @var Port[] $ports */
-        $ports = $this->container->get(ServerFactory::class)->getConfig()?->getServers();
+        $ports = $serverFactory->getConfig()?->getServers();
 
         if (! $ports) {
-            return;
+            return false;
         }
 
         foreach ($ports as $port) {
             if ($port->getOptions()?->isEnableRequestLifecycle()) {
-                return;
+                return true;
             }
         }
 
-        $this->container->get(StdoutLoggerInterface::class)->warning('Sentry: Request lifecycle is not enabled, please set `enable_request_lifecycle` to true in server config.');
+        return false;
     }
 }
