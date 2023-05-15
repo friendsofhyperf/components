@@ -54,9 +54,9 @@ class CheckIsEnableRequestLifecycleListener implements ListenerInterface
     {
         $listenerProvider = $this->container->get(ListenerProviderInterface::class);
 
-        return (bool) $listenerProvider->getListenersForEvent(new RequestReceived(null, null))
-            || (bool) $listenerProvider->getListenersForEvent(new RequestHandled(null, null))
-            || (bool) $listenerProvider->getListenersForEvent(new RequestTerminated(null, null));
+        return count($listenerProvider->getListenersForEvent(new RequestReceived(null, null))) > 0
+            || count($listenerProvider->getListenersForEvent(new RequestHandled(null, null))) > 0
+            || count($listenerProvider->getListenersForEvent(new RequestTerminated(null, null))) > 0;
     }
 
     protected function isEnableRequestLifecycle(): bool
