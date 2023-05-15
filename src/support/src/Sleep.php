@@ -15,6 +15,8 @@ use Carbon\CarbonInterval;
 use Closure;
 use DateInterval;
 use DateTimeInterface;
+use Hyperf\Conditionable\Conditionable;
+use Hyperf\Macroable\Macroable;
 use PHPUnit\Framework\Assert as PHPUnit;
 use RuntimeException;
 
@@ -23,6 +25,9 @@ use function Hyperf\Tappable\tap;
 
 class Sleep
 {
+    use Conditionable;
+    use Macroable;
+
     /**
      * The total duration to sleep.
      *
@@ -65,19 +70,7 @@ class Sleep
      */
     public function __construct($duration)
     {
-        if (! $duration instanceof DateInterval) {
-            $this->duration = CarbonInterval::microsecond(0);
-
-            $this->pending = $duration;
-        } else {
-            $duration = CarbonInterval::instance($duration);
-
-            if ($duration->totalMicroseconds < 0) {
-                $duration = CarbonInterval::seconds(0);
-            }
-
-            $this->duration = $duration;
-        }
+        $this->duration($duration);
     }
 
     /**
@@ -357,6 +350,32 @@ class Sleep
                 ]),
             ]));
         }
+    }
+
+    /**
+     * Sleep for the given duration. Replaces any previously defined duration.
+     *
+     * @param DateInterval|float|int $duration
+     * @return $this
+     */
+    protected function duration($duration)
+    {
+        if (! $duration instanceof DateInterval) {
+            $this->duration = CarbonInterval::microsecond(0);
+
+            $this->pending = $duration;
+        } else {
+            $duration = CarbonInterval::instance($duration);
+
+            if ($duration->totalMicroseconds < 0) {
+                $duration = CarbonInterval::seconds(0);
+            }
+
+            $this->duration = $duration;
+            $this->pending = null;
+        }
+
+        return $this;
     }
 
     /**
