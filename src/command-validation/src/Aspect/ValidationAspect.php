@@ -19,7 +19,7 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use function Hyperf\Support\class_uses_recursive;
 
 /**
- * @method void validateInput
+ * @method void validateInput()
  * @method void displayFailedValidationErrors(ValidatorInterface $validator)
  */
 class ValidationAspect extends AbstractAspect
