@@ -26,6 +26,9 @@
     "conflict": {
         "guzzlehttp/guzzle": "<7.0"
     },
+    "suggest": {
+        "guzzlehttp/guzzle": "Required to use the HTTP Client (^7.6)."
+    },
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\Http\\Client\\": "src/"
