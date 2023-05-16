@@ -11,7 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Http\Client;
 
 use Closure;
-use FriendsOfHyperf\Contracts\Events\Dispatcher;
+use GuzzleHttp\Promise\Create;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Response as Psr7Response;
 use GuzzleHttp\TransferStats;
@@ -163,9 +163,7 @@ class Factory
 
         $response = new Psr7Response($status, $headers, $body);
 
-        return class_exists(\GuzzleHttp\Promise\Create::class)
-            ? \GuzzleHttp\Promise\Create::promiseFor($response)
-            : \GuzzleHttp\Promise\promise_for($response);
+        return Create::promiseFor($response);
     }
 
     /**
@@ -181,7 +179,7 @@ class Factory
     /**
      * Register a stub callable that will intercept requests and be able to return stub responses.
      *
-     * @param array|callable $callback
+     * @param null|array|callable $callback
      * @return $this
      */
     public function fake($callback = null)
@@ -258,7 +256,7 @@ class Factory
     }
 
     /**
-     * Indicate that an exception should not be thrown if any request is not faked.
+     * Indicate that an exception should be thrown if any request is not faked.
      *
      * @param bool $prevent
      * @return $this

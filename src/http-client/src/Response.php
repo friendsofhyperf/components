@@ -122,7 +122,7 @@ class Response implements ArrayAccess
     /**
      * Get the JSON decoded body of the response as an object.
      *
-     * @return array|object
+     * @return null|object
      */
     public function object()
     {

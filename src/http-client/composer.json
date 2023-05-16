@@ -23,6 +23,12 @@
         "hyperf/tappable": "~3.0.0",
         "symfony/var-dumper": "^5.3|^6.0"
     },
+    "conflict": {
+        "guzzlehttp/guzzle": "<7.0"
+    },
+    "suggest": {
+        "guzzlehttp/guzzle": "Required to use the HTTP Client (^7.6)."
+    },
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\Http\\Client\\": "src/"

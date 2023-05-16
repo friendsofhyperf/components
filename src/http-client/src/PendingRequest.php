@@ -120,11 +120,7 @@ class PendingRequest
      *
      * @var array
      */
-    protected $options = [
-        'connect_timeout' => 10,
-        'http_errors' => false,
-        'timeout' => 30,
-    ];
+    protected $options = [];
 
     /**
      * A callback to run when throwing if a server or client error occurs.
@@ -241,6 +237,13 @@ class PendingRequest
 
         $this->asJson();
 
+        $this->options = [
+            'connect_timeout' => 10,
+            'crypto_method' => STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT,
+            'http_errors' => false,
+            'timeout' => 30,
+        ];
+
         $this->beforeSendingCallbacks = collect([function (Request $request, array $options, PendingRequest $pendingRequest) {
             $pendingRequest->request = $request;
             $pendingRequest->cookies = $options['cookies'];
@@ -268,7 +271,7 @@ class PendingRequest
      * @param string $contentType
      * @return $this
      */
-    public function withBody($content, $contentType)
+    public function withBody($content, $contentType = 'application/json')
     {
         $this->bodyFormat('body');
 
@@ -441,7 +444,7 @@ class PendingRequest
     /**
      * Specify the user agent for the request.
      *
-     * @param string $userAgent
+     * @param bool|string $userAgent
      * @return $this
      */
     public function withUserAgent($userAgent)
@@ -554,6 +557,7 @@ class PendingRequest
      * A callable that is invoked when the HTTP headers of the response have been received but the body has not yet begun to download.
      *
      * @return $this
+     * @deprecated since 3.1
      */
     public function onHeaders(callable $callback)
     {
@@ -566,6 +570,7 @@ class PendingRequest
      * The callback is invoked with transfer statistics about the request, the response received, or the error encountered. Included in the data is the total amount of time taken to send the request.
      *
      * @return $this
+     * @deprecated since 3.1
      */
     public function onStats(callable $callback)
     {
@@ -578,6 +583,7 @@ class PendingRequest
      * Defines a function to invoke when transfer progress is made.
      *
      * @return $this
+     * @deprecated since 3.1
      */
     public function progress(callable $callback)
     {
