@@ -15,17 +15,16 @@ use Carbon\CarbonInterval;
 use Closure;
 use DateInterval;
 use DateTimeInterface;
-use Hyperf\Conditionable\Conditionable;
 use Hyperf\Macroable\Macroable;
 use PHPUnit\Framework\Assert as PHPUnit;
 use RuntimeException;
 
 use function Hyperf\Collection\collect;
+use function Hyperf\Support\value;
 use function Hyperf\Tappable\tap;
 
 class Sleep
 {
-    use Conditionable;
     use Macroable;
 
     /**
@@ -334,7 +333,7 @@ class Sleep
      */
     public static function assertNeverSlept()
     {
-        return static::assertInsomniac();
+        return static::assertSleptTimes(0);
     }
 
     /**
@@ -342,6 +341,10 @@ class Sleep
      */
     public static function assertInsomniac()
     {
+        if (static::$sequence === []) {
+            PHPUnit::assertTrue(true);
+        }
+
         foreach (static::$sequence as $duration) {
             PHPUnit::assertSame(0, $duration->totalMicroseconds, vsprintf('Unexpected sleep duration of [%s] found.', [
                 $duration->cascade()->forHumans([
@@ -350,6 +353,32 @@ class Sleep
                 ]),
             ]));
         }
+    }
+
+    /**
+     * Only sleep when the given condition is true.
+     *
+     * @param  (\Closure($this): bool)|bool $condition
+     * @param mixed $condition
+     * @return $this
+     */
+    public function when($condition)
+    {
+        $this->shouldSleep = (bool) value($condition, $this);
+
+        return $this;
+    }
+
+    /**
+     * Don't sleep when the given condition is true.
+     *
+     * @param  (\Closure($this): bool)|bool $condition
+     * @param mixed $condition
+     * @return $this
+     */
+    public function unless($condition)
+    {
+        return $this->when(! value($condition, $this));
     }
 
     /**
