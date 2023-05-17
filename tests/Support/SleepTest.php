@@ -17,6 +17,8 @@ use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+use function FriendsOfHyperf\Helpers\now;
+
 /**
  * @internal
  * @coversNothing
