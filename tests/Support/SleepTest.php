@@ -17,6 +17,8 @@ use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+use function FriendsOfHyperf\Helpers\now;
+
 /**
  * @internal
  * @coversNothing
@@ -317,6 +319,38 @@ class SleepTest extends TestCase
         }
     }
 
+    public function testAssertNeverSlept()
+    {
+        Sleep::fake();
+
+        Sleep::assertNeverSlept();
+
+        Sleep::for(1)->seconds();
+
+        try {
+            Sleep::assertNeverSlept();
+            $this->fail();
+        } catch (AssertionFailedError $e) {
+            $this->assertSame("Expected [0] sleeps but found [1].\nFailed asserting that 1 is identical to 0.", $e->getMessage());
+        }
+    }
+
+    public function testAssertNeverAgainstZeroSecondSleep()
+    {
+        Sleep::fake();
+
+        Sleep::assertNeverSlept();
+
+        Sleep::for(0)->seconds();
+
+        try {
+            Sleep::assertNeverSlept();
+            $this->fail();
+        } catch (AssertionFailedError $e) {
+            $this->assertSame("Expected [0] sleeps but found [1].\nFailed asserting that 1 is identical to 0.", $e->getMessage());
+        }
+    }
+
     public function testItCanAssertNoSleepingOccurred()
     {
         Sleep::fake();
@@ -395,29 +429,6 @@ class SleepTest extends TestCase
         }
     }
 
-    public function testItCanCreateConditionallyDefinedDurationsViaConditionable()
-    {
-        Sleep::fake();
-
-        $sleep = Sleep::for(1)
-            ->second()
-            ->when(
-                true,
-                fn (Sleep $sleep) => $sleep->and(2)->milliseconds(),
-                fn (Sleep $sleep) => $sleep->and(3)->milliseconds(),
-            );
-        $this->assertSame($sleep->duration->totalMicroseconds, 1002000);
-
-        $sleep = Sleep::for(1)
-            ->second()
-            ->when(
-                false,
-                fn (Sleep $sleep) => $sleep->and(2)->milliseconds(),
-                fn (Sleep $sleep) => $sleep->and(3)->milliseconds(),
-            );
-        $this->assertSame($sleep->duration->totalMicroseconds, 1003000);
-    }
-
     public function testItCanCreateMacrosViaMacroable()
     {
         Sleep::fake();
@@ -465,5 +476,43 @@ class SleepTest extends TestCase
 
         $sleep->setDuration(500)->milliseconds();
         $this->assertSame($sleep->duration->totalMicroseconds, 500000);
+    }
+
+    public function testItCanSleepConditionallyWhen()
+    {
+        Sleep::fake();
+
+        // Control test
+        Sleep::assertSlept(fn () => true, 0);
+        Sleep::for(1)->second();
+        Sleep::assertSlept(fn () => true, 1);
+        Sleep::fake();
+        Sleep::assertSlept(fn () => true, 0);
+
+        // Reset
+        Sleep::fake();
+
+        // Will not sleep if `when()` yields `false`
+        Sleep::for(1)->second()->when(false);
+        Sleep::for(1)->second()->when(fn () => false);
+
+        // Will not sleep if `unless()` yields `true`
+        Sleep::for(1)->second()->unless(true);
+        Sleep::for(1)->second()->unless(fn () => true);
+
+        // Finish 'do not sleep' tests - assert no sleeping occurred
+        Sleep::assertSlept(fn () => true, 0);
+
+        // Will sleep if `when()` yields `true`
+        Sleep::for(1)->second()->when(true);
+        Sleep::assertSlept(fn () => true, 1);
+        Sleep::for(1)->second()->when(fn () => true);
+        Sleep::assertSlept(fn () => true, 2);
+
+        // Will sleep if `unless()` yields `false`
+        Sleep::for(1)->second()->unless(false);
+        Sleep::assertSlept(fn () => true, 3);
+        Sleep::for(1)->second()->unless(fn () => false);
+        Sleep::assertSlept(fn () => true, 4);
     }
 }
