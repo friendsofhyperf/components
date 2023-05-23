@@ -30,7 +30,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: redis, pdo, pdo_mysql, bcmath, swoole-${{ matrix.swoole }}
+          extensions: redis, pdo, pdo_mysql, bcmath if ${{ matrix.swoole }} != 'master' ,swoole-${{ matrix.swoole }} else ''
           tools: phpize
           coverage: none
       - name: Show Imformations
