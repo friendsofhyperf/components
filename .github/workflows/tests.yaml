@@ -18,7 +18,7 @@ jobs:
         os: [ubuntu-22.04]
         php: ['8.0', '8.1', '8.2']
         swoole: ['4.8.13', '5.0.3']
-      max-parallel: 4
+      max-parallel: 20
       fail-fast: false
     steps:
       - name: Checkout
