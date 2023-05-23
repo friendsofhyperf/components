@@ -11,13 +11,17 @@ env:
 
 jobs:
   ci:
-    name: Test on PHP ${{ matrix.php }}
+    name: Test on PHP ${{ matrix.php }} with Swoole ${{ matrix.swoole }}
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
         os: [ubuntu-22.04]
         php: ['8.0', '8.1', '8.2']
-      max-parallel: 4
+        swoole: ['4.8.13', '5.0.3']
+        exclude:
+          - php: '8.2'
+            swoole: '4.8.13'
+      max-parallel: 20
       fail-fast: false
     steps:
       - name: Checkout
@@ -26,9 +30,13 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: redis, pdo, pdo_mysql, bcmath, swoole
+          extensions: redis, pdo, pdo_mysql, bcmath, swoole-${{ matrix.swoole }}
           tools: phpize
           coverage: none
+      - name: Show Imformations
+        run: |
+          php -v
+          php --ri swoole
       - name: Setup pest-plugin-parallel
         run: |
           composer require pestphp/pest-plugin-parallel:^1.2.1
