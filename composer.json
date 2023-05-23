@@ -231,7 +231,6 @@
         }
     },
     "scripts": {
-        "post-autoload-dump": "@php bin/regenerate-pest",
         "analyse": "@php vendor/bin/phpstan analyse --memory-limit 4096M -l 0 -c phpstan.neon",
         "cs-fix": "@php vendor/bin/php-cs-fixer fix $1",
         "json-fix": "@php ./bin/composer-json-fixer",
