@@ -29,6 +29,10 @@ jobs:
           extensions: redis, pdo, pdo_mysql, bcmath, swoole
           tools: phpize
           coverage: none
+      - name: Show Versions
+        run: |
+          php -v
+          php --ri swoole
       - name: Setup pest-plugin-parallel
         run: |
           composer require pestphp/pest-plugin-parallel:^1.2.1
