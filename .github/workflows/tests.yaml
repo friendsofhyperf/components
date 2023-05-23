@@ -17,6 +17,7 @@ jobs:
       matrix:
         os: [ubuntu-22.04]
         php: ['8.0', '8.1', '8.2']
+        swoole: ['4.8.13', '5.0.3']
       max-parallel: 4
       fail-fast: false
     steps:
@@ -26,7 +27,7 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: redis, pdo, pdo_mysql, bcmath, swoole
+          extensions: redis, pdo, pdo_mysql, bcmath, swoole-${{ matrix.swoole }}
           tools: phpize
           coverage: none
       - name: Show Versions
