@@ -20,7 +20,6 @@ namespace FriendsOfHyperf\ExceptionEvent{
 
     /**
      * @param string|Throwable $exception
-     * @param array ...$arguments
      */
     function report($exception = 'RuntimeException', ...$parameters)
     {
@@ -90,7 +89,6 @@ namespace {
     if (! function_exists('report')) {
         /**
          * @param string|Throwable $exception
-         * @param array ...$arguments
          * @deprecated since 3.1, use `\FriendsOfHyperf\ExceptionEvent\report` instead.
          */
         function report($exception = 'RuntimeException', ...$parameters)

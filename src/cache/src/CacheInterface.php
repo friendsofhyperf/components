@@ -79,7 +79,7 @@ interface CacheInterface
      * @template TCacheValue
      *
      * @param array|string $key
-     * @param  TCacheValue|(\Closure(): TCacheValue)  $default
+     * @param (Closure(): TCacheValue)|TCacheValue $default
      * @return (TCacheValue is null ? mixed : TCacheValue)
      */
     public function get($key, $default = null);
@@ -95,7 +95,7 @@ interface CacheInterface
      * @template TCacheValue
      *
      * @param array|string $key
-     * @param TCacheValue|(\Closure(): TCacheValue)  $default
+     * @param (Closure(): TCacheValue)|TCacheValue $default
      * @return (TCacheValue is null ? mixed : TCacheValue)
      */
     public function pull(string $key, $default = null);

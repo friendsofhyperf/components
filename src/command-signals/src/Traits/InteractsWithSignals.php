@@ -25,7 +25,6 @@ trait InteractsWithSignals
     /**
      * Define a callback to be run when the given signal(s) occurs.
      *
-     * @param int|iterable<array-key, int> $signals
      * @param callable(int $signal): void  $callback
      * @throws TypeError
      * @throws NotFoundExceptionInterface

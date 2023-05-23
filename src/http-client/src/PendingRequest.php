@@ -663,7 +663,6 @@ class PendingRequest
      * Throw an exception if a server or client error occurred and the given condition evaluates to true.
      *
      * @param bool|callable $condition
-     * @param null|callable $throwCallback
      * @return $this
      */
     public function throwIf($condition)

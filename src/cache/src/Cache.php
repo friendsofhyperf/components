@@ -169,9 +169,6 @@ class Cache implements CacheInterface
             ->all();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getMultiple($keys, $default = null): iterable
     {
         $defaults = [];
@@ -219,9 +216,6 @@ class Cache implements CacheInterface
         return $this->rememberForever($key, $callback);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setMultiple($values, $ttl = null): bool
     {
         return $this->putMany(is_array($values) ? $values : iterator_to_array($values), $ttl);

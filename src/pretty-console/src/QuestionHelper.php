@@ -23,9 +23,6 @@ use function Hyperf\Support\with;
 
 class QuestionHelper extends SymfonyQuestionHelper
 {
-    /**
-     * {@inheritdoc}
-     */
     protected function writePrompt(OutputInterface $output, Question $question)
     {
         $text = OutputFormatter::escapeTrailingBackslash($question->getQuestion());

@@ -67,9 +67,6 @@ class SentryHandler extends AbstractProcessingHandler
         $this->hub = $container->get(HubInterface::class);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function handleBatch(array $records): void
     {
         $level = $this->level;
@@ -191,7 +188,6 @@ class SentryHandler extends AbstractProcessingHandler
     }
 
     /**
-     * {@inheritdoc}
      * @suppress PhanTypeMismatchArgument
      */
     protected function write(array|LogRecord $record): void
@@ -277,9 +273,6 @@ class SentryHandler extends AbstractProcessingHandler
         );
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function getDefaultFormatter(): FormatterInterface
     {
         return new LineFormatter('[%channel%] %message%');

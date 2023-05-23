@@ -21,7 +21,7 @@ class Task extends Component
      * Renders the component using the given arguments.
      *
      * @param string $description
-     * @param  (callable(): bool)|null  $task
+     * @param null|(callable(): bool) $task
      * @param int $verbosity
      */
     public function render($description, $task = null, $verbosity = OutputInterface::VERBOSITY_NORMAL)
