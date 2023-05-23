@@ -30,7 +30,7 @@ jobs:
           extensions: redis, pdo, pdo_mysql, bcmath, swoole-${{ matrix.swoole }}
           tools: phpize
           coverage: none
-      - name: Show Versions
+      - name: Show Imformations
         run: |
           php -v
           php --ri swoole
