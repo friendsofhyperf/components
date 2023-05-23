@@ -126,9 +126,6 @@ function blank($value): bool
  * If an array is passed, we'll assume you want to put to the cache.
  *
  * @param  dynamic  key|key,default|data,expiration|null
- * @param null|string $key
- * @param null|mixed $value
- * @param null|DateInterval|DateTimeInterface|int $ttl
  * @return CacheInterface|mixed
  * @throws Exception
  */

@@ -26,7 +26,7 @@ class Timebox
      *
      * @template TCallReturnType
      *
-     * @param  (callable($this): TCallReturnType)  $callback
+     * @param (callable($this): TCallReturnType) $callback
      * @return TCallReturnType
      */
     public function call(callable $callback, int $microseconds)

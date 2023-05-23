@@ -86,9 +86,6 @@ if (! function_exists('cache')) {
      * If an array is passed, we'll assume you want to put to the cache.
      *
      * @param  dynamic  key|key,default|data,expiration|null
-     * @param null|string $key
-     * @param null|mixed $value
-     * @param null|DateInterval|DateTimeInterface|int $ttl
      * @return CacheInterface|mixed
      * @throws \Exception
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\cache` instead.

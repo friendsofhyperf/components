@@ -26,9 +26,6 @@ class Integration implements IntegrationInterface
 {
     private static ?string $transaction = null;
 
-    /**
-     * {@inheritdoc}
-     */
     public function setupOnce(): void
     {
         Scope::addGlobalEventProcessor(function (Event $event): Event {

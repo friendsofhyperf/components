@@ -108,8 +108,6 @@ class ArrMixin
     /**
      * Recursively sort an array by keys and values in descending order.
      *
-     * @param array $array
-     * @param int $options
      * @return array
      */
     public function sortRecursiveDesc()

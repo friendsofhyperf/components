@@ -358,7 +358,7 @@ class Sleep
     /**
      * Only sleep when the given condition is true.
      *
-     * @param  (\Closure($this): bool)|bool $condition
+     * @param (Closure($this): bool)|bool $condition
      * @param mixed $condition
      * @return $this
      */
@@ -372,7 +372,7 @@ class Sleep
     /**
      * Don't sleep when the given condition is true.
      *
-     * @param  (\Closure($this): bool)|bool $condition
+     * @param (Closure($this): bool)|bool $condition
      * @param mixed $condition
      * @return $this
      */
