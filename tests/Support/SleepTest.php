@@ -12,6 +12,7 @@ namespace FriendsOfHyperf\Tests\Support;
 
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use Exception;
 use FriendsOfHyperf\Support\Sleep;
 use PHPUnit\Framework\AssertionFailedError;
 use PHPUnit\Framework\TestCase;
@@ -514,5 +515,40 @@ class SleepTest extends TestCase
         Sleep::assertSlept(fn () => true, 3);
         Sleep::for(1)->second()->unless(fn () => false);
         Sleep::assertSlept(fn () => true, 4);
+    }
+
+    public function testItCanRegisterCallbacksToRunInTests()
+    {
+        $countA = 0;
+        $countB = 0;
+        Sleep::fake();
+        Sleep::whenFakingSleep(function ($duration) use (&$countA) {
+            $countA += $duration->totalMilliseconds;
+        });
+        Sleep::whenFakingSleep(function ($duration) use (&$countB) {
+            $countB += $duration->totalMilliseconds;
+        });
+
+        Sleep::for(1)->millisecond();
+        Sleep::for(2)->millisecond();
+
+        Sleep::assertSequence([
+            Sleep::for(1)->millisecond(),
+            Sleep::for(2)->millisecond(),
+        ]);
+
+        $this->assertSame(3, $countA);
+        $this->assertSame(3, $countB);
+    }
+
+    public function testItDoesntRunCallbacksWhenNotFaking()
+    {
+        Sleep::whenFakingSleep(function () {
+            throw new Exception('Should not run without faking.');
+        });
+
+        Sleep::for(1)->millisecond();
+
+        $this->assertTrue(true);
     }
 }
