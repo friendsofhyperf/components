@@ -15,6 +15,7 @@ use FriendsOfHyperf\Cache\CacheManager;
 use Hyperf\Context\ApplicationContext;
 
 /**
+ * @template TCacheValue
  * @method static bool add(string $key, mixed $value, null|\DateInterval|\DateTimeInterface|int $ttl = null)
  * @method static bool delete(string $key)
  * @method static bool deleteMultiple(iterable<string> $keys)
