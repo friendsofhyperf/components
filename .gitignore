@@ -5,3 +5,4 @@ composer.lock
 .idea
 .vscode/launch.json
 bin/co-pest
+*.bak
