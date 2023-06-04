@@ -874,6 +874,20 @@ class HttpClientTest extends TestCase
         });
     }
 
+    public function testItCanReplaceHeadersWhenNoHeadersYetSet()
+    {
+        $this->factory->fake();
+
+        $this->factory->replaceHeaders([
+            'X-Test-Header' => 'baz',
+        ])->post('http://foo.com/json');
+
+        $this->factory->assertSent(function (Request $request) {
+            return $request->url() === 'http://foo.com/json'
+                   && $request->hasHeaders(['X-Test-Header' => ['baz']]);
+        });
+    }
+
     public function testExceptionAccessorOnSuccess()
     {
         $resp = new Response(new Psr7Response());
