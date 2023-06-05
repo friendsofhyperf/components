@@ -30,8 +30,9 @@ class DatabaseLock extends AbstractLock
     {
         parent::__construct($name, $seconds, $owner);
 
+        $constructor = array_merge(['pool' => 'default', 'table' => 'locks'], $constructor);
         $this->connection = Db::connection($constructor['pool']);
-        $this->table = $constructor['table'] ?? 'locks';
+        $this->table = $constructor['table'];
     }
 
     /**
