@@ -10,19 +10,17 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Lock\Driver;
 
-use Hyperf\Redis\RedisProxy;
-use Redis;
+use Hyperf\Cache\Driver\CoroutineMemoryDriver;
+use Psr\SimpleCache\CacheInterface;
 
 use function Hyperf\Support\make;
 
-class RedisLock extends AbstractLock
+class CoroutineLock extends AbstractLock
 {
     /**
-     * The Redis factory implementation.
-     *
-     * @var Redis
+     * The cache store implementation.
      */
-    protected $store;
+    protected CacheInterface $store;
 
     /**
      * Create a new lock instance.
@@ -31,11 +29,8 @@ class RedisLock extends AbstractLock
     {
         parent::__construct($name, $seconds, $owner);
 
-        $constructor = array_merge(['pool' => 'default', 'prefix' => ''], $constructor);
-        if ($constructor['prefix']) {
-            $this->name = ((string) $constructor['prefix']) . $this->name;
-        }
-        $this->store = make(RedisProxy::class, $constructor);
+        $constructor = array_merge(['prefix' => ''], $constructor);
+        $this->store = make(CoroutineMemoryDriver::class, $constructor);
     }
 
     /**
@@ -43,11 +38,11 @@ class RedisLock extends AbstractLock
      */
     public function acquire(): bool
     {
-        if ($this->seconds > 0) {
-            return $this->store->set($this->name, $this->owner, ['NX', 'EX' => $this->seconds]) == true;
+        if ($this->store->has($this->name)) {
+            return false;
         }
 
-        return $this->store->setNX($this->name, $this->owner) === true;
+        return $this->store->set($this->name, $this->owner, $this->seconds);
     }
 
     /**
@@ -55,15 +50,19 @@ class RedisLock extends AbstractLock
      */
     public function release(): bool
     {
-        return (bool) $this->store->eval(LuaScripts::releaseLock(), [$this->name, $this->owner], 1);
+        if ($this->isOwnedByCurrentProcess()) {
+            return $this->store->delete($this->name);
+        }
+
+        return false;
     }
 
     /**
-     * Releases this lock in disregard of ownership.
+     * Releases this lock regardless of ownership.
      */
     public function forceRelease(): void
     {
-        $this->store->del($this->name);
+        $this->store->delete($this->name);
     }
 
     /**

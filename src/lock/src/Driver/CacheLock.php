@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Lock\Driver;
 
+use Hyperf\Cache\CacheManager;
 use Hyperf\Context\ApplicationContext;
 use Psr\SimpleCache\CacheInterface;
 
@@ -27,7 +28,10 @@ class CacheLock extends AbstractLock
     {
         parent::__construct($name, $seconds, $owner);
 
-        $this->store = ApplicationContext::getContainer()->get(CacheInterface::class);
+        $container = ApplicationContext::getContainer();
+        $cacheManager = $container->get(CacheManager::class);
+        $constructor = array_merge(['driver' => 'default'], $constructor);
+        $this->store = $cacheManager->getDriver($constructor['driver']);
     }
 
     /**
