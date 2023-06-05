@@ -11,9 +11,7 @@ declare(strict_types=1);
 return [
     'default' => [
         'driver' => FriendsOfHyperf\Lock\Driver\RedisLock::class,
-        'constructor' => [
-            'pool' => 'default',
-        ],
+        'constructor' => ['pool' => 'default', 'prefix' => 'lock:'],
     ],
     'file' => [
         'driver' => FriendsOfHyperf\Lock\Driver\FileSystemLock::class,
@@ -23,9 +21,10 @@ return [
     ],
     'database' => [
         'driver' => FriendsOfHyperf\Lock\Driver\DatabaseLock::class,
-        'constructor' => [
-            'pool' => 'default',
-            'table' => 'locks',
-        ],
+        'constructor' => ['pool' => 'default', 'table' => 'locks', 'prefix' => 'lock:'],
+    ],
+    'co' => [
+        'driver' => FriendsOfHyperf\Lock\Driver\CoroutineLock::class,
+        'constructor' => ['prefix' => 'lock:'],
     ],
 ];
