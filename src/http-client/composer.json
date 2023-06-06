@@ -3,12 +3,10 @@
     "description": "The http client component for Hyperf, from Laravel.",
     "type": "library",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "huangdijia",
-            "email": "huangdijia@gmail.com"
-        }
-    ],
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
     "support": {
         "issues": "https://github.com/friendsofhyperf/components/issues",
         "source": "https://github.com/friendsofhyperf/components"
@@ -34,11 +32,14 @@
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\Http\\Client\\": "src/"
-        }
+        },
+        "files": [
+            "src/Functions.php"
+        ]
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "3.1-dev"
+            "3.x-dev": "3.0-dev"
         }
     }
 }

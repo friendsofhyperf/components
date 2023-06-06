@@ -11,7 +11,6 @@ declare(strict_types=1);
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ApplicationInterface;
 use Mockery as m;
-use Pest\Mock\Mock;
 use Psr\Container\ContainerInterface;
 
 use function FriendsOfHyperf\Helpers\class_namespace;
@@ -65,9 +64,9 @@ test('test PregReplaceArray', function ($pattern, $replacements, $subject, $expe
 
 test('test FriendsOfHyperf\Helpers\Command\call', function () {
     ApplicationContext::setContainer(
-        (new Mock(ContainerInterface::class))->expect(
+        mock(ContainerInterface::class)->expect(
             has: fn () => true,
-            get: fn () => (new Mock(ApplicationInterface::class))->expect(
+            get: fn () => mock(ApplicationInterface::class)->expect(
                 setAutoExit: fn () => null,
                 run: fn () => 0,
             )

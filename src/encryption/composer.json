@@ -9,13 +9,11 @@
         "encryption",
         "swoole"
     ],
-    "authors": [
-        {
-            "name": "Huangdijia",
-            "email": "huangdijia@gmail.com",
-            "homepage": "https://github.com/huangdijia"
-        }
-    ],
+    "authors": [{
+        "name": "Huangdijia",
+        "email": "huangdijia@gmail.com",
+        "homepage": "https://github.com/huangdijia"
+    }],
     "support": {
         "issues": "https://github.com/friendsofhyperf/components/issues",
         "source": "https://github.com/friendsofhyperf/components"
@@ -45,9 +43,6 @@
     "extra": {
         "hyperf": {
             "config": "Friendsofhyperf\\Encryption\\ConfigProvider"
-        },
-        "branch-alias": {
-            "dev-main": "3.1-dev"
         }
     }
 }

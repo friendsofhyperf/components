@@ -42,6 +42,24 @@ class Environment
     }
 
     /**
+     * Get or check the current application environment.
+     *
+     * @param array|string $environments
+     * @return bool|string
+     * @deprecated v3.1, use `is()` or `get()` instead.
+     */
+    public function environment(...$environments)
+    {
+        if (count($environments) > 0) {
+            $patterns = is_array($environments[0]) ? $environments[0] : $environments;
+
+            return Str::is($patterns, $this->env);
+        }
+
+        return $this->env;
+    }
+
+    /**
      * Get the current application environment.
      */
     public function get(): ?string

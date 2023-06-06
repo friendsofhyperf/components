@@ -2,12 +2,10 @@
     "name": "friendsofhyperf/exception-event",
     "description": "The exception component for Hyperf.",
     "homepage": "https://github.com/friendsofhyperf/exception-event",
-    "authors": [
-        {
-            "name": "huangdijia",
-            "email": "huangdijia@gmail.com"
-        }
-    ],
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
     "type": "library",
     "license": "MIT",
     "support": {
@@ -30,9 +28,6 @@
     "extra": {
         "hyperf": {
             "config": "FriendsOfHyperf\\ExceptionEvent\\ConfigProvider"
-        },
-        "branch-alias": {
-            "dev-main": "3.1-dev"
         }
     },
     "config": {
