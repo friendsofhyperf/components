@@ -8,6 +8,15 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
+use Pest\Mock\Mock;
+
+/*
+ * This file is part of friendsofhyperf/components.
+ *
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @contact  huangdijia@gmail.com
+ */
 // uses(Tests\TestCase::class)->in('Feature');
 
 /*
@@ -36,7 +45,15 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+/**
+ * Creates a new mock with the given class or object.
+ *
+ * @template TObject as object
+ *
+ * @param class-string<TObject>|TObject $object
+ * @return Mock<TObject>
+ */
+function mocking(string|object $object): Mock
 {
-    // ..
+    return new Mock($object);
 }
