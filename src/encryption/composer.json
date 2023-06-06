@@ -29,12 +29,12 @@
         ]
     },
     "require": {
-        "hyperf/context": "~3.0.16",
-        "hyperf/contract": "~3.0.0",
-        "hyperf/di": "~3.0.0",
-        "hyperf/event": "~3.0.0",
-        "hyperf/stringable": "~3.0.0",
-        "hyperf/tappable": "~3.0.0"
+        "hyperf/context": "~3.1.0",
+        "hyperf/contract": "~3.1.0",
+        "hyperf/di": "~3.1.0",
+        "hyperf/event": "~3.1.0",
+        "hyperf/stringable": "~3.1.0",
+        "hyperf/tappable": "~3.1.0"
     },
     "suggest": {
         "opis/closure": "For encrypting closures."

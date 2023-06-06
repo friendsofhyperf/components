@@ -15,8 +15,8 @@
         }
     },
     "require": {
-        "hyperf/coroutine": "~3.0.0",
-        "hyperf/logger": "~3.0.0"
+        "hyperf/coroutine": "~3.1.0",
+        "hyperf/logger": "~3.1.0"
     },
     "extra": {
         "hyperf": {

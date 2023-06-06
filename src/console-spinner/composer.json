@@ -14,10 +14,10 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "hyperf/command": "~3.0.0",
-        "hyperf/context": "~3.0.16",
-        "hyperf/di": "~3.0.0",
-        "hyperf/support": "~3.0.1",
+        "hyperf/command": "~3.1.0",
+        "hyperf/context": "~3.1.0",
+        "hyperf/di": "~3.1.0",
+        "hyperf/support": "~3.1.0",
         "symfony/console": "^5.3|^6.0",
         "symfony/process": "^5.3|^6.0"
     },
