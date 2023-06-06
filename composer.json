@@ -127,7 +127,6 @@
     },
     "autoload": {
         "files": [
-            "src/async-task/src/Functions.php",
             "src/encryption/src/Functions.php",
             "src/exception-event/src/Functions.php",
             "src/helpers/src/Command/Functions.php",
