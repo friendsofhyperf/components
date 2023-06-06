@@ -3,12 +3,10 @@
     "description": "The http request lifecycle component for Hyperf.",
     "type": "library",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "huangdijia",
-            "email": "huangdijia@gmail.com"
-        }
-    ],
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
     "support": {
         "issues": "https://github.com/friendsofhyperf/components/issues",
         "source": "https://github.com/friendsofhyperf/components"
@@ -28,9 +26,6 @@
     "extra": {
         "hyperf": {
             "config": "FriendsOfHyperf\\Http\\RequestLifeCycle\\ConfigProvider"
-        },
-        "branch-alias": {
-            "dev-main": "3.1-dev"
         }
     },
     "config": {

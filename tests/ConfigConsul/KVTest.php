@@ -12,7 +12,6 @@ use FriendsOfHyperf\ConfigConsul\Consul\KVFactory;
 use FriendsOfHyperf\ConfigConsul\Consul\KVInterface;
 use Hyperf\Consul\KV;
 use Mockery as m;
-use Pest\Mock\Mock;
 use Psr\Container\ContainerInterface;
 
 afterEach(function () {
@@ -25,8 +24,10 @@ function foo(KVInterface $kv): KVInterface
 }
 
 test('test KVInterface', function () {
-    $KVFactory = (new Mock(KVFactory::class))->expect(
-        __invoke: fn () => m::mock(KV::class)
+    $KVFactory = mock(KVFactory::class)->expect(
+        __invoke: function () {
+            return m::mock(KV::class);
+        }
     );
 
     $kv = $KVFactory(m::mock(ContainerInterface::class));

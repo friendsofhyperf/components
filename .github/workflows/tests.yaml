@@ -16,8 +16,11 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04]
-        php: ['8.1', '8.2']
-        swoole: ['5.0.3']
+        php: ['8.0', '8.1', '8.2']
+        swoole: ['4.8.13', '5.0.3']
+        exclude:
+          - php: '8.2'
+            swoole: '4.8.13'
       max-parallel: 20
       fail-fast: false
     steps:
@@ -34,6 +37,10 @@ jobs:
         run: |
           php -v
           php --ri swoole
+      - name: Setup pest-plugin-parallel
+        run: |
+          composer require pestphp/pest-plugin-parallel:^1.2.1
+        if: matrix.php == '8.0'
       - name: Setup Packages
         run: composer update -o
       - name: Run Cs Fixer

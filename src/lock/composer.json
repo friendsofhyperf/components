@@ -3,12 +3,10 @@
     "description": "The lock component for Hyperf.",
     "type": "library",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "huangdijia",
-            "email": "huangdijia@gmail.com"
-        }
-    ],
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
     "support": {
         "issues": "https://github.com/friendsofhyperf/components/issues",
         "source": "https://github.com/friendsofhyperf/components"
@@ -31,9 +29,6 @@
     "extra": {
         "hyperf": {
             "config": "FriendsOfHyperf\\Lock\\ConfigProvider"
-        },
-        "branch-alias": {
-            "dev-main": "3.1-dev"
         }
     },
     "suggest": {

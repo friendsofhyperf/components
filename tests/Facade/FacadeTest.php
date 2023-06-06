@@ -13,7 +13,6 @@ use FriendsOfHyperf\Facade\Log;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Logger\LoggerFactory;
 use Mockery as m;
-use Pest\Mock\Mock;
 use Psr\Container\ContainerInterface;
 
 uses()->group('facade');
@@ -30,9 +29,9 @@ test('test Cache Macroable', function () {
 
 test('test Log Macroable', function () {
     ApplicationContext::setContainer(
-        (new Mock(ContainerInterface::class))->expect(
-            get: fn () => (new Mock(LoggerFactory::class))->expect(
-                get: fn () => (new Mock(\Psr\Log\LoggerInterface::class))->allows()->info('test')->getMock()
+        mock(ContainerInterface::class)->expect(
+            get: fn () => mock(LoggerFactory::class)->expect(
+                get: fn () => mock(\Psr\Log\LoggerInterface::class)->allows()->info('test')->getMock()
             )
         )
     );

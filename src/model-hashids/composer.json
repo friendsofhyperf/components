@@ -3,14 +3,12 @@
     "description": "The hashids for Hyperf models.",
     "type": "library",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "huangdijia",
-            "email": "huangdijia@gmail.com"
-        }
-    ],
+    "authors": [{
+        "name": "huangdijia",
+        "email": "huangdijia@gmail.com"
+    }],
     "require": {
-        "php": ">=8.1",
+        "php": "^8.0",
         "hashids/hashids": "^4.1|^5.0",
         "hyperf/database": "~3.0.0",
         "hyperf/stringable": "~3.0.0"
@@ -27,13 +25,6 @@
     "extra": {
         "hyperf": {
             "config": "FriendsOfHyperf\\ModelHashids\\ConfigProvider"
-        },
-        "branch-alias": {
-            "dev-main": "3.1-dev"
         }
-    },
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components"
     }
 }
