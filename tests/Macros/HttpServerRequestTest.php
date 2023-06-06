@@ -11,6 +11,7 @@ declare(strict_types=1);
 use Hyperf\Context\Context;
 use Hyperf\HttpServer\Request;
 use Mockery as m;
+use Pest\Mock\Mock;
 use Psr\Http\Message\ServerRequestInterface;
 
 uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'request');
@@ -22,7 +23,7 @@ afterEach(function () {
 });
 
 test('test only', function () {
-    $psrRequest = mock(ServerRequestInterface::class)->expect(
+    $psrRequest = (new Mock(ServerRequestInterface::class))->expect(
         getParsedBody: fn () => ['id' => 1],
         getQueryParams: fn () => [],
     );
@@ -35,7 +36,7 @@ test('test only', function () {
 });
 
 test('test isEmptyString', function () {
-    $psrRequest = mock(ServerRequestInterface::class)->expect(
+    $psrRequest = (new Mock(ServerRequestInterface::class))->expect(
         getParsedBody: fn () => ['id' => 1],
         getQueryParams: fn () => [],
     );
