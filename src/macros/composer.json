@@ -39,6 +39,9 @@
     "extra": {
         "hyperf": {
             "config": "FriendsOfHyperf\\Macros\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
         }
     },
     "config": {

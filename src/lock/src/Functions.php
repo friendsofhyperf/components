@@ -8,33 +8,18 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Lock{
-    use FriendsOfHyperf\Lock\Driver\LockInterface;
-    use Hyperf\Context\ApplicationContext;
+namespace FriendsOfHyperf\Lock;
 
-    function lock(string $name = null, int $seconds = 0, ?string $owner = null, string $driver = 'default'): LockFactory|LockInterface
-    {
-        $factory = ApplicationContext::getContainer()->get(LockFactory::class);
+use FriendsOfHyperf\Lock\Driver\LockInterface;
+use Hyperf\Context\ApplicationContext;
 
-        if (is_null($name)) {
-            return $factory;
-        }
+function lock(string $name = null, int $seconds = 0, ?string $owner = null, string $driver = 'default'): LockFactory|LockInterface
+{
+    $factory = ApplicationContext::getContainer()->get(LockFactory::class);
 
-        return $factory->make($name, $seconds, $owner, $driver);
+    if (is_null($name)) {
+        return $factory;
     }
-}
 
-namespace {
-    use FriendsOfHyperf\Lock\Driver\LockInterface;
-    use FriendsOfHyperf\Lock\LockFactory;
-
-    if (! function_exists('lock')) {
-        /**
-         * @deprecated 3.1, use `\FriendsOfHyperf\Lock\lock()` instead.
-         */
-        function lock(string $name = null, int $seconds = 0, ?string $owner = null, string $driver = 'default'): LockFactory|LockInterface
-        {
-            return \FriendsOfHyperf\Lock\lock($name, $seconds, $owner, $driver);
-        }
-    }
+    return $factory->make($name, $seconds, $owner, $driver);
 }

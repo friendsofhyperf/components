@@ -30,6 +30,13 @@
             "config": [
                 "FriendsOfHyperf\\FastPaginate\\ConfigProvider"
             ]
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
         }
+    },
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
     }
 }

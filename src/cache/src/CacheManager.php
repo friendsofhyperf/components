@@ -31,12 +31,4 @@ class CacheManager
             'driver' => $this->cacheManager->getDriver($name),
         ]);
     }
-
-    /**
-     * @deprecated since 3.1, use `FriendsOfHyperf\Cache\CacheManager::store()` instead.
-     */
-    public function get(string $name = 'default'): CacheInterface
-    {
-        return $this->store($name);
-    }
 }
