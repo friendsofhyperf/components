@@ -29,7 +29,7 @@
         "sentry/sdk": "^3.0"
     },
     "suggest": {
-        "hyperf/guzzle": "Required to use the Guzzle client (~3.0.0).",
+        "hyperf/guzzle": "Required to use the Guzzle client (~3.1.0).",
         "php-http/guzzle6-adapter": "Required to use the Guzzle transport (^1.0|^2.0).",
         "php-http/guzzle7-adapter": "Required to use the Guzzle transport (^1.0)."
     },

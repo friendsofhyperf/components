@@ -38,7 +38,7 @@
         }
     },
     "suggest": {
-        "hyperf/async-queue": "Required to use Hyperf\\AsyncQueue\\Job.(~3.0.0)"
+        "hyperf/async-queue": "Required to use Hyperf\\AsyncQueue\\Job.(~3.1.0)"
     },
     "minimum-stability": "dev",
     "config": {
