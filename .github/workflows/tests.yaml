@@ -33,6 +33,7 @@ jobs:
       - name: Setup Repositories
         run: |
           composer config repositories.local path ./hyperf-src
+          cat composer.json
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
