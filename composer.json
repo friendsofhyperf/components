@@ -130,7 +130,6 @@
             "src/encryption/src/Functions.php",
             "src/exception-event/src/Functions.php",
             "src/helpers/src/Command/Functions.php",
-            "src/helpers/src/DeprecatedFunctions.php",
             "src/helpers/src/Functions.php",
             "src/http-client/src/Functions.php",
             "src/lock/src/Functions.php",
