@@ -29,9 +29,9 @@ test('test Cache Macroable', function () {
 
 test('test Log Macroable', function () {
     ApplicationContext::setContainer(
-        mock(ContainerInterface::class)->expect(
-            get: fn () => mock(LoggerFactory::class)->expect(
-                get: fn () => mock(\Psr\Log\LoggerInterface::class)->allows()->info('test')->getMock()
+        mocking(ContainerInterface::class)->expect(
+            get: fn () => mocking(LoggerFactory::class)->expect(
+                get: fn () => mocking(\Psr\Log\LoggerInterface::class)->allows()->info('test')->getMock()
             )
         )
     );

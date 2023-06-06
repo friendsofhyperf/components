@@ -22,7 +22,7 @@ afterEach(function () {
 });
 
 test('test only', function () {
-    $psrRequest = mock(ServerRequestInterface::class)->expect(
+    $psrRequest = mocking(ServerRequestInterface::class)->expect(
         getParsedBody: fn () => ['id' => 1],
         getQueryParams: fn () => [],
     );
@@ -35,7 +35,7 @@ test('test only', function () {
 });
 
 test('test isEmptyString', function () {
-    $psrRequest = mock(ServerRequestInterface::class)->expect(
+    $psrRequest = mocking(ServerRequestInterface::class)->expect(
         getParsedBody: fn () => ['id' => 1],
         getQueryParams: fn () => [],
     );

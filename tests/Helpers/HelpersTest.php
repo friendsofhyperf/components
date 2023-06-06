@@ -64,9 +64,9 @@ test('test PregReplaceArray', function ($pattern, $replacements, $subject, $expe
 
 test('test FriendsOfHyperf\Helpers\Command\call', function () {
     ApplicationContext::setContainer(
-        mock(ContainerInterface::class)->expect(
+        mocking(ContainerInterface::class)->expect(
             has: fn () => true,
-            get: fn () => mock(ApplicationInterface::class)->expect(
+            get: fn () => mocking(ApplicationInterface::class)->expect(
                 setAutoExit: fn () => null,
                 run: fn () => 0,
             )
