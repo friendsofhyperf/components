@@ -32,7 +32,7 @@ jobs:
           path: hyperf-src
       - name: Setup Repositories
         run: |
-          composer set repository hyperf hyperf-src
+          composer config repositories.local path ./hyperf-src
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
