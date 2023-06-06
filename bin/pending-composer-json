@@ -34,6 +34,7 @@ foreach ($files as $file) {
     $component = basename(dirname($file));
     $composerJson = json_decode(file_get_contents($file));
 
+    $composerJson->license = 'MIT';
     $composerJson->support = [
         'issues' => 'https://github.com/friendsofhyperf/components/issues',
         'source' => 'https://github.com/friendsofhyperf/components',
