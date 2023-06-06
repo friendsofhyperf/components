@@ -24,17 +24,3 @@ namespace FriendsOfHyperf\Lock{
     }
 }
 
-namespace {
-    use FriendsOfHyperf\Lock\Driver\LockInterface;
-    use FriendsOfHyperf\Lock\LockFactory;
-
-    if (! function_exists('lock')) {
-        /**
-         * @deprecated 3.1, use `\FriendsOfHyperf\Lock\lock()` instead.
-         */
-        function lock(string $name = null, int $seconds = 0, ?string $owner = null, string $driver = 'default'): LockFactory|LockInterface
-        {
-            return \FriendsOfHyperf\Lock\lock($name, $seconds, $owner, $driver);
-        }
-    }
-}

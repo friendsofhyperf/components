@@ -52,13 +52,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 return;
             }
 
-            $guzzleConfig = (function () {
-                if (method_exists($this, 'getConfig')) { // @deprecated ClientInterface::getConfig will be removed in guzzlehttp/guzzle:8.0.
-                    return $this->getConfig();
-                }
-
-                return $this->config ?? [];
-            })->call($instance);
+            $guzzleConfig = (fn () => $this->config ?? [])->call($instance);
 
             if (($guzzleConfig['no_aspect'] ?? null) === true) {
                 return;
