@@ -3,10 +3,12 @@
     "description": "A magic memoization function for Hyperf.",
     "type": "library",
     "license": "MIT",
-    "authors": [{
-        "name": "huangdijia",
-        "email": "huangdijia@gmail.com"
-    }],
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
     "require": {
         "hyperf/di": "~3.0.0",
         "hyperf/tappable": "~3.0.0",
@@ -20,6 +22,9 @@
     "extra": {
         "hyperf": {
             "config": "FriendsOfHyperf\\Once\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
         }
     },
     "suggest": {
@@ -31,5 +36,9 @@
     "config": {
         "sort-packages": true,
         "optimize-autoloader": true
+    },
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
     }
 }
