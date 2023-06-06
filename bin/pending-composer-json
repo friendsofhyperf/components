@@ -34,6 +34,15 @@ foreach ($files as $file) {
     $component = basename(dirname($file));
     $composerJson = json_decode(file_get_contents($file));
 
+    // foreach ($composerJson->require as $package => &$version) {
+    //     if ($package == 'hyperf/engine') {
+    //         continue;
+    //     }
+    //     if (strpos($package, 'hyperf/') === 0) {
+    //         $version = '~3.1.0';
+    //     }
+    // }
+
     $composerJson->license = 'MIT';
     $composerJson->support = [
         'issues' => 'https://github.com/friendsofhyperf/components/issues',

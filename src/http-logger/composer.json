@@ -14,11 +14,11 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "hyperf/config": "~3.0.0",
-        "hyperf/coroutine": "~3.0.0",
-        "hyperf/http-server": "~3.0.0",
-        "hyperf/logger": "~3.0.0",
-        "hyperf/support": "~3.0.1",
+        "hyperf/config": "~3.1.0",
+        "hyperf/coroutine": "~3.1.0",
+        "hyperf/http-server": "~3.1.0",
+        "hyperf/logger": "~3.1.0",
+        "hyperf/support": "~3.1.0",
         "nesbot/carbon": "^2.0"
     },
     "autoload": {
