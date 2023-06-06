@@ -23,6 +23,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - name: Checkout Hyperf
+        uses: actions/checkout@v3
+        with:
+          repository: hyperf/hyperf
+          ref: '3.1'
+          fetch-depth: 1
+          path: hyperf-src
+      - name: Setup Repositories
+        run: |
+          composer set repositories.hyperf path hyperf-src
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
