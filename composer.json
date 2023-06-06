@@ -16,7 +16,7 @@
     "require": {
         "php": ">=8.1",
         "barryvdh/reflection-docblock": "^2.0",
-        "composer/composer": "^1.0|^2.0",
+        "composer/composer": "^2.0",
         "google/protobuf": "^3.21",
         "google/recaptcha": "^1.2",
         "guzzlehttp/uri-template": "^1.0",
