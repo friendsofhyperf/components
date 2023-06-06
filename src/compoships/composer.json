@@ -1,44 +1,51 @@
 {
-  "name": "friendsofhyperf/compoships",
-  "description": "Hyperf relationships with support for composite/multiple keys.",
-  "license": "MIT",
-  "keywords": [
-    "Hyperf",
-    "Hyperf composite keys",
-    "Hyperf relationships"
-  ],
-  "authors": [
-    {
-      "name": "Claudin J. Daniel",
-      "email": "cdaniel@awobaz.com"
+    "name": "friendsofhyperf/compoships",
+    "description": "Hyperf relationships with support for composite/multiple keys.",
+    "license": "MIT",
+    "keywords": [
+        "Hyperf",
+        "Hyperf composite keys",
+        "Hyperf relationships"
+    ],
+    "authors": [
+        {
+            "name": "Claudin J. Daniel",
+            "email": "cdaniel@awobaz.com"
+        },
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "require": {
+        "hyperf/database": "~3.0.0",
+        "hyperf/stringable": "~3.0.0",
+        "hyperf/support": "~3.0.1",
+        "hyperf/tappable": "~3.0.0"
     },
-    {
-      "name": "huangdijia",
-      "email": "huangdijia@gmail.com"
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Compoships\\": "src"
+        }
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Compoships\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "suggest": {
+        "awobaz/eloquent-mutators": "Reusable mutators (getters/setters) for Laravel 5's Eloquent",
+        "awobaz/eloquent-auto-append": "Automatically append accessors to model serialization",
+        "awobaz/blade-active": "Blade directives for the Laravel 'Active' package",
+        "awobaz/syntactic": "Syntactic sugar for named and indexed parameters call."
+    },
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
     }
-  ],
-  "require": {
-    "hyperf/database": "~3.0.0",
-    "hyperf/stringable": "~3.0.0",
-    "hyperf/support": "~3.0.1",
-    "hyperf/tappable": "~3.0.0"
-  },
-  "autoload": {
-    "psr-4": {
-      "FriendsOfHyperf\\Compoships\\": "src"
-    }
-  },
-  "extra": {
-    "hyperf": {
-      "config": "FriendsOfHyperf\\Compoships\\ConfigProvider"
-    }
-  },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
-  "suggest": {
-    "awobaz/eloquent-mutators": "Reusable mutators (getters/setters) for Laravel 5's Eloquent",
-    "awobaz/eloquent-auto-append": "Automatically append accessors to model serialization",
-    "awobaz/blade-active": "Blade directives for the Laravel 'Active' package",
-    "awobaz/syntactic": "Syntactic sugar for named and indexed parameters call."
-  }
 }

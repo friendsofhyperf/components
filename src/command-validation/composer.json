@@ -3,10 +3,12 @@
     "description": "The command validation component for Hyperf.",
     "type": "library",
     "license": "MIT",
-    "authors": [{
-        "name": "huangdijia",
-        "email": "huangdijia@gmail.com"
-    }],
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
     "require": {
         "hyperf/command": "~3.0.0",
         "hyperf/context": "~3.0.16",
@@ -28,6 +30,13 @@
     "extra": {
         "hyperf": {
             "config": "FriendsOfHyperf\\CommandValidation\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
         }
+    },
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
     }
 }

@@ -1,0 +1,50 @@
+#!/usr/bin/env php
+<?php
+/**
+ * This file is part of friendsofhyperf/components.
+ *
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @contact  huangdijia@gmail.com
+ */
+use Symfony\Component\Finder\Finder;
+
+foreach ([__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php'] as $file) {
+    if (file_exists($file)) {
+        require $file;
+        break;
+    }
+}
+
+$files = Finder::create()
+    ->in(__DIR__ . '/../src')
+    ->name('composer.json')
+    ->files();
+
+$require = [];
+$autoload = [];
+$autoloadFiles = [];
+$autoloadDev = [
+    'FriendsOfHyperf\\Tests\\' => 'tests/',
+];
+$configProviders = [];
+$replaces = [];
+
+foreach ($files as $file) {
+    $component = basename(dirname($file));
+    $composerJson = json_decode(file_get_contents($file));
+
+    $composerJson->license = 'MIT';
+    $composerJson->support = [
+        'issues' => 'https://github.com/friendsofhyperf/components/issues',
+        'source' => 'https://github.com/friendsofhyperf/components',
+    ];
+    $composerJson->extra->{'branch-alias'} = [
+        'dev-main' => '3.1-dev',
+    ];
+
+    file_put_contents(
+        $file,
+        json_encode($composerJson, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . PHP_EOL
+    );
+}
