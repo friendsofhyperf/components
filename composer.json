@@ -16,7 +16,7 @@
     "require": {
         "php": ">=8.1",
         "barryvdh/reflection-docblock": "^2.0",
-        "composer/composer": "^1.0|^2.0",
+        "composer/composer": "^2.0",
         "google/protobuf": "^3.21",
         "google/recaptcha": "^1.2",
         "guzzlehttp/uri-template": "^1.0",
@@ -127,13 +127,10 @@
     },
     "autoload": {
         "files": [
-            "src/async-task/src/Functions.php",
             "src/encryption/src/Functions.php",
             "src/exception-event/src/Functions.php",
             "src/helpers/src/Command/Functions.php",
-            "src/helpers/src/DeprecatedFunctions.php",
             "src/helpers/src/Functions.php",
-            "src/http-client/src/Functions.php",
             "src/lock/src/Functions.php",
             "src/macros/src/Functions.php",
             "src/support/src/Functions.php"
