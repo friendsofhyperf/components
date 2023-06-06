@@ -14,7 +14,7 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "friendsofhyperf/support": "^3.1",
+        "friendsofhyperf/support": "~3.1.0",
         "hyperf/context": "~3.1.0",
         "hyperf/di": "~3.1.0"
     },
