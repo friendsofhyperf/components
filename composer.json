@@ -90,6 +90,7 @@
     },
     "replace": {
         "friendsofhyperf/access-log": "*",
+        "friendsofhyperf/async-task": "*",
         "friendsofhyperf/cache": "*",
         "friendsofhyperf/closure-command": "*",
         "friendsofhyperf/command-signals": "*",
@@ -126,6 +127,7 @@
     },
     "autoload": {
         "files": [
+            "src/async-task/src/Functions.php",
             "src/encryption/src/Functions.php",
             "src/exception-event/src/Functions.php",
             "src/helpers/src/Command/Functions.php",
@@ -138,6 +140,7 @@
         ],
         "psr-4": {
             "FriendsOfHyperf\\AccessLog\\": "src/access-log/src/",
+            "FriendsOfHyperf\\AsyncTask\\": "src/async-task/src/",
             "FriendsOfHyperf\\Cache\\": "src/cache/src/",
             "FriendsOfHyperf\\ClosureCommand\\": "src/closure-command/src/",
             "FriendsOfHyperf\\CommandSignals\\": "src/command-signals/src/",
@@ -182,6 +185,7 @@
         "hyperf": {
             "config": [
                 "FriendsOfHyperf\\AccessLog\\ConfigProvider",
+                "FriendsOfHyperf\\AsyncTask\\ConfigProvider",
                 "FriendsOfHyperf\\Cache\\ConfigProvider",
                 "FriendsOfHyperf\\ClosureCommand\\ConfigProvider",
                 "FriendsOfHyperf\\CommandSignals\\ConfigProvider",
