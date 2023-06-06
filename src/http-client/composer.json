@@ -12,7 +12,7 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "friendsofhyperf/support": "^3.0",
+        "friendsofhyperf/support": "~3.0.0",
         "guzzlehttp/uri-template": "^1.0",
         "hyperf/collection": "~3.0.0",
         "hyperf/conditionable": "~3.0.0",
