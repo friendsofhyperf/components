@@ -33,75 +33,35 @@ class RunInCoroutineVisitor extends NodeVisitorAbstract
         /** @var Node\Stmt\Expression $main */
         $main = array_pop($nodes);
         $main = $main->expr;
-
-        $nodes[] = new Node\Stmt\Expression(new Node\Expr\Assign(
-            new Node\Expr\Variable('code'),
-            new Node\Scalar\LNumber(0)
-        ));
-
-        $nodes[] = $this->getCoroutineSetter()[0];
-
-        // $main->args[] = new Node\Arg(new Node\Expr\ConstFetch(new Node\Name('false')));
-
-        $nodes[] = new Node\Stmt\Expression(
-            new Node\Expr\FuncCall(
-                new Node\Name('Swoole\Coroutine\run'),
-                [
-                    new Node\Arg(new Node\Expr\Closure([
-                        'stmts' => [
-                            new Node\Stmt\TryCatch([
-                                new Node\Stmt\Expression(new Node\Expr\Assign(
-                                    new Node\Expr\Variable('code'),
-                                    $main
-                                )),
-                            ], [
-                                new Node\Stmt\Catch_(
-                                    [
-                                        new Node\Name\FullyQualified('Throwable'),
-                                    ],
-                                    new Node\Expr\Variable('e'),
-                                    [
-                                        new Node\Stmt\Expression(new Node\Expr\Assign(
-                                            new Node\Expr\Variable('code'),
-                                            new Node\Expr\MethodCall(new Node\Expr\Variable('e'), 'getCode')
-                                        )),
-                                    ]
-                                ),
-                            ]),
-
-                            $this->getTimerClearAll()[0],
-                            $this->getCoordinatorResume()[0],
-                        ],
-                        'uses' => [
-                            new Node\Expr\ClosureUse(new Node\Expr\Variable('code'), true),
-                        ],
-                    ])),
-                ]
-            )
-        );
-        $nodes[] = new Node\Stmt\Expression(new Node\Expr\Exit_(new Node\Expr\Variable('code')));
+        foreach ($this->wrapCoroutine($main) as $node) {
+            $nodes[] = $node;
+        }
         return $nodes;
     }
 
-    protected function getCoroutineSetter(): array
+    protected function wrapCoroutine($expr): array
     {
-        return $this->parser->parse("<?php 
-Swoole\\Coroutine::set([
-    'hook_flags' => SWOOLE_HOOK_ALL,
-    'exit_condition' => function() {
-        return Swoole\\Coroutine::stats()['coroutine_num'] === 0;
+        /** @var PhpParser\Node\Stmt\Expression[] $nodes */
+        $nodes = $this->parser->parse('<?php
+$code = 0;
+Swoole\Coroutine::set(["hook_flags" => SWOOLE_HOOK_ALL, "exit_condition" => function () {
+    return Swoole\Coroutine::stats()["coroutine_num"] === 0;
+}]);
+Swoole\Coroutine\run(function () use(&$code) {
+    try {
+    } catch (Swoole\ExitException $e) {
+        $code = $e->getStatus();
     }
-]);");
-    }
-
-    protected function getTimerClearAll(): array
-    {
-        return $this->parser->parse('<?php Swoole\\Timer::clearAll();');
-    }
-
-    protected function getCoordinatorResume(): array
-    {
-        return $this->parser->parse('<?php Hyperf\\Coordinator\\CoordinatorManager::until(Hyperf\\Coordinator\\Constants::WORKER_EXIT)->resume();');
+    Swoole\Timer::clearAll();
+    Hyperf\Coordinator\CoordinatorManager::until(Hyperf\Coordinator\Constants::WORKER_EXIT)->resume();
+});
+die($code);
+');
+        $nodes[2]->expr->args[0]->value->stmts[0]->stmts[0] = new Node\Stmt\Expression(new Node\Expr\Assign(
+            new Node\Expr\Variable('code'),
+            $expr
+        ));
+        return $nodes;
     }
 }
 
