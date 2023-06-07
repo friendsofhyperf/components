@@ -76,7 +76,7 @@ Swoole\Coroutine\run(function () use(&$code) {
             } catch (Throwable|Error $e) {
                 Panic::with($e);
             }
-            exit($result);
+            return $result;
         })();
     } catch (Swoole\ExitException $e) {
         $code = $e->getStatus();
