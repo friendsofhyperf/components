@@ -38,6 +38,7 @@ parameters:
     - '#Access to an undefined property App\\Util\\Http\\Client\\Response::\$cookies\.#'
     - '#Access to an undefined property FriendsOfHyperf\\Http\\Client\\Response::\$\w+\.#'
     - '#Function GuzzleHttp\\Psr7\\get_message_body_summary not found.#'
+    - '#Function GuzzleHttp\\Promise\\promise_for not found.#'
     - '#.*should either be compatible with ArrayAccess::offset\w+.*#'
     - 
       message: '#Undefined variable: \$this#'
