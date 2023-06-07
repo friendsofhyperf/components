@@ -4,5 +4,4 @@ composer.lock
 .bashrc
 .idea
 .vscode/launch.json
-bin/co-pest
 *.bak
