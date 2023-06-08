@@ -11,7 +11,7 @@ env:
 
 jobs:
   ci:
-    name: Test on php-${{ matrix.php }} with swoole-${{ matrix.swoole }}
+    name: Test on PHP ${{ matrix.php }} with ${{ matrix.swoole }}
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
