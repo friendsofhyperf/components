@@ -25,7 +25,8 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup PHP
-        uses: shivammathur/setup-php@verbose
+        # uses: shivammathur/setup-php@verbose
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: redis, pdo, pdo_mysql, bcmath, ${{ matrix.swoole }}
@@ -34,7 +35,7 @@ jobs:
           ini-values: swoole.use_shortname=Off
         env:
           SWOOLE_LIBS: libc-ares-dev libcurl4-openssl-dev libpq-dev libbrotli-dev
-          SWOOLE_CONFIGURE_OPTS: "--enable-openssl --enable-swoole-curl --enable-cares --enable-swoole-pgsql --enable-brotli"
+          SWOOLE_CONFIGURE_OPTS: --enable-openssl --enable-swoole-curl --enable-cares --enable-swoole-pgsql --enable-brotli
       - name: Print Imformations
         run: |
           # cat /home/runner/work/_actions/shivammathur/setup-php/v2/src/scripts/run.sh
