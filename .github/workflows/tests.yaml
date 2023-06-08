@@ -11,13 +11,14 @@ env:
 
 jobs:
   ci:
-    name: Test on PHP ${{ matrix.php }} with Swoole ${{ matrix.swoole }}
+    name: Test on PHP ${{ matrix.php }} with ${{ matrix.swoole }}
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
         os: [ubuntu-22.04]
         php: ['8.1', '8.2']
-        swoole: ['5.0.3']
+        swoole: 
+          - swoole-5.0.3
       max-parallel: 20
       fail-fast: false
     steps:
@@ -27,16 +28,16 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: redis, pdo, pdo_mysql, bcmath, swoole-${{ matrix.swoole }}
+          extensions: redis, pdo, pdo_mysql, bcmath, ${{ matrix.swoole }}
           tools: phpize
           coverage: none
           ini-values: swoole.use_shortname=Off
         env:
-          SWOOLE_VERSION: ${{ matrix.swoole }}
-          # SWOOLE_CONFIGURE_SUFFIX_OPTS: --enable-openssl --enable-swoole-curl --enable-cares --enable-swoole-pgsql --enable-brotli
+          SWOOLE_CONFIGURE_OPTS: --enable-openssl --enable-swoole-curl --enable-cares --enable-swoole-pgsql --enable-brotli
       - name: Show Imformations
         run: |
           php -v
+          php -m
           php --ri swoole
       - name: Setup Packages
         run: composer update -o
