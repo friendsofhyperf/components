@@ -40,6 +40,7 @@ use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\VarDumper\VarDumper;
 
 use function Hyperf\Collection\collect;
+use function Hyperf\Tappable\tap;
 
 /**
  * @internal
