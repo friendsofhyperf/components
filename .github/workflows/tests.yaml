@@ -30,6 +30,8 @@ jobs:
           extensions: redis, pdo, pdo_mysql, bcmath, swoole-${{ matrix.swoole }}
           tools: phpize
           coverage: none
+        env:
+          SWOOLE_CONFIGURE_OPTS: --enable-openssl --enable-swoole-curl --enable-cares --enable-swoole-pgsql --enable-brotli
       - name: Show Imformations
         run: |
           php -v
