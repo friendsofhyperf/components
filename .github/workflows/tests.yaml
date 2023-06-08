@@ -25,17 +25,17 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Setup PHP
-        uses: shivammathur/setup-php@verbose
-        # uses: shivammathur/setup-php@v2
+        # uses: shivammathur/setup-php@verbose
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: redis, pdo, pdo_mysql, bcmath, ${{ matrix.swoole }}
           tools: phpize
           coverage: none
           ini-values: swoole.use_shortname=Off
-        env:
-          SWOOLE_LIBS: libc-ares-dev libcurl4-openssl-dev libpq-dev libbrotli-dev
-          SWOOLE_CONFIGURE_OPTS: --enable-openssl --enable-swoole-curl --enable-cares --enable-swoole-pgsql --enable-brotli
+        # env:
+        #   SWOOLE_LIBS: libc-ares-dev libcurl4-openssl-dev libpq-dev libbrotli-dev
+        #   SWOOLE_CONFIGURE_OPTS: --enable-openssl --enable-swoole-curl --enable-cares --enable-swoole-pgsql --enable-brotli
       - name: Print Imformations
         run: |
           php -v
