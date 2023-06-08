@@ -33,7 +33,7 @@ jobs:
           coverage: none
           ini-values: swoole.use_shortname=Off
         env:
-          debug: true
+          SWOOLE_LIBS: libc-ares-dev libcurl4-openssl-dev libpq-dev libbrotli-dev
           SWOOLE_CONFIGURE_OPTS: "--enable-openssl --enable-swoole-curl --enable-cares --enable-swoole-pgsql --enable-brotli"
       - name: Print Imformations
         run: |
