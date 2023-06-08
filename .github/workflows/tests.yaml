@@ -35,7 +35,7 @@ jobs:
         env:
           debug: true
           SWOOLE_CONFIGURE_OPTS: "--enable-openssl --enable-swoole-curl --enable-cares --enable-swoole-pgsql --enable-brotli"
-      - name: Show Imformations
+      - name: Print Imformations
         run: |
           php -v
           php -m
