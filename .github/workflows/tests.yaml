@@ -27,10 +27,11 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: redis, pdo, pdo_mysql, bcmath, swoole-${{ matrix.swoole }}
+          extensions: redis, pdo, pdo_mysql, bcmath, swoole
           tools: phpize
           coverage: none
         env:
+          SWOOLE_VERSION: ${{ matrix.swoole }}
           SWOOLE_CONFIGURE_SUFFIX_OPTS: --enable-openssl --enable-swoole-curl --enable-cares --enable-swoole-pgsql --enable-brotli
       - name: Show Imformations
         run: |
