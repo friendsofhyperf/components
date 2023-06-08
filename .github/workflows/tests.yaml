@@ -33,7 +33,7 @@ jobs:
           coverage: none
           ini-values: swoole.use_shortname=Off
         env:
-          SWOOLE_CONFIGURE_OPTIONS: --enable-openssl --enable-swoole-curl --enable-cares --enable-swoole-pgsql --enable-brotli
+          SWOOLE_CONFIGURE_OPTS: --enable-openssl --enable-swoole-curl --enable-cares --enable-swoole-pgsql --enable-brotli
       - name: Show Imformations
         run: |
           php -v
