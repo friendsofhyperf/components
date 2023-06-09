@@ -83,7 +83,7 @@ class Arr
      * Sort the array in descending order using the given callback or "dot" notation.
      *
      * @param array $array
-     * @param null|array|callable|string $callback
+     * @param array|callable|string|null $callback
      * @return array
      */
     public static function sortDesc($array, $callback = null)

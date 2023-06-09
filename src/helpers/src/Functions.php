@@ -294,7 +294,7 @@ function info($message, array $context = [], bool $backtrace = false)
 }
 
 /**
- * @param null|string|Stringable $message
+ * @param string|Stringable|null $message
  * @return LoggerInterface|void
  * @throws TypeError
  */
@@ -323,7 +323,7 @@ function logs(string $name = 'hyperf', string $group = 'default'): LoggerInterfa
 /**
  * Create a new Carbon instance for the current time.
  *
- * @param null|DateTimeZone|string $tz
+ * @param DateTimeZone|string|null $tz
  */
 function now($tz = null): Carbon
 {
@@ -336,7 +336,7 @@ function now($tz = null): Carbon
  * @template T of object
  *
  * @param T $object
- * @param null|string $key
+ * @param string|null $key
  * @param mixed $default
  * @return mixed|T
  */
@@ -389,7 +389,7 @@ function resolve(string|callable $abstract, array $parameters = [])
 
 /**
  * Get an instance of the current request or an input item from the request.
- * @param null|array|string $key
+ * @param array|string|null $key
  * @param mixed $default
  * @return array|mixed|RequestInterface
  * @throws TypeError
@@ -412,7 +412,7 @@ function request($key = null, $default = null)
 /**
  * Return a new response from the application.
  *
- * @param null|array|string $content
+ * @param array|string|null $content
  * @param int $status
  * @return PsrResponseInterface|ResponseInterface
  */
@@ -446,7 +446,7 @@ function response($content = '', $status = 200, array $headers = [])
  *
  * If an array is passed as the key, we will assume you want to set an array of values.
  *
- * @param null|array|string $key
+ * @param array|string|null $key
  * @param mixed $default
  * @return mixed|SessionInterface
  */
@@ -468,7 +468,7 @@ function session($key = null, $default = null)
 /**
  * Create a new Carbon instance for the current date.
  *
- * @param null|\DateTimeZone|string $tz
+ * @param \DateTimeZone|string|null $tz
  */
 function today($tz = null): Carbon
 {

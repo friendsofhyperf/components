@@ -19,7 +19,7 @@ interface CacheInterface
     /**
      * @param string $key
      * @param mixed $value
-     * @param null|DateInterval|DateTimeInterface|int $ttl
+     * @param DateInterval|DateTimeInterface|int|null $ttl
      */
     public function add($key, $value, $ttl = null): bool;
 
@@ -53,7 +53,7 @@ interface CacheInterface
     /**
      * @param array|string $key
      * @param mixed $value
-     * @param null|DateInterval|DateTimeInterface|int $ttl
+     * @param DateInterval|DateTimeInterface|int|null $ttl
      */
     public function put($key, $value, $ttl = null): bool;
 
@@ -106,7 +106,7 @@ interface CacheInterface
      * @template TCacheValue
      *
      * @param string $key
-     * @param null|DateInterval|DateTimeInterface|int $ttl
+     * @param DateInterval|DateTimeInterface|int|null $ttl
      * @param Closure(): TCacheValue $callback
      * @return TCacheValue
      */

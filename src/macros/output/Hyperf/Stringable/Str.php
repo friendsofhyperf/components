@@ -40,7 +40,7 @@ class Str
      * @param string $text
      * @param string $phrase
      * @param array $options
-     * @return null|string
+     * @return string|null
      */
     public static function excerpt($text, $phrase = '', $options = [])
     {
@@ -152,7 +152,7 @@ class Str
      * @param array|string $string
      * @param array|string $replace
      * @param array|int $offset
-     * @param null|array|int $length
+     * @param array|int|null $length
      * @return array|string
      */
     public static function substrReplace($string, $replace, $offset = 0, $length = null)
@@ -173,8 +173,8 @@ class Str
      * Transliterate a string to its closest ASCII representation.
      *
      * @param string $string
-     * @param null|string $unknown
-     * @param null|bool $strict
+     * @param string|null $unknown
+     * @param bool|null $strict
      * @return string
      */
     public static function transliterate($string, $unknown = '?', $strict = false)
@@ -219,7 +219,7 @@ class Str
      * Wrap the string with the given strings.
      *
      * @param string $before
-     * @param null|string $after
+     * @param string|null $after
      * @param mixed $value
      * @return string
      */
