@@ -224,7 +224,7 @@ if (! function_exists('info')) {
 
 if (! function_exists('logger')) {
     /**
-     * @param null|string|\Stringable $message
+     * @param string|\Stringable|null $message
      * @return LoggerInterface|void
      * @throws TypeError
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\logger` instead.
@@ -250,7 +250,7 @@ if (! function_exists('now')) {
     /**
      * Create a new Carbon instance for the current time.
      *
-     * @param null|DateTimeZone|string $tz
+     * @param DateTimeZone|string|null $tz
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\now` instead.
      */
     function now($tz = null): Carbon
@@ -266,7 +266,7 @@ if (! function_exists('object_get')) {
      * @template T of object
      *
      * @param T $object
-     * @param null|string $key
+     * @param string|null $key
      * @param mixed $default
      * @return mixed|T
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\object_get` instead.
@@ -308,7 +308,7 @@ if (! function_exists('resolve')) {
 if (! function_exists('request')) {
     /**
      * Get an instance of the current request or an input item from the request.
-     * @param null|array|string $key
+     * @param array|string|null $key
      * @param mixed $default
      * @return array|mixed|RequestInterface
      * @throws TypeError
@@ -324,7 +324,7 @@ if (! function_exists('response')) {
     /**
      * Return a new response from the application.
      *
-     * @param null|array|string $content
+     * @param array|string|null $content
      * @param int $status
      * @return PsrResponseInterface|ResponseInterface
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\response` instead.
@@ -341,7 +341,7 @@ if (! function_exists('session')) {
      *
      * If an array is passed as the key, we will assume you want to set an array of values.
      *
-     * @param null|array|string $key
+     * @param array|string|null $key
      * @param mixed $default
      * @return mixed|SessionInterface
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\session` instead.
@@ -356,7 +356,7 @@ if (! function_exists('str')) {
     /**
      * Get a new stringable object from the given string.
      *
-     * @param null|string $string
+     * @param string|null $string
      * @return mixed|Stringable
      * @deprecated since 3.1, use `\Hyperf\Stringable\str` instead.
      */
@@ -370,7 +370,7 @@ if (! function_exists('today')) {
     /**
      * Create a new Carbon instance for the current date.
      *
-     * @param null|\DateTimeZone|string $tz
+     * @param \DateTimeZone|string|null $tz
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\today` instead.
      */
     function today($tz = null): Carbon
