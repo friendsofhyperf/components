@@ -10,7 +10,30 @@ env:
   PHP_CS_FIXER_IGNORE_ENV: 1
 
 jobs:
-  ci:
+  cs-fix:
+    name: PHP CS Fixer on PHP ${{ matrix.php }}
+    runs-on: "${{ matrix.os }}"
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+        php: ['8.1']
+      max-parallel: 20
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: redis, pdo, pdo_mysql, bcmath, swoole
+          tools: phpize
+          coverage: none
+      - name: Setup Packages
+        run: composer update -o
+      - name: Run Cs Fixer
+        run: vendor/bin/php-cs-fixer fix src --dry-run --diff --verbose
+  tests:
     name: Test on PHP ${{ matrix.php }} with Swoole ${{ matrix.swoole }}
     runs-on: "${{ matrix.os }}"
     strategy:
@@ -43,8 +66,8 @@ jobs:
         if: matrix.php == '8.0'
       - name: Setup Packages
         run: composer update -o
-      - name: Run Cs Fixer
-        run: vendor/bin/php-cs-fixer fix src --dry-run
+      # - name: Run Cs Fixer
+      #   run: vendor/bin/php-cs-fixer fix src --dry-run
       - name: Run Analyse
         run: composer analyse src
       - name: Run Test Cases
