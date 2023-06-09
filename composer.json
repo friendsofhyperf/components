@@ -70,7 +70,7 @@
     },
     "require-dev": {
         "friendsofhyperf/rector": "dev-main",
-        "friendsofphp/php-cs-fixer": "^3.0",
+        "friendsofphp/php-cs-fixer": "^3.17.0",
         "hashids/hashids": "^4.1|^5.0",
         "hyperf/etcd": "~3.1.0",
         "hyperf/ide-helper": "~3.1.0",
