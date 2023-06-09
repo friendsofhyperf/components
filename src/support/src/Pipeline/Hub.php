@@ -54,7 +54,7 @@ class Hub implements HubInterface
      * Send an object through one of the available pipelines.
      *
      * @param mixed $object
-     * @param null|string $pipeline
+     * @param string|null $pipeline
      * @return mixed
      */
     public function pipe($object, $pipeline = null)

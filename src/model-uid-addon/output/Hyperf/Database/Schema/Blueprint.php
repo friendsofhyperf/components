@@ -36,7 +36,7 @@ class Blueprint
      * Create a new ULID column on the table.
      *
      * @param string $column
-     * @param null|int $length
+     * @param int|null $length
      * @return ColumnDefinition
      */
     public function ulid($column = 'ulid', $length = 26)
@@ -47,7 +47,7 @@ class Blueprint
      * Create a new ULID column on the table with a foreign key constraint.
      *
      * @param string $column
-     * @param null|int $length
+     * @param int|null $length
      * @return ForeignIdColumnDefinition
      */
     public function foreignUlid($column, $length = 26)

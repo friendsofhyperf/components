@@ -22,7 +22,7 @@ use function Hyperf\Tappable\tap;
 class SentrySdk
 {
     /**
-     * @var null|HubInterface The current hub
+     * @var HubInterface|null The current hub
      */
     private static $currentHub;
 

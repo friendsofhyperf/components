@@ -50,8 +50,8 @@ trait HasRelationships
      * Define a one-to-one relationship.
      *
      * @param string $related
-     * @param null|array|string $foreignKey
-     * @param null|array|string $localKey
+     * @param array|string|null $foreignKey
+     * @param array|string|null $localKey
      *
      * @return \FriendsOfHyperf\Compoships\Database\Eloquent\Relations\HasOne
      */
@@ -84,8 +84,8 @@ trait HasRelationships
      * Define a one-to-many relationship.
      *
      * @param string $related
-     * @param null|array|string $foreignKey
-     * @param null|array|string $localKey
+     * @param array|string|null $foreignKey
+     * @param array|string|null $localKey
      *
      * @return \FriendsOfHyperf\Compoships\Database\Eloquent\Relations\HasMany
      */
@@ -118,8 +118,8 @@ trait HasRelationships
      * Define an inverse one-to-one or many relationship.
      *
      * @param string $related
-     * @param null|array|string $foreignKey
-     * @param null|array|string $ownerKey
+     * @param array|string|null $foreignKey
+     * @param array|string|null $ownerKey
      * @param string $relation
      *
      * @return \FriendsOfHyperf\Compoships\Database\Eloquent\Relations\BelongsTo

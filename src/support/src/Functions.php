@@ -20,7 +20,7 @@ use function Hyperf\Support\value;
  *
  * @param array|int $times
  * @param Closure|int $sleepMilliseconds
- * @param null|callable $when
+ * @param callable|null $when
  * @return mixed
  *
  * @throws Exception

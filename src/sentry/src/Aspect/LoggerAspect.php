@@ -43,7 +43,7 @@ class LoggerAspect extends AbstractAspect
             $level = $level instanceof UnitEnum ? (int) $level->value : (int) $level;
             $message = $proceedingJoinPoint->arguments['keys']['message'];
             $context = $proceedingJoinPoint->arguments['keys']['context'];
-            /** @var null|DateTimeImmutable $datetime */
+            /** @var DateTimeImmutable|null $datetime */
             $datetime = $proceedingJoinPoint->arguments['keys']['datetime'];
 
             if (isset($context['no_aspect']) && $context['no_aspect'] === true) {

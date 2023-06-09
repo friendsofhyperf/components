@@ -14,7 +14,7 @@ use Hashids\Hashids;
 use Hyperf\Database\Model\Model;
 
 /**
- * @method null|Model findByHashid($hashid)
+ * @method Model|null findByHashid($hashid)
  * @method Model findByHashidOrFail($hashid)
  */
 trait HasHashid
@@ -33,7 +33,7 @@ trait HasHashid
      * Decode the hashid to the id.
      *
      * @param string $hashid
-     * @return null|int
+     * @return int|null
      */
     public function hashidToId($hashid)
     {
@@ -44,7 +44,7 @@ trait HasHashid
      * Encode an id to its equivalent hashid.
      *
      * @param string $id
-     * @return null|string
+     * @return string|null
      */
     public function idToHashid($id)
     {
@@ -74,7 +74,7 @@ trait HasHashid
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     protected function getHashidAttribute()
     {

@@ -29,7 +29,7 @@ interface RequestInterface
      *
      * Returns true when value is "1", "true", "on", and "yes". Otherwise, returns false.
      *
-     * @param null|string $key
+     * @param string|null $key
      * @param bool $default
      */
     public function boolean($key = null, $default = false): bool;
@@ -37,9 +37,9 @@ interface RequestInterface
     /**
      * Retrieve input from the request as a collection.
      *
-     * @param null|array|string $key
+     * @param array|string|null $key
      */
-    public function collect(null|array|string $key = null): \Hyperf\Collection\Collection;
+    public function collect(array|string|null $key = null): \Hyperf\Collection\Collection;
 
     /**
      * Retrieve input from the request as a Carbon instance.
@@ -147,7 +147,7 @@ interface RequestInterface
      *
      * @param string $key
      * @param class-string<TEnum> $enumClass
-     * @return null|TEnum
+     * @return TEnum|null
      */
     public function enum($key, $enumClass);
 

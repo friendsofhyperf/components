@@ -36,7 +36,7 @@ class ForeignIdColumnDefinition extends ColumnDefinition
     /**
      * Create a foreign key constraint on this column referencing the "id" column of the conventionally related table.
      *
-     * @param null|string $table
+     * @param string|null $table
      * @param string $column
      * @return ForeignKeyDefinition
      */
