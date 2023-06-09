@@ -41,7 +41,7 @@ class BelongsTo extends BaseBelongsTo
     /**
      * Associate the model instance to the given parent.
      *
-     * @param null|int|Model|string $model
+     * @param int|Model|string|null $model
      *
      * @return Model
      */

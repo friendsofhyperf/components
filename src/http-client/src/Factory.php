@@ -31,7 +31,7 @@ use function Hyperf\Tappable\tap;
  * @method PendingRequest asJson()
  * @method PendingRequest asMultipart()
  * @method PendingRequest async()
- * @method PendingRequest attach(array|string $name, resource|string $contents = '', null|string $filename = null, array $headers = [])
+ * @method PendingRequest attach(array|string $name, resource|string $contents = '', string|null $filename = null, array $headers = [])
  * @method PendingRequest baseUrl(string $url)
  * @method PendingRequest beforeSending(callable $callback)
  * @method PendingRequest bodyFormat(string $format)
@@ -60,8 +60,8 @@ use function Hyperf\Tappable\tap;
  * @method PendingRequest throwUnless($condition)
  * @method array pool(callable $callback)
  * @method Response delete(string $url, array $data = [])
- * @method Response get(string $url, null|array|string $query = null)
- * @method Response head(string $url, null|array|string $query = null)
+ * @method Response get(string $url, array|string|null $query = null)
+ * @method Response head(string $url, array|string|null $query = null)
  * @method Response patch(string $url, array $data = [])
  * @method Response post(string $url, array $data = [])
  * @method Response put(string $url, array $data = [])
@@ -78,7 +78,7 @@ class Factory
     /**
      * The event dispatcher implementation.
      *
-     * @var null|EventDispatcherInterface
+     * @var EventDispatcherInterface|null
      */
     protected $dispatcher;
 
@@ -148,7 +148,7 @@ class Factory
     /**
      * Create a new response instance for use during stubbing.
      *
-     * @param null|array|string $body
+     * @param array|string|null $body
      * @param int $status
      * @param array $headers
      * @return \GuzzleHttp\Promise\PromiseInterface
@@ -179,7 +179,7 @@ class Factory
     /**
      * Register a stub callable that will intercept requests and be able to return stub responses.
      *
-     * @param null|array|callable $callback
+     * @param array|callable|null $callback
      * @return $this
      */
     public function fake($callback = null)
@@ -396,7 +396,7 @@ class Factory
     /**
      * Get the current event dispatcher implementation.
      *
-     * @return null|EventDispatcherInterface
+     * @return EventDispatcherInterface|null
      */
     public function getDispatcher()
     {

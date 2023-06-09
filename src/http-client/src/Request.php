@@ -145,8 +145,8 @@ class Request implements ArrayAccess
      * Determine if the request contains the given file.
      *
      * @param string $name
-     * @param null|string $value
-     * @param null|string $filename
+     * @param string|null $value
+     * @param string|null $filename
      * @return bool
      */
     public function hasFile($name, $value = null, $filename = null)

@@ -44,7 +44,7 @@ class Sleep
     /**
      * The pending duration to sleep.
      *
-     * @var null|float|int
+     * @var float|int|null
      */
     protected $pending;
 

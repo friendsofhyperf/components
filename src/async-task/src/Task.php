@@ -29,7 +29,7 @@ use function Hyperf\Coroutine\go;
 class Task
 {
     /**
-     * @var null|CoHttpServer|CoServer|Server
+     * @var CoHttpServer|CoServer|Server|null
      */
     public static $server;
 

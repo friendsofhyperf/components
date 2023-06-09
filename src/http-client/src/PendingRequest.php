@@ -48,7 +48,7 @@ class PendingRequest
     /**
      * The factory instance.
      *
-     * @var null|Factory
+     * @var Factory|null
      */
     protected $factory;
 
@@ -111,7 +111,7 @@ class PendingRequest
     /**
      * The transfer stats for the request.
      *
-     * @var null|\GuzzleHttp\TransferStats
+     * @var \GuzzleHttp\TransferStats|null
      */
     protected $transferStats;
 
@@ -160,7 +160,7 @@ class PendingRequest
     /**
      * The callback that will determine if the request should be retried.
      *
-     * @var null|callable
+     * @var callable|null
      */
     protected $retryWhenCallback;
 
@@ -174,7 +174,7 @@ class PendingRequest
     /**
      * The stub callables that will handle requests.
      *
-     * @var null|Collection
+     * @var Collection|null
      */
     protected $stubCallbacks;
 
@@ -209,7 +209,7 @@ class PendingRequest
     /**
      * The sent request object, if a request has been made.
      *
-     * @var null|Request
+     * @var Request|null
      */
     protected $request;
 
@@ -307,7 +307,7 @@ class PendingRequest
      *
      * @param array|string $name
      * @param resource|string $contents
-     * @param null|string $filename
+     * @param string|null $filename
      * @return $this
      */
     public function attach($name, $contents = '', $filename = null, array $headers = [])
@@ -734,7 +734,7 @@ class PendingRequest
     /**
      * Issue a GET request to the given URL.
      *
-     * @param null|array|string $query
+     * @param array|string|null $query
      * @return Response
      */
     public function get(string $url, $query = null)
@@ -747,7 +747,7 @@ class PendingRequest
     /**
      * Issue a HEAD request to the given URL.
      *
-     * @param null|array|string $query
+     * @param array|string|null $query
      * @return Response
      */
     public function head(string $url, $query = null)
@@ -1115,7 +1115,7 @@ class PendingRequest
     /**
      * Retrieve the pending request promise.
      *
-     * @return null|\GuzzleHttp\Promise\PromiseInterface
+     * @return \GuzzleHttp\Promise\PromiseInterface|null
      */
     public function getPromise()
     {

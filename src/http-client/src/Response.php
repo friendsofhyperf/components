@@ -37,7 +37,7 @@ class Response implements ArrayAccess
     /**
      * The transfer stats for the request.
      *
-     * @var null|\GuzzleHttp\TransferStats
+     * @var \GuzzleHttp\TransferStats|null
      */
     public $transferStats;
 
@@ -102,7 +102,7 @@ class Response implements ArrayAccess
     /**
      * Get the JSON decoded body of the response as an array or scalar value.
      *
-     * @param null|string $key
+     * @param string|null $key
      * @param mixed $default
      * @return mixed
      */
@@ -122,7 +122,7 @@ class Response implements ArrayAccess
     /**
      * Get the JSON decoded body of the response as an object.
      *
-     * @return null|object
+     * @return object|null
      */
     public function object()
     {
@@ -132,7 +132,7 @@ class Response implements ArrayAccess
     /**
      * Get the JSON decoded body of the response as a collection.
      *
-     * @param null|string $key
+     * @param string|null $key
      * @return Collection
      */
     public function collect($key = null)
@@ -183,7 +183,7 @@ class Response implements ArrayAccess
     /**
      * Get the effective URI of the response.
      *
-     * @return null|\Psr\Http\Message\UriInterface
+     * @return \Psr\Http\Message\UriInterface|null
      */
     public function effectiveUri()
     {
@@ -299,7 +299,7 @@ class Response implements ArrayAccess
     /**
      * Create an exception if a server or client error occurred.
      *
-     * @return null|RequestException
+     * @return RequestException|null
      */
     public function toException()
     {
