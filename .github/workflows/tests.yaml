@@ -15,7 +15,7 @@ jobs:
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-latest]
         php: ['8.1']
       max-parallel: 20
       fail-fast: false
@@ -66,8 +66,6 @@ jobs:
         if: matrix.php == '8.0'
       - name: Setup Packages
         run: composer update -o
-      # - name: Run Cs Fixer
-      #   run: vendor/bin/php-cs-fixer fix src --dry-run
       - name: Run Analyse
         run: composer analyse src
       - name: Run Test Cases
