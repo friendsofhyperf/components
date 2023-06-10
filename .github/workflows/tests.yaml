@@ -61,9 +61,13 @@ jobs:
         run: |
           php -v
           php --ri swoole
-      - name: Setup pest-plugin-parallel
+      - name: Setup dependencies
         run: |
-          composer require pestphp/pest-plugin-parallel:^1.2.1
+          composer remove --dev --no-install workerman/gateway-worker
+          rm -rf vendor composer.lock
+          composer require --dev --no-install pestphp/pest-plugin-parallel:^1.2.1
+          sed -i 's/{gateway-worker}/gateway-worker/g' phpstan.neon
+          cat phpstan.neon
         if: matrix.php == '8.0'
       - name: Setup Packages
         run: composer update -o

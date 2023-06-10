@@ -86,7 +86,9 @@
         "phpstan/phpstan-deprecation-rules": "^1.1",
         "swoole/ide-helper": "dev-master",
         "swow/swow": "dev-develop",
-        "voku/portable-ascii": "^1.4|^1.5"
+        "voku/portable-ascii": "^1.4|^1.5",
+        "workerman/gateway-worker": "dev-master as 4.0.0",
+        "workerman/gatewayclient": "^3.0.13"
     },
     "replace": {
         "friendsofhyperf/access-log": "*",
@@ -103,6 +105,7 @@
         "friendsofhyperf/exception-event": "*",
         "friendsofhyperf/facade": "*",
         "friendsofhyperf/fast-paginate": "*",
+        "friendsofhyperf/gateway-worker": "*",
         "friendsofhyperf/grpc-validation": "*",
         "friendsofhyperf/helpers": "*",
         "friendsofhyperf/http-client": "*",
@@ -152,6 +155,7 @@
             "FriendsOfHyperf\\ExceptionEvent\\": "src/exception-event/src/",
             "FriendsOfHyperf\\Facade\\": "src/facade/src/",
             "FriendsOfHyperf\\FastPaginate\\": "src/fast-paginate/src/",
+            "FriendsOfHyperf\\GatewayWorker\\": "src/gateway-worker/src/",
             "FriendsOfHyperf\\GrpcValidation\\": "src/grpc-validation/src/",
             "FriendsOfHyperf\\Helpers\\": "src/helpers/src/",
             "FriendsOfHyperf\\Http\\Client\\": "src/http-client/src/",
@@ -197,6 +201,7 @@
                 "FriendsOfHyperf\\ExceptionEvent\\ConfigProvider",
                 "FriendsOfHyperf\\Facade\\ConfigProvider",
                 "FriendsOfHyperf\\FastPaginate\\ConfigProvider",
+                "FriendsOfHyperf\\GatewayWorker\\ConfigProvider",
                 "FriendsOfHyperf\\GrpcValidation\\ConfigProvider",
                 "FriendsOfHyperf\\Helpers\\ConfigProvider",
                 "FriendsOfHyperf\\Http\\Logger\\ConfigProvider",

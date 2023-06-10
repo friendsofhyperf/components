@@ -6,8 +6,8 @@
 #   - vendor/phpstan/phpstan-deprecation-rules/rules.neon
 parameters:
   excludePaths:
-    - 'src/macros/output/*'
-    - 'src/model-uid-addon/output/*'
+    - 'src/*/output/*'
+    - 'src/{gateway-worker}/*'
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     # - '#Unsafe usage of new static\(\)#'
