@@ -61,7 +61,7 @@ jobs:
         run: |
           php -v
           php --ri swoole
-      - name: Setup dependencies
+      - name: Setup Dependencies
         run: |
           composer remove --dev --no-install workerman/gateway-worker
           rm -rf vendor composer.lock
