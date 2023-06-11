@@ -61,13 +61,16 @@ jobs:
         run: |
           php -v
           php --ri swoole
-      - name: Setup pest-plugin-parallel
+      - name: Setup Dependencies
         run: |
-          composer require pestphp/pest-plugin-parallel:^1.2.1
+          composer require --dev --no-install pestphp/pest-plugin-parallel:^1.2.1
         if: matrix.php == '8.0'
       - name: Setup Packages
-        run: composer update -o
+        run: |
+          composer update -o
       - name: Run Analyse
-        run: composer analyse src
+        run: |
+          composer analyse src
       - name: Run Test Cases
-        run: php vendor/bin/pest --parallel
+        run: |
+          php vendor/bin/pest --parallel
