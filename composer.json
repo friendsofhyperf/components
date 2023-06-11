@@ -87,7 +87,7 @@
         "swoole/ide-helper": "dev-master",
         "swow/swow": "dev-develop",
         "voku/portable-ascii": "^1.4|^1.5",
-        "workerman/gateway-worker": "dev-master as 4.0.0",
+        "workerman/gateway-worker": "^3.0.0|dev-master as 4.0.0",
         "workerman/gatewayclient": "^3.0.13"
     },
     "replace": {

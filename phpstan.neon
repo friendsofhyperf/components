@@ -7,7 +7,7 @@
 parameters:
   excludePaths:
     - 'src/*/output/*'
-    - 'src/{gateway-worker}/*'
+    - 'src/gateway-worker/publish/gatewayworker.php'
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     # - '#Unsafe usage of new static\(\)#'
