@@ -1,13 +1,12 @@
 {
-    "name": "friendsofhyperf/gateway-worker",
-    "description": "The gateway-worker component for Hyperf.",
+    "name": "friendsofhyperf/openai-client",
+    "description": "The openai client component for Hyperf.",
     "type": "library",
     "keywords": [
         "hyperf",
-        "gateway-worker",
-        "websocket"
+        "openai"
     ],
-    "homepage": "https://github.com/friendsofhyperf/gateway-worker",
+    "homepage": "https://github.com/friendsofhyperf/openai-client",
     "license": "MIT",
     "authors": [
         {
@@ -17,24 +16,19 @@
     ],
     "require": {
         "php": ">=8.1",
-        "hyperf/command": "~3.1.0",
         "hyperf/config": "~3.1.0",
-        "hyperf/engine-swow": "^2.8.3",
-        "hyperf/event": "~3.1.0",
-        "hyperf/framework": "~3.1.0",
-        "hyperf/macroable": "~3.1.0",
-        "hyperf/support": "~3.1.0",
-        "workerman/gateway-worker": "dev-master as 4.0.0",
-        "workerman/gatewayclient": "^3.0.13"
+        "hyperf/di": "~3.1.0",
+        "hyperf/guzzle": "~3.1.0",
+        "openai-php/client": "^0.5.1"
     },
     "autoload": {
         "psr-4": {
-            "FriendsOfHyperf\\GatewayWorker\\": "src/"
+            "FriendsOfHyperf\\OpenAi\\": "src/"
         }
     },
     "extra": {
         "hyperf": {
-            "config": "FriendsOfHyperf\\GatewayWorker\\ConfigProvider"
+            "config": "FriendsOfHyperf\\OpenAi\\ConfigProvider"
         },
         "branch-alias": {
             "dev-main": "3.1-dev"
@@ -43,6 +37,8 @@
     "config": {
         "sort-packages": true
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "support": {
         "issues": "https://github.com/friendsofhyperf/components/issues",
         "source": "https://github.com/friendsofhyperf/components"

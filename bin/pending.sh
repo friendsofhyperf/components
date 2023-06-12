@@ -26,8 +26,11 @@ function pending()
     echo "Copying .gitattributes to ${REPO}"
     cp -rf bin/stubs/.gitattributes src/$REPO
 
-    echo "Copying LICENSE to ${REPO}"
-    cp -rf ./LICENSE src/$REPO
+    # if the LICENSE not exists, copy it
+    if [[ ! -f src/$REPO/LICENSE ]]; then
+        echo "Copying LICENSE to ${REPO}"
+        cp -rf ./LICENSE src/$REPO
+    fi
 
     return
 }

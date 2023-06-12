@@ -51,6 +51,15 @@ foreach ($files as $file) {
     $composerJson->extra->{'branch-alias'} = [
         'dev-main' => '3.1-dev',
     ];
+    if (isset($composerJson->{'require-dev'})) {
+        unset($composerJson->{'require-dev'});
+    }
+    if (isset($composerJson->{'autoload-dev'})) {
+        unset($composerJson->{'autoload-dev'});
+    }
+    if (isset($composerJson->scripts)) {
+        unset($composerJson->scripts);
+    }
 
     file_put_contents(
         $file,
