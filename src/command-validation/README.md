@@ -9,7 +9,7 @@ The command validation component for Hyperf.
 ## Installation
 
 ```base
-composer require friendsofhyperf/command-validation:^3.0
+composer require friendsofhyperf/command-validation
 ```
 
 ## Usage

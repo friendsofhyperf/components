@@ -9,7 +9,7 @@ The HTTP Client component for Hyperf, from Laravel.
 ## Installation
 
 ```bash
-composer require friendsofhyperf/http-client:^3.0
+composer require friendsofhyperf/http-client
 ```
 
 ## Usage
