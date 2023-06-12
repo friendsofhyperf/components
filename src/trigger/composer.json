@@ -1,0 +1,55 @@
+{
+    "name": "friendsofhyperf/trigger",
+    "description": "The MySQL Trigger component for Hyperf.",
+    "type": "library",
+    "require": {
+        "php": ">=8.0.0",
+        "friendsofhyperf/command-signals": "~3.0.0",
+        "hyperf/collection": "~3.0.0",
+        "hyperf/command": "~3.0.0",
+        "hyperf/conditionable": "~3.0.0",
+        "hyperf/context": "~3.0.0",
+        "hyperf/coordinator": "~3.0.0",
+        "hyperf/coroutine": "~3.0.0",
+        "hyperf/di": "~3.0.0",
+        "hyperf/event": "~3.0.0",
+        "hyperf/process": "~3.0.0",
+        "hyperf/stringable": "~3.0.0",
+        "hyperf/support": "~3.0.0",
+        "hyperf/tappable": "~3.0.0",
+        "moln/php-mysql-replication": "^1.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Trigger\\": "src"
+        }
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Trigger\\ConfigProvider"
+        }
+    },
+    "suggest": {
+        "hyperf/redis": "Required to use Redis client.",
+        "hyperf/signal": "Required to use Signal manager."
+    },
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    }
+}
