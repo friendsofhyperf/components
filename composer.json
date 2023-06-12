@@ -55,6 +55,7 @@
         "hyperf/view-engine": "~3.0.0",
         "laravel/serializable-closure": "^1.0",
         "league/commonmark": "^1.3|^2.0.2",
+        "moln/php-mysql-replication": "^1.2",
         "nesbot/carbon": "^2.0",
         "nunomaduro/termwind": "^1.13",
         "openai-php/client": "^0.5.1",
@@ -128,6 +129,7 @@
         "friendsofhyperf/sentry": "*",
         "friendsofhyperf/support": "*",
         "friendsofhyperf/tinker": "*",
+        "friendsofhyperf/trigger": "*",
         "friendsofhyperf/validated-dto": "*"
     },
     "autoload": {
@@ -179,6 +181,7 @@
             "FriendsOfHyperf\\Sentry\\": "src/sentry/src/",
             "FriendsOfHyperf\\Support\\": "src/support/src/",
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
+            "FriendsOfHyperf\\Trigger\\": "src/trigger/src/",
             "FriendsOfHyperf\\ValidatedDTO\\": "src/validated-dto/src/",
             "Friendsofhyperf\\Encryption\\": "src/encryption/src/"
         }
@@ -225,6 +228,7 @@
                 "FriendsOfHyperf\\Sentry\\ConfigProvider",
                 "FriendsOfHyperf\\Support\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
+                "FriendsOfHyperf\\Trigger\\ConfigProvider",
                 "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider",
                 "Friendsofhyperf\\Encryption\\ConfigProvider"
             ]
