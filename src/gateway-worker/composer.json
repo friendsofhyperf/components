@@ -24,7 +24,7 @@
         "hyperf/framework": "~3.0.0",
         "hyperf/macroable": "~3.0.0",
         "hyperf/support": "~3.0.0",
-        "workerman/gateway-worker": "dev-master as 4.0.0",
+        "workerman/gateway-worker": "^4.0.0",
         "workerman/gatewayclient": "^3.0.13"
     },
     "autoload": {
