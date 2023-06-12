@@ -1,0 +1,43 @@
+{
+    "name": "friendsofhyperf/openai-client",
+    "description": "The openai client component for Hyperf.",
+    "type": "library",
+    "keywords": [
+        "hyperf",
+        "openai"
+    ],
+    "homepage": "https://github.com/friendsofhyperf/openai-client",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "hyperf/config": "~3.0.0",
+        "hyperf/di": "~3.0.0",
+        "hyperf/guzzle": "~3.0.0",
+        "openai-php/client": "^0.5.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\OpenAi\\": "src/"
+        }
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\OpenAi\\ConfigProvider"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    }
+}

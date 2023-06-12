@@ -1,0 +1,68 @@
+#!/usr/bin/env php
+<?php
+/**
+ * This file is part of friendsofhyperf/components.
+ *
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @contact  huangdijia@gmail.com
+ */
+use Symfony\Component\Finder\Finder;
+
+foreach ([__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', __DIR__ . '/vendor/autoload.php'] as $file) {
+    if (file_exists($file)) {
+        require $file;
+        break;
+    }
+}
+
+$files = Finder::create()
+    ->in(__DIR__ . '/../src')
+    ->name('composer.json')
+    ->files();
+
+$require = [];
+$autoload = [];
+$autoloadFiles = [];
+$autoloadDev = [
+    'FriendsOfHyperf\\Tests\\' => 'tests/',
+];
+$configProviders = [];
+$replaces = [];
+
+foreach ($files as $file) {
+    $component = basename(dirname($file));
+    $composerJson = json_decode(file_get_contents($file));
+
+    // foreach ($composerJson->require as $package => &$version) {
+    //     if ($package == 'hyperf/engine') {
+    //         continue;
+    //     }
+    //     if (strpos($package, 'hyperf/') === 0) {
+    //         $version = '~3.1.0';
+    //     }
+    // }
+
+    $composerJson->license = 'MIT';
+    $composerJson->support = [
+        'issues' => 'https://github.com/friendsofhyperf/components/issues',
+        'source' => 'https://github.com/friendsofhyperf/components',
+    ];
+    if (isset($composerJson->extra->{'branch-alias'})) {
+        unset($composerJson->extra->{'branch-alias'});
+    }
+    if (isset($composerJson->{'require-dev'})) {
+        unset($composerJson->{'require-dev'});
+    }
+    if (isset($composerJson->{'autoload-dev'})) {
+        unset($composerJson->{'autoload-dev'});
+    }
+    if (isset($composerJson->scripts)) {
+        unset($composerJson->scripts);
+    }
+
+    file_put_contents(
+        $file,
+        json_encode($composerJson, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT) . PHP_EOL
+    );
+}
