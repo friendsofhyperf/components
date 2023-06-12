@@ -39,5 +39,9 @@
     },
     "config": {
         "sort-packages": true
+    },
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
     }
 }

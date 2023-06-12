@@ -8,6 +8,7 @@ parameters:
   excludePaths:
     - 'src/*/output/*'
     - 'src/gateway-worker/publish/gatewayworker.php'
+    - 'src/{openai-client}/*'
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     # - '#Unsafe usage of new static\(\)#'

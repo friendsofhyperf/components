@@ -63,7 +63,11 @@ jobs:
           php --ri swoole
       - name: Setup Dependencies
         run: |
+          composer remove --no-update openai-php/client
+          rm -rf vendor composer.lock
           composer require --dev --no-install pestphp/pest-plugin-parallel:^1.2.1
+          sed -i 's/{openai-client}/openai-client/g' phpstan.neon
+          cat phpstan.neon
         if: matrix.php == '8.0'
       - name: Setup Packages
         run: |
