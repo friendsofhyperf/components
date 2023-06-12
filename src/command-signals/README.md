@@ -15,7 +15,7 @@ The signals component for Hyperf Command.
 ## Installation
 
 ```shell
-composer require friendsofhyperf/command-signals:^0.4.0
+composer require friendsofhyperf/command-signals
 ```
 
 ## Usage

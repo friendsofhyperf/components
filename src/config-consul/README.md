@@ -9,7 +9,7 @@ The consul config component for Hyperf.
 ## Installation
 
 ```shell
-composer require friendsofhyperf/config-consul:^3.0
+composer require friendsofhyperf/config-consul
 ```
 
 ## Configure

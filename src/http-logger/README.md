@@ -11,7 +11,7 @@ The http logger component for Hyperf.
 - Request
 
 ```bash
-composer require "friendsofhyperf/http-logger:^3.0"
+composer require "friendsofhyperf/http-logger
 ```
 
 - Publish
