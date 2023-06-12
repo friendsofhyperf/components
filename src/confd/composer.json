@@ -3,10 +3,12 @@
     "description": "The confd component for Hyperf.",
     "type": "library",
     "license": "MIT",
-    "authors": [{
-        "name": "huangdijia",
-        "email": "huangdijia@gmail.com"
-    }],
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
     "require": {
         "hyperf/codec": "~3.0.0",
         "hyperf/collection": "~3.0.0",
@@ -33,5 +35,9 @@
     "suggest": {
         "hyperf/nacos": "For nacos driver.",
         "hyperf/etcd": "For etcd driver."
+    },
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
     }
 }

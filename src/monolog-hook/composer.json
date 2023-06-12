@@ -3,10 +3,12 @@
     "description": "The monolog hook for Hyperf.",
     "type": "library",
     "license": "MIT",
-    "authors": [{
-        "name": "Huangdijia",
-        "email": "huangdijia@gmail.com"
-    }],
+    "authors": [
+        {
+            "name": "Huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\MonologHook\\": "src/"
@@ -24,5 +26,9 @@
     "config": {
         "sort-packages": true
     },
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    }
 }

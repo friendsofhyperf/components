@@ -3,10 +3,12 @@
     "description": "The signals component for Hyperf Command.",
     "type": "library",
     "license": "MIT",
-    "authors": [{
-        "name": "huangdijia",
-        "email": "huangdijia@gmail.com"
-    }],
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
     "require": {
         "php": "^8.0",
         "hyperf/context": "~3.0.16",
@@ -30,5 +32,9 @@
         "hyperf": {
             "config": "FriendsOfHyperf\\CommandSignals\\ConfigProvider"
         }
+    },
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
     }
 }

@@ -2,7 +2,12 @@
     "name": "friendsofhyperf/validated-dto",
     "description": "The Data Transfer Objects with validation for Hyperf.",
     "type": "library",
-    "keywords": ["hyperf", "dto", "data transfer object", "validation"],
+    "keywords": [
+        "hyperf",
+        "dto",
+        "data transfer object",
+        "validation"
+    ],
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -29,5 +34,9 @@
         "hyperf": {
             "config": "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider"
         }
+    },
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
     }
 }
