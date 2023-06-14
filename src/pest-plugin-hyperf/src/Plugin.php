@@ -47,10 +47,13 @@ class Plugin implements HandlesArguments
             throw new InvalidOption('The coroutine mode is not supported when running in parallel.');
         }
 
-        $vendorDir = (fn () => $this->vendorDir)->call(Composer::getLoader());
-        defined('BASE_PATH') or define('BASE_PATH', dirname($vendorDir, 1));
+        if ($this->hasArgument('--scan', $arguments)) {
+            $vendorDir = (fn () => $this->vendorDir)->call(Composer::getLoader());
+            defined('BASE_PATH') or define('BASE_PATH', dirname($vendorDir, 1));
+            ClassLoader::init();
 
-        ClassLoader::init();
+            $arguments = $this->popArgument('--scan', $arguments);
+        }
 
         $code = 0;
         $output = Container::getInstance()->get(OutputInterface::class);
