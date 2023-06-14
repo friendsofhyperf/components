@@ -70,7 +70,9 @@ class Plugin implements HandlesArguments
             CoordinatorManager::until(Constants::WORKER_EXIT)->resume();
         });
 
-        exit($code);
+        $kernel->shutdown();
+
+        return $code;
     }
 
     private function prepend(array $arguments): array
