@@ -14,4 +14,6 @@ composer require friendsofhyperf/pest-plugin-hyperf --dev
 
 ```shell
 php vendor/bin/pest --coroutine
+# or
+php vendor/bin/pest --prepend test/bootstrap.php --coroutine
 ```

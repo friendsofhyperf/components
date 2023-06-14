@@ -12,8 +12,6 @@ namespace Pest\Hyperf;
 
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
-use Hyperf\Di\ClassLoader;
-use Hyperf\Support\Composer;
 use Pest\Contracts\Plugins\HandlesArguments;
 use Pest\Exceptions\InvalidOption;
 use Pest\Kernel;
@@ -33,6 +31,8 @@ class Plugin implements HandlesArguments
 
     public function handleArguments(array $arguments): array
     {
+        $arguments = $this->prepend($arguments);
+
         if (Coroutine::getCid() > 0) {
             return $arguments;
         }
@@ -41,20 +41,17 @@ class Plugin implements HandlesArguments
             return $arguments;
         }
 
-        $arguments = $this->popArgument('--coroutine', $arguments);
-
         if ($this->hasArgument('--parallel', $arguments) || $this->hasArgument('-p', $arguments)) {
             throw new InvalidOption('The coroutine mode is not supported when running in parallel.');
         }
 
-        if ($this->hasArgument('--scan', $arguments)) {
-            $vendorDir = (fn () => $this->vendorDir)->call(Composer::getLoader());
-            defined('BASE_PATH') or define('BASE_PATH', dirname($vendorDir, 1));
-            ClassLoader::init();
+        $arguments = $this->popArgument('--coroutine', $arguments);
 
-            $arguments = $this->popArgument('--scan', $arguments);
-        }
+        exit($this->runInCoroutine($arguments));
+    }
 
+    private function runInCoroutine(array $arguments): int
+    {
         $code = 0;
         $output = Container::getInstance()->get(OutputInterface::class);
         $kernel = new Kernel(
@@ -74,5 +71,30 @@ class Plugin implements HandlesArguments
         });
 
         exit($code);
+    }
+
+    private function prepend(array $arguments): array
+    {
+        $prepend = null;
+        foreach ($arguments as $key => $argument) {
+            if (str_starts_with($argument, '--prepend=')) {
+                $prepend = explode('=', $argument, 2)[1];
+                unset($arguments[$key]);
+                break;
+            }
+            if (str_starts_with($argument, '--prepend')) {
+                if (isset($arguments[$key + 1])) {
+                    $prepend = $arguments[$key + 1];
+                    unset($arguments[$key + 1]);
+                }
+                unset($arguments[$key]);
+            }
+        }
+
+        if ($prepend && file_exists($prepend)) {
+            require_once $prepend;
+        }
+
+        return $arguments;
     }
 }
