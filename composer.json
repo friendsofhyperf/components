@@ -176,7 +176,8 @@
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
             "FriendsOfHyperf\\Trigger\\": "src/trigger/src/",
             "FriendsOfHyperf\\ValidatedDTO\\": "src/validated-dto/src/",
-            "Friendsofhyperf\\Encryption\\": "src/encryption/src/"
+            "Friendsofhyperf\\Encryption\\": "src/encryption/src/",
+            "Pest\\Hyperf\\": "src/pest-plugin-hyperf/src/"
         }
     },
     "autoload-dev": {
