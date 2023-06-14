@@ -15,5 +15,25 @@ composer require friendsofhyperf/pest-plugin-hyperf --dev
 ```shell
 php vendor/bin/pest --coroutine
 # or
-php vendor/bin/pest --prepend test/bootstrap.php --coroutine
+php vendor/bin/pest --prepend test/prepend.php --coroutine
+```
+
+- test/prepend.php
+
+```php
+<?php
+require_once __DIR__ . '/../vendor/autoload.php';
+
+defined('BASE_PATH') or define('BASE_PATH', dirname(__DIR__, 1));
+
+(function () {
+    \Hyperf\Di\ClassLoader::init();
+
+    \Hyperf\Context\ApplicationContext::setContainer(
+        new \Hyperf\Di\Container((new \Hyperf\Di\Definition\DefinitionSourceFactory())())
+    );
+    
+    // $container->get(Hyperf\Contract\ApplicationInterface::class);
+})();
+
 ```
