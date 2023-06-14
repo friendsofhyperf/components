@@ -35,6 +35,9 @@
             ]
         }
     },
+    "conflict": {
+        "hyperf/testing": "*"
+    },
     "config": {
         "sort-packages": true
     },
