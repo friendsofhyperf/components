@@ -11,6 +11,8 @@ declare(strict_types=1);
 use function Hyperf\Support\env;
 
 return [
+    'base_uri' => env('OPENAI_BASE_URI', 'api.openai.com/v1'),
     'api_key' => env('OPENAI_API_KEY', ''),
     'organization' => env('OPENAI_ORGANIZATION'),
+    'request_timeout' => (int) env('OPENAI_REQUEST_TIMEOUT', 30),
 ];

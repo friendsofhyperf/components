@@ -21,20 +21,24 @@ final class ClientFactory
 {
     public function __invoke(ContainerInterface $container)
     {
+        $baseUri = config('openai.base_uri', 'api.openai.com/v1');
         $apiKey = config('openai.api_key');
         $organization = config('openai.organization');
+        $timeout = config('openai.request_timeout', 30);
 
         if (! is_string($apiKey) || ($organization !== null && ! is_string($organization))) {
             throw ApiKeyIsMissing::create();
         }
 
+        $httpClient = $container->get(GuzzleClientFactory::class)->create([
+            'timeout' => $timeout,
+        ]);
+
         return OpenAI::factory()
+            ->withBaseUri($baseUri)
             ->withApiKey($apiKey)
             ->withOrganization($organization)
-            ->withBaseUri('api.openai.com/v1')
-            ->withHttpClient(
-                $container->get(GuzzleClientFactory::class)->create()
-            )
+            ->withHttpClient($httpClient)
             ->make();
     }
 }
