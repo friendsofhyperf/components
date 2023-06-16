@@ -1,0 +1,42 @@
+{
+    "name": "friendsofhyperf/pest-plugin-hyperf",
+    "description": "The Pest Hyperf Plugin.",
+    "keywords": [
+        "php",
+        "framework",
+        "pest",
+        "unit",
+        "test",
+        "testing",
+        "plugin"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": "^8.1",
+        "ext-swoole": "*",
+        "hyperf/coordinator": "~3.0.0",
+        "hyperf/di": "~3.0.0",
+        "hyperf/support": "~3.0.0",
+        "pestphp/pest": "^2.5",
+        "pestphp/pest-plugin": "^2.0.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Pest\\Hyperf\\": "src/"
+        }
+    },
+    "extra": {
+        "pest": {
+            "plugins": [
+                "Pest\\Hyperf\\Plugin"
+            ]
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    }
+}
