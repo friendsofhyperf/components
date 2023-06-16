@@ -73,6 +73,7 @@ jobs:
       - name: Setup PHPStan
         run: |
           sed -i 's/{openai-client}/openai-client/g' phpstan.neon
+          sed -i 's/{pest-plugin-hyperf}/pest-plugin-hyperf/g' phpstan.neon
           cat phpstan.neon
         if: matrix.php == '8.0'
       - name: Run Analyse

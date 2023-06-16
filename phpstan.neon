@@ -9,6 +9,7 @@ parameters:
     - 'src/*/output/*'
     - 'src/gateway-worker/publish/gatewayworker.php'
     - 'src/{openai-client}/*'
+    - 'src/{pest-plugin-hyperf}/*'
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     # - '#Unsafe usage of new static\(\)#'
