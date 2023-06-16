@@ -47,10 +47,10 @@ class Plugin implements HandlesArguments
 
         $arguments = $this->popArgument('--coroutine', $arguments);
 
-        exit($this->runInCoroutine($arguments));
+        exit($this->runTestsInCoroutine($arguments));
     }
 
-    private function runInCoroutine(array $arguments): int
+    private function runTestsInCoroutine(array $arguments): int
     {
         $code = 0;
         $output = Container::getInstance()->get(OutputInterface::class);
@@ -64,7 +64,7 @@ class Plugin implements HandlesArguments
         }]);
 
         /* @phpstan-ignore-next-line */
-        \Swoole\Coroutine\run(function () use (&$code, $kernel, $arguments) {
+        \Swoole\Coroutine\run(static function () use (&$code, $kernel, $arguments) {
             $code = $kernel->handle($arguments);
             Timer::clearAll();
             CoordinatorManager::until(Constants::WORKER_EXIT)->resume();
