@@ -8,10 +8,11 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+use Mockery as m;
 use Hyperf\Context\Context;
 use Hyperf\HttpServer\Request;
-use Mockery as m;
 use Psr\Http\Message\ServerRequestInterface;
+use Swow\Psr7\Message\ServerRequestPlusInterface;
 
 uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'request');
 
@@ -22,7 +23,7 @@ afterEach(function () {
 });
 
 test('test only', function () {
-    $psrRequest = mocking(ServerRequestInterface::class)->expect(
+    $psrRequest = mocking(ServerRequestPlusInterface::class)->expect(
         getParsedBody: fn () => ['id' => 1],
         getQueryParams: fn () => [],
     );
@@ -35,7 +36,7 @@ test('test only', function () {
 });
 
 test('test isEmptyString', function () {
-    $psrRequest = mocking(ServerRequestInterface::class)->expect(
+    $psrRequest = mocking(ServerRequestPlusInterface::class)->expect(
         getParsedBody: fn () => ['id' => 1],
         getQueryParams: fn () => [],
     );
