@@ -12,13 +12,11 @@ use FriendsOfHyperf\Cache\Cache;
 use FriendsOfHyperf\Facade\Log;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Logger\LoggerFactory;
-use Mockery as m;
 use Psr\Container\ContainerInterface;
 
 uses()->group('facade');
 
 afterEach(function () {
-    m::close();
 });
 
 test('test Cache Macroable', function () {
@@ -28,13 +26,13 @@ test('test Cache Macroable', function () {
 });
 
 test('test Log Macroable', function () {
-    ApplicationContext::setContainer(
-        mocking(ContainerInterface::class)->expect(
-            get: fn () => mocking(LoggerFactory::class)->expect(
-                get: fn () => mocking(\Psr\Log\LoggerInterface::class)->allows()->info('test')->getMock()
-            )
+    /** @var ContainerInterface $container */
+    $container = mocking(ContainerInterface::class)->expect(
+        get: fn () => mocking(LoggerFactory::class)->expect(
+            get: fn () => mocking(\Psr\Log\LoggerInterface::class)->allows()->info('test')->getMock()
         )
     );
+    ApplicationContext::setContainer($container);
 
     expect(Log::channel('hyperf', 'default'))->toBeInstanceOf(\Psr\Log\LoggerInterface::class);
 

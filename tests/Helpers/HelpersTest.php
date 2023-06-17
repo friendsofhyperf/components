@@ -10,7 +10,6 @@ declare(strict_types=1);
  */
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ApplicationInterface;
-use Mockery as m;
 use Psr\Container\ContainerInterface;
 
 use function FriendsOfHyperf\Helpers\class_namespace;
@@ -21,7 +20,6 @@ use function FriendsOfHyperf\Helpers\preg_replace_array;
 uses(\FriendsOfHyperf\Tests\TestCase::class)->group('helpers');
 
 afterEach(function () {
-    m::close();
 });
 
 test('test ClassNamespace', function () {
@@ -63,15 +61,15 @@ test('test PregReplaceArray', function ($pattern, $replacements, $subject, $expe
 })->with('providesPregReplaceArrayData');
 
 test('test FriendsOfHyperf\Helpers\Command\call', function () {
-    ApplicationContext::setContainer(
-        mocking(ContainerInterface::class)->expect(
-            has: fn () => true,
-            get: fn () => mocking(ApplicationInterface::class)->expect(
-                setAutoExit: fn () => null,
-                run: fn () => 0,
-            )
+    /** @var ContainerInterface $container */
+    $container = mocking(ContainerInterface::class)->expect(
+        has: fn () => true,
+        get: fn () => mocking(ApplicationInterface::class)->expect(
+            setAutoExit: fn () => null,
+            run: fn () => 0,
         )
     );
+    ApplicationContext::setContainer($container);
 
     expect(call('command', ['argument' => 'value']))->toBe(0);
 });

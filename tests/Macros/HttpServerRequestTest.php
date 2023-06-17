@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use Mockery as m;
 use Hyperf\Context\Context;
 use Hyperf\HttpServer\Request;
 use Psr\Http\Message\ServerRequestInterface;
@@ -17,7 +16,6 @@ use Swow\Psr7\Message\ServerRequestPlusInterface;
 uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'request');
 
 afterEach(function () {
-    m::close();
     Context::set(ServerRequestInterface::class, null);
     Context::set('http.request.parsedData', null);
 });

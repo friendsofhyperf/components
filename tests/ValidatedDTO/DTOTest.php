@@ -27,13 +27,16 @@ afterEach(function () {
 test('test BaseValidate', function () {
     $data = ['name' => 'Hyperf', 'age' => 18];
 
-    ApplicationContext::setContainer(
-        m::mock(ContainerInterface::class, [
-            'get' => m::mock(ValidatorFactoryInterface::class, [
-                'make' => m::mock(ValidatorInterface::class, ['fails' => false, 'validated' => $data]),
-            ]),
-        ])
+    /** @var ContainerInterface $container */
+    $container = mocking(ContainerInterface::class)->expect(
+        get: fn () => mocking(ValidatorFactoryInterface::class)->expect(
+            make: fn () => mocking(ValidatorInterface::class)->expect(
+                fails: fn () => false,
+                validated: fn () => $data
+            )
+        )
     );
+    ApplicationContext::setContainer($container);
 
     $dto = UserDTO::fromArray($data);
 
@@ -49,19 +52,19 @@ test('test BaseValidate', function () {
 test('test ValidateWithScene', function () {
     $data = ['foo' => 'Foo', 'bar' => 'Bar'];
 
-    ApplicationContext::setContainer(
-        m::mock(ContainerInterface::class, [
-            'get' => m::mock(ValidatorFactoryInterface::class, [
-                'make' => m::mock(ValidatorInterface::class, function ($mock) use ($data) {
-                    $mock->shouldReceive('fails')->andReturn(false)
-                        ->shouldReceive('validated')->andReturn(
-                            Arr::only($data, ['foo']),
-                            Arr::only($data, ['bar'])
-                        );
-                }),
-            ]),
+    /** @var ContainerInterface $container */
+    $container = m::mock(ContainerInterface::class, [
+        'get' => m::mock(ValidatorFactoryInterface::class, [
+            'make' => m::mock(ValidatorInterface::class, function ($mock) use ($data) {
+                $mock->shouldReceive('fails')->andReturn(false)
+                    ->shouldReceive('validated')->andReturn(
+                        Arr::only($data, ['foo']),
+                        Arr::only($data, ['bar'])
+                    );
+            }),
         ]),
-    );
+    ]);
+    ApplicationContext::setContainer($container);
 
     $dto = FooDTO::fromArray($data, 'foo');
 
@@ -80,16 +83,17 @@ test('test ValidateWithCasting', function () {
         'bar' => new Stringable('Bar'),
     ];
 
-    ApplicationContext::setContainer(
-        m::mock(ContainerInterface::class, [
-            'get' => m::mock(ValidatorFactoryInterface::class, [
-                'make' => m::mock(ValidatorInterface::class, [
-                    'fails' => false,
-                    'validated' => $data,
-                ]),
-            ]),
-        ]),
+    /** @var ContainerInterface $container */
+    $container = mocking(ContainerInterface::class)->expect(
+        get: fn () => mocking(ValidatorFactoryInterface::class)->expect(
+            make: fn () => mocking(ValidatorInterface::class)->expect(
+                fails: fn () => false,
+                validated: fn () => $data
+            )
+        )
     );
+
+    ApplicationContext::setContainer($container);
 
     $dto = BarDTO::fromArray($data);
 

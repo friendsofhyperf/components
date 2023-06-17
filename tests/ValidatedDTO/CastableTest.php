@@ -31,7 +31,6 @@ use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Database\Model\Model;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
-use Mockery as m;
 use Psr\Container\ContainerInterface;
 
 uses()->group('validated-dto');
@@ -41,7 +40,6 @@ beforeEach(function () {
 });
 
 afterEach(function () {
-    m::close();
 });
 
 test('test CastToArray', function () {
@@ -185,13 +183,16 @@ test('test CastToCarbonImmutable', function () {
 });
 
 test('test CastToCollection', function () {
-    ApplicationContext::setContainer(
-        m::mock(ContainerInterface::class, [
-            'get' => m::mock(ValidatorFactoryInterface::class, [
-                'make' => m::mock(ValidatorInterface::class, ['fails' => false, 'validated' => []]),
-            ]),
-        ])
+    /** @var ContainerInterface */
+    $container = mocking(ContainerInterface::class)->expect(
+        get: fn () => mocking(ValidatorFactoryInterface::class)->expect(
+            make: fn () => mocking(ValidatorInterface::class)->expect(
+                fails: fn () => false,
+                validated: fn () => [],
+            ),
+        ),
     );
+    ApplicationContext::setContainer($container);
 
     $castable = new CollectionCast();
 
@@ -242,13 +243,17 @@ test('test CastToCollection', function () {
 });
 
 test('test CastToDTO', function () {
-    ApplicationContext::setContainer(
-        m::mock(ContainerInterface::class, [
-            'get' => m::mock(ValidatorFactoryInterface::class, [
-                'make' => m::mock(ValidatorInterface::class, ['fails' => false, 'validated' => ['name' => 'John Doe', 'age' => 30]]),
-            ]),
-        ])
+    /** @var ContainerInterface $container */
+    $container = mocking(ContainerInterface::class)->expect(
+        get: fn () => mocking(ValidatorFactoryInterface::class)->expect(
+            make: fn () => mocking(ValidatorInterface::class)->expect(
+                fails: fn () => false,
+                validated: fn () => ['name' => 'John Doe', 'age' => 30],
+            ),
+        )
     );
+
+    ApplicationContext::setContainer($container);
 
     $castable = new DTOCast(ValidatedDTOInstance::class);
 
