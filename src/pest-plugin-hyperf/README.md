@@ -4,6 +4,8 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/pest-plugin-hyperf)](https://packagist.org/packages/friendsofhyperf/pest-plugin-hyperf)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/pest-plugin-hyperf)](https://github.com/friendsofhyperf/pest-plugin-hyperf)
 
+> This is a [Pest](https://pestphp.com) plugin that enables your Hyperf project's Pest to run within a Swoole-based coroutine environment.
+
 ## Installation
 
 ```shell
