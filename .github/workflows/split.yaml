@@ -10,6 +10,7 @@ on:
 
 jobs:
   split:
+    name: Split on branch ${{ github.ref }}
     if: github.repository == 'friendsofhyperf/components'
     runs-on: ubuntu-latest
     env:
