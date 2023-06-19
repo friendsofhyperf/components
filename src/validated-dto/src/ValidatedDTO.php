@@ -174,12 +174,12 @@ abstract class ValidatedDTO
         return [];
     }
 
-     /**
-      * Defines the type casting for the properties of the DTO.
-      * @return array<string,Castable>
-      */
-     protected function casts(): array
-     {
-         return [];
-     }
+    /**
+     * Defines the type casting for the properties of the DTO.
+     * @return array<string,Castable>
+     */
+    protected function casts(): array
+    {
+        return [];
+    }
 }
