@@ -17,7 +17,7 @@
         "hyperf/coordinator": "~3.1.0",
         "hyperf/di": "~3.1.0",
         "hyperf/support": "~3.1.0",
-        "pestphp/pest": "^2.5",
+        "pestphp/pest": "^2.8.0",
         "pestphp/pest-plugin": "^2.0.1"
     },
     "autoload": {
