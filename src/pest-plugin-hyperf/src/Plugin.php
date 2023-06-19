@@ -20,9 +20,6 @@ use Pest\Support\Container;
 use Swoole\Coroutine;
 use Swoole\Timer;
 
-/**
- * @property string $vendorDir
- */
 final class Plugin implements HandlesArguments
 {
     use HandleArguments;
@@ -31,19 +28,19 @@ final class Plugin implements HandlesArguments
     {
         $arguments = $this->prepend($arguments);
 
-        if (Coroutine::getCid() > 0) {
+        if (! $this->hasArgument('--coroutine', $arguments)) {
             return $arguments;
         }
 
-        if (! $this->hasArgument('--coroutine', $arguments)) {
+        $arguments = $this->popArgument('--coroutine', $arguments);
+
+        if (Coroutine::getCid() > 0) {
             return $arguments;
         }
 
         if ($this->hasArgument('--parallel', $arguments) || $this->hasArgument('-p', $arguments)) {
             throw new InvalidOption('The [--coroutine] option is not supported when running in parallel.');
         }
-
-        $arguments = $this->popArgument('--coroutine', $arguments);
 
         exit($this->runTestsInCoroutine($arguments));
     }
@@ -54,9 +51,10 @@ final class Plugin implements HandlesArguments
         /** @var Kernel $kernel */
         $kernel = Container::getInstance()->get(Kernel::class);
 
-        Coroutine::set(['hook_flags' => SWOOLE_HOOK_ALL, 'exit_condition' => function () {
-            return Coroutine::stats()['coroutine_num'] === 0;
-        }]);
+        Coroutine::set([
+            'hook_flags' => SWOOLE_HOOK_ALL,
+            'exit_condition' => fn () => Coroutine::stats()['coroutine_num'] === 0,
+        ]);
 
         /* @phpstan-ignore-next-line */
         \Swoole\Coroutine\run(static function () use (&$code, $kernel, $arguments) {
