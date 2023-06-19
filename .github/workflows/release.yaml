@@ -10,6 +10,7 @@ on:
 
 jobs:
   release:
+    name: Release ${{ github.event.inputs.tag }}
     if: github.repository == 'friendsofhyperf/components'
     runs-on: ubuntu-latest
     env:
