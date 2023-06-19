@@ -23,6 +23,8 @@ use function Hyperf\Tappable\tap;
 
 class Console
 {
+    public const ROUTE = BASE_PATH . '/config/console.php';
+
     /**
      * @var ClosureCommand[]
      */

@@ -45,7 +45,7 @@ class RegisterCommandListener implements ListenerInterface
 
     private function registerClosureCommands(): void
     {
-        $route = BASE_PATH . '/config/console.php';
+        $route = Console::ROUTE;
 
         if (! file_exists($route)) {
             return;
