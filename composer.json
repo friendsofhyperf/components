@@ -225,11 +225,6 @@
                 "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider",
                 "Friendsofhyperf\\Encryption\\ConfigProvider"
             ]
-        },
-        "pest": {
-            "plugins": [
-                "Pest\\Hyperf\\Plugin"
-            ]
         }
     },
     "minimum-stability": "dev",

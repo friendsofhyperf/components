@@ -19,6 +19,8 @@ use Mockery as m;
  */
 class TestCase extends \PHPUnit\Framework\TestCase
 {
+    use Traits\RunTestsInCoroutine;
+
     public function __construct($name = null, array $data = [], $dataName = '')
     {
         parent::__construct($name, $data, $dataName);
