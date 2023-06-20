@@ -251,13 +251,11 @@
         "cs-fix": "@php vendor/bin/php-cs-fixer fix $1",
         "json-fix": "@php ./bin/composer-json-fixer",
         "test": "@php vendor/bin/pest",
-        "co-test": "@php bin/co-pest",
         "pending": [
-            "./bin/pending.sh",
+            "./bin/pending-repositories.sh",
             "@php ./bin/pending-composer-json",
             "@php ./bin/composer-json-fixer",
-            "./bin/regenerate-readme.sh > README.md",
-            "@php ./bin/regenerate-pest"
+            "./bin/regenerate-readme.sh > README.md"
         ]
     }
 }
