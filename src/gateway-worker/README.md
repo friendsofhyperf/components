@@ -9,27 +9,27 @@ The gateway-worker component for Hyperf.
 
 ## Installation
 
-~~~bash
+```shell
 composer require friendsofhyperf/gateway-worker
-~~~
+```
 
 publish
 
-~~~bash
+```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/gateway-worker
-~~~
+```
 
 ## Usage
 
-~~~bash
+```shell
 php bin/hyperf.php gateway-worker:serve [start|stop|restart|status|connections|help]
-~~~
+```
 
 for help
 
-~~~bash
+```shell
 php bin/hyperf.php gateway-worker:serve --help
-~~~
+```
 
 ## Cluster
 
@@ -43,6 +43,23 @@ php bin/hyperf.php gateway-worker:serve --help
 
 - In One
 
-~~~bash
+```shell
 php bin/hyperf.php --register --gateway --businessworker
-~~~
+```
+
+## Donate
+
+> If you like them, Buy me a cup of coffee.
+
+| Alipay | WeChat |
+|  ----  | ----  |
+| <img src="https://hdj.me/images/alipay-min.jpg" width="200" height="200" />  | <img src="https://hdj.me/images/wechat-pay-min.jpg" width="200" height="200" /> |
+
+## Contact
+
+- [Twitter](https://twitter.com/huangdijia)
+- [Gmail](mailto:huangdijia@gmail.com)
+
+## License
+
+[MIT](LICENSE)
