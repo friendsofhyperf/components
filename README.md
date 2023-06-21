@@ -46,6 +46,19 @@ The most popular components for Hyperf.
 |[trigger](https://github.com/friendsofhyperf/trigger)|[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/trigger/v)](https://packagist.org/packages/friendsofhyperf/trigger)|[![Total Downloads](https://poser.pugx.org/friendsofhyperf/trigger/downloads)](https://packagist.org/packages/friendsofhyperf/trigger)|[![Monthly Downloads](https://poser.pugx.org/friendsofhyperf/trigger/d/monthly)](https://packagist.org/packages/friendsofhyperf/trigger)||
 |[validated-dto](https://github.com/friendsofhyperf/validated-dto)|[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/validated-dto/v)](https://packagist.org/packages/friendsofhyperf/validated-dto)|[![Total Downloads](https://poser.pugx.org/friendsofhyperf/validated-dto/downloads)](https://packagist.org/packages/friendsofhyperf/validated-dto)|[![Monthly Downloads](https://poser.pugx.org/friendsofhyperf/validated-dto/d/monthly)](https://packagist.org/packages/friendsofhyperf/validated-dto)||
 
-## Sponsor
+## Donate
 
-If you like them, Buy me a cup of coffee. [ [Alipay](https://hdj.me/images/alipay.jpg) | [WePay](https://hdj.me/images/wechat-pay.jpg) ]
+> If you like them, Buy me a cup of coffee.
+
+| Alipay | WeChat |
+|  ----  | ----  |
+| <img src="https://hdj.me/images/alipay-min.jpg" width="200" height="200" />  | <img src="https://hdj.me/images/wechat-pay-min.jpg" width="200" height="200" /> |
+
+## Contact
+
+- [Twitter](https://twitter.com/huangdijia)
+- [Gmail](mailto:huangdijia@gmail.com)
+
+## License
+
+[MIT](LICENSE)

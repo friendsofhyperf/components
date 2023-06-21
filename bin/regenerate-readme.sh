@@ -66,6 +66,21 @@ done
 
 echo
 
-echo "## Sponsor"
-echo
-echo "If you like them, Buy me a cup of coffee. [ [Alipay](https://hdj.me/images/alipay.jpg) | [WePay](https://hdj.me/images/wechat-pay.jpg) ]"
+cat <<EOF
+## Donate
+
+> If you like them, Buy me a cup of coffee.
+
+| Alipay | WeChat |
+|  ----  | ----  |
+| <img src="https://hdj.me/images/alipay-min.jpg" width="200" height="200" />  | <img src="https://hdj.me/images/wechat-pay-min.jpg" width="200" height="200" /> |
+
+## Contact
+
+- [Twitter](https://twitter.com/huangdijia)
+- [Gmail](mailto:huangdijia@gmail.com)
+
+## License
+
+[MIT](LICENSE)
+EOF
