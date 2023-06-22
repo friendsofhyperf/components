@@ -52,7 +52,7 @@ class Pool
      *
      * @param string $method
      * @param array $parameters
-     * @return PendingRequest
+     * @return PendingRequest|\GuzzleHttp\Promise\Promise
      */
     public function __call($method, $parameters)
     {
