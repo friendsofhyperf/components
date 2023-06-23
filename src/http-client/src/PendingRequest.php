@@ -355,6 +355,20 @@ class PendingRequest
     }
 
     /**
+     * Set the given query parameters in the request URI.
+     *
+     * @return $this
+     */
+    public function withQueryParameters(array $parameters)
+    {
+        return tap($this, function () use ($parameters) {
+            $this->options = array_merge_recursive($this->options, [
+                'query' => $parameters,
+            ]);
+        });
+    }
+
+    /**
      * Specify the request's content type.
      *
      * @return $this
