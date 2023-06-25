@@ -88,12 +88,6 @@ class StrMixin
         };
     }
 
-    public function flushCache()
-    {
-        return function () {
-        };
-    }
-
     public function headline()
     {
         return function ($value) {
