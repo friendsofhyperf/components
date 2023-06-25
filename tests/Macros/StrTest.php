@@ -28,21 +28,6 @@ test('test strBetweenFirst', function ($expected, $args) {
     ['', ['foobarbar', 'foo', 'bar']],
 ]);
 
-test('test flushCache', function () {
-    $reflection = new ReflectionClass(Str::class);
-    $property = $reflection->getProperty('snakeCache');
-    $property->setAccessible(true);
-
-    Str::flushCache();
-    $this->assertEmpty($property->getValue());
-
-    Str::snake('Taylor Otwell');
-    $this->assertNotEmpty($property->getValue());
-
-    Str::flushCache();
-    $this->assertEmpty($property->getValue());
-});
-
 test('test excerpt', function () {
     $this->assertSame('...is a beautiful morn...', Str::excerpt('This is a beautiful morning', 'beautiful', ['radius' => 5]));
     $this->assertSame('This is a...', Str::excerpt('This is a beautiful morning', 'this', ['radius' => 5]));
