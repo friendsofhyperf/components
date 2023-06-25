@@ -48,6 +48,7 @@ class Str
 
     /**
      * Remove all strings from the casing caches.
+     * @deprecated since 3.0.58, remove in 3.1.0.
      */
     public static function flushCache()
     {
