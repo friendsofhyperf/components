@@ -88,18 +88,6 @@ class StrMixin
         };
     }
 
-    public function flushCache()
-    {
-        return function () {
-            /* @phpstan-ignore-next-line */
-            static::$snakeCache = [];
-            /* @phpstan-ignore-next-line */
-            static::$camelCache = [];
-            /* @phpstan-ignore-next-line */
-            static::$studlyCache = [];
-        };
-    }
-
     public function headline()
     {
         return function ($value) {

@@ -47,13 +47,6 @@ class Str
     }
 
     /**
-     * Remove all strings from the casing caches.
-     */
-    public static function flushCache()
-    {
-    }
-
-    /**
      * Convert the given string to title case for each word.
      *
      * @param string $value
