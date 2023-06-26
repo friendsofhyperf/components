@@ -29,12 +29,12 @@ use Hyperf\Context\ApplicationContext;
  * @method static bool putMany(array $values, \DateInterval|\DateTimeInterface|int|null $ttl = null)
  * @method static bool|int decrement(string $key, mixed $value = 1)
  * @method static bool|int increment(string $key, mixed $value = 1)
- * @method static (TCacheValue get(array|string $key, TCacheValue|(\Closure(): TCacheValue) $default = null)
+ * @method static (TCacheValue get(array|string $key, TCacheValue|(\Closure():TCacheValue) $default = null)
  * @method static array many(array $keys)
- * @method static (TCacheValue pull(array|string $key, TCacheValue|(\Closure(): TCacheValue) $default = null)
- * @method static TCacheValue remember(string $key, \Closure|\DateInterval|\DateTimeInterface|int|null $ttl, \Closure(): TCacheValue $callback)
- * @method static TCacheValue rememberForever(string $key, \Closure(): TCacheValue $callback)
- * @method static TCacheValue sear(string $key, \Closure(): TCacheValue $callback)
+ * @method static (TCacheValue pull(array|string $key, TCacheValue|(\Closure():TCacheValue) $default = null)
+ * @method static TCacheValue remember(string $key, \Closure|\DateInterval|\DateTimeInterface|int|null $ttl, \Closure():TCacheValue $callback)
+ * @method static TCacheValue rememberForever(string $key, \Closure():TCacheValue $callback)
+ * @method static TCacheValue sear(string $key, \Closure():TCacheValue $callback)
  * @method static bool setMultiple(iterable $values, \DateInterval|int|null $ttl = null)
  * @see \FriendsOfHyperf\Cache\Cache
  * @see \FriendsOfHyperf\Cache\CacheInterface
