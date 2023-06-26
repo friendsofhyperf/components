@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Tests\HttpClient;
 
+use Carbon\Carbon;
 use Exception;
 use FriendsOfHyperf\Http\Client\Events\RequestSending;
 use FriendsOfHyperf\Http\Client\Events\ResponseReceived;
