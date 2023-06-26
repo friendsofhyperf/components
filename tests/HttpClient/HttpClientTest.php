@@ -10,38 +10,37 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Tests\HttpClient;
 
-use Mockery as m;
 use Exception;
-use Carbon\Carbon;
-use JsonSerializable;
-use RuntimeException;
-use OutOfBoundsException;
-use GuzzleHttp\Middleware;
-use Hyperf\Collection\Arr;
-use Hyperf\Stringable\Str;
-use Hyperf\Support\Fluent;
-use GuzzleHttp\TransferStats;
-use Hyperf\Collection\collect;
-use Hyperf\Contract\Arrayable;
-use PHPUnit\Framework\TestCase;
-use Hyperf\Collection\Collection;
-use FriendsOfHyperf\Http\Client\Pool;
-use Psr\Http\Message\ResponseInterface;
-use FriendsOfHyperf\Http\Client\Factory;
-use FriendsOfHyperf\Http\Client\Request;
-use GuzzleHttp\Promise\PromiseInterface;
-use FriendsOfHyperf\Http\Client\Response;
-use GuzzleHttp\Psr7\Response as Psr7Response;
-use Symfony\Component\VarDumper\VarDumper;
-use PHPUnit\Framework\AssertionFailedError;
-use FriendsOfHyperf\Http\Client\PendingRequest;
-use FriendsOfHyperf\Http\Client\RequestException;
-use FriendsOfHyperf\Http\Client\ResponseSequence;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use FriendsOfHyperf\Http\Client\Events\RequestSending;
 use FriendsOfHyperf\Http\Client\Events\ResponseReceived;
+use FriendsOfHyperf\Http\Client\Factory;
+use FriendsOfHyperf\Http\Client\PendingRequest;
+use FriendsOfHyperf\Http\Client\Pool;
+use FriendsOfHyperf\Http\Client\Request;
+use FriendsOfHyperf\Http\Client\RequestException;
+use FriendsOfHyperf\Http\Client\Response;
+use FriendsOfHyperf\Http\Client\ResponseSequence;
+use GuzzleHttp\Middleware;
+use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Psr7\Response as Psr7Response;
+use GuzzleHttp\TransferStats;
+use Hyperf\Collection\Arr;
+use Hyperf\Collection\Collection;
+use Hyperf\Contract\Arrayable;
+use Hyperf\Stringable\Str;
+use Hyperf\Support\Fluent;
+use JsonSerializable;
+use Mockery as m;
+use OutOfBoundsException;
+use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\TestCase;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Http\Message\ResponseInterface;
+use RuntimeException;
+use Symfony\Component\HttpFoundation\Response as HttpResponse;
+use Symfony\Component\VarDumper\VarDumper;
 
-use Symfony\Component\HttpFoundation\Response as HttpResponsen\collect;
+use function Hyperf\Collection\collect;
 
 /**
  * @internal
