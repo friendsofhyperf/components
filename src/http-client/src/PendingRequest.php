@@ -21,6 +21,7 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\UriTemplate\UriTemplate;
 use Hyperf\Collection\Arr;
 use Hyperf\Collection\Collection;
@@ -230,10 +231,10 @@ class PendingRequest
     /**
      * Create a new HTTP Client instance.
      */
-    public function __construct(Factory $factory = null)
+    public function __construct(Factory $factory = null, array $middleware = [])
     {
         $this->factory = $factory;
-        $this->middleware = new Collection();
+        $this->middleware = new Collection($middleware);
 
         $this->asJson();
 
@@ -630,6 +631,28 @@ class PendingRequest
     {
         $this->middleware->push($middleware);
 
+        return $this;
+    }
+
+    /**
+     * Add new request middleware the client handler stack.
+     *
+     * @return $this
+     */
+    public function withRequestMiddleware(callable $middleware)
+    {
+        $this->middleware->push(Middleware::mapRequest($middleware));
+        return $this;
+    }
+
+    /**
+     * Add new response middleware the client handler stack.
+     *
+     * @return $this
+     */
+    public function withResponseMiddleware(callable $middleware)
+    {
+        $this->middleware->push(Middleware::mapResponse($middleware));
         return $this;
     }
 
