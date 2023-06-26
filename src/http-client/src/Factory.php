@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Http\Client;
 
 use Closure;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\Promise\Create;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Response as Psr7Response;
@@ -83,6 +84,13 @@ class Factory
     protected $dispatcher;
 
     /**
+     * The middleware to apply to every request.
+     *
+     * @var array
+     */
+    protected $globalMiddleware = [];
+
+    /**
      * The stub callables that will handle requests.
      *
      * @var Collection
@@ -143,6 +151,42 @@ class Factory
         return tap($this->newPendingRequest(), function ($request) {
             $request->stub($this->stubCallbacks)->preventStrayRequests($this->preventStrayRequests);
         })->{$method}(...$parameters);
+    }
+
+    /**
+     * Add middleware to apply to every request.
+     *
+     * @param callable $middleware
+     * @return $this
+     */
+    public function globalMiddleware($middleware)
+    {
+        $this->globalMiddleware[] = $middleware;
+        return $this;
+    }
+
+    /**
+     * Add request middleware to apply to every request.
+     *
+     * @param callable $middleware
+     * @return $this
+     */
+    public function globalRequestMiddleware($middleware)
+    {
+        $this->globalMiddleware[] = Middleware::mapRequest($middleware);
+        return $this;
+    }
+
+    /**
+     * Add response middleware to apply to every request.
+     *
+     * @param callable $middleware
+     * @return $this
+     */
+    public function globalResponseMiddleware($middleware)
+    {
+        $this->globalMiddleware[] = Middleware::mapResponse($middleware);
+        return $this;
     }
 
     /**
@@ -422,6 +466,6 @@ class Factory
      */
     protected function newPendingRequest()
     {
-        return new PendingRequest($this);
+        return new PendingRequest($this, $this->globalMiddleware);
     }
 }
