@@ -9,27 +9,27 @@ The gateway-worker component for Hyperf.
 
 ## Installation
 
-~~~bash
+```shell
 composer require friendsofhyperf/gateway-worker
-~~~
+```
 
 publish
 
-~~~bash
+```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/gateway-worker
-~~~
+```
 
 ## Usage
 
-~~~bash
+```shell
 php bin/hyperf.php gateway-worker:serve [start|stop|restart|status|connections|help]
-~~~
+```
 
 for help
 
-~~~bash
+```shell
 php bin/hyperf.php gateway-worker:serve --help
-~~~
+```
 
 ## Cluster
 
@@ -43,6 +43,6 @@ php bin/hyperf.php gateway-worker:serve --help
 
 - In One
 
-~~~bash
-php bin/hyperf.php --register --gateway --businessworker
-~~~
+```shell
+php bin/hyperf.php gateway-worker:serve --register --gateway --businessworker
+```
