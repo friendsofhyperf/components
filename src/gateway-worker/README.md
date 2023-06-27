@@ -44,7 +44,7 @@ php bin/hyperf.php gateway-worker:serve --help
 - In One
 
 ```shell
-php bin/hyperf.php --register --gateway --businessworker
+php bin/hyperf.php gateway-worker:serve --register --gateway --businessworker
 ```
 
 ## Donate
