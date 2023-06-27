@@ -10,8 +10,6 @@ declare(strict_types=1);
  */
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
-use FriendsOfHyperf\Tests\ValidatedDTO\Dataset\ModelInstance;
-use FriendsOfHyperf\Tests\ValidatedDTO\Dataset\ValidatedDTOInstance;
 use FriendsOfHyperf\ValidatedDTO\Casting\ArrayCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\BooleanCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\CarbonCast;
@@ -30,6 +28,8 @@ use Hyperf\Collection\Collection;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Database\Model\Model;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
+use Tests\ValidatedDTO\Dataset\ModelInstance;
+use Tests\ValidatedDTO\Dataset\ValidatedDTOInstance;
 
 uses()->group('validated-dto');
 

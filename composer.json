@@ -184,7 +184,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "FriendsOfHyperf\\Tests\\": "tests/"
+            "Tests\\": "tests/"
         }
     },
     "extra": {
