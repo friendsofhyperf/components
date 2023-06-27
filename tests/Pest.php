@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 use Pest\Mock\Mock;
 
-uses(\FriendsOfHyperf\Tests\TestCase::class)->in('*/*');
+uses(\Tests\TestCase::class)->in('*/*');
 
 /*
 |--------------------------------------------------------------------------
