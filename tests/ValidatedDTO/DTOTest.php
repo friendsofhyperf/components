@@ -11,12 +11,10 @@ declare(strict_types=1);
 use FriendsOfHyperf\ValidatedDTO\Casting\StringCast;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
 use Hyperf\Collection\Arr;
-use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Stringable\Stringable;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Mockery as m;
-use Psr\Container\ContainerInterface;
 
 uses()->group('validated-dto');
 
@@ -27,16 +25,12 @@ afterEach(function () {
 test('test BaseValidate', function () {
     $data = ['name' => 'Hyperf', 'age' => 18];
 
-    /** @var ContainerInterface $container */
-    $container = mocking(ContainerInterface::class)->expect(
-        get: fn () => mocking(ValidatorFactoryInterface::class)->expect(
-            make: fn () => mocking(ValidatorInterface::class)->expect(
-                fails: fn () => false,
-                validated: fn () => $data
-            )
-        )
-    );
-    ApplicationContext::setContainer($container);
+    $this->instance(ValidatorFactoryInterface::class, mocking(ValidatorFactoryInterface::class)->expect(
+        make: fn () => mocking(ValidatorInterface::class)->expect(
+            fails: fn () => false,
+            validated: fn () => $data,
+        ),
+    ));
 
     $dto = UserDTO::fromArray($data);
 
@@ -52,19 +46,17 @@ test('test BaseValidate', function () {
 test('test ValidateWithScene', function () {
     $data = ['foo' => 'Foo', 'bar' => 'Bar'];
 
-    /** @var ContainerInterface $container */
-    $container = m::mock(ContainerInterface::class, [
-        'get' => m::mock(ValidatorFactoryInterface::class, [
-            'make' => m::mock(ValidatorInterface::class, function ($mock) use ($data) {
-                $mock->shouldReceive('fails')->andReturn(false)
+    $this->mock(ValidatorFactoryInterface::class, function ($factory) use ($data) {
+        $factory->shouldReceive('make')->andReturn(
+            $this->mock(ValidatorInterface::class, function ($validator) use ($data) {
+                $validator->shouldReceive('fails')->andReturn(false)
                     ->shouldReceive('validated')->andReturn(
                         Arr::only($data, ['foo']),
                         Arr::only($data, ['bar'])
                     );
-            }),
-        ]),
-    ]);
-    ApplicationContext::setContainer($container);
+            })
+        );
+    });
 
     $dto = FooDTO::fromArray($data, 'foo');
 
@@ -83,17 +75,12 @@ test('test ValidateWithCasting', function () {
         'bar' => new Stringable('Bar'),
     ];
 
-    /** @var ContainerInterface $container */
-    $container = mocking(ContainerInterface::class)->expect(
-        get: fn () => mocking(ValidatorFactoryInterface::class)->expect(
-            make: fn () => mocking(ValidatorInterface::class)->expect(
-                fails: fn () => false,
-                validated: fn () => $data
-            )
+    $this->instance(ValidatorFactoryInterface::class, mocking(ValidatorFactoryInterface::class)->expect(
+        make: fn () => mocking(ValidatorInterface::class)->expect(
+            fails: fn () => false,
+            validated: fn () => $data
         )
-    );
-
-    ApplicationContext::setContainer($container);
+    ));
 
     $dto = BarDTO::fromArray($data);
 

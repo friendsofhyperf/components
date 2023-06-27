@@ -439,12 +439,12 @@ class SleepTest extends TestCase
         });
 
         Sleep::macro('useSomeOtherAmountOfTime', function () {
-            /* @var Sleep $this */
+            /* @phpstan-ignore-next-line */
             return $this->duration(1.234)->seconds();
         });
 
         Sleep::macro('andSomeMoreGranularControl', function () {
-            /* @var Sleep $this */
+            /* @phpstan-ignore-next-line */
             return $this->and(567)->microseconds();
         });
 
@@ -466,6 +466,7 @@ class SleepTest extends TestCase
         Sleep::fake();
 
         Sleep::macro('setDuration', function ($duration) {
+            /* @phpstan-ignore-next-line */
             return $this->duration($duration);
         });
 

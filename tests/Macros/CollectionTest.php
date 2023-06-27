@@ -14,7 +14,7 @@ use Hyperf\Collection\Collection;
 
 use function Hyperf\Collection\collect;
 
-uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'collection');
+uses()->group('macros', 'collection');
 
 dataset('collectionClassProvider', [
     [Collection::class],

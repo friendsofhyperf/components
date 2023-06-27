@@ -8,19 +8,14 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ApplicationInterface;
-use Psr\Container\ContainerInterface;
 
 use function FriendsOfHyperf\Helpers\class_namespace;
 use function FriendsOfHyperf\Helpers\Command\call;
 use function FriendsOfHyperf\Helpers\object_get;
 use function FriendsOfHyperf\Helpers\preg_replace_array;
 
-uses(\FriendsOfHyperf\Tests\TestCase::class)->group('helpers');
-
-afterEach(function () {
-});
+uses()->group('helpers');
 
 test('test ClassNamespace', function () {
     $this->assertSame('Foo\Bar', class_namespace('Foo\Bar\Baz'));
@@ -61,15 +56,10 @@ test('test PregReplaceArray', function ($pattern, $replacements, $subject, $expe
 })->with('providesPregReplaceArrayData');
 
 test('test FriendsOfHyperf\Helpers\Command\call', function () {
-    /** @var ContainerInterface $container */
-    $container = mocking(ContainerInterface::class)->expect(
-        has: fn () => true,
-        get: fn () => mocking(ApplicationInterface::class)->expect(
-            setAutoExit: fn () => null,
-            run: fn () => 0,
-        )
-    );
-    ApplicationContext::setContainer($container);
+    $this->instance(ApplicationInterface::class, mocking(ApplicationInterface::class)->expect(
+        setAutoExit: fn () => null,
+        run: fn () => 0,
+    ));
 
-    expect(call('command', ['argument' => 'value']))->toBe(0);
+    expect(call('foo:bar', ['argument' => 'value']))->toBe(0);
 });

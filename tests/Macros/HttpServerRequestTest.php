@@ -13,7 +13,7 @@ use Hyperf\HttpServer\Request;
 use Psr\Http\Message\ServerRequestInterface;
 use Swow\Psr7\Message\ServerRequestPlusInterface;
 
-uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'request');
+uses()->group('macros', 'request');
 
 afterEach(function () {
     Context::set(ServerRequestInterface::class, null);
