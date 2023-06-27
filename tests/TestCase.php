@@ -19,7 +19,8 @@ use Mockery as m;
  */
 class TestCase extends \PHPUnit\Framework\TestCase
 {
-    use Traits\RunTestsInCoroutine;
+    use Concerns\InteractsWithContainer;
+    use Concerns\RunTestsInCoroutine;
 
     public function __construct($name = null, array $data = [], $dataName = '')
     {
@@ -31,11 +32,15 @@ class TestCase extends \PHPUnit\Framework\TestCase
         $bootApplication = (object) [];
         (new \FriendsOfHyperf\Macros\Listener\RegisterMixinListener())->process($bootApplication);
         (new \FriendsOfHyperf\FastPaginate\Listener\RegisterMixinListener())->process($bootApplication);
+
+        $this->refreshContainer();
     }
 
     protected function tearDown(): void
     {
         m::close();
+
+        $this->flushContainer();
     }
 
     protected function stringable($value = '')

@@ -10,14 +10,7 @@ declare(strict_types=1);
  */
 use Pest\Mock\Mock;
 
-/*
- * This file is part of friendsofhyperf/components.
- *
- * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
- * @contact  huangdijia@gmail.com
- */
-// uses(Tests\TestCase::class)->in('Feature');
+uses(\FriendsOfHyperf\Tests\TestCase::class)->in('*/*');
 
 /*
 |--------------------------------------------------------------------------

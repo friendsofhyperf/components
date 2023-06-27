@@ -20,6 +20,7 @@ parameters:
         - src/model-uid-addon/macros/str.php
         - src/model-uid-addon/macros/blueprint.php
         - src/tinker/src/TinkerCaster.php
+        - tests/*.php
     -
       message: '#Calling static::\w+\(\) outside of class scope#'
       path: src/macros/src/collection.php

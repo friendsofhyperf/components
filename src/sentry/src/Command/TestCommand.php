@@ -88,11 +88,6 @@ class TestCommand extends HyperfCommand
         }
     }
 
-    protected function option($name)
-    {
-        return $this->input->getOption($name);
-    }
-
     /**
      * Generate a test exception to send to Sentry.
      *

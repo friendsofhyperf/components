@@ -10,14 +10,9 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Cache\Cache;
 use FriendsOfHyperf\Facade\Log;
-use Hyperf\Context\ApplicationContext;
 use Hyperf\Logger\LoggerFactory;
-use Psr\Container\ContainerInterface;
 
 uses()->group('facade');
-
-afterEach(function () {
-});
 
 test('test Cache Macroable', function () {
     Cache::macro('test', fn () => null);
@@ -26,15 +21,12 @@ test('test Cache Macroable', function () {
 });
 
 test('test Log Macroable', function () {
-    /** @var ContainerInterface $container */
-    $container = mocking(ContainerInterface::class)->expect(
-        get: fn () => mocking(LoggerFactory::class)->expect(
-            get: fn () => mocking(\Psr\Log\LoggerInterface::class)->allows()->info('test')->getMock()
-        )
-    );
-    ApplicationContext::setContainer($container);
+    $this->instance(LoggerFactory::class, mocking(LoggerFactory::class)->expect(
+        get: fn () => mocking(\Psr\Log\LoggerInterface::class)->allows()->info('test')->getMock()
+    ));
 
     expect(Log::channel('hyperf', 'default'))->toBeInstanceOf(\Psr\Log\LoggerInterface::class);
 
+    /* @phpstan-ignore-next-line */
     expect(Log::info('test'))->toBeEmpty();
 });

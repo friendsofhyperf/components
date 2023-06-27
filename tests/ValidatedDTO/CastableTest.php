@@ -27,19 +27,14 @@ use FriendsOfHyperf\ValidatedDTO\Exception\CastException;
 use FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
 use Hyperf\Collection\Collection;
-use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Database\Model\Model;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
-use Psr\Container\ContainerInterface;
 
 uses()->group('validated-dto');
 
 beforeEach(function () {
     $this->testProperty = 'test_property';
-});
-
-afterEach(function () {
 });
 
 test('test CastToArray', function () {
@@ -183,16 +178,12 @@ test('test CastToCarbonImmutable', function () {
 });
 
 test('test CastToCollection', function () {
-    /** @var ContainerInterface */
-    $container = mocking(ContainerInterface::class)->expect(
-        get: fn () => mocking(ValidatorFactoryInterface::class)->expect(
-            make: fn () => mocking(ValidatorInterface::class)->expect(
-                fails: fn () => false,
-                validated: fn () => [],
-            ),
+    $this->instance(ValidatorFactoryInterface::class, mocking(ValidatorFactoryInterface::class)->expect(
+        make: fn () => mocking(ValidatorInterface::class)->expect(
+            fails: fn () => false,
+            validated: fn () => [],
         ),
-    );
-    ApplicationContext::setContainer($container);
+    ));
 
     $castable = new CollectionCast();
 
@@ -243,17 +234,12 @@ test('test CastToCollection', function () {
 });
 
 test('test CastToDTO', function () {
-    /** @var ContainerInterface $container */
-    $container = mocking(ContainerInterface::class)->expect(
-        get: fn () => mocking(ValidatorFactoryInterface::class)->expect(
-            make: fn () => mocking(ValidatorInterface::class)->expect(
-                fails: fn () => false,
-                validated: fn () => ['name' => 'John Doe', 'age' => 30],
-            ),
-        )
-    );
-
-    ApplicationContext::setContainer($container);
+    $this->instance(ValidatorFactoryInterface::class, mocking(ValidatorFactoryInterface::class)->expect(
+        make: fn () => mocking(ValidatorInterface::class)->expect(
+            fails: fn () => false,
+            validated: fn () => ['name' => 'John Doe', 'age' => 30],
+        ),
+    ));
 
     $castable = new DTOCast(ValidatedDTOInstance::class);
 
