@@ -116,6 +116,7 @@
         "friendsofhyperf/ide-helper": "*",
         "friendsofhyperf/lock": "*",
         "friendsofhyperf/macros": "*",
+        "friendsofhyperf/model-factory": "*",
         "friendsofhyperf/model-hashids": "*",
         "friendsofhyperf/model-morph-addon": "*",
         "friendsofhyperf/model-observer": "*",
@@ -140,6 +141,7 @@
             "src/helpers/src/Functions.php",
             "src/lock/src/Functions.php",
             "src/macros/src/Functions.php",
+            "src/model-factory/src/Functions.php",
             "src/support/src/Functions.php"
         ],
         "psr-4": {
@@ -164,6 +166,7 @@
             "FriendsOfHyperf\\IdeHelper\\": "src/ide-helper/src/",
             "FriendsOfHyperf\\Lock\\": "src/lock/src/",
             "FriendsOfHyperf\\Macros\\": "src/macros/src/",
+            "FriendsOfHyperf\\ModelFactory\\": "src/model-factory/src/",
             "FriendsOfHyperf\\ModelHashids\\": "src/model-hashids/src/",
             "FriendsOfHyperf\\ModelMorphAddon\\": "src/model-morph-addon/src/",
             "FriendsOfHyperf\\ModelObserver\\": "src/model-observer/src/",
@@ -210,6 +213,7 @@
                 "FriendsOfHyperf\\IdeHelper\\ConfigProvider",
                 "FriendsOfHyperf\\Lock\\ConfigProvider",
                 "FriendsOfHyperf\\Macros\\ConfigProvider",
+                "FriendsOfHyperf\\ModelFactory\\ConfigProvider",
                 "FriendsOfHyperf\\ModelHashids\\ConfigProvider",
                 "FriendsOfHyperf\\ModelMorphAddon\\ConfigProvider",
                 "FriendsOfHyperf\\ModelObserver\\ConfigProvider",
