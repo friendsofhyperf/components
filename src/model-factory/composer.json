@@ -11,6 +11,8 @@
     ],
     "require": {
         "php": "^8.0",
+        "fakerphp/faker": "^1.23",
+        "hyperf/config": "~3.0.0",
         "hyperf/database": "~3.0.0",
         "hyperf/stringable": "~3.0.0"
     },
