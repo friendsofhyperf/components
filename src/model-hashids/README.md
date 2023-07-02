@@ -1,4 +1,4 @@
-# model-uid-addon
+# model-hashids
 
 > Using hashids instead of integer ids in urls and list items can be more
 appealing and clever. For more information visit [hashids.org](https://hashids.org/).
