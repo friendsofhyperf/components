@@ -16,166 +16,38 @@ use FriendsOfHyperf\ValidatedDTO\Exception\MissingCastTypeException;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ValidatorInterface;
-use Hyperf\Database\Model\Model;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Hyperf\Validation\ValidationException;
 use InvalidArgumentException;
 
-abstract class ValidatedDTO
+abstract class ValidatedDTO extends SimpleDTO
 {
-    use Traits\InteractsWithIO;
-
-    protected array $validatedData = [];
-
-    protected bool $requireCasting = false;
-
     protected ?ValidatorInterface $validator = null;
 
-    /**
-     * @throws ValidationException
-     */
-    public function __construct(protected array $data, protected ?string $scene = null)
+    public function __construct(?array $data = null, protected ?string $scene = null)
     {
-        $this->isValidData() ? $this->passedValidation() : $this->failedValidation();
-    }
-
-    public function __get(string $name): mixed
-    {
-        return $this->validatedData[$name] ?? null;
+        parent::__construct($data);
     }
 
     /**
-     * Returns the DTO validated data in array format.
+     * Defines the custom messages for validator errors.
      */
-    public function toArray(): array
+    public function messages(): array
     {
-        return $this->validatedData;
+        return [];
     }
 
     /**
-     * Returns the DTO validated data in a JSON string format.
+     * Defines the custom attributes for validator errors.
      */
-    public function toJson(int $options = JSON_UNESCAPED_UNICODE): string
+    public function attributes(): array
     {
-        return json_encode($this->validatedData, $options);
+        return [];
     }
 
-    /**
-     * Returns the DTO validated data in a pretty JSON string format.
-     */
-    public function toPrettyJson(): string
+    protected function scenes(): array
     {
-        return json_encode($this->validatedData, JSON_PRETTY_PRINT);
-    }
-
-    /**
-     * Creates a new model with the DTO validated data.
-     */
-    public function toModel(string $model): Model
-    {
-        return new $model($this->validatedData);
-    }
-
-    protected function getRules()
-    {
-        $rules = $this->rules();
-
-        if ($scene = $this->scene) {
-            if (! $this->hasScene($scene) || ! $keys = $this->getSceneKeys($scene)) {
-                throw new InvalidArgumentException(sprintf('Scene [%s] is not defined or empty.', $scene));
-            }
-
-            $rules = Arr::only($rules, $keys);
-        }
-
-        return $rules;
-    }
-
-    /**
-     * Checks if the data is valid for the DTO.
-     */
-    protected function isValidData(): bool
-    {
-        $this->validator = ApplicationContext::getContainer()
-            ->get(ValidatorFactoryInterface::class)
-            ->make(
-                $this->data,
-                $this->getRules(),
-                $this->messages(),
-                $this->attributes()
-            );
-
-        return ! $this->validator->fails();
-    }
-
-    /**
-     * Handles a passed validation attempt.
-     */
-    protected function passedValidation(array $rules = []): void
-    {
-        $this->validatedData = $this->validatedData();
-
-        foreach ($this->defaults() as $key => $value) {
-            if (! in_array($key, array_keys($rules))) {
-                continue;
-            }
-
-            $this->validatedData[$key] = $value;
-        }
-
-        $casts = $this->casts();
-
-        foreach ($this->validatedData as $key => $value) {
-            if (! array_key_exists($key, $casts)) {
-                if ($this->requireCasting) {
-                    throw new MissingCastTypeException($key);
-                }
-
-                continue;
-            }
-
-            $formatted = $this->shouldReturnNull($key, $value)
-                    ? null
-                    : $this->castValue($casts[$key], $key, $value);
-
-            $this->validatedData[$key] = $formatted;
-        }
-    }
-
-    protected function validatedData(): array
-    {
-        return $this->validator->validated();
-    }
-
-    /**
-     * Handles a failed validation attempt.
-     *
-     * @throws ValidationException
-     */
-    protected function failedValidation(): void
-    {
-        throw new ValidationException($this->validator);
-    }
-
-    /**
-     * @throws CastTargetException
-     */
-    protected function castValue(mixed $cast, string $key, mixed $value): mixed
-    {
-        if ($cast instanceof Castable) {
-            return $cast->cast($key, $value);
-        }
-
-        if (! is_callable($cast)) {
-            throw new CastTargetException($key);
-        }
-
-        return $cast($key, $value);
-    }
-
-    protected function shouldReturnNull(string $key, mixed $value): bool
-    {
-        return is_null($value) && $this->isOptionalProperty($key);
+        return [];
     }
 
     protected function hasScene(string $scene): bool
@@ -188,47 +60,96 @@ abstract class ValidatedDTO
         return $this->scenes()[$scene] ?? [];
     }
 
+    protected function getRules(): array
+    {
+        $rules = $this->rules();
+        $scene = $this->scene;
+
+        if ($scene) {
+            if (! $this->hasScene($scene) || ! $keys = $this->getSceneKeys($scene)) {
+                throw new InvalidArgumentException(sprintf('Scene [%s] is not defined or empty.', $scene));
+            }
+
+            $rules = Arr::only($rules, $keys);
+        }
+
+        return $rules;
+    }
+
     /**
-     * Defines the default values for the properties of the DTO.
+     * Defines the validation rules for the DTO.
      */
     abstract protected function rules(): array;
 
     /**
-     * Defines the custom messages for validator errors.
+     * Builds the validated data from the given data and the rules.
+     *
+     * @throws MissingCastTypeException|CastTargetException
      */
-    protected function messages(): array
+    protected function validatedData(): array
     {
-        return [];
+        $acceptedKeys = array_keys($this->getRules());
+        $result = [];
+
+        /** @var array<Castable> $casts */
+        $casts = $this->casts();
+
+        foreach ($this->data as $key => $value) {
+            if (in_array($key, $acceptedKeys)) {
+                if (! array_key_exists($key, $casts)) {
+                    if ($this->requireCasting) {
+                        throw new MissingCastTypeException($key);
+                    }
+                    $result[$key] = $value;
+
+                    continue;
+                }
+
+                $result[$key] = $this->shouldReturnNull($key, $value)
+                    ? null
+                    : $this->castValue($casts[$key], $key, $value);
+            }
+        }
+
+        foreach ($acceptedKeys as $property) {
+            if (
+                ! array_key_exists($property, $result)
+                && $this->isOptionalProperty($property)
+            ) {
+                $result[$property] = null;
+            }
+        }
+
+        return $result;
+    }
+
+    protected function isValidData(): bool
+    {
+        $container = ApplicationContext::getContainer();
+        $this->validator = $container->get(ValidatorFactoryInterface::class)
+            ->make(
+                $this->data,
+                $this->getRules(),
+                $this->messages(),
+                $this->attributes()
+            );
+
+        return ! $this->validator->fails();
     }
 
     /**
-     * Defines the custom attributes for validator errors.
+     * Handles a failed validation attempt.
+     *
+     * @throws ValidationException
      */
-    protected function attributes(): array
+    protected function failedValidation(): void
     {
-        return [];
+        throw new ValidationException($this->validator);
     }
 
-    protected function scenes(): array
+    protected function shouldReturnNull(string $key, mixed $value): bool
     {
-        return [];
-    }
-
-    /**
-     * Defines the default values for the properties of the DTO.
-     */
-    protected function defaults(): array
-    {
-        return [];
-    }
-
-    /**
-     * Defines the type casting for the properties of the DTO.
-     * @return array<string,Castable>
-     */
-    protected function casts(): array
-    {
-        return [];
+        return is_null($value) && $this->isOptionalProperty($key);
     }
 
     private function isOptionalProperty(string $property): bool

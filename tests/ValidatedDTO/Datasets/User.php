@@ -8,11 +8,15 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace Tests\ValidatedDTO\Dataset;
+namespace FriendsOfHyperf\Tests\ValidatedDTO\Datasets;
 
 use Hyperf\Database\Model\Model;
 
-class ModelInstance extends Model
+class User extends Model
 {
-    protected array $fillable = ['name', 'age'];
+    protected array $fillable = [
+        'first_name',
+        'last_name',
+        'email',
+    ];
 }
