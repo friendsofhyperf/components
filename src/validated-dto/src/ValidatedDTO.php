@@ -78,6 +78,14 @@ abstract class ValidatedDTO
     }
 
     /**
+     * Returns the DTO validated data in a pretty JSON string format.
+     */
+    public function toPrettyJson(): string
+    {
+        return json_encode($this->validatedData, JSON_PRETTY_PRINT);
+    }
+
+    /**
      * Creates a new model with the DTO validated data.
      */
     public function toModel(string $model): Model
@@ -111,9 +119,9 @@ abstract class ValidatedDTO
                 continue;
             }
 
-            if (! $casts[$key] instanceof Castable) {
-                throw new CastTargetException($key);
-            }
+            $result[$key] = $this->shouldReturnNull($key, $value)
+                    ? null
+                    : $this->castValue($casts[$key], $key, $value);
 
             $formatted = $casts[$key]->cast($key, $value);
             $this->validatedData[$key] = $formatted;
@@ -127,7 +135,27 @@ abstract class ValidatedDTO
      */
     protected function failedValidation(ValidatorInterface $validator): void
     {
-        throw new ValidationException($validator);
+    }
+
+    /**
+     * @throws \WendellAdriel\ValidatedDTO\Exceptions\CastTargetException
+     */
+    protected function castValue(mixed $cast, string $key, mixed $value): mixed
+    {
+        if ($cast instanceof Castable) {
+            return $cast->cast($key, $value);
+        }
+
+        if (! is_callable($cast)) {
+            throw new CastTargetException($key);
+        }
+
+        return $cast($key, $value);
+    }
+
+    protected function shouldReturnNull(string $key, mixed $value): bool
+    {
+        return is_null($value) && $this->isOptionalProperty($key);
     }
 
     protected function hasScene(string $scene): bool
@@ -181,5 +209,15 @@ abstract class ValidatedDTO
     protected function casts(): array
     {
         return [];
+    }
+
+    private function isOptionalProperty(string $property): bool
+    {
+        $rules = $this->rules();
+        $propertyRules = is_array($rules[$property])
+            ? $rules[$property]
+            : explode('|', $rules[$property]);
+
+        return in_array('optional', $propertyRules) || in_array('nullable', $propertyRules);
     }
 }
