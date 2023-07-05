@@ -10,16 +10,23 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\AttributesDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\ModelCastInstance;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 
-it('properly casts a Model property to a DTO class', function () {
-    $this->instance(ValidatorFactoryInterface::class, mocking(ValidatorFactoryInterface::class)->expect(
-        make: fn () => mocking(ValidatorInterface::class)->expect(
-            fails: fn () => false
-        )
-    ));
+beforeEach(function () {
+    $this->mock(ValidatorFactoryInterface::class, function ($mock) {
+        $mock->shouldReceive('make')->andReturn(Mockery::mock(ValidatorInterface::class, function ($mock) {
+            $mock->shouldReceive('fails')->andReturn(false)
+                ->shouldReceive('passes')->andReturn(true);
+        }));
+    });
+    $this->mock(ConfigInterface::class, function ($mock) {
+        $mock->shouldReceive('get')->with('dto')->andReturn([]);
+    });
+});
 
+it('properly casts a Model property to a DTO class', function () {
     $model = new ModelCastInstance([
         'name' => faker()->name(),
         'metadata' => '{"age": 10, "doc": "foo"}',

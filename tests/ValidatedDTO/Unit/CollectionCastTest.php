@@ -15,9 +15,15 @@ use FriendsOfHyperf\ValidatedDTO\Casting\DTOCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\IntegerCast;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
 use Hyperf\Collection\Collection;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 
+beforeEach(function () {
+    $this->mock(ConfigInterface::class, function ($mock) {
+        $mock->shouldReceive('get')->with('dto')->andReturn([]);
+    });
+});
 it('casts to Collection class')
     ->expect(fn () => new CollectionCast())
     ->cast(test_property(), '{"name": "John Doe", "email": "john.doe@example.com"}')

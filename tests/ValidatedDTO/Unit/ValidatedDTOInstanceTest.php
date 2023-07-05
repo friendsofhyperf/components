@@ -13,21 +13,25 @@ use FriendsOfHyperf\ValidatedDTO\Casting\DTOCast;
 use FriendsOfHyperf\ValidatedDTO\Exception\CastException;
 use FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Database\Model\Model;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Mockery;
 
 beforeEach(function () {
-    $this->instance(
+    $this->mock(
         ValidatorFactoryInterface::class,
-        Mockery::mock(ValidatorFactoryInterface::class, function ($mock) {
+        function ($mock) {
             $mock->shouldReceive('make')->andReturn(Mockery::mock(ValidatorInterface::class, function ($mock) {
                 $mock->shouldReceive('fails')->andReturn(false)
                     ->shouldReceive('passes')->andReturn(true);
             }));
-        })
+        }
     );
+    $this->mock(ConfigInterface::class, function ($mock) {
+        $mock->shouldReceive('get')->with('dto')->andReturn([]);
+    });
 });
 
 it('casts to DTO', function () {

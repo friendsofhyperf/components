@@ -15,7 +15,9 @@ use FriendsOfHyperf\ValidatedDTO\Casting\Castable;
 use FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException;
 use FriendsOfHyperf\ValidatedDTO\Exception\MissingCastTypeException;
 use Hyperf\Collection\Collection;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\CastsAttributes;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Database\Model\Model;
 use Hyperf\Validation\ValidationException;
 
@@ -359,7 +361,14 @@ abstract class SimpleDTO implements CastsAttributes
      */
     private function initConfig(): void
     {
-        $config = $this->config?->get('dto');
+        $config = null;
+
+        if (
+            ApplicationContext::hasContainer()
+            && $container = ApplicationContext::getContainer()
+        ) {
+            $config = $container->get(ConfigInterface::class)?->get('dto');
+        }
 
         if (! empty($config) && array_key_exists('require_casting', $config)) {
             $this->requireCasting = $config['require_casting'];
