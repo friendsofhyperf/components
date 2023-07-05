@@ -18,7 +18,7 @@ use function FriendsOfHyperf\Helpers\Command\call;
 use function FriendsOfHyperf\Helpers\object_get;
 use function FriendsOfHyperf\Helpers\preg_replace_array;
 
-uses(\FriendsOfHyperf\Tests\TestCase::class)->group('helpers');
+uses()->group('helpers');
 
 afterEach(function () {
     m::close();
