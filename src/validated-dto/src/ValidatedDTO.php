@@ -233,7 +233,7 @@ abstract class ValidatedDTO
 
     private function isOptionalProperty(string $property): bool
     {
-        $rules = $this->rules();
+        $rules = $this->getRules();
         $propertyRules = is_array($rules[$property])
             ? $rules[$property]
             : explode('|', $rules[$property]);
