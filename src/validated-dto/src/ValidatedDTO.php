@@ -96,13 +96,11 @@ abstract class ValidatedDTO
      */
     protected function isValidData(): bool
     {
-        $rules = $this->getRules();
-
         $this->validator = ApplicationContext::getContainer()
             ->get(ValidatorFactoryInterface::class)
             ->make(
                 $this->data,
-                $rules,
+                $this->getRules(),
                 $this->messages(),
                 $this->attributes()
             );
