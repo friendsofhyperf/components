@@ -29,31 +29,14 @@ abstract class ValidatedDTO
 
     protected bool $requireCasting = false;
 
+    protected ?ValidatorInterface $validator = null;
+
     /**
      * @throws ValidationException
      */
-    public function __construct(protected array $data, ?string $scene = null)
+    public function __construct(protected array $data, protected ?string $scene = null)
     {
-        $rules = $this->rules();
-
-        if ($scene) {
-            if (! $this->hasScene($scene) || ! $keys = $this->getSceneKeys($scene)) {
-                throw new InvalidArgumentException(sprintf('Scene [%s] is not defined or empty.', $scene));
-            }
-
-            $rules = Arr::only($rules, $keys);
-        }
-
-        $validator = ApplicationContext::getContainer()
-            ->get(ValidatorFactoryInterface::class)
-            ->make(
-                $data,
-                $rules,
-                $this->messages(),
-                $this->attributes()
-            );
-
-        ! $validator->fails() ? $this->passedValidation($validator, $rules) : $this->failedValidation($validator);
+        $this->isValidData() ? $this->passedValidation() : $this->failedValidation();
     }
 
     public function __get(string $name): mixed
@@ -78,6 +61,14 @@ abstract class ValidatedDTO
     }
 
     /**
+     * Returns the DTO validated data in a pretty JSON string format.
+     */
+    public function toPrettyJson(): string
+    {
+        return json_encode($this->validatedData, JSON_PRETTY_PRINT);
+    }
+
+    /**
      * Creates a new model with the DTO validated data.
      */
     public function toModel(string $model): Model
@@ -85,12 +76,44 @@ abstract class ValidatedDTO
         return new $model($this->validatedData);
     }
 
+    protected function getRules()
+    {
+        $rules = $this->rules();
+
+        if ($scene = $this->scene) {
+            if (! $this->hasScene($scene) || ! $keys = $this->getSceneKeys($scene)) {
+                throw new InvalidArgumentException(sprintf('Scene [%s] is not defined or empty.', $scene));
+            }
+
+            $rules = Arr::only($rules, $keys);
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Checks if the data is valid for the DTO.
+     */
+    protected function isValidData(): bool
+    {
+        $this->validator = ApplicationContext::getContainer()
+            ->get(ValidatorFactoryInterface::class)
+            ->make(
+                $this->data,
+                $this->getRules(),
+                $this->messages(),
+                $this->attributes()
+            );
+
+        return ! $this->validator->fails();
+    }
+
     /**
      * Handles a passed validation attempt.
      */
-    protected function passedValidation(ValidatorInterface $validator, array $rules = []): void
+    protected function passedValidation(array $rules = []): void
     {
-        $this->validatedData = $validator->validated();
+        $this->validatedData = $this->validatedData();
 
         foreach ($this->defaults() as $key => $value) {
             if (! in_array($key, array_keys($rules))) {
@@ -111,13 +134,17 @@ abstract class ValidatedDTO
                 continue;
             }
 
-            if (! $casts[$key] instanceof Castable) {
-                throw new CastTargetException($key);
-            }
+            $formatted = $this->shouldReturnNull($key, $value)
+                    ? null
+                    : $this->castValue($casts[$key], $key, $value);
 
-            $formatted = $casts[$key]->cast($key, $value);
             $this->validatedData[$key] = $formatted;
         }
+    }
+
+    protected function validatedData(): array
+    {
+        return $this->validator->validated();
     }
 
     /**
@@ -125,9 +152,30 @@ abstract class ValidatedDTO
      *
      * @throws ValidationException
      */
-    protected function failedValidation(ValidatorInterface $validator): void
+    protected function failedValidation(): void
     {
-        throw new ValidationException($validator);
+        throw new ValidationException($this->validator);
+    }
+
+    /**
+     * @throws CastTargetException
+     */
+    protected function castValue(mixed $cast, string $key, mixed $value): mixed
+    {
+        if ($cast instanceof Castable) {
+            return $cast->cast($key, $value);
+        }
+
+        if (! is_callable($cast)) {
+            throw new CastTargetException($key);
+        }
+
+        return $cast($key, $value);
+    }
+
+    protected function shouldReturnNull(string $key, mixed $value): bool
+    {
+        return is_null($value) && $this->isOptionalProperty($key);
     }
 
     protected function hasScene(string $scene): bool
@@ -181,5 +229,15 @@ abstract class ValidatedDTO
     protected function casts(): array
     {
         return [];
+    }
+
+    private function isOptionalProperty(string $property): bool
+    {
+        $rules = $this->getRules();
+        $propertyRules = is_array($rules[$property])
+            ? $rules[$property]
+            : explode('|', $rules[$property]);
+
+        return in_array('optional', $propertyRules) || in_array('nullable', $propertyRules);
     }
 }
