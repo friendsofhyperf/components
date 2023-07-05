@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Tests\Concerns;
 use Throwable;
 
 /**
+ * @method string getName()
  * @method string name()
  */
 trait RunTestsInCoroutine
@@ -50,7 +51,7 @@ trait RunTestsInCoroutine
     final protected function runTest(): mixed
     {
         if (extension_loaded('swoole') && \Swoole\Coroutine::getCid() === -1 && $this->enableCoroutine) {
-            $this->realTestName = $this->name();
+            $this->realTestName = method_exists($this, 'getName') ? $this->getName() : $this->name();
             parent::setName('runTestsInCoroutine');
         }
 

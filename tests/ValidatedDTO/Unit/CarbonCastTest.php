@@ -14,6 +14,10 @@ use FriendsOfHyperf\ValidatedDTO\Casting\CarbonCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\CarbonImmutableCast;
 use FriendsOfHyperf\ValidatedDTO\Exception\CastException;
 
+beforeEach(function () {
+    $this->timezone = date_default_timezone_get();
+});
+
 it('casts to carbon', function () {
     $castable = new CarbonCast();
 
@@ -34,7 +38,7 @@ it('casts to carbon', function () {
 });
 
 it('casts to carbon with timezone', function () {
-    $castable = new CarbonCast('Europe/Lisbon');
+    $castable = new CarbonCast($this->timezone);
 
     $date = date('Y-m-d');
     $result = $castable->cast(test_property(), $date);
@@ -51,7 +55,7 @@ it('casts to carbon with timezone', function () {
     $this->expectException(CastException::class);
     $castable->cast(test_property(), 'TEST');
 
-    $castable = new CarbonCast('Europe/Lisbon', 'Y-m-d');
+    $castable = new CarbonCast($this->time, 'Y-m-d');
 
     $date = date('Y-m-d');
     $result = $castable->cast(test_property(), $date);
@@ -85,7 +89,7 @@ it('casts to carbon immutable', function () {
     $this->expectException(CastException::class);
     $castable->cast(test_property(), 'TEST');
 
-    $castable = new CarbonImmutableCast('Europe/Lisbon');
+    $castable = new CarbonImmutableCast($this->time);
 
     $date = date('Y-m-d');
     $result = $castable->cast(test_property(), $date);
@@ -102,7 +106,7 @@ it('casts to carbon immutable', function () {
     $this->expectException(CastException::class);
     $castable->cast(test_property(), 'TEST');
 
-    $castable = new CarbonImmutableCast('Europe/Lisbon', 'Y-m-d');
+    $castable = new CarbonImmutableCast($this->time, 'Y-m-d');
 
     $date = date('Y-m-d');
     $result = $castable->cast(test_property(), $date);

@@ -10,7 +10,6 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Tests;
 
-use Hyperf\Stringable\Stringable;
 use Mockery as m;
 
 /**
@@ -20,7 +19,7 @@ use Mockery as m;
 class TestCase extends \PHPUnit\Framework\TestCase
 {
     use Concerns\InteractsWithContainer;
-    use Concerns\RunTestsInCoroutine;
+    // use Concerns\RunTestsInCoroutine;
 
     public function __construct($name = null, array $data = [], $dataName = '')
     {
@@ -41,10 +40,5 @@ class TestCase extends \PHPUnit\Framework\TestCase
         m::close();
 
         $this->flushContainer();
-    }
-
-    protected function stringable($value = '')
-    {
-        return new Stringable($value);
     }
 }

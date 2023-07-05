@@ -13,11 +13,6 @@ use FriendsOfHyperf\ValidatedDTO\SimpleDTO;
 
 use function Hyperf\Collection\collect;
 
-beforeEach(function () {
-    $this->name = faker()->name();
-    $this->age = faker()->numberBetween(1, 100);
-});
-
 it('validates that a Wireable DTO will return the correct data for the toLivewire method', function () {
     $wireableDTO = new WireableDTO(['name' => $this->name, 'age' => $this->age]);
 

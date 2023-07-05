@@ -25,10 +25,6 @@ use Hyperf\Database\Model\Model;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
-beforeEach(function () {
-    $this->subject_name = faker()->name();
-});
-
 it('instantiates a SimpleDTO', function () {
     $simpleDTO = new SimpleDTOInstance(['name' => $this->subject_name]);
 

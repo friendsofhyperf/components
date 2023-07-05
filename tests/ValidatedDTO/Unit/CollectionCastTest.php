@@ -15,8 +15,6 @@ use FriendsOfHyperf\ValidatedDTO\Casting\DTOCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\IntegerCast;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
 use Hyperf\Collection\Collection;
-use Hyperf\Contract\ValidatorInterface;
-use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 
 it('casts to Collection class')
     ->expect(fn () => new CollectionCast())
@@ -70,12 +68,6 @@ it('properly casts an IntegerCast to collection')
     ->toBe([1, 5, 10]);
 
 it('properly casts an DTOCast', function () {
-    $this->instance(ValidatorFactoryInterface::class, mocking(ValidatorFactoryInterface::class)->expect(
-        make: fn () => mocking(ValidatorInterface::class)->expect(
-            fails: fn () => false
-        )
-    ));
-
     $castable = new CollectionCast(new DTOCast(ValidatedDTOInstance::class));
 
     $johnDto = new ValidatedDTOInstance(['name' => 'John Doe', 'age' => 30]);
