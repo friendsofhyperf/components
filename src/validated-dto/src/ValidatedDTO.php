@@ -136,11 +136,10 @@ abstract class ValidatedDTO
                 continue;
             }
 
-            $result[$key] = $this->shouldReturnNull($key, $value)
+            $formatted = $this->shouldReturnNull($key, $value)
                     ? null
                     : $this->castValue($casts[$key], $key, $value);
 
-            $formatted = $casts[$key]->cast($key, $value);
             $this->validatedData[$key] = $formatted;
         }
     }
