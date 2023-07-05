@@ -138,7 +138,7 @@ abstract class ValidatedDTO
     }
 
     /**
-     * @throws \WendellAdriel\ValidatedDTO\Exceptions\CastTargetException
+     * @throws CastTargetException
      */
     protected function castValue(mixed $cast, string $key, mixed $value): mixed
     {
