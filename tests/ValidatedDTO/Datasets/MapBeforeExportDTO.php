@@ -8,23 +8,18 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace Tests\ValidatedDTO\Dataset;
+namespace FriendsOfHyperf\Tests\ValidatedDTO\Datasets;
 
-use FriendsOfHyperf\ValidatedDTO\Casting\IntegerCast;
-use FriendsOfHyperf\ValidatedDTO\Casting\StringCast;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
 
-class ValidatedDTOInstance extends ValidatedDTO
+class MapBeforeExportDTO extends ValidatedDTO
 {
     public string $name;
-
-    public ?int $age = null;
 
     protected function rules(): array
     {
         return [
-            'name' => 'required',
-            'age' => 'numeric',
+            'name' => ['required', 'string'],
         ];
     }
 
@@ -35,9 +30,13 @@ class ValidatedDTOInstance extends ValidatedDTO
 
     protected function casts(): array
     {
+        return [];
+    }
+
+    protected function mapBeforeExport(): array
+    {
         return [
-            'name' => new StringCast(),
-            'age' => new IntegerCast(),
+            'name' => 'username',
         ];
     }
 }

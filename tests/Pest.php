@@ -8,9 +8,11 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+use Faker\Factory;
+use Faker\Generator;
 use Pest\Mock\Mock;
 
-uses(\Tests\TestCase::class)->in('*/*');
+uses(\FriendsOfHyperf\Tests\TestCase::class)->in('*/*');
 
 /*
 |--------------------------------------------------------------------------
@@ -49,4 +51,17 @@ expect()->extend('toBeOne', function () {
 function mocking(string|object $object): Mock
 {
     return new Mock($object);
+}
+
+/**
+ * Returns the string "test_property".
+ */
+function test_property(): string
+{
+    return 'test_property';
+}
+
+function faker(string $locale = Factory::DEFAULT_LOCALE): Generator
+{
+    return Factory::create($locale);
 }
