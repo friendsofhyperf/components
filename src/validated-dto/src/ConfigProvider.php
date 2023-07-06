@@ -20,6 +20,15 @@ class ConfigProvider
             'commands' => [
                 Command\GeneratorCommand::class,
             ],
+
+            'publish' => [
+                [
+                    'id' => 'config',
+                    'description' => 'The config file of dto.',
+                    'source' => __DIR__ . '/../publish/dto.php',
+                    'destination' => BASE_PATH . '/config/autoload/dto.php',
+                ],
+            ],
         ];
     }
 }

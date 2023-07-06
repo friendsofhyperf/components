@@ -8,16 +8,36 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.0/README.md
  * @contact  huangdijia@gmail.com
  */
+use Faker\Factory;
+use Faker\Generator;
+use FriendsOfHyperf\Tests\Concerns\MakeStringable;
+use FriendsOfHyperf\Tests\TestCase;
+use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\ValidatorInterface;
+use Hyperf\Validation\Contract\ValidatorFactoryInterface;
+use Mockery as m;
 use Pest\Mock\Mock;
 
-/*
- * This file is part of friendsofhyperf/components.
- *
- * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
- * @contact  huangdijia@gmail.com
- */
-// uses(Tests\TestCase::class)->in('Feature');
+uses(TestCase::class)->beforeEach(function () {
+    $this->mock(ValidatorFactoryInterface::class, function ($mock) {
+        $mock->shouldReceive('make')->andReturn(m::mock(ValidatorInterface::class, function ($mock) {
+            $mock->shouldReceive('fails')->andReturn(false)
+                ->shouldReceive('passes')->andReturn(true);
+        }));
+    });
+    $this->mock(ConfigInterface::class, function ($mock) {
+        $mock->shouldReceive('get')->with('dto')->andReturn([]);
+    });
+    $this->name = faker()->name();
+    $this->age = faker()->numberBetween(1, 100);
+    $this->subject_name = faker()->name();
+})->in('ValidatedDTO');
+
+uses(MakeStringable::class)->beforeAll(function () {
+    $bootApplication = (object) [];
+    (new \FriendsOfHyperf\Macros\Listener\RegisterMixinListener())->process($bootApplication);
+    (new \FriendsOfHyperf\FastPaginate\Listener\RegisterMixinListener())->process($bootApplication);
+})->in('Macros', 'FastPaginate', 'Helpers');
 
 /*
 |--------------------------------------------------------------------------
@@ -56,4 +76,17 @@ expect()->extend('toBeOne', function () {
 function mocking(string|object $object): Mock
 {
     return new Mock($object);
+}
+
+/**
+ * Returns the string "test_property".
+ */
+function test_property(): string
+{
+    return 'test_property';
+}
+
+function faker(string $locale = Factory::DEFAULT_LOCALE): Generator
+{
+    return Factory::create($locale);
 }
