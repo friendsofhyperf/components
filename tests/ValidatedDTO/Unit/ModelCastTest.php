@@ -15,16 +15,17 @@ use FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Database\Model\Model;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
+use Mockery as m;
 
 beforeEach(function () {
-    $this->instance(
+    $this->mock(
         ValidatorFactoryInterface::class,
-        Mockery::mock(ValidatorFactoryInterface::class, function ($mock) {
-            $mock->shouldReceive('make')->andReturn(Mockery::mock(ValidatorInterface::class, function ($mock) {
+        function ($mock) {
+            $mock->shouldReceive('make')->andReturn(m::mock(ValidatorInterface::class, function ($mock) {
                 $mock->shouldReceive('fails')->andReturn(false)
                     ->shouldReceive('passes')->andReturn(true);
             }));
-        })
+        }
     );
 });
 
