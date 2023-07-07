@@ -90,11 +90,18 @@ class Encrypter implements EncrypterContract, StringEncrypter
         $value = self::$supportedCiphers[strtolower($this->cipher)]['aead']
             ? \openssl_encrypt(
                 $serialize ? serialize($value) : $value,
-                strtolower($this->cipher), $this->key, 0, $iv, $tag
+                strtolower($this->cipher),
+                $this->key,
+                0,
+                $iv,
+                $tag
             )
             : \openssl_encrypt(
                 $serialize ? serialize($value) : $value,
-                strtolower($this->cipher), $this->key, 0, $iv
+                strtolower($this->cipher),
+                $this->key,
+                0,
+                $iv
             );
 
         if ($value === false) {
