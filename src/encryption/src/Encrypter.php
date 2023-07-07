@@ -86,14 +86,16 @@ class Encrypter implements EncrypterContract, StringEncrypter
     public function encrypt($value, bool $serialize = true): string
     {
         $iv = random_bytes(openssl_cipher_iv_length(strtolower($this->cipher)));
-        $value = \openssl_encrypt(
-            $serialize ? serialize($value) : $value,
-            strtolower($this->cipher),
-            $this->key,
-            0,
-            $iv,
-            $tag
-        );
+        $tag = '';
+        $value = self::$supportedCiphers[strtolower($this->cipher)]['aead']
+            ? \openssl_encrypt(
+                $serialize ? serialize($value) : $value,
+                strtolower($this->cipher), $this->key, 0, $iv, $tag
+            )
+            : \openssl_encrypt(
+                $serialize ? serialize($value) : $value,
+                strtolower($this->cipher), $this->key, 0, $iv
+            );
 
         if ($value === false) {
             throw new EncryptException('Could not encrypt the data.');
