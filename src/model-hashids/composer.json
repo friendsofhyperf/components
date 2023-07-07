@@ -12,6 +12,7 @@
     "require": {
         "php": "^8.0",
         "hashids/hashids": "^4.1|^5.0",
+        "hyperf/config": "~3.0.0",
         "hyperf/database": "~3.0.0",
         "hyperf/stringable": "~3.0.0"
     },

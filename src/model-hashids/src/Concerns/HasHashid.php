@@ -13,6 +13,8 @@ namespace FriendsOfHyperf\ModelHashids\Concerns;
 use Hashids\Hashids;
 use Hyperf\Database\Model\Model;
 
+use function Hyperf\Config\config;
+
 /**
  * @method Model|null findByHashid($hashid)
  * @method Model findByHashidOrFail($hashid)
