@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Friendsofhyperf\\Encryption\\": "src/"
+            "FriendsOfHyperf\\Encryption\\": "src/"
         },
         "files": [
             "src/Functions.php"
@@ -44,7 +44,7 @@
     },
     "extra": {
         "hyperf": {
-            "config": "Friendsofhyperf\\Encryption\\ConfigProvider"
+            "config": "FriendsOfHyperf\\Encryption\\ConfigProvider"
         },
         "branch-alias": {
             "dev-main": "3.1-dev"

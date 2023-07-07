@@ -8,12 +8,12 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace Friendsofhyperf\Encryption\Listener;
+namespace FriendsOfHyperf\Encryption\Listener;
 
-use Friendsofhyperf\Encryption\Contract\Encrypter as EncrypterInterface;
-use Friendsofhyperf\Encryption\Contract\StringEncrypter;
-use Friendsofhyperf\Encryption\Encrypter;
-use Friendsofhyperf\Encryption\KeyParser;
+use FriendsOfHyperf\Encryption\Contract\Encrypter as EncrypterInterface;
+use FriendsOfHyperf\Encryption\Contract\StringEncrypter;
+use FriendsOfHyperf\Encryption\Encrypter;
+use FriendsOfHyperf\Encryption\KeyParser;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Container;
 use Hyperf\Event\Contract\ListenerInterface;
