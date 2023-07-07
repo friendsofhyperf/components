@@ -8,9 +8,9 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace Friendsofhyperf\Encryption;
+namespace FriendsOfHyperf\Encryption;
 
-use Friendsofhyperf\Encryption\Listener\BootEncryptionListener;
+use FriendsOfHyperf\Encryption\Listener\BootEncryptionListener;
 
 class ConfigProvider
 {

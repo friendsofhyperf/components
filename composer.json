@@ -155,6 +155,7 @@
             "FriendsOfHyperf\\Confd\\": "src/confd/src/",
             "FriendsOfHyperf\\ConfigConsul\\": "src/config-consul/src/",
             "FriendsOfHyperf\\ConsoleSpinner\\": "src/console-spinner/src/",
+            "FriendsOfHyperf\\Encryption\\": "src/encryption/src/",
             "FriendsOfHyperf\\ExceptionEvent\\": "src/exception-event/src/",
             "FriendsOfHyperf\\Facade\\": "src/facade/src/",
             "FriendsOfHyperf\\FastPaginate\\": "src/fast-paginate/src/",
@@ -181,7 +182,6 @@
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
             "FriendsOfHyperf\\Trigger\\": "src/trigger/src/",
             "FriendsOfHyperf\\ValidatedDTO\\": "src/validated-dto/src/",
-            "Friendsofhyperf\\Encryption\\": "src/encryption/src/",
             "Pest\\Hyperf\\": "src/pest-plugin-hyperf/src/"
         }
     },
@@ -203,6 +203,7 @@
                 "FriendsOfHyperf\\Confd\\ConfigProvider",
                 "FriendsOfHyperf\\ConfigConsul\\ConfigProvider",
                 "FriendsOfHyperf\\ConsoleSpinner\\ConfigProvider",
+                "FriendsOfHyperf\\Encryption\\ConfigProvider",
                 "FriendsOfHyperf\\ExceptionEvent\\ConfigProvider",
                 "FriendsOfHyperf\\Facade\\ConfigProvider",
                 "FriendsOfHyperf\\FastPaginate\\ConfigProvider",
@@ -227,8 +228,7 @@
                 "FriendsOfHyperf\\Support\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
                 "FriendsOfHyperf\\Trigger\\ConfigProvider",
-                "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider",
-                "Friendsofhyperf\\Encryption\\ConfigProvider"
+                "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider"
             ]
         }
     },

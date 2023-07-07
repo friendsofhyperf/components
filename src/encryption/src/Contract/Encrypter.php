@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace Friendsofhyperf\Encryption\Contract;
+namespace FriendsOfHyperf\Encryption\Contract;
 
 interface Encrypter
 {
@@ -16,7 +16,7 @@ interface Encrypter
      * Encrypt the given value.
      *
      * @param mixed $value
-     * @throws \Friendsofhyperf\Encryption\Contract\EncryptException
+     * @throws \FriendsOfHyperf\Encryption\Contract\EncryptException
      */
     public function encrypt($value, bool $serialize = true): string;
 
@@ -24,7 +24,7 @@ interface Encrypter
      * Decrypt the given value.
      *
      * @return mixed
-     * @throws \Friendsofhyperf\Encryption\Contract\DecryptException
+     * @throws \FriendsOfHyperf\Encryption\Contract\DecryptException
      */
     public function decrypt(string $payload, bool $unserialize = true);
 
