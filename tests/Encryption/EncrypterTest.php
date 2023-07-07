@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Tests\Encryption;
 
-use Friendsofhyperf\Encryption\Contract\DecryptException;
+use FriendsOfHyperf\Encryption\Contract\DecryptException;
 use FriendsOfHyperf\Encryption\Encrypter;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
