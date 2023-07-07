@@ -203,6 +203,7 @@
                 "FriendsOfHyperf\\Confd\\ConfigProvider",
                 "FriendsOfHyperf\\ConfigConsul\\ConfigProvider",
                 "FriendsOfHyperf\\ConsoleSpinner\\ConfigProvider",
+                "FriendsOfHyperf\\Encryption\\ConfigProvider",
                 "FriendsOfHyperf\\ExceptionEvent\\ConfigProvider",
                 "FriendsOfHyperf\\Facade\\ConfigProvider",
                 "FriendsOfHyperf\\FastPaginate\\ConfigProvider",
@@ -227,8 +228,7 @@
                 "FriendsOfHyperf\\Support\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
                 "FriendsOfHyperf\\Trigger\\ConfigProvider",
-                "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider",
-                "FriendsOfHyperf\\Encryption\\ConfigProvider"
+                "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider"
             ]
         }
     },
