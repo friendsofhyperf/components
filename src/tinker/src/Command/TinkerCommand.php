@@ -22,6 +22,7 @@ use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Throwable;
 
 use function Hyperf\Support\env;
 
@@ -97,6 +98,9 @@ class TinkerCommand extends HyperfCommand
             try {
                 $shell->setOutput($this->output);
                 $shell->execute($code);
+            } catch (Throwable $e) {
+                $shell->writeException($e);
+                return 1;
             } finally {
                 $loader->unregister();
             }
