@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace Friendsofhyperf\Encryption\Exception;
+namespace FriendsOfHyperf\Encryption\Exception;
 
 use RuntimeException;
 

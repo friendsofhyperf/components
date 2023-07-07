@@ -8,21 +8,21 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace Friendsofhyperf\Encryption\Contract;
+namespace FriendsOfHyperf\Encryption\Contract;
 
 interface StringEncrypter
 {
     /**
      * Encrypt a string without serialization.
      *
-     * @throws \Friendsofhyperf\Encryption\Contract\EncryptException
+     * @throws \FriendsOfHyperf\Encryption\Contract\EncryptException
      */
     public function encryptString(string $value): string;
 
     /**
      * Decrypt the given string without unserialization.
      *
-     * @throws \Friendsofhyperf\Encryption\Contract\DecryptException
+     * @throws \FriendsOfHyperf\Encryption\Contract\DecryptException
      */
     public function decryptString(string $payload): string;
 }

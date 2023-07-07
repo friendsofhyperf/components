@@ -22,7 +22,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Friendsofhyperf\\Encryption\\": "src/"
+            "FriendsOfHyperf\\Encryption\\": "src/"
         },
         "files": [
             "src/Functions.php"

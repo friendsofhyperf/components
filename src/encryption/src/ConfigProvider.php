@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace Friendsofhyperf\Encryption;
 
-use Friendsofhyperf\Encryption\Listener\BootEncryptionListener;
+use FriendsOfHyperf\Encryption\Listener\BootEncryptionListener;
 
 class ConfigProvider
 {
