@@ -22,7 +22,10 @@ return [
         'consul' => [
             'driver' => FriendsOfHyperf\ConfigConsul\ConsulDriver::class,
             'packer' => Hyperf\Codec\Packer\JsonPacker::class,
-            'uri' => env('CONSUL_URI'),
+            'client' => [
+                'uri' => env('CONSUL_URI'),
+                'token' => env('CONSUL_TOKEN'),
+            ],
             'namespaces' => [
                 '/application',
             ],

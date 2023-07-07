@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ConfigConsul\Consul;
 
 use Hyperf\Consul\KV;
+use Hyperf\Consul\KVInterface as KVContract;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Guzzle\ClientFactory;
 use Psr\Container\ContainerInterface;
@@ -21,12 +22,17 @@ class KVFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        return new KV(function () use ($container) {
-            $config = $container->get(ConfigInterface::class);
-            $token = $config->get('config_center.drivers.consul.token', '');
+        if (! $config = $container->get(ConfigInterface::class)->get('config_center.drivers.consul.client')) {
+            return $container->get(KVContract::class);
+        }
+
+        $token = $config['token'] ?? '';
+        $uri = $config['uri'] ?? KV::DEFAULT_URI;
+
+        return new KV(function () use ($container, $token, $uri) {
             $options = [
                 'timeout' => 2,
-                'base_uri' => $config->get('config_center.drivers.consul.uri', KV::DEFAULT_URI),
+                'base_uri' => $uri,
             ];
 
             if (! empty($token)) {
