@@ -679,6 +679,10 @@ class ModelCommand extends HyperfCommand
 
         $types = $this->extractReflectionTypes($returnType);
 
+        if (is_string($types)) {
+            $types = [$types];
+        }
+
         if ($returnType->allowsNull()) {
             $types[] = 'null';
         }
