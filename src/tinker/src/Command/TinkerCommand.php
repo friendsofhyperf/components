@@ -97,7 +97,7 @@ class TinkerCommand extends HyperfCommand
         if ($code = $this->input->getOption('execute')) {
             try {
                 $shell->setOutput($this->output);
-                $shell->execute($code);
+                $shell->execute($code, true);
             } catch (Throwable $e) {
                 $shell->writeException($e);
                 return 1;
