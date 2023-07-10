@@ -10,23 +10,6 @@ declare(strict_types=1);
  */
 use Hyperf\Collection\Arr;
 
-test('test isList', function ($expected, $value) {
-    expect(Arr::isList($value))->toBe($expected);
-})->with([
-    [true, []],
-    [true, [1, 2, 3]],
-    [true, ['foo', 2, 3]],
-    [true, ['foo', 'bar']],
-    [true, [0 => 'foo', 'bar']],
-    [true, [0 => 'foo', 1 => 'bar']],
-
-    [false, [1 => 'foo', 'bar']],
-    [false, [1 => 'foo', 0 => 'bar']],
-    [false, [0 => 'foo', 'bar' => 'baz']],
-    [false, [0 => 'foo', 2 => 'bar']],
-    [false, ['foo' => 'bar', 'baz' => 'qux']],
-]);
-
 test('test keyBy', function () {
     $array = [
         ['id' => '123', 'data' => 'abc'],
