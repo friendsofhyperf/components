@@ -13,18 +13,6 @@ namespace Hyperf\Collection;
 class Arr
 {
     /**
-     * Determines if an array is a list.
-     *
-     * An array is a "list" if all array keys are sequential integers starting from 0 with no gaps in between.
-     *
-     * @param array $array
-     * @return bool
-     */
-    public static function isList($array)
-    {
-    }
-
-    /**
      * Key an associative array by a field or using a callback.
      *
      * @param array $array

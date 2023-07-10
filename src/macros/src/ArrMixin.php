@@ -18,11 +18,6 @@ use Hyperf\Collection\Collection;
  */
 class ArrMixin
 {
-    public function isList()
-    {
-        return fn ($array) => array_is_list($array);
-    }
-
     public function join()
     {
         return function ($array, $glue, $finalGlue = '') {
