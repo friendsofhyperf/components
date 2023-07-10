@@ -21,9 +21,6 @@
         "nesbot/carbon": "^2.0"
     },
     "autoload": {
-        "files": [
-            "src/Functions.php"
-        ],
         "psr-4": {
             "FriendsOfHyperf\\Macros\\": "src/"
         }
