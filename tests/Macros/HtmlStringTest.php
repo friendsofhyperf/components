@@ -10,8 +10,6 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Macros\Foundation\HtmlString;
 
-uses()->group('macros', 'html-string');
-
 test('test toHtml', function () {
     $str = '<h1>foo</h1>';
     $html = new HtmlString('<h1>foo</h1>');

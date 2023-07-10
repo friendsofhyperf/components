@@ -10,8 +10,6 @@ declare(strict_types=1);
  */
 use Hyperf\Collection\Arr;
 
-uses()->group('macros', 'arr');
-
 test('test isList', function ($expected, $value) {
     expect(Arr::isList($value))->toBe($expected);
 })->with([

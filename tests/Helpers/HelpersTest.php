@@ -16,8 +16,6 @@ use function FriendsOfHyperf\Helpers\Command\call;
 use function FriendsOfHyperf\Helpers\object_get;
 use function FriendsOfHyperf\Helpers\preg_replace_array;
 
-uses()->group('helpers');
-
 test('test ClassNamespace', function () {
     $this->assertSame('Foo\Bar', class_namespace('Foo\Bar\Baz'));
     $this->assertSame('', class_namespace('Baz'));

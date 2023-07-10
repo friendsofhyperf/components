@@ -14,8 +14,6 @@ use Mockery as m;
 use Psr\Http\Message\ServerRequestInterface;
 use Swow\Psr7\Message\ServerRequestPlusInterface;
 
-uses()->group('macros', 'request');
-
 afterEach(function () {
     Context::set(ServerRequestInterface::class, null);
     Context::set('http.request.parsedData', null);

@@ -13,8 +13,6 @@ use FriendsOfHyperf\Tinker\TinkerCaster;
 use Hyperf\Collection\Collection;
 use Hyperf\Stringable\Stringable;
 
-uses()->group('tinker');
-
 beforeEach(function () {
     $this->caster = new TinkerCaster();
 });

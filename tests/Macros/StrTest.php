@@ -10,8 +10,6 @@ declare(strict_types=1);
  */
 use Hyperf\Stringable\Str;
 
-uses()->group('macros', 'str');
-
 test('test strBetweenFirst', function ($expected, $args) {
     expect(Str::betweenFirst(...$args))->toBe($expected);
 })->with([

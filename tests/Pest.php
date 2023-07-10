@@ -16,6 +16,13 @@ use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Mockery as m;
 
 uses(\FriendsOfHyperf\Tests\TestCase::class)->in('*/*');
+uses()->group('config-consul')->in('ConfigConsul');
+uses()->group('facade')->in('Facade');
+uses()->group('fast-paginate')->in('FastPaginate');
+uses()->group('helpers')->in('Helpers');
+uses()->group('macros')->in('Macros');
+uses()->group('support')->in('Support');
+uses()->group('tinker')->in('Tinker');
 uses()->group('validated-dto')
     ->beforeEach(function () {
         $this->subject_name = faker()->name();
@@ -34,6 +41,7 @@ uses()->group('validated-dto')
         });
     })
     ->in('ValidatedDTO');
+
 /*
 |--------------------------------------------------------------------------
 | Expectations
