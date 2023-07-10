@@ -9,7 +9,6 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 use Hyperf\Contract\ApplicationInterface;
-use Mockery as m;
 
 use function FriendsOfHyperf\Helpers\class_namespace;
 use function FriendsOfHyperf\Helpers\Command\call;
@@ -55,10 +54,10 @@ test('test PregReplaceArray', function ($pattern, $replacements, $subject, $expe
 })->with('providesPregReplaceArrayData');
 
 test('test FriendsOfHyperf\Helpers\Command\call', function () {
-    $this->instance(ApplicationInterface::class, m::mock(ApplicationInterface::class, [
-        'setAutoExit' => null,
-        'run' => 0,
-    ]));
+    $this->mock(ApplicationInterface::class, function ($mock) {
+        $mock->shouldReceive('setAutoExit')->andReturnSelf();
+        $mock->shouldReceive('run')->andReturn(0);
+    });
 
     expect(call('foo:bar', ['argument' => 'value']))->toBe(0);
 });

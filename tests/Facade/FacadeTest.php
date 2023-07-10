@@ -20,13 +20,13 @@ test('test Cache Macroable', function () {
 });
 
 test('test Log Macroable', function () {
-    $this->instance(
+    $this->mock(
         LoggerFactory::class,
-        m::mock(LoggerFactory::class, [
-            'get' => m::mock(\Psr\Log\LoggerInterface::class, [
+        function ($mock) {
+            $mock->shouldReceive('get')->andReturn(m::mock(\Psr\Log\LoggerInterface::class, [
                 'info' => null,
-            ]),
-        ])
+            ]));
+        }
     );
 
     expect(Log::channel('hyperf', 'default'))->toBeInstanceOf(\Psr\Log\LoggerInterface::class);
