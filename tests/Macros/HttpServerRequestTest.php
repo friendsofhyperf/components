@@ -10,10 +10,9 @@ declare(strict_types=1);
  */
 use Hyperf\Context\Context;
 use Hyperf\HttpServer\Request;
+use Mockery as m;
 use Psr\Http\Message\ServerRequestInterface;
 use Swow\Psr7\Message\ServerRequestPlusInterface;
-
-uses()->group('macros', 'request');
 
 afterEach(function () {
     Context::set(ServerRequestInterface::class, null);
@@ -21,10 +20,10 @@ afterEach(function () {
 });
 
 test('test only', function () {
-    $psrRequest = mocking(ServerRequestPlusInterface::class)->expect(
-        getParsedBody: fn () => ['id' => 1],
-        getQueryParams: fn () => [],
-    );
+    $psrRequest = m::mock(ServerRequestPlusInterface::class, [
+        'getParsedBody' => ['id' => 1],
+        'getQueryParams' => [],
+    ]);
     Context::set(ServerRequestInterface::class, $psrRequest);
 
     $request = new Request();
@@ -34,10 +33,10 @@ test('test only', function () {
 });
 
 test('test isEmptyString', function () {
-    $psrRequest = mocking(ServerRequestPlusInterface::class)->expect(
-        getParsedBody: fn () => ['id' => 1],
-        getQueryParams: fn () => [],
-    );
+    $psrRequest = m::mock(ServerRequestPlusInterface::class, [
+        'getParsedBody' => ['id' => 1],
+        'getQueryParams' => [],
+    ]);
     Context::set(ServerRequestInterface::class, $psrRequest);
 
     $request = new Request();

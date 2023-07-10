@@ -12,22 +12,7 @@ use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\ModelInstance;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\ValidatedDTOInstance;
 use FriendsOfHyperf\ValidatedDTO\Casting\ModelCast;
 use FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException;
-use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Database\Model\Model;
-use Hyperf\Validation\Contract\ValidatorFactoryInterface;
-use Mockery as m;
-
-beforeEach(function () {
-    $this->mock(
-        ValidatorFactoryInterface::class,
-        function ($mock) {
-            $mock->shouldReceive('make')->andReturn(m::mock(ValidatorInterface::class, function ($mock) {
-                $mock->shouldReceive('fails')->andReturn(false)
-                    ->shouldReceive('passes')->andReturn(true);
-            }));
-        }
-    );
-});
 
 it('properly casts a to the Model class')
     ->expect(fn () => new ModelCast(ModelInstance::class))

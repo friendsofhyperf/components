@@ -15,8 +15,6 @@ use function FriendsOfHyperf\Helpers\Command\call;
 use function FriendsOfHyperf\Helpers\object_get;
 use function FriendsOfHyperf\Helpers\preg_replace_array;
 
-uses()->group('helpers');
-
 test('test ClassNamespace', function () {
     $this->assertSame('Foo\Bar', class_namespace('Foo\Bar\Baz'));
     $this->assertSame('', class_namespace('Baz'));
@@ -56,10 +54,10 @@ test('test PregReplaceArray', function ($pattern, $replacements, $subject, $expe
 })->with('providesPregReplaceArrayData');
 
 test('test FriendsOfHyperf\Helpers\Command\call', function () {
-    $this->instance(ApplicationInterface::class, mocking(ApplicationInterface::class)->expect(
-        setAutoExit: fn () => null,
-        run: fn () => 0,
-    ));
+    $this->mock(ApplicationInterface::class, function ($mock) {
+        $mock->shouldReceive('setAutoExit')->andReturnSelf();
+        $mock->shouldReceive('run')->andReturn(0);
+    });
 
     expect(call('foo:bar', ['argument' => 'value']))->toBe(0);
 });

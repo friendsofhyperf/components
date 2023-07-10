@@ -11,8 +11,7 @@ declare(strict_types=1);
 use FriendsOfHyperf\Cache\Cache;
 use FriendsOfHyperf\Facade\Log;
 use Hyperf\Logger\LoggerFactory;
-
-uses()->group('facade');
+use Mockery as m;
 
 test('test Cache Macroable', function () {
     Cache::macro('test', fn () => null);
@@ -21,9 +20,14 @@ test('test Cache Macroable', function () {
 });
 
 test('test Log Macroable', function () {
-    $this->instance(LoggerFactory::class, mocking(LoggerFactory::class)->expect(
-        get: fn () => mocking(\Psr\Log\LoggerInterface::class)->allows()->info('test')->getMock()
-    ));
+    $this->mock(
+        LoggerFactory::class,
+        function ($mock) {
+            $mock->shouldReceive('get')->andReturn(m::mock(\Psr\Log\LoggerInterface::class, [
+                'info' => null,
+            ]));
+        }
+    );
 
     expect(Log::channel('hyperf', 'default'))->toBeInstanceOf(\Psr\Log\LoggerInterface::class);
 

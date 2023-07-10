@@ -10,15 +10,15 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\ConfigConsul\Consul\KVFactory;
 use FriendsOfHyperf\ConfigConsul\Consul\KVInterface;
-use Hyperf\Consul\KV;
+use Mockery as m;
 use Psr\Container\ContainerInterface;
 
 test('test KVInterface', function () {
-    $KVFactory = mocking(KVFactory::class)->expect(
-        __invoke: fn () => mocking(KV::class)->expect()
-    );
+    $KVFactory = m::mock(KVFactory::class, [
+        '__invoke' => m::mock(KVInterface::class),
+    ]);
 
-    $kv = $KVFactory(mocking(ContainerInterface::class)->expect());
+    $kv = $KVFactory(m::mock(ContainerInterface::class));
 
     expect($kv)->toBeInstanceOf(KVInterface::class);
 });

@@ -9,13 +9,6 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 use FriendsOfHyperf\ValidatedDTO\Casting\ArrayCast;
-use Hyperf\Contract\ConfigInterface;
-
-beforeEach(function () {
-    $this->mock(ConfigInterface::class, function ($mock) {
-        $mock->shouldReceive('get')->with('dto')->andReturn([]);
-    });
-});
 
 it('properly casts from json string to array')
     ->expect(fn () => new ArrayCast())

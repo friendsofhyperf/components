@@ -10,9 +10,37 @@ declare(strict_types=1);
  */
 use Faker\Factory;
 use Faker\Generator;
-use Pest\Mock\Mock;
+use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\ValidatorInterface;
+use Hyperf\Validation\Contract\ValidatorFactoryInterface;
+use Mockery as m;
 
 uses(\FriendsOfHyperf\Tests\TestCase::class)->in('*/*');
+uses()->group('config-consul')->in('ConfigConsul');
+uses()->group('facade')->in('Facade');
+uses()->group('fast-paginate')->in('FastPaginate');
+uses()->group('helpers')->in('Helpers');
+uses()->group('macros')->in('Macros');
+uses()->group('support')->in('Support');
+uses()->group('tinker')->in('Tinker');
+uses()->group('validated-dto')
+    ->beforeEach(function () {
+        $this->subject_name = faker()->name();
+        $this->name = faker()->name();
+        $this->age = faker()->numberBetween(1, 100);
+
+        $this->mock(ValidatorFactoryInterface::class, function ($mock) {
+            $mock->shouldReceive('make')->andReturn(m::mock(ValidatorInterface::class, function ($mock) {
+                $mock->shouldReceive('fails')->andReturn(false)
+                    ->shouldReceive('passes')->andReturn(true);
+            }));
+        });
+
+        $this->mock(ConfigInterface::class, function ($mock) {
+            $mock->shouldReceive('get')->with('dto')->andReturn([]);
+        });
+    })
+    ->in('ValidatedDTO');
 
 /*
 |--------------------------------------------------------------------------
@@ -39,19 +67,6 @@ expect()->extend('toBeOne', function () {
 | global functions to help you to reduce the number of lines of code in your test files.
 |
 */
-
-/**
- * Creates a new mock with the given class or object.
- *
- * @template TObject as object
- *
- * @param class-string<TObject>|TObject $object
- * @return Mock<TObject>
- */
-function mocking(string|object $object): Mock
-{
-    return new Mock($object);
-}
 
 /**
  * Returns the string "test_property".
