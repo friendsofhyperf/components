@@ -15,23 +15,6 @@ use FriendsOfHyperf\ValidatedDTO\Casting\DTOCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\IntegerCast;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
 use Hyperf\Collection\Collection;
-use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\ValidatorInterface;
-use Hyperf\Validation\Contract\ValidatorFactoryInterface;
-use Mockery as m;
-
-beforeEach(function () {
-    $this->mock(ValidatorFactoryInterface::class, function ($mock) {
-        $mock->shouldReceive('make')->andReturn(
-            m::mock(ValidatorInterface::class, function ($mock) {
-                $mock->shouldReceive('fails')->andReturn(false);
-            })
-        );
-    });
-    $this->mock(ConfigInterface::class, function ($mock) {
-        $mock->shouldReceive('get')->with('dto')->andReturn([]);
-    });
-});
 
 it('casts to Collection class')
     ->expect(fn () => new CollectionCast())

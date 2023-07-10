@@ -10,17 +10,8 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\WireableDTO;
 use FriendsOfHyperf\ValidatedDTO\SimpleDTO;
-use Hyperf\Contract\ConfigInterface;
 
 use function Hyperf\Collection\collect;
-
-beforeEach(function () {
-    $this->name = faker()->name();
-    $this->age = faker()->numberBetween(1, 100);
-    $this->mock(ConfigInterface::class, function ($mock) {
-        $mock->shouldReceive('get')->with('dto')->andReturn([]);
-    });
-});
 
 it('validates that a Wireable DTO will return the correct data for the toLivewire method', function () {
     $wireableDTO = new WireableDTO(['name' => $this->name, 'age' => $this->age]);

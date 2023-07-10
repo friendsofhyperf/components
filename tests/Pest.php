@@ -10,9 +10,30 @@ declare(strict_types=1);
  */
 use Faker\Factory;
 use Faker\Generator;
+use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\ValidatorInterface;
+use Hyperf\Validation\Contract\ValidatorFactoryInterface;
+use Mockery as m;
 
 uses(\FriendsOfHyperf\Tests\TestCase::class)->in('*/*');
+uses()->group('validated-dto')
+    ->beforeEach(function () {
+        $this->subject_name = faker()->name();
+        $this->name = faker()->name();
+        $this->age = faker()->numberBetween(1, 100);
 
+        $this->mock(ValidatorFactoryInterface::class, function ($mock) {
+            $mock->shouldReceive('make')->andReturn(m::mock(ValidatorInterface::class, function ($mock) {
+                $mock->shouldReceive('fails')->andReturn(false)
+                    ->shouldReceive('passes')->andReturn(true);
+            }));
+        });
+
+        $this->mock(ConfigInterface::class, function ($mock) {
+            $mock->shouldReceive('get')->with('dto')->andReturn([]);
+        });
+    })
+    ->in('ValidatedDTO');
 /*
 |--------------------------------------------------------------------------
 | Expectations

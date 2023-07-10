@@ -21,18 +21,10 @@ use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\User;
 use FriendsOfHyperf\ValidatedDTO\Exception\InvalidJsonException;
 use FriendsOfHyperf\ValidatedDTO\SimpleDTO;
 use Hyperf\Command\Command;
-use Hyperf\Contract\ConfigInterface;
 use Hyperf\Database\Model\Model;
 use Mockery as m;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\Console\Input\InputInterface;
-
-beforeEach(function () {
-    $this->subject_name = faker()->name();
-    $this->mock(ConfigInterface::class, function ($mock) {
-        $mock->shouldReceive('get')->with('dto')->andReturn([]);
-    });
-});
 
 it('instantiates a SimpleDTO', function () {
     $simpleDTO = new SimpleDTOInstance(['name' => $this->subject_name]);

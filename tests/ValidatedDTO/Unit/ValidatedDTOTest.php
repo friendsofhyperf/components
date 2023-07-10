@@ -20,30 +20,11 @@ use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\ValidatedDTOInstance;
 use FriendsOfHyperf\ValidatedDTO\Exception\InvalidJsonException;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
 use Hyperf\Command\Command;
-use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Database\Model\Model;
-use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Hyperf\Validation\ValidationException;
 use Mockery as m;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\Console\Input\InputInterface;
-
-beforeEach(function () {
-    $this->subject_name = faker()->name();
-    $this->mock(
-        ValidatorFactoryInterface::class,
-        function ($mock) {
-            $mock->shouldReceive('make')->andReturn(Mockery::mock(ValidatorInterface::class, function ($mock) {
-                $mock->shouldReceive('fails')->andReturn(false)
-                    ->shouldReceive('passes')->andReturn(true);
-            }));
-        }
-    );
-    $this->mock(ConfigInterface::class, function ($mock) {
-        $mock->shouldReceive('get')->with('dto')->andReturn([]);
-    });
-});
 
 it('instantiates a ValidatedDTO validating its data', function () {
     $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
