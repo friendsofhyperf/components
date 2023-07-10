@@ -17,6 +17,7 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Nacos\Application;
 use Hyperf\Nacos\Config;
+use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 
 use function Hyperf\Collection\collect;
@@ -28,7 +29,11 @@ class Nacos implements DriverInterface
 
     public function __construct(private ContainerInterface $container, private ConfigInterface $config, private StdoutLoggerInterface $logger)
     {
-        $config = $this->config->get('confd.drivers.nacos.client', []);
+        $config = $this->config->get('confd.drivers.nacos.client') ?: $this->config->get('nacos', []);
+
+        if (empty($config)) {
+            throw new InvalidArgumentException('Nacos config is invalid.');
+        }
 
         $this->client = make(NacosClient::class, [
             'config' => $this->buildNacosConfig($config),

@@ -38,6 +38,11 @@ return [
                 'guzzle' => [
                     'config' => ['timeout' => 3, 'connect_timeout' => 1],
                 ],
+                // Only support for nacos v2.
+                'grpc' => [
+                    'enable' => false,
+                    'heartbeat' => 10,
+                ],
             ],
             'listener_config' => [
                 'mysql' => [
