@@ -17,13 +17,13 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Database\Model\Model;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
-use Mockery;
+use Mockery as m;
 
 beforeEach(function () {
     $this->mock(
         ValidatorFactoryInterface::class,
         function ($mock) {
-            $mock->shouldReceive('make')->andReturn(Mockery::mock(ValidatorInterface::class, function ($mock) {
+            $mock->shouldReceive('make')->andReturn(m::mock(ValidatorInterface::class, function ($mock) {
                 $mock->shouldReceive('fails')->andReturn(false)
                     ->shouldReceive('passes')->andReturn(true);
             }));

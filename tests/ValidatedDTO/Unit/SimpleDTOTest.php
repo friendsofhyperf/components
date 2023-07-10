@@ -23,6 +23,7 @@ use FriendsOfHyperf\ValidatedDTO\SimpleDTO;
 use Hyperf\Command\Command;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Database\Model\Model;
+use Mockery as m;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\Console\Input\InputInterface;
 
@@ -90,9 +91,9 @@ it('validates that a SimpleDTO can be instantiated from Array', function () {
 
 it('validates that a SimpleDTO can be instantiated from a Request', function () {
     /** @var RequestInterface $request */
-    $request = mocking(RequestInterface::class)->expect(
-        all: fn () => ['name' => $this->subject_name]
-    );
+    $request = m::mock(RequestInterface::class, [
+        'all' => ['name' => $this->subject_name],
+    ]);
 
     $simpleDTO = SimpleDTOInstance::fromRequest($request);
 
@@ -117,9 +118,9 @@ it('validates that a SimpleDTO can be instantiated from Command arguments', func
     $command = new class($this->subject_name) extends Command {
         public function __construct(protected string $subject_name)
         {
-            $this->input = mocking(InputInterface::class)->expect(
-                getArguments: fn () => ['name' => $this->subject_name]
-            );
+            $this->input = m::mock(InputInterface::class, [
+                'getArguments' => ['name' => $this->subject_name],
+            ]);
         }
     };
 
@@ -133,9 +134,9 @@ it('validates that a SimpleDTO can be instantiated from Command options', functi
     $command = new class($this->subject_name) extends Command {
         public function __construct(protected string $subject_name)
         {
-            $this->input = mocking(InputInterface::class)->expect(
-                getOptions: fn () => ['name' => $this->subject_name]
-            );
+            $this->input = m::mock(InputInterface::class, [
+                'getOptions' => ['name' => $this->subject_name],
+            ]);
         }
     };
 
@@ -149,10 +150,10 @@ it('validates that a SimpleDTO can be instantiated from a Command', function () 
     $command = new class($this->subject_name) extends Command {
         public function __construct(protected string $subject_name)
         {
-            $this->input = mocking(InputInterface::class)->expect(
-                getArguments: fn () => ['name' => $this->subject_name],
-                getOptions: fn () => ['age' => 30]
-            );
+            $this->input = m::mock(InputInterface::class, [
+                'getArguments' => ['name' => $this->subject_name],
+                'getOptions' => ['age' => 30],
+            ]);
         }
     };
 
