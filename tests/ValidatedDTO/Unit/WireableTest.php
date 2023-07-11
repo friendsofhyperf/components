@@ -8,8 +8,10 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\SimpleNameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\WireableDTO;
 use FriendsOfHyperf\ValidatedDTO\SimpleDTO;
+use Hyperf\Collection\Collection;
 
 use function Hyperf\Collection\collect;
 
@@ -21,6 +23,55 @@ it('validates that a Wireable DTO will return the correct data for the toLivewir
         ->toBe(['name' => $this->name, 'age' => $this->age])
         ->and($wireableDTO->toLivewire())
         ->toBe($wireableDTO->toArray());
+});
+
+it('validates that a Wireable DTO with a nested DTO will return the correct data for the toLivewire method', function () {
+    $data = [
+        'name' => $this->name,
+        'age' => $this->age,
+        'simple_name_dto' => [
+            'first_name' => $this->name,
+            'last_name' => $this->name,
+        ],
+    ];
+
+    $wireableDTO = new WireableDTO($data);
+
+    expect($wireableDTO)
+        ->toBeInstanceOf(SimpleDTO::class)
+        ->and($wireableDTO->simple_name_dto)
+        ->toBeInstanceOf(SimpleNameDTO::class)
+        ->and($wireableDTO->toLivewire())
+        ->toBe($data);
+});
+
+it('validates that a Wireable DTO with a DTO Collection will return the correct data for the toLivewire method', function () {
+    $simple_name = [
+        'first_name' => $this->name,
+        'last_name' => $this->name,
+    ];
+
+    $simple_name_2 = [
+        'first_name' => $this->name,
+        'last_name' => $this->name,
+    ];
+
+    $data = [
+        'name' => $this->name,
+        'age' => $this->age,
+        'simple_names_collection' => [$simple_name, $simple_name_2],
+    ];
+
+    $wireableDTO = new WireableDTO($data);
+
+    expect($wireableDTO)
+        ->toBeInstanceOf(SimpleDTO::class)
+        ->and($wireableDTO->simple_names_collection)
+        ->toBeInstanceOf(Collection::class)
+        ->and($wireableDTO->simple_names_collection->first())
+        ->toBeInstanceOf(SimpleNameDTO::class)
+        ->and($wireableDTO->toLivewire())
+        ->toBe($data);
 });
 
 it('validates that a Wireable DTO can be instantiated with the fromLivewire method with array', function () {

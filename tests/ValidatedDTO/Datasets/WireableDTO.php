@@ -10,10 +10,13 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Tests\ValidatedDTO\Datasets;
 
+use FriendsOfHyperf\ValidatedDTO\Casting\CollectionCast;
+use FriendsOfHyperf\ValidatedDTO\Casting\DTOCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\IntegerCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\StringCast;
 use FriendsOfHyperf\ValidatedDTO\Concerns\Wireable;
 use FriendsOfHyperf\ValidatedDTO\SimpleDTO;
+use Hyperf\Collection\Collection;
 
 class WireableDTO extends SimpleDTO
 {
@@ -22,6 +25,10 @@ class WireableDTO extends SimpleDTO
     public ?string $name;
 
     public ?int $age;
+
+    public ?SimpleNameDTO $simple_name_dto;
+
+    public ?Collection $simple_names_collection;
 
     protected function defaults(): array
     {
@@ -33,6 +40,8 @@ class WireableDTO extends SimpleDTO
         return [
             'name' => new StringCast(),
             'age' => new IntegerCast(),
+            'simple_name_dto' => new DTOCast(SimpleNameDTO::class),
+            'simple_names_collection' => new CollectionCast(new DTOCast(SimpleNameDTO::class)),
         ];
     }
 }
