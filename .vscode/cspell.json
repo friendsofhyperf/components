@@ -24,6 +24,7 @@
         "Kemal",
         "Laozi",
         "Laravel",
+        "Livewire",
         "Macroable",
         "mergable",
         "middlewares",
@@ -44,6 +45,7 @@
         "swow",
         "Thich",
         "ucsplit",
-        "undot"
+        "undot",
+        "Wireable"
     ]
 }

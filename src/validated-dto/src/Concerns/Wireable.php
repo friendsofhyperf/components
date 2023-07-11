@@ -17,6 +17,7 @@ trait Wireable
     public static function fromLivewire($value)
     {
         if (is_array($value)) {
+            json_decode(json_encode($value), true);
             return new static($value);
         }
 
@@ -33,6 +34,8 @@ trait Wireable
 
     public function toLivewire(): array
     {
-        return $this->toArray();
+        $fullArray = json_decode(json_encode($this->toArray()), true);
+
+        return array_filter($fullArray, fn ($value) => ! is_null($value));
     }
 }
