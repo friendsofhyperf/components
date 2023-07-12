@@ -38,7 +38,7 @@ class Spinner
 
     public function __call($name, $arguments)
     {
-        return call_user_func_array([$this->progressBar, $name], $arguments);
+        return $this->progressBar->{$name}(...$arguments);
     }
 
     public function getOriginalProgressBar(): ProgressBar
