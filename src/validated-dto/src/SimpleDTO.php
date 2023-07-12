@@ -87,6 +87,9 @@ abstract class SimpleDTO implements CastsAttributes
 
     /**
      * Creates a new model with the DTO validated data.
+     * @template T of \Hyperf\Database\Model\Model
+     * @param class-string<T> $model
+     * @return T
      */
     public function toModel(string $model): Model
     {
