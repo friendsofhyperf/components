@@ -28,11 +28,16 @@ trait Spinnerable
     {
         /** @var ConfigInterface $config */
         $config = ApplicationContext::getContainer()->get(ConfigInterface::class);
+        $chars = null;
+
+        if ($config->has($key = 'console_spinner.chars')) {
+            $chars = (array) $config->get($key);
+        }
 
         return make(Spinner::class, [
             'output' => $this->output,
             'max' => $max,
-            'chars' => $config->get('console_spinner.chars'),
+            'chars' => $chars,
         ]);
     }
 
