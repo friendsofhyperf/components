@@ -15,12 +15,13 @@ use Closure;
 use Hyperf\Collection\Collection;
 use Hyperf\Macroable\Macroable;
 use LogicException;
+use Stringable;
 
 use function Hyperf\Collection\data_get;
 use function Hyperf\Collection\value;
 use function Hyperf\Tappable\tap;
 
-class Response implements ArrayAccess
+class Response implements ArrayAccess, Stringable
 {
     use Concerns\DeterminesStatusCode;
     use Macroable {
