@@ -12,7 +12,6 @@ namespace FriendsOfHyperf\ClosureCommand;
 
 use Hyperf\Command\Command;
 use Hyperf\Command\Concerns\InteractsWithIO;
-use Hyperf\Context\Context;
 use Psr\Container\ContainerInterface;
 
 use function Hyperf\Support\class_uses_recursive;
@@ -31,9 +30,6 @@ class AnnotationCommand extends Command
 
     public function handle()
     {
-        Context::set(Input::class, $this->input);
-        Context::set(Output::class, $this->output);
-
         $inputs = array_merge($this->input->getArguments(), $this->input->getOptions());
         $parameters = $this->parameterParser->parseMethodParameters($this->class, $this->method, $inputs);
         $instance = $this->container->get($this->class);
