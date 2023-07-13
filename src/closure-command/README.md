@@ -5,6 +5,7 @@
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/closure-command)](https://github.com/friendsofhyperf/closure-command)
 
 The closure command component for Hyperf.
+
 ⚠️ This component is deprecated, please use [hyperf/command](https://github.com/hyperf/command) instead.
 
 ## Installation
