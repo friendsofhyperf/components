@@ -13,6 +13,9 @@ namespace FriendsOfHyperf\ClosureCommand\Annotation;
 use Attribute;
 use Hyperf\Di\Annotation\AbstractMultipleAnnotation;
 
+/**
+ * @deprecated since 3.1, use Hyperf\Command\Annotation\AsCommand instead.
+ */
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 class Command extends AbstractMultipleAnnotation
 {

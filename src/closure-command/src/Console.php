@@ -21,6 +21,9 @@ use Symfony\Component\Console\Output\NullOutput;
 use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
 
+/**
+ * @deprecated since 3.1, use Hyperf\Command\Console instead.
+ */
 class Console
 {
     public const ROUTE = BASE_PATH . '/config/console.php';
