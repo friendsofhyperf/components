@@ -54,25 +54,24 @@ use Hyperf\Di\Annotation\Inject;
 #[Command(signature: 'foo', description: 'The description of foo command.')]
 class FooService
 {
-    #[Inject()]
-    protected Output $output;
+    use \Hyperf\Command\Concerns\InteractsWithIO;
 
     #[Command(signature: 'foo:bar {--bar=1 : Bar Value}', description: 'The description of foo:bar command.')]
     public function bar($bar)
     {
-        $this->output->info('Bar Value: ' . $bar);
+        $this->output?->info('Bar Value: ' . $bar);
 
         return $bar;
     }
 
     public function bar1()
     {
-        $this->output->info(__METHOD__);
+        $this->output?->info(__METHOD__);
     }
 
     public function handle()
     {
-        $this->output->info(__METHOD__);
+        $this->output?->info(__METHOD__);
     }
 }
 ```

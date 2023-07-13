@@ -15,6 +15,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 
 /**
  * @mixin SymfonyStyle
+ * @deprecated 3.1. Use Hyperf\Command\Concerns\InteractsWithIO instead.
  */
 class Output
 {

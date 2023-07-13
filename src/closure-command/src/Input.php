@@ -15,6 +15,7 @@ use Symfony\Component\Console\Input\Input as SymfonyInput;
 
 /**
  * @mixin SymfonyInput
+ * @deprecated 3.1. Use Hyperf\Command\Concerns\InteractsWithIO instead.
  */
 class Input
 {
