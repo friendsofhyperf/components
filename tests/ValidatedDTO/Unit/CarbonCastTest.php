@@ -34,7 +34,7 @@ it('casts to carbon', function () {
 });
 
 it('casts to carbon with timezone', function () {
-    $castable = new CarbonCast('Europe/Lisbon');
+    $castable = new CarbonCast($this->timezone);
 
     $date = date('Y-m-d');
     $result = $castable->cast(test_property(), $date);
@@ -51,7 +51,7 @@ it('casts to carbon with timezone', function () {
     $this->expectException(CastException::class);
     $castable->cast(test_property(), 'TEST');
 
-    $castable = new CarbonCast('Europe/Lisbon', 'Y-m-d');
+    $castable = new CarbonCast($this->timezone, 'Y-m-d');
 
     $date = date('Y-m-d');
     $result = $castable->cast(test_property(), $date);
@@ -85,7 +85,7 @@ it('casts to carbon immutable', function () {
     $this->expectException(CastException::class);
     $castable->cast(test_property(), 'TEST');
 
-    $castable = new CarbonImmutableCast('Europe/Lisbon');
+    $castable = new CarbonImmutableCast($this->timezone);
 
     $date = date('Y-m-d');
     $result = $castable->cast(test_property(), $date);
@@ -102,7 +102,7 @@ it('casts to carbon immutable', function () {
     $this->expectException(CastException::class);
     $castable->cast(test_property(), 'TEST');
 
-    $castable = new CarbonImmutableCast('Europe/Lisbon', 'Y-m-d');
+    $castable = new CarbonImmutableCast($this->timezone, 'Y-m-d');
 
     $date = date('Y-m-d');
     $result = $castable->cast(test_property(), $date);
