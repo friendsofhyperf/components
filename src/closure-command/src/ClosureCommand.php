@@ -12,7 +12,6 @@ namespace FriendsOfHyperf\ClosureCommand;
 
 use Closure;
 use Hyperf\Command\Command;
-use Hyperf\Context\Context;
 use Psr\Container\ContainerInterface;
 
 class ClosureCommand extends Command
@@ -29,9 +28,6 @@ class ClosureCommand extends Command
 
     public function handle()
     {
-        Context::set(Input::class, $this->input);
-        Context::set(Output::class, $this->output);
-
         $inputs = array_merge($this->input->getArguments(), $this->input->getOptions());
         $parameters = $this->parameterParser->parseClosureParameters($this->closure, $inputs);
 

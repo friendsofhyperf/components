@@ -11,8 +11,10 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ClosureCommand;
 
 use Hyperf\Command\Command;
-use Hyperf\Context\Context;
+use Hyperf\Command\Concerns\InteractsWithIO;
 use Psr\Container\ContainerInterface;
+
+use function Hyperf\Support\class_uses_recursive;
 
 class AnnotationCommand extends Command
 {
@@ -28,12 +30,15 @@ class AnnotationCommand extends Command
 
     public function handle()
     {
-        Context::set(Input::class, $this->input);
-        Context::set(Output::class, $this->output);
-
         $inputs = array_merge($this->input->getArguments(), $this->input->getOptions());
         $parameters = $this->parameterParser->parseMethodParameters($this->class, $this->method, $inputs);
+        $instance = $this->container->get($this->class);
 
-        return (fn ($method) => $this->{$method}(...$parameters))->call($this->container->get($this->class), $this->method);
+        if (in_array(InteractsWithIO::class, class_uses_recursive($instance))) {
+            $instance->setInput($this->input);
+            $instance->setOutput($this->output);
+        }
+
+        return (fn ($method) => $this->{$method}(...$parameters))->call($instance, $this->method);
     }
 }
