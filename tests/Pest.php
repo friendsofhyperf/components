@@ -28,7 +28,7 @@ uses()->group('validated-dto')
         $this->subject_name = faker()->name();
         $this->name = faker()->name();
         $this->age = faker()->numberBetween(1, 100);
-        $this->timezone = faker()->timezone;
+        $this->timezone = 'Asia/Shanghai';
 
         $this->mock(ValidatorFactoryInterface::class, function ($mock) {
             $mock->shouldReceive('make')->andReturn(m::mock(ValidatorInterface::class, function ($mock) {
