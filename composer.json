@@ -137,8 +137,7 @@
         "files": [
             "src/encryption/src/Functions.php",
             "src/exception-event/src/Functions.php",
-            "src/helpers/src/Command/Functions.php",
-            "src/helpers/src/Functions.php",
+            "src/helpers/src/Autoload.php",
             "src/lock/src/Functions.php",
             "src/model-factory/src/Functions.php",
             "src/support/src/Functions.php"

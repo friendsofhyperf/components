@@ -37,8 +37,7 @@
     },
     "autoload": {
         "files": [
-            "src/Command/Functions.php",
-            "src/Functions.php"
+            "src/Autoload.php"
         ],
         "psr-4": {
             "FriendsOfHyperf\\Helpers\\": "src/"

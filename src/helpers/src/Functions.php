@@ -14,13 +14,10 @@ use Carbon\Carbon;
 use Closure;
 use Countable;
 use Exception;
-use FriendsOfHyperf\AsyncTask\Task as AsyncTask;
 use FriendsOfHyperf\AsyncTask\TaskInterface as AsyncTaskInterface;
 use FriendsOfHyperf\Support\AsyncQueue\ClosureJob;
 use FriendsOfHyperf\Support\Environment;
 use Hyperf\Amqp\Message\ProducerMessageInterface;
-use Hyperf\Amqp\Producer;
-use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\AsyncQueue\JobInterface;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\SessionInterface;
@@ -30,7 +27,6 @@ use Hyperf\HttpMessage\Cookie\CookieJarInterface;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
-use Hyperf\Kafka\ProducerManager;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Stringable\Str;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
@@ -205,15 +201,10 @@ function dispatch($job, ...$arguments)
     }
 
     return match (true) {
-        $job instanceof JobInterface => di(DriverFactory::class)
-            ->get((string) ($arguments[0] ?? $job->queue ?? 'default'))
-            ->push($job, (int) ($arguments[1] ?? $job->delay ?? 0)),
-        $job instanceof ProducerMessageInterface => di(Producer::class)
-            ->produce($job, ...$arguments),
-        $job instanceof ProduceMessage => di(ProducerManager::class)
-            ->getProducer((string) ($arguments[0] ?? 'default'))
-            ->sendBatch([$job]),
-        $job instanceof AsyncTaskInterface => AsyncTask::deliver($job, ...$arguments),
+        $job instanceof JobInterface => AsyncQueue\dispatch($job, ...$arguments),
+        $job instanceof ProducerMessageInterface => Amqp\dispatch($job, ...$arguments),
+        $job instanceof ProduceMessage => Kafka\dispatch($job, ...$arguments),
+        $job instanceof AsyncTaskInterface => AsyncTask\dispatch($job, ...$arguments),
         default => throw new \InvalidArgumentException('Not Support job type.')
     };
 }
