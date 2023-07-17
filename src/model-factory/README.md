@@ -1,20 +1,20 @@
 # model-factory
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/model-factory)](https://packagist.org/packages/friendsofhyperf/model-factory)  
-[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/model-factory)](https://packagist.org/packages/friendsofhyperf/model-factory)  
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/model-factory)](https://packagist.org/packages/friendsofhyperf/model-factory)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/model-factory)](https://packagist.org/packages/friendsofhyperf/model-factory)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/model-factory)](https://github.com/friendsofhyperf/model-factory)
 
 ## Installation
 
 Install the package with Composer:
 
-```
+```shell
 composer require friendsofhyperf/model-factory --dev
 ```
 
 Also, publish the vendor config files to your application (necessary for the dependencies):
 
-```
+```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/model-factory
 ```
 
@@ -22,7 +22,7 @@ php bin/hyperf.php vendor:publish friendsofhyperf/model-factory
 
 `/factories/user_factory.php`
 
-```
+```php
 <?php
 
 
@@ -47,9 +47,7 @@ $factory->define(User::class, function (Faker\Generator $faker) {
 
 `/seeders/user_seeder.php`
 
-
-
-```
+```php
 <?php
 
 declare(strict_types=1);
@@ -67,13 +65,13 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-		// Create 1 user with name 'Admin'
+        // Create 1 user with name 'Admin'
         factory(User::class)->create([
             'name' => 'Admin'
         ]);
 
 
-		// Create 20 random users
+        // Create 20 random users
         factory(User::class, 20)->create();
     }
 }
@@ -84,9 +82,9 @@ class UserSeeder extends Seeder
 
 > If you like them, Buy me a cup of coffee.
 
-| Alipay                                    | WeChat                                        |
-| ----------------------------------------- | --------------------------------------------- |
-| ![](https://hdj.me/images/alipay-min.jpg) | ![](https://hdj.me/images/wechat-pay-min.jpg) |
+| Alipay | WeChat |
+|  ----  | ----  |
+| <img src="https://hdj.me/images/alipay-min.jpg" width="200" height="200" />  | <img src="https://hdj.me/images/wechat-pay-min.jpg" width="200" height="200" /> |
 
 ## Contact
 
