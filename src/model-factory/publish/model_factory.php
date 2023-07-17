@@ -9,5 +9,5 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 return [
-    'path' => BASE_PATH . '/database/factory/',
+    'path' => BASE_PATH . '/factories/',
 ];

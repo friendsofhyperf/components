@@ -31,7 +31,7 @@ class ConfigProvider
                     'id' => 'model_factory_example',
                     'description' => 'The example for model factory.',
                     'source' => __DIR__ . '/../publish/example.php.stub',
-                    'destination' => BASE_PATH . '/database/factory/ModelFactory.php',
+                    'destination' => BASE_PATH . '/factories/model_factory.php',
                 ],
             ],
         ];
