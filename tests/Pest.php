@@ -31,6 +31,8 @@ uses(TestCase::class)->beforeEach(function () {
     $this->name = faker()->name();
     $this->age = faker()->numberBetween(1, 100);
     $this->subject_name = faker()->name();
+    $this->timezone = faker()->timezone();
+    date_default_timezone_set($this->timezone);
 })->in('ValidatedDTO');
 
 uses(MakeStringable::class)->beforeAll(function () {
