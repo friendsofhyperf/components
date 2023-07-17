@@ -227,8 +227,14 @@ function dispatch($job, ...$arguments)
 
     return match (true) {
         $job instanceof JobInterface => di(DriverFactory::class)
-            ->get((string) ($arguments[0] ?? $job->queue ?? 'default'))
-            ->push($job, (int) ($arguments[1] ?? $job->delay ?? 0)),
+            ->get((string) ($arguments[0] ?? (fn () => $this->queue ?? $this->pool ?? 'default')->call($job)))
+            ->push(
+                tap(
+                    $job,
+                    fn ($job) => isset($arguments[2]) && (fn () => $this->maxAttempts = (int) $arguments[2])->call($job)
+                ),
+                (int) ($arguments[1] ?? (fn () => $this->delay ?? 0)->call($job))
+            ),
         $job instanceof ProducerMessageInterface => di(Producer::class)
             ->produce($job, ...$arguments),
         $job instanceof ProduceMessage => di(ProducerManager::class)
