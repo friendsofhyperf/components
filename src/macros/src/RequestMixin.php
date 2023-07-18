@@ -143,13 +143,57 @@ class RequestMixin
 
     public function host()
     {
-        /* @phpstan-ignore-next-line */
-        return fn () => $this->getHttpHost();
+        return fn () => $this->getHost();
     }
 
     public function httpHost()
     {
+        return fn () => $this->getHttpHost();
+    }
+
+    public function getHost()
+    {
         return fn () => $this->getHeader('HOST')[0] ?? $this->getServerParams('SERVER_NAME')[0] ?? $this->getServerParams('SERVER_ADDR')[0] ?? '';
+    }
+
+    public function getHttpHost()
+    {
+        return fn () => $this->getHost() . ':' . $this->getPort();
+    }
+
+    public function getPort()
+    {
+        return function () {
+            if (! $host = $this->getHeader('HOST')[0] ?? '') {
+                return $this->getServerParams('SERVER_PORT')[0];
+            }
+
+            if ($host[0] === '[') {
+                $pos = strpos($host, ':', strrpos($host, ']'));
+            } else {
+                $pos = strrpos($host, ':');
+            }
+
+            if ($pos !== false && $port = substr($host, $pos + 1)) {
+                return (int) $port;
+            }
+
+            return $this->getScheme() === 'https' ? 443 : 80;
+        };
+    }
+
+    public function getScheme()
+    {
+        return fn () => $this->isSecure() ? 'https' : 'http';
+    }
+
+    public function isSecure()
+    {
+        return function () {
+            $https = $this->getServerParams('HTTPS')[0] ?? '';
+
+            return ! empty($https) && strtolower($https) !== 'off';
+        };
     }
 
     public function integer()
