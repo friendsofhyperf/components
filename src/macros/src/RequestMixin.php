@@ -282,11 +282,7 @@ class RequestMixin
 
     public function schemeAndHttpHost()
     {
-        return function () {
-            $https = $this->getServerParams('HTTPS')[0] ?? null;
-            /* @phpstan-ignore-next-line */
-            return ($https ? 'https' : 'http') . '://' . $this->httpHost();
-        };
+        return fn () => $this->getScheme() . '://' . $this->httpHost();
     }
 
     public function str()
