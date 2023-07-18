@@ -149,7 +149,10 @@ class RequestMixin
 
     public function getHost()
     {
-        return fn () => $this->getHeader('HOST')[0] ?? $this->getServerParams('SERVER_NAME')[0] ?? $this->getServerParams('SERVER_ADDR')[0] ?? '';
+        return function () {
+            $host = $this->getHeader('HOST')[0] ?? $this->getServerParams('SERVER_NAME')[0] ?? $this->getServerParams('SERVER_ADDR')[0] ?? '';
+            return strtolower(preg_replace('/:\d+$/', '', trim($host)));
+        };
     }
 
     public function getHttpHost()
