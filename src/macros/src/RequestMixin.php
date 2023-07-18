@@ -21,6 +21,7 @@ use function Hyperf\Collection\collect;
 use function Hyperf\Collection\data_get;
 
 /**
+ * @property array $contextkeys
  * @mixin Request
  */
 class RequestMixin
@@ -36,7 +37,6 @@ class RequestMixin
             $keys = is_array($keys) ? $keys : func_get_args();
 
             foreach ($keys as $key) {
-                /* @phpstan-ignore-next-line */
                 if ($this->filled($key)) {
                     return true;
                 }
@@ -58,7 +58,6 @@ class RequestMixin
                 return $this->all();
             }
 
-            /* @phpstan-ignore-next-line */
             return collect(
                 is_array($key) ? $this->only($key) : $this->input($key)
             );
@@ -68,7 +67,6 @@ class RequestMixin
     public function date()
     {
         return function (string $key, $format = null, $tz = null) {
-            /* @phpstan-ignore-next-line */
             if ($this->isNotFilled($key)) {
                 return null;
             }
@@ -85,7 +83,6 @@ class RequestMixin
     {
         return function ($key, $enumClass) {
             if (
-                /* @phpstan-ignore-next-line */
                 $this->isNotFilled($key)
                 || ! function_exists('enum_exists')
                 || ! enum_exists($enumClass)
@@ -121,7 +118,6 @@ class RequestMixin
             $keys = is_array($key) ? $key : func_get_args();
 
             foreach ($keys as $value) {
-                /* @phpstan-ignore-next-line */
                 if ($this->isEmptyString($value)) {
                     return false;
                 }
@@ -143,13 +139,57 @@ class RequestMixin
 
     public function host()
     {
-        /* @phpstan-ignore-next-line */
-        return fn () => $this->getHttpHost();
+        return fn () => $this->getHost();
     }
 
     public function httpHost()
     {
+        return fn () => $this->getHttpHost();
+    }
+
+    public function getHost()
+    {
         return fn () => $this->getHeader('HOST')[0] ?? $this->getServerParams('SERVER_NAME')[0] ?? $this->getServerParams('SERVER_ADDR')[0] ?? '';
+    }
+
+    public function getHttpHost()
+    {
+        return fn () => $this->getHost() . ':' . $this->getPort();
+    }
+
+    public function getPort()
+    {
+        return function () {
+            if (! $host = $this->getHeader('HOST')[0] ?? '') {
+                return $this->getServerParams('SERVER_PORT')[0];
+            }
+
+            if ($host[0] === '[') {
+                $pos = strpos($host, ':', strrpos($host, ']'));
+            } else {
+                $pos = strrpos($host, ':');
+            }
+
+            if ($pos !== false && $port = substr($host, $pos + 1)) {
+                return (int) $port;
+            }
+
+            return $this->getScheme() === 'https' ? 443 : 80;
+        };
+    }
+
+    public function getScheme()
+    {
+        return fn () => $this->isSecure() ? 'https' : 'http';
+    }
+
+    public function isSecure()
+    {
+        return function () {
+            $https = $this->getServerParams('HTTPS')[0] ?? '';
+
+            return ! empty($https) && strtolower($https) !== 'off';
+        };
     }
 
     public function integer()
@@ -177,7 +217,6 @@ class RequestMixin
             $keys = is_array($key) ? $key : func_get_args();
 
             foreach ($keys as $value) {
-                /* @phpstan-ignore-next-line */
                 if (! $this->isEmptyString($value)) {
                     return false;
                 }
@@ -204,7 +243,6 @@ class RequestMixin
 
     public function mergeIfMissing()
     {
-        /* @phpstan-ignore-next-line */
         return fn (array $input) => $this->merge(
             collect($input)
                 ->filter(fn ($value, $key) => $this->missing($key))
@@ -236,13 +274,14 @@ class RequestMixin
         };
     }
 
+    public function getSchemeAndHttpHost()
+    {
+        return fn () => $this->getScheme() . '://' . $this->httpHost();
+    }
+
     public function schemeAndHttpHost()
     {
-        return function () {
-            $https = $this->getServerParams('HTTPS')[0] ?? null;
-            /* @phpstan-ignore-next-line */
-            return ($https ? 'https' : 'http') . '://' . $this->httpHost();
-        };
+        return fn () => $this->getSchemeAndHttpHost();
     }
 
     public function str()
@@ -258,7 +297,6 @@ class RequestMixin
     public function whenFilled()
     {
         return function ($key, callable $callback, callable $default = null) {
-            /* @phpstan-ignore-next-line */
             if ($this->filled($key)) {
                 return $callback(data_get($this->all(), $key)) ?: $this;
             }

@@ -83,10 +83,22 @@ interface RequestInterface
      */
     public function host(): string;
 
+    public function getHost(): string;
+
     /**
      * Get the HTTP host being requested.
      */
     public function httpHost(): string;
+
+    public function getHttpHost(): string;
+
+    public function getPort(): int;
+
+    public function getScheme(): string;
+
+    public function isSecure(): bool;
+
+    public function getSchemeAndHttpHost(): string;
 
     /**
      * Get the scheme and HTTP host.
