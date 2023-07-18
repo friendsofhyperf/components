@@ -21,6 +21,7 @@ use function Hyperf\Collection\collect;
 use function Hyperf\Collection\data_get;
 
 /**
+ * @property array $contextkeys
  * @mixin Request
  */
 class RequestMixin
@@ -36,7 +37,6 @@ class RequestMixin
             $keys = is_array($keys) ? $keys : func_get_args();
 
             foreach ($keys as $key) {
-                /* @phpstan-ignore-next-line */
                 if ($this->filled($key)) {
                     return true;
                 }
@@ -58,7 +58,6 @@ class RequestMixin
                 return $this->all();
             }
 
-            /* @phpstan-ignore-next-line */
             return collect(
                 is_array($key) ? $this->only($key) : $this->input($key)
             );
@@ -68,7 +67,6 @@ class RequestMixin
     public function date()
     {
         return function (string $key, $format = null, $tz = null) {
-            /* @phpstan-ignore-next-line */
             if ($this->isNotFilled($key)) {
                 return null;
             }
@@ -85,7 +83,6 @@ class RequestMixin
     {
         return function ($key, $enumClass) {
             if (
-                /* @phpstan-ignore-next-line */
                 $this->isNotFilled($key)
                 || ! function_exists('enum_exists')
                 || ! enum_exists($enumClass)
@@ -121,7 +118,6 @@ class RequestMixin
             $keys = is_array($key) ? $key : func_get_args();
 
             foreach ($keys as $value) {
-                /* @phpstan-ignore-next-line */
                 if ($this->isEmptyString($value)) {
                     return false;
                 }
@@ -221,7 +217,6 @@ class RequestMixin
             $keys = is_array($key) ? $key : func_get_args();
 
             foreach ($keys as $value) {
-                /* @phpstan-ignore-next-line */
                 if (! $this->isEmptyString($value)) {
                     return false;
                 }
@@ -239,7 +234,6 @@ class RequestMixin
     public function merge()
     {
         return function (array $input) {
-            /* @phpstan-ignore-next-line */
             Context::override($this->contextkeys['parsedData'], fn ($inputs) => array_replace((array) $inputs, $input));
 
             return $this;
@@ -248,7 +242,6 @@ class RequestMixin
 
     public function mergeIfMissing()
     {
-        /* @phpstan-ignore-next-line */
         return fn (array $input) => $this->merge(
             collect($input)
                 ->filter(fn ($value, $key) => $this->missing($key))
@@ -303,7 +296,6 @@ class RequestMixin
     public function whenFilled()
     {
         return function ($key, callable $callback, callable $default = null) {
-            /* @phpstan-ignore-next-line */
             if ($this->filled($key)) {
                 return $callback(data_get($this->all(), $key)) ?: $this;
             }
