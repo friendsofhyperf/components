@@ -98,6 +98,8 @@ interface RequestInterface
 
     public function isSecure(): bool;
 
+    public function getSchemeAndHttpHost(): string;
+
     /**
      * Get the scheme and HTTP host.
      */

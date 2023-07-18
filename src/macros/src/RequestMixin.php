@@ -280,9 +280,14 @@ class RequestMixin
         };
     }
 
-    public function schemeAndHttpHost()
+    public function getSchemeAndHttpHost()
     {
         return fn () => $this->getScheme() . '://' . $this->httpHost();
+    }
+
+    public function schemeAndHttpHost()
+    {
+        return fn () => $this->getSchemeAndHttpHost();
     }
 
     public function str()
