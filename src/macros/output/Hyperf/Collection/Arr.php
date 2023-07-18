@@ -5,25 +5,13 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace Hyperf\Collection;
 
 class Arr
 {
-    /**
-     * Determines if an array is a list.
-     *
-     * An array is a "list" if all array keys are sequential integers starting from 0 with no gaps in between.
-     *
-     * @param array $array
-     * @return bool
-     */
-    public static function isList($array)
-    {
-    }
-
     /**
      * Key an associative array by a field or using a callback.
      *
@@ -83,10 +71,21 @@ class Arr
      * Sort the array in descending order using the given callback or "dot" notation.
      *
      * @param array $array
-     * @param null|array|callable|string $callback
+     * @param array|callable|string|null $callback
      * @return array
      */
     public static function sortDesc($array, $callback = null)
+    {
+    }
+
+    /**
+     * Recursively sort an array by keys and values in descending order.
+     *
+     * @param array $array
+     * @param int $options
+     * @return array
+     */
+    public function sortRecursiveDesc($array, $options = SORT_REGULAR)
     {
     }
 

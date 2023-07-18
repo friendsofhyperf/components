@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Sentry\Command;
@@ -86,11 +86,6 @@ class TestCommand extends HyperfCommand
         } catch (Throwable $e) {
             $this->error("[Sentry] {$e->getMessage()}");
         }
-    }
-
-    protected function option($name)
-    {
-        return $this->input->getOption($name);
     }
 
     /**

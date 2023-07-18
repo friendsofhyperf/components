@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Sentry\Aspect;
@@ -43,7 +43,7 @@ class LoggerAspect extends AbstractAspect
             $level = $level instanceof UnitEnum ? (int) $level->value : (int) $level;
             $message = $proceedingJoinPoint->arguments['keys']['message'];
             $context = $proceedingJoinPoint->arguments['keys']['context'];
-            /** @var null|DateTimeImmutable $datetime */
+            /** @var DateTimeImmutable|null $datetime */
             $datetime = $proceedingJoinPoint->arguments['keys']['datetime'];
 
             if (isset($context['no_aspect']) && $context['no_aspect'] === true) {

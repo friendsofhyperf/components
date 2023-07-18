@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\CommandSignals\Traits;
@@ -16,6 +16,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use TypeError;
 
 use function Hyperf\Coroutine\defer;
+use function Hyperf\Support\make;
 
 trait InteractsWithSignals
 {
@@ -24,8 +25,7 @@ trait InteractsWithSignals
     /**
      * Define a callback to be run when the given signal(s) occurs.
      *
-     * @param int|iterable<array-key, int> $signals
-     * @param callable(int $signal): void  $callback
+     * @param callable(int $signal): void $callback
      * @throws TypeError
      * @throws NotFoundExceptionInterface
      * @throws ContainerExceptionInterface

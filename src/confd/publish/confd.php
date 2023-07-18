@@ -5,9 +5,11 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+use function Hyperf\Support\env;
+
 return [
     'default' => env('CONFD_DRIVER', 'etcd'),
 
@@ -35,6 +37,11 @@ return [
                 'password' => 'nacos',
                 'guzzle' => [
                     'config' => ['timeout' => 3, 'connect_timeout' => 1],
+                ],
+                // Only support for nacos v2.
+                'grpc' => [
+                    'enable' => false,
+                    'heartbeat' => 10,
                 ],
             ],
             'listener_config' => [

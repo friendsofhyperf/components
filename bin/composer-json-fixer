@@ -4,7 +4,7 @@
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/2.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
  * @contact  huangdijia@gmail.com
  */
 use Symfony\Component\Finder\Finder;
@@ -29,9 +29,11 @@ $autoloadDev = [
 ];
 $configProviders = [];
 $replaces = [];
+
 foreach ($files as $file) {
     $component = basename(dirname($file));
     $composerJson = json_decode(file_get_contents($file), true);
+
     if (isset($composerJson['name']) && str_starts_with($composerJson['name'], 'friendsofhyperf')) {
         $replaces[$composerJson['name']] = '*';
     }
@@ -39,6 +41,7 @@ foreach ($files as $file) {
     foreach ($composerJson['autoload']['files'] ?? [] as $file) {
         $autoloadFiles[] = "src/{$component}/" . preg_replace('#^./#', '', $file);
     }
+
     foreach ($composerJson['autoload']['psr-4'] ?? [] as $ns => $dir) {
         $value = "src/{$component}/" . trim($dir, '/') . '/';
         if (isset($autoload[$ns])) {
@@ -47,6 +50,7 @@ foreach ($files as $file) {
             $autoload[$ns] = $value;
         }
     }
+
     foreach ($composerJson['autoload-dev']['psr-4'] ?? [] as $ns => $dir) {
         $value = "src/{$component}/" . trim($dir, '/') . '/';
         if (isset($autoloadDev[$ns])) {
@@ -55,6 +59,7 @@ foreach ($files as $file) {
             $autoloadDev[$ns] = $value;
         }
     }
+
     if (isset($composerJson['extra']['hyperf']['config'])) {
         $configProviders = array_merge($configProviders, (array) $composerJson['extra']['hyperf']['config']);
     }

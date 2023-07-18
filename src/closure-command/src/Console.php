@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\ClosureCommand;
@@ -18,10 +18,16 @@ use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
 
+use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
 
+/**
+ * @deprecated since 3.1, use Hyperf\Command\Console instead.
+ */
 class Console
 {
+    public const ROUTE = BASE_PATH . '/config/console.php';
+
     /**
      * @var ClosureCommand[]
      */

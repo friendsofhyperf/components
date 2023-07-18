@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\ValidatedDTO;
@@ -16,118 +16,38 @@ use FriendsOfHyperf\ValidatedDTO\Exception\MissingCastTypeException;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ValidatorInterface;
-use Hyperf\Database\Model\Model;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Hyperf\Validation\ValidationException;
 use InvalidArgumentException;
 
-abstract class ValidatedDTO
+abstract class ValidatedDTO extends SimpleDTO
 {
-    use Traits\InteractsWithIO;
+    protected ?ValidatorInterface $validator = null;
 
-    protected array $validatedData = [];
-
-    protected bool $requireCasting = false;
-
-    /**
-     * @throws ValidationException
-     */
-    public function __construct(protected array $data, ?string $scene = null)
+    public function __construct(?array $data = null, protected ?string $scene = null)
     {
-        $rules = $this->rules();
-
-        if ($scene) {
-            if (! $this->hasScene($scene) || ! $keys = $this->getSceneKeys($scene)) {
-                throw new InvalidArgumentException(sprintf('Scene [%s] is not defined or empty.', $scene));
-            }
-
-            $rules = Arr::only($rules, $keys);
-        }
-
-        $validator = ApplicationContext::getContainer()
-            ->get(ValidatorFactoryInterface::class)
-            ->make(
-                $data,
-                $rules,
-                $this->messages(),
-                $this->attributes()
-            );
-
-        ! $validator->fails() ? $this->passedValidation($validator, $rules) : $this->failedValidation($validator);
-    }
-
-    public function __get(string $name): mixed
-    {
-        return $this->validatedData[$name] ?? null;
+        parent::__construct($data);
     }
 
     /**
-     * Returns the DTO validated data in array format.
+     * Defines the custom messages for validator errors.
      */
-    public function toArray(): array
+    public function messages(): array
     {
-        return $this->validatedData;
+        return [];
     }
 
     /**
-     * Returns the DTO validated data in a JSON string format.
+     * Defines the custom attributes for validator errors.
      */
-    public function toJson(int $options = JSON_UNESCAPED_UNICODE): string
+    public function attributes(): array
     {
-        return json_encode($this->validatedData, $options);
+        return [];
     }
 
-    /**
-     * Creates a new model with the DTO validated data.
-     */
-    public function toModel(string $model): Model
+    protected function scenes(): array
     {
-        return new $model($this->validatedData);
-    }
-
-    /**
-     * Handles a passed validation attempt.
-     */
-    protected function passedValidation(ValidatorInterface $validator, array $rules = []): void
-    {
-        $this->validatedData = $validator->validated();
-
-        foreach ($this->defaults() as $key => $value) {
-            if (! in_array($key, array_keys($rules))) {
-                continue;
-            }
-
-            $this->validatedData[$key] = $value;
-        }
-
-        $casts = $this->casts();
-
-        foreach ($this->validatedData as $key => $value) {
-            if (! array_key_exists($key, $casts)) {
-                if ($this->requireCasting) {
-                    throw new MissingCastTypeException($key);
-                }
-
-                continue;
-            }
-
-            if (! $casts[$key] instanceof Castable) {
-                throw new CastTargetException($key);
-            }
-
-            $formatted = $casts[$key]->cast($key, $value);
-            $this->validatedData[$key] = $formatted;
-        }
-    }
-
-    /**
-     * Handles a failed validation attempt.
-     *
-     * @throws ValidationException
-     */
-    protected function failedValidation(ValidatorInterface $validator): void
-    {
-        throw new ValidationException($validator);
+        return [];
     }
 
     protected function hasScene(string $scene): bool
@@ -140,46 +60,105 @@ abstract class ValidatedDTO
         return $this->scenes()[$scene] ?? [];
     }
 
+    protected function getRules(): array
+    {
+        $rules = $this->rules();
+        $scene = $this->scene;
+
+        if ($scene) {
+            if (! $this->hasScene($scene) || ! $keys = $this->getSceneKeys($scene)) {
+                throw new InvalidArgumentException(sprintf('Scene [%s] is not defined or empty.', $scene));
+            }
+
+            $rules = Arr::only($rules, $keys);
+        }
+
+        return $rules;
+    }
+
     /**
-     * Defines the default values for the properties of the DTO.
+     * Defines the validation rules for the DTO.
      */
     abstract protected function rules(): array;
 
     /**
-     * Defines the custom messages for validator errors.
+     * Builds the validated data from the given data and the rules.
+     *
+     * @throws MissingCastTypeException|CastTargetException
      */
-    protected function messages(): array
+    protected function validatedData(): array
     {
-        return [];
+        $acceptedKeys = array_keys($this->getRules());
+        $result = [];
+
+        /** @var array<Castable> $casts */
+        $casts = $this->casts();
+
+        foreach ($this->data as $key => $value) {
+            if (in_array($key, $acceptedKeys)) {
+                if (! array_key_exists($key, $casts)) {
+                    if ($this->requireCasting) {
+                        throw new MissingCastTypeException($key);
+                    }
+                    $result[$key] = $value;
+
+                    continue;
+                }
+
+                $result[$key] = $this->shouldReturnNull($key, $value)
+                    ? null
+                    : $this->castValue($casts[$key], $key, $value);
+            }
+        }
+
+        foreach ($acceptedKeys as $property) {
+            if (
+                ! array_key_exists($property, $result)
+                && $this->isOptionalProperty($property)
+            ) {
+                $result[$property] = null;
+            }
+        }
+
+        return $result;
+    }
+
+    protected function isValidData(): bool
+    {
+        $container = ApplicationContext::getContainer();
+        $this->validator = $container->get(ValidatorFactoryInterface::class)
+            ->make(
+                $this->data,
+                $this->getRules(),
+                $this->messages(),
+                $this->attributes()
+            );
+
+        return ! $this->validator->fails();
     }
 
     /**
-     * Defines the custom attributes for validator errors.
+     * Handles a failed validation attempt.
+     *
+     * @throws ValidationException
      */
-    protected function attributes(): array
+    protected function failedValidation(): void
     {
-        return [];
+        throw new ValidationException($this->validator);
     }
 
-    protected function scenes(): array
+    protected function shouldReturnNull(string $key, mixed $value): bool
     {
-        return [];
+        return is_null($value) && $this->isOptionalProperty($key);
     }
 
-    /**
-     * Defines the default values for the properties of the DTO.
-     */
-    protected function defaults(): array
+    private function isOptionalProperty(string $property): bool
     {
-        return [];
-    }
+        $rules = $this->getRules();
+        $propertyRules = is_array($rules[$property])
+            ? $rules[$property]
+            : explode('|', $rules[$property]);
 
-     /**
-      * Defines the type casting for the properties of the DTO.
-      * @return array<string,Castable>
-      */
-     protected function casts(): array
-     {
-         return [];
-     }
+        return in_array('optional', $propertyRules) || in_array('nullable', $propertyRules);
+    }
 }

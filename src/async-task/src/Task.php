@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\AsyncTask;
@@ -15,20 +15,21 @@ use FriendsOfHyperf\AsyncTask\Event\AfterHandle;
 use FriendsOfHyperf\AsyncTask\Event\BeforeHandle;
 use FriendsOfHyperf\AsyncTask\Event\FailedHandle;
 use FriendsOfHyperf\AsyncTask\Event\RetryHandle;
+use FriendsOfHyperf\Support\Sleep;
 use Hyperf\Context\ApplicationContext;
-use Hyperf\Coroutine\Coroutine;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Swoole\Coroutine\Http\Server as CoHttpServer;
 use Swoole\Coroutine\Server as CoServer;
 use Swoole\Server;
 use Throwable;
 
+use function FriendsOfHyperf\Support\retry;
 use function Hyperf\Coroutine\go;
 
 class Task
 {
     /**
-     * @var null|CoHttpServer|CoServer|Server
+     * @var CoHttpServer|CoServer|Server|null
      */
     public static $server;
 
@@ -82,16 +83,18 @@ class Task
         $eventDispatcher = $container->get(EventDispatcherInterface::class);
 
         if ($message->getDelay()) {
-            Coroutine::sleep((float) $message->getDelay());
+            Sleep::sleep($message->getDelay() * 1000);
         }
 
         try {
             $eventDispatcher->dispatch(new BeforeHandle($message));
 
-            retry($message->getMaxAttempts(), function ($attempts, $e) use ($message, $eventDispatcher) {
-                $attempts > 1 && $eventDispatcher->dispatch(new RetryHandle($message, $e));
-                $message->task()->handle();
-            }, $message->getRetryAfter() * 1000);
+            retry(
+                $message->getMaxAttempts(),
+                fn ($attempts) => $message->task()->handle(),
+                $message->getRetryAfter() * 1000,
+                fn ($e) => $eventDispatcher->dispatch(new RetryHandle($message, $e))
+            );
 
             $eventDispatcher->dispatch(new AfterHandle($message));
         } catch (Throwable $e) {

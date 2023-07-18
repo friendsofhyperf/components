@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\ClosureCommand;
@@ -39,9 +39,6 @@ class ParameterParser
         }
     }
 
-    /**
-     * @throws GlobalInvalidArgumentException
-     */
     public function parseClosureParameters(Closure $closure, array $arguments): array
     {
         if (! $this->closureDefinitionCollector) {
@@ -63,14 +60,11 @@ class ParameterParser
         return $this->getInjections($definitions, "{$class}::{$method}", $arguments);
     }
 
-    /**
-     * @throws GlobalInvalidArgumentException
-     */
     private function getInjections(array $definitions, string $callableName, array $arguments): array
     {
         $injections = [];
 
-        foreach ($definitions ?? [] as $pos => $definition) {
+        foreach ($definitions as $pos => $definition) {
             $value = $arguments[$pos] ?? $arguments[$definition->getMeta('name')] ?? $arguments[Str::snake($definition->getMeta('name'), '-')] ?? null;
             if ($value === null) {
                 if ($definition->getMeta('defaultValueAvailable')) {

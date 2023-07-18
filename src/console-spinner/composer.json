@@ -3,18 +3,21 @@
     "description": "The progress bar component For Hyperf.",
     "type": "library",
     "license": "MIT",
-    "authors": [{
-        "name": "huangdijia",
-        "email": "huangdijia@gmail.com"
-    }],
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
     "support": {
         "issues": "https://github.com/friendsofhyperf/components/issues",
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "hyperf/command": "~3.0.0",
-        "hyperf/context": "~3.0.16",
-        "hyperf/di": "~3.0.0",
+        "hyperf/command": "~3.1.0",
+        "hyperf/context": "~3.1.0",
+        "hyperf/di": "~3.1.0",
+        "hyperf/support": "~3.1.0",
         "symfony/console": "^5.3|^6.0",
         "symfony/process": "^5.3|^6.0"
     },
@@ -29,6 +32,9 @@
     "extra": {
         "hyperf": {
             "config": "FriendsOfHyperf\\ConsoleSpinner\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
         }
     }
 }

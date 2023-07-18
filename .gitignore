@@ -4,3 +4,5 @@ composer.lock
 .bashrc
 .idea
 .vscode/launch.json
+*.bak
+runtime

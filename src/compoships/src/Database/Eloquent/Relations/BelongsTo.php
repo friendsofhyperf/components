@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Compoships\Database\Eloquent\Relations;
@@ -41,7 +41,7 @@ class BelongsTo extends BaseBelongsTo
     /**
      * Associate the model instance to the given parent.
      *
-     * @param null|int|Model|string $model
+     * @param int|Model|string|null $model
      *
      * @return Model
      */
@@ -61,7 +61,7 @@ class BelongsTo extends BaseBelongsTo
         $relationName = property_exists($this, 'relationName') ? $this->relationName : $this->relation;
         if ($model instanceof Model) {
             $this->child->setRelation($relationName, $model);
-        // proper unset // https://github.com/illuminate/database/commit/44411c7288fc7b7d4e5680cfcdaa46d348b5c981
+            // proper unset // https://github.com/illuminate/database/commit/44411c7288fc7b7d4e5680cfcdaa46d348b5c981
         } elseif ($this->child->isDirty($this->foreignKey)) {
             $this->child->unsetRelation($relationName);
         }

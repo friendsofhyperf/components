@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace Hyperf\Collection;
@@ -181,8 +181,8 @@ class Collection
      *
      * @template TWhenEmptyReturnType
      *
-     * @param  (callable($this): TWhenEmptyReturnType)  $callback
-     * @param  (callable($this): TWhenEmptyReturnType)|null  $default
+     * @param (callable($this): TWhenEmptyReturnType) $callback
+     * @param (callable($this): TWhenEmptyReturnType)|null $default
      * @return $this|TWhenEmptyReturnType
      */
     public function whenEmpty(callable $callback, callable $default = null)
@@ -195,7 +195,7 @@ class Collection
      * @template TWhenNotEmptyReturnType
      *
      * @param callable($this): TWhenNotEmptyReturnType $callback
-     * @param  (callable($this): TWhenNotEmptyReturnType)|null  $default
+     * @param (callable($this): TWhenNotEmptyReturnType)|null $default
      * @return $this|TWhenNotEmptyReturnType
      */
     public function whenNotEmpty(callable $callback, callable $default = null)
@@ -208,7 +208,7 @@ class Collection
      * @template TUnlessEmptyReturnType
      *
      * @param callable($this): TUnlessEmptyReturnType $callback
-     * @param  (callable($this): TUnlessEmptyReturnType)|null  $default
+     * @param (callable($this): TUnlessEmptyReturnType)|null $default
      * @return $this|TUnlessEmptyReturnType
      */
     public function unlessEmpty(callable $callback, callable $default = null)
@@ -221,7 +221,7 @@ class Collection
      * @template TUnlessNotEmptyReturnType
      *
      * @param callable($this): TUnlessNotEmptyReturnType $callback
-     * @param  (callable($this): TUnlessNotEmptyReturnType)|null  $default
+     * @param (callable($this): TUnlessNotEmptyReturnType)|null $default
      * @return $this|TUnlessNotEmptyReturnType
      */
     public function unlessNotEmpty(callable $callback, callable $default = null)

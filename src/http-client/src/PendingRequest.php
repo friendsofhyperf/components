@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Http\Client;
@@ -21,6 +21,7 @@ use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TransferException;
 use GuzzleHttp\HandlerStack;
+use GuzzleHttp\Middleware;
 use GuzzleHttp\UriTemplate\UriTemplate;
 use Hyperf\Collection\Arr;
 use Hyperf\Collection\Collection;
@@ -36,6 +37,7 @@ use Psr\Http\Message\RequestInterface;
 use RuntimeException;
 use Symfony\Component\VarDumper\VarDumper;
 
+use function FriendsOfHyperf\Support\retry;
 use function Hyperf\Collection\collect;
 use function Hyperf\Tappable\tap;
 
@@ -47,7 +49,7 @@ class PendingRequest
     /**
      * The factory instance.
      *
-     * @var null|Factory
+     * @var Factory|null
      */
     protected $factory;
 
@@ -110,7 +112,7 @@ class PendingRequest
     /**
      * The transfer stats for the request.
      *
-     * @var null|\GuzzleHttp\TransferStats
+     * @var \GuzzleHttp\TransferStats|null
      */
     protected $transferStats;
 
@@ -159,7 +161,7 @@ class PendingRequest
     /**
      * The callback that will determine if the request should be retried.
      *
-     * @var null|callable
+     * @var callable|null
      */
     protected $retryWhenCallback;
 
@@ -173,7 +175,7 @@ class PendingRequest
     /**
      * The stub callables that will handle requests.
      *
-     * @var null|Collection
+     * @var Collection|null
      */
     protected $stubCallbacks;
 
@@ -208,7 +210,7 @@ class PendingRequest
     /**
      * The sent request object, if a request has been made.
      *
-     * @var null|Request
+     * @var Request|null
      */
     protected $request;
 
@@ -229,15 +231,16 @@ class PendingRequest
     /**
      * Create a new HTTP Client instance.
      */
-    public function __construct(Factory $factory = null)
+    public function __construct(Factory $factory = null, array $middleware = [])
     {
         $this->factory = $factory;
-        $this->middleware = new Collection();
+        $this->middleware = new Collection($middleware);
 
         $this->asJson();
 
         $this->options = [
             'connect_timeout' => 10,
+            'crypto_method' => STREAM_CRYPTO_METHOD_TLSv1_2_CLIENT,
             'http_errors' => false,
             'timeout' => 30,
         ];
@@ -269,7 +272,7 @@ class PendingRequest
      * @param string $contentType
      * @return $this
      */
-    public function withBody($content, $contentType)
+    public function withBody($content, $contentType = 'application/json')
     {
         $this->bodyFormat('body');
 
@@ -305,7 +308,7 @@ class PendingRequest
      *
      * @param array|string $name
      * @param resource|string $contents
-     * @param null|string $filename
+     * @param string|null $filename
      * @return $this
      */
     public function attach($name, $contents = '', $filename = null, array $headers = [])
@@ -349,6 +352,20 @@ class PendingRequest
     {
         return tap($this, function () use ($format) {
             $this->bodyFormat = $format;
+        });
+    }
+
+    /**
+     * Set the given query parameters in the request URI.
+     *
+     * @return $this
+     */
+    public function withQueryParameters(array $parameters)
+    {
+        return tap($this, function () use ($parameters) {
+            $this->options = array_merge_recursive($this->options, [
+                'query' => $parameters,
+            ]);
         });
     }
 
@@ -400,6 +417,30 @@ class PendingRequest
     }
 
     /**
+     * Add the given header to the request.
+     *
+     * @param string $name
+     * @param mixed $value
+     * @return $this
+     */
+    public function withHeader($name, $value)
+    {
+        return $this->withHeaders([$name => $value]);
+    }
+
+    /**
+     * Replace the given headers on the request.
+     *
+     * @return $this
+     */
+    public function replaceHeaders(array $headers)
+    {
+        $this->options['headers'] = array_merge($this->options['headers'] ?? [], $headers);
+
+        return $this;
+    }
+
+    /**
      * Specify the basic authentication username and password for the request.
      *
      * @return $this
@@ -442,7 +483,7 @@ class PendingRequest
     /**
      * Specify the user agent for the request.
      *
-     * @param string $userAgent
+     * @param bool|string $userAgent
      * @return $this
      */
     public function withUserAgent($userAgent)
@@ -552,42 +593,6 @@ class PendingRequest
     }
 
     /**
-     * A callable that is invoked when the HTTP headers of the response have been received but the body has not yet begun to download.
-     *
-     * @return $this
-     */
-    public function onHeaders(callable $callback)
-    {
-        return tap($this, function () use ($callback) {
-            $this->options['on_headers'] = $callback;
-        });
-    }
-
-    /**
-     * The callback is invoked with transfer statistics about the request, the response received, or the error encountered. Included in the data is the total amount of time taken to send the request.
-     *
-     * @return $this
-     */
-    public function onStats(callable $callback)
-    {
-        return tap($this, function () use ($callback) {
-            $this->options['on_stats'] = $callback;
-        });
-    }
-
-    /**
-     * Defines a function to invoke when transfer progress is made.
-     *
-     * @return $this
-     */
-    public function progress(callable $callback)
-    {
-        return tap($this, function () use ($callback) {
-            $this->options['progress'] = $callback;
-        });
-    }
-
-    /**
      * Specify the number of times the request should be attempted.
      *
      * @return $this
@@ -630,6 +635,28 @@ class PendingRequest
     }
 
     /**
+     * Add new request middleware the client handler stack.
+     *
+     * @return $this
+     */
+    public function withRequestMiddleware(callable $middleware)
+    {
+        $this->middleware->push(Middleware::mapRequest($middleware));
+        return $this;
+    }
+
+    /**
+     * Add new response middleware the client handler stack.
+     *
+     * @return $this
+     */
+    public function withResponseMiddleware(callable $middleware)
+    {
+        $this->middleware->push(Middleware::mapResponse($middleware));
+        return $this;
+    }
+
+    /**
      * Add a new "before sending" callback to the request.
      *
      * @param callable $callback
@@ -658,7 +685,6 @@ class PendingRequest
      * Throw an exception if a server or client error occurred and the given condition evaluates to true.
      *
      * @param bool|callable $condition
-     * @param null|callable $throwCallback
      * @return $this
      */
     public function throwIf($condition)
@@ -718,7 +744,7 @@ class PendingRequest
     /**
      * Issue a GET request to the given URL.
      *
-     * @param null|array|string $query
+     * @param array|string|null $query
      * @return Response
      */
     public function get(string $url, $query = null)
@@ -731,7 +757,7 @@ class PendingRequest
     /**
      * Issue a HEAD request to the given URL.
      *
-     * @param null|array|string $query
+     * @param array|string|null $query
      * @return Response
      */
     public function head(string $url, $query = null)
@@ -1099,7 +1125,7 @@ class PendingRequest
     /**
      * Retrieve the pending request promise.
      *
-     * @return null|\GuzzleHttp\Promise\PromiseInterface
+     * @return \GuzzleHttp\Promise\PromiseInterface|null
      */
     public function getPromise()
     {

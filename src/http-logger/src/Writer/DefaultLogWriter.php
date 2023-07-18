@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Http\Logger\Writer;
@@ -15,6 +15,8 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Logger\LoggerFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
+
+use function Hyperf\Support\env;
 
 class DefaultLogWriter implements LogWriter
 {

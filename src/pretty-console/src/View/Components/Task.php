@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\PrettyConsole\View\Components;
@@ -21,7 +21,7 @@ class Task extends Component
      * Renders the component using the given arguments.
      *
      * @param string $description
-     * @param  (callable(): bool)|null  $task
+     * @param (callable(): bool)|null $task
      * @param int $verbosity
      */
     public function render($description, $task = null, $verbosity = OutputInterface::VERBOSITY_NORMAL)

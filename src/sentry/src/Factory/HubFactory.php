@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Sentry\Factory;
@@ -21,6 +21,7 @@ use Sentry\Integration as SdkIntegration;
 use Sentry\SentrySdk;
 use Sentry\State\Hub;
 
+use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
 
 class HubFactory

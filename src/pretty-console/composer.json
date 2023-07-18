@@ -3,18 +3,22 @@
     "description": "The pretty console component for Hyperf.",
     "type": "library",
     "license": "MIT",
-    "authors": [{
-        "name": "huangdijia",
-        "email": "huangdijia@gmail.com"
-    }],
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
     "support": {
         "issues": "https://github.com/friendsofhyperf/components/issues",
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "friendsofhyperf/helpers": "^3.0",
-        "hyperf/contract": "~3.0.0",
-        "hyperf/tappable": "~3.0.0",
+        "friendsofhyperf/helpers": "~3.1.0",
+        "hyperf/contract": "~3.1.0",
+        "hyperf/stringable": "~3.1.0",
+        "hyperf/support": "~3.1.0",
+        "hyperf/tappable": "~3.1.0",
         "nunomaduro/termwind": "^1.13"
     },
     "autoload": {
@@ -30,6 +34,9 @@
     "extra": {
         "hyperf": {
             "config": "FriendsOfHyperf\\PrettyConsole\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
         }
     }
 }

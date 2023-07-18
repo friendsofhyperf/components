@@ -5,29 +5,10 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 use Hyperf\Collection\Arr;
-
-uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'arr');
-
-test('test isList', function ($expected, $value) {
-    expect(Arr::isList($value))->toBe($expected);
-})->with([
-    [true, []],
-    [true, [1, 2, 3]],
-    [true, ['foo', 2, 3]],
-    [true, ['foo', 'bar']],
-    [true, [0 => 'foo', 'bar']],
-    [true, [0 => 'foo', 1 => 'bar']],
-
-    [false, [1 => 'foo', 'bar']],
-    [false, [1 => 'foo', 0 => 'bar']],
-    [false, [0 => 'foo', 'bar' => 'baz']],
-    [false, [0 => 'foo', 2 => 'bar']],
-    [false, ['foo' => 'bar', 'baz' => 'qux']],
-]);
 
 test('test keyBy', function () {
     $array = [

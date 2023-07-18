@@ -6,6 +6,8 @@
 
 The closure command component for Hyperf.
 
+⚠️ This component is deprecated, please use [hyperf/command](https://github.com/hyperf/command) instead.
+
 ## Installation
 
 ```bash
@@ -52,25 +54,24 @@ use Hyperf\Di\Annotation\Inject;
 #[Command(signature: 'foo', description: 'The description of foo command.')]
 class FooService
 {
-    #[Inject()]
-    protected Output $output;
+    use \Hyperf\Command\Concerns\InteractsWithIO;
 
     #[Command(signature: 'foo:bar {--bar=1 : Bar Value}', description: 'The description of foo:bar command.')]
     public function bar($bar)
     {
-        $this->output->info('Bar Value: ' . $bar);
+        $this->output?->info('Bar Value: ' . $bar);
 
         return $bar;
     }
 
     public function bar1()
     {
-        $this->output->info(__METHOD__);
+        $this->output?->info(__METHOD__);
     }
 
     public function handle()
     {
-        $this->output->info(__METHOD__);
+        $this->output?->info(__METHOD__);
     }
 }
 ```
@@ -83,6 +84,19 @@ foo
   foo:bar1                  The description of foo:bar1 command.
 ```
 
-## Sponsor
+## Donate
 
-If you like this project, Buy me a cup of coffee. [ [Alipay](https://hdj.me/images/alipay.jpg) | [WePay](https://hdj.me/images/wechat-pay.jpg) ]
+> If you like them, Buy me a cup of coffee.
+
+| Alipay | WeChat |
+|  ----  | ----  |
+| <img src="https://hdj.me/images/alipay-min.jpg" width="200" height="200" />  | <img src="https://hdj.me/images/wechat-pay-min.jpg" width="200" height="200" /> |
+
+## Contact
+
+- [Twitter](https://twitter.com/huangdijia)
+- [Gmail](mailto:huangdijia@gmail.com)
+
+## License
+
+[MIT](LICENSE)

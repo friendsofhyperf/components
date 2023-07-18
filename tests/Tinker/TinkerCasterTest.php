@@ -5,15 +5,13 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 use FriendsOfHyperf\Macros\Foundation\HtmlString;
 use FriendsOfHyperf\Tinker\TinkerCaster;
 use Hyperf\Collection\Collection;
 use Hyperf\Stringable\Stringable;
-
-uses()->group('tinker');
 
 beforeEach(function () {
     $this->caster = new TinkerCaster();

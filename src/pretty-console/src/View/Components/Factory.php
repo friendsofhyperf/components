@@ -5,13 +5,16 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\PrettyConsole\View\Components;
 
 use InvalidArgumentException;
 use Symfony\Component\Console\Style\SymfonyStyle;
+
+use function FriendsOfHyperf\Helpers\throw_unless;
+use function Hyperf\Support\with;
 
 /**
  * @method void alert(string $string, int $verbosity = \Symfony\Component\Console\Output\OutputInterface::VERBOSITY_NORMAL)

@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Http\Client;
@@ -44,12 +44,7 @@ class Pool
     public function __construct(Factory $factory = null)
     {
         $this->factory = $factory ?: new Factory();
-
-        if (method_exists(Utils::class, 'chooseHandler')) {
-            $this->handler = Utils::chooseHandler();
-        } else {
-            $this->handler = \GuzzleHttp\choose_handler();
-        }
+        $this->handler = Utils::chooseHandler();
     }
 
     /**
@@ -57,7 +52,7 @@ class Pool
      *
      * @param string $method
      * @param array $parameters
-     * @return PendingRequest
+     * @return PendingRequest|\GuzzleHttp\Promise\Promise
      */
     public function __call($method, $parameters)
     {

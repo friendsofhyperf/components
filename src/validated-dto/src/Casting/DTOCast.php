@@ -5,14 +5,14 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\ValidatedDTO\Casting;
 
 use FriendsOfHyperf\ValidatedDTO\Exception\CastException;
 use FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException;
-use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
+use FriendsOfHyperf\ValidatedDTO\SimpleDTO;
 use Hyperf\Validation\ValidationException;
 use Throwable;
 
@@ -25,7 +25,7 @@ class DTOCast implements Castable
     /**
      * @throws CastException|CastTargetException|ValidationException
      */
-    public function cast(string $property, mixed $value): ValidatedDTO
+    public function cast(string $property, mixed $value): SimpleDTO
     {
         if (is_string($value)) {
             $value = json_decode($value, true);
@@ -39,11 +39,12 @@ class DTOCast implements Castable
             $dto = new $this->dtoClass($value);
         } catch (ValidationException $exception) {
             throw $exception;
-        } catch (Throwable) {
+        } catch (Throwable $exception) {
+            throw $exception;
             throw new CastException($property);
         }
 
-        if (! $dto instanceof ValidatedDTO) {
+        if (! $dto instanceof SimpleDTO) {
             throw new CastTargetException($property);
         }
 

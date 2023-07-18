@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Lock\Driver;
@@ -14,6 +14,8 @@ use Carbon\Carbon;
 use Hyperf\Database\ConnectionInterface;
 use Hyperf\Database\Exception\QueryException;
 use Hyperf\DbConnection\Db;
+
+use function Hyperf\Support\optional;
 
 class DatabaseLock extends AbstractLock
 {
@@ -28,8 +30,12 @@ class DatabaseLock extends AbstractLock
     {
         parent::__construct($name, $seconds, $owner);
 
+        $constructor = array_merge(['pool' => 'default', 'table' => 'locks', 'prefix' => ''], $constructor);
+        if ($constructor['prefix']) {
+            $this->name = ((string) $constructor['prefix']) . $this->name;
+        }
         $this->connection = Db::connection($constructor['pool']);
-        $this->table = $constructor['table'] ?? 'locks';
+        $this->table = $constructor['table'];
     }
 
     /**

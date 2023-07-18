@@ -5,12 +5,10 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 use Hyperf\Stringable\Str;
-
-uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'str');
 
 test('test strBetweenFirst', function ($expected, $args) {
     expect(Str::betweenFirst(...$args))->toBe($expected);
@@ -27,21 +25,6 @@ test('test strBetweenFirst', function ($expected, $args) {
     ['foo', ['foofoobar', 'foo', 'bar']],
     ['', ['foobarbar', 'foo', 'bar']],
 ]);
-
-test('test flushCache', function () {
-    $reflection = new ReflectionClass(Str::class);
-    $property = $reflection->getProperty('snakeCache');
-    $property->setAccessible(true);
-
-    Str::flushCache();
-    $this->assertEmpty($property->getValue());
-
-    Str::snake('Taylor Otwell');
-    $this->assertNotEmpty($property->getValue());
-
-    Str::flushCache();
-    $this->assertEmpty($property->getValue());
-});
 
 test('test excerpt', function () {
     $this->assertSame('...is a beautiful morn...', Str::excerpt('This is a beautiful morning', 'beautiful', ['radius' => 5]));

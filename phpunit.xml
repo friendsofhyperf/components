@@ -1,16 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<phpunit backupGlobals="false"
-         backupStaticAttributes="false"
-         bootstrap="vendor/autoload.php"
-         colors="true"
-         convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
-         convertWarningsToExceptions="true"
-         processIsolation="false"
-         stopOnFailure="false">
-    <testsuites>
-        <testsuite name="Tests">
-            <directory suffix="Test.php">./tests</directory>
-        </testsuite>
-    </testsuites>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" backupGlobals="false" bootstrap="vendor/autoload.php" colors="true" processIsolation="false" stopOnFailure="false" xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.2/phpunit.xsd" cacheDirectory=".phpunit.cache" backupStaticProperties="false">
+  <testsuites>
+    <!--
+    <testsuite name="default">
+      <directory suffix="Test.php">./tests</directory>
+    </testsuite>
+    -->
+    <testsuite name="ConfigConsul">
+      <directory suffix="Test.php">./tests/ConfigConsul</directory>
+    </testsuite>
+    <testsuite name="Facade">
+      <directory suffix="Test.php">./tests/Facade</directory>
+    </testsuite>
+    <testsuite name="FastPaginate">
+      <directory suffix="Test.php">./tests/FastPaginate</directory>
+    </testsuite>
+    <testsuite name="Helpers">
+      <directory suffix="Test.php">./tests/Helpers</directory>
+    </testsuite>
+    <testsuite name="HttpClient">
+      <directory suffix="Test.php">./tests/HttpClient</directory>
+    </testsuite>
+    <testsuite name="Macros">
+      <directory suffix="Test.php">./tests/Macros</directory>
+    </testsuite>
+    <testsuite name="Support">
+      <directory suffix="Test.php">./tests/Support</directory>
+    </testsuite>
+    <testsuite name="Tinker">
+      <directory suffix="Test.php">./tests/Tinker</directory>
+    </testsuite>
+    <testsuite name="ValidatedDTO">
+      <directory suffix="Test.php">./tests/ValidatedDTO</directory>
+    </testsuite>
+  </testsuites>
+  <source>
+    <include>
+      <directory suffix=".php">./src</directory>
+    </include>
+  </source>
 </phpunit>

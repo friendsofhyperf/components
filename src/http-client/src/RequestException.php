@@ -5,10 +5,12 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Http\Client;
+
+use GuzzleHttp\Psr7\Message;
 
 class RequestException extends HttpClientException
 {
@@ -37,10 +39,7 @@ class RequestException extends HttpClientException
     protected function prepareMessage(Response $response)
     {
         $message = "HTTP request returned status code {$response->status()}";
-
-        $summary = class_exists(\GuzzleHttp\Psr7\Message::class)
-            ? \GuzzleHttp\Psr7\Message::bodySummary($response->toPsrResponse())
-            : \GuzzleHttp\Psr7\get_message_body_summary($response->toPsrResponse());
+        $summary = Message::bodySummary($response->toPsrResponse());
 
         return is_null($summary) ? $message : $message .= ":\n{$summary}\n";
     }

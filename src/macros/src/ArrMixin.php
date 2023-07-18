@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Macros;
@@ -18,11 +18,6 @@ use Hyperf\Collection\Collection;
  */
 class ArrMixin
 {
-    public function isList()
-    {
-        return fn ($array) => array_is_list($array);
-    }
-
     public function join()
     {
         return function ($array, $glue, $finalGlue = '') {
@@ -103,6 +98,16 @@ class ArrMixin
     public static function sortDesc()
     {
         return fn ($array, $callback = null) => Collection::make($array)->sortByDesc($callback)->all();
+    }
+
+    /**
+     * Recursively sort an array by keys and values in descending order.
+     *
+     * @return array
+     */
+    public function sortRecursiveDesc()
+    {
+        return fn ($array, $options = SORT_REGULAR) => $this->sortRecursive($array, $options, true);
     }
 
     public function undot()

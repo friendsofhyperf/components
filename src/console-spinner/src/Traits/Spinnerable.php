@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\ConsoleSpinner\Traits;
@@ -17,6 +17,8 @@ use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 use TypeError;
 
+use function Hyperf\Support\make;
+
 trait Spinnerable
 {
     /**
@@ -26,11 +28,16 @@ trait Spinnerable
     {
         /** @var ConfigInterface $config */
         $config = ApplicationContext::getContainer()->get(ConfigInterface::class);
+        $chars = null;
+
+        if ($config->has($key = 'console_spinner.chars')) {
+            $chars = (array) $config->get($key);
+        }
 
         return make(Spinner::class, [
             'output' => $this->output,
             'max' => $max,
-            'chars' => $config->get('console_spinner.chars'),
+            'chars' => $chars,
         ]);
     }
 

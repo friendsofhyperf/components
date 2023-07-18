@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\IdeHelper\Command;
@@ -19,12 +19,14 @@ use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Database\Model\Relations\Relation;
 use Hyperf\Stringable\Str;
-use Hyperf\Utils\Filesystem\Filesystem;
+use Hyperf\Support\Filesystem\Filesystem;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionMethod;
 use ReflectionNamedType;
 use ReflectionObject;
+use ReflectionType;
+use ReflectionUnionType;
 use SplFileObject;
 use Symfony\Component\Console\Output\OutputInterface;
 use Throwable;
@@ -250,7 +252,6 @@ class ModelCommand extends HyperfCommand
                     $realType = class_exists($type) ? ('\\' . $type) : 'mixed';
                     break;
             }
-
             if (! isset($this->properties[$name])) {
                 continue;
             }
@@ -371,7 +372,7 @@ class ModelCommand extends HyperfCommand
                     $name = Str::snake(substr($method, 3, -9));
                     if (! empty($name)) {
                         $reflection = new ReflectionMethod($model, $method);
-                        $type = $this->getReturnTypeFromDocBlock($reflection);
+                        $type = $this->getReturnType($reflection);
                         $this->setProperty($name, $type, true, null);
                     }
                 } elseif (str_starts_with($method, 'set') && str_ends_with(
@@ -646,6 +647,11 @@ class ModelCommand extends HyperfCommand
         return (bool) $this->config->get('ide-helper.model.camel_case_properties', false);
     }
 
+    protected function getReturnType(ReflectionMethod $reflection): ?string
+    {
+        return $this->getReturnTypeFromDocBlock($reflection) ?: $this->getReturnTypeFromReflection($reflection);
+    }
+
     /**
      * Get method return type based on it DocBlock comment.
      */
@@ -661,6 +667,61 @@ class ModelCommand extends HyperfCommand
         }
 
         return $type;
+    }
+
+    protected function getReturnTypeFromReflection(ReflectionMethod $reflection): ?string
+    {
+        $returnType = $reflection->getReturnType();
+
+        if (! $returnType) {
+            return null;
+        }
+
+        $types = $this->extractReflectionTypes($returnType);
+
+        if (is_string($types)) {
+            $types = [$types];
+        }
+
+        if ($returnType->allowsNull()) {
+            $types[] = 'null';
+        }
+
+        return implode('|', $types);
+    }
+
+    /**
+     * @return string|string[]
+     */
+    protected function extractReflectionTypes(ReflectionType $reflectionType)
+    {
+        if ($reflectionType instanceof ReflectionNamedType) {
+            return $this->getReflectionNamedType($reflectionType);
+        }
+
+        /** @var ReflectionUnionType $reflectionType */
+        $types = [];
+
+        foreach ($reflectionType->getTypes() as $namedType) {
+            if ($namedType->getName() === 'null') {
+                continue;
+            }
+
+            $types[] = $this->getReflectionNamedType($namedType);
+        }
+
+        return $types;
+    }
+
+    protected function getReflectionNamedType(ReflectionNamedType $paramType): string
+    {
+        $parameterName = $paramType->getName();
+
+        if (! $paramType->isBuiltin()) {
+            $parameterName = '\\' . $parameterName;
+        }
+
+        return $parameterName;
     }
 
     /**

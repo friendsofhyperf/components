@@ -2,11 +2,11 @@
 # Fortunately, You can ingore it by the following config.
 #
 # vendor/bin/phpstan analyse app --memory-limit 200M -l 0
-#
+# includes:
+#   - vendor/phpstan/phpstan-deprecation-rules/rules.neon
 parameters:
   excludePaths:
-    - 'src/macros/output/*'
-    - 'src/model-uid-addon/output/*'
+    - 'src/*/output/*'
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     # - '#Unsafe usage of new static\(\)#'
@@ -20,6 +20,7 @@ parameters:
         - src/model-uid-addon/macros/str.php
         - src/model-uid-addon/macros/blueprint.php
         - src/tinker/src/TinkerCaster.php
+        - tests/*.php
     -
       message: '#Calling static::\w+\(\) outside of class scope#'
       path: src/macros/src/collection.php

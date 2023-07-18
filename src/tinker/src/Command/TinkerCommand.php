@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Tinker\Command;
@@ -22,6 +22,9 @@ use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Exception\LogicException;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
+use Throwable;
+
+use function Hyperf\Support\env;
 
 class TinkerCommand extends HyperfCommand
 {
@@ -94,7 +97,10 @@ class TinkerCommand extends HyperfCommand
         if ($code = $this->input->getOption('execute')) {
             try {
                 $shell->setOutput($this->output);
-                $shell->execute($code);
+                $shell->execute($code, true);
+            } catch (Throwable $e) {
+                $shell->writeException($e);
+                return 1;
             } finally {
                 $loader->unregister();
             }

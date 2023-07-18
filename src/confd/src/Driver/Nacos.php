@@ -5,21 +5,23 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Confd\Driver;
 
+use Hyperf\Codec\Json;
+use Hyperf\Codec\Xml;
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Nacos\Application;
 use Hyperf\Nacos\Config;
-use Hyperf\Utils\Codec\Json;
-use Hyperf\Utils\Codec\Xml;
+use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 
 use function Hyperf\Collection\collect;
+use function Hyperf\Support\make;
 
 class Nacos implements DriverInterface
 {
@@ -27,7 +29,11 @@ class Nacos implements DriverInterface
 
     public function __construct(private ContainerInterface $container, private ConfigInterface $config, private StdoutLoggerInterface $logger)
     {
-        $config = $this->config->get('confd.drivers.nacos.client', []);
+        $config = $this->config->get('confd.drivers.nacos.client') ?: $this->config->get('nacos', []);
+
+        if (empty($config)) {
+            throw new InvalidArgumentException('Nacos config is invalid.');
+        }
 
         $this->client = make(NacosClient::class, [
             'config' => $this->buildNacosConfig($config),
@@ -74,7 +80,7 @@ class Nacos implements DriverInterface
     /**
      * pull fresh config from nacos server.
      * @throws \GuzzleHttp\Exception\GuzzleException
-     * @throws \Hyperf\Utils\Exception\InvalidArgumentException
+     * @throws \Hyperf\Codec\Exception\InvalidArgumentException
      */
     protected function pull(array $options = []): array|string
     {

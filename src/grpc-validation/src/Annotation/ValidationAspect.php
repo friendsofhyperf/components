@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\GrpcValidation\Annotation;
@@ -57,7 +57,7 @@ class ValidationAspect extends AbstractAspect
     protected function getValidationRules(ProceedingJoinPoint $proceedingJoinPoint): array
     {
         $metadata = $proceedingJoinPoint->getAnnotationMetadata();
-        /** @var null|Validation $annotation */
+        /** @var Validation|null $annotation */
         $annotation = $metadata->method[Validation::class] ?? null;
 
         if (! $annotation) {

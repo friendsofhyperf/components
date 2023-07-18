@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Facade;
@@ -39,7 +39,7 @@ use Hyperf\HttpServer\Contract\RequestInterface as Accessor;
  * @method static array allFiles()
  * @method static bool anyFilled($keys)
  * @method static bool boolean($key = null, $default = false)
- * @method static \Hyperf\Collection\Collection collect(null|array|string $key = null)
+ * @method static \Hyperf\Collection\Collection collect(array|string|null $key = null)
  * @method static null|\Carbon\Carbon date(string $key, ?string $format = null, ?string $tz = null)
  * @method static array except($keys)
  * @method static bool filled(array|string $key)

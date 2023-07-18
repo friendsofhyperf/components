@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Http\Client;
@@ -145,8 +145,8 @@ class Request implements ArrayAccess
      * Determine if the request contains the given file.
      *
      * @param string $name
-     * @param null|string $value
-     * @param null|string $filename
+     * @param string|null $value
+     * @param string|null $filename
      * @return bool
      */
     public function hasFile($name, $value = null, $filename = null)

@@ -12,13 +12,37 @@ The sentry component for Hyperf.
 composer require friendsofhyperf/sentry
 ```
 
-## Publish config file
+## Publish Config File
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/sentry
 ```
 
-## Register exception handler
+## Enable Request Lifecycle
+
+```php
+# config/autoload/server.php
+return [
+    // ...
+    'servers' => [
+        [
+            'name' => 'http',
+            'type' => Server::SERVER_HTTP,
+            'host' => '0.0.0.0',
+            'port' => 9501,
+            'callbacks' => [
+                Event::ON_REQUEST => [Hyperf\HttpServer\Server::class, 'onRequest'],
+            ],
+            'options' => [
+                'enable_request_lifecycle' => true,
+            ],
+        ],
+    ],
+    // ...
+];
+```
+
+## Register ExceptionHandler
 
 ```php
 return [
@@ -31,7 +55,7 @@ return [
 ];
 ```
 
-## Register logger handler
+## Register Logger Handler
 
 ```php
 <?php
@@ -94,6 +118,19 @@ composer require php-http/guzzle6-adapter
 composer require php-http/guzzle7-adapter
 ```
 
-## Sponsor
+## Donate
 
-If you like this project, Buy me a cup of coffee. [ [Alipay](https://hdj.me/images/alipay.jpg) | [WePay](https://hdj.me/images/wechat-pay.jpg) ]
+> If you like them, Buy me a cup of coffee.
+
+| Alipay | WeChat |
+|  ----  | ----  |
+| <img src="https://hdj.me/images/alipay-min.jpg" width="200" height="200" />  | <img src="https://hdj.me/images/wechat-pay-min.jpg" width="200" height="200" /> |
+
+## Contact
+
+- [Twitter](https://twitter.com/huangdijia)
+- [Gmail](mailto:huangdijia@gmail.com)
+
+## License
+
+[MIT](LICENSE)

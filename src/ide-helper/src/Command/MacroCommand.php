@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\IdeHelper\Command;
@@ -15,7 +15,7 @@ use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Macroable\Macroable;
 use Hyperf\Stringable\Str;
-use Hyperf\Utils\Filesystem\Filesystem;
+use Hyperf\Support\Filesystem\Filesystem;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use ReflectionFunction;
@@ -26,6 +26,7 @@ use Swoole\Coroutine\System;
 use Throwable;
 
 use function Hyperf\Collection\collect;
+use function Hyperf\Support\optional;
 
 class MacroCommand extends HyperfCommand
 {

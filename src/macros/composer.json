@@ -14,21 +14,19 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "hyperf/collection": "~3.0.0",
-        "hyperf/macroable": "~3.0.0",
-        "hyperf/stringable": "~3.0.0",
+        "hyperf/collection": "~3.1.0",
+        "hyperf/macroable": "~3.1.0",
+        "hyperf/stringable": "~3.1.0",
+        "hyperf/support": "~3.1.0",
         "nesbot/carbon": "^2.0"
     },
     "autoload": {
-        "files": [
-            "src/Functions.php"
-        ],
         "psr-4": {
             "FriendsOfHyperf\\Macros\\": "src/"
         }
     },
     "suggest": {
-        "hyperf/http-server": "Required to use (~3.0.0)",
+        "hyperf/http-server": "Required to use (~3.1.0)",
         "league/commonmark": "Required to use (^1.3|^2.0.2)",
         "opis/closure": "Required to use (^3.1)",
         "ramsey/uuid": "Required to generate UUIDs (^4.7)",
@@ -38,6 +36,9 @@
     "extra": {
         "hyperf": {
             "config": "FriendsOfHyperf\\Macros\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
         }
     },
     "config": {

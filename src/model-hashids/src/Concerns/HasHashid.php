@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\ModelHashids\Concerns;
@@ -13,8 +13,10 @@ namespace FriendsOfHyperf\ModelHashids\Concerns;
 use Hashids\Hashids;
 use Hyperf\Database\Model\Model;
 
+use function Hyperf\Config\config;
+
 /**
- * @method null|Model findByHashid($hashid)
+ * @method Model|null findByHashid($hashid)
  * @method Model findByHashidOrFail($hashid)
  */
 trait HasHashid
@@ -33,7 +35,7 @@ trait HasHashid
      * Decode the hashid to the id.
      *
      * @param string $hashid
-     * @return null|int
+     * @return int|null
      */
     public function hashidToId($hashid)
     {
@@ -44,7 +46,7 @@ trait HasHashid
      * Encode an id to its equivalent hashid.
      *
      * @param string $id
-     * @return null|string
+     * @return string|null
      */
     public function idToHashid($id)
     {
@@ -74,7 +76,7 @@ trait HasHashid
     }
 
     /**
-     * @return null|string
+     * @return string|null
      */
     protected function getHashidAttribute()
     {

@@ -10,14 +10,14 @@ env:
   PHP_CS_FIXER_IGNORE_ENV: 1
 
 jobs:
-  ci:
-    name: Test on PHP ${{ matrix.php }}
+  cs-fix:
+    name: PHP CS Fixer on PHP ${{ matrix.php }}
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
-        os: [ubuntu-22.04]
-        php: ['8.0', '8.1', '8.2']
-      max-parallel: 4
+        os: [ubuntu-latest]
+        php: ['8.1']
+      max-parallel: 20
       fail-fast: false
     steps:
       - name: Checkout
@@ -29,14 +29,37 @@ jobs:
           extensions: redis, pdo, pdo_mysql, bcmath, swoole
           tools: phpize
           coverage: none
-      - name: Setup pest-plugin-parallel
-        run: |
-          composer require pestphp/pest-plugin-parallel:^1.2.1
-        if: matrix.php == '8.0'
       - name: Setup Packages
         run: composer update -o
       - name: Run Cs Fixer
-        run: vendor/bin/php-cs-fixer fix src --dry-run
+        run: vendor/bin/php-cs-fixer fix src --dry-run --diff --verbose
+  tests:
+    needs: cs-fix
+    name: Test on PHP ${{ matrix.php }} with Swoole ${{ matrix.swoole }}
+    runs-on: "${{ matrix.os }}"
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+        php: ['8.1', '8.2']
+        swoole: ['5.0.3']
+      max-parallel: 20
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: redis, pdo, pdo_mysql, bcmath, swoole-${{ matrix.swoole }}
+          tools: phpize
+          coverage: none
+      - name: Show Imformations
+        run: |
+          php -v
+          php --ri swoole
+      - name: Setup Packages
+        run: composer update -o
       - name: Run Analyse
         run: composer analyse src
       - name: Run Test Cases

@@ -5,14 +5,14 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\ModelObserver\Command;
 
+use Hyperf\CodeParser\Project;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Utils\CodeGen\Project;
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputArgument;

@@ -9,30 +9,32 @@
         "encryption",
         "swoole"
     ],
-    "authors": [{
-        "name": "Huangdijia",
-        "email": "huangdijia@gmail.com",
-        "homepage": "https://github.com/huangdijia"
-    }],
+    "authors": [
+        {
+            "name": "Huangdijia",
+            "email": "huangdijia@gmail.com",
+            "homepage": "https://github.com/huangdijia"
+        }
+    ],
     "support": {
         "issues": "https://github.com/friendsofhyperf/components/issues",
         "source": "https://github.com/friendsofhyperf/components"
     },
     "autoload": {
         "psr-4": {
-            "Friendsofhyperf\\Encryption\\": "src/"
+            "FriendsOfHyperf\\Encryption\\": "src/"
         },
         "files": [
             "src/Functions.php"
         ]
     },
     "require": {
-        "hyperf/context": "~3.0.16",
-        "hyperf/contract": "~3.0.0",
-        "hyperf/di": "~3.0.0",
-        "hyperf/event": "~3.0.0",
-        "hyperf/stringable": "~3.0.0",
-        "hyperf/tappable": "~3.0.0"
+        "hyperf/context": "~3.1.0",
+        "hyperf/contract": "~3.1.0",
+        "hyperf/di": "~3.1.0",
+        "hyperf/event": "~3.1.0",
+        "hyperf/stringable": "~3.1.0",
+        "hyperf/tappable": "~3.1.0"
     },
     "suggest": {
         "opis/closure": "For encrypting closures."
@@ -42,7 +44,10 @@
     },
     "extra": {
         "hyperf": {
-            "config": "Friendsofhyperf\\Encryption\\ConfigProvider"
+            "config": "FriendsOfHyperf\\Encryption\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
         }
     }
 }

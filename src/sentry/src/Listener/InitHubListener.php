@@ -5,17 +5,19 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Sentry\Listener;
 
-use FriendsOfHyperf\Http\RequestLifeCycle\Events\RequestReceived;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\AfterWorkerStart;
+use Hyperf\HttpServer\Event\RequestReceived;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
 use Sentry\State\HubInterface;
+
+use function Hyperf\Support\make;
 
 class InitHubListener implements ListenerInterface
 {

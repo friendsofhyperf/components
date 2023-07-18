@@ -5,10 +5,44 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-// uses(Tests\TestCase::class)->in('Feature');
+use Faker\Factory;
+use Faker\Generator;
+use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\ValidatorInterface;
+use Hyperf\Validation\Contract\ValidatorFactoryInterface;
+use Mockery as m;
+
+uses(\FriendsOfHyperf\Tests\TestCase::class)->in('*/*');
+uses()->group('config-consul')->in('ConfigConsul');
+uses()->group('facade')->in('Facade');
+uses()->group('fast-paginate')->in('FastPaginate');
+uses()->group('helpers')->in('Helpers');
+uses()->group('macros')->in('Macros');
+uses()->group('support')->in('Support');
+uses()->group('tinker')->in('Tinker');
+uses()->group('validated-dto')
+    ->beforeEach(function () {
+        $this->subject_name = faker()->name();
+        $this->name = faker()->name();
+        $this->age = faker()->numberBetween(1, 100);
+        $this->timezone = faker()->timezone();
+        date_default_timezone_set($this->timezone);
+
+        $this->mock(ValidatorFactoryInterface::class, function ($mock) {
+            $mock->shouldReceive('make')->andReturn(m::mock(ValidatorInterface::class, function ($mock) {
+                $mock->shouldReceive('fails')->andReturn(false)
+                    ->shouldReceive('passes')->andReturn(true);
+            }));
+        });
+
+        $this->mock(ConfigInterface::class, function ($mock) {
+            $mock->shouldReceive('get')->with('dto')->andReturn([]);
+        });
+    })
+    ->in('ValidatedDTO');
 
 /*
 |--------------------------------------------------------------------------
@@ -36,7 +70,15 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
+/**
+ * Returns the string "test_property".
+ */
+function test_property(): string
 {
-    // ..
+    return 'test_property';
+}
+
+function faker(string $locale = Factory::DEFAULT_LOCALE): Generator
+{
+    return Factory::create($locale);
 }

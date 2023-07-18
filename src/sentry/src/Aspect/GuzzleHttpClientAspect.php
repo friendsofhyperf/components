@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Sentry\Aspect;
@@ -52,13 +52,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 return;
             }
 
-            $guzzleConfig = (function () {
-                if (method_exists($this, 'getConfig')) { // @deprecated ClientInterface::getConfig will be removed in guzzlehttp/guzzle:8.0.
-                    return $this->getConfig();
-                }
-
-                return $this->config ?? [];
-            })->call($instance);
+            $guzzleConfig = (fn () => $this->config ?? [])->call($instance);
 
             if (($guzzleConfig['no_aspect'] ?? null) === true) {
                 return;

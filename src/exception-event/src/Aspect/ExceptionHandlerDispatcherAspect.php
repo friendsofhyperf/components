@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\ExceptionEvent\Aspect;
@@ -35,7 +35,7 @@ class ExceptionHandlerDispatcherAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($responseHandled) use ($proceedingJoinPoint) {
-            /** @var null|Throwable $exception */
+            /** @var Throwable|null $exception */
             $exception = $proceedingJoinPoint->getArguments()[0][0] ?? null;
             $request = Context::get(ServerRequestInterface::class);
             $response = Context::get(ResponseInterface::class);

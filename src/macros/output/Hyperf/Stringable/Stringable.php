@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace Hyperf\Stringable;
@@ -26,7 +26,7 @@ class Stringable
      *
      * @param string $phrase
      * @param array $options
-     * @return null|string
+     * @return string|null
      */
     public function excerpt($phrase = '', $options = [])
     {
@@ -129,7 +129,7 @@ class Stringable
      *
      * @param array|string $replace
      * @param array|int $offset
-     * @param null|array|int $length
+     * @param array|int|null $length
      * @return static
      */
     public function substrReplace($replace, $offset = 0, $length = null)
@@ -177,7 +177,7 @@ class Stringable
      * Wrap the string with the given strings.
      *
      * @param string $before
-     * @param null|string $after
+     * @param string|null $after
      * @return static
      */
     public function wrap($before, $after = null)
@@ -189,7 +189,7 @@ class Stringable
      *
      * @param array|string $needles
      * @param callable $callback
-     * @param null|callable $default
+     * @param callable|null $default
      * @return static
      */
     public function whenContains($needles, $callback, $default = null)
@@ -200,7 +200,7 @@ class Stringable
      * Execute the given callback if the string contains all array values.
      *
      * @param callable $callback
-     * @param null|callable $default
+     * @param callable|null $default
      * @return static
      */
     public function whenContainsAll(array $needles, $callback, $default = null)
@@ -212,7 +212,7 @@ class Stringable
      *
      * @param array|string $needles
      * @param callable $callback
-     * @param null|callable $default
+     * @param callable|null $default
      * @return static
      */
     public function whenEndsWith($needles, $callback, $default = null)
@@ -224,7 +224,7 @@ class Stringable
      *
      * @param string $value
      * @param callable $callback
-     * @param null|callable $default
+     * @param callable|null $default
      * @return static
      */
     public function whenExactly($value, $callback, $default = null)
@@ -236,7 +236,7 @@ class Stringable
      *
      * @param string $value
      * @param callable $callback
-     * @param null|callable $default
+     * @param callable|null $default
      * @return static
      */
     public function whenNotExactly($value, $callback, $default = null)
@@ -248,7 +248,7 @@ class Stringable
      *
      * @param array|string $pattern
      * @param callable $callback
-     * @param null|callable $default
+     * @param callable|null $default
      * @return static
      */
     public function whenIs($pattern, $callback, $default = null)
@@ -259,7 +259,7 @@ class Stringable
      * Execute the given callback if the string is 7 bit ASCII.
      *
      * @param callable $callback
-     * @param null|callable $default
+     * @param callable|null $default
      * @return static
      */
     public function whenIsAscii($callback, $default = null)
@@ -270,7 +270,7 @@ class Stringable
      * Execute the given callback if the string is a valid ULID.
      *
      * @param callable $callback
-     * @param null|callable $default
+     * @param callable|null $default
      * @return static
      */
     public function whenIsUlid($callback, $default = null)
@@ -281,7 +281,7 @@ class Stringable
      * Execute the given callback if the string is a valid UUID.
      *
      * @param callable $callback
-     * @param null|callable $default
+     * @param callable|null $default
      * @return static
      */
     public function whenIsUuid($callback, $default = null)
@@ -293,7 +293,7 @@ class Stringable
      *
      * @param string $pattern
      * @param callable $callback
-     * @param null|callable $default
+     * @param callable|null $default
      * @return static
      */
     public function whenTest($pattern, $callback, $default = null)
@@ -305,7 +305,7 @@ class Stringable
      *
      * @param array|string $needles
      * @param callable $callback
-     * @param null|callable $default
+     * @param callable|null $default
      * @return static
      */
     public function whenStartsWith($needles, $callback, $default = null)

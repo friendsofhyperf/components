@@ -5,13 +5,14 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Http\Client;
 
 use Closure;
 
+use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
 
 /**
@@ -23,7 +24,7 @@ use function Hyperf\Tappable\tap;
  * @method static PendingRequest asJson()
  * @method static PendingRequest asMultipart()
  * @method static PendingRequest async()
- * @method static PendingRequest attach(array|string $name, string $contents = '', null|string $filename = null, array $headers = [])
+ * @method static PendingRequest attach(array|string $name, string $contents = '', string|null $filename = null, array $headers = [])
  * @method static PendingRequest baseUrl(string $url)
  * @method static PendingRequest beforeSending(callable $callback)
  * @method static PendingRequest bodyFormat(string $format)
@@ -52,7 +53,7 @@ use function Hyperf\Tappable\tap;
  * @method static PendingRequest withoutRedirecting()
  * @method static PendingRequest withoutVerifying()
  * @method static PendingRequest throw(callable $callback = null)
- * @method static PendingRequest throwIf(bool|callable $condition, null|callable $throwCallback)
+ * @method static PendingRequest throwIf(bool|callable $condition, callable|null $throwCallback)
  * @method static PendingRequest throwUnless($condition)
  * @method static Response throwIfStatus(callable|int $statusCode)
  * @method static Response throwUnlessStatus(callable|int $statusCode)
@@ -60,8 +61,8 @@ use function Hyperf\Tappable\tap;
  * @method static Response throwIfServerError()
  * @method static array pool(callable $callback)
  * @method static Response delete(string $url, array $data = [])
- * @method static Response get(string $url, null|array|string $query = null)
- * @method static Response head(string $url, null|array|string $query = null)
+ * @method static Response get(string $url, array|string|null $query = null)
+ * @method static Response head(string $url, array|string|null $query = null)
  * @method static Response patch(string $url, array $data = [])
  * @method static Response post(string $url, array $data = [])
  * @method static Response put(string $url, array $data = [])

@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Http\Client;
@@ -15,12 +15,13 @@ use Closure;
 use Hyperf\Collection\Collection;
 use Hyperf\Macroable\Macroable;
 use LogicException;
+use Stringable;
 
 use function Hyperf\Collection\data_get;
 use function Hyperf\Collection\value;
 use function Hyperf\Tappable\tap;
 
-class Response implements ArrayAccess
+class Response implements ArrayAccess, Stringable
 {
     use Concerns\DeterminesStatusCode;
     use Macroable {
@@ -37,7 +38,7 @@ class Response implements ArrayAccess
     /**
      * The transfer stats for the request.
      *
-     * @var null|\GuzzleHttp\TransferStats
+     * @var \GuzzleHttp\TransferStats|null
      */
     public $transferStats;
 
@@ -102,7 +103,7 @@ class Response implements ArrayAccess
     /**
      * Get the JSON decoded body of the response as an array or scalar value.
      *
-     * @param null|string $key
+     * @param string|null $key
      * @param mixed $default
      * @return mixed
      */
@@ -122,7 +123,7 @@ class Response implements ArrayAccess
     /**
      * Get the JSON decoded body of the response as an object.
      *
-     * @return array|object
+     * @return object|null
      */
     public function object()
     {
@@ -132,7 +133,7 @@ class Response implements ArrayAccess
     /**
      * Get the JSON decoded body of the response as a collection.
      *
-     * @param null|string $key
+     * @param string|null $key
      * @return Collection
      */
     public function collect($key = null)
@@ -183,7 +184,7 @@ class Response implements ArrayAccess
     /**
      * Get the effective URI of the response.
      *
-     * @return null|\Psr\Http\Message\UriInterface
+     * @return \Psr\Http\Message\UriInterface|null
      */
     public function effectiveUri()
     {
@@ -299,7 +300,7 @@ class Response implements ArrayAccess
     /**
      * Create an exception if a server or client error occurred.
      *
-     * @return null|RequestException
+     * @return RequestException|null
      */
     public function toException()
     {
@@ -311,7 +312,6 @@ class Response implements ArrayAccess
     /**
      * Throw an exception if a server or client error occurred.
      *
-     * @param null|Closure $callback
      * @return $this
      * @throws RequestException
      */

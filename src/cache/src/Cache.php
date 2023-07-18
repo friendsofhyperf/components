@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Cache;
@@ -25,6 +25,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 use function Hyperf\Collection\collect;
 use function Hyperf\Collection\value;
+use function Hyperf\Support\with;
 use function Hyperf\Tappable\tap;
 
 class Cache implements CacheInterface
@@ -168,9 +169,6 @@ class Cache implements CacheInterface
             ->all();
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function getMultiple($keys, $default = null): iterable
     {
         $defaults = [];
@@ -218,9 +216,6 @@ class Cache implements CacheInterface
         return $this->rememberForever($key, $callback);
     }
 
-    /**
-     * {@inheritdoc}
-     */
     public function setMultiple($values, $ttl = null): bool
     {
         return $this->putMany(is_array($values) ? $values : iterator_to_array($values), $ttl);

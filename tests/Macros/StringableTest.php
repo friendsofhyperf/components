@@ -5,13 +5,11 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 use FriendsOfHyperf\Macros\Foundation\HtmlString;
 use Hyperf\Stringable\Str;
-
-uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'stringable');
 
 test('test betweenFirst', function () {
     $this->assertSame('abc', (string) $this->stringable('abc')->betweenFirst('', 'c'));
@@ -29,8 +27,8 @@ test('test betweenFirst', function () {
 
 test('test classNamespace', function () {
     $this->assertEquals(
-        Str::classNamespace(static::class),
-        $this->stringable(static::class)->classNamespace()
+        Str::classNamespace($this::class),
+        $this->stringable($this::class)->classNamespace()
     );
 });
 

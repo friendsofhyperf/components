@@ -1,4 +1,4 @@
-# model-uid-addon
+# model-hashids
 
 > Using hashids instead of integer ids in urls and list items can be more
 appealing and clever. For more information visit [hashids.org](https://hashids.org/).
@@ -191,6 +191,19 @@ Route::get('/user/{user}/items/{item}', function (User $user, Item $item) {
 
 ```
 
-## Sponsor
+## Donate
 
-If you like this project, Buy me a cup of coffee. [ [Alipay](https://hdj.me/images/alipay.jpg) | [WePay](https://hdj.me/images/wechat-pay.jpg) ]
+> If you like them, Buy me a cup of coffee.
+
+| Alipay | WeChat |
+|  ----  | ----  |
+| <img src="https://hdj.me/images/alipay-min.jpg" width="200" height="200" />  | <img src="https://hdj.me/images/wechat-pay-min.jpg" width="200" height="200" /> |
+
+## Contact
+
+- [Twitter](https://twitter.com/huangdijia)
+- [Gmail](mailto:huangdijia@gmail.com)
+
+## License
+
+[MIT](LICENSE)

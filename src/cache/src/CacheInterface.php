@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\Cache;
@@ -19,7 +19,7 @@ interface CacheInterface
     /**
      * @param string $key
      * @param mixed $value
-     * @param null|DateInterval|DateTimeInterface|int $ttl
+     * @param DateInterval|DateTimeInterface|int|null $ttl
      */
     public function add($key, $value, $ttl = null): bool;
 
@@ -53,7 +53,7 @@ interface CacheInterface
     /**
      * @param array|string $key
      * @param mixed $value
-     * @param null|DateInterval|DateTimeInterface|int $ttl
+     * @param DateInterval|DateTimeInterface|int|null $ttl
      */
     public function put($key, $value, $ttl = null): bool;
 
@@ -79,7 +79,7 @@ interface CacheInterface
      * @template TCacheValue
      *
      * @param array|string $key
-     * @param  TCacheValue|(\Closure(): TCacheValue)  $default
+     * @param (Closure(): TCacheValue)|TCacheValue $default
      * @return (TCacheValue is null ? mixed : TCacheValue)
      */
     public function get($key, $default = null);
@@ -95,7 +95,7 @@ interface CacheInterface
      * @template TCacheValue
      *
      * @param array|string $key
-     * @param TCacheValue|(\Closure(): TCacheValue)  $default
+     * @param (Closure(): TCacheValue)|TCacheValue $default
      * @return (TCacheValue is null ? mixed : TCacheValue)
      */
     public function pull(string $key, $default = null);
@@ -106,7 +106,7 @@ interface CacheInterface
      * @template TCacheValue
      *
      * @param string $key
-     * @param null|DateInterval|DateTimeInterface|int $ttl
+     * @param DateInterval|DateTimeInterface|int|null $ttl
      * @param Closure(): TCacheValue $callback
      * @return TCacheValue
      */

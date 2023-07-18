@@ -5,20 +5,15 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ApplicationInterface;
-use Hyperf\Stringable\Stringable;
-use Mockery as m;
-use Psr\Container\ContainerInterface;
 
-uses(\FriendsOfHyperf\Tests\TestCase::class)->group('helpers');
-
-afterEach(function () {
-    m::close();
-});
+use function FriendsOfHyperf\Helpers\class_namespace;
+use function FriendsOfHyperf\Helpers\Command\call;
+use function FriendsOfHyperf\Helpers\object_get;
+use function FriendsOfHyperf\Helpers\preg_replace_array;
 
 test('test ClassNamespace', function () {
     $this->assertSame('Foo\Bar', class_namespace('Foo\Bar\Baz'));
@@ -58,35 +53,11 @@ test('test PregReplaceArray', function ($pattern, $replacements, $subject, $expe
     );
 })->with('providesPregReplaceArrayData');
 
-test('test Str', function () {
-    $stringable = str('string-value');
-
-    $this->assertInstanceOf(Stringable::class, $stringable);
-    $this->assertSame('string-value', (string) $stringable);
-
-    $stringable = str($name = null);
-    $this->assertInstanceOf(Stringable::class, $stringable);
-    $this->assertTrue($stringable->isEmpty());
-
-    $strAccessor = str();
-    $this->assertTrue((new ReflectionClass($strAccessor))->isAnonymous());
-    $this->assertSame($strAccessor->limit('string-value', 3), 'str...');
-
-    $strAccessor = str();
-    $this->assertTrue((new ReflectionClass($strAccessor))->isAnonymous());
-    $this->assertSame((string) $strAccessor, '');
-});
-
 test('test FriendsOfHyperf\Helpers\Command\call', function () {
-    ApplicationContext::setContainer(
-        mock(ContainerInterface::class)->expect(
-            has: fn () => true,
-            get: fn () => mock(ApplicationInterface::class)->expect(
-                setAutoExit: fn () => null,
-                run: fn () => 0,
-            )
-        )
-    );
+    $this->mock(ApplicationInterface::class, function ($mock) {
+        $mock->shouldReceive('setAutoExit')->andReturnSelf();
+        $mock->shouldReceive('run')->andReturn(0);
+    });
 
-    expect(FriendsOfHyperf\Helpers\Command\call('command', ['argument' => 'value']))->toBe(0);
+    expect(call('foo:bar', ['argument' => 'value']))->toBe(0);
 });

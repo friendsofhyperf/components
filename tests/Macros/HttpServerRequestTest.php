@@ -5,27 +5,25 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 use Hyperf\Context\Context;
 use Hyperf\HttpServer\Request;
 use Mockery as m;
 use Psr\Http\Message\ServerRequestInterface;
-
-uses(\FriendsOfHyperf\Tests\TestCase::class)->group('macros', 'request');
+use Swow\Psr7\Message\ServerRequestPlusInterface;
 
 afterEach(function () {
-    m::close();
     Context::set(ServerRequestInterface::class, null);
     Context::set('http.request.parsedData', null);
 });
 
 test('test only', function () {
-    $psrRequest = mock(ServerRequestInterface::class)->expect(
-        getParsedBody: fn () => ['id' => 1],
-        getQueryParams: fn () => [],
-    );
+    $psrRequest = m::mock(ServerRequestPlusInterface::class, [
+        'getParsedBody' => ['id' => 1],
+        'getQueryParams' => [],
+    ]);
     Context::set(ServerRequestInterface::class, $psrRequest);
 
     $request = new Request();
@@ -35,10 +33,10 @@ test('test only', function () {
 });
 
 test('test isEmptyString', function () {
-    $psrRequest = mock(ServerRequestInterface::class)->expect(
-        getParsedBody: fn () => ['id' => 1],
-        getQueryParams: fn () => [],
-    );
+    $psrRequest = m::mock(ServerRequestPlusInterface::class, [
+        'getParsedBody' => ['id' => 1],
+        'getQueryParams' => [],
+    ]);
     Context::set(ServerRequestInterface::class, $psrRequest);
 
     $request = new Request();

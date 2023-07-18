@@ -9,23 +9,26 @@
         "tinker",
         "swoole"
     ],
-    "authors": [{
-        "name": "Huangdijia",
-        "email": "huangdijia@gmail.com",
-        "homepage": "https://github.com/huangdijia"
-    }],
+    "authors": [
+        {
+            "name": "Huangdijia",
+            "email": "huangdijia@gmail.com",
+            "homepage": "https://github.com/huangdijia"
+        }
+    ],
     "support": {
         "issues": "https://github.com/friendsofhyperf/components/issues",
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "hyperf/command": "~3.0.0",
-        "hyperf/collection": "~3.0.0",
-        "hyperf/contract": "~3.0.0",
-        "hyperf/di": "~3.0.0",
-        "hyperf/framework": "~3.0.0",
-        "hyperf/stringable": "~3.0.0",
-        "hyperf/tappable": "~3.0.0",
+        "hyperf/command": "~3.1.0",
+        "hyperf/collection": "~3.1.0",
+        "hyperf/contract": "~3.1.0",
+        "hyperf/di": "~3.1.0",
+        "hyperf/framework": "~3.1.0",
+        "hyperf/stringable": "~3.1.0",
+        "hyperf/support": "~3.1.0",
+        "hyperf/tappable": "~3.1.0",
         "psy/psysh": "^0.10.0|^0.11.0"
     },
     "suggest": {
@@ -43,6 +46,9 @@
     "extra": {
         "hyperf": {
             "config": "FriendsOfHyperf\\Tinker\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
         }
     }
 }

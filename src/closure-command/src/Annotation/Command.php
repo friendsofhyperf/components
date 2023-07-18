@@ -5,7 +5,7 @@ declare(strict_types=1);
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 namespace FriendsOfHyperf\ClosureCommand\Annotation;
@@ -13,6 +13,9 @@ namespace FriendsOfHyperf\ClosureCommand\Annotation;
 use Attribute;
 use Hyperf\Di\Annotation\AbstractMultipleAnnotation;
 
+/**
+ * @deprecated since 3.1, use Hyperf\Command\Annotation\AsCommand instead.
+ */
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
 class Command extends AbstractMultipleAnnotation
 {
