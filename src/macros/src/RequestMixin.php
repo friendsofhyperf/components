@@ -144,7 +144,7 @@ class RequestMixin
     public function host()
     {
         /* @phpstan-ignore-next-line */
-        return fn () => $this->getHttpHost();
+        return fn () => $this->httpHost();
     }
 
     public function httpHost()
