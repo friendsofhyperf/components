@@ -44,3 +44,88 @@ test('test isEmptyString', function () {
     expect($request->isEmptyString('foo'))->toBeTrue();
     expect($request->isEmptyString('id'))->toBeFalse();
 });
+
+test('test get host', function () {
+    $request = new Request();
+
+    $host = 'foo.com';
+    $psrRequest = m::mock(ServerRequestPlusInterface::class, function ($mock) use ($host) {
+        $mock->shouldReceive('getHeader')->with('HOST')->andReturn([$host]);
+    });
+    Context::set(ServerRequestInterface::class, $psrRequest);
+
+    expect($request->getHost())->toBe($host);
+
+    $psrRequest = m::mock(ServerRequestPlusInterface::class, function ($mock) use ($host) {
+        $mock->shouldReceive('getHeader')->with('HOST')->andReturn([]);
+        $mock->shouldReceive('getServerParams')->with('SERVER_NAME')->andReturn([$host]);
+    });
+    Context::set(ServerRequestInterface::class, $psrRequest);
+
+    expect($request->getHost())->toBe($host);
+
+    $psrRequest = m::mock(ServerRequestPlusInterface::class, function ($mock) use ($host) {
+        $mock->shouldReceive('getHeader')->with('HOST')->andReturn([]);
+        $mock->shouldReceive('getServerParams')->with('SERVER_NAME')->andReturn([]);
+        $mock->shouldReceive('getServerParams')->with('SERVER_ADDR')->andReturn([$host]);
+    });
+    Context::set(ServerRequestInterface::class, $psrRequest);
+
+    expect($request->getHost())->toBe($host);
+});
+
+test('test get port', function () {
+    $request = new Request();
+
+    $port = 80;
+    $psrRequest = m::mock(ServerRequestPlusInterface::class, function ($mock) use ($port) {
+        $mock->shouldReceive('getHeader')->with('HOST')->andReturn([]);
+        $mock->shouldReceive('getServerParams')->with('SERVER_PORT')->andReturn([$port]);
+    });
+    Context::set(ServerRequestInterface::class, $psrRequest);
+
+    expect($request->getPort())->toBe($port);
+    $port = 80;
+    $psrRequest = m::mock(ServerRequestPlusInterface::class, function ($mock) {
+        $mock->shouldReceive('getHeader')->with('HOST')->andReturn(['foo.com:80']);
+    });
+    Context::set(ServerRequestInterface::class, $psrRequest);
+
+    expect($request->getPort())->toBe($port);
+
+    $port = 80;
+    $psrRequest = m::mock(ServerRequestPlusInterface::class, function ($mock) {
+        $mock->shouldReceive('getHeader')->with('HOST')->andReturn(['foo.com']);
+        $mock->shouldReceive('getServerParams')->with('HTTPS')->andReturn(['off']);
+    });
+    Context::set(ServerRequestInterface::class, $psrRequest);
+
+    expect($request->getPort())->toBe($port);
+
+    $port = 443;
+    $psrRequest = m::mock(ServerRequestPlusInterface::class, function ($mock) {
+        $mock->shouldReceive('getHeader')->with('HOST')->andReturn(['foo.com']);
+        $mock->shouldReceive('getServerParams')->with('HTTPS')->andReturn(['on']);
+    });
+    Context::set(ServerRequestInterface::class, $psrRequest);
+
+    expect($request->getPort())->toBe($port);
+});
+
+test('test get scheme', function () {
+    $request = new Request();
+
+    $psrRequest = m::mock(ServerRequestPlusInterface::class, function ($mock) {
+        $mock->shouldReceive('getServerParams')->with('HTTPS')->andReturn(['on']);
+    });
+    Context::set(ServerRequestInterface::class, $psrRequest);
+
+    expect($request->getScheme())->toBe('https');
+
+    $psrRequest = m::mock(ServerRequestPlusInterface::class, function ($mock) {
+        $mock->shouldReceive('getServerParams')->with('HTTPS')->andReturn(['off']);
+    });
+    Context::set(ServerRequestInterface::class, $psrRequest);
+
+    expect($request->getScheme())->toBe('http');
+});
