@@ -8,9 +8,9 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Macros\Foundation;
+namespace FriendsOfHyperf\Support;
 
-use FriendsOfHyperf\Macros\Contract\Htmlable;
+use FriendsOfHyperf\Support\Contract\Htmlable;
 use Stringable;
 
 class HtmlString implements Htmlable, Stringable

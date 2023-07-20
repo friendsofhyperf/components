@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Macros;
 
-use FriendsOfHyperf\Macros\Foundation\HtmlString;
+use FriendsOfHyperf\Support\HtmlString;
 use Hyperf\Stringable\Str;
 use Hyperf\Stringable\Stringable;
 
@@ -18,6 +18,7 @@ use function Hyperf\Collection\collect;
 
 /**
  * @mixin Stringable
+ * @property string $value
  */
 class StringableMixin
 {

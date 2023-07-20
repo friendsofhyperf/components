@@ -13,6 +13,11 @@ use FriendsOfHyperf\Facade\Log;
 use Hyperf\Logger\LoggerFactory;
 use Mockery as m;
 
+test()->expect('FriendsOfHyperf\Facade')
+    ->classes()
+    ->toExtend(FriendsOfHyperf\Facade\Facade::class)
+    ->ignoring('FriendsOfHyperf\Facade\ConfigProvider');
+
 test('test Cache Macroable', function () {
     Cache::macro('test', fn () => null);
 

@@ -10,8 +10,8 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Macros;
 
-use FriendsOfHyperf\Macros\Exceptions\ItemNotFoundException;
-use FriendsOfHyperf\Macros\Exceptions\MultipleItemsFoundException;
+use FriendsOfHyperf\Macros\Exception\ItemNotFoundException;
+use FriendsOfHyperf\Macros\Exception\MultipleItemsFoundException;
 use Hyperf\Collection\Arr;
 use Hyperf\Collection\Collection;
 use stdClass;

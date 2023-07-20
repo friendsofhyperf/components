@@ -158,7 +158,7 @@ class Stringable
     /**
      * Convert the string into a `HtmlString` instance.
      *
-     * @return \FriendsOfHyperf\Macros\Foundation\HtmlString
+     * @return \FriendsOfHyperf\Support\HtmlString
      */
     public function toHtmlString()
     {

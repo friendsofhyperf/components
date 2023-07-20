@@ -8,10 +8,9 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\Macros\Exceptions;
+namespace FriendsOfHyperf\Support;
 
-use RuntimeException;
-
-class MultipleItemsFoundException extends RuntimeException
+class UuidContainer
 {
+    public static $uuidFactory;
 }

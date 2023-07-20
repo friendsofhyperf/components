@@ -86,6 +86,7 @@
         "opis/closure": "^3.6",
         "pestphp/pest": "^2.8.0",
         "pestphp/pest-plugin-faker": "^2.0",
+        "pestphp/pest-plugin-type-coverage": "^2.0",
         "php-http/guzzle7-adapter": "^1.0",
         "phpstan/phpstan": "^1.0",
         "phpstan/phpstan-deprecation-rules": "^1.1",
@@ -245,7 +246,12 @@
         "analyse": "@php vendor/bin/phpstan analyse --memory-limit 4096M -l 0 -c phpstan.neon",
         "cs-fix": "@php vendor/bin/php-cs-fixer fix $1",
         "json-fix": "@php ./bin/composer-json-fixer",
-        "test": "@php vendor/bin/pest",
+        "test:unit": "@php vendor/bin/pest",
+        "test:types": "@php vendor/bin/pest --type-coverage",
+        "test": [
+            "@composer test:unit",
+            "@composer test:types"
+        ],
         "pending": [
             "./bin/pending-repositories.sh",
             "@php ./bin/pending-composer-json",

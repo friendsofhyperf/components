@@ -8,8 +8,8 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use FriendsOfHyperf\Macros\Exceptions\ItemNotFoundException;
-use FriendsOfHyperf\Macros\Exceptions\MultipleItemsFoundException;
+use FriendsOfHyperf\Macros\Exception\ItemNotFoundException;
+use FriendsOfHyperf\Macros\Exception\MultipleItemsFoundException;
 use Hyperf\Collection\Collection;
 
 use function Hyperf\Collection\collect;
