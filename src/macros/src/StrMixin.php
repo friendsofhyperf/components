@@ -10,7 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\Macros;
 
-use FriendsOfHyperf\Macros\Foundation\UuidContainer;
+use FriendsOfHyperf\Support\UuidContainer;
 use Hyperf\Collection\Collection;
 use Hyperf\Stringable\Str;
 use JsonException;

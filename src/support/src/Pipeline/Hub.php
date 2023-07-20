@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Support\Pipeline;
 
 use Closure;
+use FriendsOfHyperf\Support\Contract\HubInterface;
 use Hyperf\Pipeline\Pipeline;
 use Psr\Container\ContainerInterface;
 

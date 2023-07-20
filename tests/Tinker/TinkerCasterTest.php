@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use FriendsOfHyperf\Macros\Foundation\HtmlString;
+use FriendsOfHyperf\Support\HtmlString;
 use FriendsOfHyperf\Tinker\TinkerCaster;
 use Hyperf\Collection\Collection;
 use Hyperf\Stringable\Stringable;
