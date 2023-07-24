@@ -28,7 +28,7 @@ abstract class JobConsumer extends ConsumerMessage
 
         try {
             $data->handle();
-            $data->clearAttempts($data->getJobId());
+            $data->clearAttempts();
 
             return Result::ACK;
         } catch (Throwable $e) {
