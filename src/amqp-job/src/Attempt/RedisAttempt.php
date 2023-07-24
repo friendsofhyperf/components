@@ -15,15 +15,16 @@ use Redis;
 
 class RedisAttempt implements Attempt
 {
-    private string $prefix = 'hyperf:amqp-job:attempts:';
-
-    public function __construct(private Redis $redis)
+    public function __construct(private Redis $redis, private string $prefix = 'hyperf:amqp-job:attempts:', private int $ttl = 86400)
     {
     }
 
     public function incr(string $key): int
     {
-        return (int) $this->redis->incr($this->prefix . $key);
+        $attempts = (int) $this->redis->incr($this->prefix . $key);
+        $this->redis->expire($this->prefix . $key, $this->ttl);
+
+        return $attempts;
     }
 
     public function clear(string $key): void
