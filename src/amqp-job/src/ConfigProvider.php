@@ -12,7 +12,7 @@ namespace FriendsOfHyperf\AmqpJob;
 
 use FriendsOfHyperf\AmqpJob\Contract\Packer;
 
-class ConfigProvider
+final class ConfigProvider
 {
     public function __invoke()
     {
