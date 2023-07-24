@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\AmqpJob;
 
+use FriendsOfHyperf\AmqpJob\Contract\Attempt;
 use FriendsOfHyperf\AmqpJob\Contract\Packer;
 
 final class ConfigProvider
@@ -18,6 +19,7 @@ final class ConfigProvider
     {
         return [
             'dependencies' => [
+                Attempt::class => \FriendsOfHyperf\AmqpJob\Attempt\RedisAttempt::class,
                 Packer::class => \Hyperf\Codec\Packer\PhpSerializerPacker::class,
             ],
         ];

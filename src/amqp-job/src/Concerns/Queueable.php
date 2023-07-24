@@ -10,9 +10,9 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\AmqpJob\Concerns;
 
+use FriendsOfHyperf\AmqpJob\Contract\Attempt;
 use Hyperf\Amqp\Message\Type;
 use Hyperf\Context\ApplicationContext;
-use Redis;
 
 trait Queueable
 {
@@ -34,11 +34,11 @@ trait Queueable
 
     public function attempts(): bool
     {
-        $redis = ApplicationContext::getContainer()->get(Redis::class);
+        $attempt = ApplicationContext::getContainer()->get(Attempt::class);
         $key = sprintf('hyperf:amqp-job:attempts:%s', $this->getJobId());
-        $this->attempts = (int) $redis->incr($key);
+        $this->attempts = (int) $attempt->incr($key);
 
-        if ($this->getMaxAttempts() > $this->attempts++) {
+        if ($this->getMaxAttempts() > $this->attempts) {
             return true;
         }
 
