@@ -10,14 +10,8 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\AmqpJob\Concerns;
 
-use FriendsOfHyperf\AmqpJob\Contract\Attempt;
-use Hyperf\Amqp\Message\Type;
-use Hyperf\Context\ApplicationContext;
-
 trait Queueable
 {
-    protected int $attempts = 0;
-
     protected bool $confirm = false;
 
     protected string $exchange = 'hyperf';
@@ -31,24 +25,6 @@ trait Queueable
     protected string $routingKey = 'hyperf.job';
 
     protected int $timeout = 5;
-
-    public function attempts(): bool
-    {
-        $attempt = ApplicationContext::getContainer()->get(Attempt::class);
-        $this->attempts = (int) $attempt->incr($this->getJobId());
-
-        if ($this->getMaxAttempts() > $this->attempts) {
-            return true;
-        }
-
-        return false;
-    }
-
-    public function clearAttempts(): void
-    {
-        $attempt = ApplicationContext::getContainer()->get(Attempt::class);
-        $attempt->clear($this->getJobId());
-    }
 
     public function getConfirm(): bool
     {
@@ -89,10 +65,5 @@ trait Queueable
     public function getTimeout(): int
     {
         return $this->timeout;
-    }
-
-    public function getType(): string|Type
-    {
-        return Type::DIRECT;
     }
 }

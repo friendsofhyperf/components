@@ -10,7 +10,9 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\AmqpJob;
 
+use FriendsOfHyperf\AmqpJob\Contract\Attempt;
 use FriendsOfHyperf\AmqpJob\Contract\Packer;
+use FriendsOfHyperf\AmqpJob\Contract\ShouldQueue;
 use Hyperf\Amqp\Message\ConsumerMessage;
 use Hyperf\Amqp\Result;
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -27,11 +29,11 @@ abstract class JobConsumer extends ConsumerMessage
 
         try {
             $data->handle();
-            $data->clearAttempts();
+            $this->clearAttempts($data);
 
             return Result::ACK;
         } catch (Throwable $e) {
-            if ($data->attempts()) {
+            if ($this->attempts($data)) {
                 return Result::REQUEUE;
             }
 
@@ -47,5 +49,26 @@ abstract class JobConsumer extends ConsumerMessage
         $packer = $this->getContainer()->get(Packer::class);
 
         return $packer->unpack($data);
+    }
+
+    private function attempts(ShouldQueue $job): bool
+    {
+        $attempts = (int) $this->getAttempt()->incr($job->getJobId());
+
+        if ($job->getMaxAttempts() > $attempts) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private function clearAttempts(ShouldQueue $job): void
+    {
+        $this->getAttempt()->clear($job->getJobId());
+    }
+
+    private function getAttempt(): Attempt
+    {
+        return $this->getContainer()->get(Attempt::class);
     }
 }

@@ -11,16 +11,14 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\AmqpJob;
 
 use FriendsOfHyperf\AmqpJob\Contract\ShouldQueue;
-use Hyperf\Amqp\Message\Type;
 use Hyperf\Amqp\Producer;
 use Hyperf\Context\ApplicationContext;
 
-function dispatch(ShouldQueue $payload, ?string $exchange = null, string|array|null $routingKey = null, string|Type|null $type = null, ?string $pool = null, ?bool $confirm = null, ?int $timeout = null): bool
+function dispatch(ShouldQueue $payload, ?string $exchange = null, string|array|null $routingKey = null, ?string $pool = null, ?bool $confirm = null, ?int $timeout = null): bool
 {
     $message = new JobMessage($payload);
     $exchange = $exchange ?? $payload->getExchange();
     $routingKey = $routingKey ?? $payload->getRoutingKey();
-    $type = $type ?? $payload->getType();
     $poolName = $pool ?? $payload->getPoolName();
 
     if ($exchange !== null) {
@@ -28,9 +26,6 @@ function dispatch(ShouldQueue $payload, ?string $exchange = null, string|array|n
     }
     if ($routingKey !== null) {
         $message->setRoutingKey($routingKey);
-    }
-    if ($type !== null) {
-        $message->setType($type);
     }
     if ($poolName !== null) {
         $message->setPoolName($poolName);
