@@ -35,14 +35,19 @@ trait Queueable
     public function attempts(): bool
     {
         $attempt = ApplicationContext::getContainer()->get(Attempt::class);
-        $key = sprintf('hyperf:amqp-job:attempts:%s', $this->getJobId());
-        $this->attempts = (int) $attempt->incr($key);
+        $this->attempts = (int) $attempt->incr($this->getJobId());
 
         if ($this->getMaxAttempts() > $this->attempts) {
             return true;
         }
 
         return false;
+    }
+
+    public function clearAttempts(): void
+    {
+        $attempt = ApplicationContext::getContainer()->get(Attempt::class);
+        $attempt->clear($this->getJobId());
     }
 
     public function getConfirm(): bool
