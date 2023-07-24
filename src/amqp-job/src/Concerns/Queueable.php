@@ -12,19 +12,19 @@ namespace FriendsOfHyperf\AmqpJob\Concerns;
 
 trait Queueable
 {
-    protected string $exchange = 'hyperf';
-
-    protected string $routingKey = 'hyperf.job';
-
-    protected string $poolName = 'default';
+    protected int $attempts = 0;
 
     protected bool $confirm = false;
 
-    protected int $timeout = 5;
-
-    protected int $attempts = 0;
+    protected string $exchange = 'hyperf';
 
     protected int $maxAttempts = 0;
+
+    protected string $poolName = 'default';
+
+    protected string $routingKey = 'hyperf.job';
+
+    protected int $timeout = 5;
 
     public function attempts(): bool
     {
@@ -34,9 +34,9 @@ trait Queueable
         return false;
     }
 
-    public function getMaxAttempts(): int
+    public function getConfirm(): bool
     {
-        return $this->maxAttempts;
+        return $this->confirm;
     }
 
     public function getExchange(): string
@@ -44,23 +44,23 @@ trait Queueable
         return $this->exchange;
     }
 
+    public function getMaxAttempts(): int
+    {
+        return $this->maxAttempts;
+    }
+
     public function getRoutingKey(): string
     {
         return $this->routingKey;
     }
 
-    public function getConfirm(): bool
+    public function getPoolName(): string
     {
-        return $this->confirm;
+        return $this->poolName;
     }
 
     public function getTimeout(): int
     {
         return $this->timeout;
-    }
-
-    public function getPoolName(): string
-    {
-        return $this->poolName;
     }
 }

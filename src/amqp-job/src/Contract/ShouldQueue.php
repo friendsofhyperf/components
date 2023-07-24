@@ -12,13 +12,17 @@ namespace FriendsOfHyperf\AmqpJob\Contract;
 
 interface ShouldQueue
 {
-    public function getExchange(): string;
+    public function attempts(): bool;
 
-    public function getRoutingKey(): string;
+    public function getMaxAttempts(): int;
+
+    public function getConfirm(): bool;
+
+    public function getExchange(): string;
 
     public function getPoolName(): string;
 
-    public function getConfirm(): bool;
+    public function getRoutingKey(): string;
 
     public function getTimeout(): int;
 }
