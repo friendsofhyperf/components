@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\AmqpJob;
 
+use FriendsOfHyperf\AmqpJob\Contract\Packer;
 use Hyperf\Amqp\Message\ConsumerMessage;
 use Hyperf\Amqp\Result;
 use Hyperf\Context\ApplicationContext;
@@ -37,5 +38,13 @@ abstract class JobConsumer extends ConsumerMessage
             ApplicationContext::getContainer()->get(StdoutLoggerInterface::class)->error((string) $e);
             return Result::DROP;
         }
+    }
+
+    final public function unserialize(string $data)
+    {
+        $container = ApplicationContext::getContainer();
+        $packer = $container->get(Packer::class);
+
+        return $packer->unpack($data);
     }
 }

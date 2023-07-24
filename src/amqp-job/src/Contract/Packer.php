@@ -8,16 +8,10 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-namespace FriendsOfHyperf\AmqpJob;
+namespace FriendsOfHyperf\AmqpJob\Contract;
 
-class ConfigProvider
+use Hyperf\Contract\PackerInterface;
+
+interface Packer extends PackerInterface
 {
-    public function __invoke()
-    {
-        return [
-            'dependencies' => [
-                Packer::class => \Hyperf\Codec\Packer\PhpSerializerPacker::class,
-            ],
-        ];
-    }
 }

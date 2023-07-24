@@ -10,7 +10,9 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\AmqpJob;
 
+use FriendsOfHyperf\AmqpJob\Contract\Packer;
 use Hyperf\Amqp\Message\ProducerMessage;
+use Hyperf\Context\ApplicationContext;
 
 class JobMessage extends ProducerMessage
 {
@@ -26,5 +28,11 @@ class JobMessage extends ProducerMessage
             $this->setExchange($exchange);
         }
         $this->setPayload($payload);
+    }
+
+    final public function serialize(): string
+    {
+        $packer = ApplicationContext::getContainer()->get(Packer::class);
+        return $packer->pack($this->payload);
     }
 }
