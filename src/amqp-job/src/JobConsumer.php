@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\AmqpJob;
 use FriendsOfHyperf\AmqpJob\Contract\Packer;
 use Hyperf\Amqp\Message\ConsumerMessage;
 use Hyperf\Amqp\Result;
-use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
 use PhpAmqpLib\Message\AMQPMessage;
 use Throwable;
@@ -36,15 +35,16 @@ abstract class JobConsumer extends ConsumerMessage
                 return Result::REQUEUE;
             }
 
-            ApplicationContext::getContainer()->get(StdoutLoggerInterface::class)->error((string) $e);
+            $logger = $this->getContainer()->get(StdoutLoggerInterface::class);
+            $logger->error((string) $e);
+
             return Result::DROP;
         }
     }
 
     final public function unserialize(string $data)
     {
-        $container = ApplicationContext::getContainer();
-        $packer = $container->get(Packer::class);
+        $packer = $this->getContainer()->get(Packer::class);
 
         return $packer->unpack($data);
     }
