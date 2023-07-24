@@ -10,6 +10,8 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\AmqpJob\Concerns;
 
+use Hyperf\Amqp\Message\Type;
+
 trait Queueable
 {
     protected int $attempts = 0;
@@ -17,6 +19,8 @@ trait Queueable
     protected bool $confirm = false;
 
     protected string $exchange = 'hyperf';
+
+    protected string $jobId = '';
 
     protected int $maxAttempts = 0;
 
@@ -44,6 +48,17 @@ trait Queueable
         return $this->exchange;
     }
 
+    public function setJobId(string $jobId): self
+    {
+        $this->jobId = $jobId;
+        return $this;
+    }
+
+    public function getJobId(): string
+    {
+        return $this->jobId;
+    }
+
     public function getMaxAttempts(): int
     {
         return $this->maxAttempts;
@@ -62,5 +77,10 @@ trait Queueable
     public function getTimeout(): int
     {
         return $this->timeout;
+    }
+
+    public function getType(): string|Type
+    {
+        return Type::DIRECT;
     }
 }

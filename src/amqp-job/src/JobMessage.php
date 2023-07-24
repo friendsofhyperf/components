@@ -11,21 +11,16 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\AmqpJob;
 
 use FriendsOfHyperf\AmqpJob\Contract\Packer;
+use FriendsOfHyperf\AmqpJob\Contract\ShouldQueue;
 use Hyperf\Amqp\Message\ProducerMessage;
 use Hyperf\Context\ApplicationContext;
 
 class JobMessage extends ProducerMessage
 {
-    public function __construct($payload, ?string $exchange = null, string|array|null $routingKey = null, ?string $pool = null)
+    public function __construct(ShouldQueue $payload)
     {
-        if ($routingKey !== null) {
-            $this->routingKey = $routingKey;
-        }
-        if ($pool !== null) {
-            $this->poolName = $pool;
-        }
-        if ($exchange !== null) {
-            $this->setExchange($exchange);
+        if (! $payload->getJobId()) {
+            $payload->setJobId(uniqid('', true));
         }
         $this->setPayload($payload);
     }
