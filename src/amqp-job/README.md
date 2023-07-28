@@ -20,7 +20,7 @@ use function FriendsOfHyperf\AmqpJob\dispatch;
 
 class FooJob extends Job
 {
-    public function handle():void
+    public function handle()
     {
         var_dump('foo');
     }

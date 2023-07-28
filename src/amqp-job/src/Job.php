@@ -17,5 +17,8 @@ abstract class Job implements ShouldQueue
 {
     use Queueable;
 
-    abstract public function handle(): void;
+    /**
+     * @return \Hyperf\Amqp\Result|string|void
+     */
+    abstract public function handle();
 }
