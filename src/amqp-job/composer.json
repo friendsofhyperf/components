@@ -1,0 +1,46 @@
+{
+    "name": "friendsofhyperf/amqp-job",
+    "description": "The amqp job for Hyperf.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
+    "require": {
+        "friendsofhyperf/support": "~3.1.0",
+        "hyperf/di": "~3.1.0",
+        "hyperf/codec": "~3.1.0",
+        "hyperf/config": "~3.1.0",
+        "hyperf/context": "~3.1.0",
+        "hyperf/logger": "~3.1.0",
+        "hyperf/redis": "~3.1.0",
+        "hyperf/support": "~3.1.0"
+    },
+    "autoload": {
+        "files": [
+            "src/Functions.php"
+        ],
+        "psr-4": {
+            "FriendsOfHyperf\\AmqpJob\\": "src/"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev",
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\AmqpJob\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        }
+    }
+}
