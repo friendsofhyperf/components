@@ -297,6 +297,15 @@ class RequestMixin
         return fn ($key, $default = null) => Str::of($this->input($key, $default));
     }
 
+    public function wantsJson()
+    {
+        return function() {
+            $acceptable = explode(',', $this->header('ACCEPT') ?? '');
+    
+            return Str::contains(strtolower($acceptable[0]) ?? '', ['/json', '+json']);
+        };
+    }
+
     public function whenFilled()
     {
         return function ($key, callable $callback, callable $default = null) {
