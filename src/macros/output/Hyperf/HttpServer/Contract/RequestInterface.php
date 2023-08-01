@@ -134,6 +134,11 @@ interface RequestInterface
     public function only($keys): array;
 
     /**
+     * Determine if the current request is asking for JSON.
+     */
+    public function wantsJson(): bool;
+
+    /**
      * Apply the callback if the request contains a non-empty value for the given input item key.
      *
      * @return $this|mixed
