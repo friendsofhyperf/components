@@ -129,3 +129,23 @@ test('test get scheme', function () {
 
     expect($request->getScheme())->toBe('http');
 });
+
+test('test wantsJson', function () {
+    $request = new Request();
+
+    $psrRequest = m::mock(ServerRequestPlusInterface::class, function ($mock) {
+        $mock->shouldReceive('hasHeader')->with('ACCEPT')->andReturn(true);
+        $mock->shouldReceive('getHeaderLine')->with('ACCEPT')->andReturn('application/json');
+    });
+    Context::set(ServerRequestInterface::class, $psrRequest);
+
+    expect($request->wantsJson())->toBeTrue();
+
+    $psrRequest = m::mock(ServerRequestPlusInterface::class, function ($mock) {
+        $mock->shouldReceive('hasHeader')->with('ACCEPT')->andReturn(true);
+        $mock->shouldReceive('getHeaderLine')->with('ACCEPT')->andReturn('text/html');
+    });
+    Context::set(ServerRequestInterface::class, $psrRequest);
+
+    expect($request->wantsJson())->toBeFalse();
+});
