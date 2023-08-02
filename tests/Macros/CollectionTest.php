@@ -12,15 +12,21 @@ use FriendsOfHyperf\Macros\Exception\ItemNotFoundException;
 use FriendsOfHyperf\Macros\Exception\MultipleItemsFoundException;
 use Hyperf\Collection\Collection;
 
-use function Hyperf\Collection\collect;
-
 dataset('collectionClassProvider', [
     [Collection::class],
     // [LazyCollection::class],
 ]);
 
-test('test firstOrFailReturnsFirstItemInCollection', function () {
-    $collection = collect([
+test('test ensure', function ($collection) {
+    $data = $collection::make([1, 2, 3]);
+    $data->ensure('int');
+    $data = $collection::make([1, 2, 3, 'foo']);
+    $this->expectException(\UnexpectedValueException::class);
+    $data->ensure('int');
+})->with('collectionClassProvider');
+
+test('test firstOrFailReturnsFirstItemInCollection', function ($collection) {
+    $collection = new $collection([
         ['name' => 'foo'],
         ['name' => 'bar'],
     ]);
@@ -28,10 +34,10 @@ test('test firstOrFailReturnsFirstItemInCollection', function () {
     $this->assertSame(['name' => 'foo'], $collection->where('name', 'foo')->firstOrFail());
     $this->assertSame(['name' => 'foo'], $collection->firstOrFail('name', '=', 'foo'));
     $this->assertSame(['name' => 'foo'], $collection->firstOrFail('name', 'foo'));
-});
+})->with('collectionClassProvider');
 
-test('test getOrPut', function () {
-    $data = new Collection(['name' => 'taylor', 'email' => 'foo']);
+test('test getOrPut', function ($collection) {
+    $data = new $collection(['name' => 'taylor', 'email' => 'foo']);
 
     $this->assertEquals('taylor', $data->getOrPut('name', null));
     $this->assertEquals('foo', $data->getOrPut('email', null));
@@ -41,7 +47,7 @@ test('test getOrPut', function () {
     $this->assertEquals('foo', $data->get('email'));
     $this->assertEquals('male', $data->get('gender'));
 
-    $data = new Collection(['name' => 'taylor', 'email' => 'foo']);
+    $data = new $collection(['name' => 'taylor', 'email' => 'foo']);
 
     $this->assertEquals('taylor', $data->getOrPut('name', function () {
         return null;
@@ -58,17 +64,17 @@ test('test getOrPut', function () {
     $this->assertEquals('taylor', $data->get('name'));
     $this->assertEquals('foo', $data->get('email'));
     $this->assertEquals('male', $data->get('gender'));
-});
+})->with('collectionClassProvider');
 
-test('test hasAny', function () {
-    $data = collect(['id' => 1, 'first' => 'Hello', 'second' => 'World']);
+test('test hasAny', function ($collection) {
+    $data = new $collection(['id' => 1, 'first' => 'Hello', 'second' => 'World']);
 
     $this->assertTrue($data->hasAny('first'));
     $this->assertFalse($data->hasAny('third'));
     $this->assertTrue($data->hasAny(['first', 'second']));
     $this->assertTrue($data->hasAny(['first', 'fourth']));
     $this->assertFalse($data->hasAny(['third', 'fourth']));
-});
+})->with('collectionClassProvider');
 
 test('test intersectUsingWithNull', function ($collection) {
     $collect = new $collection(['green', 'brown', 'blue']);
@@ -108,8 +114,8 @@ test('test intersectAssocUsingCollection', function ($collection) {
     $this->assertEquals(['b' => 'brown'], $array1->intersectAssocUsing($array2, 'strcasecmp')->all());
 })->with('collectionClassProvider');
 
-test('test pipeThrough', function () {
-    $data = new Collection([1, 2, 3]);
+test('test pipeThrough', function ($collection) {
+    $data = new $collection([1, 2, 3]);
 
     $result = $data->pipeThrough([
         function ($data) {
@@ -121,75 +127,75 @@ test('test pipeThrough', function () {
     ]);
 
     $this->assertEquals(15, $result);
-});
+})->with('collectionClassProvider');
 
-test('test sliding', function () {
+test('test sliding', function ($collection) {
     // Default parameters: $size = 2, $step = 1
-    $this->assertSame([], Collection::times(0)->sliding()->toArray());
-    $this->assertSame([], Collection::times(1)->sliding()->toArray());
-    $this->assertSame([[1, 2]], Collection::times(2)->sliding()->toArray());
+    $this->assertSame([], $collection::times(0)->sliding()->toArray());
+    $this->assertSame([], $collection::times(1)->sliding()->toArray());
+    $this->assertSame([[1, 2]], $collection::times(2)->sliding()->toArray());
     $this->assertSame(
         [[1, 2], [2, 3]],
-        Collection::times(3)->sliding()->map->values()->toArray()
+        $collection::times(3)->sliding()->map->values()->toArray()
     );
 
     // Custom step: $size = 2, $step = 3
-    $this->assertSame([], Collection::times(1)->sliding(2, 3)->toArray());
-    $this->assertSame([[1, 2]], Collection::times(2)->sliding(2, 3)->toArray());
-    $this->assertSame([[1, 2]], Collection::times(3)->sliding(2, 3)->toArray());
-    $this->assertSame([[1, 2]], Collection::times(4)->sliding(2, 3)->toArray());
+    $this->assertSame([], $collection::times(1)->sliding(2, 3)->toArray());
+    $this->assertSame([[1, 2]], $collection::times(2)->sliding(2, 3)->toArray());
+    $this->assertSame([[1, 2]], $collection::times(3)->sliding(2, 3)->toArray());
+    $this->assertSame([[1, 2]], $collection::times(4)->sliding(2, 3)->toArray());
     $this->assertSame(
         [[1, 2], [4, 5]],
-        Collection::times(5)->sliding(2, 3)->map->values()->toArray()
+        $collection::times(5)->sliding(2, 3)->map->values()->toArray()
     );
 
     // Custom size: $size = 3, $step = 1
-    $this->assertSame([], Collection::times(2)->sliding(3)->toArray());
-    $this->assertSame([[1, 2, 3]], Collection::times(3)->sliding(3)->toArray());
+    $this->assertSame([], $collection::times(2)->sliding(3)->toArray());
+    $this->assertSame([[1, 2, 3]], $collection::times(3)->sliding(3)->toArray());
     $this->assertSame(
         [[1, 2, 3], [2, 3, 4]],
-        Collection::times(4)->sliding(3)->map->values()->toArray()
+        $collection::times(4)->sliding(3)->map->values()->toArray()
     );
     $this->assertSame(
         [[1, 2, 3], [2, 3, 4]],
-        Collection::times(4)->sliding(3)->map->values()->toArray()
+        $collection::times(4)->sliding(3)->map->values()->toArray()
     );
 
     // Custom size and custom step: $size = 3, $step = 2
-    $this->assertSame([], Collection::times(2)->sliding(3, 2)->toArray());
-    $this->assertSame([[1, 2, 3]], Collection::times(3)->sliding(3, 2)->toArray());
-    $this->assertSame([[1, 2, 3]], Collection::times(4)->sliding(3, 2)->toArray());
+    $this->assertSame([], $collection::times(2)->sliding(3, 2)->toArray());
+    $this->assertSame([[1, 2, 3]], $collection::times(3)->sliding(3, 2)->toArray());
+    $this->assertSame([[1, 2, 3]], $collection::times(4)->sliding(3, 2)->toArray());
     $this->assertSame(
         [[1, 2, 3], [3, 4, 5]],
-        Collection::times(5)->sliding(3, 2)->map->values()->toArray()
+        $collection::times(5)->sliding(3, 2)->map->values()->toArray()
     );
     $this->assertSame(
         [[1, 2, 3], [3, 4, 5]],
-        Collection::times(6)->sliding(3, 2)->map->values()->toArray()
+        $collection::times(6)->sliding(3, 2)->map->values()->toArray()
     );
 
     // Ensure keys are preserved, and inner chunks are also collections
-    $chunks = Collection::times(3)->sliding();
+    $chunks = $collection::times(3)->sliding();
 
     $this->assertSame([[0 => 1, 1 => 2], [1 => 2, 2 => 3]], $chunks->toArray());
 
     $this->assertInstanceOf(Collection::class, $chunks);
     $this->assertInstanceOf(Collection::class, $chunks->first());
     $this->assertInstanceOf(Collection::class, $chunks->skip(1)->first());
-});
+})->with('collectionClassProvider');
 
-test('test skip', function () {
-    $data = collect([1, 2, 3, 4, 5, 6]);
+test('test skip', function ($collection) {
+    $data = $collection::make([1, 2, 3, 4, 5, 6]);
 
     // Total items to skip is smaller than collection length
     $this->assertSame([5, 6], $data->skip(4)->values()->all());
 
     // Total items to skip is more than collection length
     $this->assertSame([], $data->skip(10)->values()->all());
-});
+})->with('collectionClassProvider');
 
-test('test soleReturnsFirstItemInCollectionIfOnlyOneExists', function () {
-    $collection = collect([
+test('test soleReturnsFirstItemInCollectionIfOnlyOneExists', function ($collection) {
+    $collection = $collection::make([
         ['name' => 'foo'],
         ['name' => 'bar'],
     ]);
@@ -197,39 +203,39 @@ test('test soleReturnsFirstItemInCollectionIfOnlyOneExists', function () {
     $this->assertSame(['name' => 'foo'], $collection->where('name', 'foo')->sole());
     $this->assertSame(['name' => 'foo'], $collection->sole('name', '=', 'foo'));
     $this->assertSame(['name' => 'foo'], $collection->sole('name', 'foo'));
-});
+})->with('collectionClassProvider');
 
-test('test soleThrowsExceptionIfNoItemsExist', function () {
+test('test soleThrowsExceptionIfNoItemsExist', function ($collection) {
     $this->expectException(ItemNotFoundException::class);
 
-    $collection = collect([
+    $collect = new $collection([
         ['name' => 'foo'],
         ['name' => 'bar'],
     ]);
 
-    $collection->where('name', 'INVALID')->sole();
-});
+    $collect->where('name', 'INVALID')->sole();
+})->with('collectionClassProvider');
 
-test('test soleThrowsExceptionIfMoreThanOneItemExists', function () {
+test('test soleThrowsExceptionIfMoreThanOneItemExists', function ($collection) {
     $this->expectException(MultipleItemsFoundException::class);
 
-    $collection = collect([
+    $collect = new $collection([
         ['name' => 'foo'],
         ['name' => 'foo'],
         ['name' => 'bar'],
     ]);
 
-    $collection->where('name', 'foo')->sole();
-});
+    $collect->where('name', 'foo')->sole();
+})->with('collectionClassProvider');
 
-test('test sortKeysUsing', function () {
-    $data = collect(['B' => 'dayle', 'a' => 'taylor']);
+test('test sortKeysUsing', function ($collection) {
+    $data = new $collection(['B' => 'dayle', 'a' => 'taylor']);
 
     $this->assertSame(['a' => 'taylor', 'B' => 'dayle'], $data->sortKeysUsing('strnatcasecmp')->all());
-});
+})->with('collectionClassProvider');
 
-test('test undot', function () {
-    $data = collect([
+test('test undot', function ($collection) {
+    $data = $collection::make([
         'name' => 'Taylor',
         'meta.foo' => 'bar',
         'meta.baz' => 'boom',
@@ -247,7 +253,7 @@ test('test undot', function () {
         ],
     ], $data->all());
 
-    $data = collect([
+    $data = $collection::make([
         'foo.0' => 'bar',
         'foo.1' => 'baz',
         'foo.baz' => 'boom',
@@ -260,15 +266,15 @@ test('test undot', function () {
             'baz' => 'boom',
         ],
     ], $data->all());
-});
+})->with('collectionClassProvider');
 
-test('test value', function () {
-    $c = collect([['id' => 1, 'name' => 'Hello'], ['id' => 2, 'name' => 'World']]);
+test('test value', function ($collection) {
+    $c = $collection::make([['id' => 1, 'name' => 'Hello'], ['id' => 2, 'name' => 'World']]);
 
     $this->assertEquals('Hello', $c->value('name'));
     $this->assertEquals('World', $c->where('id', 2)->value('name'));
 
-    $c = collect([
+    $c = $collection::make([
         ['id' => 1, 'pivot' => ['value' => 'foo']],
         ['id' => 2, 'pivot' => ['value' => 'bar']],
     ]);
@@ -276,7 +282,7 @@ test('test value', function () {
     $this->assertEquals(['value' => 'foo'], $c->value('pivot'));
     $this->assertEquals('foo', $c->value('pivot.value'));
     $this->assertEquals('bar', $c->where('id', 2)->value('pivot.value'));
-});
+})->with('collectionClassProvider');
 
 test('test whenEmpty', function ($collection) {
     $data = new $collection(['michael', 'tom']);
