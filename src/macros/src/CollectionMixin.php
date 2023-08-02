@@ -15,11 +15,13 @@ use FriendsOfHyperf\Macros\Exception\MultipleItemsFoundException;
 use Hyperf\Collection\Arr;
 use Hyperf\Collection\Collection;
 use stdClass;
+use UnexpectedValueException;
 
 use function Hyperf\Collection\data_get;
 use function Hyperf\Collection\value;
 
 /**
+ * @property array $items
  * @mixin Collection
  */
 class CollectionMixin
@@ -27,6 +29,17 @@ class CollectionMixin
     public function doesntContain()
     {
         return fn ($key, $operator = null, $value = null) => ! $this->contains(...func_get_args());
+    }
+
+    public function ensure()
+    {
+        return fn ($type) => $this->each(function ($item) use ($type) {
+            $itemType = get_debug_type($item);
+
+            if ($itemType !== $type) {
+                throw new UnexpectedValueException("Collection should only include '{$type}' items, but '{$itemType}' found.");
+            }
+        });
     }
 
     public function firstOrFail()
