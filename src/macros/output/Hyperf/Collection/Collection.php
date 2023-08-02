@@ -31,10 +31,10 @@ class Collection
     /**
      * Ensure that every item in the collection is of the expected type.
      *
-     * @template TEnforceIntoValue
+     * @template TEnsureOfType
      *
-     * @param class-string<TEnforceIntoValue> $type
-     * @return static<mixed, TEnforceIntoValue>
+     * @param class-string<TEnsureOfType> $type
+     * @return static<mixed, TEnsureOfType>
      *
      * @throws UnexpectedValueException
      */

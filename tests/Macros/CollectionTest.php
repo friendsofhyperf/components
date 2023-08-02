@@ -17,12 +17,22 @@ dataset('collectionClassProvider', [
     // [LazyCollection::class],
 ]);
 
-test('test ensure', function ($collection) {
+test('test ensureForScalar', function ($collection) {
     $data = $collection::make([1, 2, 3]);
     $data->ensure('int');
+
     $data = $collection::make([1, 2, 3, 'foo']);
-    $this->expectException(\UnexpectedValueException::class);
+    $this->expectException(UnexpectedValueException::class);
     $data->ensure('int');
+})->with('collectionClassProvider');
+
+test('test ensureForObjects', function ($collection) {
+    $data = $collection::make([new stdClass(), new stdClass(), new stdClass()]);
+    $data->ensure(stdClass::class);
+
+    $data = $collection::make([new stdClass(), new stdClass(), new stdClass(), $collection]);
+    $this->expectException(UnexpectedValueException::class);
+    $data->ensure(stdClass::class);
 })->with('collectionClassProvider');
 
 test('test firstOrFailReturnsFirstItemInCollection', function ($collection) {
