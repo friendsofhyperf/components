@@ -11,6 +11,7 @@ declare(strict_types=1);
 namespace Hyperf\Collection;
 
 use Hyperf\Contract\Arrayable;
+use UnexpectedValueException;
 
 class Collection
 {
@@ -24,6 +25,20 @@ class Collection
      * @return bool
      */
     public function doesntContain($key, $operator = null, $value = null)
+    {
+    }
+
+    /**
+     * Ensure that every item in the collection is of the expected type.
+     *
+     * @template TEnforceIntoValue
+     *
+     * @param class-string<TEnforceIntoValue> $type
+     * @return static<mixed, TEnforceIntoValue>
+     *
+     * @throws UnexpectedValueException
+     */
+    public function ensure($type)
     {
     }
 
