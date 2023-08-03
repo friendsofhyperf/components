@@ -38,7 +38,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
         $arguments = $proceedingJoinPoint->arguments;
 
         if ($proceedingJoinPoint->methodName == 'request') { // Disable the aspect for the requestAsync method.
-            $proceedingJoinPoint->arguments['keys']['options']['no_aspect'] = true;
+            $proceedingJoinPoint->arguments['keys']['options']['no_sentry_aspect'] = true;
         }
 
         return tap($proceedingJoinPoint->process(), function ($result) use ($instance, $arguments, $startTime) {
@@ -48,13 +48,13 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
             $options = $arguments['keys']['options'] ?? [];
 
-            if (($options['no_aspect'] ?? null) === true) {
+            if (($options['no_sentry_aspect'] ?? null) === true) {
                 return;
             }
 
             $guzzleConfig = (fn () => $this->config ?? [])->call($instance);
 
-            if (($guzzleConfig['no_aspect'] ?? null) === true) {
+            if (($guzzleConfig['no_sentry_aspect'] ?? null) === true) {
                 return;
             }
 
