@@ -10,11 +10,11 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\AmqpJob;
 
-use FriendsOfHyperf\AmqpJob\Contract\ShouldQueue;
+use FriendsOfHyperf\AmqpJob\Contract\JobInterface;
 use Hyperf\Amqp\Producer;
 use Hyperf\Context\ApplicationContext;
 
-function dispatch(ShouldQueue $payload, ?string $exchange = null, string|array|null $routingKey = null, ?string $pool = null, ?bool $confirm = null, ?int $timeout = null): bool
+function dispatch(JobInterface $payload, ?string $exchange = null, string|array|null $routingKey = null, ?string $pool = null, ?bool $confirm = null, ?int $timeout = null): bool
 {
     $message = new JobMessage($payload);
     $exchange = $exchange ?? $payload->getExchange();

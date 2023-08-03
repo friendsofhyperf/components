@@ -12,7 +12,5 @@ namespace FriendsOfHyperf\AmqpJob\Contract;
 
 interface Attempt
 {
-    public function incr(string $key): int;
-
-    public function clear(string $key): void;
+    public function increment(string $key): int;
 }
