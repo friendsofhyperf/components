@@ -20,7 +20,6 @@ use Sentry\Breadcrumb;
 
 /**
  * @method array getConfig
- * @package FriendsOfHyperf\Sentry\Aspect
  */
 class GuzzleHttpClientAspect extends AbstractAspect
 {
@@ -74,7 +73,6 @@ class GuzzleHttpClientAspect extends AbstractAspect
         }
         $data['timeMs'] = (microtime(true) - $startTime) * 1000;
 
-            
         Integration::addBreadcrumb(new Breadcrumb(
             Breadcrumb::LEVEL_INFO,
             Breadcrumb::TYPE_DEFAULT,
