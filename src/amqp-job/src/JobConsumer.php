@@ -22,7 +22,11 @@ abstract class JobConsumer extends ConsumerMessage
 {
     public function consumeMessage($data, AMQPMessage $message): Result
     {
+        $logger = $this->getContainer()->get(StdoutLoggerInterface::class);
+
         if (! $data instanceof JobInterface) {
+            $logger->error(sprintf('The message is not an instance of %s.', JobInterface::class));
+
             return Result::DROP;
         }
 
@@ -39,7 +43,6 @@ abstract class JobConsumer extends ConsumerMessage
                 return Result::REQUEUE;
             }
 
-            $logger = $this->getContainer()->get(StdoutLoggerInterface::class);
             $logger->error((string) $e);
 
             return Result::DROP;
