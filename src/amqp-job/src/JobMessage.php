@@ -10,14 +10,14 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\AmqpJob;
 
+use FriendsOfHyperf\AmqpJob\Contract\JobInterface;
 use FriendsOfHyperf\AmqpJob\Contract\Packer;
-use FriendsOfHyperf\AmqpJob\Contract\ShouldQueue;
 use Hyperf\Amqp\Message\ProducerMessage;
 use Hyperf\Context\ApplicationContext;
 
 class JobMessage extends ProducerMessage
 {
-    public function __construct(ShouldQueue $payload)
+    public function __construct(JobInterface $payload)
     {
         if (! $payload->getJobId()) {
             $payload->setJobId(uniqid('', true));

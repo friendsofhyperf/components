@@ -10,13 +10,13 @@ declare(strict_types=1);
  */
 namespace FriendsOfHyperf\AmqpJob\Contract;
 
-interface ShouldQueue
+interface JobInterface
 {
+    public function attempts(): bool;
+
     public function getConfirm(): bool;
 
     public function getExchange(): string;
-
-    public function getMaxAttempts(): int;
 
     public function setJobId(string $jobId): self;
 
@@ -27,4 +27,9 @@ interface ShouldQueue
     public function getRoutingKey(): string;
 
     public function getTimeout(): int;
+
+    /**
+     * @return Result|void
+     */
+    public function handle();
 }
