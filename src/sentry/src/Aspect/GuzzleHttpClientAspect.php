@@ -18,8 +18,10 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Http\Message\ResponseInterface;
 use Sentry\Breadcrumb;
 
-use function Hyperf\Tappable\tap;
-
+/**
+ * @method array getConfig
+ * @package FriendsOfHyperf\Sentry\Aspect
+ */
 class GuzzleHttpClientAspect extends AbstractAspect
 {
     public array $classes = [
@@ -33,55 +35,54 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        if (! $this->config->get('sentry.breadcrumbs.guzzle', false)) {
+            return $proceedingJoinPoint->process();
+        }
+
         $startTime = microtime(true);
         $instance = $proceedingJoinPoint->getInstance();
         $arguments = $proceedingJoinPoint->arguments;
+        $options = $arguments['keys']['options'] ?? [];
+        $guzzleConfig = (function () {
+            if (method_exists($this, 'getConfig')) { // @deprecated ClientInterface::getConfig will be removed in guzzlehttp/guzzle:8.0.
+                return $this->getConfig();
+            }
 
-        if ($proceedingJoinPoint->methodName == 'request') { // Disable the aspect for the requestAsync method.
+            return $this->config ?? [];
+        })->call($instance);
+
+        if (($options['no_sentry_aspect'] ?? null) === true || ($guzzleConfig['no_sentry_aspect'] ?? null) === true) {
+            return $proceedingJoinPoint->process();
+        }
+
+        // Disable the aspect for the requestAsync method.
+        if ($proceedingJoinPoint->methodName == 'request') {
             $proceedingJoinPoint->arguments['keys']['options']['no_sentry_aspect'] = true;
         }
 
-        return tap($proceedingJoinPoint->process(), function ($result) use ($instance, $arguments, $startTime) {
-            if (! $this->config->get('sentry.breadcrumbs.guzzle', false)) {
-                return;
-            }
+        $uri = $arguments['keys']['uri'] ?? '';
+        $data['config'] = $guzzleConfig;
+        $data['request']['method'] = $arguments['keys']['method'] ?? 'GET';
+        $data['request']['options'] = $arguments['keys']['options'] ?? [];
 
-            $options = $arguments['keys']['options'] ?? [];
+        $result = $proceedingJoinPoint->process();
 
-            if (($options['no_sentry_aspect'] ?? null) === true) {
-                return;
-            }
+        if ($result instanceof ResponseInterface) {
+            $data['response']['status'] = $result->getStatusCode();
+            $data['response']['reason'] = $result->getReasonPhrase();
+            $data['response']['headers'] = $result->getHeaders();
+        }
+        $data['timeMs'] = (microtime(true) - $startTime) * 1000;
 
-            $guzzleConfig = (function () {
-                if (method_exists($this, 'getConfig')) { // @deprecated ClientInterface::getConfig will be removed in guzzlehttp/guzzle:8.0.
-                    return $this->getConfig();
-                }
+            
+        Integration::addBreadcrumb(new Breadcrumb(
+            Breadcrumb::LEVEL_INFO,
+            Breadcrumb::TYPE_DEFAULT,
+            'guzzle',
+            $uri,
+            $data
+        ));
 
-                return $this->config ?? [];
-            })->call($instance);
-
-            if (($guzzleConfig['no_sentry_aspect'] ?? null) === true) {
-                return;
-            }
-
-            $uri = $arguments['keys']['uri'] ?? '';
-            $data['config'] = $guzzleConfig;
-            $data['request']['method'] = $arguments['keys']['method'] ?? 'GET';
-            $data['request']['options'] = $arguments['keys']['options'] ?? [];
-            if ($result instanceof ResponseInterface) {
-                $data['response']['status'] = $result->getStatusCode();
-                $data['response']['reason'] = $result->getReasonPhrase();
-                $data['response']['headers'] = $result->getHeaders();
-            }
-            $data['timeMs'] = (microtime(true) - $startTime) * 1000;
-
-            Integration::addBreadcrumb(new Breadcrumb(
-                Breadcrumb::LEVEL_INFO,
-                Breadcrumb::TYPE_DEFAULT,
-                'guzzle',
-                $uri,
-                $data
-            ));
-        });
+        return $result;
     }
 }
