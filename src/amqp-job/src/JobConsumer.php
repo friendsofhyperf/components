@@ -31,7 +31,11 @@ abstract class JobConsumer extends ConsumerMessage
             $ack = $data->handle();
             $this->clearAttempts($data);
 
-            return ($ack && Result::tryFrom($ack)) ?? Result::ACK;
+            if ($ack instanceof Result) {
+                return $ack;
+            }
+
+            return Result::tryFrom((string) $ack) ?? Result::ACK;
         } catch (Throwable $e) {
             if ($this->attempts($data)) {
                 return Result::REQUEUE;
