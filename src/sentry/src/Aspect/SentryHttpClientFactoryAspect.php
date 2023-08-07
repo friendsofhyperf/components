@@ -38,7 +38,7 @@ class SentryHttpClientFactoryAspect extends AbstractAspect
         $guzzleConfig = [
             GuzzleHttpClientOptions::TIMEOUT => $options->getHttpTimeout(),
             GuzzleHttpClientOptions::CONNECT_TIMEOUT => $options->getHttpConnectTimeout(),
-            'no_aspect' => true,
+            'no_sentry_aspect' => true,
         ];
 
         if ($options->getHttpProxy() !== null) {
