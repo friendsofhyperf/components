@@ -39,11 +39,11 @@ abstract class JobConsumer extends ConsumerMessage
 
             return Result::tryFrom((string) $ack) ?? Result::ACK;
         } catch (Throwable $e) {
+            $logger->error((string) $e);
+
             if ($data->attempts()) {
                 return Result::REQUEUE;
             }
-
-            $logger->error((string) $e);
 
             return Result::DROP;
         }
