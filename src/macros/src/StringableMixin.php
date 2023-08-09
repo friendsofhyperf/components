@@ -211,6 +211,7 @@ class StringableMixin
      */
     public function wordWrap()
     {
+        /* @phpstan-ignore-next-line */
         return fn ($characters = 75, $break = "\n", $cutLongWords = false) => new static(Str::wordWrap($this->value, $characters, $break, $cutLongWords));
     }
 }
