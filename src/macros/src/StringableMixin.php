@@ -18,6 +18,7 @@ use function Hyperf\Collection\collect;
 
 /**
  * @mixin Stringable
+ * @property string $value
  */
 class StringableMixin
 {
@@ -201,5 +202,15 @@ class StringableMixin
     {
         /* @phpstan-ignore-next-line */
         return fn ($before, $after = null) => new static(Str::wrap($this->value, $before, $after));
+    }
+
+    /**
+     * Wrap a string to a given number of characters.
+     *
+     * @return static
+     */
+    public function wordWrap()
+    {
+        return fn ($characters = 75, $break = "\n", $cutLongWords = false) => new static(Str::wordWrap($this->value, $characters, $break, $cutLongWords));
     }
 }
