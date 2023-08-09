@@ -264,3 +264,11 @@ test('test wrap', function () {
     $this->assertEquals('"value"', Str::wrap('value', '"'));
     $this->assertEquals('foo-bar-baz', Str::wrap('-bar-', 'foo', 'baz'));
 });
+
+test('test wordWrap', function ($expected, $args) {
+    expect(Str::wordWrap(...$args))->toBe($expected);
+})->with([
+    ['Hello<br />World', ['Hello World', 3, '<br />']],
+    ['Hel<br />lo<br />Wor<br />ld', ['Hello World', 3, '<br />', true]],
+    ['❤Multi<br />Byte☆❤☆❤☆❤', ['❤Multi Byte☆❤☆❤☆❤', 3, '<br />']],
+]);

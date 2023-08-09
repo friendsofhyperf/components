@@ -217,4 +217,9 @@ class StrMixin
     {
         return fn ($value, $before, $after = null) => $before . $value . ($after ??= $before);
     }
+
+    public static function wordWrap()
+    {
+        return fn ($string, $characters = 75, $break = "\n", $cutLongWords = false) => wordwrap($string, $characters, $break, $cutLongWords);
+    }
 }

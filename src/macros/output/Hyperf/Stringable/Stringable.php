@@ -329,4 +329,16 @@ class Stringable
     public function toString()
     {
     }
+
+    /**
+     * Wrap a string to a given number of characters.
+     *
+     * @param int $characters
+     * @param string $break
+     * @param bool $cutLongWords
+     * @return static
+     */
+    public function wordWrap($characters = 75, $break = "\n", $cutLongWords = false)
+    {
+    }
 }
