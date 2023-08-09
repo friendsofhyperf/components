@@ -227,4 +227,17 @@ class Str
     public static function wrap($value, $before, $after = null)
     {
     }
+
+    /**
+     * Wrap a string to a given number of characters.
+     *
+     * @param string $string
+     * @param int $characters
+     * @param string $break
+     * @param bool $cutLongWords
+     * @return string
+     */
+    public static function wordWrap($string, $characters = 75, $break = "\n", $cutLongWords = false)
+    {
+    }
 }
