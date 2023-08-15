@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/3.0/README.md
  * @contact  huangdijia@gmail.com
  */
+
 namespace FriendsOfHyperf\ConfigConsul\Consul;
 
 class_alias(\Hyperf\Consul\KVInterface::class, KVInterface::class);
