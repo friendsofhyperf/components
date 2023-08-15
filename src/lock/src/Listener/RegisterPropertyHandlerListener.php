@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+
 namespace FriendsOfHyperf\Lock\Listener;
 
 use FriendsOfHyperf\Lock\Annotation\Lock;
