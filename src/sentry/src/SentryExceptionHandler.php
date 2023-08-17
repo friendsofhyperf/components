@@ -61,18 +61,6 @@ class SentryExceptionHandler extends ExceptionHandler
      */
     public function isValid(Throwable $throwable): bool
     {
-        if (method_exists($throwable, 'shouldntReportSentry') && $throwable->shouldntReportSentry()) {
-            return false;
-        }
-
-        $dontReport = $this->config->get('sentry.dont_report', []);
-
-        foreach ($dontReport as $type) {
-            if ($throwable instanceof $type) {
-                return false;
-            }
-        }
-
         return true;
     }
 }

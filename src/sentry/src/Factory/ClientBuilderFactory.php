@@ -25,6 +25,14 @@ class ClientBuilderFactory
     {
         $usrConfig = $container->get(ConfigInterface::class)->get('sentry', []);
 
+        // compatible with dont_report
+        if (isset($usrConfig['dont_report'])) {
+            $userConfig['ignore_exceptions'] = array_merge(
+                $usrConfig['ignore_exceptions'] ?? [],
+                $usrConfig['dont_report'] ?? [],
+            );
+        }
+
         unset(
             $usrConfig['breadcrumbs'],
             $usrConfig['integrations'],
