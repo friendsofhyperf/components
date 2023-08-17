@@ -28,7 +28,6 @@ class ClientBuilderFactory
         unset(
             $usrConfig['breadcrumbs'],
             $usrConfig['integrations'],
-            $usrConfig['dont_report'],
         );
 
         $options = array_merge(
