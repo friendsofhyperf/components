@@ -940,10 +940,6 @@ class PendingRequest
         if (
             extension_loaded('swoole')
             && Coroutine::inCoroutine()
-            && (
-                ! defined('SWOOLE_HOOK_NATIVE_CURL') // swoole < 4.6.0
-                || (\Swoole\Runtime::getHookFlags() & SWOOLE_HOOK_NATIVE_CURL) == 0 // unsupported native-curl
-            )
         ) {
             $this->setHandler(new CoroutineHandler());
         }
