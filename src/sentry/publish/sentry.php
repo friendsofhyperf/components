@@ -32,7 +32,11 @@ return [
 
     'integrations' => [],
 
-    'dont_report' => [
+    'ignore_exceptions' => [
         Hyperf\Validation\ValidationException::class,
+    ],
+
+    'ignore_transactions' => [
+        'GET /health',
     ],
 ];
