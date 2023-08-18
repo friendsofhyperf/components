@@ -25,6 +25,10 @@ use Sentry\State\Hub;
 use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
 
+/**
+ * @property \Sentry\Transport\TransportInterface|null $transport
+ * @method \Sentry\ClientInterface getClient()
+ */
 class HubFactory
 {
     public function __invoke(ContainerInterface $container)
@@ -73,7 +77,12 @@ class HubFactory
             return array_merge($integrations, $userIntegrations);
         });
 
-        return tap(new Hub($clientBuilder->getClient()), fn ($hub) => SentrySdk::setCurrentHub($hub));
+        $client = (function () {
+            $this->transport = null; // Make the transport is new created before get client
+            return $this->getClient();
+        })->call($clientBuilder);
+
+        return tap(new Hub($client), fn ($hub) => SentrySdk::setCurrentHub($hub));
     }
 
     protected function resolveIntegrationsFromUserConfig(ContainerInterface $container): array
