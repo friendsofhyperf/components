@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace Hyperf\Tracer\Aspect;
+namespace FriendsOfHyperf\Sentry\Aspect;
 
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
