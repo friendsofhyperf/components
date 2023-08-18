@@ -27,23 +27,19 @@ use function Hyperf\Tappable\tap;
 
 class ClientBuilderFactory
 {
+    public const SPECIFIC_OPTIONS = [
+        'breadcrumbs',
+        'integrations',
+        'dont_report',
+    ];
+
     public function __invoke(ContainerInterface $container)
     {
         $usrConfig = $container->get(ConfigInterface::class)->get('sentry', []);
 
-        // compatible with dont_report
-        if (isset($usrConfig['dont_report'])) {
-            $userConfig['ignore_exceptions'] = array_merge(
-                $usrConfig['ignore_exceptions'] ?? [],
-                $usrConfig['dont_report'] ?? [],
-            );
+        foreach (static::SPECIFIC_OPTIONS as $specificOptionName) {
+            unset($userConfig[$specificOptionName]);
         }
-
-        unset(
-            $usrConfig['breadcrumbs'],
-            $usrConfig['integrations'],
-            $usrConfig['dont_report'],
-        );
 
         $options = array_merge(
             [
