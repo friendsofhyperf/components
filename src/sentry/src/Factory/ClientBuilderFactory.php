@@ -35,10 +35,12 @@ class ClientBuilderFactory
 
     public function __invoke(ContainerInterface $container)
     {
-        $usrConfig = $container->get(ConfigInterface::class)->get('sentry', []);
+        $userConfig = $container->get(ConfigInterface::class)->get('sentry', []);
 
         foreach (static::SPECIFIC_OPTIONS as $specificOptionName) {
-            unset($userConfig[$specificOptionName]);
+            if (isset($userConfig[$specificOptionName])) {
+                unset($userConfig[$specificOptionName]);
+            }
         }
 
         $options = array_merge(
@@ -46,7 +48,7 @@ class ClientBuilderFactory
                 'prefixes' => [BASE_PATH],
                 'in_app_exclude' => [BASE_PATH . '/vendor'],
             ],
-            $usrConfig
+            $userConfig
         );
 
         // When we get no environment from the (user) configuration we default to the Laravel environment
