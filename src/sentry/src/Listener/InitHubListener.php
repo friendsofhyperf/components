@@ -29,8 +29,6 @@ class InitHubListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            AfterWorkerStart::class,
-            MainCoroutineServerStart::class,
             RequestReceived::class,
         ];
     }
