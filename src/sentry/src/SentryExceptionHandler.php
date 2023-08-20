@@ -16,11 +16,11 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\ExceptionHandler\ExceptionHandler;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
-use Sentry\SentrySdk;
 use Throwable;
 
-use function Hyperf\Coroutine\defer;
-
+/**
+ * @deprecated v3.0, will be removed in v3.1, use `FriendsOfHyperf\Sentry\Listener\HttpExceptionListener` instead.
+ */
 class SentryExceptionHandler extends ExceptionHandler
 {
     protected ConfigInterface $config;
@@ -38,18 +38,6 @@ class SentryExceptionHandler extends ExceptionHandler
      */
     public function handle(Throwable $throwable, ResponseInterface $response): ResponseInterface
     {
-        defer(function () use ($throwable) {
-            try {
-                $hub = SentrySdk::getCurrentHub();
-
-                $hub->captureException($throwable);
-
-                $hub->getClient()?->flush();
-            } catch (Throwable $e) {
-                $this->logger->error((string) $e);
-            }
-        });
-
         return $response;
     }
 
