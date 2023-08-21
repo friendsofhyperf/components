@@ -47,7 +47,7 @@ class LoggerAspect extends AbstractAspect
             /** @var DateTimeImmutable|null $datetime */
             $datetime = $proceedingJoinPoint->arguments['keys']['datetime'];
 
-            if (isset($context['no_aspect']) && $context['no_aspect'] === true) {
+            if (isset($context['no_sentry_aspect']) && $context['no_sentry_aspect'] === true) {
                 return;
             }
 
