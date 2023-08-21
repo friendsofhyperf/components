@@ -36,7 +36,7 @@ class ConfigProvider
             'listeners' => [
                 Listener\CheckIsEnableRequestLifecycleListener::class,
                 Listener\DbQueryListener::class,
-                Listener\InitHubListener::class,
+                Listener\CaptureExceptionListener::class,
             ],
             'annotations' => [
                 'scan' => [

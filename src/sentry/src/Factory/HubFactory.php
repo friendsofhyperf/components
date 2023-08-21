@@ -13,11 +13,9 @@ namespace FriendsOfHyperf\Sentry\Factory;
 
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilderInterface;
-use Sentry\SentrySdk;
 use Sentry\State\Hub;
 
 use function Hyperf\Support\make;
-use function Hyperf\Tappable\tap;
 
 /**
  * @property \Sentry\Transport\TransportInterface|null $transport
@@ -33,6 +31,6 @@ class HubFactory
             return $this->getClient();
         })->call($clientBuilder);
 
-        return tap(new Hub($client), fn ($hub) => SentrySdk::setCurrentHub($hub));
+        return new Hub($client);
     }
 }

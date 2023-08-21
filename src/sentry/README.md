@@ -42,19 +42,6 @@ return [
 ];
 ```
 
-## Register ExceptionHandler
-
-```php
-return [
-    'handler' => [
-        'http' => [
-            FriendsOfHyperf\Sentry\SentryExceptionHandler::class,
-            App\Exception\Handler\AppExceptionHandler::class,
-        ],
-    ],
-];
-```
-
 ## Register Logger Handler
 
 ```php
