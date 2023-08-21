@@ -40,7 +40,7 @@ class ClientBuilderFactory
         if (isset($userConfig['dont_report']) && ! isset($userConfig['ignore_exceptions'])) {
             $userConfig['ignore_exceptions'] = $userConfig['dont_report'];
             unset($userConfig['dont_report']);
-            $container->get(StdoutLoggerInterface::class)->warning('The `dont_report` option is deprecated and will be removed in v3.1. Use `ignore_exceptions` instead.');
+            $container->get(StdoutLoggerInterface::class)->warning('The `dont_report` option is deprecated and will be removed in v3.1, use `ignore_exceptions` instead.');
         }
 
         foreach (static::SPECIFIC_OPTIONS as $specificOptionName) {
