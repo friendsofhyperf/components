@@ -15,6 +15,7 @@ use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Integration\RequestFetcher;
 use FriendsOfHyperf\Sentry\Version;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Server\ServerManager;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
@@ -30,12 +31,17 @@ class ClientBuilderFactory
     public const SPECIFIC_OPTIONS = [
         'breadcrumbs',
         'integrations',
-        'dont_report',
     ];
 
     public function __invoke(ContainerInterface $container)
     {
         $userConfig = $container->get(ConfigInterface::class)->get('sentry', []);
+
+        if (isset($userConfig['dont_report']) && ! isset($userConfig['ignore_exceptions'])) {
+            $userConfig['ignore_exceptions'] = $userConfig['dont_report'];
+            unset($userConfig['dont_report']);
+            $container->get(StdoutLoggerInterface::class)->warning('The `dont_report` option is deprecated and will be removed in v3.1, use `ignore_exceptions` instead.');
+        }
 
         foreach (static::SPECIFIC_OPTIONS as $specificOptionName) {
             if (isset($userConfig[$specificOptionName])) {
