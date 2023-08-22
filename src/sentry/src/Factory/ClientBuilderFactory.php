@@ -14,10 +14,11 @@ namespace FriendsOfHyperf\Sentry\Factory;
 use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Integration\RequestFetcher;
 use FriendsOfHyperf\Sentry\Version;
+use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
-use Hyperf\Server\ServerManager;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use Sentry\ClientBuilder;
 use Sentry\Integration as SdkIntegration;
@@ -100,7 +101,7 @@ class ClientBuilderFactory
 
                 $requestFetcher = null;
 
-                if (class_exists(ServerManager::class) && ServerManager::list()) {
+                if (Context::has(ServerRequestInterface::class)) {
                     $requestFetcher = $container->get(RequestFetcher::class);
                 }
 
