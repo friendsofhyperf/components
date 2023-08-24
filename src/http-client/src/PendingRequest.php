@@ -862,7 +862,7 @@ class PendingRequest
     /**
      * Send a pool of asynchronous requests concurrently.
      *
-     * @return array
+     * @return array<array-key, Response>
      */
     public function pool(callable $callback)
     {
