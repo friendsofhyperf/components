@@ -84,11 +84,13 @@ class StringableMixin
 
     public function replaceStart()
     {
+        /* @phpstan-ignore-next-line */
         return fn ($search, $replace) => new static(Str::replaceStart($search, $replace, $this->value));
     }
 
     public function replaceEnd()
     {
+        /* @phpstan-ignore-next-line */
         return fn ($search, $replace) => new static(Str::replaceEnd($search, $replace, $this->value));
     }
 
