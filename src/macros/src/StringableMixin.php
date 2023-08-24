@@ -82,6 +82,18 @@ class StringableMixin
         return fn ($count = 1) => $this->append(str_repeat(PHP_EOL, $count));
     }
 
+    public function replaceStart()
+    {
+        /* @phpstan-ignore-next-line */
+        return fn ($search, $replace) => new static(Str::replaceStart($search, $replace, $this->value));
+    }
+
+    public function replaceEnd()
+    {
+        /* @phpstan-ignore-next-line */
+        return fn ($search, $replace) => new static(Str::replaceEnd($search, $replace, $this->value));
+    }
+
     public function reverse()
     {
         /* @phpstan-ignore-next-line */
