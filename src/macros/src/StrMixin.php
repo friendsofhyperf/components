@@ -185,6 +185,40 @@ class StrMixin
             ->implode('');
     }
 
+    public static function replaceStart()
+    {
+        return function ($search, $replace, $subject) {
+            $search = (string) $search;
+
+            if ($search === '') {
+                return $subject;
+            }
+
+            if (static::startsWith($subject, $search)) {
+                return static::replaceFirst($search, $replace, $subject);
+            }
+
+            return $subject;
+        };
+    }
+
+    public static function replaceEnd()
+    {
+        return function ($search, $replace, $subject) {
+            $search = (string) $search;
+
+            if ($search === '') {
+                return $subject;
+            }
+
+            if (static::endsWith($subject, $search)) {
+                return static::replaceLast($search, $replace, $subject);
+            }
+
+            return $subject;
+        };
+    }
+
     public function reverse()
     {
         return fn ($value) => implode(array_reverse(mb_str_split($value)));
