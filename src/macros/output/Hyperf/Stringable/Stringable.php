@@ -98,6 +98,28 @@ class Stringable
     }
 
     /**
+     * Replace the first occurrence of the given value if it appears at the start of the string.
+     *
+     * @param string $search
+     * @param string $replace
+     * @return static
+     */
+    public function replaceStart($search, $replace)
+    {
+    }
+
+    /**
+     * Replace the last occurrence of a given value if it appears at the end of the string.
+     *
+     * @param string $search
+     * @param string $replace
+     * @return static
+     */
+    public function replaceEnd($search, $replace)
+    {
+    }
+
+    /**
      * Reverse the string.
      *
      * @return static
