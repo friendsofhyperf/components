@@ -11,6 +11,13 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Http\RequestLifeCycle\Events;
 
-class RequestTerminated extends AbstractEvent
-{
+class_alias(\Hyperf\HttpServer\Event\RequestTerminated::class, RequestTerminated::class);
+
+if (! class_exists(RequestTerminated::class)) {
+    /**
+     * @deprecated v3.0, will be removed in v3.1, please use \Hyperf\HttpServer\Event\RequestTerminated instead.
+     */
+    class RequestTerminated extends \Hyperf\HttpServer\Event\RequestTerminated
+    {
+    }
 }
