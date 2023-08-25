@@ -15,7 +15,6 @@
     },
     "require": {
         "hyperf/http-server": "~3.0.24",
-        "hyperf/support": "~3.0.1"
     },
     "suggest": {
         "hyperf/grpc-server": "Required to use (~3.0.0)"
