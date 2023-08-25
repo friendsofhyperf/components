@@ -15,5 +15,5 @@ final class Version
 {
     public const SDK_IDENTIFIER = 'sentry.php.hyperf';
 
-    public const SDK_VERSION = '3.0.0';
+    public const SDK_VERSION = '3.1.0';
 }
