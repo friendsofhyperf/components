@@ -11,6 +11,13 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Http\RequestLifeCycle\Events;
 
-class RequestHandled extends AbstractEvent
-{
+class_alias(\Hyperf\HttpServer\Event\RequestHandled::class, RequestHandled::class);
+
+if (! class_exists(RequestHandled::class)) {
+    /**
+     * @deprecated v3.0, will be removed in v3.1, please use \Hyperf\HttpServer\Event\RequestHandled instead.
+     */
+    class RequestHandled extends \Hyperf\HttpServer\Event\RequestHandled
+    {
+    }
 }

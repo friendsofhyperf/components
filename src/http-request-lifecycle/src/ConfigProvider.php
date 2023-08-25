@@ -11,15 +11,13 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Http\RequestLifeCycle;
 
+class_exists(Events\RequestReceived::class);
+class_exists(Events\RequestHandled::class);
+class_exists(Events\RequestTerminated::class);
 class ConfigProvider
 {
     public function __invoke(): array
     {
-        return [
-            'dependencies' => [
-                \Hyperf\HttpServer\Server::class => HttpServer::class,
-                \Hyperf\GrpcServer\Server::class => GrpcServer::class,
-            ],
-        ];
+        return [];
     }
 }
