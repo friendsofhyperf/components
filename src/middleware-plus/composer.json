@@ -1,0 +1,33 @@
+{
+    "name": "friendsofhyperf/middleware-plus",
+    "description": "The middleware plus component for Hyperf.",
+    "type": "library",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
+    "authors": [
+        {
+            "name": "Huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\MiddlewarePlus\\": "src/"
+        }
+    },
+    "require": {
+        "hyperf/dispatcher": "~3.0.0"
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\MiddlewarePlus\\ConfigProvider"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}
