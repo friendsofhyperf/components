@@ -14,7 +14,7 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "hyperf/http-server": "~3.0.24",
+        "hyperf/http-server": "~3.0.24"
     },
     "suggest": {
         "hyperf/grpc-server": "Required to use (~3.0.0)"
