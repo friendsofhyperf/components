@@ -38,8 +38,10 @@ abstract class AbstractRequestHandler
         } else {
             $handler = $this->middlewares[$this->offset];
             if (is_string($handler)) {
-                [$handler, $arguments] = explode(':', $handler, 2);
-                $arguments = explode(',', $arguments);
+                if (strpos($handler, ':') !== false) {
+                    [$handler, $arguments] = explode(':', $handler, 2);
+                    $arguments = explode(',', $arguments);
+                }
                 $handler = $this->container->get($handler);
             }
         }
