@@ -37,10 +37,8 @@ class RegisterInjectPropertyHandler
                     $reflectionProperty = ReflectionManager::reflectProperty($currentClassName, $property);
                     $container = ApplicationContext::getContainer();
                     if (! str_contains($annotation->value, '@') && $container->has($id = $annotation->value . '@' . $currentClassName)) {
-                        var_dump([$annotation->value => $id]);
                         $reflectionProperty->setValue($object, $container->get($id));
                     } elseif ($container->has($annotation->value)) {
-                        var_dump([$annotation->value => $annotation->value]);
                         $reflectionProperty->setValue($object, $container->get($annotation->value));
                     } elseif ($annotation->required) {
                         throw new NotFoundException("No entry or class found for '{$annotation->value}'");
