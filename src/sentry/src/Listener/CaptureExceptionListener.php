@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Sentry\Listener;
 use Hyperf\Amqp\Event as AmqpEvent;
 use Hyperf\AsyncQueue\Event as AsyncQueueEvent;
 use Hyperf\Command\Event as CommandEvent;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Event as RequestEvent;
@@ -57,6 +58,10 @@ class CaptureExceptionListener implements ListenerInterface
      */
     public function process(object $event): void
     {
+        if (! $this->isEnable($event)) {
+            return;
+        }
+
         $throwable = match ($event::class) {
             RequestEvent\RequestTerminated::class => $event->exception,
             AmqpEvent\FailToConsume::class, CommandEvent\FailToHandle::class, AsyncQueueEvent\FailedHandle::class, KafkaEvent\FailToConsume::class => $event->getThrowable(),
@@ -81,5 +86,18 @@ class CaptureExceptionListener implements ListenerInterface
         } finally {
             $hub->getClient()?->flush();
         }
+    }
+
+    protected function isEnable($event): bool
+    {
+        $config = $this->container->get(ConfigInterface::class);
+        return (bool) match ($event::class) {
+            RequestEvent\RequestReceived::class, RequestEvent\RequestTerminated::class => $config->get('sentry.enable.http', true),
+            AmqpEvent\BeforeConsume::class, AmqpEvent\FailToConsume::class => $config->get('sentry.enable.amqp', true),
+            CommandEvent\BeforeHandle::class, CommandEvent\FailToHandle::class => $config->get('sentry.enable.command', true),
+            AsyncQueueEvent\BeforeHandle::class, AsyncQueueEvent\FailedHandle::class => $config->get('sentry.enable.async_queue', true),
+            KafkaEvent\BeforeConsume::class, KafkaEvent\FailToConsume::class => $config->get('sentry.enable.kafka', true),
+            default => false,
+        };
     }
 }
