@@ -34,9 +34,14 @@ class ConfigProvider
                 \Sentry\State\HubInterface::class => Factory\HubFactory::class,
             ],
             'listeners' => [
+                Listener\AmqpExceptionListener::class,
+                Listener\AsyncQueueExceptionListener::class,
                 Listener\CheckIsEnableRequestLifecycleListener::class,
+                Listener\CommandExceptionListener::class,
+                Listener\CrontabExceptionListener::class,
                 Listener\DbQueryListener::class,
-                Listener\CaptureExceptionListener::class,
+                Listener\KafkaExceptionListener::class,
+                Listener\RequestExceptionListener::class,
             ],
             'annotations' => [
                 'scan' => [
