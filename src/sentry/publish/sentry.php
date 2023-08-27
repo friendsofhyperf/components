@@ -34,6 +34,15 @@ return [
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#send-default-pii
     'send_default_pii' => env('SENTRY_SEND_DEFAULT_PII', false),
 
+    'enable' => [
+        'amqp' => env('SENTRY_ENABLE_AMQP', true),
+        'async_queue' => env('SENTRY_ENABLE_ASYNC_QUEUE', true),
+        'command' => env('SENTRY_ENABLE_COMMAND', true),
+        'crontab' => env('SENTRY_ENABLE_CRONTAB', true),
+        'kafka' => env('SENTRY_ENABLE_KAFKA', true),
+        'request' => env('SENTRY_ENABLE_REQUEST', true),
+    ],
+
     'breadcrumbs' => [
         'sql_queries' => env('SENTRY_BREADCRUMBS_SQL_QUERIES', true),
         'sql_bindings' => env('SENTRY_BREADCRUMBS_SQL_BINDINGS', true),

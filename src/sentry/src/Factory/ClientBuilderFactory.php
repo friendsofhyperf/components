@@ -25,6 +25,7 @@ class ClientBuilderFactory
     public const SPECIFIC_OPTIONS = [
         'breadcrumbs',
         'integrations',
+        'enable',
     ];
 
     public function __invoke(ContainerInterface $container)
