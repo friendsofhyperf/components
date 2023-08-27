@@ -15,7 +15,7 @@ use FriendsOfHyperf\Trigger\Annotation\Subscriber;
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\AnnotationCollector;
-use SplPriorityQueue;
+use Hyperf\Stdlib\SplPriorityQueue;
 
 class SubscriberManager
 {

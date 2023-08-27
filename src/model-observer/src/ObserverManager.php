@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\ModelObserver;
 
 use FriendsOfHyperf\ModelObserver\Annotation\Observer;
 use Hyperf\Di\Annotation\AnnotationCollector;
-use SplPriorityQueue;
+use Hyperf\Stdlib\SplPriorityQueue;
 
 class ObserverManager
 {
