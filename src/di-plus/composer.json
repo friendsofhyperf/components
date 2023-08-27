@@ -1,0 +1,33 @@
+{
+    "name": "friendsofhyperf/di-plus",
+    "description": "The di plus component for Hyperf.",
+    "type": "library",
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
+    "authors": [
+        {
+            "name": "Huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\DiPlus\\": "src/"
+        }
+    },
+    "require": {
+        "hyperf/dispatcher": "~3.0.0"
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\DiPlus\\ConfigProvider"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "minimum-stability": "dev"
+}
