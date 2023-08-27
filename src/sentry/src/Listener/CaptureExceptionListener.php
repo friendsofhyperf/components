@@ -46,6 +46,6 @@ abstract class CaptureExceptionListener implements ListenerInterface
 
     protected function isEnable(string $key): bool
     {
-        return $this->config->get('sentry.enable.' . $key, true);
+        return (bool) $this->config->get('sentry.enable.' . $key, true);
     }
 }
