@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\DiPlus;
 
-use Hyperf\Di\Aop\RegisterInjectPropertyHandler;
 use Hyperf\Di\Definition\DefinitionSource;
 use Hyperf\Di\Definition\Reference;
 
@@ -23,11 +22,13 @@ class ConfigProvider
             'annotations' => [
                 'scan' => [
                     'class_map' => [
-                        RegisterInjectPropertyHandler::class => __DIR__ . '/../class_map/RegisterInjectPropertyHandler.php',
                         DefinitionSource::class => __DIR__ . '/../class_map/DefinitionSource.php',
                         Reference::class => __DIR__ . '/../class_map/Reference.php',
                     ],
                 ],
+            ],
+            'listeners' => [
+                Listener\RegisterInjectPropertyListener::class,
             ],
         ];
     }
