@@ -14,6 +14,7 @@
         "hyperf/di": "~3.1.0",
         "hyperf/event": "~3.1.0",
         "hyperf/process": "~3.1.0",
+        "hyperf/stdlib": "~3.1.0",
         "hyperf/stringable": "~3.1.0",
         "hyperf/support": "~3.1.0",
         "hyperf/tappable": "~3.1.0",
