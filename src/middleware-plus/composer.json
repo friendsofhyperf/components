@@ -24,6 +24,9 @@
     "extra": {
         "hyperf": {
             "config": "FriendsOfHyperf\\MiddlewarePlus\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
         }
     },
     "config": {
