@@ -39,8 +39,8 @@ return [
         'async_queue' => env('SENTRY_ENABLE_ASYNC_QUEUE', true),
         'command' => env('SENTRY_ENABLE_COMMAND', true),
         'crontab' => env('SENTRY_ENABLE_CRONTAB', true),
-        'http' => env('SENTRY_ENABLE_HTTP', true),
         'kafka' => env('SENTRY_ENABLE_KAFKA', true),
+        'request' => env('SENTRY_ENABLE_REQUEST', true),
     ],
 
     'breadcrumbs' => [
