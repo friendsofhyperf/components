@@ -49,6 +49,16 @@ class StrMixin
         };
     }
 
+    /**
+     * Convert the case of a string.
+     *
+     * @return string
+     */
+    public static function convertCase()
+    {
+        return fn (string $string, int $mode = MB_CASE_FOLD, ?string $encoding = 'UTF-8') => mb_convert_case($string, $mode, $encoding);
+    }
+
     public function createUuidsNormally()
     {
         return fn () => UuidContainer::$uuidFactory = null;

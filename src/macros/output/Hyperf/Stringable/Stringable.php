@@ -23,6 +23,17 @@ class Stringable
     }
 
     /**
+     * Convert the case of a string.
+     *
+     * @param int $mode
+     * @param string $encoding
+     * @return static
+     */
+    public function convertCase($mode = MB_CASE_FOLD, $encoding = 'UTF-8')
+    {
+    }
+
+    /**
      * Extracts an excerpt from text that matches the first instance of a phrase.
      *
      * @param string $phrase
