@@ -30,7 +30,6 @@ class ReCaptchaManager
     }
 
     /**
-     * @param string $version
      * @throws TypeError
      * @throws RuntimeException
      */

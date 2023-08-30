@@ -36,6 +36,29 @@ class Str
     }
 
     /**
+     * Convert the case of a string.
+     *
+     * @return string
+     */
+    public static function convertCase(string $string, int $mode = MB_CASE_FOLD, ?string $encoding = 'UTF-8')
+    {
+    }
+
+    /**
+     * Set the callable that will be used to generate UUIDs.
+     */
+    public static function createUuidsUsing(callable $factory = null)
+    {
+    }
+
+    /**
+     * Indicate that UUIDs should be created normally and not using a custom factory.
+     */
+    public static function createUuidsNormally()
+    {
+    }
+
+    /**
      * Extracts an excerpt from text that matches the first instance of a phrase.
      *
      * @param string $text
@@ -204,20 +227,6 @@ class Str
      * @return string
      */
     public static function transliterate($string, $unknown = '?', $strict = false)
-    {
-    }
-
-    /**
-     * Set the callable that will be used to generate UUIDs.
-     */
-    public static function createUuidsUsing(callable $factory = null)
-    {
-    }
-
-    /**
-     * Indicate that UUIDs should be created normally and not using a custom factory.
-     */
-    public static function createUuidsNormally()
     {
     }
 
