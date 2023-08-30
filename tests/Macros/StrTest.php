@@ -315,3 +315,10 @@ test('test wordWrap', function ($expected, $args) {
     ['Hel<br />lo<br />Wor<br />ld', ['Hello World', 3, '<br />', true]],
     ['❤Multi<br />Byte☆❤☆❤☆❤', ['❤Multi Byte☆❤☆❤☆❤', 3, '<br />']],
 ]);
+
+test('test convertCase', function ($expected, $args) {
+    expect(Str::convertCase(...$args))->toBe($expected);
+})->with([
+    ['MARY HAD A LITTLE LAMB AND SHE LOVED IT SO', ['mary had a Little lamb and she loved it so', MB_CASE_UPPER, 'UTF-8']],
+    ['Mary Had A Little Lamb And She Loved It So', ['mary had a Little lamb and she loved it so', MB_CASE_TITLE, 'UTF-8']],
+]);

@@ -35,6 +35,12 @@ class StringableMixin
         return fn () => new static(Str::classNamespace($this->value));
     }
 
+    public function convertCase()
+    {
+        /* @phpstan-ignore-next-line */
+        return fn ($mode = MB_CASE_FOLD, $encoding = 'UTF-8') => new static(Str::convertCase($this->value, $mode, $encoding));
+    }
+
     public function excerpt()
     {
         /* @phpstan-ignore-next-line */
