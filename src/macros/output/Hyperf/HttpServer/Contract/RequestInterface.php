@@ -37,8 +37,6 @@ interface RequestInterface
 
     /**
      * Retrieve input from the request as a collection.
-     *
-     * @param array|string|null $key
      */
     public function collect(array|string|null $key = null): \Hyperf\Collection\Collection;
 
