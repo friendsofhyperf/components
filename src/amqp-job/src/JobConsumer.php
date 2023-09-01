@@ -46,6 +46,8 @@ abstract class JobConsumer extends ConsumerMessage
                 return Result::REQUEUE;
             }
 
+            $this->failed($this, $data, $logger);
+
             return Result::DROP;
         }
     }
@@ -55,5 +57,10 @@ abstract class JobConsumer extends ConsumerMessage
         $packer = $this->getContainer()->get(Packer::class);
 
         return $packer->unpack($data);
+    }
+
+    public function failed(JobConsumer$customer, JobInterface $job, StdoutLoggerInterface $logger): void
+    {
+        $logger->error(sprintf('Customer: %s, Job: %s, failed!', $customer->getRoutingKey(), $job->getJobId()));
     }
 }
