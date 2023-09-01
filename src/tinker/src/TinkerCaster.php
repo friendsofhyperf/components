@@ -69,7 +69,7 @@ class TinkerCaster
     /**
      * Get an array representing the properties of a collection.
      *
-     * @param \Hyperf\Collection\Collection|\Hyperf\Utils\Collection $collection
+     * @param \Hyperf\Collection\Collection $collection
      */
     public static function castCollection($collection): array
     {
@@ -92,8 +92,7 @@ class TinkerCaster
 
     /**
      * Get an array representing the properties of a fluent string.
-     *
-     * @param \Hyperf\Stringable\Stringable|\Hyperf\Utils\Stringable $stringable
+     * @param \Hyperf\Stringable\Stringable $stringable
      */
     public static function castStringable($stringable): array
     {
