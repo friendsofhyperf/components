@@ -46,9 +46,13 @@ abstract class JobConsumer extends ConsumerMessage
                 return Result::REQUEUE;
             }
 
-            $data->fail($e);
+            try {
+                $data->fail($e);
+            } catch (Throwable $e) {
+                $logger->error((string) $e);
+            }
 
-            return Result::DROP;
+                        return Result::DROP;
         }
     }
 
