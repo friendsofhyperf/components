@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\AmqpJob;
 use FriendsOfHyperf\AmqpJob\Contract\Attempt;
 use FriendsOfHyperf\AmqpJob\Contract\JobInterface;
 use Hyperf\Context\ApplicationContext;
+use Throwable;
 
 abstract class Job implements JobInterface
 {
@@ -87,6 +88,10 @@ abstract class Job implements JobInterface
      * @return \Hyperf\Amqp\Result|string|void
      */
     abstract public function handle();
+
+    public function fail(Throwable $e): void
+    {
+    }
 
     protected function getAttempt(): Attempt
     {
