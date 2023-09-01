@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\AmqpJob\Contract;
 
+use Throwable;
+
 interface JobInterface
 {
     public function attempts(): bool;
@@ -33,4 +35,6 @@ interface JobInterface
      * @return Result|void
      */
     public function handle();
+
+    public function fail(Throwable $e): void;
 }
