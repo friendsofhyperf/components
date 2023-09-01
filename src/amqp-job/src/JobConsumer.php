@@ -59,7 +59,7 @@ abstract class JobConsumer extends ConsumerMessage
         return $packer->unpack($data);
     }
 
-    public function failed(JobConsumer$customer, JobInterface $job, StdoutLoggerInterface $logger): void
+    public function failed(JobConsumer $customer, JobInterface $job, StdoutLoggerInterface $logger): void
     {
         $logger->error(sprintf('Customer: %s, Job: %s, failed!', $customer->getRoutingKey(), $job->getJobId()));
     }
