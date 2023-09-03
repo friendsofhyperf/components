@@ -11,62 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ClosureCommand;
 
-use Closure;
-use Hyperf\Context\ApplicationContext;
-use Hyperf\Contract\ApplicationInterface;
-use Psr\Container\ContainerInterface;
-use Symfony\Component\Console\Application;
-use Symfony\Component\Console\Input\ArrayInput;
-use Symfony\Component\Console\Output\NullOutput;
+class_alias(\Hyperf\Command\Console::class, Console::class);
 
-use function Hyperf\Support\make;
-use function Hyperf\Tappable\tap;
-
-/**
- * @deprecated since 3.1, use Hyperf\Command\Console instead.
- */
-class Console
-{
-    public const ROUTE = BASE_PATH . '/config/console.php';
-
+if (! class_exists(Console::class)) {
     /**
-     * @var ClosureCommand[]
+     * @deprecated since 3.1, use Hyperf\Command\Console instead
+     * @mixin \Hyperf\Command\Console
      */
-    protected static $commands = [];
-
-    public static function command(string $signature, Closure $command): ClosureCommand
+    class Console
     {
-        return tap(make(ClosureCommand::class, [
-            'signature' => $signature,
-            'closure' => $command,
-        ]), static function ($handler) {
-            $handlerId = spl_object_hash($handler);
-            self::$commands[$handlerId] = $handler;
-        });
-    }
-
-    /**
-     * @return ClosureCommand[]
-     */
-    public static function getCommands(): array
-    {
-        return self::$commands;
-    }
-
-    public static function call(string $command, array $arguments = []): int
-    {
-        $arguments['command'] = $command;
-
-        $input = new ArrayInput($arguments);
-        $output = new NullOutput();
-
-        /** @var ContainerInterface $container */
-        $container = ApplicationContext::getContainer();
-
-        /** @var Application $application */
-        $application = $container->get(ApplicationInterface::class);
-        $application->setAutoExit(false);
-
-        return $application->run($input, $output);
     }
 }

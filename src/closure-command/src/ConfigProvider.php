@@ -11,32 +11,19 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ClosureCommand;
 
-use FriendsOfHyperf\ClosureCommand\Annotation\CommandCollector;
-use FriendsOfHyperf\ClosureCommand\Listener\RegisterCommandListener;
-
 class ConfigProvider
 {
     public function __invoke(): array
     {
-        defined('BASE_PATH') or define('BASE_PATH', '');
-
+        class_exists(\FriendsOfHyperf\ClosureCommand\Annotation\Command::class);
+        class_exists(\FriendsOfHyperf\ClosureCommand\Console::class);
         return [
-            'annotations' => [
-                'scan' => [
-                    'collectors' => [
-                        CommandCollector::class,
-                    ],
-                ],
-            ],
-            'listeners' => [
-                RegisterCommandListener::class,
-            ],
             'publish' => [
                 [
                     'id' => 'config',
-                    'description' => 'The console route file of closure-command.',
-                    'source' => __DIR__ . '/../publish/console.php',
-                    'destination' => Console::ROUTE,
+                    'description' => 'The console route file of hyperf/command.',
+                    'source' => __DIR__ . '/../../../hyperf/command/publish/console.php',
+                    'destination' => \Hyperf\Command\Console::ROUTE,
                 ],
             ],
         ];
