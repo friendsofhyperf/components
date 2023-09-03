@@ -11,33 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ClosureCommand\Annotation;
 
-use Attribute;
-use Hyperf\Di\Annotation\AbstractMultipleAnnotation;
+class_alias(\Hyperf\Command\Annotation\AsCommand::class, Command::class);
 
-/**
- * @deprecated since 3.1, use Hyperf\Command\Annotation\AsCommand instead.
- */
-#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
-class Command extends AbstractMultipleAnnotation
-{
-    public function __construct(public string $signature = '', public string $description = '', public ?string $handle = null)
+if (! class_exists(Command::class)) {
+    /**
+     * @deprecated since 3.1, use Hyperf\Command\Annotation\AsCommand instead
+     * @mixin \Hyperf\Command\Annotation\AsCommand
+     */
+    class Command
     {
-    }
-
-    public function collectMethod(string $className, ?string $target): void
-    {
-        CommandCollector::set($className . '@' . $target, [
-            'class' => $className,
-            'method' => $target,
-            'signature' => $this->signature,
-            'description' => $this->description,
-        ]);
-    }
-
-    public function collectClass(string $className): void
-    {
-        $target = $this->handle ?? 'handle';
-
-        $this->collectMethod($className, $target);
     }
 }
