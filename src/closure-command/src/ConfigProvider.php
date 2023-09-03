@@ -17,6 +17,15 @@ class ConfigProvider
     {
         class_exists(\FriendsOfHyperf\ClosureCommand\Annotation\Command::class);
         class_exists(\FriendsOfHyperf\ClosureCommand\Console::class);
-        return [];
+        return [
+            'publish' => [
+                [
+                    'id' => 'config',
+                    'description' => 'The console route file of hyperf/command.',
+                    'source' => __DIR__ . '/../../../hyperf/command/publish/console.php',
+                    'destination' => \Hyperf\Command\Console::ROUTE,
+                ],
+            ],
+        ];
     }
 }
