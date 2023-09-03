@@ -31,7 +31,7 @@
     "config": {
         "sort-packages": true
     },
-    "abandoned": "hyperf/closure-command is abandoned, you should use hyperf/command instead.",
+    "abandoned": "hyperf/command",
     "extra": {
         "hyperf": {
             "config": "FriendsOfHyperf\\ClosureCommand\\ConfigProvider"
