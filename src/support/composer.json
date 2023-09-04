@@ -9,6 +9,10 @@
             "email": "huangdijia@gmail.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
     "require": {
         "hyperf/di": "~3.0.0",
         "hyperf/collection": "~3.0.0",
@@ -35,15 +39,12 @@
         }
     },
     "suggest": {
-        "hyperf/async-queue": "Required to use Hyperf\\AsyncQueue\\Job.(~3.0.0)"
+        "hyperf/async-queue": "Required to use Hyperf\\AsyncQueue\\Job.(~3.0.0)",
+        "vlucas/phpdotenv": "Required to use Dotenv.(^5.0)"
     },
     "minimum-stability": "dev",
     "config": {
         "sort-packages": true,
         "optimize-autoloader": true
-    },
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components"
     }
 }
