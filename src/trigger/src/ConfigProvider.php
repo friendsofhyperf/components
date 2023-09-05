@@ -31,7 +31,7 @@ class ConfigProvider
                 Command\TriggersCommand::class,
             ],
             'listeners' => [
-                Listener\BindTriggerProcessesListener::class,
+                // Listener\BindTriggerProcessesListener::class,
             ],
             'publish' => [
                 [
