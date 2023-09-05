@@ -35,6 +35,7 @@ class ConsumeCommand extends HyperfCommand
         protected ContainerInterface $container,
         protected ConfigInterface $config
     ) {
+        parent::__construct();
     }
 
     public function handle()
