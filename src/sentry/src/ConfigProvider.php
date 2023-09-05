@@ -27,6 +27,7 @@ class ConfigProvider
                 Aspect\SentryHttpClientFactoryAspect::class,
             ],
             'commands' => [
+                Command\AboutCommand::class,
                 Command\TestCommand::class,
             ],
             'dependencies' => [
