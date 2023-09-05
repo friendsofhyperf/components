@@ -18,7 +18,7 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\MainWorkerStart;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 
-class OnBootApplicationListener implements ListenerInterface
+class BindProcessListener implements ListenerInterface
 {
     public function __construct(
         protected SubscriberManager $subscriberManager,
