@@ -15,7 +15,8 @@ use FriendsOfHyperf\Trigger\ConsumerManager;
 use FriendsOfHyperf\Trigger\SubscriberManager;
 use FriendsOfHyperf\Trigger\TriggerManager;
 use Hyperf\Event\Contract\ListenerInterface;
-use Hyperf\Framework\Event\BootApplication;
+use Hyperf\Framework\Event\MainWorkerStart;
+use Hyperf\Server\Event\MainCoroutineServerStart;
 
 class OnBootApplicationListener implements ListenerInterface
 {
@@ -29,12 +30,13 @@ class OnBootApplicationListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            BootApplication::class,
+            MainWorkerStart::class,
+            MainCoroutineServerStart::class,
         ];
     }
 
     /**
-     * @param BootApplication $event
+     * @param MainWorkerStart|MainCoroutineServerStart $event
      */
     public function process(object $event): void
     {
