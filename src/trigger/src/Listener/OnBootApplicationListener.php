@@ -11,35 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Trigger\Listener;
 
-use FriendsOfHyperf\Trigger\ConsumerManager;
-use FriendsOfHyperf\Trigger\SubscriberManager;
-use FriendsOfHyperf\Trigger\TriggerManager;
-use Hyperf\Event\Contract\ListenerInterface;
-use Hyperf\Framework\Event\BootApplication;
-
-class OnBootApplicationListener implements ListenerInterface
+/**
+ * @deprecated v3.0, will be removed in v3.1, please use StartTriggerListener instead.
+ */
+class OnBootApplicationListener extends BindTriggerProcessesListener
 {
-    public function __construct(
-        protected SubscriberManager $subscriberManager,
-        protected TriggerManager $triggerManager,
-        protected ConsumerManager $consumerManager
-    ) {
-    }
-
-    public function listen(): array
-    {
-        return [
-            BootApplication::class,
-        ];
-    }
-
-    /**
-     * @param BootApplication $event
-     */
-    public function process(object $event): void
-    {
-        $this->subscriberManager->register();
-        $this->triggerManager->register();
-        $this->consumerManager->run();
-    }
 }
