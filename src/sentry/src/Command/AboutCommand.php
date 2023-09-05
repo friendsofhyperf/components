@@ -42,18 +42,18 @@ class AboutCommand extends Command
         if ($client === null) {
             return [
                 'Enabled' => '<fg=red;options=bold>NOT CONFIGURED</>',
-                'Laravel SDK Version' => Version::SDK_VERSION,
+                'Hyperf SDK Version' => Version::SDK_VERSION,
                 'PHP SDK Version' => Client::SDK_VERSION,
             ];
         }
 
         $options = $client->getOptions();
 
-        // Note: order is not important since Laravel orders these alphabetically
+        // Note: order is not important since Hyperf orders these alphabetically
         return [
             'Enabled' => $options->getDsn() ? '<fg=green;options=bold>YES</>' : '<fg=red;options=bold>MISSING DSN</>',
             'Environment' => $options->getEnvironment() ?: '<fg=yellow;options=bold>NOT SET</>',
-            'Laravel SDK Version' => Version::SDK_VERSION,
+            'Hyperf SDK Version' => Version::SDK_VERSION,
             'PHP SDK Version' => Client::SDK_VERSION,
             'Release' => $options->getRelease() ?: '<fg=yellow;options=bold>NOT SET</>',
             'Sample Rate Errors' => $this->formatSampleRate($options->getSampleRate()),
