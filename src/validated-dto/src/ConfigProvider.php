@@ -19,7 +19,7 @@ class ConfigProvider
 
         return [
             'commands' => [
-                Command\GeneratorCommand::class,
+                Command\MakeDTOCommand::class,
             ],
 
             'publish' => [

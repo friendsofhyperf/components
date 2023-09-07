@@ -13,6 +13,9 @@ namespace FriendsOfHyperf\ValidatedDTO;
 
 use FriendsOfHyperf\ValidatedDTO\Casting\ArrayCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\Castable;
+use FriendsOfHyperf\ValidatedDTO\Concerns\DataResolver;
+use FriendsOfHyperf\ValidatedDTO\Concerns\DataTransformer;
+use FriendsOfHyperf\ValidatedDTO\Contract\BaseDTO;
 use FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException;
 use FriendsOfHyperf\ValidatedDTO\Exception\MissingCastTypeException;
 use Hyperf\Collection\Collection;
@@ -22,9 +25,10 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Database\Model\Model;
 use Hyperf\Validation\ValidationException;
 
-abstract class SimpleDTO implements CastsAttributes
+abstract class SimpleDTO implements BaseDTO, CastsAttributes
 {
-    use Traits\InteractsWithIO;
+    use DataResolver;
+    use DataTransformer;
 
     protected array $data = [];
 
@@ -157,7 +161,7 @@ abstract class SimpleDTO implements CastsAttributes
     /**
      * Maps the DTO properties before the DTO instantiation.
      */
-    protected function mapBeforeValidation(): array
+    protected function mapData(): array
     {
         return [];
     }
@@ -165,7 +169,7 @@ abstract class SimpleDTO implements CastsAttributes
     /**
      * Maps the DTO properties before the DTO export.
      */
-    protected function mapBeforeExport(): array
+    protected function mapToTransform(): array
     {
         return [];
     }
@@ -288,15 +292,15 @@ abstract class SimpleDTO implements CastsAttributes
 
     private function buildDataForValidation(array $data): array
     {
-        return $this->mapData($this->mapBeforeValidation(), $data);
+        return $this->mapDTOData($this->mapData(), $data);
     }
 
     private function buildDataForExport(): array
     {
-        return $this->mapData($this->mapBeforeExport(), $this->validatedData);
+        return $this->mapDTOData($this->mapToTransform(), $this->validatedData);
     }
 
-    private function mapData(array $mapping, array $data): array
+    private function mapDTOData(array $mapping, array $data): array
     {
         if (empty($mapping)) {
             return $data;
@@ -365,9 +369,6 @@ abstract class SimpleDTO implements CastsAttributes
         return $value->toArray();
     }
 
-    /**
-     * Inits the configuration for the DTOs.
-     */
     private function initConfig(): void
     {
         $config = null;
