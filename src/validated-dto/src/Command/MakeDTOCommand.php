@@ -12,25 +12,23 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ValidatedDTO\Command;
 
 use Hyperf\CodeParser\Project;
-use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
-use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class GeneratorCommand extends SymfonyCommand
+class MakeDTOCommand extends SymfonyCommand
 {
     protected InputInterface $input;
 
     protected OutputInterface $output;
 
-    public function __construct()
+    public function __construct(protected ConfigInterface $config)
     {
-        parent::__construct('gen:dto');
-        $this->setDescription('Create a new dto class');
+        parent::__construct('make:dto');
+        $this->setDescription('Create a new DTO class.');
     }
 
     public function configure()
@@ -227,24 +225,19 @@ class GeneratorCommand extends SymfonyCommand
     /**
      * Get the custom config for generator.
      */
-    protected function getConfig(): array
+    protected function getDevtoolConfig(): array
     {
         $key = 'devtool.generator.dto';
-        return $this->getContainer()->get(ConfigInterface::class)->get($key) ?? [];
-    }
-
-    protected function getContainer(): ContainerInterface
-    {
-        return ApplicationContext::getContainer();
+        return $this->config->get($key) ?? [];
     }
 
     protected function getStub(): string
     {
-        return $this->getConfig()['stub'] ?? __DIR__ . '/stubs/dto.stub';
+        return $this->getDevtoolConfig()['stub'] ?? __DIR__ . '/stubs/dto.stub';
     }
 
     protected function getDefaultNamespace(): string
     {
-        return $this->getConfig()['namespace'] ?? 'App\\DTO';
+        return $this->getDevtoolConfig()['namespace'] ?? $this->config->get('dto.namespace') ?? 'App\\DTO';
     }
 }

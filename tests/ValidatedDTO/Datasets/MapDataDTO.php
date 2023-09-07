@@ -34,14 +34,14 @@ class MapDataDTO extends ValidatedDTO
         return [];
     }
 
-    protected function mapBeforeValidation(): array
+    protected function mapData(): array
     {
         return [
             'full_name' => 'name',
         ];
     }
 
-    protected function mapBeforeExport(): array
+    protected function mapToTransform(): array
     {
         return [
             'name' => 'username',

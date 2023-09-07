@@ -13,6 +13,10 @@ namespace FriendsOfHyperf\ValidatedDTO\Casting;
 
 class ArrayCast implements Castable
 {
+    public function __construct(private ?Castable $type = null)
+    {
+    }
+
     public function cast(string $property, mixed $value): array
     {
         if (is_string($value)) {
@@ -21,6 +25,10 @@ class ArrayCast implements Castable
             return is_array($jsonDecoded) ? $jsonDecoded : [$value];
         }
 
-        return is_array($value) ? $value : [$value];
+        $result = is_array($value) ? $value : [$value];
+
+        return ! $this->type
+            ? $result
+            : array_map(fn ($item) => $this->type->cast($property, $item), $result);
     }
 }
