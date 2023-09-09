@@ -36,8 +36,7 @@ class TimeboxTest extends TestCase
         $mock = m::spy(Timebox::class)->shouldAllowMockingProtectedMethods()->makePartial();
         $mock->shouldReceive('usleep')->once();
 
-        $mock->call(function () {
-        }, 10000);
+        $mock->call(function () {}, 10000);
 
         $mock->shouldHaveReceived('usleep')->once();
     }
