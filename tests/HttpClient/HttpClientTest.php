@@ -67,6 +67,8 @@ class HttpClientTest extends TestCase
     protected function tearDown(): void
     {
         m::close();
+
+        parent::tearDown();
     }
 
     public function testStubbedResponsesAreReturnedAfterFaking()
@@ -146,6 +148,20 @@ class HttpClientTest extends TestCase
 
         $response = $this->factory->post('http://forge.laravel.com');
         $this->assertFalse($response->found());
+    }
+
+    public function testNotModifiedRequest(): void
+    {
+        $this->factory->fake([
+            'vapor.laravel.com' => $this->factory::response('', HttpResponse::HTTP_NOT_MODIFIED),
+            'forge.laravel.com' => $this->factory::response('', HttpResponse::HTTP_OK),
+        ]);
+
+        $response = $this->factory->post('https://vapor.laravel.com');
+        $this->assertTrue($response->notModified());
+
+        $response = $this->factory->post('https://forge.laravel.com');
+        $this->assertFalse($response->notModified());
     }
 
     public function testBadRequestRequest()
