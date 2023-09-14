@@ -24,9 +24,9 @@ function foo(KVInterface $kv): KVInterface
 }
 
 test('test KVInterface', function () {
-    $KVFactory = mocking(KVFactory::class)->expect(
-        __invoke: fn () => m::mock(KV::class)
-    );
+    $KVFactory = m::mock(KVFactory::class, [
+        '__invoke' => m::mock(KV::class),
+    ]);
 
     $kv = $KVFactory(m::mock(ContainerInterface::class));
 

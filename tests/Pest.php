@@ -16,7 +16,6 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Mockery as m;
-use Pest\Mock\Mock;
 
 uses(TestCase::class)->beforeEach(function () {
     $this->mock(ValidatorFactoryInterface::class, function ($mock) {
@@ -66,19 +65,6 @@ expect()->extend('toBeOne', function () {
 | global functions to help you to reduce the number of lines of code in your test files.
 |
 */
-
-/**
- * Creates a new mock with the given class or object.
- *
- * @template TObject as object
- *
- * @param class-string<TObject>|TObject $object
- * @return Mock<TObject>
- */
-function mocking(string|object $object): Mock
-{
-    return new Mock($object);
-}
 
 /**
  * Returns the string "test_property".

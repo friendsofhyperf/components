@@ -22,10 +22,10 @@ afterEach(function () {
 });
 
 test('test only', function () {
-    $psrRequest = mocking(ServerRequestInterface::class)->expect(
-        getParsedBody: fn () => ['id' => 1],
-        getQueryParams: fn () => [],
-    );
+    $psrRequest = m::mock(ServerRequestInterface::class, [
+        'getParsedBody' => ['id' => 1],
+        'getQueryParams' => [],
+    ]);
     Context::set(ServerRequestInterface::class, $psrRequest);
 
     $request = new Request();
@@ -35,10 +35,10 @@ test('test only', function () {
 });
 
 test('test isEmptyString', function () {
-    $psrRequest = mocking(ServerRequestInterface::class)->expect(
-        getParsedBody: fn () => ['id' => 1],
-        getQueryParams: fn () => [],
-    );
+    $psrRequest = m::mock(ServerRequestInterface::class, [
+        'getParsedBody' => ['id' => 1],
+        'getQueryParams' => [],
+    ]);
     Context::set(ServerRequestInterface::class, $psrRequest);
 
     $request = new Request();

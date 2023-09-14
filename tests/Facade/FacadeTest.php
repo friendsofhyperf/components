@@ -29,11 +29,13 @@ test('test Cache Macroable', function () {
 
 test('test Log Macroable', function () {
     ApplicationContext::setContainer(
-        mocking(ContainerInterface::class)->expect(
-            get: fn () => mocking(LoggerFactory::class)->expect(
-                get: fn () => mocking(\Psr\Log\LoggerInterface::class)->allows()->info('test')->getMock()
-            )
-        )
+        m::mock(ContainerInterface::class, [
+            'get' => m::mock(LoggerFactory::class, [
+                'get' => m::mock(\Psr\Log\LoggerInterface::class, [
+                    'info' => null,
+                ]),
+            ]),
+        ])
     );
 
     expect(Log::channel('hyperf', 'default'))->toBeInstanceOf(\Psr\Log\LoggerInterface::class);
