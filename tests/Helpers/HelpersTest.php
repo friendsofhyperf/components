@@ -64,13 +64,13 @@ test('test PregReplaceArray', function ($pattern, $replacements, $subject, $expe
 
 test('test FriendsOfHyperf\Helpers\Command\call', function () {
     ApplicationContext::setContainer(
-        mocking(ContainerInterface::class)->expect(
-            has: fn () => true,
-            get: fn () => mocking(ApplicationInterface::class)->expect(
-                setAutoExit: fn () => null,
-                run: fn () => 0,
-            )
-        )
+        m::mock(ContainerInterface::class, [
+            'has' => true,
+            'get' => m::mock(ApplicationInterface::class, [
+                'setAutoExit' => null,
+                'run' => 0,
+            ]),
+        ])
     );
 
     expect(call('command', ['argument' => 'value']))->toBe(0);
