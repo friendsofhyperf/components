@@ -84,7 +84,7 @@ it('validates that a SimpleDTO can be instantiated from Array', function () {
 it('validates that a SimpleDTO can be instantiated from a Request', function () {
     /** @var RequestInterface $request */
     $request = m::mock(RequestInterface::class, [
-        'getParsedBody' => ['name' => $this->subject_name],
+        'all' => ['name' => $this->subject_name],
     ]);
 
     $simpleDTO = SimpleDTOInstance::fromRequest($request);
