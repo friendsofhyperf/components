@@ -187,6 +187,11 @@ class StrMixin
             ->implode('');
     }
 
+    public static function position()
+    {
+        return fn ($haystack, $needle, $offset = 0, $encoding = null) => mb_strpos($haystack, (string) $needle, $offset, $encoding);
+    }
+
     public static function replaceStart()
     {
         return function ($search, $replace, $subject) {

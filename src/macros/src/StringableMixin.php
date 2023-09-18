@@ -88,6 +88,12 @@ class StringableMixin
         return fn ($count = 1) => $this->append(str_repeat(PHP_EOL, $count));
     }
 
+    public function position()
+    {
+        /* @phpstan-ignore-next-line */
+        return fn ($needle, $offset = 0, $encoding = null) => Str::position($this->value, $needle, $offset, $encoding);
+    }
+
     public function replaceStart()
     {
         /* @phpstan-ignore-next-line */
