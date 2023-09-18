@@ -24,7 +24,7 @@ trait DataResolver
     /**
      * @throws InvalidJsonException|ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromJson(string $json): self
+    public static function fromJson(string $json): static
     {
         $jsonDecoded = json_decode($json, true);
         if (! is_array($jsonDecoded)) {
@@ -37,7 +37,7 @@ trait DataResolver
     /**
      * @throws CastTargetException|MissingCastTypeException
      */
-    public static function fromArray(array $array): self
+    public static function fromArray(array $array): static
     {
         return new static($array);
     }
@@ -47,7 +47,7 @@ trait DataResolver
      * @param \Hyperf\HttpServer\Contract\RequestInterface $request
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromRequest(RequestInterface $request): self
+    public static function fromRequest(RequestInterface $request): static
     {
         return new static($request->all());
     }
@@ -55,7 +55,7 @@ trait DataResolver
     /**
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromModel(Model $model): self
+    public static function fromModel(Model $model): static
     {
         return new static($model->toArray());
     }
@@ -63,7 +63,7 @@ trait DataResolver
     /**
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromCommandArguments(Command $command): self
+    public static function fromCommandArguments(Command $command): static
     {
         $arguments = (fn () => $this->input->getArguments())->call($command);
         return new static($arguments);
@@ -72,7 +72,7 @@ trait DataResolver
     /**
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromCommandOptions(Command $command): self
+    public static function fromCommandOptions(Command $command): static
     {
         $options = (fn () => $this->input->getOptions())->call($command);
         return new static($options);
@@ -81,7 +81,7 @@ trait DataResolver
     /**
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public static function fromCommand(Command $command): self
+    public static function fromCommand(Command $command): static
     {
         $arguments = (fn () => $this->input->getArguments())->call($command);
         $options = (fn () => $this->input->getOptions())->call($command);
