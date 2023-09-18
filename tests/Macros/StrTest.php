@@ -199,6 +199,24 @@ test('test password', function ($expected, $args) {
     [10, [10]],
 ]);
 
+test('test position', function ($expected, $args) {
+    expect(Str::position(...$args))->toBe($expected);
+})->with([
+    [7, ['Hello, World!', 'W']],
+    [10, ['This is a test string.', 'test']],
+    [23, ['This is a test string, test again.', 'test', 15]],
+    [0, ['Hello, World!', 'Hello']],
+    [7, ['Hello, World!', 'World!']],
+    [10, ['This is a tEsT string.', 'tEsT', 0, 'UTF-8']],
+    [7, ['Hello, World!', 'W', -6]],
+    [18, ['Äpfel, Birnen und Kirschen', 'Kirschen', -10, 'UTF-8']],
+    [9, ['@%€/=!"][$', '$', 0, 'UTF-8']],
+    [false, ['Hello, World!', 'w', 0, 'UTF-8']],
+    [false, ['Hello, World!', 'X', 0, 'UTF-8']],
+    [false, ['', 'test']],
+    [false, ['Hello, World!', 'X']],
+]);
+
 test('test replaceStart', function ($expected, $args) {
     expect(Str::replaceStart(...$args))->toBe($expected);
 })->with([

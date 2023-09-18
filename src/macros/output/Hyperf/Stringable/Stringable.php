@@ -109,6 +109,18 @@ class Stringable
     }
 
     /**
+     * Find the multi-byte safe position of the first occurrence of the given substring.
+     *
+     * @param string $needle
+     * @param int $offset
+     * @param string|null $encoding
+     * @return int|false
+     */
+    public function position($needle, $offset = 0, $encoding = null)
+    {
+    }
+
+    /**
      * Replace the first occurrence of the given value if it appears at the start of the string.
      *
      * @param string $search
