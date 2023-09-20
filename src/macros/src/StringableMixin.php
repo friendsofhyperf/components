@@ -136,6 +136,17 @@ class StringableMixin
         return fn (array $map) => new static(strtr($this->value, $map));
     }
 
+    /**
+     * Take the first or last {$limit} characters.
+     *
+     * @return static
+     */
+    public function take()
+    {
+        /* @phpstan-ignore-next-line */
+        return fn (int $limit) => new static(Str::take($this->value, $limit));
+    }
+
     public function test()
     {
         return fn ($pattern) => $this->match($pattern)->isNotEmpty();
