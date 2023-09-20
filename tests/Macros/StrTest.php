@@ -278,6 +278,13 @@ test('test swapKeywords', function (): void {
     );
 });
 
+test('test take', function ($expected, $args) {
+    expect(Str::take(...$args))->toBe($expected);
+})->with([
+    ['ab', ['abcdef', 2]],
+    ['ef', ['abcdef', -2]],
+]);
+
 test('test transliterate', function (string $value, string $expected) {
     $this->assertSame($expected, Str::transliterate($value));
 })->with('ialCharacterProvider');

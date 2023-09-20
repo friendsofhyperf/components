@@ -192,6 +192,15 @@ class Stringable
     }
 
     /**
+     * Take the first or last {$limit} characters.
+     *
+     * @return static
+     */
+    public function take(int $limit)
+    {
+    }
+
+    /**
      * Determine if the string matches the given pattern.
      *
      * @param string $pattern

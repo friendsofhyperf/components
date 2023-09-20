@@ -252,6 +252,17 @@ class StrMixin
         return fn (array $map, $subject) => str_replace(array_keys($map), array_values($map), $subject);
     }
 
+    public static function take()
+    {
+        return function ($string, int $limit) {
+            if ($limit < 0) {
+                return static::substr($string, $limit);
+            }
+
+            return static::substr($string, 0, $limit);
+        };
+    }
+
     public function transliterate()
     {
         return fn ($string, $unknown = '?', $strict = false) => ASCII::to_transliterate($string, $unknown, $strict);

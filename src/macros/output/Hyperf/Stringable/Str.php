@@ -224,6 +224,15 @@ class Str
     }
 
     /**
+     * Take the first or last {$limit} characters of a string.
+     *
+     * @param string $string
+     */
+    public static function take($string, int $limit): string
+    {
+    }
+
+    /**
      * Transliterate a string to its closest ASCII representation.
      *
      * @param string $string

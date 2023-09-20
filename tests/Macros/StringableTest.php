@@ -113,6 +113,13 @@ test('test swap', function () {
     ]));
 });
 
+test('test take', function ($expected, $args) {
+    expect((string) $this->stringable(array_shift($args))->take(...$args))->toBe($expected);
+})->with([
+    ['ab', ['abcdef', 2]],
+    ['ef', ['abcdef', -2]],
+]);
+
 test('test test', function () {
     $stringable = $this->stringable('foo bar');
 
