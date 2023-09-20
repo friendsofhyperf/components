@@ -19,7 +19,7 @@
         "hyperf/config": "~3.0.0",
         "hyperf/di": "~3.0.0",
         "hyperf/guzzle": "~3.0.0",
-        "openai-php/client": "^0.6.0"
+        "openai-php/client": "^0.7.0"
     },
     "autoload": {
         "psr-4": {
