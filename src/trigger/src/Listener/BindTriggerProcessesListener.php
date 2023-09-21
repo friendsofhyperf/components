@@ -11,11 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Trigger\Listener;
 
-use FriendsOfHyperf\Trigger\ConsumerManager;
-use FriendsOfHyperf\Trigger\SubscriberManager;
 use FriendsOfHyperf\Trigger\TriggerManager;
-use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\MainWorkerStart;
+use FriendsOfHyperf\Trigger\ConsumerManager;
+use Hyperf\Event\Contract\ListenerInterface;
+use FriendsOfHyperf\Trigger\SubscriberManager;
+use Hyperf\Framework\Event\BeforeMainServerStart;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 
 class BindTriggerProcessesListener implements ListenerInterface
@@ -30,13 +31,13 @@ class BindTriggerProcessesListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            MainWorkerStart::class,
+            BeforeMainServerStart::class,
             MainCoroutineServerStart::class,
         ];
     }
 
     /**
-     * @param MainWorkerStart|MainCoroutineServerStart $event
+     * @param BeforeMainServerStart|MainCoroutineServerStart $event
      */
     public function process(object $event): void
     {
