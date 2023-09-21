@@ -33,11 +33,11 @@ class Consumer
 {
     use Logger;
 
-    protected ?string $name;
+    protected ?string $name = null;
 
-    private ?HealthMonitor $healthMonitor;
+    private ?HealthMonitor $healthMonitor = null;
 
-    private ?ServerMutexInterface $serverMutex;
+    private ?ServerMutexInterface $serverMutex = null;
 
     private BinLogCurrentSnapshotInterface $binLogCurrentSnapshot;
 
