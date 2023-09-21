@@ -20,6 +20,16 @@ composer require friendsofhyperf/trigger
 php bin/hyperf.php vendor:publish friendsofhyperf/trigger
 ```
 
+## Add listener
+
+```php
+// config/autoload/listeners.php
+
+return [
+    FriendsOfHyperf\Trigger\Listener\BindTriggerProcessesListener::class => PHP_INT_MAX,
+];
+```
+
 ## Define a trigger
 
 ```php
