@@ -26,8 +26,8 @@ use MySQLReplication\Config\ConfigBuilder;
 use MySQLReplication\MySQLReplicationFactory;
 use MySQLReplication\Socket\SocketException;
 
-use function FriendsOfHyperf\Support\retry;
 use function Hyperf\Support\make;
+use function Hyperf\Support\retry;
 use function Hyperf\Tappable\tap;
 
 class Consumer
