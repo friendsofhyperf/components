@@ -42,7 +42,7 @@ return [
             ],
 
             'concurrent' => [
-                'limit' => 1000,
+                'limit' => 1,
             ],
         ],
     ],

@@ -37,7 +37,7 @@ class TriggerSubscriber extends AbstractSubscriber
         protected ?StdoutLoggerInterface $logger = null
     ) {
         $this->concurrent = new Concurrent(
-            (int) $consumer->getOption('concurrent.limit') ?? 1000
+            (int) $consumer->getOption('concurrent.limit') ?? 1
         );
     }
 
@@ -89,13 +89,7 @@ class TriggerSubscriber extends AbstractSubscriber
                     try {
                         call([$this->container->get($class), $method], $args);
                     } catch (Throwable $e) {
-                        $this->error(sprintf(
-                            "%s in %s:%s\n%s",
-                            $e->getMessage(),
-                            $e->getFile(),
-                            $e->getLine(),
-                            $e->getTraceAsString()
-                        ));
+                        $this->warning((string) $e);
                     }
                 });
             }
