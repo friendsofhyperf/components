@@ -27,6 +27,7 @@ use MySQLReplication\MySQLReplicationFactory;
 use MySQLReplication\Socket\SocketException;
 
 use function Hyperf\Support\make;
+use function Hyperf\Support\retry;
 use function Hyperf\Tappable\tap;
 
 class Consumer
@@ -101,7 +102,12 @@ class Consumer
                 try {
                     $replication->consume();
                 } catch (SocketException $e) {
-                    $replication->connect();
+                    retry(
+                        (int) $this->getOption('connect_retries', 10),
+                        fn () => $replication->connect(),
+                        200
+                    );
+                    $this->debug('Connection lost, reconnected.');
                 }
             }
         };
@@ -200,9 +206,9 @@ class Consumer
             make(MySQLReplicationFactory::class, [
                 'config' => $configBuilder->build(),
                 'eventDispatcher' => $eventDispatcher,
+                'logger' => $this->logger,
             ]),
-            function ($factory) use ($connection) {
-                /** @var MySQLReplicationFactory $factory */
+            function (MySQLReplicationFactory $factory) use ($connection) {
                 $subscribers = $this->subscriberManager->get($connection);
                 $subscribers[] = TriggerSubscriber::class;
                 $subscribers[] = SnapshotSubscriber::class;

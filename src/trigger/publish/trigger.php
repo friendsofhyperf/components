@@ -22,6 +22,7 @@ return [
             'databases_only' => env('TRIGGER_DATABASES_ONLY', '') ? explode(',', env('TRIGGER_DATABASES_ONLY')) : [],
             'tables_only' => env('TRIGGER_TABLES_ONLY', '') ? explode(',', env('TRIGGER_TABLES_ONLY')) : [],
             'heartbeat_period' => (int) env('TRIGGER_HEARTBEAT', 3),
+            'connect_retries' => 10,
 
             'server_mutex' => [
                 'enable' => true,
