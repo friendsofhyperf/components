@@ -74,7 +74,7 @@ class Consumer
     public function start(): void
     {
         $callback = function () {
-            // Health monitor
+            // Health monitor start
             if ($this->healthMonitor) {
                 $this->healthMonitor->process();
             }
@@ -89,9 +89,7 @@ class Consumer
             // Worker exit
             Coroutine::create(function () {
                 CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
-
                 $this->stop();
-
                 $this->warning('Consumer stopped.');
             });
 
