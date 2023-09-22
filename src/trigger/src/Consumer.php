@@ -24,7 +24,7 @@ use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Coroutine;
 use MySQLReplication\Config\ConfigBuilder;
 use MySQLReplication\MySQLReplicationFactory;
-use Throwable;
+use MySQLReplication\Socket\SocketException;
 
 use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
@@ -100,8 +100,8 @@ class Consumer
 
                 try {
                     $replication->consume();
-                } catch (Throwable $e) {
-                    $this->warning((string) $e);
+                } catch (SocketException $e) {
+                    $replication->connect();
                 }
             }
         };
