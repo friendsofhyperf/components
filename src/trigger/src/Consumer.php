@@ -26,7 +26,6 @@ use MySQLReplication\Config\ConfigBuilder;
 use MySQLReplication\MySQLReplicationFactory;
 use Throwable;
 
-use function Hyperf\Coroutine\wait;
 use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
 
@@ -102,7 +101,7 @@ class Consumer
                 }
 
                 try {
-                    wait(fn () => $replication->consume(), (float) $this->getOption('consume_timeout', 600));
+                    $replication->consume();
                 } catch (Throwable $e) {
                     $this->warning((string) $e);
                 }
