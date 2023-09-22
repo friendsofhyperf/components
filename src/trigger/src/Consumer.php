@@ -24,8 +24,8 @@ use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Coroutine;
 use MySQLReplication\Config\ConfigBuilder;
 use MySQLReplication\MySQLReplicationFactory;
+use Throwable;
 
-use function Hyperf\Coroutine\wait;
 use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
 
@@ -74,7 +74,7 @@ class Consumer
     public function start(): void
     {
         $callback = function () {
-            // Health monitor
+            // Health monitor start
             if ($this->healthMonitor) {
                 $this->healthMonitor->process();
             }
@@ -89,9 +89,7 @@ class Consumer
             // Worker exit
             Coroutine::create(function () {
                 CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
-
                 $this->stop();
-
                 $this->warning('Consumer stopped.');
             });
 
@@ -100,7 +98,11 @@ class Consumer
                     break;
                 }
 
-                wait(fn () => $replication->consume(), (float) $this->getOption('consume_timeout', 600));
+                try {
+                    $replication->consume();
+                } catch (Throwable $e) {
+                    $this->warning((string) $e);
+                }
             }
         };
 
