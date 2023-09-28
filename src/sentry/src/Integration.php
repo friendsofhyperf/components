@@ -20,6 +20,7 @@ use Sentry\Tracing\Span;
 
 use function Sentry\addBreadcrumb;
 use function Sentry\configureScope;
+use function Sentry\getBaggage;
 
 use const SWOOLE_VERSION;
 
@@ -112,6 +113,15 @@ class Integration implements IntegrationInterface
 
     /**
      * Retrieve the meta tags with tracing information to link this request to front-end requests.
+     * This propagates the Dynamic Sampling Context.
+     */
+    public static function sentryMeta(): string
+    {
+        return self::sentryTracingMeta() . self::sentryBaggageMeta();
+    }
+
+    /**
+     * Retrieve the meta tags with tracing information to link this request to front-end requests.
      */
     public static function sentryTracingMeta(): string
     {
@@ -122,6 +132,15 @@ class Integration implements IntegrationInterface
         }
 
         return sprintf('<meta name="sentry-trace" content="%s"/>', $span->toTraceparent());
+    }
+
+    /**
+     * Retrieve the `baggage` meta tag with information to link this request to front-end requests.
+     * This propagates the Dynamic Sampling Context.
+     */
+    public static function sentryBaggageMeta(): string
+    {
+        return sprintf('<meta name="baggage" content="%s"/>', getBaggage());
     }
 
     /**
