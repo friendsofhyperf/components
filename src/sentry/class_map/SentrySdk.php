@@ -15,6 +15,7 @@ use Hyperf\Context\Context;
 use Sentry\State\Hub;
 use Sentry\State\HubInterface;
 
+use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
 
 /**
@@ -49,7 +50,7 @@ class SentrySdk
      */
     public static function getCurrentHub(): HubInterface
     {
-        return Context::getOrSet(__CLASS__, fn () => new Hub());
+        return Context::getOrSet(__CLASS__, fn () => make(HubInterface::class));
     }
 
     /**
