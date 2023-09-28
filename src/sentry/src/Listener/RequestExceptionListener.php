@@ -29,7 +29,7 @@ class RequestExceptionListener extends CaptureExceptionListener
      */
     public function process(object $event): void
     {
-        if (! $this->isEnable('request')) {
+        if (! $this->switcher->isEnable('request')) {
             return;
         }
 

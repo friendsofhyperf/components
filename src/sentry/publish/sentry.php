@@ -40,6 +40,7 @@ return [
         'command' => env('SENTRY_ENABLE_COMMAND', true),
         'kafka' => env('SENTRY_ENABLE_KAFKA', true),
         'request' => env('SENTRY_ENABLE_REQUEST', true),
+        'tracing' => env('SENTRY_ENABLE_TRACING', true),
     ],
 
     'breadcrumbs' => [
@@ -61,5 +62,15 @@ return [
 
     'ignore_transactions' => [
         'GET /health',
+    ],
+
+    // Performance monitoring specific configuration
+    'tracing' => [
+        'db' => env('SENTRY_TRACING_DB', true),
+        'elasticsearch' => env('SENTRY_TRACING_ELASTICSEARCH', true),
+        'guzzle' => env('SENTRY_TRACING_GUZZLE', true),
+        'rpc' => env('SENTRY_TRACING_RPC', true),
+        'redis' => env('SENTRY_TRACING_REDIS', true),
+        'sql_queries' => env('SENTRY_TRACING_SQL_QUERIES', true),
     ],
 ];

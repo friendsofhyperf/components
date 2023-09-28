@@ -26,6 +26,7 @@ class ClientBuilderFactory
         'breadcrumbs',
         'integrations',
         'enable',
+        'tracing',
     ];
 
     public function __invoke(ContainerInterface $container)

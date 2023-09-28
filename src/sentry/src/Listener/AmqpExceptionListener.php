@@ -29,7 +29,7 @@ class AmqpExceptionListener extends CaptureExceptionListener
      */
     public function process(object $event): void
     {
-        if (! $this->isEnable('amqp')) {
+        if (! $this->switcher->isEnable('amqp')) {
             return;
         }
 

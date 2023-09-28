@@ -73,14 +73,18 @@
         "workerman/gatewayclient": "^3.0.13"
     },
     "require-dev": {
+        "elasticsearch/elasticsearch": "^7.0",
         "friendsofhyperf/rector": "dev-main",
         "hashids/hashids": "^4.1|^5.0",
         "huangdijia/php-coding-standard": "^1.1",
+        "hyperf/db": "~3.0.0",
         "hyperf/etcd": "~3.0.0",
         "hyperf/http2-client": "~3.0.0",
         "hyperf/ide-helper": "~3.0.0",
         "hyperf/nacos": "~3.0.0",
         "hyperf/paginator": "~3.0.0",
+        "hyperf/rpc": "~3.0.0",
+        "hyperf/rpc-client": "~3.0.0",
         "hyperf/scout": "~3.0.0",
         "hyperf/tracer": "~3.0.0",
         "mockery/mockery": "^1.6",

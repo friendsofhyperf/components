@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Listener;
 
-use Hyperf\Contract\ConfigInterface;
+use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
@@ -20,7 +20,7 @@ use Throwable;
 
 abstract class CaptureExceptionListener implements ListenerInterface
 {
-    public function __construct(protected ContainerInterface $container, protected ConfigInterface $config)
+    public function __construct(protected ContainerInterface $container, protected Switcher $switcher)
     {
     }
 
@@ -42,10 +42,5 @@ abstract class CaptureExceptionListener implements ListenerInterface
         } finally {
             $hub->getClient()?->flush();
         }
-    }
-
-    protected function isEnable(string $key): bool
-    {
-        return (bool) $this->config->get('sentry.enable.' . $key, true);
     }
 }
