@@ -72,8 +72,7 @@ class ElasticserachAspect extends AbstractAspect
             }
             throw $e;
         } finally {
-            $context->setData($data);
-            $context->start();
+            $context->setData($data)->finish();
         }
 
         return $result;

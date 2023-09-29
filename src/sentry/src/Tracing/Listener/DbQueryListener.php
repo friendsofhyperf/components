@@ -52,15 +52,14 @@ class DbQueryListener implements ListenerInterface
             return;
         }
 
-        $context = SpanContext::create('db.sql.query', $event->sql);
-
-        $context->setData([
-            'coroutine.id' => Coroutine::id(),
-            'db.connection_name' => $event->connectionName,
-            'db.bindings' => $event->bindings,
-        ]);
-        $context->setStartTimestamp(microtime(true) - $event->time / 1000);
-        $context->setEndTimestamp($context->getStartTimestamp() + $event->time / 1000);
-        $context->start();
+        $startTimestamp = microtime(true) - $event->time / 1000;
+        SpanContext::create('db.sql.query', $event->sql)
+            ->setData([
+                'coroutine.id' => Coroutine::id(),
+                'db.connection_name' => $event->connectionName,
+                'db.bindings' => $event->bindings,
+            ])
+            ->setStartTimestamp($startTimestamp)
+            ->finish($startTimestamp + $event->time / 1000);
     }
 }

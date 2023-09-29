@@ -92,8 +92,7 @@ class JsonRpcAspect extends AbstractAspect
                 /** @var SpanContext $context */
                 if ($context = Context::get(static::CONTEXT)) {
                     $data['rpc.status'] = isset($result['result']) ? 'OK' : 'Failed';
-                    $context->setData($data);
-                    $context->start();
+                    $context->setData($data)->finish();
                 }
             }
 

@@ -16,13 +16,24 @@ use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanContext as SentrySpanContext;
 
 /**
+ * @method self setDescription(?string $description)
+ * @method self setOp(?string $op)
+ * @method self setStatus(?SpanStatus $status)
+ * @method self setParentSpanId(?SpanId $parentSpanId)
+ * @method self setSampled(?bool $sampled)
+ * @method self setSpanId(?SpanId $spanId)
+ * @method self setTraceId(?TraceId $traceId)
+ * @method self setTags(array $tags)
+ * @method self setData(array $data)
+ * @method self setStartTimestamp(?float $startTimestamp)
+ * @method self setEndTimestamp(?float $endTimestamp)
  * @mixin SentrySpanContext
  */
 class SpanContext
 {
     protected ?Span $parentSpan;
 
-    protected SentrySpanContext $spanContext;
+    protected ?SentrySpanContext $spanContext = null;
 
     public function __construct()
     {
@@ -32,25 +43,21 @@ class SpanContext
 
     public function __call($name, $arguments)
     {
-        return $this->spanContext->{$name}(...$arguments);
+        $result = $this->spanContext?->{$name}(...$arguments);
+        return str_starts_with($name, 'set') ? $this : $result;
     }
 
-    public function start()
+    public function finish(?float $endTimestamp = null): void
     {
-        // if (! $this->spanContext->getStartTimestamp()) {
-        $this->spanContext->setEndTimestamp(microtime(true));
-        // }
-
+        $this->spanContext->setEndTimestamp($endTimestamp ?? microtime(true));
         $this->parentSpan?->startChild($this->spanContext);
+        $this->spanContext = null;
     }
 
-    public static function create(string $op, ?string $description = null, ?float $startTime = null): static
+    public static function create(string $op, ?string $description = null, ?float $startTimestamp = null): static
     {
-        $startTime ??= microtime(true);
-        $context = new static();
-        $context->spanContext->setOp($op);
-        $description && $context->spanContext->setDescription($description);
-        $context->spanContext->setStartTimestamp($startTime);
-        return $context;
+        return (new static())->setOp($op)
+            ->setDescription($description)
+            ->setStartTimestamp($startTimestamp ?? microtime(true));
     }
 }

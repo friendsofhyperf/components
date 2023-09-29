@@ -38,8 +38,7 @@ class DbAspect extends AbstractAspect
         $arguments = $proceedingJoinPoint->arguments['keys'];
         $context = SpanContext::create(
             'Db::' . $arguments['name'],
-            $proceedingJoinPoint->className . '::' . $arguments['name'] . '()',
-            startTime: microtime(true),
+            $proceedingJoinPoint->className . '::' . $arguments['name'] . '()'
         );
 
         $data = [
@@ -62,8 +61,7 @@ class DbAspect extends AbstractAspect
             }
             throw $e;
         } finally {
-            $context->setData($data);
-            $context->start();
+            $context->setData($data)->finish();
         }
 
         return $result;
