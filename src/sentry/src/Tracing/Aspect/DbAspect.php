@@ -17,6 +17,7 @@ use Hyperf\Coroutine\Coroutine;
 use Hyperf\DB\DB;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Sentry\Tracing\SpanStatus;
 use Throwable;
 
 class DbAspect extends AbstractAspect
@@ -49,10 +50,11 @@ class DbAspect extends AbstractAspect
         try {
             $result = $proceedingJoinPoint->process();
             // $data['result'] = $result;
+            $context->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {
+            $context->setStatus(SpanStatus::internalError());
             if (! $this->switcher->isExceptionIgnored($e)) {
                 $data = array_merge($data, [
-                    'error' => true,
                     'exception.class' => get_class($e),
                     'exception.message' => $e->getMessage(),
                     'exception.code' => $e->getCode(),

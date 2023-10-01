@@ -21,9 +21,8 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Rpc;
 use Hyperf\RpcClient;
 use Psr\Container\ContainerInterface;
+use Sentry\Tracing\SpanStatus;
 use Throwable;
-
-use function Sentry\getBaggage;
 
 class JsonRpcAspect extends AbstractAspect
 {
@@ -61,8 +60,8 @@ class JsonRpcAspect extends AbstractAspect
                 $rpcContext = $this->container->get(Rpc\Context::class);
 
                 $rpcContext->set(TraceContext::RPC_CARRIER, [
-                    'sentry-trace' => TraceContext::getTransaction()->getTraceId(),
-                    'baggage' => getBaggage(),
+                    'sentry-trace' => TraceContext::getTransaction()->toTraceparent(),
+                    'baggage' => TraceContext::getTransaction()->toBaggage(),
                 ]);
             }
 
@@ -73,6 +72,8 @@ class JsonRpcAspect extends AbstractAspect
             /** @var array $data */
             $data = Context::get(static::DATA);
             $data['arguments'] = $proceedingJoinPoint->arguments['keys'];
+            /** @var SpanContext|null $context */
+            $context = Context::get(static::CONTEXT);
 
             try {
                 $result = $proceedingJoinPoint->process();
@@ -80,7 +81,6 @@ class JsonRpcAspect extends AbstractAspect
             } catch (Throwable $e) {
                 if (! $this->switcher->isExceptionIgnored($e)) {
                     $data = array_merge($data, [
-                        'error' => true,
                         'exception.class' => get_class($e),
                         'exception.message' => $e->getMessage(),
                         'exception.code' => $e->getCode(),
@@ -89,11 +89,11 @@ class JsonRpcAspect extends AbstractAspect
                 }
                 throw $e;
             } finally {
-                /** @var SpanContext $context */
-                if ($context = Context::get(static::CONTEXT)) {
-                    $data['rpc.status'] = isset($result['result']) ? 'OK' : 'Failed';
-                    $context->setData($data)->finish();
-                }
+                $context?->setStatus(
+                    isset($result['result']) ? SpanStatus::ok() : SpanStatus::internalError()
+                )
+                    ->setData($data)
+                    ->finish();
             }
 
             return $result;

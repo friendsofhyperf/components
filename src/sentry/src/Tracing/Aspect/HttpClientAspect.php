@@ -21,6 +21,7 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Rpc;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
+use Sentry\Tracing\SpanStatus;
 use Throwable;
 
 /**
@@ -102,10 +103,12 @@ class HttpClientAspect extends AbstractAspect
                     'response.headers' => $result->getHeaders(),
                 ]);
             }
+
+            $context->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {
+            $context->setStatus(SpanStatus::internalError());
             if (! $this->switcher->isExceptionIgnored($e)) {
                 $data = array_merge($data, [
-                    'error' => true,
                     'exception.class' => get_class($e),
                     'exception.message' => $e->getMessage(),
                     'exception.code' => $e->getCode(),

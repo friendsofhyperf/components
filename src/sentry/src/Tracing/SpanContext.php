@@ -35,10 +35,13 @@ class SpanContext
 
     protected ?SentrySpanContext $spanContext = null;
 
-    public function __construct()
+    public function __construct(string $op, ?string $description = null, ?float $startTimestamp = null)
     {
-        $this->parentSpan = SentrySdk::getCurrentHub()->getSpan();
+        $this->parentSpan = TraceContext::getRoot() ?: SentrySdk::getCurrentHub()->getSpan();
         $this->spanContext = new SentrySpanContext();
+        $this->spanContext->setOp($op);
+        $this->spanContext->setDescription($description);
+        $this->spanContext->setStartTimestamp($startTimestamp ?? microtime(true));
     }
 
     public function __call($name, $arguments)
@@ -56,8 +59,6 @@ class SpanContext
 
     public static function create(string $op, ?string $description = null, ?float $startTimestamp = null): static
     {
-        return (new static())->setOp($op)
-            ->setDescription($description)
-            ->setStartTimestamp($startTimestamp ?? microtime(true));
+        return new static($op, $description,$startTimestamp ?? microtime(true));
     }
 }

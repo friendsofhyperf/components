@@ -66,6 +66,7 @@ return [
 
     // Performance monitoring specific configuration
     'tracing' => [
+        'coroutine' => env('SENTRY_TRACING_COROUTINE', true),
         'db' => env('SENTRY_TRACING_DB', true),
         'elasticsearch' => env('SENTRY_TRACING_ELASTICSEARCH', true),
         'guzzle' => env('SENTRY_TRACING_GUZZLE', true),

@@ -13,10 +13,12 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\Annotation\Trace;
-use FriendsOfHyperf\Sentry\Tracing\SpanContext;
+use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Sentry\Tracing\SpanContext as SentrySpanContext;
+use Sentry\Tracing\SpanStatus;
 use Throwable;
 
 class TraceAnnotationAspect extends AbstractAspect
@@ -35,7 +37,7 @@ class TraceAnnotationAspect extends AbstractAspect
         /** @var Trace|null $annotation */
         $annotation = $metadata->method[Trace::class] ?? null;
 
-        if (! $annotation) {
+        if (! $annotation || ! $parentSpan = TraceContext::getRoot()) {
             return $proceedingJoinPoint->process();
         }
 
@@ -45,18 +47,24 @@ class TraceAnnotationAspect extends AbstractAspect
             'arguments' => $arguments,
         ];
 
-        $context = SpanContext::create(
-            $annotation->op ?? 'method',
-            $annotation->description ?? sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
-        );
+        $anContext = new SentrySpanContext();
+        $anContext->setOp($annotation->op ?? 'method');
+        $anContext->setDescription($annotation->description ?? sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName));
+        $anContext->setStartTimestamp(microtime(true));
+
+        $anSpan = $parentSpan->startChild($anContext);
+
+        // Set current span as root
+        TraceContext::setRoot($anSpan);
 
         try {
             $result = $proceedingJoinPoint->process();
             // $data['result'] = $result;
+            $anSpan->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {
+            $anSpan->setStatus(SpanStatus::internalError());
             if (! $this->switcher->isExceptionIgnored($e)) {
-                $data = array_merge($data, [
-                    'error' => true,
+                $anSpan->setTags([
                     'exception.class' => get_class($e),
                     'exception.message' => $e->getMessage(),
                     'exception.code' => $e->getCode(),
@@ -65,7 +73,12 @@ class TraceAnnotationAspect extends AbstractAspect
             }
             throw $e;
         } finally {
-            $context->setData($data)->finish();
+            $anContext->setData($data);
+            $anContext->setEndTimestamp(microtime(true));
+            $anSpan->finish(microtime(true));
+
+            // Reset root span
+            TraceContext::setRoot($parentSpan);
         }
 
         return $result;
