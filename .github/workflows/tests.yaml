@@ -46,9 +46,9 @@ jobs:
           - php: '8.2'
             swoole: '4.8.13'
           - php: '8.3'
-            swoole: '5.0.3'
-          - php: '8.3'
             swoole: '4.8.13'
+          - php: '8.3'
+            swoole: '5.0.3'
       max-parallel: 20
       fail-fast: false
     steps:
