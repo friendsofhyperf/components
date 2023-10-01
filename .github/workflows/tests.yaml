@@ -41,7 +41,7 @@ jobs:
       matrix:
         os: [ubuntu-22.04]
         php: ['8.0', '8.1', '8.2']
-        swoole: ['4.8.13', '5.0.3']
+        swoole: ['4.8.13', '5.0.3', '5.1.0']
         exclude:
           - php: '8.2'
             swoole: '4.8.13'
