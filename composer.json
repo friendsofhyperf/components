@@ -149,7 +149,8 @@
             "src/helpers/src/Functions.php",
             "src/lock/src/Functions.php",
             "src/model-factory/src/Functions.php",
-            "src/support/src/Functions.php"
+            "src/support/src/Functions.php",
+            "src/validated-dto/src/Functions.php"
         ],
         "psr-4": {
             "FriendsOfHyperf\\AccessLog\\": "src/access-log/src/",

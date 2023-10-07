@@ -66,7 +66,7 @@ trait DataResolver
     public static function fromCommandArguments(Command $command): static
     {
         $arguments = (fn () => $this->input->getArguments())->call($command);
-        return new static($arguments);
+        return new static(self::filterArguments($arguments));
     }
 
     /**
@@ -85,6 +85,18 @@ trait DataResolver
     {
         $arguments = (fn () => $this->input->getArguments())->call($command);
         $options = (fn () => $this->input->getOptions())->call($command);
-        return new static(array_merge($arguments, $options));
+        return new static(array_merge(self::filterArguments($arguments), $options));
+    }
+
+    private static function filterArguments(array $arguments): array
+    {
+        $result = [];
+        foreach ($arguments as $key => $value) {
+            if (! is_numeric($key)) {
+                $result[$key] = $value;
+            }
+        }
+
+        return $result;
     }
 }

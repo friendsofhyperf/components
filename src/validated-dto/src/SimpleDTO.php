@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ValidatedDTO;
 
+use FriendsOfHyperf\ValidatedDTO\Attributes\DefaultValue;
+use FriendsOfHyperf\ValidatedDTO\Attributes\Map;
+use FriendsOfHyperf\ValidatedDTO\Attributes\Rules;
 use FriendsOfHyperf\ValidatedDTO\Casting\ArrayCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\Castable;
 use FriendsOfHyperf\ValidatedDTO\Concerns\DataResolver;
@@ -22,8 +25,11 @@ use Hyperf\Collection\Collection;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\CastsAttributes;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Database\Model\Model;
 use Hyperf\Validation\ValidationException;
+use ReflectionClass;
+use ReflectionProperty;
 
 abstract class SimpleDTO implements BaseDTO, CastsAttributes
 {
@@ -36,6 +42,18 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
 
     protected bool $requireCasting = false;
 
+    protected ?ValidatorInterface $validator = null;
+
+    protected array $dtoRules = [];
+
+    protected array $dtoMessages = [];
+
+    protected array $dtoDefaults = [];
+
+    protected array $dtoMapData = [];
+
+    protected array $dtoMapTransform = [];
+
     /**
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
@@ -44,6 +62,8 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         if (is_null($data)) {
             return;
         }
+
+        $this->buildAttributesData();
 
         $this->data = $this->buildDataForValidation($data);
 
@@ -189,7 +209,12 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             $this->{$key} = $value;
         }
 
-        foreach ($this->defaults() as $key => $value) {
+        $defaults = [
+            ...$this->defaults(),
+            ...$this->dtoDefaults,
+        ];
+
+        foreach ($defaults as $key => $value) {
             if (
                 ! property_exists($this, $key)
                 || empty($this->{$key})
@@ -290,22 +315,96 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         return is_null($value);
     }
 
+    private function buildAttributesData(): void
+    {
+        $publicProperties = $this->getPublicProperties();
+
+        $validatedProperties = $this->getPropertiesForAttribute($publicProperties, Rules::class);
+        foreach ($validatedProperties as $property => $attribute) {
+            $attributeInstance = $attribute->newInstance();
+            $this->dtoRules[$property] = $attributeInstance->rules;
+            $this->dtoMessages[$property] = $attributeInstance->messages ?? [];
+        }
+
+        $this->dtoMessages = array_filter(
+            $this->dtoMessages,
+            fn ($value) => $value !== []
+        );
+
+        $defaultProperties = $this->getPropertiesForAttribute($publicProperties, DefaultValue::class);
+        foreach ($defaultProperties as $property => $attribute) {
+            $attributeInstance = $attribute->newInstance();
+            $this->dtoDefaults[$property] = $attributeInstance->value;
+        }
+
+        $mapDataProperties = $this->getPropertiesForAttribute($publicProperties, Map::class);
+        foreach ($mapDataProperties as $property => $attribute) {
+            $attributeInstance = $attribute->newInstance();
+
+            if (! blank($attributeInstance->data)) {
+                $this->dtoMapData[$attributeInstance->data] = $property;
+            }
+
+            if (! blank($attributeInstance->transform)) {
+                $this->dtoMapTransform[$property] = $attributeInstance->transform;
+            }
+        }
+    }
+
+    private function getPublicProperties(): array
+    {
+        $reflectionClass = new ReflectionClass($this);
+        $dtoProperties = [];
+
+        foreach ($reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
+            if ($this->isForbiddenProperty($property->getName())) {
+                continue;
+            }
+
+            $reflectionProperty = new ReflectionProperty($this, $property->getName());
+            $attributes = $reflectionProperty->getAttributes();
+            $dtoProperties[$property->getName()] = $attributes;
+        }
+
+        return $dtoProperties;
+    }
+
+    private function getPropertiesForAttribute(array $properties, string $attribute): array
+    {
+        $result = [];
+        foreach ($properties as $property => $attributes) {
+            foreach ($attributes as $attr) {
+                if ($attr->getName() === $attribute) {
+                    $result[$property] = $attr;
+                }
+            }
+        }
+
+        return $result;
+    }
+
     private function buildDataForValidation(array $data): array
     {
-        return $this->mapDTOData($this->mapData(), $data);
+        $mapping = [
+            ...$this->mapData(),
+            ...$this->dtoMapData,
+        ];
+
+        return $this->mapDTOData($mapping, $data);
     }
 
     private function buildDataForExport(): array
     {
-        return $this->mapDTOData($this->mapToTransform(), $this->validatedData);
+        $mapping = [
+            ...$this->mapToTransform(),
+            ...$this->dtoMapTransform,
+        ];
+
+        return $this->mapDTOData($mapping, $this->validatedData);
     }
 
     private function mapDTOData(array $mapping, array $data): array
     {
-        if (empty($mapping)) {
-            return $data;
-        }
-
         $mappedData = [];
         foreach ($data as $key => $value) {
             $properties = $this->getMappedProperties($mapping, $key);
@@ -323,7 +422,9 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
                 ? $mapping[$key]
                 : $key;
 
-            $mappedData[$property] = $value;
+            $mappedData[$property] = $this->isArrayable($value)
+            ? $this->formatArrayableValue($value)
+            : $value;
         }
 
         return $mappedData;
@@ -358,15 +459,47 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
 
     private function formatArrayableValue(mixed $value): array
     {
-        if (is_array($value)) {
-            return $value;
+        return match (true) {
+            is_array($value) => $value,
+            $value instanceof Collection => $this->transformCollectionToArray($value),
+            $value instanceof Model => $this->transformModelToArray($value),
+            $value instanceof SimpleDTO => $this->transformDTOToArray($value),
+            is_object($value) => (array) $value,
+            default => [],
+        };
+    }
+
+    private function transformCollectionToArray(Collection $collection): array
+    {
+        return $collection->map(function ($item) {
+            return $this->isArrayable($item)
+                ? $this->formatArrayableValue($item)
+                : $item;
+        })->toArray();
+    }
+
+    private function transformModelToArray(Model $model): array
+    {
+        $result = [];
+        foreach ($model->getAttributes() as $key => $value) {
+            $result[$key] = $this->isArrayable($value)
+                ? $this->formatArrayableValue($value)
+                : $value;
         }
 
-        if (is_object($value)) {
-            return (array) $value;
+        return $result;
+    }
+
+    private function transformDTOToArray(SimpleDTO $dto): array
+    {
+        $result = [];
+        foreach ($dto->validatedData as $key => $value) {
+            $result[$key] = $this->isArrayable($value)
+                ? $this->formatArrayableValue($value)
+                : $value;
         }
 
-        return $value->toArray();
+        return $result;
     }
 
     private function initConfig(): void
@@ -389,7 +522,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     {
         $acceptedKeys = [];
         foreach (get_class_vars($this::class) as $key => $value) {
-            if (! $this->isforbiddenProperty($key)) {
+            if (! $this->isForbiddenProperty($key)) {
                 $acceptedKeys[] = $key;
             }
         }
@@ -397,13 +530,18 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         return $acceptedKeys;
     }
 
-    private function isforbiddenProperty(string $property): bool
+    private function isForbiddenProperty(string $property): bool
     {
         return in_array($property, [
             'data',
             'validatedData',
             'requireCasting',
             'validator',
+            'dtoRules',
+            'dtoMessages',
+            'dtoDefaults',
+            'dtoMapData',
+            'dtoMapTransform',
         ]);
     }
 }
