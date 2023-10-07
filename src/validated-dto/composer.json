@@ -10,6 +10,9 @@
     ],
     "license": "MIT",
     "autoload": {
+        "files": [
+            "src/Functions.php"
+        ],
         "psr-4": {
             "FriendsOfHyperf\\ValidatedDTO\\": "src/"
         }

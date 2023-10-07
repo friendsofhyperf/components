@@ -16,15 +16,12 @@ use FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException;
 use FriendsOfHyperf\ValidatedDTO\Exception\MissingCastTypeException;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\ApplicationContext;
-use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Hyperf\Validation\ValidationException;
 use InvalidArgumentException;
 
 abstract class ValidatedDTO extends SimpleDTO
 {
-    protected ?ValidatorInterface $validator = null;
-
     public function __construct(?array $data = null, protected ?string $scene = null)
     {
         parent::__construct($data);
@@ -89,7 +86,7 @@ abstract class ValidatedDTO extends SimpleDTO
      */
     protected function validatedData(): array
     {
-        $acceptedKeys = array_keys($this->getRules());
+        $acceptedKeys = array_keys($this->rulesList());
         $result = [];
 
         /** @var array<Castable> $casts */
@@ -130,8 +127,8 @@ abstract class ValidatedDTO extends SimpleDTO
         $this->validator = $container->get(ValidatorFactoryInterface::class)
             ->make(
                 $this->data,
-                $this->getRules(),
-                $this->messages(),
+                $this->rulesList(),
+                $this->messagesList(),
                 $this->attributes()
             );
 
@@ -153,9 +150,25 @@ abstract class ValidatedDTO extends SimpleDTO
         return is_null($value) && $this->isOptionalProperty($key);
     }
 
+    private function rulesList(): array
+    {
+        return [
+            ...$this->rules(),
+            ...$this->dtoRules,
+        ];
+    }
+
+    private function messagesList(): array
+    {
+        return [
+            ...$this->messages(),
+            ...$this->dtoMessages,
+        ];
+    }
+
     private function isOptionalProperty(string $property): bool
     {
-        $rules = $this->getRules();
+        $rules = $this->rulesList();
         $propertyRules = is_array($rules[$property])
             ? $rules[$property]
             : explode('|', $rules[$property]);
