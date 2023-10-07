@@ -405,10 +405,6 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
 
     private function mapDTOData(array $mapping, array $data): array
     {
-        if (empty($mapping)) {
-            return $data;
-        }
-
         $mappedData = [];
         foreach ($data as $key => $value) {
             $properties = $this->getMappedProperties($mapping, $key);
@@ -426,7 +422,9 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
                 ? $mapping[$key]
                 : $key;
 
-            $mappedData[$property] = $value;
+            $mappedData[$property] = $this->isArrayable($value)
+            ? $this->formatArrayableValue($value)
+            : $value;
         }
 
         return $mappedData;
@@ -461,15 +459,26 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
 
     private function formatArrayableValue(mixed $value): array
     {
-        if (is_array($value)) {
-            return $value;
+        return match (true) {
+            is_array($value) => $value,
+            $value instanceof Collection => $value->toArray(),
+            $value instanceof Model => $value->toArray(),
+            $value instanceof SimpleDTO => $this->transformDTOToArray($value),
+            is_object($value) => (array) $value,
+            default => [],
+        };
+    }
+
+    private function transformDTOToArray(SimpleDTO $dto): array
+    {
+        $result = [];
+        foreach ($dto->validatedData as $key => $value) {
+            $result[$key] = $this->isArrayable($value)
+                ? $this->formatArrayableValue($value)
+                : $value;
         }
 
-        if (is_object($value)) {
-            return (array) $value;
-        }
-
-        return $value->toArray();
+        return $result;
     }
 
     private function initConfig(): void

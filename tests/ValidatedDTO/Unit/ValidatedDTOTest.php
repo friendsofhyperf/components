@@ -16,6 +16,7 @@ use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\NameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\NullableDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\User;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\UserDTO;
+use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\UserNestedDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\ValidatedDTOInstance;
 use FriendsOfHyperf\ValidatedDTO\Exception\InvalidJsonException;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
@@ -25,6 +26,11 @@ use Hyperf\Validation\ValidationException;
 use Mockery as m;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\Console\Input\InputInterface;
+
+beforeEach(function () {
+    $this->subject_name = faker()->name();
+    $this->subject_email = faker()->unique()->safeEmail();
+});
 
 it('instantiates a ValidatedDTO validating its data', function () {
     $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
@@ -203,6 +209,60 @@ it('validates that the ValidatedDTO can be converted into a pretty JSON string',
 
     expect($validatedDTO)->toPrettyJson()
         ->toBe(json_encode(['name' => $this->subject_name], JSON_PRETTY_PRINT));
+});
+
+it('validates that the ValidatedDTO with nested data can be converted into an array', function () {
+    $validatedDTO = new UserNestedDTO([
+        'name' => [
+            'first_name' => $this->subject_name,
+            'last_name' => 'Doe',
+        ],
+        'email' => $this->subject_email,
+    ]);
+
+    expect($validatedDTO)->toArray()
+        ->toBe([
+            'name' => [
+                'first_name' => $this->subject_name,
+                'last_name' => 'Doe',
+            ],
+            'email' => $this->subject_email,
+        ]);
+});
+
+it('validates that the ValidatedDTO with nested data can be converted into a JSON string', function () {
+    $validatedDTO = new UserNestedDTO([
+        'name' => [
+            'first_name' => $this->subject_name,
+            'last_name' => 'Doe',
+        ],
+        'email' => $this->subject_email,
+    ]);
+
+    expect($validatedDTO)->toJson()
+        ->toBe('{"name":{"first_name":"' . $this->subject_name . '","last_name":"Doe"},"email":"' . $this->subject_email . '"}');
+});
+
+it('validates that the ValidatedDTO with nested data can be converted into a pretty JSON string', function () {
+    $validatedDTO = new UserNestedDTO([
+        'name' => [
+            'first_name' => $this->subject_name,
+            'last_name' => 'Doe',
+        ],
+        'email' => $this->subject_email,
+    ]);
+
+    expect($validatedDTO)->toPrettyJson()
+        ->toBe(json_encode(
+            [
+                'name' => [
+                    'first_name' => $this->subject_name,
+                    'last_name' => 'Doe',
+                ],
+                'email' => $this->subject_email,
+            ],
+            JSON_PRETTY_PRINT
+        ));
 });
 
 it('validates that the ValidatedDTO can be converted into an Eloquent Model', function () {
