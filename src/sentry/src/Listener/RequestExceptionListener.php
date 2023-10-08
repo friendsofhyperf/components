@@ -13,9 +13,6 @@ namespace FriendsOfHyperf\Sentry\Listener;
 
 use Hyperf\HttpServer\Event;
 use Sentry\SentrySdk;
-use Sentry\State\HubInterface;
-
-use function Hyperf\Support\make;
 
 class RequestExceptionListener extends CaptureExceptionListener
 {
@@ -38,7 +35,7 @@ class RequestExceptionListener extends CaptureExceptionListener
 
         match ($event::class) {
             Event\RequestTerminated::class => $this->captureException($event->exception),
-            default => SentrySdk::setCurrentHub(make(HubInterface::class)),
+            default => SentrySdk::getCurrentHub(),
         };
     }
 }
