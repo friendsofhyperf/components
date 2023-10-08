@@ -37,7 +37,7 @@ class TraceAnnotationAspect extends AbstractAspect
         /** @var Trace|null $annotation */
         $annotation = $metadata->method[Trace::class] ?? null;
 
-        if (! $annotation || ! $parentSpan = TraceContext::getRoot()) {
+        if (! $annotation || ! $parent = TraceContext::getParent()) {
             return $proceedingJoinPoint->process();
         }
 
@@ -52,10 +52,10 @@ class TraceAnnotationAspect extends AbstractAspect
         $anContext->setDescription($annotation->description ?? sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName));
         $anContext->setStartTimestamp(microtime(true));
 
-        $anSpan = $parentSpan->startChild($anContext);
+        $anSpan = $parent->startChild($anContext);
 
         // Set current span as root
-        TraceContext::setRoot($anSpan);
+        TraceContext::setParent($anSpan);
 
         try {
             $result = $proceedingJoinPoint->process();
@@ -78,7 +78,7 @@ class TraceAnnotationAspect extends AbstractAspect
             $anSpan->finish(microtime(true));
 
             // Reset root span
-            TraceContext::setRoot($parentSpan);
+            TraceContext::setParent($parent);
         }
 
         return $result;

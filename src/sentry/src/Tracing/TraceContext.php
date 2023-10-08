@@ -41,23 +41,28 @@ class TraceContext
         Context::set(self::TRANSACTION, null);
     }
 
-    public static function setRoot(Span $context): Span
+    public static function setParent(Span $context): Span
     {
         return Context::set(self::ROOT, $context);
     }
 
-    public static function getRoot(): ?Span
+    public static function getParent(): ?Span
     {
         return Context::get(self::ROOT);
     }
 
-    public static function clearRoot(): void
+    public static function clearParent(): void
     {
         Context::set(self::ROOT, null);
     }
 
-    public static function getWaitGroup(): WaitGroup
+    public static function setWaitGroup(?WaitGroup $waitGroup = null): WaitGroup
     {
-        return Context::getOrSet(self::WAIT_GROUP, fn () => new WaitGroup());
+        return Context::set(self::WAIT_GROUP, $waitGroup ?? new WaitGroup());
+    }
+
+    public static function getWaitGroup(): ?WaitGroup
+    {
+        return Context::get(self::WAIT_GROUP);
     }
 }

@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
+use Hyperf\Context\Context;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -35,15 +36,18 @@ class CoroutineAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('coroutine') || ! $parentSpan = TraceContext::getRoot()) {
+        if (! $this->switcher->isTracingEnable('coroutine') || ! $parent = TraceContext::getParent()) {
             return $proceedingJoinPoint->process();
         }
 
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
         $waitGroup = TraceContext::getWaitGroup();
-        $waitGroup->add();
+        $waitGroup?->add();
 
-        $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parentSpan, $waitGroup) {
+        $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent, $waitGroup) {
+            // Copy the WaitGroup to the current coroutine context
+            Context::copy(Co::pid(), [TraceContext::WAIT_GROUP]);
+
             $coContext = new SentrySpanContext();
             $coContext->setOp('coroutine.run');
             $coContext->setDescription('#' . Coroutine::id());
@@ -51,18 +55,18 @@ class CoroutineAspect extends AbstractAspect
             // Pre-activate the context to make sure that the current context is available
             $coContext->setEndTimestamp(microtime(true));
 
-            $coSpan = $parentSpan->startChild($coContext);
+            $coSpan = $parent->startChild($coContext);
             // Pre-activate the span to make sure that the current span is available
             $coSpan->finish();
 
             // Set current span as root span
-            TraceContext::setRoot($coSpan);
+            TraceContext::setParent($coSpan);
 
             defer(function () use ($coContext, $coSpan, $waitGroup) {
                 $coContext->setEndTimestamp(microtime(true));
                 $coSpan->finish();
-                TraceContext::clearRoot();
-                $waitGroup->done();
+                TraceContext::clearParent();
+                $waitGroup?->done();
             });
 
             $data = [

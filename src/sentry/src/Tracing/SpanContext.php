@@ -31,30 +31,30 @@ use Sentry\Tracing\SpanContext as SentrySpanContext;
  */
 class SpanContext
 {
-    protected ?Span $parentSpan;
+    protected ?Span $parent;
 
-    protected ?SentrySpanContext $spanContext = null;
+    protected ?SentrySpanContext $context = null;
 
     public function __construct(string $op, ?string $description = null, ?float $startTimestamp = null)
     {
-        $this->parentSpan = TraceContext::getRoot() ?? SentrySdk::getCurrentHub()->getSpan();
-        $this->spanContext = new SentrySpanContext();
-        $this->spanContext->setOp($op);
-        $this->spanContext->setDescription($description);
-        $this->spanContext->setStartTimestamp($startTimestamp ?? microtime(true));
+        $this->parent = TraceContext::getParent() ?? SentrySdk::getCurrentHub()->getSpan();
+        $this->context = new SentrySpanContext();
+        $this->context->setOp($op);
+        $this->context->setDescription($description);
+        $this->context->setStartTimestamp($startTimestamp ?? microtime(true));
     }
 
     public function __call($name, $arguments)
     {
-        $result = $this->spanContext?->{$name}(...$arguments);
+        $result = $this->context?->{$name}(...$arguments);
         return str_starts_with($name, 'set') ? $this : $result;
     }
 
     public function finish(?float $endTimestamp = null): void
     {
-        $this->spanContext->setEndTimestamp($endTimestamp ?? microtime(true));
-        $this->parentSpan?->startChild($this->spanContext);
-        $this->spanContext = null;
+        $this->context->setEndTimestamp($endTimestamp ?? microtime(true));
+        $this->parent?->startChild($this->context);
+        $this->context = null;
     }
 
     public static function create(string $op, ?string $description = null, ?float $startTimestamp = null): static

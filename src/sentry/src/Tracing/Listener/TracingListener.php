@@ -52,7 +52,6 @@ class TracingListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        TraceContext::getWaitGroup();
         $sentry = SentrySdk::getCurrentHub();
 
         match ($event::class) {
@@ -64,22 +63,15 @@ class TracingListener implements ListenerInterface
 
     private function startTransaction(ServerRequestInterface $request, HubInterface $sentry, string $server = 'http'): void
     {
-        // Try $_SERVER['REQUEST_TIME_FLOAT'] then LARAVEL_START and fallback to microtime(true) if neither are defined
         $requestStartTime = microtime(true);
-
+        $requestPath = $request->getUri()->getPath();
         $context = continueTrace(
             $request->getHeaderLine('sentry-trace', ''),
             $request->getHeaderLine('baggage', '')
         );
 
-        $requestPath = $request->getUri()->getPath();
-
         $context->setOp($server . '.server');
-        // $context->setDescription(sprintf(
-        //     'request: %s %s',
-        //     $request->getMethod(),
-        //     $requestPath
-        // ));
+        // $context->setDescription(sprintf('request: %s %s', $request->getMethod(), $requestPath));
         $context->setName(sprintf('request: %s %s', $request->getMethod(), $requestPath));
         $context->setSource(TransactionSource::url());
         $context->setStartTimestamp($requestStartTime);
@@ -97,22 +89,21 @@ class TracingListener implements ListenerInterface
         }
 
         TraceContext::setTransaction($transaction);
+        TraceContext::setWaitGroup();
 
         $sentry->setSpan($transaction);
 
-        $appContextStart = new SpanContext();
-        $appContextStart->setOp('request.received');
-        $appContextStart->setDescription(sprintf(
-            'request: %s %s',
-            $request->getMethod(),
-            $requestPath
-        ));
-        $appContextStart->setStartTimestamp(microtime(true));
+        $reqContext = new SpanContext();
+        $reqContext->setOp('request.received');
+        $reqContext->setDescription(
+            sprintf('request: %s %s', $request->getMethod(), $requestPath)
+        );
+        $reqContext->setStartTimestamp(microtime(true));
 
-        $appSpan = $transaction->startChild($appContextStart);
-        TraceContext::setRoot($appSpan);
+        $reqSpan = $transaction->startChild($reqContext);
+        TraceContext::setParent($reqSpan);
 
-        $sentry->setSpan($appSpan);
+        $sentry->setSpan($reqSpan);
     }
 
     /**
@@ -120,9 +111,7 @@ class TracingListener implements ListenerInterface
      */
     private function handleTransaction(object $event): void
     {
-        if ($appSpan = TraceContext::getRoot()) {
-            $appSpan->finish();
-        }
+        TraceContext::getParent()?->finish();
 
         /** @var ResponsePlusInterface|ResponseInterface $response */
         $response = $event->response;
@@ -165,6 +154,6 @@ class TracingListener implements ListenerInterface
         $transaction->finish();
 
         TraceContext::clearTransaction();
-        TraceContext::clearRoot();
+        TraceContext::clearParent();
     }
 }
