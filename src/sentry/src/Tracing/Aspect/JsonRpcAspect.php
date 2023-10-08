@@ -24,6 +24,9 @@ use Psr\Container\ContainerInterface;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
+use function Sentry\getBaggage;
+use function Sentry\getTraceparent;
+
 class JsonRpcAspect extends AbstractAspect
 {
     protected const CONTEXT = 'sentry.tracing.rpc.context';
@@ -58,10 +61,9 @@ class JsonRpcAspect extends AbstractAspect
 
             if ($this->container->has(Rpc\Context::class)) {
                 $rpcContext = $this->container->get(Rpc\Context::class);
-
                 $rpcContext->set(TraceContext::RPC_CARRIER, [
-                    'sentry-trace' => TraceContext::getTransaction()->toTraceparent(),
-                    'baggage' => TraceContext::getTransaction()->toBaggage(),
+                    'sentry-trace' => getTraceparent(),
+                    'baggage' => getBaggage(),
                 ]);
             }
 

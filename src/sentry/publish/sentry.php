@@ -40,7 +40,6 @@ return [
         'command' => env('SENTRY_ENABLE_COMMAND', true),
         'kafka' => env('SENTRY_ENABLE_KAFKA', true),
         'request' => env('SENTRY_ENABLE_REQUEST', true),
-        'tracing' => env('SENTRY_ENABLE_TRACING', true),
     ],
 
     'breadcrumbs' => [
@@ -74,4 +73,6 @@ return [
         'redis' => env('SENTRY_TRACING_REDIS', true),
         'sql_queries' => env('SENTRY_TRACING_SQL_QUERIES', true),
     ],
+
+    'tracing_wait_timeout' => (int) env('SENTRY_TRACING_TIMEOUT', 10),
 ];

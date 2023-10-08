@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\HttpServer\Event;
@@ -30,8 +31,11 @@ use function Sentry\continueTrace;
 
 class TracingListener implements ListenerInterface
 {
-    public function __construct(protected ContainerInterface $container, protected Switcher $switcher)
-    {
+    public function __construct(
+        protected ContainerInterface $container,
+        protected ConfigInterface $config,
+        protected Switcher $switcher
+    ) {
     }
 
     public function listen(): array
@@ -48,10 +52,6 @@ class TracingListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if (! $this->switcher->isEnable('tracing')) {
-            return;
-        }
-
         TraceContext::getWaitGroup();
         $sentry = SentrySdk::getCurrentHub();
 
@@ -116,11 +116,31 @@ class TracingListener implements ListenerInterface
     }
 
     /**
+     * @param Event\RequestHandled $event
+     */
+    private function handleTransaction(object $event): void
+    {
+        if ($appSpan = TraceContext::getRoot()) {
+            $appSpan->finish();
+        }
+
+        /** @var ResponsePlusInterface|ResponseInterface $response */
+        $response = $event->response;
+        $traceId = (string) TraceContext::getTransaction()?->getTraceId();
+
+        if (method_exists($response, 'addHeader')) {
+            $response->addHeader('sentry-trace', $traceId);
+        }
+    }
+
+    /**
      * @param RequestTerminated $event
      */
     private function finishTransaction(object $event): void
     {
-        TraceContext::getWaitGroup()->wait();
+        TraceContext::getWaitGroup()->wait(
+            (int) $this->config->get('sentry.tracing_wait_timeout', 10)
+        );
 
         $transaction = TraceContext::getTransaction();
 
@@ -146,23 +166,5 @@ class TracingListener implements ListenerInterface
 
         TraceContext::clearTransaction();
         TraceContext::clearRoot();
-    }
-
-    /**
-     * @param Event\RequestHandled $event
-     */
-    private function handleTransaction(object $event): void
-    {
-        if ($appSpan = TraceContext::getRoot()) {
-            $appSpan->finish();
-        }
-
-        /** @var ResponsePlusInterface|ResponseInterface $response */
-        $response = $event->response;
-        $traceId = (string) TraceContext::getTransaction()?->getTraceId();
-
-        if (method_exists($response, 'addHeader')) {
-            $response->addHeader('sentry-trace', $traceId);
-        }
     }
 }

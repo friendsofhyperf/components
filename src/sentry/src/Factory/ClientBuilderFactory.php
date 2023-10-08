@@ -27,6 +27,7 @@ class ClientBuilderFactory
         'integrations',
         'enable',
         'tracing',
+        'tracing_wait_timeout',
     ];
 
     public function __invoke(ContainerInterface $container)
