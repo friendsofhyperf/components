@@ -13,9 +13,6 @@ namespace FriendsOfHyperf\Sentry\Listener;
 
 use Hyperf\AsyncQueue\Event;
 use Sentry\SentrySdk;
-use Sentry\State\HubInterface;
-
-use function Hyperf\Support\make;
 
 class AsyncQueueExceptionListener extends CaptureExceptionListener
 {
@@ -38,7 +35,7 @@ class AsyncQueueExceptionListener extends CaptureExceptionListener
 
         match ($event::class) {
             Event\FailedHandle::class => $this->captureException($event->getThrowable()),
-            default => SentrySdk::setCurrentHub(make(HubInterface::class)),
+            default => SentrySdk::getCurrentHub(),
         };
     }
 }

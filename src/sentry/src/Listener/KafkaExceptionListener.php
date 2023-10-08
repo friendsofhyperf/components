@@ -13,9 +13,6 @@ namespace FriendsOfHyperf\Sentry\Listener;
 
 use Hyperf\Kafka\Event;
 use Sentry\SentrySdk;
-use Sentry\State\HubInterface;
-
-use function Hyperf\Support\make;
 
 class KafkaExceptionListener extends CaptureExceptionListener
 {
@@ -38,7 +35,7 @@ class KafkaExceptionListener extends CaptureExceptionListener
 
         match ($event::class) {
             Event\FailToConsume::class => $this->captureException($event->getThrowable()),
-            default => SentrySdk::setCurrentHub(make(HubInterface::class)),
+            default => SentrySdk::getCurrentHub(),
         };
     }
 }
