@@ -18,11 +18,11 @@ use Sentry\Tracing\Transaction;
 
 class TraceContext
 {
-    public const ROOT = 'sentry.tracing.root';
+    public const PARENT = 'sentry.tracing.parent';
 
     public const TRANSACTION = 'sentry.tracing.transaction';
 
-    public const RPC_CARRIER = 'sentry.tracing.rpc.carrier';
+    public const RPC_CARRIER = 'sentry.tracing.rpc_carrier';
 
     public const WAIT_GROUP = 'sentry.tracing.wait_group';
 
@@ -43,17 +43,17 @@ class TraceContext
 
     public static function setParent(Span $context): Span
     {
-        return Context::set(self::ROOT, $context);
+        return Context::set(self::PARENT, $context);
     }
 
     public static function getParent(): ?Span
     {
-        return Context::get(self::ROOT);
+        return Context::get(self::PARENT);
     }
 
     public static function clearParent(): void
     {
-        Context::set(self::ROOT, null);
+        Context::set(self::PARENT, null);
     }
 
     public static function setWaitGroup(?WaitGroup $waitGroup = null): WaitGroup
