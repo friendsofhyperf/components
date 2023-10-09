@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use Elasticsearch\Client;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanContext;
+use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -44,7 +45,7 @@ class ElasticserachAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('elasticserach')) {
+        if (! $this->switcher->isTracingEnable('elasticserach') || ! TraceContext::getSpan()) {
             return $proceedingJoinPoint->process();
         }
 

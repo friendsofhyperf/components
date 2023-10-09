@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanContext;
+use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Database\Events\TransactionBeginning;
@@ -48,7 +49,7 @@ class DbQueryListener implements ListenerInterface
      */
     protected function queryExecutedHandler(object $event): void
     {
-        if (! $this->switcher->isTracingEnable('sql_queries')) {
+        if (! $this->switcher->isTracingEnable('sql_queries') || ! TraceContext::getSpan()) {
             return;
         }
 

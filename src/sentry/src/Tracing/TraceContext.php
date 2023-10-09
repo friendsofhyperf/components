@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing;
 
 use Hyperf\Context\Context;
-use Hyperf\Coroutine\WaitGroup;
 use Sentry\Tracing\Span;
 use Sentry\Tracing\Transaction;
 
@@ -23,8 +22,6 @@ class TraceContext
     public const SPAN = 'sentry.tracing.span';
 
     public const TRANSACTION = 'sentry.tracing.transaction';
-
-    public const WAIT_GROUP = 'sentry.tracing.wait_group';
 
     public static function setTransaction(Transaction $transaction): Transaction
     {
@@ -54,15 +51,5 @@ class TraceContext
     public static function clearSpan(): void
     {
         Context::set(self::SPAN, null);
-    }
-
-    public static function setWaitGroup(?WaitGroup $waitGroup = null): WaitGroup
-    {
-        return Context::set(self::WAIT_GROUP, $waitGroup ?? new WaitGroup());
-    }
-
-    public static function getWaitGroup(): ?WaitGroup
-    {
-        return Context::get(self::WAIT_GROUP);
     }
 }

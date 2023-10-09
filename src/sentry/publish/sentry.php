@@ -73,6 +73,4 @@ return [
         'redis' => env('SENTRY_TRACING_REDIS', true),
         'sql_queries' => env('SENTRY_TRACING_SQL_QUERIES', true),
     ],
-
-    'tracing_wait_timeout' => (int) env('SENTRY_TRACING_TIMEOUT', 10),
 ];

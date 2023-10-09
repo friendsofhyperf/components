@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Middleware;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
-use Hyperf\Contract\ConfigInterface;
+use Hyperf\Rpc\Context as RpcContext;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -34,7 +34,6 @@ class TraceMiddleware implements MiddlewareInterface
 {
     public function __construct(
         protected ContainerInterface $container,
-        protected ConfigInterface $config,
         protected Switcher $switcher
     ) {
     }
@@ -83,11 +82,19 @@ class TraceMiddleware implements MiddlewareInterface
     {
         $startTimestamp = microtime(true);
         $path = $request->getUri()->getPath();
-        $context = continueTrace(
-            $request->getHeaderLine('sentry-trace', ''),
-            $request->getHeaderLine('baggage', '')
-        );
+        $sentryTrace = $request->getHeaderLine('sentry-trace', '');
+        $baggage = $request->getHeaderLine('baggage', '');
 
+        if ($this->container->has(RpcContext::class)) {
+            $rpcContext = $this->container->get(RpcContext::class);
+            $carrier = $rpcContext->get(TraceContext::RPC_CARRIER);
+            if (! empty($carrier['sentry-trace']) && ! empty($carrier['baggage'])) {
+                $sentryTrace = $carrier['sentry-trace'];
+                $baggage = $carrier['baggage'];
+            }
+        }
+
+        $context = continueTrace($sentryTrace, $baggage);
         $context->setOp($server . '.server');
         // $context->setDescription(sprintf('request: %s %s', $request->getMethod(), $requestPath));
         $context->setName(sprintf('request: %s %s', $request->getMethod(), $path));
@@ -107,7 +114,6 @@ class TraceMiddleware implements MiddlewareInterface
         }
 
         TraceContext::setTransaction($transaction);
-        TraceContext::setWaitGroup();
 
         $sentry->setSpan($transaction);
 
@@ -129,10 +135,6 @@ class TraceMiddleware implements MiddlewareInterface
         if (! $transaction = TraceContext::getTransaction()) {
             return;
         }
-
-        TraceContext::getWaitGroup()?->wait(
-            (int) $this->config->get('sentry.tracing_wait_timeout', 10)
-        );
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
         $transaction->finish();

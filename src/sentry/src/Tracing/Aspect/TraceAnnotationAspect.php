@@ -17,6 +17,7 @@ use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Sentry\SentrySdk;
 use Sentry\Tracing\SpanContext as SentrySpanContext;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
@@ -41,11 +42,13 @@ class TraceAnnotationAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $arguments = $proceedingJoinPoint->arguments['keys'];
         $data = [
             'coroutine.id' => Coroutine::id(),
-            'arguments' => $arguments,
         ];
+
+        if ($annotation->arguments) {
+            $data['arguments'] = $proceedingJoinPoint->arguments['keys'];
+        }
 
         $anContext = new SentrySpanContext();
         $anContext->setOp($annotation->op ?? 'method');
@@ -59,7 +62,9 @@ class TraceAnnotationAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
-            // $data['result'] = $result;
+            if ($annotation->result) {
+                $data['result'] = $result;
+            }
             $anSpan->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {
             $anSpan->setStatus(SpanStatus::internalError());
@@ -75,7 +80,9 @@ class TraceAnnotationAspect extends AbstractAspect
         } finally {
             $anContext->setData($data);
             $anContext->setEndTimestamp(microtime(true));
+            SentrySdk::getCurrentHub()->setSpan($anSpan);
             $anSpan->finish(microtime(true));
+            SentrySdk::getCurrentHub()->setSpan($parent);
 
             // Reset root span
             TraceContext::setSpan($parent);

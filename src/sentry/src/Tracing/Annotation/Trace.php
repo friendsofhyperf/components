@@ -20,8 +20,8 @@ class Trace extends AbstractAnnotation
     public function __construct(
         public ?string $op = null,
         public ?string $description = null,
-        public bool $recordArguments = true,
-        public bool $recordResult = true,
+        public bool $arguments = true,
+        public bool $result = true,
     ) {
     }
 }

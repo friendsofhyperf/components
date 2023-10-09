@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanContext;
+use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -32,7 +33,7 @@ class RedisAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('redis')) {
+        if (! $this->switcher->isTracingEnable('redis') || ! TraceContext::getSpan()) {
             return $proceedingJoinPoint->process();
         }
 
@@ -49,7 +50,7 @@ class RedisAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
-            // $data['result'] = $result;
+            $data['result'] = $result;
             $context->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {
             $context->setStatus(SpanStatus::internalError());
