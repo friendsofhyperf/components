@@ -37,7 +37,7 @@ class SpanContext
 
     public function __construct(string $op, ?string $description = null, ?float $startTimestamp = null)
     {
-        $this->parent = TraceContext::getParent() ?? SentrySdk::getCurrentHub()->getSpan();
+        $this->parent = TraceContext::getSpan() ?? SentrySdk::getCurrentHub()->getSpan();
         $this->context = new SentrySpanContext();
         $this->context->setOp($op);
         $this->context->setDescription($description);

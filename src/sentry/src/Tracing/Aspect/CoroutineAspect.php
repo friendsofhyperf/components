@@ -15,9 +15,9 @@ use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Context\Context;
 use Hyperf\Coroutine\Coroutine;
+use Hyperf\Coroutine\Coroutine as Co;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Hyperf\Engine\Coroutine as Co;
 use Sentry\Tracing\SpanContext as SentrySpanContext;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
@@ -36,7 +36,7 @@ class CoroutineAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('coroutine') || ! $parent = TraceContext::getParent()) {
+        if (! $this->switcher->isTracingEnable('coroutine') || ! $parent = TraceContext::getSpan()) {
             return $proceedingJoinPoint->process();
         }
 
@@ -45,9 +45,6 @@ class CoroutineAspect extends AbstractAspect
         $waitGroup?->add();
 
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent, $waitGroup) {
-            // Copy the WaitGroup to the current coroutine context
-            Context::copy(Co::pid(), [TraceContext::WAIT_GROUP]);
-
             $coContext = new SentrySpanContext();
             $coContext->setOp('coroutine.run');
             $coContext->setDescription('#' . Coroutine::id());
@@ -60,12 +57,12 @@ class CoroutineAspect extends AbstractAspect
             $coSpan->finish();
 
             // Set current span as root span
-            TraceContext::setParent($coSpan);
+            TraceContext::setSpan($coSpan);
 
             defer(function () use ($coContext, $coSpan, $waitGroup) {
                 $coContext->setEndTimestamp(microtime(true));
                 $coSpan->finish();
-                TraceContext::clearParent();
+                TraceContext::clearSpan();
                 $waitGroup?->done();
             });
 
