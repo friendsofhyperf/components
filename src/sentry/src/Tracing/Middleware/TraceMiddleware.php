@@ -97,8 +97,8 @@ class TraceMiddleware implements MiddlewareInterface
 
         $context = continueTrace($sentryTrace, $baggage);
         $context->setName($server . '.server');
-        $context->setOp('request');
-        $context->setDescription(sprintf('request: %s %s', $request->getMethod(), $path));
+        $context->setOp(sprintf('request: %s %s', $request->getMethod(), $path));
+        // $context->setDescription(sprintf('request: %s %s', $request->getMethod(), $path));
         $context->setSource(TransactionSource::url());
         $context->setStartTimestamp($startTimestamp);
 
@@ -120,7 +120,7 @@ class TraceMiddleware implements MiddlewareInterface
 
         $reqContext = new SpanContext();
         $reqContext->setOp('request.received');
-        $reqContext->setDescription('#' . Coroutine::id());
+        // $reqContext->setDescription('#' . Coroutine::id());
         $reqContext->setStartTimestamp(microtime(true));
 
         $reqSpan = $transaction->startChild($reqContext);
