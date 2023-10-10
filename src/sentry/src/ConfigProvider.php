@@ -29,7 +29,7 @@ class ConfigProvider
                 Tracing\Aspect\DbAspect::class,
                 Tracing\Aspect\ElasticserachAspect::class,
                 Tracing\Aspect\HttpClientAspect::class,
-                Tracing\Aspect\JsonRpcAspect::class,
+                Tracing\Aspect\RpcAspect::class,
                 Tracing\Aspect\RedisAspect::class,
                 Tracing\Aspect\TraceAnnotationAspect::class,
             ],
