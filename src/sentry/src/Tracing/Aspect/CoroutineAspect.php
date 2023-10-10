@@ -42,6 +42,7 @@ class CoroutineAspect extends AbstractAspect
         }
 
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
+        $parent = TraceContext::getSpan();
 
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent) {
             $sentryTrace = $parent->toTraceparent();
