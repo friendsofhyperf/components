@@ -24,7 +24,7 @@ use Psr\Container\ContainerInterface;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
-class JsonRpcAspect extends AbstractAspect
+class RpcAspect extends AbstractAspect
 {
     protected const CONTEXT = 'sentry.tracing.rpc.context';
 
