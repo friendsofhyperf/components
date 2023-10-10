@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ValidatedDTO;
 
+use FriendsOfHyperf\ValidatedDTO\Attributes\Cast;
 use FriendsOfHyperf\ValidatedDTO\Attributes\DefaultValue;
 use FriendsOfHyperf\ValidatedDTO\Attributes\Map;
 use FriendsOfHyperf\ValidatedDTO\Attributes\Rules;
@@ -49,6 +50,8 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     protected array $dtoMessages = [];
 
     protected array $dtoDefaults = [];
+
+    protected array $dtoCasts = [];
 
     protected array $dtoMapData = [];
 
@@ -203,7 +206,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     {
         $this->validatedData = $this->validatedData();
         /** @var array<Castable> $casts */
-        $casts = $this->casts();
+        $casts = $this->buildCasts();
 
         foreach ($this->validatedData as $key => $value) {
             $this->{$key} = $value;
@@ -217,7 +220,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         foreach ($defaults as $key => $value) {
             if (
                 ! property_exists($this, $key)
-                || empty($this->{$key})
+                || ! isset($this->{$key})
             ) {
                 if (! array_key_exists($key, $casts)) {
                     if ($this->requireCasting) {
@@ -266,7 +269,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         $result = [];
 
         /** @var array<Castable> $casts */
-        $casts = $this->casts();
+        $casts = $this->buildCasts();
 
         foreach ($this->data as $key => $value) {
             if (in_array($key, $acceptedKeys)) {
@@ -315,6 +318,21 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         return is_null($value);
     }
 
+    protected function buildCasts(): array
+    {
+        $casts = [];
+        foreach ($this->dtoCasts as $property => $cast) {
+            $casts[$property] = is_null($cast->param)
+                ? new $cast->type()
+                : new $cast->type(new $cast->param());
+        }
+
+        return [
+            ...$this->casts(),
+            ...$casts,
+        ];
+    }
+
     private function buildAttributesData(): void
     {
         $publicProperties = $this->getPublicProperties();
@@ -335,6 +353,12 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         foreach ($defaultProperties as $property => $attribute) {
             $attributeInstance = $attribute->newInstance();
             $this->dtoDefaults[$property] = $attributeInstance->value;
+        }
+
+        $castProperties = $this->getPropertiesForAttribute($publicProperties, Cast::class);
+        foreach ($castProperties as $property => $attribute) {
+            $attributeInstance = $attribute->newInstance();
+            $this->dtoCasts[$property] = $attributeInstance;
         }
 
         $mapDataProperties = $this->getPropertiesForAttribute($publicProperties, Map::class);
@@ -540,6 +564,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             'dtoRules',
             'dtoMessages',
             'dtoDefaults',
+            'dtoCasts',
             'dtoMapData',
             'dtoMapTransform',
         ]);

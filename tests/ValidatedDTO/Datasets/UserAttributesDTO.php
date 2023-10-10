@@ -11,9 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tests\ValidatedDTO\Datasets;
 
+use FriendsOfHyperf\ValidatedDTO\Attributes\Cast;
 use FriendsOfHyperf\ValidatedDTO\Attributes\DefaultValue;
 use FriendsOfHyperf\ValidatedDTO\Attributes\Map;
 use FriendsOfHyperf\ValidatedDTO\Attributes\Rules;
+use FriendsOfHyperf\ValidatedDTO\Casting\ArrayCast;
+use FriendsOfHyperf\ValidatedDTO\Casting\BooleanCast;
+use FriendsOfHyperf\ValidatedDTO\Casting\FloatCast;
+use FriendsOfHyperf\ValidatedDTO\Casting\IntegerCast;
 use FriendsOfHyperf\ValidatedDTO\Concerns\EmptyCasts;
 use FriendsOfHyperf\ValidatedDTO\Concerns\EmptyDefaults;
 use FriendsOfHyperf\ValidatedDTO\Concerns\EmptyRules;
@@ -34,5 +39,14 @@ class UserAttributesDTO extends ValidatedDTO
 
     #[Rules(['sometimes', 'boolean'])]
     #[DefaultValue(true)]
+    #[Cast(BooleanCast::class)]
     public bool $active;
+
+    #[Rules(['sometimes', 'integer'])]
+    #[Cast(IntegerCast::class)]
+    public ?int $age;
+
+    #[Rules(['sometimes', 'array'])]
+    #[Cast(type: ArrayCast::class, param: FloatCast::class)]
+    public ?array $grades;
 }

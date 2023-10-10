@@ -90,7 +90,7 @@ abstract class ValidatedDTO extends SimpleDTO
         $result = [];
 
         /** @var array<Castable> $casts */
-        $casts = $this->casts();
+        $casts = $this->buildCasts();
 
         foreach ($this->data as $key => $value) {
             if (in_array($key, $acceptedKeys)) {
