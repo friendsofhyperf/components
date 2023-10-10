@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Middleware;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Rpc\Context as RpcContext;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
@@ -95,9 +96,9 @@ class TraceMiddleware implements MiddlewareInterface
         }
 
         $context = continueTrace($sentryTrace, $baggage);
-        $context->setOp($server . '.server');
-        // $context->setDescription(sprintf('request: %s %s', $request->getMethod(), $requestPath));
-        $context->setName(sprintf('request: %s %s', $request->getMethod(), $path));
+        $context->setName($server . '.server');
+        $context->setOp('request');
+        $context->setDescription(sprintf('request: %s %s', $request->getMethod(), $path));
         $context->setSource(TransactionSource::url());
         $context->setStartTimestamp($startTimestamp);
 
@@ -119,9 +120,7 @@ class TraceMiddleware implements MiddlewareInterface
 
         $reqContext = new SpanContext();
         $reqContext->setOp('request.received');
-        $reqContext->setDescription(
-            sprintf('request: %s %s', $request->getMethod(), $path)
-        );
+        $reqContext->setDescription('#' . Coroutine::id());
         $reqContext->setStartTimestamp(microtime(true));
 
         $reqSpan = $transaction->startChild($reqContext);

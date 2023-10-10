@@ -17,14 +17,17 @@ use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Hyperf\Redis\RedisConnection;
+use Hyperf\Redis\Redis;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
+/**
+ * @property string $poolName
+ */
 class RedisAspect extends AbstractAspect
 {
     public array $classes = [
-        RedisConnection::class . '::__call',
+        Redis::class . '::__call',
     ];
 
     public function __construct(protected Switcher $switcher)
@@ -40,6 +43,7 @@ class RedisAspect extends AbstractAspect
         $arguments = $proceedingJoinPoint->arguments['keys'];
         $data = [
             'coroutine.id' => Coroutine::id(),
+            'pool' => (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance()),
             'arguments' => $arguments['arguments'],
         ];
 
