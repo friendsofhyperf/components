@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry;
 
+use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Contract\ConfigInterface;
 use Throwable;
 
@@ -32,6 +33,10 @@ class Switcher
 
     public function isTracingEnable(string $key): bool
     {
+        if (! TraceContext::getSpan()) {
+            return false;
+        }
+
         return (bool) $this->config->get('sentry.tracing.' . $key, false);
     }
 

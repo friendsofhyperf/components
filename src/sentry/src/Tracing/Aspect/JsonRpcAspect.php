@@ -41,13 +41,15 @@ class JsonRpcAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('rpc') || ! $parent = TraceContext::getSpan()) {
+        if (! $this->switcher->isTracingEnable('rpc')) {
             return $proceedingJoinPoint->process();
         }
 
+        $parent = TraceContext::getSpan();
+
         if ($proceedingJoinPoint->methodName === '__generateRpcPath') {
             $path = $proceedingJoinPoint->process();
-            $key = "JsonRPC send [{$path}]";
+            $key = "RPC send [{$path}]";
 
             $context = SpanContext::create($key);
             Context::set(static::CONTEXT, $context);
