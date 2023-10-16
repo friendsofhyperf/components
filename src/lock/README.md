@@ -8,7 +8,7 @@ The lock component for Hyperf. [中文说明](README_CN.md)
 
 ## Installation
 
-- Request
+- Require
 
 ```bash
 composer require friendsofhyperf/lock
