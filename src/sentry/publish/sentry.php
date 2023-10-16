@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types=1);
+declare(strict.types=1);
 /**
  * This file is part of friendsofhyperf/components.
  *
@@ -65,12 +65,24 @@ return [
 
     // Performance monitoring specific configuration
     'tracing' => [
-        'coroutine' => env('SENTRY_TRACING_COROUTINE', true),
-        'db' => env('SENTRY_TRACING_DB', true),
-        'elasticsearch' => env('SENTRY_TRACING_ELASTICSEARCH', true),
-        'guzzle' => env('SENTRY_TRACING_GUZZLE', true),
-        'rpc' => env('SENTRY_TRACING_RPC', true),
-        'redis' => env('SENTRY_TRACING_REDIS', true),
-        'sql_queries' => env('SENTRY_TRACING_SQL_QUERIES', true),
+        'enable' => [
+            'coroutine' => env('SENTRY_TRACING_ENABLE_COROUTINE', true),
+            'db' => env('SENTRY_TRACING_ENABLE_DB', true),
+            'elasticsearch' => env('SENTRY_TRACING_ENABLE_ELASTICSEARCH', true),
+            'guzzle' => env('SENTRY_TRACING_ENABLE_GUZZLE', true),
+            'rpc' => env('SENTRY_TRACING_ENABLE_RPC', true),
+            'redis' => env('SENTRY_TRACING_ENABLE_REDIS', true),
+            'sql_queries' => env('SENTRY_TRACING_ENABLE_SQL_QUERIES', true),
+        ],
+        'tags' => [
+            'coroutine' => [
+                'id' => 'coroutine.id',
+            ],
+            'rpc' => [
+                'coroutine.id' => 'coroutine.id',
+                'path' => 'rpc.path',
+                'arguments' => 'rpc.arguments',
+            ],
+        ],
     ],
 ];

@@ -37,7 +37,7 @@ class Switcher
             return false;
         }
 
-        return (bool) $this->config->get('sentry.tracing.' . $key, false);
+        return (bool) $this->config->get('sentry.tracing.enable.' . $key, false);
     }
 
     public function isExceptionIgnored(string|Throwable $exception): bool
