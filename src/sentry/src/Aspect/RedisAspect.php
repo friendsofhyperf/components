@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Aspect;
 
 use FriendsOfHyperf\Sentry\Integration;
-use Hyperf\Contract\ConfigInterface;
+use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Redis\RedisConnection;
@@ -26,11 +26,8 @@ class RedisAspect extends AbstractAspect
         RedisConnection::class . '::__call',
     ];
 
-    protected $config;
-
-    public function __construct(ConfigInterface $config)
+    public function __construct(protected Switcher $switcher)
     {
-        $this->config = $config;
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -39,7 +36,7 @@ class RedisAspect extends AbstractAspect
         $startTime = microtime(true);
 
         return tap($proceedingJoinPoint->process(), function ($result) use ($arguments, $startTime) {
-            if (! $this->config->get('sentry.breadcrumbs.redis', false)) {
+            if (! $this->switcher->isBreadcrumbEnable('redis')) {
                 return;
             }
 

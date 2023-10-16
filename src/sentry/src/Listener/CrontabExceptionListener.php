@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Listener;
 
+use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Crontab\Event;
 use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
@@ -19,6 +20,10 @@ use function Hyperf\Support\make;
 
 class CrontabExceptionListener extends CaptureExceptionListener
 {
+    public function __construct(protected Switcher $switcher)
+    {
+    }
+
     public function listen(): array
     {
         return [
@@ -32,7 +37,7 @@ class CrontabExceptionListener extends CaptureExceptionListener
      */
     public function process(object $event): void
     {
-        if (! $this->isEnable('crontab')) {
+        if (! $this->switcher->isEnable('crontab')) {
             return;
         }
 

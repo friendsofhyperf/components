@@ -29,7 +29,7 @@ class CommandExceptionListener extends CaptureExceptionListener
      */
     public function process(object $event): void
     {
-        if (! $this->isEnable('command')) {
+        if (! $this->switcher->isEnable('command')) {
             return;
         }
 

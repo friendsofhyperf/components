@@ -29,7 +29,7 @@ class AsyncQueueExceptionListener extends CaptureExceptionListener
      */
     public function process(object $event): void
     {
-        if (! $this->isEnable('async_queue')) {
+        if (! $this->switcher->isEnable('async_queue')) {
             return;
         }
 
