@@ -78,10 +78,42 @@ return [
             'coroutine' => [
                 'id' => 'coroutine.id',
             ],
+            'db' => [
+                'coroutine.id' => 'coroutine.id',
+                'query' => 'db.query',
+                // 'result' => 'db.result',
+            ],
+            'elasticsearch' => [
+                'coroutine.id' => 'coroutine.id',
+                'arguments' => 'elasticsearch.arguments',
+                // 'result' => 'elasticsearch.result',
+            ],
+            'guzzle' => [
+                'coroutine.id' => 'coroutine.id',
+                'http.method' => 'http.method',
+                'http.uri' => 'http.uri',
+                'guzzle.config' => 'guzzle.config',
+                'request.options' => 'request.options',
+                'response.status' => 'response.status',
+                'response.reason' => 'response.reason',
+                'response.headers' => 'response.headers',
+            ],
+            'redis' => [
+                'coroutine.id' => 'coroutine.id',
+                'arguments' => 'arguments',
+                'pool' => 'pool',
+                // 'result' => 'redis.result',
+            ],
             'rpc' => [
                 'coroutine.id' => 'coroutine.id',
                 'path' => 'rpc.path',
                 'arguments' => 'rpc.arguments',
+                // 'result' => 'rpc.result',
+            ],
+            'annotation' => [
+                'coroutine.id' => 'coroutine.id',
+                'arguments' => 'arguments',
+                // 'result' => 'result',
             ],
         ],
     ],
