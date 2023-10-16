@@ -41,7 +41,7 @@ class SentrySdk
      */
     public static function init(): HubInterface
     {
-        return tap(new Hub(), fn ($hub) => Context::set(__CLASS__, $hub));
+        return tap(make(HubInterface::class), fn ($hub) => Context::set(__CLASS__, $hub));
     }
 
     /**
