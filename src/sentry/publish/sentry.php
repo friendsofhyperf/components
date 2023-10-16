@@ -62,4 +62,27 @@ return [
     'ignore_transactions' => [
         'GET /health',
     ],
+
+    // Performance monitoring specific configuration
+    'tracing' => [
+        'enable' => [
+            'coroutine' => env('SENTRY_TRACING_ENABLE_COROUTINE', true),
+            'db' => env('SENTRY_TRACING_ENABLE_DB', true),
+            'elasticsearch' => env('SENTRY_TRACING_ENABLE_ELASTICSEARCH', true),
+            'guzzle' => env('SENTRY_TRACING_ENABLE_GUZZLE', true),
+            'rpc' => env('SENTRY_TRACING_ENABLE_RPC', true),
+            'redis' => env('SENTRY_TRACING_ENABLE_REDIS', true),
+            'sql_queries' => env('SENTRY_TRACING_ENABLE_SQL_QUERIES', true),
+        ],
+        'tags' => [
+            'coroutine' => [
+                'id' => 'coroutine.id',
+            ],
+            'rpc' => [
+                'coroutine.id' => 'coroutine.id',
+                'path' => 'rpc.path',
+                'arguments' => 'rpc.arguments',
+            ],
+        ],
+    ],
 ];

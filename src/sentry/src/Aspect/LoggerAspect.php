@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Aspect;
 
 use FriendsOfHyperf\Sentry\Integration;
-use Hyperf\Contract\ConfigInterface;
+use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Monolog\DateTimeImmutable;
@@ -29,14 +29,14 @@ class LoggerAspect extends AbstractAspect
         Logger::class . '::addRecord',
     ];
 
-    public function __construct(protected ConfigInterface $config)
+    public function __construct(protected Switcher $switcher)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (! $this->config->get('sentry.breadcrumbs.logs', false)) {
+            if (! $this->switcher->isBreadcrumbEnable('logs')) {
                 return;
             }
 

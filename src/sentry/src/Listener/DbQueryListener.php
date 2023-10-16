@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Listener;
 
 use FriendsOfHyperf\Sentry\Integration;
-use Hyperf\Contract\ConfigInterface;
+use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Database\Events\TransactionBeginning;
 use Hyperf\Database\Events\TransactionCommitted;
@@ -22,7 +22,7 @@ use Sentry\Breadcrumb;
 
 class DbQueryListener implements ListenerInterface
 {
-    public function __construct(protected ConfigInterface $config)
+    public function __construct(protected Switcher $switcher)
     {
     }
 
@@ -54,7 +54,7 @@ class DbQueryListener implements ListenerInterface
      */
     protected function queryExecutedHandler(object $event): void
     {
-        if (! $this->config->get('sentry.breadcrumbs.sql_queries', false)) {
+        if (! $this->switcher->isBreadcrumbEnable('sql_queries')) {
             return;
         }
 
@@ -64,7 +64,7 @@ class DbQueryListener implements ListenerInterface
             $data['executionTimeMs'] = $event->time;
         }
 
-        if ($this->config->get('sentry.breadcrumbs.sql_bindings', false)) {
+        if ($this->switcher->isBreadcrumbEnable('sql_bindings')) {
             $data['bindings'] = $event->bindings;
         }
 
@@ -82,7 +82,7 @@ class DbQueryListener implements ListenerInterface
      */
     protected function transactionHandler(object $event): void
     {
-        if (! $this->config->get('sentry.breadcrumbs.sql_transaction', false)) {
+        if (! $this->switcher->isBreadcrumbEnable('sql_transaction', false)) {
             return;
         }
 

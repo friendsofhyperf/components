@@ -29,7 +29,7 @@ class KafkaExceptionListener extends CaptureExceptionListener
      */
     public function process(object $event): void
     {
-        if (! $this->isEnable('kafka')) {
+        if (! $this->switcher->isEnable('kafka')) {
             return;
         }
 

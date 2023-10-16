@@ -25,6 +25,13 @@ class ConfigProvider
                 Aspect\RedisAspect::class,
                 Aspect\SingletonAspect::class,
                 Aspect\SentryHttpClientFactoryAspect::class,
+                Tracing\Aspect\CoroutineAspect::class,
+                Tracing\Aspect\DbAspect::class,
+                Tracing\Aspect\ElasticserachAspect::class,
+                Tracing\Aspect\HttpClientAspect::class,
+                Tracing\Aspect\RpcAspect::class,
+                Tracing\Aspect\RedisAspect::class,
+                Tracing\Aspect\TraceAnnotationAspect::class,
             ],
             'commands' => [
                 Command\AboutCommand::class,
@@ -42,6 +49,7 @@ class ConfigProvider
                 Listener\DbQueryListener::class,
                 Listener\KafkaExceptionListener::class,
                 Listener\RequestExceptionListener::class,
+                Tracing\Listener\DbQueryListener::class,
             ],
             'annotations' => [
                 'scan' => [

@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Aspect;
 
 use FriendsOfHyperf\Sentry\Integration;
+use FriendsOfHyperf\Sentry\Switcher;
 use GuzzleHttp\Client;
-use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Http\Message\ResponseInterface;
@@ -21,6 +21,7 @@ use Sentry\Breadcrumb;
 
 /**
  * @method array getConfig
+ * @property array $config
  */
 class GuzzleHttpClientAspect extends AbstractAspect
 {
@@ -29,13 +30,13 @@ class GuzzleHttpClientAspect extends AbstractAspect
         Client::class . '::requestAsync',
     ];
 
-    public function __construct(protected ConfigInterface $config)
+    public function __construct(protected Switcher $switcher)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->config->get('sentry.breadcrumbs.guzzle', false)) {
+        if (! $this->switcher->isBreadcrumbEnable('guzzle')) {
             return $proceedingJoinPoint->process();
         }
 
