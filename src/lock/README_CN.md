@@ -2,21 +2,21 @@
 
 Hyperf 原子锁组件。[English Document](README.md)
 
-## Installation
+## 安装
 
-- Request
+- 安装依赖
 
 ```bash
 composer require friendsofhyperf/lock
 ```
 
-- Publish
+- 发布配置
 
 ```bash
 php bin/hyperf.php vendor:publish friendsofhyperf/lock -i config
 ```
 
-## Usage
+## 使用
 
 你可以使用 `lock()` 方法来创建和管理锁：
 
