@@ -11,12 +11,16 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ValidatedDTO;
 
+use BackedEnum;
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use FriendsOfHyperf\ValidatedDTO\Attributes\Cast;
 use FriendsOfHyperf\ValidatedDTO\Attributes\DefaultValue;
 use FriendsOfHyperf\ValidatedDTO\Attributes\Map;
 use FriendsOfHyperf\ValidatedDTO\Attributes\Rules;
 use FriendsOfHyperf\ValidatedDTO\Casting\ArrayCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\Castable;
+use FriendsOfHyperf\ValidatedDTO\Casting\EnumCast;
 use FriendsOfHyperf\ValidatedDTO\Concerns\DataResolver;
 use FriendsOfHyperf\ValidatedDTO\Concerns\DataTransformer;
 use FriendsOfHyperf\ValidatedDTO\Contract\BaseDTO;
@@ -31,6 +35,7 @@ use Hyperf\Database\Model\Model;
 use Hyperf\Validation\ValidationException;
 use ReflectionClass;
 use ReflectionProperty;
+use UnitEnum;
 
 abstract class SimpleDTO implements BaseDTO, CastsAttributes
 {
@@ -322,9 +327,17 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     {
         $casts = [];
         foreach ($this->dtoCasts as $property => $cast) {
-            $casts[$property] = is_null($cast->param)
-                ? new $cast->type()
-                : new $cast->type(new $cast->param());
+            if (is_null($cast->param)) {
+                $casts[$property] = new $cast->type();
+
+                continue;
+            }
+
+            $param = $cast->type === EnumCast::class
+                ? $cast->param
+                : new $cast->param();
+
+            $casts[$property] = new $cast->type($param);
         }
 
         return [
@@ -481,10 +494,13 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             || is_object($value);
     }
 
-    private function formatArrayableValue(mixed $value): array
+    private function formatArrayableValue(mixed $value): array|int|string
     {
         return match (true) {
             is_array($value) => $value,
+            $value instanceof BackedEnum => $value->value,
+            $value instanceof UnitEnum => $value->name,
+            $value instanceof Carbon || $value instanceof CarbonImmutable => $value->toISOString(),
             $value instanceof Collection => $this->transformCollectionToArray($value),
             $value instanceof Model => $this->transformModelToArray($value),
             $value instanceof SimpleDTO => $this->transformDTOToArray($value),
