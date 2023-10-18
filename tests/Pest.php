@@ -34,7 +34,8 @@ uses()->group('validated-dto')
         $this->mock(ValidatorFactoryInterface::class, function ($mock) {
             $mock->shouldReceive('make')->andReturn(m::mock(ValidatorInterface::class, function ($mock) {
                 $mock->shouldReceive('fails')->andReturn(false)
-                    ->shouldReceive('passes')->andReturn(true);
+                    ->shouldReceive('passes')->andReturn(true)
+                    ->shouldReceive('after')->andReturn(null);
             }));
         });
 

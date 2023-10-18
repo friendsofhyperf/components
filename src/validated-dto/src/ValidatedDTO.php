@@ -16,6 +16,7 @@ use FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException;
 use FriendsOfHyperf\ValidatedDTO\Exception\MissingCastTypeException;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\ApplicationContext;
+use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Hyperf\Validation\ValidationException;
 use InvalidArgumentException;
@@ -41,6 +42,11 @@ abstract class ValidatedDTO extends SimpleDTO
     public function attributes(): array
     {
         return [];
+    }
+
+    protected function after(ValidatorInterface $validator): void
+    {
+        // Do nothing
     }
 
     protected function scenes(): array
@@ -131,6 +137,8 @@ abstract class ValidatedDTO extends SimpleDTO
                 $this->messagesList(),
                 $this->attributes()
             );
+
+        $this->validator->after(fn ($validator) => $this->after($validator));
 
         return ! $this->validator->fails();
     }
