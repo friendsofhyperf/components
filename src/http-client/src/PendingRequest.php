@@ -939,7 +939,8 @@ class PendingRequest
     public function buildHandlerStack()
     {
         if (
-            extension_loaded('swoole')
+            ! $this->handler
+            && extension_loaded('swoole')
             && Coroutine::inCoroutine()
             && (
                 ! defined('SWOOLE_HOOK_NATIVE_CURL') // swoole < 4.6.0
