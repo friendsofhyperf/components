@@ -16,6 +16,7 @@ use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\MapBeforeExportDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\MapBeforeValidationDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\MapDataDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\MappedNameDTO;
+use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\NameAfterDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\NameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\NullableDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\User;
@@ -67,6 +68,13 @@ it('instantiates a ValidatedDTO with nullable and optional properties', function
         ->and($dto->address)
         ->toBeNull();
 });
+
+it('handles the after hook when instantiating a ValidatedDTO')
+    ->expect(fn () => new NameAfterDTO([
+        'first_name' => $this->subject_name,
+        'last_name' => $this->subject_name,
+    ]))
+    ->throws(ValidationException::class);
 
 it('returns null when trying to access a property that does not exist', function () {
     $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
