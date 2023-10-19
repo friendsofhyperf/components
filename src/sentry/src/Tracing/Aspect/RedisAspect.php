@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanContext;
+use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -29,8 +30,10 @@ class RedisAspect extends AbstractAspect
         Redis::class . '::__call',
     ];
 
-    public function __construct(protected Switcher $switcher)
-    {
+    public function __construct(
+        protected Switcher $switcher,
+        protected TagManager $tagManager
+    ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -40,11 +43,17 @@ class RedisAspect extends AbstractAspect
         }
 
         $arguments = $proceedingJoinPoint->arguments['keys'];
-        $data = [
-            'coroutine.id' => Coroutine::id(),
-            'pool' => (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance()),
-            'arguments' => $arguments['arguments'],
-        ];
+        $data = [];
+
+        if ($this->tagManager->has('coroutine.id')) {
+            $data[$this->tagManager->get('coroutine.id')] = Coroutine::id();
+        }
+        if ($this->tagManager->has('pool')) {
+            $data[$this->tagManager->get('pool')] = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
+        }
+        if ($this->tagManager->has('redis.arguments')) {
+            $data[$this->tagManager->get('redis.arguments')] = $arguments['arguments'];
+        }
 
         $context = SpanContext::create(
             sprintf('redis.%s', $arguments['name']),
@@ -53,7 +62,9 @@ class RedisAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
-            $data['result'] = $result;
+            if ($this->tagManager->has('redis.result')) {
+                $data[$this->tagManager->get('redis.result')] = $result;
+            }
             $context->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {
             $context->setStatus(SpanStatus::internalError());

@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanContext;
+use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Context\Context;
 use Hyperf\Coroutine\Coroutine;
@@ -35,8 +36,11 @@ class RpcAspect extends AbstractAspect
         RpcClient\Client::class . '::send',
     ];
 
-    public function __construct(protected ContainerInterface $container, protected Switcher $switcher)
-    {
+    public function __construct(
+        protected ContainerInterface $container,
+        protected Switcher $switcher,
+        protected TagManager $tagManager
+    ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -53,10 +57,14 @@ class RpcAspect extends AbstractAspect
 
             $context = SpanContext::create($key);
             Context::set(static::CONTEXT, $context);
-            Context::set(static::DATA, [
-                'coroutine.id' => Coroutine::id(),
-                'rpc.path' => $path,
-            ]);
+
+            $data = [];
+
+            if ($this->tagManager->has('rpc.coroutine.id')) {
+                $data[$this->tagManager->get('rpc.coroutine.id')] = Coroutine::id();
+            }
+
+            Context::set(static::DATA, $data);
 
             if ($this->container->has(Rpc\Context::class)) {
                 $sentryTrace = $parent->toTraceparent();
@@ -73,14 +81,18 @@ class RpcAspect extends AbstractAspect
 
         if ($proceedingJoinPoint->methodName === 'send') {
             /** @var array $data */
-            $data = Context::get(static::DATA);
-            $data['arguments'] = $proceedingJoinPoint->arguments['keys'];
+            $data = (array) Context::get(static::DATA);
+            if ($this->tagManager->has('rpc.arguments')) {
+                $data[$this->tagManager->get('rpc.arguments')] = $proceedingJoinPoint->arguments['keys'];
+            }
             /** @var SpanContext|null $context */
             $context = Context::get(static::CONTEXT);
 
             try {
                 $result = $proceedingJoinPoint->process();
-                // $data['result'] = $result;
+                if ($this->tagManager->has('rpc.result')) {
+                    $data[$this->tagManager->get('rpc.result')] = $result;
+                }
             } catch (Throwable $e) {
                 if (! $this->switcher->isExceptionIgnored($e)) {
                     $data = array_merge($data, [

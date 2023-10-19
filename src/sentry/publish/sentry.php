@@ -76,13 +76,49 @@ return [
             'sql_queries' => env('SENTRY_TRACING_ENABLE_SQL_QUERIES', true),
         ],
         'tags' => [
+            'annotation' => [
+                'coroutine.id' => 'coroutine.id',
+                'arguments' => 'arguments',
+                // 'result' => 'result',
+            ],
             'coroutine' => [
                 'id' => 'coroutine.id',
             ],
+            'db' => [
+                'coroutine.id' => 'coroutine.id',
+                'query' => 'db.query',
+                // 'result' => 'db.result',
+            ],
+            'elasticsearch' => [
+                'coroutine.id' => 'coroutine.id',
+                'arguments' => 'arguments',
+                // 'result' => 'result',
+            ],
+            'guzzle' => [
+                'coroutine.id' => 'coroutine.id',
+                'http.method' => 'http.method',
+                'http.uri' => 'http.uri',
+                'guzzle.config' => 'guzzle.config',
+                'request.options' => 'request.options',
+                'response.status' => 'response.status',
+                'response.reason' => 'response.reason',
+                'response.headers' => 'response.headers',
+            ],
+            'redis' => [
+                'coroutine.id' => 'coroutine.id',
+                'pool' => 'pool',
+                'arguments' => 'arguments',
+                // 'result' => 'result',
+            ],
             'rpc' => [
                 'coroutine.id' => 'coroutine.id',
-                'path' => 'rpc.path',
-                'arguments' => 'rpc.arguments',
+                'arguments' => 'arguments',
+                // 'result' => 'result',
+            ],
+            'sql_queries' => [
+                'coroutine.id' => 'coroutine.id',
+                'db.connection_name' => 'db.connection_name',
+                'db.bindings' => 'db.bindings',
             ],
         ],
     ],

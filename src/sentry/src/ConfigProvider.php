@@ -28,7 +28,7 @@ class ConfigProvider
                 Tracing\Aspect\CoroutineAspect::class,
                 Tracing\Aspect\DbAspect::class,
                 Tracing\Aspect\ElasticserachAspect::class,
-                Tracing\Aspect\HttpClientAspect::class,
+                Tracing\Aspect\GuzzleHttpClientAspect::class,
                 Tracing\Aspect\RpcAspect::class,
                 Tracing\Aspect\RedisAspect::class,
                 Tracing\Aspect\TraceAnnotationAspect::class,

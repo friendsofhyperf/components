@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\Annotation\Trace;
+use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -28,8 +29,10 @@ class TraceAnnotationAspect extends AbstractAspect
         Trace::class,
     ];
 
-    public function __construct(protected Switcher $switcher)
-    {
+    public function __construct(
+        protected Switcher $switcher,
+        protected TagManager $tagManager
+    ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -42,12 +45,12 @@ class TraceAnnotationAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $data = [
-            'coroutine.id' => Coroutine::id(),
-        ];
-
-        if ($annotation->arguments) {
-            $data['arguments'] = $proceedingJoinPoint->arguments['keys'];
+        $data = [];
+        if ($this->tagManager->has('annotation.coroutine.id')) {
+            $data[$this->tagManager->get('annotation.coroutine.id')] = Coroutine::id();
+        }
+        if ($this->tagManager->has('annotation.arguments')) {
+            $data[$this->tagManager->get('annotation.arguments')] = $proceedingJoinPoint->arguments['keys'];
         }
 
         $anContext = new SentrySpanContext();
@@ -62,8 +65,8 @@ class TraceAnnotationAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
-            if ($annotation->result) {
-                $data['result'] = $result;
+            if ($this->tagManager->has('annotation.result')) {
+                $data[$this->tagManager->get('annotation.result')] = $result;
             }
             $anSpan->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {
