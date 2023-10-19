@@ -63,9 +63,6 @@ class RpcAspect extends AbstractAspect
             if ($this->tagManager->has('rpc.coroutine.id')) {
                 $data[$this->tagManager->get('rpc.coroutine.id')] = Coroutine::id();
             }
-            if ($this->tagManager->has('rpc.path')) {
-                $data[$this->tagManager->get('rpc.path')] = $path;
-            }
 
             Context::set(static::DATA, $data);
 

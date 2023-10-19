@@ -46,11 +46,11 @@ class TraceAnnotationAspect extends AbstractAspect
         }
 
         $data = [];
-        if ($this->tagManager->get('coroutine.id')) {
-            $data[$this->tagManager->get('coroutine.id')] = Coroutine::id();
+        if ($this->tagManager->has('annotation.coroutine.id')) {
+            $data[$this->tagManager->get('annotation.coroutine.id')] = Coroutine::id();
         }
-        if ($this->tagManager->get('arguments')) {
-            $data[$this->tagManager->get('arguments')] = $proceedingJoinPoint->arguments['keys'];
+        if ($this->tagManager->has('annotation.arguments')) {
+            $data[$this->tagManager->get('annotation.arguments')] = $proceedingJoinPoint->arguments['keys'];
         }
 
         $anContext = new SentrySpanContext();
@@ -65,8 +65,8 @@ class TraceAnnotationAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
-            if ($this->tagManager->get('result')) {
-                $data[$this->tagManager->get('result')] = $result;
+            if ($this->tagManager->has('annotation.result')) {
+                $data[$this->tagManager->get('annotation.result')] = $result;
             }
             $anSpan->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {

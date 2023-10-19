@@ -75,6 +75,11 @@ return [
             'sql_queries' => env('SENTRY_TRACING_ENABLE_SQL_QUERIES', true),
         ],
         'tags' => [
+            'annotation' => [
+                'coroutine.id' => 'coroutine.id',
+                'arguments' => 'arguments',
+                // 'result' => 'result',
+            ],
             'coroutine' => [
                 'id' => 'coroutine.id',
             ],
@@ -85,8 +90,8 @@ return [
             ],
             'elasticsearch' => [
                 'coroutine.id' => 'coroutine.id',
-                'arguments' => 'elasticsearch.arguments',
-                // 'result' => 'elasticsearch.result',
+                'arguments' => 'arguments',
+                // 'result' => 'result',
             ],
             'guzzle' => [
                 'coroutine.id' => 'coroutine.id',
@@ -100,20 +105,19 @@ return [
             ],
             'redis' => [
                 'coroutine.id' => 'coroutine.id',
-                'arguments' => 'arguments',
                 'pool' => 'pool',
-                // 'result' => 'redis.result',
+                'arguments' => 'arguments',
+                // 'result' => 'result',
             ],
             'rpc' => [
                 'coroutine.id' => 'coroutine.id',
-                'path' => 'rpc.path',
-                'arguments' => 'rpc.arguments',
-                // 'result' => 'rpc.result',
-            ],
-            'annotation' => [
-                'coroutine.id' => 'coroutine.id',
                 'arguments' => 'arguments',
                 // 'result' => 'result',
+            ],
+            'sql_queries' => [
+                'coroutine.id' => 'coroutine.id',
+                'db.connection_name' => 'db.connection_name',
+                'db.bindings' => 'db.bindings',
             ],
         ],
     ],

@@ -51,8 +51,8 @@ class RedisAspect extends AbstractAspect
         if ($this->tagManager->has('pool')) {
             $data[$this->tagManager->get('pool')] = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
         }
-        if ($this->tagManager->has('arguments')) {
-            $data[$this->tagManager->get('arguments')] = $arguments['arguments'];
+        if ($this->tagManager->has('redis.arguments')) {
+            $data[$this->tagManager->get('redis.arguments')] = $arguments['arguments'];
         }
 
         $context = SpanContext::create(
@@ -62,8 +62,8 @@ class RedisAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
-            if ($this->tagManager->has('result')) {
-                $data[$this->tagManager->get('result')] = $result;
+            if ($this->tagManager->has('redis.result')) {
+                $data[$this->tagManager->get('redis.result')] = $result;
             }
             $context->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {

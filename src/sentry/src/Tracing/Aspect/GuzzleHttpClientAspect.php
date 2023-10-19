@@ -76,20 +76,20 @@ class GuzzleHttpClientAspect extends AbstractAspect
         $method = $arguments['method'] ?? 'GET';
         $data = [];
 
-        if ($this->tagManager->has('coroutine.id')) {
-            $data[$this->tagManager->get('coroutine.id')] = Coroutine::id();
+        if ($this->tagManager->has('guzzle.coroutine.id')) {
+            $data[$this->tagManager->get('guzzle.coroutine.id')] = Coroutine::id();
         }
-        if ($this->tagManager->has('http.method')) {
-            $data[$this->tagManager->get('http.method')] = $method;
+        if ($this->tagManager->has('guzzle.http.method')) {
+            $data[$this->tagManager->get('guzzle.http.method')] = $method;
         }
-        if ($this->tagManager->has('http.uri')) {
-            $data[$this->tagManager->get('http.uri')] = (string) $uri;
+        if ($this->tagManager->has('guzzle.http.uri')) {
+            $data[$this->tagManager->get('guzzle.http.uri')] = (string) $uri;
         }
-        if ($this->tagManager->has('guzzle.config')) {
-            $data[$this->tagManager->get('guzzle.config')] = $guzzleConfig;
+        if ($this->tagManager->has('guzzle.guzzle.config')) {
+            $data[$this->tagManager->get('guzzle.guzzle.config')] = $guzzleConfig;
         }
-        if ($this->tagManager->has('request.options')) {
-            $data[$this->tagManager->get('request.options')] = $arguments['options'] ?? [];
+        if ($this->tagManager->has('guzzle.request.options')) {
+            $data[$this->tagManager->get('guzzle.request.options')] = $arguments['options'] ?? [];
         }
 
         $context = SpanContext::create(
@@ -111,14 +111,14 @@ class GuzzleHttpClientAspect extends AbstractAspect
             $result = $proceedingJoinPoint->process();
 
             if ($result instanceof ResponseInterface) {
-                if ($this->tagManager->has('response.status')) {
-                    $data[$this->tagManager->get('response.status')] = $result->getStatusCode();
+                if ($this->tagManager->has('guzzle.response.status')) {
+                    $data[$this->tagManager->get('guzzle.response.status')] = $result->getStatusCode();
                 }
-                if ($this->tagManager->has('response.reason')) {
-                    $data[$this->tagManager->get('response.reason')] = $result->getReasonPhrase();
+                if ($this->tagManager->has('guzzle.response.reason')) {
+                    $data[$this->tagManager->get('guzzle.response.reason')] = $result->getReasonPhrase();
                 }
-                if ($this->tagManager->has('response.headers')) {
-                    $data[$this->tagManager->get('response.headers')] = $result->getHeaders();
+                if ($this->tagManager->has('guzzle.response.headers')) {
+                    $data[$this->tagManager->get('guzzle.response.headers')] = $result->getHeaders();
                 }
             }
 
