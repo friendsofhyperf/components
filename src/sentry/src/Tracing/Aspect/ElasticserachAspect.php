@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use Elasticsearch\Client;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanContext;
+use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -38,8 +39,10 @@ class ElasticserachAspect extends AbstractAspect
         Client::class . '::search',
     ];
 
-    public function __construct(protected Switcher $switcher)
-    {
+    public function __construct(
+        protected Switcher $switcher,
+        protected TagManager $tagManager
+    ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -53,14 +56,22 @@ class ElasticserachAspect extends AbstractAspect
             sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
         );
 
-        $data = [
-            'coroutine.id' => Coroutine::id(),
-            'arguments' => $proceedingJoinPoint->arguments['keys'],
-        ];
+        $data = [];
+
+        if ($this->tagManager->has('elasticserach.coroutine.id')) {
+            $data[$this->tagManager->get('elasticserach.coroutine.id')] = Coroutine::id();
+        }
+
+        if ($this->tagManager->has('elasticserach.arguments')) {
+            $data[$this->tagManager->get('elasticserach.arguments')] = json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE);
+        }
 
         try {
             $result = $proceedingJoinPoint->process();
             // $data['result'] = $result;
+            if ($this->tagManager->has('elasticserach.result')) {
+                $data[$this->tagManager->get('elasticserach.result')] = json_encode($result, JSON_UNESCAPED_UNICODE);
+            }
             $context->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {
             $context->setStatus(SpanStatus::internalError());

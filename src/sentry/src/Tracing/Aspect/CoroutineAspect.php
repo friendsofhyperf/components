@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Coroutine\Coroutine as Co;
@@ -31,8 +32,10 @@ class CoroutineAspect extends AbstractAspect
         'Hyperf\Coroutine\Coroutine::create',
     ];
 
-    public function __construct(protected Switcher $switcher)
-    {
+    public function __construct(
+        protected Switcher $switcher,
+        protected TagManager $tagManager
+    ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -74,9 +77,11 @@ class CoroutineAspect extends AbstractAspect
                 // TraceContext::clearTransaction();
             });
 
-            $data = [
-                'coroutine.id' => Co::id(),
-            ];
+            $data = [];
+
+            if ($this->tagManager->has('coroutine.id')) {
+                $data[$this->tagManager->get('coroutine.id')] = Co::id();
+            }
 
             try {
                 $callable();

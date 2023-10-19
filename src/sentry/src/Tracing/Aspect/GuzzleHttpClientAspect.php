@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanContext;
+use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use GuzzleHttp\Client;
 use Hyperf\Coroutine\Coroutine;
@@ -28,15 +29,18 @@ use Throwable;
  * @method array getConfig
  * @property array $config
  */
-class HttpClientAspect extends AbstractAspect
+class GuzzleHttpClientAspect extends AbstractAspect
 {
     public array $classes = [
         Client::class . '::request',
         Client::class . '::requestAsync',
     ];
 
-    public function __construct(protected ContainerInterface $container, protected Switcher $switcher)
-    {
+    public function __construct(
+        protected ContainerInterface $container,
+        protected Switcher $switcher,
+        protected TagManager $tagManager
+    ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -70,13 +74,23 @@ class HttpClientAspect extends AbstractAspect
 
         $uri = $arguments['uri'] ?? '/';
         $method = $arguments['method'] ?? 'GET';
-        $data = [
-            'coroutine.id' => Coroutine::id(),
-            'http.method' => $method,
-            'http.uri' => $uri,
-            'config' => $guzzleConfig,
-            'options' => $arguments['options'] ?? [],
-        ];
+        $data = [];
+
+        if ($this->tagManager->has('guzzle.coroutine.id')) {
+            $data[$this->tagManager->get('guzzle.coroutine.id')] = Coroutine::id();
+        }
+        if ($this->tagManager->has('guzzle.http.method')) {
+            $data[$this->tagManager->get('guzzle.http.method')] = $method;
+        }
+        if ($this->tagManager->has('guzzle.http.uri')) {
+            $data[$this->tagManager->get('guzzle.http.uri')] = (string) $uri;
+        }
+        if ($this->tagManager->has('guzzle.guzzle.config')) {
+            $data[$this->tagManager->get('guzzle.guzzle.config')] = $guzzleConfig;
+        }
+        if ($this->tagManager->has('guzzle.request.options')) {
+            $data[$this->tagManager->get('guzzle.request.options')] = $arguments['options'] ?? [];
+        }
 
         $context = SpanContext::create(
             'http.client',
@@ -97,11 +111,15 @@ class HttpClientAspect extends AbstractAspect
             $result = $proceedingJoinPoint->process();
 
             if ($result instanceof ResponseInterface) {
-                $data = array_merge($data, [
-                    'response.status' => $result->getStatusCode(),
-                    'response.reason' => $result->getReasonPhrase(),
-                    'response.headers' => $result->getHeaders(),
-                ]);
+                if ($this->tagManager->has('guzzle.response.status')) {
+                    $data[$this->tagManager->get('guzzle.response.status')] = $result->getStatusCode();
+                }
+                if ($this->tagManager->has('guzzle.response.reason')) {
+                    $data[$this->tagManager->get('guzzle.response.reason')] = $result->getReasonPhrase();
+                }
+                if ($this->tagManager->has('guzzle.response.headers')) {
+                    $data[$this->tagManager->get('guzzle.response.headers')] = $result->getHeaders();
+                }
             }
 
             $context->setStatus(SpanStatus::ok());
