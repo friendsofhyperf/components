@@ -53,9 +53,7 @@ class RpcAspect extends AbstractAspect
 
         if ($proceedingJoinPoint->methodName === '__generateRpcPath') {
             $path = $proceedingJoinPoint->process();
-            $key = "RPC send [{$path}]";
-
-            $context = SpanContext::create($key);
+            $context = SpanContext::create('rpc.send', $path);
             Context::set(static::CONTEXT, $context);
 
             $data = [];
