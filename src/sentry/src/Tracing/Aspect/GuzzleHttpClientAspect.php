@@ -98,8 +98,8 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
         $parent = TraceContext::getSpan();
         $options['headers'] = array_replace($options['headers'] ?? [], [
-            'Sentry-Trace' => $parent->toTraceparent(),
-            'Baggage' => $parent->toBaggage(),
+            'sentry-trace' => $parent->toTraceparent(),
+            'baggage' => $parent->toBaggage(),
         ]);
         $proceedingJoinPoint->arguments['keys']['options']['headers'] = $options['headers'];
 
