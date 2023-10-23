@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Lock\Driver;
 
 use Hyperf\Redis\RedisProxy;
-use Redis;
 
 use function Hyperf\Support\make;
 
@@ -21,7 +20,7 @@ class RedisLock extends AbstractLock
     /**
      * The Redis factory implementation.
      *
-     * @var Redis
+     * @var \Hyperf\Redis\Redis
      */
     protected $store;
 
