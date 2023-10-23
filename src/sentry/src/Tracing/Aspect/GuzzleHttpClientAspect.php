@@ -19,7 +19,6 @@ use GuzzleHttp\Client;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Hyperf\Rpc;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Sentry\Tracing\SpanStatus;
@@ -97,14 +96,11 @@ class GuzzleHttpClientAspect extends AbstractAspect
             $method . ' ' . (string) $uri
         );
 
-        $appendHeaders = [];
-        if (
-            $this->container->has(Rpc\Context::class)
-            && $rpcContext = $this->container->get(Rpc\Context::class)
-        ) {
-            $appendHeaders = $rpcContext->get(TraceContext::RPC_CARRIER, []);
-        }
-        $options['headers'] = array_replace($options['headers'] ?? [], $appendHeaders);
+        $parent = TraceContext::getSpan();
+        $options['headers'] = array_replace($options['headers'] ?? [], [
+            'sentry-trace' => $parent->toTraceparent(),
+            'baggage' => $parent->toBaggage(),
+        ]);
         $proceedingJoinPoint->arguments['keys']['options']['headers'] = $options['headers'];
 
         try {
