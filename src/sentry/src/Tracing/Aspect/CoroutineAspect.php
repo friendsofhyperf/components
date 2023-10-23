@@ -70,9 +70,9 @@ class CoroutineAspect extends AbstractAspect
 
             defer(function () use ($transaction, $coContext, $coSpan) {
                 $coContext->setEndTimestamp(microtime(true));
-                $coSpan->finish(microtime(true));
+                $coSpan->finish();
                 SentrySdk::getCurrentHub()->setSpan($transaction);
-                $transaction->finish(microtime(true));
+                $transaction->finish();
                 // TraceContext::clearSpan();
                 // TraceContext::clearTransaction();
             });
