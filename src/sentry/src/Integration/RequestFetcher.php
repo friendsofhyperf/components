@@ -11,18 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Integration;
 
-use Psr\Container\ContainerInterface;
+use Hyperf\Context\Context;
 use Psr\Http\Message\ServerRequestInterface;
 use Sentry\Integration\RequestFetcherInterface;
 
 class RequestFetcher implements RequestFetcherInterface
 {
-    public function __construct(private ContainerInterface $container)
-    {
-    }
-
     public function fetchRequest(): ?ServerRequestInterface
     {
-        return $this->container->get(ServerRequestInterface::class);
+        return Context::get(ServerRequestInterface::class);
     }
 }
