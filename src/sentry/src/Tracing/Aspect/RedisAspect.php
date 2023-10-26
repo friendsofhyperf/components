@@ -72,8 +72,10 @@ class RedisAspect extends AbstractAspect
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
-                'exception.stacktrace' => (string) $exception,
             ]);
+            if ($this->tagManager->has('redis.exception')) {
+                $data[$this->tagManager->get('redis.exception')] = (string) $exception;
+            }
 
             throw $exception;
         } finally {

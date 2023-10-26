@@ -79,19 +79,23 @@ return [
             'annotation' => [
                 'coroutine.id' => 'coroutine.id',
                 'arguments' => 'arguments',
+                'exception' => 'exception',
                 // 'result' => 'result',
             ],
             'coroutine' => [
                 'id' => 'coroutine.id',
+                'exception' => 'exception',
             ],
             'db' => [
                 'coroutine.id' => 'coroutine.id',
                 'query' => 'db.query',
+                'exception' => 'exception',
                 // 'result' => 'db.result',
             ],
             'elasticsearch' => [
                 'coroutine.id' => 'coroutine.id',
                 'arguments' => 'arguments',
+                'exception' => 'exception',
                 // 'result' => 'result',
             ],
             'guzzle' => [
@@ -103,27 +107,32 @@ return [
                 'response.status' => 'response.status',
                 'response.reason' => 'response.reason',
                 'response.headers' => 'response.headers',
+                'exception' => 'exception',
             ],
             'redis' => [
                 'coroutine.id' => 'coroutine.id',
                 'pool' => 'pool',
                 'arguments' => 'arguments',
+                'exception' => 'exception',
                 // 'result' => 'result',
             ],
             'request' => [
                 'header' => 'request.header',
                 'body' => 'request.body',
                 'query_params' => 'request.query_params',
+                'exception' => 'exception',
             ],
             'rpc' => [
                 'coroutine.id' => 'coroutine.id',
                 'arguments' => 'arguments',
+                'exception' => 'exception',
                 // 'result' => 'result',
             ],
             'sql_queries' => [
                 'coroutine.id' => 'coroutine.id',
                 'db.connection_name' => 'db.connection_name',
                 'db.bindings' => 'db.bindings',
+                'exception' => 'exception',
             ],
         ],
     ],

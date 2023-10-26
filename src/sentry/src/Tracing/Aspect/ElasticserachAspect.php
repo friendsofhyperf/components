@@ -79,8 +79,10 @@ class ElasticserachAspect extends AbstractAspect
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
-                'exception.stacktrace' => (string) $exception,
             ]);
+            if ($this->tagManager->has('elasticserach.exception')) {
+                $data[$this->tagManager->get('elasticserach.exception')] = (string) $exception;
+            }
 
             throw $exception;
         } finally {
