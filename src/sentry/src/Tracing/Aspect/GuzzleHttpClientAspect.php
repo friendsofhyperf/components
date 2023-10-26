@@ -126,8 +126,8 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('guzzle.exception')) {
-                $data[$this->tagManager->get('guzzle.exception')] = (string) $exception;
+            if ($this->tagManager->has('guzzle.exception.stack_trace')) {
+                $data[$this->tagManager->get('guzzle.exception.stack_trace')] = (string) $exception;
             }
 
             throw $exception;

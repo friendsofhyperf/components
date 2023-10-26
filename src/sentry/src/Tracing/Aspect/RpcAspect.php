@@ -98,8 +98,8 @@ class RpcAspect extends AbstractAspect
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => $exception->getCode(),
                 ]);
-                if ($this->tagManager->has('rpc.exception')) {
-                    $data[$this->tagManager->get('rpc.exception')] = (string) $exception;
+                if ($this->tagManager->has('rpc.exception.stack_trace')) {
+                    $data[$this->tagManager->get('rpc.exception.stack_trace')] = (string) $exception;
                 }
 
                 throw $exception;
