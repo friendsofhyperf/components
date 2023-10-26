@@ -89,6 +89,7 @@ class CoroutineAspect extends AbstractAspect
             } catch (Throwable $exception) {
                 $transaction->setStatus(SpanStatus::internalError());
                 $transaction->setTags([
+                    'error' => true,
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => $exception->getCode(),
