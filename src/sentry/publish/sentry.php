@@ -110,6 +110,11 @@ return [
                 'arguments' => 'arguments',
                 // 'result' => 'result',
             ],
+            'request' => [
+                'header' => 'request.header',
+                'body' => 'request.body',
+                'query_params' => 'request.query_params',
+            ],
             'rpc' => [
                 'coroutine.id' => 'coroutine.id',
                 'arguments' => 'arguments',
