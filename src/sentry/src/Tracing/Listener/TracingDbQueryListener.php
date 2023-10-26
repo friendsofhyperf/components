@@ -21,7 +21,7 @@ use Hyperf\Database\Events\TransactionCommitted;
 use Hyperf\Database\Events\TransactionRolledBack;
 use Hyperf\Event\Contract\ListenerInterface;
 
-class DbQueryListener implements ListenerInterface
+class TracingDbQueryListener implements ListenerInterface
 {
     public function __construct(
         protected Switcher $switcher,
