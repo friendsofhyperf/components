@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Middleware;
 
 use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Rpc\Context as RpcContext;
@@ -36,7 +37,8 @@ class TraceMiddleware implements MiddlewareInterface
 {
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher
+        protected Switcher $switcher,
+        protected TagManager $tagManager
     ) {
     }
 
@@ -104,10 +106,22 @@ class TraceMiddleware implements MiddlewareInterface
         $context->setSource(TransactionSource::url());
         $context->setStartTimestamp($startTimestamp);
 
-        $context->setData([
+        $data = [
             'url' => $path,
             'http.method' => strtoupper($request->getMethod()),
-        ]);
+        ];
+        if ($this->tagManager->has('request.header')) {
+            foreach ($request->getHeaders() as $key => $value) {
+                $data[$this->tagManager->get('request.header') . '.' . $key] = implode(', ', $value);
+            }
+        }
+        if ($this->tagManager->has('request.query_params')) {
+            $data[$this->tagManager->get('request.query_params')] = $request->getQueryParams();
+        }
+        if ($this->tagManager->has('request.body')) {
+            $data[$this->tagManager->get('request.body')] = $request->getParsedBody();
+        }
+        $context->setData($data);
 
         $transaction = $sentry->startTransaction($context);
 
