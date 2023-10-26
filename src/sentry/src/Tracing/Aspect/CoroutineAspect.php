@@ -92,7 +92,7 @@ class CoroutineAspect extends AbstractAspect
                     'exception.class' => get_class($e),
                     'exception.message' => $e->getMessage(),
                     'exception.code' => $e->getCode(),
-                    'exception.stacktrace' => $e->getTraceAsString(),
+                    'exception.stacktrace' => (string) $e,
                 ]);
 
                 throw $e;
