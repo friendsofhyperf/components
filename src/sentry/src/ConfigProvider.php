@@ -50,6 +50,7 @@ class ConfigProvider
                 Listener\DbQueryListener::class,
                 Listener\KafkaExceptionListener::class,
                 Listener\RequestExceptionListener::class,
+                Listener\SetServerNameListener::class,
                 Tracing\Listener\DbQueryListener::class,
             ],
             'annotations' => [
