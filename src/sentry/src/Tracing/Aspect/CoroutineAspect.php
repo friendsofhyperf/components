@@ -86,16 +86,16 @@ class CoroutineAspect extends AbstractAspect
             try {
                 $callable();
                 $transaction->setStatus(SpanStatus::ok());
-            } catch (Throwable $e) {
+            } catch (Throwable $exception) {
                 $transaction->setStatus(SpanStatus::internalError());
                 $transaction->setTags([
-                    'exception.class' => get_class($e),
-                    'exception.message' => $e->getMessage(),
-                    'exception.code' => $e->getCode(),
-                    'exception.stacktrace' => (string) $e,
+                    'exception.class' => get_class($exception),
+                    'exception.message' => $exception->getMessage(),
+                    'exception.code' => $exception->getCode(),
+                    'exception.stacktrace' => (string) $exception,
                 ]);
 
-                throw $e;
+                throw $exception;
             } finally {
                 $coContext->setData($data);
             }
