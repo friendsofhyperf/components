@@ -68,14 +68,13 @@ class RedisAspect extends AbstractAspect
             $context->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {
             $context->setStatus(SpanStatus::internalError());
-            if (! $this->switcher->isExceptionIgnored($e)) {
-                $data = array_merge($data, [
-                    'exception.class' => get_class($e),
-                    'exception.message' => $e->getMessage(),
-                    'exception.code' => $e->getCode(),
-                    'exception.stacktrace' => $e->getTraceAsString(),
-                ]);
-            }
+            $context->setTags([
+                'exception.class' => get_class($e),
+                'exception.message' => $e->getMessage(),
+                'exception.code' => $e->getCode(),
+                'exception.stacktrace' => $e->getTraceAsString(),
+            ]);
+
             throw $e;
         } finally {
             $context->setData($data)->finish();
