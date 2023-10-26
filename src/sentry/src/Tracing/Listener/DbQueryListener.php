@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanContext;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Database\Events\TransactionBeginning;
 use Hyperf\Database\Events\TransactionCommitted;
@@ -56,7 +57,7 @@ class DbQueryListener implements ListenerInterface
 
         $data = [];
         if ($this->tagManager->has('sql_queries.coroutine.id')) {
-            $data[$this->tagManager->get('sql_queries.coroutine.id')] = $event->sql;
+            $data[$this->tagManager->get('sql_queries.coroutine.id')] = Coroutine::id();
         }
         if ($this->tagManager->has('sql_queries.db.bindings')) {
             $data[$this->tagManager->get('sql_queries.db.bindings')] = $event->bindings;
