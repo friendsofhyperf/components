@@ -58,10 +58,15 @@ class TraceMiddleware implements MiddlewareInterface
         try {
             $response = $handler->handle($request);
 
+            // Set http status code
             TraceContext::getTransaction()?->setHttpStatus($response->getStatusCode());
+            // Set status
+            TraceContext::getTransaction()?->setStatus(SpanStatus::ok());
+
+            // Append sentry-trace header to response
             $traceId = (string) TraceContext::getTransaction()?->getTraceId();
             if ($traceId) {
-                $response = $response->withHeader('sentry-trace', $traceId);
+                $response = $response->withHeader('sentry-trace-id', $traceId);
             }
         } catch (Throwable $exception) {
             $transaction->setStatus(SpanStatus::internalError());
@@ -106,15 +111,11 @@ class TraceMiddleware implements MiddlewareInterface
         $context->setSource(TransactionSource::url());
         $context->setStartTimestamp($startTimestamp);
 
+        // Set data
         $data = [
             'url' => $path,
             'http.method' => strtoupper($request->getMethod()),
         ];
-        if ($this->tagManager->has('request.header')) {
-            foreach ($request->getHeaders() as $key => $value) {
-                $data[$this->tagManager->get('request.header') . '.' . $key] = implode(', ', $value);
-            }
-        }
         if ($this->tagManager->has('request.query_params')) {
             $data[$this->tagManager->get('request.query_params')] = $request->getQueryParams();
         }
@@ -122,6 +123,17 @@ class TraceMiddleware implements MiddlewareInterface
             $data[$this->tagManager->get('request.body')] = $request->getParsedBody();
         }
         $context->setData($data);
+
+        // Set tags
+        $tags = [];
+
+        if ($this->tagManager->has('request.header')) {
+            foreach ($request->getHeaders() as $key => $value) {
+                $tags[$this->tagManager->get('request.header') . '.' . $key] = implode(', ', $value);
+            }
+        }
+
+        $context->setTags($tags);
 
         $transaction = $sentry->startTransaction($context);
 
