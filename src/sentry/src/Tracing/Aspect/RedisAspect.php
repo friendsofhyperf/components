@@ -69,7 +69,7 @@ class RedisAspect extends AbstractAspect
         } catch (Throwable $exception) {
             $context->setStatus(SpanStatus::internalError());
             $context->setTags([
-                'exception.class' => get_class($exception),
+                'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
                 'exception.stacktrace' => (string) $exception,

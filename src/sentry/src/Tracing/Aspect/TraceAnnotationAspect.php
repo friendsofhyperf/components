@@ -72,7 +72,7 @@ class TraceAnnotationAspect extends AbstractAspect
         } catch (Throwable $exception) {
             $anSpan->setStatus(SpanStatus::internalError());
             $anSpan->setTags([
-                'exception.class' => get_class($exception),
+                'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
                 'exception.stacktrace' => (string) $exception,
