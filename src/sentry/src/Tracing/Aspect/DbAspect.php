@@ -64,6 +64,7 @@ class DbAspect extends AbstractAspect
         } catch (Throwable $exception) {
             $context->setStatus(SpanStatus::internalError());
             $context->setTags([
+                'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
