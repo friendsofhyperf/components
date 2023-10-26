@@ -61,16 +61,16 @@ class DbAspect extends AbstractAspect
                 $data[$this->tagManager->get('db.result')] = json_encode($result, JSON_UNESCAPED_UNICODE);
             }
             $context->setStatus(SpanStatus::ok());
-        } catch (Throwable $e) {
+        } catch (Throwable $exception) {
             $context->setStatus(SpanStatus::internalError());
             $context->setTags([
-                'exception.class' => get_class($e),
-                'exception.message' => $e->getMessage(),
-                'exception.code' => $e->getCode(),
-                'exception.stacktrace' => $e->getTraceAsString(),
+                'exception.class' => $exception::class,
+                'exception.message' => $exception->getMessage(),
+                'exception.code' => $exception->getCode(),
+                'exception.stacktrace' => (string) $exception,
             ]);
 
-            throw $e;
+            throw $exception;
         } finally {
             $context->setData($data)->finish();
         }
