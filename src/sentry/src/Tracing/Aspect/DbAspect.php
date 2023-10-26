@@ -67,8 +67,10 @@ class DbAspect extends AbstractAspect
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
-                'exception.stacktrace' => (string) $exception,
             ]);
+            if ($this->tagManager->has('db.exception.stack_trace')) {
+                $data[$this->tagManager->get('db.exception.stack_trace')] = (string) $exception;
+            }
 
             throw $exception;
         } finally {

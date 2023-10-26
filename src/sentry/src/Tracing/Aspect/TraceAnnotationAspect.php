@@ -75,8 +75,10 @@ class TraceAnnotationAspect extends AbstractAspect
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
-                'exception.stacktrace' => (string) $exception,
             ]);
+            if ($this->tagManager->has('annotation.exception.stack_trace')) {
+                $data[$this->tagManager->get('annotation.exception.stack_trace')] = (string) $exception;
+            }
             throw $exception;
         } finally {
             $anContext->setData($data);

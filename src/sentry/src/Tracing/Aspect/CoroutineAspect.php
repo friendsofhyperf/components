@@ -92,8 +92,10 @@ class CoroutineAspect extends AbstractAspect
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => $exception->getCode(),
-                    'exception.stacktrace' => (string) $exception,
                 ]);
+                if ($this->tagManager->has('coroutine.exception.stack_trace')) {
+                    $data[$this->tagManager->get('coroutine.exception.stack_trace')] = (string) $exception;
+                }
 
                 throw $exception;
             } finally {
