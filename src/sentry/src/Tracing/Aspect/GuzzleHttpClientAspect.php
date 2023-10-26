@@ -125,7 +125,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
-                'exception.stacktrace' => (string) $exception,
+                'exception.stacktrace' => (string) $exception, // todo
             ]);
 
             throw $exception;
