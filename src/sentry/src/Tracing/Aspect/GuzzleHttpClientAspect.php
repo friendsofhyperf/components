@@ -121,9 +121,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
             $context->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {
             $context->setStatus(SpanStatus::internalError());
-
-            $transaction = TraceContext::getTransaction();
-            $transaction?->setTags([
+            $context->setTags([
                 'exception.class' => get_class($e),
                 'exception.message' => $e->getMessage(),
                 'exception.code' => $e->getCode(),

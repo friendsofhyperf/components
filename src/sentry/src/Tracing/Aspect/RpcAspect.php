@@ -92,8 +92,8 @@ class RpcAspect extends AbstractAspect
                     $data[$this->tagManager->get('rpc.result')] = $result;
                 }
             } catch (Throwable $e) {
-                $transaction = TraceContext::getTransaction();
-                $transaction?->setTags([
+                $context->setStatus(SpanStatus::internalError());
+                $context->setTags([
                     'exception.class' => get_class($e),
                     'exception.message' => $e->getMessage(),
                     'exception.code' => $e->getCode(),
