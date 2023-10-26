@@ -14,6 +14,9 @@ namespace FriendsOfHyperf\Sentry\Tracing;
 use Sentry\SentrySdk;
 use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanContext as SentrySpanContext;
+use Sentry\Tracing\SpanId;
+use Sentry\Tracing\SpanStatus;
+use Sentry\Tracing\TraceId;
 
 /**
  * @method self setDescription(?string $description)

@@ -71,14 +71,12 @@ class TraceAnnotationAspect extends AbstractAspect
             $anSpan->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {
             $anSpan->setStatus(SpanStatus::internalError());
-            if (! $this->switcher->isExceptionIgnored($e)) {
-                $anSpan->setTags([
-                    'exception.class' => get_class($e),
-                    'exception.message' => $e->getMessage(),
-                    'exception.code' => $e->getCode(),
-                    'exception.stacktrace' => $e->getTraceAsString(),
-                ]);
-            }
+            $anSpan->setTags([
+                'exception.class' => get_class($e),
+                'exception.message' => $e->getMessage(),
+                'exception.code' => $e->getCode(),
+                'exception.stacktrace' => $e->getTraceAsString(),
+            ]);
             throw $e;
         } finally {
             $anContext->setData($data);

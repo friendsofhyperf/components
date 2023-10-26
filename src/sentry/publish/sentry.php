@@ -74,6 +74,7 @@ return [
             'rpc' => env('SENTRY_TRACING_ENABLE_RPC', true),
             'redis' => env('SENTRY_TRACING_ENABLE_REDIS', true),
             'sql_queries' => env('SENTRY_TRACING_ENABLE_SQL_QUERIES', true),
+            'missing_routes' => env('SENTRY_TRACING_ENABLE_MISSING_ROUTES', true),
         ],
         'tags' => [
             'annotation' => [

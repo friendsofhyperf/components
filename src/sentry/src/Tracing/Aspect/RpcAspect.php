@@ -92,14 +92,14 @@ class RpcAspect extends AbstractAspect
                     $data[$this->tagManager->get('rpc.result')] = $result;
                 }
             } catch (Throwable $e) {
-                if (! $this->switcher->isExceptionIgnored($e)) {
-                    $data = array_merge($data, [
-                        'exception.class' => get_class($e),
-                        'exception.message' => $e->getMessage(),
-                        'exception.code' => $e->getCode(),
-                        'exception.stacktrace' => $e->getTraceAsString(),
-                    ]);
-                }
+                $context->setStatus(SpanStatus::internalError());
+                $context->setTags([
+                    'exception.class' => get_class($e),
+                    'exception.message' => $e->getMessage(),
+                    'exception.code' => $e->getCode(),
+                    'exception.stacktrace' => $e->getTraceAsString(),
+                ]);
+
                 throw $e;
             } finally {
                 $context?->setStatus(

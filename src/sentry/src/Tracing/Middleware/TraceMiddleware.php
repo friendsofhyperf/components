@@ -16,6 +16,7 @@ use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
+use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\Rpc\Context as RpcContext;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
@@ -44,6 +45,15 @@ class TraceMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): PsrResponseInterface
     {
+        /** @var Dispatched|null $dispatched */
+        $dispatched = $request->getAttribute(Dispatched::class);
+        if (
+            ! $dispatched?->isFound()
+            && ! $this->switcher->isTracingEnable('missing_routes', false)
+        ) {
+            return $handler->handle($request);
+        }
+
         $this->startTransaction($request, SentrySdk::getCurrentHub(), SentryContext::getServerName());
 
         $transaction = TraceContext::getTransaction();
@@ -70,14 +80,12 @@ class TraceMiddleware implements MiddlewareInterface
             }
         } catch (Throwable $exception) {
             $transaction?->setStatus(SpanStatus::internalError());
-            if (! $this->switcher->isExceptionIgnored($exception)) {
-                $transaction?->setTags([
-                    'exception.class' => get_class($exception),
-                    'exception.code' => $exception->getCode(),
-                    'exception.message' => $exception->getMessage(),
-                    'exception.stack_trace' => (string) $exception,
-                ]);
-            }
+            $transaction?->setTags([
+                'exception.class' => get_class($exception),
+                'exception.code' => $exception->getCode(),
+                'exception.message' => $exception->getMessage(),
+                'exception.stack_trace' => (string) $exception,
+            ]);
 
             throw $exception;
         } finally {
