@@ -15,6 +15,7 @@ use Elasticsearch\Client;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanContext;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
+use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -75,14 +76,15 @@ class ElasticserachAspect extends AbstractAspect
             $context->setStatus(SpanStatus::ok());
         } catch (Throwable $e) {
             $context->setStatus(SpanStatus::internalError());
-            if (! $this->switcher->isExceptionIgnored($e)) {
-                $data = array_merge($data, [
-                    'exception.class' => get_class($e),
-                    'exception.message' => $e->getMessage(),
-                    'exception.code' => $e->getCode(),
-                    'exception.stacktrace' => $e->getTraceAsString(),
-                ]);
-            }
+
+            $transaction = TraceContext::getTransaction();
+            $transaction?->setTags([
+                'exception.class' => get_class($e),
+                'exception.message' => $e->getMessage(),
+                'exception.code' => $e->getCode(),
+                'exception.stacktrace' => $e->getTraceAsString(),
+            ]);
+
             throw $e;
         } finally {
             $context->setData($data)->finish();
