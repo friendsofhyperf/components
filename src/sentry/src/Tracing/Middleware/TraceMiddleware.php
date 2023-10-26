@@ -126,15 +126,14 @@ class TraceMiddleware implements MiddlewareInterface
 
         // Set tags
         $tags = [];
-
         if ($this->tagManager->has('request.header')) {
             foreach ($request->getHeaders() as $key => $value) {
                 $tags[$this->tagManager->get('request.header') . '.' . $key] = implode(', ', $value);
             }
         }
-
         $context->setTags($tags);
 
+        // Start transaction
         $transaction = $sentry->startTransaction($context);
 
         // If this transaction is not sampled, we can stop here to prevent doing work for nothing
@@ -142,19 +141,20 @@ class TraceMiddleware implements MiddlewareInterface
             return;
         }
 
+        // Set transaction to context
         TraceContext::setTransaction($transaction);
 
         $sentry->setSpan($transaction);
 
-        $reqContext = new SpanContext();
-        $reqContext->setOp('request.received');
+        $requestContext = new SpanContext();
+        $requestContext->setOp('request.received');
         // $reqContext->setDescription('#' . Coroutine::id());
-        $reqContext->setStartTimestamp(microtime(true));
+        $requestContext->setStartTimestamp(microtime(true));
 
-        $reqSpan = $transaction->startChild($reqContext);
-        TraceContext::setSpan($reqSpan);
+        $requestSpan = $transaction->startChild($requestContext);
+        TraceContext::setSpan($requestSpan);
 
-        $sentry->setSpan($reqSpan);
+        $sentry->setSpan($requestSpan);
     }
 
     private function finishTransaction(): void
