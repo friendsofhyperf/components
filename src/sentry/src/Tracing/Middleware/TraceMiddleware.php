@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Middleware;
 
+use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
@@ -41,7 +42,7 @@ class TraceMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): PsrResponseInterface
     {
-        $this->startTransaction($request, SentrySdk::getCurrentHub());
+        $this->startTransaction($request, SentrySdk::getCurrentHub(), SentryContext::getServerName());
 
         $transaction = TraceContext::getTransaction();
 
@@ -79,8 +80,9 @@ class TraceMiddleware implements MiddlewareInterface
         return $response;
     }
 
-    private function startTransaction(ServerRequestInterface $request, HubInterface $sentry, string $server = 'http'): void
+    private function startTransaction(ServerRequestInterface $request, HubInterface $sentry, ?string $server = null): void
     {
+        $server ??= 'http';
         $startTimestamp = microtime(true);
         $path = $request->getUri()->getPath();
         $sentryTrace = $request->getHeaderLine('sentry-trace', '');
