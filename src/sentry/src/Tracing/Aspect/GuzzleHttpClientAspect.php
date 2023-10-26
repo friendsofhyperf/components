@@ -119,16 +119,16 @@ class GuzzleHttpClientAspect extends AbstractAspect
             }
 
             $context->setStatus(SpanStatus::ok());
-        } catch (Throwable $e) {
+        } catch (Throwable $exception) {
             $context->setStatus(SpanStatus::internalError());
             $context->setTags([
-                'exception.class' => get_class($e),
-                'exception.message' => $e->getMessage(),
-                'exception.code' => $e->getCode(),
-                'exception.stacktrace' => $e->getTraceAsString(),
+                'exception.class' => $exception::class,
+                'exception.message' => $exception->getMessage(),
+                'exception.code' => $exception->getCode(),
+                'exception.stacktrace' => (string) $exception, // todo
             ]);
 
-            throw $e;
+            throw $exception;
         } finally {
             $context->setData($data)->finish();
         }

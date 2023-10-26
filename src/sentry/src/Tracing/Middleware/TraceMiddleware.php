@@ -81,7 +81,7 @@ class TraceMiddleware implements MiddlewareInterface
         } catch (Throwable $exception) {
             $transaction?->setStatus(SpanStatus::internalError());
             $transaction?->setTags([
-                'exception.class' => get_class($exception),
+                'exception.class' => $exception::class,
                 'exception.code' => $exception->getCode(),
                 'exception.message' => $exception->getMessage(),
                 'exception.stack_trace' => (string) $exception,
