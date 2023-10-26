@@ -44,6 +44,15 @@ class TraceMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): PsrResponseInterface
     {
+        /** @var Dispatched|null $dispatched */
+        $dispatched = $request->getAttribute(Dispatched::class);
+        if (
+            ! $dispatched?->isFound()
+            && ! $this->switcher->isTracingEnable('missing_routes', false)
+        ) {
+            return $handler->handle($request);
+        }
+
         $this->startTransaction($request, SentrySdk::getCurrentHub(), SentryContext::getServerName());
 
         $transaction = TraceContext::getTransaction();
