@@ -139,6 +139,7 @@ class TraceMiddleware implements MiddlewareInterface
 
         $context = continueTrace($sentryTrace, $baggage);
         $context->setName($route);
+        $context->setSource(TransactionSource::route());
         $context->setOp(sprintf('%s.server', $server));
         $context->setDescription(sprintf('request: %s %s', $request->getMethod(), $path));
         $context->setSource(TransactionSource::url());
