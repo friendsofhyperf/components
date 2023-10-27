@@ -86,7 +86,7 @@ class TraceMiddleware implements MiddlewareInterface
                 'exception.code' => $exception->getCode(),
                 'exception.message' => $exception->getMessage(),
             ]);
-            $transaction->setData([
+            $transaction?->setData([
                 'exception.stack_trace' => (string) $exception,
             ]);
 
