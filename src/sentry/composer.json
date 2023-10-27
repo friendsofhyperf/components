@@ -14,7 +14,7 @@
         }
     },
     "require": {
-        "hyperf/command": "~3.0.0",
+        "hyperf/command": "~3.0.41",
         "hyperf/context": "~3.0.16",
         "hyperf/coroutine": "~3.0.0",
         "hyperf/database": "~3.0.0",
