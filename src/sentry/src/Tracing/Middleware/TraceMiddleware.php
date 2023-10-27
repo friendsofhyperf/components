@@ -58,6 +58,10 @@ class TraceMiddleware implements MiddlewareInterface
 
         $transaction = TraceContext::getTransaction();
 
+        if (! $transaction) {
+            return $handler->handle($request);
+        }
+
         defer(function () {
             try {
                 $this->finishTransaction();
@@ -69,24 +73,24 @@ class TraceMiddleware implements MiddlewareInterface
             $response = $handler->handle($request);
 
             // Set http status code
-            $transaction?->setHttpStatus($response->getStatusCode());
+            $transaction->setHttpStatus($response->getStatusCode());
             // Set status
-            $transaction?->setStatus(SpanStatus::ok());
+            $transaction->setStatus(SpanStatus::ok());
 
             // Append sentry-trace header to response
-            $traceId = (string) $transaction?->getTraceId();
+            $traceId = (string) $transaction->getTraceId();
             if ($traceId) {
                 $response = $response->withHeader('sentry-trace-id', $traceId);
             }
         } catch (Throwable $exception) {
-            $transaction?->setStatus(SpanStatus::internalError());
-            $transaction?->setTags([
+            $transaction->setStatus(SpanStatus::internalError());
+            $transaction->setTags([
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.code' => $exception->getCode(),
                 'exception.message' => $exception->getMessage(),
             ]);
-            $transaction?->setData([
+            $transaction->setData([
                 'exception.stack_trace' => (string) $exception,
             ]);
 
