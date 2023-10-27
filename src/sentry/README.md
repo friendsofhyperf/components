@@ -96,7 +96,7 @@ class Foo
 # config/autoload/middleware.php
 return [
     'http' => [
-        FriendsOfHyperf\Sentry\Tracing\Middleware\TraceMiddleware::class,
+        FriendsOfHyperf\Sentry\Tracing\Middleware\TraceMiddleware::class => PHP_INT_MAX,
     ],
     // rpc
     // 'rpc' => [
