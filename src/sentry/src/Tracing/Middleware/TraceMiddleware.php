@@ -46,6 +46,9 @@ class TraceMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): PsrResponseInterface
     {
+        // Must be called before all.
+        $this->startTransaction($request, SentrySdk::getCurrentHub(), SentryContext::getServerName());
+
         /** @var Dispatched|null $dispatched */
         $dispatched = $request->getAttribute(Dispatched::class);
         if (
@@ -54,8 +57,6 @@ class TraceMiddleware implements MiddlewareInterface
         ) {
             return $handler->handle($request);
         }
-
-        $this->startTransaction($request, SentrySdk::getCurrentHub(), SentryContext::getServerName());
 
         $transaction = TraceContext::getTransaction();
 
@@ -157,7 +158,9 @@ class TraceMiddleware implements MiddlewareInterface
         $context->setData($data);
 
         // Set tags
-        $tags = [];
+        $tags = [
+            'http.request.method' => strtoupper($request->getMethod()), // MUST
+        ];
         if ($this->tagManager->has('request.http.path')) {
             $tags[$this->tagManager->get('request.http.path')] = $path;
         }
