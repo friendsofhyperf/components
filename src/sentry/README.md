@@ -88,6 +88,23 @@ class Foo
 }
 ```
 
+## Trace
+
+```php
+<?php
+
+# config/autoload/middleware.php
+return [
+    'http' => [
+        FriendsOfHyperf\Sentry\Tracing\Middleware\TraceMiddleware::class,
+    ],
+    // rpc
+    // 'rpc' => [
+    //     FriendsOfHyperf\Sentry\Tracing\Middleware\TraceMiddleware::class,
+    // ],
+];
+```
+
 ## Fix un-support `native-curl`
 
 - Check
