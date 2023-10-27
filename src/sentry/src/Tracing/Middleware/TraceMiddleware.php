@@ -37,6 +37,11 @@ use function Sentry\continueTrace;
 
 class TraceMiddleware implements MiddlewareInterface
 {
+    /**
+     * @var string route/url/custom
+     */
+    protected string $source = 'route';
+
     public function __construct(
         protected ContainerInterface $container,
         protected Switcher $switcher,
@@ -109,14 +114,27 @@ class TraceMiddleware implements MiddlewareInterface
         $server ??= 'http';
         $startTimestamp = microtime(true);
         $path = $request->getUri()->getPath();
-        $sentryTrace = $request->getHeaderLine('sentry-trace', '');
-        $baggage = $request->getHeaderLine('baggage', '');
         /**
          * @var string $route
          * @var array $routeParams
          * @var string $routeCallback
          */
         [$route, $routeParams, $routeCallback] = $this->getRouteInfo($request);
+
+        /**
+         * @var string $name
+         * @var TransactionSource $source
+         */
+        [$name, $source] = match (strtolower($this->source)) {
+            'custom' => [$routeCallback, TransactionSource::custom()],
+            'route' => [$route, TransactionSource::route()],
+            'url' => [$path, TransactionSource::url()],
+            default => [$path, TransactionSource::url()],
+        };
+
+        // Get sentry-trace and baggage
+        $sentryTrace = $request->getHeaderLine('sentry-trace', '');
+        $baggage = $request->getHeaderLine('baggage', '');
 
         if ($this->container->has(RpcContext::class)) {
             $rpcContext = $this->container->get(RpcContext::class);
@@ -128,8 +146,8 @@ class TraceMiddleware implements MiddlewareInterface
         }
 
         $context = continueTrace($sentryTrace, $baggage);
-        $context->setName($route);
-        $context->setSource(TransactionSource::route());
+        $context->setName($name);
+        $context->setSource($source);
         $context->setOp(sprintf('%s.server', $server));
         $context->setDescription(sprintf('request: %s %s', $request->getMethod(), $path));
         $context->setStartTimestamp($startTimestamp);
@@ -158,7 +176,7 @@ class TraceMiddleware implements MiddlewareInterface
         if ($this->tagManager->has('request.http.method')) {
             $tags[$this->tagManager->get('request.http.method')] = strtoupper($request->getMethod());
         }
-        if ($this->tagManager->has('request.route.callback')) {
+        if ($this->tagManager->has('request.route.callback') && $routeCallback) {
             $tags[$this->tagManager->get('request.route.callback')] = $routeCallback;
         }
         if ($this->tagManager->has('request.header')) {
@@ -210,16 +228,16 @@ class TraceMiddleware implements MiddlewareInterface
     {
         /** @var Dispatched|null $dispatched */
         $dispatched = $request->getAttribute(Dispatched::class);
-        $route = '[missing_route]';
+        $route = '<missing found>';
         $params = [];
-        $callback = '[unknown_callback]';
+        $callback = '';
 
         if ($dispatched instanceof Dispatched && $dispatched->isFound()) {
             $route = $dispatched->handler->route;
             $params = $dispatched->params;
             $callback = match (true) {
                 $dispatched->handler->callback instanceof Closure => 'closure',
-                is_array($dispatched->handler->callback) => implode('::', $dispatched->handler->callback),
+                is_array($dispatched->handler->callback) => implode('@', $dispatched->handler->callback),
                 is_string($dispatched->handler->callback) => $dispatched->handler->callback,
                 default => $callback,
             };
