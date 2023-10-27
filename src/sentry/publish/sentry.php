@@ -124,9 +124,13 @@ return [
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
             'request' => [
+                'http.path' => 'http.path',
+                'http.method' => 'http.method',
                 'header' => 'request.header',
-                'body' => 'request.body',
                 'query_params' => 'request.query_params',
+                'body' => 'request.body',
+                'route.params' => 'route.params',
+                'route.callback' => 'route.callback',
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
             'rpc' => [
