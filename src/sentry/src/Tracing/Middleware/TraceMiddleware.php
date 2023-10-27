@@ -111,22 +111,12 @@ class TraceMiddleware implements MiddlewareInterface
         $path = $request->getUri()->getPath();
         $sentryTrace = $request->getHeaderLine('sentry-trace', '');
         $baggage = $request->getHeaderLine('baggage', '');
-
-        /** @var Dispatched|null $dispatched */
-        $dispatched = $request->getAttribute(Dispatched::class);
-        $route = '[missing_route]';
-        $routeParams = [];
-        $routeCallback = '[unknown_callback]';
-        if ($dispatched->isFound()) {
-            $route = $dispatched->handler->route;
-            $routeParams = $dispatched->params;
-            $routeCallback = match (true) {
-                $dispatched->handler->callback instanceof Closure => 'closure',
-                is_array($dispatched->handler->callback) => implode('::', $dispatched->handler->callback),
-                is_string($dispatched->handler->callback) => $dispatched->handler->callback,
-                default => '[unknown_callback]',
-            };
-        }
+        /**
+         * @var string $route
+         * @var array $routeParams
+         * @var string $routeCallback
+         */
+        [$route, $routeParams, $routeCallback] = $this->getRouteInfo($request);
 
         if ($this->container->has(RpcContext::class)) {
             $rpcContext = $this->container->get(RpcContext::class);
@@ -214,5 +204,27 @@ class TraceMiddleware implements MiddlewareInterface
 
         TraceContext::clearTransaction();
         TraceContext::clearSpan();
+    }
+
+    private function getRouteInfo(ServerRequestInterface $request): array
+    {
+        /** @var Dispatched|null $dispatched */
+        $dispatched = $request->getAttribute(Dispatched::class);
+        $route = '[missing_route]';
+        $params = [];
+        $callback = '[unknown_callback]';
+
+        if ($dispatched->isFound()) {
+            $route = $dispatched->handler->route;
+            $params = $dispatched->params;
+            $callback = match (true) {
+                $dispatched->handler->callback instanceof Closure => 'closure',
+                is_array($dispatched->handler->callback) => implode('::', $dispatched->handler->callback),
+                is_string($dispatched->handler->callback) => $dispatched->handler->callback,
+                default => $callback,
+            };
+        }
+
+        return [$route, $params, $callback];
     }
 }
