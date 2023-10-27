@@ -35,6 +35,10 @@ class TagManager
 
     public function get(string $key): string
     {
+        if (! str_contains($key, '.')) {
+            return $key;
+        }
+
         [$type, $key] = explode('.', $key, 2);
 
         return (string) ($this->tags[$type][$key] ?? $type . '.' . $key);
