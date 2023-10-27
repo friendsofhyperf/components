@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Middleware;
 
+use Closure;
 use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
@@ -110,6 +111,22 @@ class TraceMiddleware implements MiddlewareInterface
         $sentryTrace = $request->getHeaderLine('sentry-trace', '');
         $baggage = $request->getHeaderLine('baggage', '');
 
+        /** @var Dispatched|null $dispatched */
+        $dispatched = $request->getAttribute(Dispatched::class);
+        $route = $path;
+        $routeParams = [];
+        $routeCallback = '[unknown_callback]';
+        if ($dispatched->isFound()) {
+            $route = $dispatched->handler->route;
+            $routeParams = $dispatched->params;
+            $routeCallback = match (true) {
+                $dispatched->handler->callback instanceof Closure => 'closure',
+                is_array($dispatched->handler->callback) => implode('::', $dispatched->handler->callback),
+                is_string($dispatched->handler->callback) => $dispatched->handler->callback,
+                default => '[unknown_callback]',
+            };
+        }
+
         if ($this->container->has(RpcContext::class)) {
             $rpcContext = $this->container->get(RpcContext::class);
             $carrier = $rpcContext->get(TraceContext::RPC_CARRIER);
@@ -120,27 +137,36 @@ class TraceMiddleware implements MiddlewareInterface
         }
 
         $context = continueTrace($sentryTrace, $baggage);
-        $context->setName($path);
+        $context->setName($route);
         $context->setOp(sprintf('%s.server', $server));
         $context->setDescription(sprintf('request: %s %s', $request->getMethod(), $path));
         $context->setSource(TransactionSource::url());
         $context->setStartTimestamp($startTimestamp);
 
         // Set data
-        $data = [
-            'url' => $path,
-            'http.method' => strtoupper($request->getMethod()),
-        ];
-        if ($this->tagManager->has('request.query_params')) {
-            $data[$this->tagManager->get('request.query_params')] = $request->getQueryParams();
+        $data = [];
+        if ($this->tagManager->has('request.route.params') && $routeParams) {
+            $data[$this->tagManager->get('request.route.params')] = $routeParams;
         }
-        if ($this->tagManager->has('request.body')) {
-            $data[$this->tagManager->get('request.body')] = $request->getParsedBody();
+        if ($this->tagManager->has('request.query_params') && $queryParams = $request->getQueryParams()) {
+            $data[$this->tagManager->get('request.query_params')] = $queryParams;
+        }
+        if ($this->tagManager->has('request.body') && $parsedBody = $request->getParsedBody()) {
+            $data[$this->tagManager->get('request.body')] = $parsedBody;
         }
         $context->setData($data);
 
         // Set tags
         $tags = [];
+        if ($this->tagManager->has('request.http.path')) {
+            $tags[$this->tagManager->get('request.http.path')] = $path;
+        }
+        if ($this->tagManager->has('request.http.method')) {
+            $tags[$this->tagManager->get('request.http.method')] = strtoupper($request->getMethod());
+        }
+        if ($this->tagManager->has('request.route.callback')) {
+            $tags[$this->tagManager->get('request.route.callback')] = $routeCallback;
+        }
         if ($this->tagManager->has('request.header')) {
             foreach ($request->getHeaders() as $key => $value) {
                 $tags[$this->tagManager->get('request.header') . '.' . $key] = implode(', ', $value);
