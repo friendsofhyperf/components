@@ -214,7 +214,7 @@ class TraceMiddleware implements MiddlewareInterface
         $params = [];
         $callback = '[unknown_callback]';
 
-        if ($dispatched->isFound()) {
+        if ($dispatched instanceof Dispatched && $dispatched->isFound()) {
             $route = $dispatched->handler->route;
             $params = $dispatched->params;
             $callback = match (true) {
