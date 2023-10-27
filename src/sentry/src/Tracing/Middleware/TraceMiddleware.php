@@ -145,7 +145,9 @@ class TraceMiddleware implements MiddlewareInterface
         $context->setStartTimestamp($startTimestamp);
 
         // Set data
-        $data = [];
+        $data = [
+            'http.request.method' => strtoupper($request->getMethod()), // MUST
+        ];
         if ($this->tagManager->has('request.route.params') && $routeParams) {
             $data[$this->tagManager->get('request.route.params')] = $routeParams;
         }
@@ -158,9 +160,7 @@ class TraceMiddleware implements MiddlewareInterface
         $context->setData($data);
 
         // Set tags
-        $tags = [
-            'http.request.method' => strtoupper($request->getMethod()), // MUST
-        ];
+        $tags = [];
         if ($this->tagManager->has('request.http.path')) {
             $tags[$this->tagManager->get('request.http.path')] = $path;
         }
