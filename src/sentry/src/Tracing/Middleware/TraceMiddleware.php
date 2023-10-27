@@ -114,7 +114,7 @@ class TraceMiddleware implements MiddlewareInterface
 
         /** @var Dispatched|null $dispatched */
         $dispatched = $request->getAttribute(Dispatched::class);
-        $route = $path;
+        $route = '[missing_route]';
         $routeParams = [];
         $routeCallback = '[unknown_callback]';
         if ($dispatched->isFound()) {
@@ -146,7 +146,8 @@ class TraceMiddleware implements MiddlewareInterface
 
         // Set data
         $data = [
-            'http.request.method' => strtoupper($request->getMethod()), // MUST
+            'url' => $path,
+            'http.request.method' => strtoupper($request->getMethod()),
         ];
         if ($this->tagManager->has('request.route.params') && $routeParams) {
             $data[$this->tagManager->get('request.route.params')] = $routeParams;
