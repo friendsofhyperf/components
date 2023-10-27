@@ -83,6 +83,11 @@ return [
                 // 'result' => 'result',
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
+            'command' => [
+                'arguments' => 'command.arguments',
+                'options' => 'command.options',
+                'exit_code' => 'command.exit_code',
+            ],
             'coroutine' => [
                 'id' => 'coroutine.id',
                 'exception.stack_trace' => 'exception.stack_trace',
