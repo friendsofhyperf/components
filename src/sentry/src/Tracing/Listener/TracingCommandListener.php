@@ -12,15 +12,14 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanContext;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
+use FriendsOfHyperf\Sentry\Tracing\TraceContext;
+use Hyperf\Command\Event\AfterExecute;
 use Hyperf\Command\Event\BeforeHandle;
-use Hyperf\Coroutine\Coroutine;
-use Hyperf\Database\Events\QueryExecuted;
-use Hyperf\Database\Events\TransactionBeginning;
-use Hyperf\Database\Events\TransactionCommitted;
-use Hyperf\Database\Events\TransactionRolledBack;
 use Hyperf\Event\Contract\ListenerInterface;
+use Sentry\SentrySdk;
+use Sentry\State\HubInterface;
+use Sentry\Tracing\TransactionContext;
 
 class TracingCommandListener implements ListenerInterface
 {
@@ -34,43 +33,59 @@ class TracingCommandListener implements ListenerInterface
     {
         return [
             BeforeHandle::class,
+            AfterExecute::class,
         ];
     }
 
     /**
-     * @param QueryExecuted|TransactionBeginning|TransactionCommitted|TransactionRolledBack $event
+     * @param BeforeHandle|AfterExecute $event
      */
     public function process(object $event): void
     {
-        match (true) {
-            $event instanceof QueryExecuted => $this->queryExecutedHandler($event),
+        $sentry = SentrySdk::getCurrentHub();
+
+        match ($event::class) {
+            BeforeHandle::class => $this->startTransaction($sentry, $event),
+            AfterExecute::class => $this->finishTransaction($sentry, $event),
         };
     }
 
-    /**
-     * @param object|QueryExecuted $event
-     */
-    protected function queryExecutedHandler(object $event): void
+    protected function startTransaction(HubInterface $sentry, BeforeHandle $event): void
     {
-        if (! $this->switcher->isTracingEnable('sql_queries')) {
+        $command = $event->getCommand();
+        $context = new TransactionContext();
+        $context->setName($command->getName() ?: '<unnamed command>');
+        $context->setOp('command.execute');
+        $context->setDescription($command->getDescription());
+        $context->setStartTimestamp(microtime(true));
+
+        $data = [];
+        if ($this->tagManager->has('command.arguments')) {
+            $data[$this->tagManager->get('command.arguments')] = (fn () => $this->input->getArguments())->call($command);
+        }
+        if ($this->tagManager->has('command.options')) {
+            $data[$this->tagManager->get('command.options')] = (fn () => $this->input->getOptions())->call($command);
+        }
+        $context->setData($data);
+        $transaction = $sentry->startTransaction($context);
+        TraceContext::setTransaction($transaction);
+        $sentry->setSpan($transaction);
+    }
+
+    protected function finishTransaction(HubInterface $sentry, AfterExecute $event): void
+    {
+        $transaction = TraceContext::getTransaction();
+
+        if (! $transaction) {
             return;
         }
 
-        $data = [];
-        if ($this->tagManager->has('sql_queries.coroutine.id')) {
-            $data[$this->tagManager->get('sql_queries.coroutine.id')] = Coroutine::id();
+        $command = $event->getCommand();
+        $tags = [];
+        if ($this->tagManager->has('command.exit_code')) {
+            $tags[$this->tagManager->get('command.exit_code')] = $command->getName();
         }
-        if ($this->tagManager->has('sql_queries.db.bindings')) {
-            $data[$this->tagManager->get('sql_queries.db.bindings')] = $event->bindings;
-        }
-        if ($this->tagManager->has('sql_queries.db.connection_name')) {
-            $data[$this->tagManager->get('sql_queries.db.connection_name')] = $event->connectionName;
-        }
-
-        $startTimestamp = microtime(true) - $event->time / 1000;
-        SpanContext::create('db.sql.query', $event->sql)
-            ->setData($data)
-            ->setStartTimestamp($startTimestamp)
-            ->finish($startTimestamp + $event->time / 1000);
+        $transaction->setTags($tags);
+        $transaction->finish(microtime(true));
     }
 }
