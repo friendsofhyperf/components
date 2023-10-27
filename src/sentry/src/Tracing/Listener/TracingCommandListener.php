@@ -21,6 +21,7 @@ use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
+use Sentry\Tracing\TransactionSource;
 
 class TracingCommandListener implements ListenerInterface
 {
@@ -56,6 +57,7 @@ class TracingCommandListener implements ListenerInterface
         $command = $event->getCommand();
         $context = new TransactionContext();
         $context->setName($command->getName() ?: '<unnamed command>');
+        $context->setSource(TransactionSource::custom());
         $context->setOp('command.execute');
         $context->setDescription($command->getDescription());
         $context->setStartTimestamp(microtime(true));
