@@ -19,6 +19,7 @@ use Hyperf\Command\Event\BeforeHandle;
 use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
+use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
 
 class TracingCommandListener implements ListenerInterface
@@ -86,6 +87,20 @@ class TracingCommandListener implements ListenerInterface
             $tags[$this->tagManager->get('command.exit_code')] = $command->getName();
         }
         $transaction->setTags($tags);
+        if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
+            $transaction->setStatus(SpanStatus::internalError());
+            $transaction->setTags([
+                'error' => true,
+                'exception.class' => $exception::class,
+                'exception.message' => $exception->getMessage(),
+                'exception.code' => $exception->getCode(),
+            ]);
+            if ($this->tagManager->has('command.exception.stack_trace')) {
+                $transaction->setData([
+                    $this->tagManager->get('command.exception.stack_trace') => (string) $exception,
+                ]);
+            }
+        }
         $transaction->finish(microtime(true));
     }
 }

@@ -87,6 +87,7 @@ return [
                 'arguments' => 'command.arguments',
                 'options' => 'command.options',
                 'exit_code' => 'command.exit_code',
+                'exception.stack_trace' => 'exception.stack_trace',
             ],
             'coroutine' => [
                 'id' => 'coroutine.id',
