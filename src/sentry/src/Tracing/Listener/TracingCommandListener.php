@@ -22,7 +22,12 @@ use Sentry\State\HubInterface;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
+use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
+/**
+ * @property int $exitCode
+ * @property \Symfony\Component\Console\Input\InputInterface $input
+ */
 class TracingCommandListener implements ListenerInterface
 {
     public function __construct(
@@ -87,7 +92,7 @@ class TracingCommandListener implements ListenerInterface
         $command = $event->getCommand();
         $tags = [];
         if ($this->tagManager->has('command.exit_code')) {
-            $tags[$this->tagManager->get('command.exit_code')] = $command->getName();
+            $tags[$this->tagManager->get('command.exit_code')] = (fn () => $this->exitCode ?? SymfonyCommand::SUCCESS)->call($command);
         }
         $transaction->setTags($tags);
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
