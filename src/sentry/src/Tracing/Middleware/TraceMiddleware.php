@@ -228,7 +228,7 @@ class TraceMiddleware implements MiddlewareInterface
     {
         /** @var Dispatched|null $dispatched */
         $dispatched = $request->getAttribute(Dispatched::class);
-        $route = '<missing found>';
+        $route = '<missing route>';
         $params = [];
         $callback = '';
 
