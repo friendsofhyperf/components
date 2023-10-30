@@ -73,6 +73,7 @@ class TracingCommandListener implements ListenerInterface
         $transaction = $sentry->startTransaction($context);
         TraceContext::setTransaction($transaction);
         $sentry->setSpan($transaction);
+        TraceContext::setSpan($transaction);
     }
 
     protected function finishTransaction(HubInterface $sentry, AfterExecute $event): void
