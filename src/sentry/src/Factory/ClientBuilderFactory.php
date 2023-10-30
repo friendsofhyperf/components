@@ -24,6 +24,7 @@ class ClientBuilderFactory
 {
     public const SPECIFIC_OPTIONS = [
         'breadcrumbs',
+        'ignore_commands',
         'integrations',
         'enable',
         'tracing',
