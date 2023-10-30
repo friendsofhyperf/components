@@ -32,6 +32,7 @@ use Hyperf\Coroutine\Coroutine;
 use Hyperf\Guzzle\CoroutineHandler;
 use Hyperf\Macroable\Macroable;
 use Hyperf\Stringable\Str;
+use Hyperf\Stringable\Stringable;
 use JsonSerializable;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
@@ -1313,10 +1314,12 @@ class PendingRequest
             $this->transferStats = $transferStats;
         };
 
-        return $this->buildClient()->{$clientMethod}($method, $url, $this->mergeOptions([
+        $mergedOptions = $this->normalizeRequestOptions($this->mergeOptions([
             'laravel_data' => $laravelData,
             'on_stats' => $onStats,
         ], $options));
+
+        return $this->buildClient()->{$clientMethod}($method, $url, $mergedOptions);
     }
 
     /**
@@ -1351,6 +1354,24 @@ class PendingRequest
         }
 
         return is_array($laravelData) ? $laravelData : [];
+    }
+
+    /**
+     * Normalize the given request options.
+     *
+     * @return array
+     */
+    protected function normalizeRequestOptions(array $options)
+    {
+        foreach ($options as $key => $value) {
+            $options[$key] = match (true) {
+                is_array($value) => $this->normalizeRequestOptions($value),
+                $value instanceof Stringable => $value->toString(),
+                default => $value,
+            };
+        }
+
+        return $options;
     }
 
     /**
