@@ -15,7 +15,6 @@ use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Engine\Coroutine as Co;
-use Sentry\SentrySdk;
 
 class CoroutineAspect extends AbstractAspect
 {
@@ -23,12 +22,18 @@ class CoroutineAspect extends AbstractAspect
         'Hyperf\Coroutine\Coroutine::create',
     ];
 
+    protected array $keys = [
+        \Sentry\SentrySdk::class,
+        \Psr\Http\Message\ServerRequestInterface::class,
+    ];
+
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
+        $keys = $this->keys;
 
-        $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable) {
-            Context::copy(Co::pid(), [SentrySdk::class]);
+        $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $keys) {
+            Context::copy(Co::pid(), $keys);
             $callable();
         };
 
