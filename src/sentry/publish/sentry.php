@@ -16,7 +16,7 @@ return [
     'dsn' => env('SENTRY_DSN', ''),
 
     // The release version of your application
-    // Example with dynamic git hash: trim(exec('git --git-dir ' . base_path('.git') . ' log --pretty="%h" -n1 HEAD'))
+    // Example with dynamic git hash: trim(exec('git log --pretty="%h" -n1 HEAD'))
     'release' => env('SENTRY_RELEASE'),
 
     // When left empty or `null` the Laravel environment will be used (usually discovered from `APP_ENV` in your `.env`)
