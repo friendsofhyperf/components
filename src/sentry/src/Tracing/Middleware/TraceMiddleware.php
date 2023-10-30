@@ -38,7 +38,7 @@ use function Sentry\continueTrace;
 class TraceMiddleware implements MiddlewareInterface
 {
     /**
-     * @var string route/url/custom
+     * @var string route / url / custom
      */
     protected string $source = 'route';
 
@@ -127,9 +127,9 @@ class TraceMiddleware implements MiddlewareInterface
          */
         [$name, $source] = match (strtolower($this->source)) {
             'custom' => [$routeCallback, TransactionSource::custom()],
-            'route' => [$route, TransactionSource::route()],
             'url' => [$path, TransactionSource::url()],
-            default => [$path, TransactionSource::url()],
+            'route' => [$route, TransactionSource::route()],
+            default => [$route, TransactionSource::route()],
         };
 
         // Get sentry-trace and baggage
