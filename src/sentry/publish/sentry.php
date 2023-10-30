@@ -64,6 +64,10 @@ return [
         'GET /health',
     ],
 
+    'ignore_commands' => [
+        'tinker',
+    ],
+
     // Performance monitoring specific configuration
     'tracing' => [
         'enable' => [

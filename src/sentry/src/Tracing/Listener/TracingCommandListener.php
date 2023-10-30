@@ -16,6 +16,7 @@ use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Command\Event\AfterExecute;
 use Hyperf\Command\Event\BeforeHandle;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
@@ -30,10 +31,14 @@ use Symfony\Component\Console\Command\Command as SymfonyCommand;
  */
 class TracingCommandListener implements ListenerInterface
 {
+    protected array $ignoreCommands = [];
+
     public function __construct(
+        ConfigInterface $config,
         protected Switcher $switcher,
         protected TagManager $tagManager
     ) {
+        $this->ignoreCommands = $config->get('sentry.ignore_commands', []);
     }
 
     public function listen(): array
@@ -49,6 +54,10 @@ class TracingCommandListener implements ListenerInterface
      */
     public function process(object $event): void
     {
+        if (in_array($event->getCommand()->getName(), $this->ignoreCommands)) {
+            return;
+        }
+
         $sentry = SentrySdk::getCurrentHub();
 
         match ($event::class) {
