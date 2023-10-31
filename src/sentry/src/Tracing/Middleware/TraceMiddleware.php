@@ -52,7 +52,7 @@ class TraceMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): PsrResponseInterface
     {
         // Must be called before all.
-        $this->startTransaction($request, SentrySdk::getCurrentHub(), SentryContext::getServerName());
+        $this->startTransaction($request, SentrySdk::init(), SentryContext::getServerName());
 
         /** @var Dispatched|null $dispatched */
         $dispatched = $request->getAttribute(Dispatched::class);

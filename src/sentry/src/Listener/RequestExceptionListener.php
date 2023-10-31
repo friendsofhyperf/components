@@ -35,7 +35,7 @@ class RequestExceptionListener extends CaptureExceptionListener
 
         match ($event::class) {
             Event\RequestTerminated::class => $this->captureException($event->exception),
-            default => SentrySdk::getCurrentHub(),
+            default => SentrySdk::init(),
         };
     }
 }
