@@ -27,7 +27,7 @@ class CrontabExceptionListener extends CaptureExceptionListener
     public function listen(): array
     {
         return [
-            \Hyperf\Crontab\Event\BeforeExecute::class,
+            \Hyperf\Crontab\Event\BeforeExecute::class, /* @phpstan-ignore-line */
             \Hyperf\Crontab\Event\FailToExecute::class,
         ];
     }
