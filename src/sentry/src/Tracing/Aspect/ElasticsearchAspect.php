@@ -21,7 +21,7 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
-class ElasticserachAspect extends AbstractAspect
+class ElasticsearchAspect extends AbstractAspect
 {
     public array $classes = [
         Client::class . '::bulk',
@@ -47,7 +47,7 @@ class ElasticserachAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('elasticserach')) {
+        if (! $this->switcher->isTracingEnable('elasticsearch')) {
             return $proceedingJoinPoint->process();
         }
 
