@@ -58,11 +58,11 @@ class TracingCommandListener implements ListenerInterface
             return;
         }
 
-        $sentry = SentrySdk::getCurrentHub();
+        $sentry = SentrySdk::init();
 
         match ($event::class) {
             BeforeHandle::class => $this->startTransaction($sentry, $event),
-            AfterExecute::class => $this->finishTransaction($sentry, $event),
+            AfterExecute::class => $this->finishTransaction($event),
         };
     }
 
@@ -90,7 +90,7 @@ class TracingCommandListener implements ListenerInterface
         TraceContext::setSpan($transaction);
     }
 
-    protected function finishTransaction(HubInterface $sentry, AfterExecute $event): void
+    protected function finishTransaction(AfterExecute $event): void
     {
         $transaction = TraceContext::getTransaction();
 

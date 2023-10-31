@@ -94,7 +94,7 @@ class DbQueryListener implements ListenerInterface
             Breadcrumb::LEVEL_INFO,
             Breadcrumb::TYPE_DEFAULT,
             'sql.transaction',
-            get_class($event),
+            $event::class,
             $data
         ));
     }

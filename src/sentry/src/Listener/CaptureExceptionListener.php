@@ -33,14 +33,14 @@ abstract class CaptureExceptionListener implements ListenerInterface
             return;
         }
 
-        $hub = SentrySdk::getCurrentHub();
+        $sentry = SentrySdk::getCurrentHub();
 
         try {
-            $hub->captureException($throwable);
+            $sentry->captureException($throwable);
         } catch (Throwable $e) {
             $this->container->get(StdoutLoggerInterface::class)->error((string) $e);
         } finally {
-            $hub->getClient()?->flush();
+            $sentry->getClient()?->flush();
         }
     }
 }

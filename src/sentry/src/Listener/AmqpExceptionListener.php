@@ -35,7 +35,7 @@ class AmqpExceptionListener extends CaptureExceptionListener
 
         match ($event::class) {
             Event\FailToConsume::class => $this->captureException($event->getThrowable()),
-            default => SentrySdk::getCurrentHub(),
+            default => SentrySdk::init(),
         };
     }
 }
