@@ -35,7 +35,7 @@ class AsyncQueueExceptionListener extends CaptureExceptionListener
 
         match ($event::class) {
             Event\FailedHandle::class => $this->captureException($event->getThrowable()),
-            default => SentrySdk::getCurrentHub(),
+            default => SentrySdk::init(),
         };
     }
 }
