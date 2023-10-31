@@ -38,6 +38,7 @@ return [
         'amqp' => env('SENTRY_ENABLE_AMQP', true),
         'async_queue' => env('SENTRY_ENABLE_ASYNC_QUEUE', true),
         'command' => env('SENTRY_ENABLE_COMMAND', true),
+        'crontab' => env('SENTRY_ENABLE_CRONTAB', true),
         'kafka' => env('SENTRY_ENABLE_KAFKA', true),
         'request' => env('SENTRY_ENABLE_REQUEST', true),
     ],

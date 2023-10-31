@@ -47,6 +47,7 @@ class ConfigProvider
                 Listener\AsyncQueueExceptionListener::class,
                 Listener\CheckIsEnableRequestLifecycleListener::class,
                 Listener\CommandExceptionListener::class,
+                Listener\CrontabExceptionListener::class,
                 Listener\DbQueryListener::class,
                 Listener\KafkaExceptionListener::class,
                 Listener\RequestExceptionListener::class,
