@@ -27,7 +27,7 @@ class ConfigProvider
                 Aspect\SentryHttpClientFactoryAspect::class,
                 Tracing\Aspect\CoroutineAspect::class,
                 Tracing\Aspect\DbAspect::class,
-                Tracing\Aspect\ElasticserachAspect::class,
+                Tracing\Aspect\ElasticsearchAspect::class,
                 Tracing\Aspect\GuzzleHttpClientAspect::class,
                 Tracing\Aspect\RpcAspect::class,
                 Tracing\Aspect\RedisAspect::class,
