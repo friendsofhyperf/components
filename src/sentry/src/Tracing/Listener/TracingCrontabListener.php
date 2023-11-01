@@ -92,8 +92,6 @@ class TracingCrontabListener implements ListenerInterface
             return;
         }
 
-        $tags = [];
-        $transaction->setTags($tags);
         if ($exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError());
             $transaction->setTags([
