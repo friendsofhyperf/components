@@ -14,83 +14,83 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
-use Hyperf\Command\Event\AfterExecute;
-use Hyperf\Command\Event\BeforeHandle;
-use Hyperf\Contract\ConfigInterface;
+use Hyperf\Amqp\Event\AfterConsume;
+use Hyperf\Amqp\Event\BeforeConsume;
+use Hyperf\Amqp\Event\FailToConsume;
 use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
-use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
-/**
- * @property int $exitCode
- * @property \Symfony\Component\Console\Input\InputInterface $input
- */
-class TracingCommandListener implements ListenerInterface
+class TracingAmqpListener implements ListenerInterface
 {
-    protected array $ignoreCommands = [];
-
     public function __construct(
-        ConfigInterface $config,
         protected Switcher $switcher,
         protected TagManager $tagManager
     ) {
-        $this->ignoreCommands = $config->get('sentry.ignore_commands', []);
     }
 
     public function listen(): array
     {
         return [
-            BeforeHandle::class,
-            AfterExecute::class,
+            BeforeConsume::class,
+            AfterConsume::class,
+            FailToConsume::class,
         ];
     }
 
     /**
-     * @param BeforeHandle|AfterExecute $event
+     * @param BeforeConsume|AfterConsume|FailToConsume| $event
      */
     public function process(object $event): void
     {
-        if (in_array($event->getCommand()->getName(), $this->ignoreCommands)) {
-            return;
-        }
-
         $sentry = SentrySdk::init();
 
         match ($event::class) {
-            BeforeHandle::class => $this->startTransaction($sentry, $event),
-            AfterExecute::class => $this->finishTransaction($event),
+            BeforeConsume::class => $this->startTransaction($sentry, $event),
+            AfterConsume::class, FailToConsume::class => $this->finishTransaction($event),
         };
     }
 
-    protected function startTransaction(HubInterface $sentry, BeforeHandle $event): void
+    protected function startTransaction(HubInterface $sentry, BeforeConsume $event): void
     {
-        $command = $event->getCommand();
+        $message = $event->getMessage();
         $context = new TransactionContext();
-        $context->setName($command->getName() ?: '<unnamed command>');
+        $context->setName($message::class);
         $context->setSource(TransactionSource::custom());
-        $context->setOp('command.execute');
-        $context->setDescription($command->getDescription());
+        $context->setOp('amqp.consume');
+        $context->setDescription('message:' . $message::class);
         $context->setStartTimestamp(microtime(true));
 
-        $data = [];
-        if ($this->tagManager->has('command.arguments')) {
-            $data[$this->tagManager->get('command.arguments')] = (fn () => $this->input->getArguments())->call($command);
+        $tags = [];
+
+        if ($this->tagManager->has('amqp.type')) {
+            $tags[$this->tagManager->get('amqp.type')] = $message->getType();
         }
-        if ($this->tagManager->has('command.options')) {
-            $data[$this->tagManager->get('command.options')] = (fn () => $this->input->getOptions())->call($command);
+        if ($this->tagManager->has('amqp.exchange')) {
+            $tags[$this->tagManager->get('amqp.exchange')] = $message->getExchange();
         }
-        $context->setData($data);
+        if ($this->tagManager->has('amqp.routing_key')) {
+            $tags[$this->tagManager->get('amqp.routing_key')] = $message->getRoutingKey();
+        }
+        if ($this->tagManager->has('amqp.poo_name')) {
+            $tags[$this->tagManager->get('amqp.poo_name')] = $message->getPoolName();
+        }
+        if ($this->tagManager->has('amqp.queue') && method_exists($message, 'getQueue')) {
+            $tags[$this->tagManager->get('amqp.queue')] = $message->getQueue();
+        }
+
         $transaction = $sentry->startTransaction($context);
+        $transaction->setTags($tags);
+
         TraceContext::setTransaction($transaction);
         $sentry->setSpan($transaction);
         TraceContext::setSpan($transaction);
     }
 
-    protected function finishTransaction(AfterExecute $event): void
+    protected function finishTransaction(AfterConsume|FailToConsume $event): void
     {
         $transaction = TraceContext::getTransaction();
 
@@ -98,12 +98,11 @@ class TracingCommandListener implements ListenerInterface
             return;
         }
 
-        $command = $event->getCommand();
         $data = [];
         $tags = [];
 
-        if ($this->tagManager->has('command.exit_code')) {
-            $tags[$this->tagManager->get('command.exit_code')] = (fn () => $this->exitCode ?? SymfonyCommand::SUCCESS)->call($command);
+        if ($this->tagManager->has('amqp.result') && method_exists($event, 'getResult')) {
+            $tags[$this->tagManager->get('amqp.result')] = $event->getResult();
         }
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
@@ -114,8 +113,8 @@ class TracingCommandListener implements ListenerInterface
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('command.exception.stack_trace')) {
-                $data[$this->tagManager->get('command.exception.stack_trace')] = (string) $exception;
+            if ($this->tagManager->has('amqp.exception.stack_trace')) {
+                $data[$this->tagManager->get('amqp.exception.stack_trace')] = (string) $exception;
             }
         }
 
