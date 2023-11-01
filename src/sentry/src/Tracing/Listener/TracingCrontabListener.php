@@ -65,6 +65,7 @@ class TracingCrontabListener implements ListenerInterface
         $context->setStartTimestamp(microtime(true));
 
         $data = [];
+
         if ($this->tagManager->has('crontab.rule')) {
             $data[$this->tagManager->get('crontab.rule')] = $crontab->getRule();
         }
@@ -77,6 +78,7 @@ class TracingCrontabListener implements ListenerInterface
                 'is_on_one_server' => $crontab->isOnOneServer(),
             ];
         }
+
         $context->setData($data);
         $transaction = $sentry->startTransaction($context);
         TraceContext::setTransaction($transaction);
@@ -92,20 +94,25 @@ class TracingCrontabListener implements ListenerInterface
             return;
         }
 
+        $data = [];
+        $tags = [];
+
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError());
-            $transaction->setTags([
+            $tags = array_merge($tags, [
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
             if ($this->tagManager->has('crontab.exception.stack_trace')) {
-                $transaction->setData([
-                    $this->tagManager->get('crontab.exception.stack_trace') => (string) $exception,
-                ]);
+                $data[$this->tagManager->get('crontab.exception.stack_trace')] = (string) $exception;
             }
         }
+
+        $transaction->setData($data);
+        $transaction->setTags($tags);
+
         $transaction->finish(microtime(true));
     }
 }

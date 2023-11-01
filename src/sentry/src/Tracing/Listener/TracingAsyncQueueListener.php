@@ -14,83 +14,65 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
-use Hyperf\Command\Event\AfterExecute;
-use Hyperf\Command\Event\BeforeHandle;
-use Hyperf\Contract\ConfigInterface;
+use Hyperf\AsyncQueue\Event\AfterHandle;
+use Hyperf\AsyncQueue\Event\BeforeHandle;
+use Hyperf\AsyncQueue\Event\FailedHandle;
+use Hyperf\AsyncQueue\Event\RetryHandle;
 use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
-use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
-/**
- * @property int $exitCode
- * @property \Symfony\Component\Console\Input\InputInterface $input
- */
-class TracingCommandListener implements ListenerInterface
+class TracingAsyncQueueListener implements ListenerInterface
 {
-    protected array $ignoreCommands = [];
-
     public function __construct(
-        ConfigInterface $config,
         protected Switcher $switcher,
         protected TagManager $tagManager
     ) {
-        $this->ignoreCommands = $config->get('sentry.ignore_commands', []);
     }
 
     public function listen(): array
     {
         return [
             BeforeHandle::class,
-            AfterExecute::class,
+            AfterHandle::class,
+            RetryHandle::class,
+            FailedHandle::class,
         ];
     }
 
     /**
-     * @param BeforeHandle|AfterExecute $event
+     * @param BeforeHandle|AfterHandle $event
      */
     public function process(object $event): void
     {
-        if (in_array($event->getCommand()->getName(), $this->ignoreCommands)) {
-            return;
-        }
-
         $sentry = SentrySdk::init();
 
         match ($event::class) {
             BeforeHandle::class => $this->startTransaction($sentry, $event),
-            AfterExecute::class => $this->finishTransaction($event),
+            RetryHandle::class, FailedHandle::class, AfterHandle::class => $this->finishTransaction($event),
         };
     }
 
     protected function startTransaction(HubInterface $sentry, BeforeHandle $event): void
     {
-        $command = $event->getCommand();
+        $job = $event->getMessage()->job();
         $context = new TransactionContext();
-        $context->setName($command->getName() ?: '<unnamed command>');
+        $context->setName($job::class);
         $context->setSource(TransactionSource::custom());
-        $context->setOp('command.execute');
-        $context->setDescription($command->getDescription());
+        $context->setOp('async_queue.job.handle');
+        $context->setDescription('job:' . $job::class);
         $context->setStartTimestamp(microtime(true));
 
-        $data = [];
-        if ($this->tagManager->has('command.arguments')) {
-            $data[$this->tagManager->get('command.arguments')] = (fn () => $this->input->getArguments())->call($command);
-        }
-        if ($this->tagManager->has('command.options')) {
-            $data[$this->tagManager->get('command.options')] = (fn () => $this->input->getOptions())->call($command);
-        }
-        $context->setData($data);
         $transaction = $sentry->startTransaction($context);
         TraceContext::setTransaction($transaction);
         $sentry->setSpan($transaction);
         TraceContext::setSpan($transaction);
     }
 
-    protected function finishTransaction(AfterExecute $event): void
+    protected function finishTransaction(AfterHandle|RetryHandle|FailedHandle $event): void
     {
         $transaction = TraceContext::getTransaction();
 
@@ -98,13 +80,8 @@ class TracingCommandListener implements ListenerInterface
             return;
         }
 
-        $command = $event->getCommand();
         $data = [];
         $tags = [];
-
-        if ($this->tagManager->has('command.exit_code')) {
-            $tags[$this->tagManager->get('command.exit_code')] = (fn () => $this->exitCode ?? SymfonyCommand::SUCCESS)->call($command);
-        }
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError());
@@ -114,8 +91,8 @@ class TracingCommandListener implements ListenerInterface
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('command.exception.stack_trace')) {
-                $data[$this->tagManager->get('command.exception.stack_trace')] = (string) $exception;
+            if ($this->tagManager->has('async_queue.exception.stack_trace')) {
+                $data[$this->tagManager->get('async_queue.exception.stack_trace')] = (string) $exception;
             }
         }
 

@@ -81,10 +81,21 @@ return [
             'missing_routes' => env('SENTRY_TRACING_ENABLE_MISSING_ROUTES', true),
         ],
         'tags' => [
+            'amqp' => [
+                'type' => 'amqp.type',
+                'exchange' => 'amqp.exchange',
+                'routing_key' => 'amqp.routing_key',
+                'pool_name' => 'amqp.pool_name',
+                // 'result' => 'result',
+                'exception.stack_trace' => 'exception.stack_trace',
+            ],
             'annotation' => [
                 'coroutine.id' => 'coroutine.id',
                 'arguments' => 'arguments',
                 // 'result' => 'result',
+                'exception.stack_trace' => 'exception.stack_trace',
+            ],
+            'async_queue' => [
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
             'command' => [
@@ -124,6 +135,9 @@ return [
                 'response.status' => 'response.status',
                 'response.reason' => 'response.reason',
                 'response.headers' => 'response.headers',
+                'exception.stack_trace' => 'exception.stack_trace',
+            ],
+            'kafka' => [
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
             'redis' => [

@@ -56,6 +56,7 @@ class TracingDbQueryListener implements ListenerInterface
         }
 
         $data = [];
+
         if ($this->tagManager->has('sql_queries.coroutine.id')) {
             $data[$this->tagManager->get('sql_queries.coroutine.id')] = Coroutine::id();
         }
