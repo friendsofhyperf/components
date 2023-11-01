@@ -78,20 +78,24 @@ class TracingKafkaListener implements ListenerInterface
             return;
         }
 
+        $data = [];
+        $tags = [];
+
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError());
-            $transaction->setTags([
+            $tags = array_merge($tags, [
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
             if ($this->tagManager->has('kafka.exception.stack_trace')) {
-                $transaction->setData([
-                    $this->tagManager->get('kafka.exception.stack_trace') => (string) $exception,
-                ]);
+                $data[$this->tagManager->get('kafka.exception.stack_trace')] = (string) $exception;
             }
         }
+
+        $transaction->setData($data);
+        $transaction->setTags($tags);
 
         $transaction->finish(microtime(true));
     }

@@ -86,6 +86,7 @@ return [
                 'exchange' => 'amqp.exchange',
                 'routing_key' => 'amqp.routing_key',
                 'pool_name' => 'amqp.pool_name',
+                // 'result' => 'result',
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
             'annotation' => [

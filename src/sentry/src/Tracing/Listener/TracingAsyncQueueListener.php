@@ -80,20 +80,24 @@ class TracingAsyncQueueListener implements ListenerInterface
             return;
         }
 
+        $data = [];
+        $tags = [];
+
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError());
-            $transaction->setTags([
+            $tags = array_merge($tags, [
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
             if ($this->tagManager->has('async_queue.exception.stack_trace')) {
-                $transaction->setData([
-                    $this->tagManager->get('async_queue.exception.stack_trace') => (string) $exception,
-                ]);
+                $data[$this->tagManager->get('async_queue.exception.stack_trace')] = (string) $exception;
             }
         }
+
+        $transaction->setData($data);
+        $transaction->setTags($tags);
 
         $transaction->finish(microtime(true));
     }
