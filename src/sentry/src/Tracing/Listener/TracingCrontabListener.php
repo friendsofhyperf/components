@@ -35,8 +35,8 @@ class TracingCrontabListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            BeforeExecute::class,
-            AfterExecute::class,
+            AfterExecute::class, // @phpstan-ignore-line
+            BeforeExecute::class, // @phpstan-ignore-line
         ];
     }
 
@@ -48,12 +48,12 @@ class TracingCrontabListener implements ListenerInterface
         $sentry = SentrySdk::init();
 
         match ($event::class) {
-            BeforeExecute::class => $this->startTransaction($sentry, $event),
-            AfterExecute::class => $this->finishTransaction($event),
+            BeforeExecute::class => $this->startTransaction($sentry, $event), // @phpstan-ignore-line
+            AfterExecute::class => $this->finishTransaction($event), // @phpstan-ignore-line
         };
     }
 
-    protected function startTransaction(HubInterface $sentry, BeforeExecute $event): void
+    protected function startTransaction(HubInterface $sentry, BeforeExecute $event): void // @phpstan-ignore-line
     {
         /** @var Crontab $crontab */
         $crontab = $event->crontab;
@@ -84,7 +84,7 @@ class TracingCrontabListener implements ListenerInterface
         TraceContext::setSpan($transaction);
     }
 
-    protected function finishTransaction(AfterExecute $event): void
+    protected function finishTransaction(AfterExecute $event): void // @phpstan-ignore-line
     {
         $transaction = TraceContext::getTransaction();
 
