@@ -97,6 +97,12 @@ return [
                 'id' => 'coroutine.id',
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
+            'crontab' => [
+                'rule' => 'crontab.rule',
+                'type' => 'crontab.type',
+                'options' => 'crontab.options',
+                'exception.stack_trace' => 'exception.stack_trace',
+            ],
             'db' => [
                 'coroutine.id' => 'coroutine.id',
                 'query' => 'db.query',
