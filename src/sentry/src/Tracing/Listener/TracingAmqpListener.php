@@ -19,7 +19,6 @@ use Hyperf\Amqp\Event\BeforeConsume;
 use Hyperf\Amqp\Event\FailToConsume;
 use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\SentrySdk;
-use Sentry\State\HubInterface;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
@@ -46,16 +45,15 @@ class TracingAmqpListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        $sentry = SentrySdk::init();
-
         match ($event::class) {
-            BeforeConsume::class => $this->startTransaction($sentry, $event),
+            BeforeConsume::class => $this->startTransaction($event),
             AfterConsume::class, FailToConsume::class => $this->finishTransaction($event),
         };
     }
 
-    protected function startTransaction(HubInterface $sentry, BeforeConsume $event): void
+    protected function startTransaction(BeforeConsume $event): void
     {
+        $sentry = SentrySdk::init();
         $message = $event->getMessage();
         $context = new TransactionContext();
         $context->setName($message::class);
@@ -83,6 +81,12 @@ class TracingAmqpListener implements ListenerInterface
         }
 
         $transaction = $sentry->startTransaction($context);
+
+        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
+        if (! $transaction->getSampled()) {
+            return;
+        }
+
         $transaction->setTags($tags);
 
         TraceContext::setTransaction($transaction);

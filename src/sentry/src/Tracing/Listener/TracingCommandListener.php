@@ -19,7 +19,6 @@ use Hyperf\Command\Event\BeforeHandle;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\SentrySdk;
-use Sentry\State\HubInterface;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
@@ -61,13 +60,14 @@ class TracingCommandListener implements ListenerInterface
         $sentry = SentrySdk::init();
 
         match ($event::class) {
-            BeforeHandle::class => $this->startTransaction($sentry, $event),
+            BeforeHandle::class => $this->startTransaction($event),
             AfterExecute::class => $this->finishTransaction($event),
         };
     }
 
-    protected function startTransaction(HubInterface $sentry, BeforeHandle $event): void
+    protected function startTransaction(BeforeHandle $event): void
     {
+        $sentry = SentrySdk::init();
         $command = $event->getCommand();
         $context = new TransactionContext();
         $context->setName($command->getName() ?: '<unnamed command>');
@@ -84,7 +84,14 @@ class TracingCommandListener implements ListenerInterface
             $data[$this->tagManager->get('command.options')] = (fn () => $this->input->getOptions())->call($command);
         }
         $context->setData($data);
+
         $transaction = $sentry->startTransaction($context);
+
+        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
+        if (! $transaction->getSampled()) {
+            return;
+        }
+
         TraceContext::setTransaction($transaction);
         $sentry->setSpan($transaction);
         TraceContext::setSpan($transaction);

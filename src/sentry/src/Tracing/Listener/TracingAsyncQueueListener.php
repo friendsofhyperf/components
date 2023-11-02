@@ -20,7 +20,6 @@ use Hyperf\AsyncQueue\Event\FailedHandle;
 use Hyperf\AsyncQueue\Event\RetryHandle;
 use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\SentrySdk;
-use Sentry\State\HubInterface;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
@@ -48,16 +47,15 @@ class TracingAsyncQueueListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        $sentry = SentrySdk::init();
-
         match ($event::class) {
-            BeforeHandle::class => $this->startTransaction($sentry, $event),
+            BeforeHandle::class => $this->startTransaction($event),
             RetryHandle::class, FailedHandle::class, AfterHandle::class => $this->finishTransaction($event),
         };
     }
 
-    protected function startTransaction(HubInterface $sentry, BeforeHandle $event): void
+    protected function startTransaction(BeforeHandle $event): void
     {
+        $sentry = SentrySdk::init();
         $job = $event->getMessage()->job();
         $context = new TransactionContext();
         $context->setName($job::class);
@@ -67,6 +65,12 @@ class TracingAsyncQueueListener implements ListenerInterface
         $context->setStartTimestamp(microtime(true));
 
         $transaction = $sentry->startTransaction($context);
+
+        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
+        if (! $transaction->getSampled()) {
+            return;
+        }
+
         TraceContext::setTransaction($transaction);
         $sentry->setSpan($transaction);
         TraceContext::setSpan($transaction);

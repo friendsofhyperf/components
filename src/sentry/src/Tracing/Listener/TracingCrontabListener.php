@@ -17,9 +17,9 @@ use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Crontab\Crontab;
 use Hyperf\Crontab\Event\AfterExecute;
 use Hyperf\Crontab\Event\BeforeExecute;
+use Hyperf\Crontab\Event\FailToExecute;
 use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\SentrySdk;
-use Sentry\State\HubInterface;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
@@ -35,26 +35,26 @@ class TracingCrontabListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            AfterExecute::class, // @phpstan-ignore-line
             BeforeExecute::class, // @phpstan-ignore-line
+            FailToExecute::class,
+            AfterExecute::class, // @phpstan-ignore-line
         ];
     }
 
     /**
-     * @param BeforeExecute|AfterExecute $event
+     * @param BeforeExecute|AfterExecute|FailToExecute $event
      */
     public function process(object $event): void
     {
-        $sentry = SentrySdk::init();
-
         match ($event::class) {
-            BeforeExecute::class => $this->startTransaction($sentry, $event), // @phpstan-ignore-line
+            BeforeExecute::class => $this->startTransaction($event), // @phpstan-ignore-line
             AfterExecute::class => $this->finishTransaction($event), // @phpstan-ignore-line
         };
     }
 
-    protected function startTransaction(HubInterface $sentry, BeforeExecute $event): void // @phpstan-ignore-line
+    protected function startTransaction(BeforeExecute $event): void // @phpstan-ignore-line
     {
+        $sentry = SentrySdk::init();
         /** @var Crontab $crontab */
         $crontab = $event->crontab;
         $context = new TransactionContext();
@@ -80,13 +80,20 @@ class TracingCrontabListener implements ListenerInterface
         }
 
         $context->setData($data);
+
         $transaction = $sentry->startTransaction($context);
+
+        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
+        if (! $transaction->getSampled()) {
+            return;
+        }
+
         TraceContext::setTransaction($transaction);
         $sentry->setSpan($transaction);
         TraceContext::setSpan($transaction);
     }
 
-    protected function finishTransaction(AfterExecute $event): void // @phpstan-ignore-line
+    protected function finishTransaction(AfterExecute|FailToExecute $event): void // @phpstan-ignore-line
     {
         $transaction = TraceContext::getTransaction();
 
