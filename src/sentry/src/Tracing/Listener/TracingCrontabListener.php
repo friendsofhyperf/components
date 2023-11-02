@@ -80,7 +80,14 @@ class TracingCrontabListener implements ListenerInterface
         }
 
         $context->setData($data);
+
         $transaction = $sentry->startTransaction($context);
+
+        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
+        if (! $transaction->getSampled()) {
+            return;
+        }
+
         TraceContext::setTransaction($transaction);
         $sentry->setSpan($transaction);
         TraceContext::setSpan($transaction);

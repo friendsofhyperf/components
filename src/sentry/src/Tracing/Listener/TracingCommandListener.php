@@ -84,7 +84,14 @@ class TracingCommandListener implements ListenerInterface
             $data[$this->tagManager->get('command.options')] = (fn () => $this->input->getOptions())->call($command);
         }
         $context->setData($data);
+
         $transaction = $sentry->startTransaction($context);
+
+        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
+        if (! $transaction->getSampled()) {
+            return;
+        }
+
         TraceContext::setTransaction($transaction);
         $sentry->setSpan($transaction);
         TraceContext::setSpan($transaction);

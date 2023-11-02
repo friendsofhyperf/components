@@ -81,6 +81,12 @@ class TracingAmqpListener implements ListenerInterface
         }
 
         $transaction = $sentry->startTransaction($context);
+
+        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
+        if (! $transaction->getSampled()) {
+            return;
+        }
+
         $transaction->setTags($tags);
 
         TraceContext::setTransaction($transaction);
