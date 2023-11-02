@@ -19,7 +19,6 @@ use Hyperf\Kafka\Event\AfterConsume;
 use Hyperf\Kafka\Event\BeforeConsume;
 use Hyperf\Kafka\Event\FailToConsume;
 use Sentry\SentrySdk;
-use Sentry\State\HubInterface;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
@@ -46,16 +45,15 @@ class TracingKafkaListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        $sentry = SentrySdk::init();
-
         match ($event::class) {
-            BeforeConsume::class => $this->startTransaction($sentry, $event),
+            BeforeConsume::class => $this->startTransaction($event),
             AfterConsume::class, FailToConsume::class => $this->finishTransaction($event),
         };
     }
 
-    protected function startTransaction(HubInterface $sentry, BeforeConsume $event): void
+    protected function startTransaction(BeforeConsume $event): void
     {
+        $sentry = SentrySdk::init();
         $consumer = $event->getConsumer();
         $context = new TransactionContext();
         $context->setName($consumer->getName());
@@ -65,6 +63,12 @@ class TracingKafkaListener implements ListenerInterface
         $context->setStartTimestamp(microtime(true));
 
         $transaction = $sentry->startTransaction($context);
+
+        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
+        if (! $transaction->getSampled()) {
+            return;
+        }
+
         TraceContext::setTransaction($transaction);
         $sentry->setSpan($transaction);
         TraceContext::setSpan($transaction);
