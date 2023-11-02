@@ -134,7 +134,7 @@ class Sleep
     /**
      * Sleep until the given timestamp.
      *
-     * @param \DateTimeInterface|int|float|numeric-string $timestamp
+     * @param DateTimeInterface|int|float|numeric-string $timestamp
      * @return static
      */
     public static function until($timestamp)
