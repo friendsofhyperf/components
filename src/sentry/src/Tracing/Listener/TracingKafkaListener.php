@@ -56,11 +56,25 @@ class TracingKafkaListener implements ListenerInterface
         $sentry = SentrySdk::init();
         $consumer = $event->getConsumer();
         $context = new TransactionContext();
-        $context->setName($consumer->getName());
+        $context->setName($consumer->getTopic());
         $context->setSource(TransactionSource::custom());
         $context->setOp('kafka.consume');
         $context->setDescription($consumer::class);
         $context->setStartTimestamp(microtime(true));
+
+        $tags = [];
+
+        if ($this->tagManager->has('kafka.topic')) {
+            $tags[$this->tagManager->get('kafka.topic')] = $consumer->getTopic();
+        }
+        if ($this->tagManager->has('kafka.group_id')) {
+            $tags[$this->tagManager->get('kafka.group_id')] = $consumer->getGroupId();
+        }
+        if ($this->tagManager->has('kafka.pool')) {
+            $tags[$this->tagManager->get('kafka.pool')] = (string) $consumer->getPool();
+        }
+
+        $context->setTags($tags);
 
         $transaction = $sentry->startTransaction($context);
 

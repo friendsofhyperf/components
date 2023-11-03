@@ -138,6 +138,9 @@ return [
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
             'kafka' => [
+                'topic' => 'kafka.topic',
+                'group_id' => 'kafka.group_id',
+                'pool' => 'kafka.pool',
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
             'redis' => [
