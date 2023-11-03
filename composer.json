@@ -86,6 +86,7 @@
         "hyperf/paginator": "~3.0.0",
         "hyperf/rpc": "~3.0.0",
         "hyperf/rpc-client": "~3.0.0",
+        "hyperf/rpc-server": "~3.0.0",
         "hyperf/scout": "~3.0.0",
         "hyperf/tracer": "~3.0.0",
         "mockery/mockery": "^1.6",
