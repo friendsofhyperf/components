@@ -23,6 +23,7 @@ class ConfigProvider
                 Aspect\GuzzleHttpClientAspect::class,
                 Aspect\LoggerAspect::class,
                 Aspect\RedisAspect::class,
+                Aspect\ServerAspect::class,
                 Aspect\SingletonAspect::class,
                 Aspect\SentryHttpClientFactoryAspect::class,
                 Tracing\Aspect\CoroutineAspect::class,
@@ -50,7 +51,6 @@ class ConfigProvider
                 Listener\DbQueryListener::class,
                 Listener\KafkaExceptionListener::class,
                 Listener\RequestExceptionListener::class,
-                Listener\SetServerNameListener::class,
                 Tracing\Listener\TracingDbQueryListener::class,
             ],
             'annotations' => [
