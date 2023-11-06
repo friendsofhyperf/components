@@ -106,11 +106,14 @@ class TracingCommandListener implements ListenerInterface
         }
 
         $command = $event->getCommand();
+        $exitCode = (fn () => $this->exitCode ?? SymfonyCommand::SUCCESS)->call($command);
         $data = [];
         $tags = [];
 
+        $transaction->setStatus($exitCode == SymfonyCommand::SUCCESS ? SpanStatus::ok() : SpanStatus::internalError());
+
         if ($this->tagManager->has('command.exit_code')) {
-            $tags[$this->tagManager->get('command.exit_code')] = (fn () => $this->exitCode ?? SymfonyCommand::SUCCESS)->call($command);
+            $tags[$this->tagManager->get('command.exit_code')] = $exitCode;
         }
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {

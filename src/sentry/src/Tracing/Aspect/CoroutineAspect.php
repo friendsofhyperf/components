@@ -48,6 +48,7 @@ class CoroutineAspect extends AbstractAspect
         $parent = TraceContext::getSpan();
 
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent) {
+            $sentry = SentrySdk::init();
             $sentryTrace = $parent->toTraceparent();
             $baggage = $parent->toBaggage();
 
@@ -56,7 +57,7 @@ class CoroutineAspect extends AbstractAspect
             $context->setOp('coroutine.create');
             $context->setDescription('#' . Coroutine::id());
 
-            $transaction = SentrySdk::getCurrentHub()->startTransaction($context);
+            $transaction = $sentry->startTransaction($context);
             TraceContext::setTransaction($transaction);
 
             $coContext = new SentrySpanContext();
@@ -65,13 +66,13 @@ class CoroutineAspect extends AbstractAspect
             $coContext->setStartTimestamp(microtime(true));
             $coSpan = $transaction->startChild($coContext);
 
-            SentrySdk::getCurrentHub()->setSpan($coSpan);
+            $sentry->setSpan($coSpan);
             TraceContext::setSpan($coSpan);
 
-            defer(function () use ($transaction, $coContext, $coSpan) {
+            defer(function () use ($sentry, $transaction, $coContext, $coSpan) {
                 $coContext->setEndTimestamp(microtime(true));
                 $coSpan->finish();
-                SentrySdk::getCurrentHub()->setSpan($transaction);
+                $sentry->setSpan($transaction);
                 $transaction->finish();
                 // TraceContext::clearSpan();
                 // TraceContext::clearTransaction();
