@@ -16,15 +16,15 @@ use Hyperf\Context\ApplicationContext;
 use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanContext;
 
-function set_tag(Span|SpanContext $span, string $key, mixed $value): void
+function setTag(Span|SpanContext $span, string $key, mixed $value): void
 {
-    set_tags($span, [$key => $value]);
+    setTags($span, [$key => $value]);
 }
 
 /**
  * @param array<string, mixed> $tags
  */
-function set_tags(Span|SpanContext $span, array $tags = []): void
+function setTags(Span|SpanContext $span, array $tags = []): void
 {
     $tagManager = ApplicationContext::getContainer()->get(TagManager::class);
     $filtered = [];
@@ -46,7 +46,7 @@ function set_tags(Span|SpanContext $span, array $tags = []): void
 /**
  * @param array<string, mixed> $data
  */
-function set_data(Span|SpanContext $span, array $data = []): void
+function setData(Span|SpanContext $span, array $data = []): void
 {
     $tagManager = ApplicationContext::getContainer()->get(TagManager::class);
     $filtered = [];
