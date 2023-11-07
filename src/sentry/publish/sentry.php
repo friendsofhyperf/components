@@ -65,7 +65,10 @@ return [
     ],
 
     'ignore_commands' => [
+        'gen:*',
+        'migrate*',
         'tinker',
+        'vendor:publish',
     ],
 
     // Performance monitoring specific configuration
