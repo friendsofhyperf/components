@@ -108,7 +108,7 @@ return [
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
             'coroutine' => [
-                'id' => 'coroutine.id',
+                'coroutine.id' => 'coroutine.id',
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
             'crontab' => [
@@ -128,6 +128,11 @@ return [
                 'arguments' => 'arguments',
                 // 'result' => 'result',
                 'exception.stack_trace' => 'exception.stack_trace',
+            ],
+            'exception' => [
+                'class' => 'exception.class',
+                'message' => 'exception.message',
+                'code' => 'exception.code',
             ],
             'guzzle' => [
                 'coroutine.id' => 'coroutine.id',

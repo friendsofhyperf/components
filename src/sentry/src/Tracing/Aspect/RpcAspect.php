@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanContext;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Context\Context;
 use Hyperf\Coroutine\Coroutine;
@@ -38,8 +37,7 @@ class RpcAspect extends AbstractAspect
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher,
-        protected TagManager $tagManager
+        protected Switcher $switcher
     ) {
     }
 
@@ -56,11 +54,9 @@ class RpcAspect extends AbstractAspect
             $context = SpanContext::create('rpc.send', $path);
             Context::set(static::CONTEXT, $context);
 
-            $data = [];
-
-            if ($this->tagManager->has('rpc.coroutine.id')) {
-                $data[$this->tagManager->get('rpc.coroutine.id')] = Coroutine::id();
-            }
+            $data = [
+                'rpc.coroutine.id' => Coroutine::id(),
+            ];
 
             Context::set(static::DATA, $data);
 
@@ -80,34 +76,29 @@ class RpcAspect extends AbstractAspect
         if ($proceedingJoinPoint->methodName === 'send') {
             /** @var array $data */
             $data = (array) Context::get(static::DATA);
-            if ($this->tagManager->has('rpc.arguments')) {
-                $data[$this->tagManager->get('rpc.arguments')] = $proceedingJoinPoint->arguments['keys'];
-            }
+            $tags = [];
+            $data['rpc.arguments'] = $proceedingJoinPoint->arguments['keys'];
             /** @var SpanContext|null $context */
             $context = Context::get(static::CONTEXT);
 
             try {
                 $result = $proceedingJoinPoint->process();
-                if ($this->tagManager->has('rpc.result')) {
-                    $data[$this->tagManager->get('rpc.result')] = $result;
-                }
+                $data['rpc.result'] = $result;
             } catch (Throwable $exception) {
-                $context->setStatus(SpanStatus::internalError());
-                $context->setTags([
+                $tags = array_merge($tags, [
                     'error' => true,
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => $exception->getCode(),
                 ]);
-                if ($this->tagManager->has('rpc.exception.stack_trace')) {
-                    $data[$this->tagManager->get('rpc.exception.stack_trace')] = (string) $exception;
-                }
+                $data['rpc.exception.stack_trace'] = (string) $exception;
 
                 throw $exception;
             } finally {
                 $context?->setStatus(
                     isset($result['result']) ? SpanStatus::ok() : SpanStatus::internalError()
                 )
+                    ->setTags($tags)
                     ->setData($data)
                     ->finish();
             }

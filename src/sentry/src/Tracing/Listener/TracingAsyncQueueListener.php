@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\AsyncQueue\Event\AfterHandle;
 use Hyperf\AsyncQueue\Event\BeforeHandle;
@@ -26,10 +25,8 @@ use Sentry\Tracing\TransactionSource;
 
 class TracingAsyncQueueListener implements ListenerInterface
 {
-    public function __construct(
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function listen(): array
@@ -57,6 +54,7 @@ class TracingAsyncQueueListener implements ListenerInterface
     {
         $sentry = SentrySdk::init();
         $job = $event->getMessage()->job();
+
         $context = new TransactionContext();
         $context->setName($job::class);
         $context->setSource(TransactionSource::custom());
@@ -86,23 +84,22 @@ class TracingAsyncQueueListener implements ListenerInterface
 
         $data = [];
         $tags = [];
+        $status = SpanStatus::ok();
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
-            $transaction->setStatus(SpanStatus::internalError());
+            $status = SpanStatus::internalError();
             $tags = array_merge($tags, [
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('async_queue.exception.stack_trace')) {
-                $data[$this->tagManager->get('async_queue.exception.stack_trace')] = (string) $exception;
-            }
+            $data['async_queue.exception.stack_trace'] = (string) $exception;
         }
 
         $transaction->setData($data);
         $transaction->setTags($tags);
-
+        $transaction->setStatus($status);
         $transaction->finish(microtime(true));
     }
 }

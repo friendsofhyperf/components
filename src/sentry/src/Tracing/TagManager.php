@@ -24,6 +24,10 @@ class TagManager
 
     public function has(string $key): bool
     {
+        if ($key == 'error') {
+            return true;
+        }
+
         if (! str_contains($key, '.')) {
             return false;
         }

@@ -33,6 +33,7 @@ class ConfigProvider
                 Tracing\Aspect\GuzzleHttpClientAspect::class,
                 Tracing\Aspect\RpcAspect::class,
                 Tracing\Aspect\RedisAspect::class,
+                Tracing\Aspect\TagsFilterAspect::class,
                 Tracing\Aspect\TraceAnnotationAspect::class,
             ],
             'commands' => [

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Command\Event\AfterExecute;
 use Hyperf\Command\Event\BeforeHandle;
@@ -36,11 +35,8 @@ class TracingCommandListener implements ListenerInterface
      */
     protected array $ignoreCommands = [];
 
-    public function __construct(
-        ConfigInterface $config,
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(ConfigInterface $config, protected Switcher $switcher)
+    {
         $this->ignoreCommands = (array) $config->get('sentry.ignore_commands', []);
     }
 
@@ -78,15 +74,11 @@ class TracingCommandListener implements ListenerInterface
         $context->setDescription($command->getDescription());
         $context->setStartTimestamp(microtime(true));
 
-        $data = [];
-        if ($this->tagManager->has('command.arguments')) {
-            $data[$this->tagManager->get('command.arguments')] = (fn () => $this->input->getArguments())->call($command);
-        }
-        if ($this->tagManager->has('command.options')) {
-            $data[$this->tagManager->get('command.options')] = (fn () => $this->input->getOptions())->call($command);
-        }
+        $data = [
+            'command.arguments' => (fn () => $this->input->getArguments())->call($command),
+            'command.options' => (fn () => $this->input->getOptions())->call($command),
+        ];
         $context->setData($data);
-
         $transaction = $sentry->startTransaction($context);
 
         // If this transaction is not sampled, we can stop here to prevent doing work for nothing
@@ -110,13 +102,9 @@ class TracingCommandListener implements ListenerInterface
         $command = $event->getCommand();
         $exitCode = (fn () => $this->exitCode ?? SymfonyCommand::SUCCESS)->call($command);
         $data = [];
-        $tags = [];
-
-        $transaction->setStatus($exitCode == SymfonyCommand::SUCCESS ? SpanStatus::ok() : SpanStatus::internalError());
-
-        if ($this->tagManager->has('command.exit_code')) {
-            $tags[$this->tagManager->get('command.exit_code')] = $exitCode;
-        }
+        $tags = [
+            'command.exit_code' => $exitCode,
+        ];
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError());
@@ -126,14 +114,12 @@ class TracingCommandListener implements ListenerInterface
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('command.exception.stack_trace')) {
-                $data[$this->tagManager->get('command.exception.stack_trace')] = (string) $exception;
-            }
+            $data['command.exception.stack_trace'] = (string) $exception;
         }
 
         $transaction->setData($data);
         $transaction->setTags($tags);
-
+        $transaction->setStatus($exitCode == SymfonyCommand::SUCCESS ? SpanStatus::ok() : SpanStatus::internalError());
         $transaction->finish(microtime(true));
     }
 }

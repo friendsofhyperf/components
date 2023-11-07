@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Crontab\Crontab;
 use Hyperf\Crontab\Event\AfterExecute;
@@ -26,10 +25,8 @@ use Sentry\Tracing\TransactionSource;
 
 class TracingCrontabListener implements ListenerInterface
 {
-    public function __construct(
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function listen(): array
@@ -64,23 +61,16 @@ class TracingCrontabListener implements ListenerInterface
         $context->setDescription($crontab->getMemo());
         $context->setStartTimestamp(microtime(true));
 
-        $data = [];
-
-        if ($this->tagManager->has('crontab.rule')) {
-            $data[$this->tagManager->get('crontab.rule')] = $crontab->getRule();
-        }
-        if ($this->tagManager->has('crontab.type')) {
-            $data[$this->tagManager->get('crontab.type')] = $crontab->getType();
-        }
-        if ($this->tagManager->has('crontab.options')) {
-            $data[$this->tagManager->get('crontab.options')] = [
+        $data = [
+            'crontab.rule' => $crontab->getRule(),
+            'crontab.type' => $crontab->getType(),
+            'crontab.options' => [
                 'is_single' => $crontab->isSingleton(),
                 'is_on_one_server' => $crontab->isOnOneServer(),
-            ];
-        }
+            ],
+        ];
 
         $context->setData($data);
-
         $transaction = $sentry->startTransaction($context);
 
         // If this transaction is not sampled, we can stop here to prevent doing work for nothing
@@ -103,23 +93,22 @@ class TracingCrontabListener implements ListenerInterface
 
         $data = [];
         $tags = [];
+        $status = SpanStatus::ok();
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
-            $transaction->setStatus(SpanStatus::internalError());
+            $status = SpanStatus::internalError();
             $tags = array_merge($tags, [
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('crontab.exception.stack_trace')) {
-                $data[$this->tagManager->get('crontab.exception.stack_trace')] = (string) $exception;
-            }
+            $data['crontab.exception.stack_trace'] = (string) $exception;
         }
 
         $transaction->setData($data);
         $transaction->setTags($tags);
-
+        $transaction->setStatus($status);
         $transaction->finish(microtime(true));
     }
 }

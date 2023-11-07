@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanContext;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Database\Events\TransactionBeginning;
@@ -23,10 +22,8 @@ use Hyperf\Event\Contract\ListenerInterface;
 
 class TracingDbQueryListener implements ListenerInterface
 {
-    public function __construct(
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function listen(): array
@@ -55,17 +52,13 @@ class TracingDbQueryListener implements ListenerInterface
             return;
         }
 
-        $data = [];
-
-        if ($this->tagManager->has('sql_queries.coroutine.id')) {
-            $data[$this->tagManager->get('sql_queries.coroutine.id')] = Coroutine::id();
-        }
-        if ($this->tagManager->has('sql_queries.db.bindings')) {
-            $data[$this->tagManager->get('sql_queries.db.bindings')] = $event->bindings;
-        }
-        if ($this->tagManager->has('sql_queries.db.connection_name')) {
-            $data[$this->tagManager->get('sql_queries.db.connection_name')] = $event->connectionName;
-        }
+        $data = [
+            'sql_queries.coroutine.id' => Coroutine::id(),
+            'sql_queries.db.query' => $event->sql,
+            'sql_queries.db.time' => $event->time,
+            'sql_queries.db.bindings' => $event->bindings,
+            'sql_queries.db.connection_name' => $event->connectionName,
+        ];
 
         $startTimestamp = microtime(true) - $event->time / 1000;
         SpanContext::create('db.sql.query', $event->sql)

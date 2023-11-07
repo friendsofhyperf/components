@@ -12,10 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
-use Hyperf\Coroutine\Coroutine as Co;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\SentrySdk;
@@ -32,10 +30,8 @@ class CoroutineAspect extends AbstractAspect
         'Hyperf\Coroutine\Coroutine::create',
     ];
 
-    public function __construct(
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -78,30 +74,29 @@ class CoroutineAspect extends AbstractAspect
                 // TraceContext::clearTransaction();
             });
 
-            $data = [];
-
-            if ($this->tagManager->has('coroutine.id')) {
-                $data[$this->tagManager->get('coroutine.id')] = Co::id();
-            }
+            $data = [
+                'coroutine.coroutine.id' => Coroutine::id(),
+            ];
+            $tags = [];
+            $status = SpanStatus::ok();
 
             try {
                 $callable();
-                $transaction->setStatus(SpanStatus::ok());
             } catch (Throwable $exception) {
-                $transaction->setStatus(SpanStatus::internalError());
-                $transaction->setTags([
+                $status = SpanStatus::internalError();
+                $tags = array_merge($tags, [
                     'error' => true,
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => $exception->getCode(),
                 ]);
-                if ($this->tagManager->has('coroutine.exception.stack_trace')) {
-                    $data[$this->tagManager->get('coroutine.exception.stack_trace')] = (string) $exception;
-                }
+                $data['coroutine.exception.stack_trace'] = (string) $exception;
 
                 throw $exception;
             } finally {
-                $coContext->setData($data);
+                $transaction->setStatus($status);
+                $transaction->setData($data);
+                $transaction->setTags($tags);
             }
         };
 

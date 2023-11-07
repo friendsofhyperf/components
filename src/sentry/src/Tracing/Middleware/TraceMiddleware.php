@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Middleware;
 use Closure;
 use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\HttpServer\Router\Dispatched;
@@ -42,11 +41,8 @@ class TraceMiddleware implements MiddlewareInterface
      */
     protected string $source = 'route';
 
-    public function __construct(
-        protected ContainerInterface $container,
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(protected ContainerInterface $container, protected Switcher $switcher)
+    {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): PsrResponseInterface
@@ -156,33 +152,20 @@ class TraceMiddleware implements MiddlewareInterface
         $data = [
             'url' => $path,
             'http.request.method' => strtoupper($request->getMethod()),
+            'request.route.params' => $routeParams,
+            'request.query_params' => $request->getQueryParams(),
+            'request.body' => $request->getParsedBody(),
         ];
-        if ($this->tagManager->has('request.route.params') && $routeParams) {
-            $data[$this->tagManager->get('request.route.params')] = $routeParams;
-        }
-        if ($this->tagManager->has('request.query_params') && $queryParams = $request->getQueryParams()) {
-            $data[$this->tagManager->get('request.query_params')] = $queryParams;
-        }
-        if ($this->tagManager->has('request.body') && $parsedBody = $request->getParsedBody()) {
-            $data[$this->tagManager->get('request.body')] = $parsedBody;
-        }
         $context->setData($data);
 
         // Set tags
-        $tags = [];
-        if ($this->tagManager->has('request.http.path')) {
-            $tags[$this->tagManager->get('request.http.path')] = $path;
-        }
-        if ($this->tagManager->has('request.http.method')) {
-            $tags[$this->tagManager->get('request.http.method')] = strtoupper($request->getMethod());
-        }
-        if ($this->tagManager->has('request.route.callback') && $routeCallback) {
-            $tags[$this->tagManager->get('request.route.callback')] = $routeCallback;
-        }
-        if ($this->tagManager->has('request.header')) {
-            foreach ($request->getHeaders() as $key => $value) {
-                $tags[$this->tagManager->get('request.header') . '.' . $key] = implode(', ', $value);
-            }
+        $tags = [
+            'request.http.path' => $path,
+            'request.http.method' => strtoupper($request->getMethod()),
+            'request.route.callback' => $routeCallback,
+        ];
+        foreach ($request->getHeaders() as $key => $value) {
+            $tags['request.header.' . $key] = implode(', ', $value);
         }
         $context->setTags($tags);
 

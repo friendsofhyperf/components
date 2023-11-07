@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\Annotation\Trace;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -29,10 +28,8 @@ class TraceAnnotationAspect extends AbstractAspect
         Trace::class,
     ];
 
-    public function __construct(
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -45,13 +42,12 @@ class TraceAnnotationAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $data = [];
-        if ($this->tagManager->has('annotation.coroutine.id')) {
-            $data[$this->tagManager->get('annotation.coroutine.id')] = Coroutine::id();
-        }
-        if ($this->tagManager->has('annotation.arguments')) {
-            $data[$this->tagManager->get('annotation.arguments')] = $proceedingJoinPoint->arguments['keys'];
-        }
+        $data = [
+            'annotation.coroutine.id' => Coroutine::id(),
+            'annotation.arguments' => $proceedingJoinPoint->arguments['keys'],
+        ];
+        $tags = [];
+        $status = SpanStatus::ok();
 
         $annotationContext = new SentrySpanContext();
         $annotationContext->setOp($annotation->op ?? 'method');
@@ -65,23 +61,21 @@ class TraceAnnotationAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
-            if ($this->tagManager->has('annotation.result')) {
-                $data[$this->tagManager->get('annotation.result')] = $result;
-            }
-            $annotationSpan->setStatus(SpanStatus::ok());
+            $data['annotation.result'] = $result;
         } catch (Throwable $exception) {
-            $annotationSpan->setStatus(SpanStatus::internalError());
-            $annotationSpan->setTags([
+            $status = SpanStatus::internalError();
+            $tags = [
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
-            ]);
-            if ($this->tagManager->has('annotation.exception.stack_trace')) {
-                $data[$this->tagManager->get('annotation.exception.stack_trace')] = (string) $exception;
-            }
+            ];
+            $data['annotation.exception.stack_trace'] = (string) $exception;
+
             throw $exception;
         } finally {
+            $annotationContext->setStatus($status);
+            $annotationContext->setTags($tags);
             $annotationContext->setData($data);
             $annotationContext->setEndTimestamp(microtime(true));
             SentrySdk::getCurrentHub()->setSpan($annotationSpan);

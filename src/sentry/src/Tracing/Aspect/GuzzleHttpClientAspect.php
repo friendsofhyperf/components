@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanContext;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use GuzzleHttp\Client;
 use Hyperf\Coroutine\Coroutine;
@@ -35,11 +34,8 @@ class GuzzleHttpClientAspect extends AbstractAspect
         Client::class . '::requestAsync',
     ];
 
-    public function __construct(
-        protected ContainerInterface $container,
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(protected ContainerInterface $container, protected Switcher $switcher)
+    {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -73,28 +69,20 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
         $uri = $arguments['uri'] ?? '/';
         $method = $arguments['method'] ?? 'GET';
-        $data = [];
-
-        if ($this->tagManager->has('guzzle.coroutine.id')) {
-            $data[$this->tagManager->get('guzzle.coroutine.id')] = Coroutine::id();
-        }
-        if ($this->tagManager->has('guzzle.http.method')) {
-            $data[$this->tagManager->get('guzzle.http.method')] = $method;
-        }
-        if ($this->tagManager->has('guzzle.http.uri')) {
-            $data[$this->tagManager->get('guzzle.http.uri')] = (string) $uri;
-        }
-        if ($this->tagManager->has('guzzle.guzzle.config')) {
-            $data[$this->tagManager->get('guzzle.guzzle.config')] = $guzzleConfig;
-        }
-        if ($this->tagManager->has('guzzle.request.options')) {
-            $data[$this->tagManager->get('guzzle.request.options')] = $arguments['options'] ?? [];
-        }
+        $data = [
+            'guzzle.coroutine.id' => Coroutine::id(),
+            'guzzle.http.method' => $method,
+            'guzzle.http.uri' => (string) $uri,
+            'guzzle.guzzle.config' => $guzzleConfig,
+            'guzzle.request.options' => $arguments['options'] ?? [],
+        ];
+        $tags = [];
 
         $context = SpanContext::create(
             'http.client',
             $method . ' ' . (string) $uri
         );
+        $status = SpanStatus::ok();
 
         $parent = TraceContext::getSpan();
         $options['headers'] = array_replace($options['headers'] ?? [], [
@@ -107,33 +95,26 @@ class GuzzleHttpClientAspect extends AbstractAspect
             $result = $proceedingJoinPoint->process();
 
             if ($result instanceof ResponseInterface) {
-                if ($this->tagManager->has('guzzle.response.status')) {
-                    $data[$this->tagManager->get('guzzle.response.status')] = $result->getStatusCode();
-                }
-                if ($this->tagManager->has('guzzle.response.reason')) {
-                    $data[$this->tagManager->get('guzzle.response.reason')] = $result->getReasonPhrase();
-                }
-                if ($this->tagManager->has('guzzle.response.headers')) {
-                    $data[$this->tagManager->get('guzzle.response.headers')] = $result->getHeaders();
-                }
+                $data['guzzle.response.status'] = $result->getStatusCode();
+                $data['guzzle.response.reason'] = $result->getReasonPhrase();
+                $data['guzzle.response.headers'] = $result->getHeaders();
             }
-
-            $context->setStatus(SpanStatus::ok());
         } catch (Throwable $exception) {
-            $context->setStatus(SpanStatus::internalError());
-            $context->setTags([
+            $status = SpanStatus::internalError();
+            $tags = array_merge($tags, [
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('guzzle.exception.stack_trace')) {
-                $data[$this->tagManager->get('guzzle.exception.stack_trace')] = (string) $exception;
-            }
+            $data['guzzle.exception.stack_trace'] = (string) $exception;
 
             throw $exception;
         } finally {
-            $context->setData($data)->finish();
+            $context->setStatus($status)
+                ->setTags($tags)
+                ->setData($data)
+                ->finish();
         }
 
         return $result;

@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanContext;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -30,10 +29,8 @@ class RedisAspect extends AbstractAspect
         Redis::class . '::__call',
     ];
 
-    public function __construct(
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -43,44 +40,38 @@ class RedisAspect extends AbstractAspect
         }
 
         $arguments = $proceedingJoinPoint->arguments['keys'];
-        $data = [];
-
-        if ($this->tagManager->has('coroutine.id')) {
-            $data[$this->tagManager->get('coroutine.id')] = Coroutine::id();
-        }
-        if ($this->tagManager->has('pool')) {
-            $data[$this->tagManager->get('pool')] = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
-        }
-        if ($this->tagManager->has('redis.arguments')) {
-            $data[$this->tagManager->get('redis.arguments')] = $arguments['arguments'];
-        }
 
         $context = SpanContext::create(
             sprintf('redis.%s', $arguments['name']),
             sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name'])
         );
+        $data = [
+            'redis.coroutine.id' => Coroutine::id(),
+            'redis.pool' => (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance()),
+            'redis.arguments' => $arguments,
+        ];
+        $tags = [];
+        $status = SpanStatus::ok();
 
         try {
             $result = $proceedingJoinPoint->process();
-            if ($this->tagManager->has('redis.result')) {
-                $data[$this->tagManager->get('redis.result')] = $result;
-            }
-            $context->setStatus(SpanStatus::ok());
+            $data['redis.result'] = $result;
         } catch (Throwable $exception) {
-            $context->setStatus(SpanStatus::internalError());
-            $context->setTags([
+            $status = SpanStatus::internalError();
+            $tags = array_merge($tags, [
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('redis.exception.stack_trace')) {
-                $data[$this->tagManager->get('redis.exception.stack_trace')] = (string) $exception;
-            }
+            $data['redis.exception.stack_trace'] = (string) $exception;
 
             throw $exception;
         } finally {
-            $context->setData($data)->finish();
+            $context->setStatus($status)
+                ->setTags($tags)
+                ->setData($data)
+                ->finish();
         }
 
         return $result;

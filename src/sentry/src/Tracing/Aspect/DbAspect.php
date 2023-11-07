@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanContext;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\DB\DB;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -27,10 +26,8 @@ class DbAspect extends AbstractAspect
         DB::class . '::__call',
     ];
 
-    public function __construct(
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -44,38 +41,32 @@ class DbAspect extends AbstractAspect
             'Db::' . $arguments['name'],
             $proceedingJoinPoint->className . '::' . $arguments['name'] . '()'
         );
-
-        $data = [];
-
-        if ($this->tagManager->has('db.coroutine.id')) {
-            $data[$this->tagManager->get('db.coroutine.id')] = Coroutine::id();
-        }
-
-        if ($this->tagManager->has('db.query')) {
-            $data[$this->tagManager->get('db.query')] = json_encode($arguments['arguments'], JSON_UNESCAPED_UNICODE);
-        }
+        $data = [
+            'db.coroutine.id' => Coroutine::id(),
+            'db.query' => json_encode($arguments['arguments'], JSON_UNESCAPED_UNICODE),
+        ];
+        $tags = [];
+        $status = SpanStatus::ok();
 
         try {
             $result = $proceedingJoinPoint->process();
-            if ($this->tagManager->has('db.result')) {
-                $data[$this->tagManager->get('db.result')] = json_encode($result, JSON_UNESCAPED_UNICODE);
-            }
-            $context->setStatus(SpanStatus::ok());
+            $data['db.result'] = json_encode($result, JSON_UNESCAPED_UNICODE);
         } catch (Throwable $exception) {
-            $context->setStatus(SpanStatus::internalError());
-            $context->setTags([
+            $status = SpanStatus::internalError();
+            $tags = array_merge($tags, [
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('db.exception.stack_trace')) {
-                $data[$this->tagManager->get('db.exception.stack_trace')] = (string) $exception;
-            }
+            $data['db.exception.stack_trace'] = (string) $exception;
 
             throw $exception;
         } finally {
-            $context->setData($data)->finish();
+            $context->setStatus($status)
+                ->setData($data)
+                ->setTags($tags)
+                ->finish();
         }
 
         return $result;

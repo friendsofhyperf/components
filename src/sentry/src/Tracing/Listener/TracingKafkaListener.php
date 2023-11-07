@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Kafka\Event\AfterConsume;
@@ -25,10 +24,8 @@ use Sentry\Tracing\TransactionSource;
 
 class TracingKafkaListener implements ListenerInterface
 {
-    public function __construct(
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function listen(): array
@@ -62,20 +59,13 @@ class TracingKafkaListener implements ListenerInterface
         $context->setDescription($consumer::class);
         $context->setStartTimestamp(microtime(true));
 
-        $tags = [];
-
-        if ($this->tagManager->has('kafka.topic')) {
-            $tags[$this->tagManager->get('kafka.topic')] = $consumer->getTopic();
-        }
-        if ($this->tagManager->has('kafka.group_id')) {
-            $tags[$this->tagManager->get('kafka.group_id')] = $consumer->getGroupId();
-        }
-        if ($this->tagManager->has('kafka.pool')) {
-            $tags[$this->tagManager->get('kafka.pool')] = (string) $consumer->getPool();
-        }
+        $tags = [
+            'kafka.topic' => $consumer->getTopic(),
+            'kafka.group_id' => $consumer->getGroupId(),
+            'kafka.pool' => (string) $consumer->getPool(),
+        ];
 
         $context->setTags($tags);
-
         $transaction = $sentry->startTransaction($context);
 
         // If this transaction is not sampled, we can stop here to prevent doing work for nothing
@@ -98,23 +88,22 @@ class TracingKafkaListener implements ListenerInterface
 
         $data = [];
         $tags = [];
+        $status = SpanStatus::ok();
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
-            $transaction->setStatus(SpanStatus::internalError());
+            $status = SpanStatus::internalError();
             $tags = array_merge($tags, [
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('kafka.exception.stack_trace')) {
-                $data[$this->tagManager->get('kafka.exception.stack_trace')] = (string) $exception;
-            }
+            $data['kafka.exception.stack_trace'] = (string) $exception;
         }
 
         $transaction->setData($data);
         $transaction->setTags($tags);
-
+        $transaction->setStatus($status);
         $transaction->finish(microtime(true));
     }
 }

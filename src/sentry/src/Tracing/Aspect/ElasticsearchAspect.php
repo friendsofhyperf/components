@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use Elasticsearch\Client;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanContext;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -39,10 +38,8 @@ class ElasticsearchAspect extends AbstractAspect
         Client::class . '::search',
     ];
 
-    public function __construct(
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -55,39 +52,33 @@ class ElasticsearchAspect extends AbstractAspect
             'elasticserach.' . $proceedingJoinPoint->methodName,
             sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
         );
-
-        $data = [];
-
-        if ($this->tagManager->has('elasticserach.coroutine.id')) {
-            $data[$this->tagManager->get('elasticserach.coroutine.id')] = Coroutine::id();
-        }
-
-        if ($this->tagManager->has('elasticserach.arguments')) {
-            $data[$this->tagManager->get('elasticserach.arguments')] = json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE);
-        }
+        $data = [
+            'elasticserach.coroutine.id' => Coroutine::id(),
+            'elasticserach.method' => $proceedingJoinPoint->methodName,
+            'elasticserach.arguments' => json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE),
+        ];
+        $tags = [];
+        $status = SpanStatus::ok();
 
         try {
             $result = $proceedingJoinPoint->process();
-            // $data['result'] = $result;
-            if ($this->tagManager->has('elasticserach.result')) {
-                $data[$this->tagManager->get('elasticserach.result')] = json_encode($result, JSON_UNESCAPED_UNICODE);
-            }
-            $context->setStatus(SpanStatus::ok());
+            $data['elasticserach.result'] = json_encode($result, JSON_UNESCAPED_UNICODE);
         } catch (Throwable $exception) {
-            $context->setStatus(SpanStatus::internalError());
-            $context->setTags([
+            $status = SpanStatus::internalError();
+            $tags = array_merge($tags, [
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('elasticserach.exception.stack_trace')) {
-                $data[$this->tagManager->get('elasticserach.exception.stack_trace')] = (string) $exception;
-            }
+            $data['elasticserach.exception.stack_trace'] = (string) $exception;
 
             throw $exception;
         } finally {
-            $context->setData($data)->finish();
+            $context->setStatus($status)
+                ->setTags($tags)
+                ->setData($data)
+                ->finish();
         }
 
         return $result;
