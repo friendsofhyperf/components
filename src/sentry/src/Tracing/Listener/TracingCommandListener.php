@@ -18,6 +18,7 @@ use Hyperf\Command\Event\AfterExecute;
 use Hyperf\Command\Event\BeforeHandle;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
+use Hyperf\Stringable\Str;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
@@ -30,6 +31,9 @@ use Symfony\Component\Console\Command\Command as SymfonyCommand;
  */
 class TracingCommandListener implements ListenerInterface
 {
+    /**
+     * @var string[]
+     */
     protected array $ignoreCommands = [];
 
     public function __construct(
@@ -37,7 +41,7 @@ class TracingCommandListener implements ListenerInterface
         protected Switcher $switcher,
         protected TagManager $tagManager
     ) {
-        $this->ignoreCommands = $config->get('sentry.ignore_commands', []);
+        $this->ignoreCommands = (array) $config->get('sentry.ignore_commands', []);
     }
 
     public function listen(): array
@@ -53,11 +57,9 @@ class TracingCommandListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if (in_array($event->getCommand()->getName(), $this->ignoreCommands)) {
+        if (Str::is($this->ignoreCommands, $event->getCommand()->getName())) {
             return;
         }
-
-        $sentry = SentrySdk::init();
 
         match ($event::class) {
             BeforeHandle::class => $this->startTransaction($event),
