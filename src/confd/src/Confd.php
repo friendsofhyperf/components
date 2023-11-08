@@ -22,7 +22,7 @@ use Hyperf\Coordinator\Timer;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
-class Conf1d
+class Confd
 {
     private DriverInterface $driver;
 
