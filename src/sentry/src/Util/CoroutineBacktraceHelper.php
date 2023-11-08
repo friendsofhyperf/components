@@ -11,30 +11,39 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Util;
 
-use Hyperf\Stringable\Str;
-
 class CoroutineBacktraceHelper
 {
+    protected static array $skipFunctions = [
+        'Hyperf\Coordinator\Timer->after',
+        'Hyperf\Coordinator\Timer->tick',
+        'Hyperf\Coroutine\Concurrent->create',
+        'Hyperf\Coroutine\Parallel->wait',
+        'Hyperf\Coroutine\Waiter->wait',
+        'Hyperf\Coroutine\co', 'co',
+        'Hyperf\Coroutine\go', 'go',
+        'Hyperf\Coroutine\parallel', 'parallel',
+    ];
+
     public static function foundCallingOnFunction(): ?string
     {
         $found = false;
         foreach (debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS) as $backtrace) {
-            if (Str::startsWith($backtrace['function'], ['Hyperf\Coroutine', 'co', 'go', 'retry'])) {
-                continue;
-            }
-            if (Str::startsWith($backtrace['class'] ?? '', ['Hyperf\Coordinator'])) {
+            $function = static::compactFunction($backtrace['function'], $backtrace['class'] ?? null, $backtrace['type'] ?? null);
+            if (in_array($function, static::$skipFunctions)) {
                 continue;
             }
             if ($found === true) {
-                if (isset($backtrace['class'])) {
-                    return sprintf('%s%s%s', $backtrace['class'], $backtrace['type'], $backtrace['function']);
-                }
-                return $backtrace['function'];
+                return $function;
             }
-            if (isset($backtrace['class'], $backtrace['function']) && sprintf('%s::%s', $backtrace['class'], $backtrace['function']) === 'Hyperf\Coroutine\Coroutine::create') {
+            if ($function === 'Hyperf\Coroutine\Coroutine::create') {
                 $found = true;
             }
         }
         return null;
+    }
+
+    protected static function compactFunction(string $function, ?string $class, ?string $type): string
+    {
+        return sprintf('%s%s%s', $class, $type, $function);
     }
 }
