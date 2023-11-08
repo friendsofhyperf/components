@@ -21,7 +21,6 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\Timer;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Swoole\FastCGI\Record\Stdout;
 
 class Confd
 {
@@ -34,15 +33,17 @@ class Confd
     private array $previous = [];
 
     public function __construct(
-        private ContainerInterface $container, 
-        private ConfigInterface $config,
-        private StdoutLoggerInterface $logger
-        )
-    {
+        private ContainerInterface $container,
+        private ConfigInterface $config
+    ) {
         $driver = $this->config->get('confd.default', 'etcd');
         $class = $this->config->get(sprintf('confd.drivers.%s.driver', $driver), Etcd::class);
         $this->driver = $container->get($class);
         $this->interval = (int) $this->config->get('confd.interval', 1);
+        $logger = null;
+        if ($container->has(StdoutLoggerInterface::class)) {
+            $logger = $container->get(StdoutLoggerInterface::class);
+        }
         $this->timer = new Timer($logger);
     }
 
