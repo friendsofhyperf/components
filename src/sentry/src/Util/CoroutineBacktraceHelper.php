@@ -16,6 +16,7 @@ class CoroutineBacktraceHelper
     protected static array $skipFunctions = [
         'Hyperf\Coordinator\Timer->after',
         'Hyperf\Coordinator\Timer->tick',
+        'Hyperf\Coroutine\Concurrent->create',
         'Hyperf\Coroutine\Parallel->wait',
         'Hyperf\Coroutine\Waiter->wait',
         'Hyperf\Coroutine\co', 'co',
@@ -32,7 +33,7 @@ class CoroutineBacktraceHelper
                 continue;
             }
             if ($found === true) {
-                return static::compactFunction($backtrace['function'], $backtrace['class'] ?? null, $backtrace['type'] ?? null);
+                return $function;
             }
             if ($function === 'Hyperf\Coroutine\Coroutine::create') {
                 $found = true;
