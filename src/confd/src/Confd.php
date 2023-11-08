@@ -32,10 +32,8 @@ class Confd
 
     private array $previous = [];
 
-    public function __construct(
-        private ContainerInterface $container,
-        private ConfigInterface $config
-    ) {
+    public function __construct(private ContainerInterface $container, private ConfigInterface $config)
+    {
         $driver = $this->config->get('confd.default', 'etcd');
         $class = $this->config->get(sprintf('confd.drivers.%s.driver', $driver), Etcd::class);
         $this->driver = $container->get($class);
