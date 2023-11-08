@@ -41,6 +41,7 @@ use Symfony\Component\VarDumper\VarDumper;
 
 use function FriendsOfHyperf\Support\retry;
 use function Hyperf\Collection\collect;
+use function Hyperf\Collection\value;
 use function Hyperf\Tappable\tap;
 
 class PendingRequest
@@ -1280,7 +1281,7 @@ class PendingRequest
      *
      * @return \GuzzleHttp\Promise\PromiseInterface
      */
-    protected function makePromise(string $method, string $url, array $options = [])
+    protected function makePromise(string $method, string $url, array $options = [], int $attempt = 1)
     {
         return $this->promise = $this->sendRequest($method, $url, $options)
             ->then(function (MessageInterface $message) {
@@ -1290,8 +1291,70 @@ class PendingRequest
                 });
             })
             ->otherwise(function (TransferException $e) {
+                if ($e instanceof ConnectException) {
+                    $this->dispatchConnectionFailedEvent();
+
+                    return new ConnectionException($e->getMessage(), 0, $e);
+                }
+
                 return $e instanceof RequestException && $e->hasResponse() ? $this->populateResponse($this->newResponse($e->getResponse())) : $e;
+            })
+            ->then(function (Response|ConnectionException|TransferException $response) use ($method, $url, $options, $attempt) {
+                return $this->handlePromiseResponse($response, $method, $url, $options, $attempt);
             });
+    }
+
+    /**
+     * Handle the response of an asynchronous request.
+     *
+     * @param \Illuminate\Http\Client\Response $response
+     * @param string $method
+     * @param string $url
+     * @param array $options
+     * @param int $attempt
+     * @return mixed
+     */
+    protected function handlePromiseResponse(Response|ConnectionException|TransferException $response, $method, $url, $options, $attempt)
+    {
+        if ($response instanceof Response && $response->successful()) {
+            return $response;
+        }
+
+        if ($response instanceof RequestException) {
+            $response = $this->populateResponse($this->newResponse($response->getResponse()));
+        }
+
+        try {
+            $shouldRetry = $this->retryWhenCallback ? call_user_func(
+                $this->retryWhenCallback,
+                $response instanceof Response ? $response->toException() : $response,
+                $this
+            ) : true;
+        } catch (Exception $exception) {
+            return $exception;
+        }
+
+        if ($attempt < $this->tries && $shouldRetry) {
+            $options['delay'] = value($this->retryDelay, $attempt, $response->toException());
+
+            return $this->makePromise($method, $url, $options, $attempt + 1);
+        }
+
+        if ($response instanceof Response
+            && $this->throwCallback
+            && ($this->throwIfCallback === null || call_user_func($this->throwIfCallback, $response))) {
+            try {
+                $response->throw($this->throwCallback);
+            } catch (Exception $exception) {
+                return $exception;
+            }
+        }
+
+        if ($this->tries > 1 && $this->retryThrow) {
+            return $response instanceof Response ? $response->toException() : $response;
+        }
+
+        return $response;
     }
 
     /**
