@@ -17,6 +17,7 @@ use FriendsOfHyperf\Confd\Event\ConfigChanged;
 use FriendsOfHyperf\Confd\Event\WatchDispatched;
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\Timer;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -31,13 +32,16 @@ class Confd
 
     private array $previous = [];
 
-    public function __construct(private ContainerInterface $container, private ConfigInterface $config)
-    {
+    public function __construct(
+        private ContainerInterface $container,
+        private ConfigInterface $config,
+        private StdoutLoggerInterface $logger
+    ) {
         $driver = $this->config->get('confd.default', 'etcd');
         $class = $this->config->get(sprintf('confd.drivers.%s.driver', $driver), Etcd::class);
         $this->driver = $container->get($class);
         $this->interval = (int) $this->config->get('confd.interval', 1);
-        $this->timer = new Timer();
+        $this->timer = new Timer($logger);
     }
 
     public function fetch(): array
