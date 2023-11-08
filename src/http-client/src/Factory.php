@@ -155,6 +155,16 @@ class Factory
     }
 
     /**
+     * Get the array of global middleware.
+     *
+     * @return array
+     */
+    public function getGlobalMiddleware()
+    {
+        return $this->globalMiddleware;
+    }
+
+    /**
      * Add middleware to apply to every request.
      *
      * @param callable $middleware
