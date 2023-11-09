@@ -15,6 +15,8 @@ use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Engine\Coroutine as Co;
+use Sentry\SentrySdk;
+use Throwable;
 
 class CoroutineAspect extends AbstractAspect
 {
@@ -37,6 +39,11 @@ class CoroutineAspect extends AbstractAspect
             $callable();
         };
 
-        return $proceedingJoinPoint->process();
+        try {
+            return $proceedingJoinPoint->process();
+        } catch (Throwable $throwable) {
+            SentrySdk::getCurrentHub()->captureException($throwable);
+            throw $throwable;
+        }
     }
 }
