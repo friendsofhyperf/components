@@ -36,14 +36,15 @@ class CoroutineAspect extends AbstractAspect
 
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $keys) {
             Context::copy(Co::pid(), $keys);
-            $callable();
+
+            try {
+                $callable();
+            } catch (Throwable $throwable) {
+                SentrySdk::getCurrentHub()->captureException($throwable);
+                throw $throwable;
+            }
         };
 
-        try {
-            return $proceedingJoinPoint->process();
-        } catch (Throwable $throwable) {
-            SentrySdk::getCurrentHub()->captureException($throwable);
-            throw $throwable;
-        }
+        return $proceedingJoinPoint->process();
     }
 }
