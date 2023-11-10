@@ -94,7 +94,8 @@ class TracingAmqpListener implements ListenerInterface
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
-        if (! $transaction) {
+        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
+        if (! $transaction || ! $transaction->getSampled()) {
             return;
         }
 
