@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanContext;
+use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Context\Context;
@@ -22,11 +22,15 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Rpc;
 use Hyperf\RpcClient;
 use Psr\Container\ContainerInterface;
+use Sentry\SentrySdk;
+use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
 class RpcAspect extends AbstractAspect
 {
+    use SpanStarter;
+
     protected const CONTEXT = 'sentry.tracing.rpc.context';
 
     protected const DATA = 'sentry.tracing.rpc.data';
@@ -49,12 +53,19 @@ class RpcAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $parent = TraceContext::getSpan();
+        $parent = SentrySdk::getCurrentHub()->getSpan();
 
         if ($proceedingJoinPoint->methodName === '__generateRpcPath') {
             $path = $proceedingJoinPoint->process();
-            $context = SpanContext::create('rpc.send', $path);
-            Context::set(static::CONTEXT, $context);
+            $span = $this->startSpan(
+                'rpc.send',
+                $path
+            );
+            if (! $span) {
+                return $path;
+            }
+
+            Context::set(static::CONTEXT, $span);
 
             $data = [];
 
@@ -83,17 +94,21 @@ class RpcAspect extends AbstractAspect
             if ($this->tagManager->has('rpc.arguments')) {
                 $data[$this->tagManager->get('rpc.arguments')] = $proceedingJoinPoint->arguments['keys'];
             }
-            /** @var SpanContext|null $context */
-            $context = Context::get(static::CONTEXT);
+            /** @var Span|null $span */
+            $span = Context::get(static::CONTEXT);
 
             try {
                 $result = $proceedingJoinPoint->process();
+                if (! $span) {
+                    return $result;
+                }
+
                 if ($this->tagManager->has('rpc.result')) {
                     $data[$this->tagManager->get('rpc.result')] = $result;
                 }
             } catch (Throwable $exception) {
-                $context->setStatus(SpanStatus::internalError());
-                $context->setTags([
+                $span->setStatus(SpanStatus::internalError());
+                $span->setTags([
                     'error' => true,
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
@@ -105,11 +120,11 @@ class RpcAspect extends AbstractAspect
 
                 throw $exception;
             } finally {
-                $context?->setStatus(
+                $span->setStatus(
                     isset($result['result']) ? SpanStatus::ok() : SpanStatus::internalError()
-                )
-                    ->setData($data)
-                    ->finish();
+                );
+                $span->setData($data);
+                $span->finish();
             }
 
             return $result;
