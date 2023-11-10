@@ -11,7 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing;
 
-use FriendsOfHyperf\Sentry\Tracing\Annotation\Trace;
+use Hyperf\Context\ApplicationContext;
+use Hyperf\Rpc\Context as RpcContext;
 use Psr\Http\Message\ServerRequestInterface;
 use Sentry\SentrySdk;
 use Sentry\Tracing\Span;
@@ -45,9 +46,10 @@ trait SpanStarter
         // Get sentry-trace and baggage
         $sentryTrace = $request->getHeaderLine('sentry-trace', '');
         $baggage = $request->getHeaderLine('baggage', '');
+        $container = $this->container ?? ApplicationContext::getContainer();
 
-        if ($this->container->has(RpcContext::class)) {
-            $rpcContext = $this->container->get(RpcContext::class);
+        if ($container->has(RpcContext::class)) {
+            $rpcContext = $container->get(RpcContext::class);
             $carrier = $rpcContext->get(TraceContext::RPC_CARRIER);
             if (! empty($carrier['sentry-trace']) && ! empty($carrier['baggage'])) {
                 $sentryTrace = $carrier['sentry-trace'];
