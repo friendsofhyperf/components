@@ -56,7 +56,7 @@ class TraceMiddleware implements MiddlewareInterface
         // Must be called before all.
         $this->startTransaction(
             $request,
-            SentrySdk::getCurrentHub(),
+            SentrySdk::getCurrentHub(), // Because middleware processed after RequestReceived event, so we can get current hub.
             $dispatched?->serverName ?? 'http'
         );
 
