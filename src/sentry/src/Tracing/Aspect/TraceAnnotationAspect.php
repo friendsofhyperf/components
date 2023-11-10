@@ -67,7 +67,7 @@ class TraceAnnotationAspect extends AbstractAspect
             $result = $proceedingJoinPoint->process();
 
             if (! $span) {
-                return $proceedingJoinPoint->process();
+                return $result;
             }
 
             if ($this->tagManager->has('annotation.result')) {
