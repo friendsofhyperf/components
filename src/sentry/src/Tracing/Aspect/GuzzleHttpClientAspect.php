@@ -104,7 +104,11 @@ class GuzzleHttpClientAspect extends AbstractAspect
             'http.client',
             $method . ' ' . (string) $uri
         );
-        $span?->setStatus(SpanStatus::ok());
+        if (! $span) {
+            return $proceedingJoinPoint->process();
+        }
+
+        $span->setStatus(SpanStatus::ok());
 
         try {
             $result = $proceedingJoinPoint->process();
@@ -121,8 +125,8 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 }
             }
         } catch (Throwable $exception) {
-            $span?->setStatus(SpanStatus::internalError());
-            $span?->setTags([
+            $span->setStatus(SpanStatus::internalError());
+            $span->setTags([
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
@@ -134,8 +138,8 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
             throw $exception;
         } finally {
-            $span?->setData($data);
-            $span?->finish();
+            $span->setData($data);
+            $span->finish();
         }
 
         return $result;

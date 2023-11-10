@@ -54,6 +54,9 @@ class RpcAspect extends AbstractAspect
         }
 
         $parent = SentrySdk::getCurrentHub()->getSpan();
+        if (! $parent) {
+            return $proceedingJoinPoint->process();
+        }
 
         if ($proceedingJoinPoint->methodName === '__generateRpcPath') {
             $path = $proceedingJoinPoint->process();

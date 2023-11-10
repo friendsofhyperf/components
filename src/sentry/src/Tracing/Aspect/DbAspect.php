@@ -46,6 +46,10 @@ class DbAspect extends AbstractAspect
             'Db::' . $arguments['name'],
             $proceedingJoinPoint->className . '::' . $arguments['name'] . '()'
         );
+        if (! $span) {
+            return $proceedingJoinPoint->process();
+        }
+
         $span->setStatus(SpanStatus::ok());
 
         $data = [];

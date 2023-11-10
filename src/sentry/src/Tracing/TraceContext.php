@@ -46,6 +46,9 @@ class TraceContext
         return Context::set(self::SPAN, $context);
     }
 
+    /**
+     * @deprecated
+     */
     public static function getSpan(): ?Span
     {
         return Context::get(self::SPAN);
