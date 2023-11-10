@@ -83,6 +83,8 @@ trait SpanStarter
         }
         if (isset($options['source']) && $options['source'] instanceof TransactionSource) {
             $context->setSource($options['source']);
+        } else {
+            $context->setSource(TransactionSource::custom());
         }
 
         $transaction = $sentry->startTransaction($context);

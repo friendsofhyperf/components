@@ -60,7 +60,7 @@ class TracingCrontabListener implements ListenerInterface
             name: $crontab->getName() ?: '<unnamed crontab>',
             op: 'crontab.execute',
             description: $crontab->getMemo(),
-            source: TransactionSource::custom()
+            source: TransactionSource::task()
         );
     }
 
