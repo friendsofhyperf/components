@@ -31,6 +31,7 @@ use Sentry\Tracing\TraceId;
  * @method self setStartTimestamp(?float $startTimestamp)
  * @method self setEndTimestamp(?float $endTimestamp)
  * @mixin SentrySpanContext
+ * @deprecated v3.0, will be removed in v3.1
  */
 class SpanContext
 {
