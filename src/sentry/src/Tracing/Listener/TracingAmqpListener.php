@@ -54,21 +54,28 @@ class TracingAmqpListener implements ListenerInterface
 
     protected function startTransaction(BeforeConsume $event): void
     {
-        SentrySdk::init();
         $message = $event->getMessage();
 
-        $transaction = $this->continueTrace(
+        SentrySdk::init();
+        $this->continueTrace(
             name: 'amqp.consume',
             op: 'message:' . $message::class,
             description: $message::class,
             source: TransactionSource::custom()
         );
+    }
+
+    protected function finishTransaction(AfterConsume|FailToConsume $event): void
+    {
+        $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
         // If this transaction is not sampled, we can stop here to prevent doing work for nothing
-        if (! $transaction->getSampled()) {
+        if (! $transaction || ! $transaction->getSampled()) {
             return;
         }
 
+        $message = $event->getMessage();
+        $data = [];
         $tags = [];
 
         if ($this->tagManager->has('amqp.type')) {
@@ -86,22 +93,6 @@ class TracingAmqpListener implements ListenerInterface
         if ($this->tagManager->has('amqp.queue') && method_exists($message, 'getQueue')) {
             $tags[$this->tagManager->get('amqp.queue')] = $message->getQueue();
         }
-
-        $transaction->setTags($tags);
-    }
-
-    protected function finishTransaction(AfterConsume|FailToConsume $event): void
-    {
-        $transaction = SentrySdk::getCurrentHub()->getTransaction();
-
-        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
-        if (! $transaction || ! $transaction->getSampled()) {
-            return;
-        }
-
-        $data = [];
-        $tags = [];
-
         if ($this->tagManager->has('amqp.result') && method_exists($event, 'getResult')) {
             $tags[$this->tagManager->get('amqp.result')] = $event->getResult();
         }
