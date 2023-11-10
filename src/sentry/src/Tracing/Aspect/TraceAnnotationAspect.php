@@ -53,25 +53,30 @@ class TraceAnnotationAspect extends AbstractAspect
             $data[$this->tagManager->get('annotation.arguments')] = $proceedingJoinPoint->arguments['keys'];
         }
 
-        $annotationContext = new SentrySpanContext();
-        $annotationContext->setOp($annotation->op ?? 'method');
-        $annotationContext->setDescription($annotation->description ?? sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName));
-        $annotationContext->setStartTimestamp(microtime(true));
-
-        $annotationSpan = $parent->startChild($annotationContext);
+        $span = $parent->startChild(new SentrySpanContext());
+        $span->setOp($annotation->op ?? 'method');
+        $span->setDescription(
+            $annotation->description ?? sprintf(
+                '%s::%s()',
+                $proceedingJoinPoint->className,
+                $proceedingJoinPoint->methodName
+            )
+        );
+        $span->setStartTimestamp(microtime(true));
 
         // Set current span as root
-        TraceContext::setSpan($annotationSpan);
+        SentrySdk::getCurrentHub()->setSpan($span);
+        TraceContext::setSpan($span);
 
         try {
             $result = $proceedingJoinPoint->process();
             if ($this->tagManager->has('annotation.result')) {
                 $data[$this->tagManager->get('annotation.result')] = $result;
             }
-            $annotationSpan->setStatus(SpanStatus::ok());
+            $span->setStatus(SpanStatus::ok());
         } catch (Throwable $exception) {
-            $annotationSpan->setStatus(SpanStatus::internalError());
-            $annotationSpan->setTags([
+            $span->setStatus(SpanStatus::internalError());
+            $span->setTags([
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
@@ -82,13 +87,11 @@ class TraceAnnotationAspect extends AbstractAspect
             }
             throw $exception;
         } finally {
-            $annotationContext->setData($data);
-            $annotationContext->setEndTimestamp(microtime(true));
-            SentrySdk::getCurrentHub()->setSpan($annotationSpan);
-            $annotationSpan->finish(microtime(true));
-            SentrySdk::getCurrentHub()->setSpan($parent);
+            $span->setData($data);
+            $span->finish(microtime(true));
 
             // Reset root span
+            SentrySdk::getCurrentHub()->setSpan($parent);
             TraceContext::setSpan($parent);
         }
 
