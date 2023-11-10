@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Middleware;
 
 use Closure;
-use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Tracing\TraceContext;
@@ -51,11 +50,16 @@ class TraceMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): PsrResponseInterface
     {
-        // Must be called before all.
-        $this->startTransaction($request, SentrySdk::init(), SentryContext::getServerName());
-
         /** @var Dispatched|null $dispatched */
         $dispatched = $request->getAttribute(Dispatched::class);
+
+        // Must be called before all.
+        $this->startTransaction(
+            $request,
+            SentrySdk::getCurrentHub(), // Because middleware processed after RequestReceived event, so we can get current hub.
+            $dispatched?->serverName ?? 'http'
+        );
+
         if (
             ! $dispatched?->isFound()
             && ! $this->switcher->isTracingEnable('missing_routes', false)
