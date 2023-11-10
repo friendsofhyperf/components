@@ -57,10 +57,10 @@ class CoroutineAspect extends AbstractAspect
                 'description' => $callingOnFunction ?? '#' . Co::parentId(),
             ]);
 
-            $coSpan = $this->startSpan('coroutine.execute', '#' . Co::id());
+            $span = $this->startSpan('coroutine.execute', '#' . Co::id());
 
-            defer(function () use ($transaction, $coSpan) {
-                $coSpan->finish();
+            defer(function () use ($transaction, $span) {
+                $span->finish();
                 SentrySdk::getCurrentHub()->setSpan($transaction);
                 $transaction->finish();
             });
@@ -87,7 +87,7 @@ class CoroutineAspect extends AbstractAspect
 
                 throw $exception;
             } finally {
-                $coSpan->setData($data);
+                $span->setData($data);
             }
         };
 

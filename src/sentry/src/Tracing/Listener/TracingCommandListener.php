@@ -121,6 +121,7 @@ class TracingCommandListener implements ListenerInterface
         $transaction->setData($data);
         $transaction->setTags($tags);
 
+        SentrySdk::getCurrentHub()->setSpan($transaction);
         $transaction->finish(microtime(true));
     }
 }
