@@ -73,7 +73,6 @@ class TraceAnnotationAspect extends AbstractAspect
             if ($this->tagManager->has('annotation.result')) {
                 $data[$this->tagManager->get('annotation.result')] = $result;
             }
-            $span->setStatus(SpanStatus::ok());
         } catch (Throwable $exception) {
             $span->setStatus(SpanStatus::internalError());
             $span->setTags([

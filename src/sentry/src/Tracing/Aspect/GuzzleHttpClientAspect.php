@@ -108,8 +108,6 @@ class GuzzleHttpClientAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $span->setStatus(SpanStatus::ok());
-
         try {
             $result = $proceedingJoinPoint->process();
 

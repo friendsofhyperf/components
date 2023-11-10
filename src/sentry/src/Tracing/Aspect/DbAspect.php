@@ -50,8 +50,6 @@ class DbAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $span->setStatus(SpanStatus::ok());
-
         $data = [];
 
         if ($this->tagManager->has('db.coroutine.id')) {

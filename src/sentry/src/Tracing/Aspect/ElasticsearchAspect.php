@@ -61,8 +61,6 @@ class ElasticsearchAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $span->setStatus(SpanStatus::ok());
-
         $data = [];
 
         if ($this->tagManager->has('elasticserach.coroutine.id')) {

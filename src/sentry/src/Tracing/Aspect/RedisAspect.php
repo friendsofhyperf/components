@@ -65,8 +65,6 @@ class RedisAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $span->setStatus(SpanStatus::ok());
-
         try {
             $result = $proceedingJoinPoint->process();
             if ($this->tagManager->has('redis.result')) {
