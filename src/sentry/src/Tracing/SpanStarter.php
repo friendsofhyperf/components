@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing;
 
+use FriendsOfHyperf\Sentry\Constants;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Rpc\Context as RpcContext;
 use Psr\Http\Message\ServerRequestInterface;
@@ -38,6 +39,7 @@ trait SpanStarter
         $span->setStartTimestamp(microtime(true));
 
         SentrySdk::getCurrentHub()->setSpan($span);
+        TraceContext::setSpan($span);
 
         return $span;
     }
@@ -51,7 +53,7 @@ trait SpanStarter
 
         if ($container->has(RpcContext::class)) {
             $rpcContext = $container->get(RpcContext::class);
-            $carrier = $rpcContext->get(TraceContext::RPC_CARRIER);
+            $carrier = $rpcContext->get(Constants::RPC_CARRIER);
             if (! empty($carrier['sentry-trace']) && ! empty($carrier['baggage'])) {
                 $sentryTrace = $carrier['sentry-trace'];
                 $baggage = $carrier['baggage'];
@@ -87,6 +89,7 @@ trait SpanStarter
         $transaction->setStartTimestamp(microtime(true));
 
         $sentry->setSpan($transaction);
+        TraceContext::setTransaction($transaction);
 
         return $transaction;
     }

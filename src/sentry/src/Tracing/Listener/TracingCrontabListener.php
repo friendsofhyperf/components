@@ -14,11 +14,11 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
-use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Crontab\Event\AfterExecute;
 use Hyperf\Crontab\Event\BeforeExecute;
 use Hyperf\Crontab\Event\FailToExecute;
 use Hyperf\Event\Contract\ListenerInterface;
+use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionSource;
 
@@ -66,7 +66,7 @@ class TracingCrontabListener implements ListenerInterface
 
     protected function finishTransaction(AfterExecute|FailToExecute $event): void
     {
-        $transaction = TraceContext::getTransaction();
+        $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
         // If this transaction is not sampled, we can stop here to prevent doing work for nothing
         if (! $transaction || ! $transaction->getSampled()) {

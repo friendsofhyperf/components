@@ -15,6 +15,9 @@ use Hyperf\Context\Context;
 use Sentry\Tracing\Span;
 use Sentry\Tracing\Transaction;
 
+/**
+ * @deprecated v3.0, will be removed in v3.1
+ */
 class TraceContext
 {
     public const RPC_CARRIER = 'sentry.tracing.rpc_carrier';

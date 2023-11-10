@@ -15,7 +15,6 @@ use Closure;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
-use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\HttpServer\Router\Dispatched;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
@@ -93,7 +92,7 @@ class TraceMiddleware implements MiddlewareInterface
 
             throw $exception;
         } finally {
-            TraceContext::getSpan()?->finish();
+            $transaction->finish();
         }
 
         return $response;

@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
+use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
-use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Context\Context;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -82,7 +82,7 @@ class RpcAspect extends AbstractAspect
             $sentryTrace = $span->toTraceparent();
             $baggage = $span->toBaggage();
             $rpcContext = $this->container->get(Rpc\Context::class);
-            $rpcContext->set(TraceContext::RPC_CARRIER, [
+            $rpcContext->set(Constants::RPC_CARRIER, [
                 'sentry-trace' => $sentryTrace,
                 'baggage' => $baggage,
             ]);
