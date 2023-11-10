@@ -104,12 +104,12 @@ class GuzzleHttpClientAspect extends AbstractAspect
             'http.client',
             $method . ' ' . (string) $uri
         );
-        if (! $span) {
-            return $proceedingJoinPoint->process();
-        }
 
         try {
             $result = $proceedingJoinPoint->process();
+            if (! $span) {
+                return $result;
+            }
 
             if ($result instanceof ResponseInterface) {
                 if ($this->tagManager->has('guzzle.response.status')) {

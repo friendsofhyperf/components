@@ -61,12 +61,13 @@ class RedisAspect extends AbstractAspect
             sprintf('redis.%s', $arguments['name']),
             sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name'])
         );
-        if (! $span) {
-            return $proceedingJoinPoint->process();
-        }
 
         try {
             $result = $proceedingJoinPoint->process();
+            if (! $span) {
+                return $result;
+            }
+
             if ($this->tagManager->has('redis.result')) {
                 $data[$this->tagManager->get('redis.result')] = $result;
             }
