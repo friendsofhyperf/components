@@ -19,7 +19,6 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Kafka\Event\AfterConsume;
 use Hyperf\Kafka\Event\BeforeConsume;
 use Hyperf\Kafka\Event\FailToConsume;
-use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionSource;
 
@@ -57,7 +56,6 @@ class TracingKafkaListener implements ListenerInterface
     {
         $consumer = $event->getConsumer();
 
-        SentrySdk::init();
         $this->continueTrace(
             name: $consumer->getTopic(),
             op: 'kafka.consume',

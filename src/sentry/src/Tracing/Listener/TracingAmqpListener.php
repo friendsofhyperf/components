@@ -56,7 +56,6 @@ class TracingAmqpListener implements ListenerInterface
     {
         $message = $event->getMessage();
 
-        SentrySdk::init();
         $this->continueTrace(
             name: 'amqp.consume',
             op: 'message:' . $message::class,

@@ -72,7 +72,6 @@ class TracingCommandListener implements ListenerInterface
     {
         $command = $event->getCommand();
 
-        SentrySdk::init();
         $this->continueTrace(
             name: $command->getName() ?: '<unnamed command>',
             op: 'command.execute',

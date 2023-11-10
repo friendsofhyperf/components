@@ -19,7 +19,6 @@ use Hyperf\Crontab\Event\AfterExecute;
 use Hyperf\Crontab\Event\BeforeExecute;
 use Hyperf\Crontab\Event\FailToExecute;
 use Hyperf\Event\Contract\ListenerInterface;
-use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionSource;
 
@@ -56,7 +55,6 @@ class TracingCrontabListener implements ListenerInterface
     protected function startTransaction(BeforeExecute $event): void
     {
         $crontab = $event->crontab;
-        SentrySdk::init();
 
         $this->continueTrace(
             name: $crontab->getName() ?: '<unnamed crontab>',

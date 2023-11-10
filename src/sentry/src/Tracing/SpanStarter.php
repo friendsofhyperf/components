@@ -68,7 +68,7 @@ trait SpanStarter
 
     protected function continueTrace(string $sentryTrace = '', string $baggage = '', ...$options): Transaction
     {
-        $sentry = SentrySdk::getCurrentHub();
+        $sentry = SentrySdk::init();
         $context = continueTrace($sentryTrace, $baggage);
         if (isset($options['name'])) {
             $context->setName($options['name']);

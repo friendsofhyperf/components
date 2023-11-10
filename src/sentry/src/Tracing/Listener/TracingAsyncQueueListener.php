@@ -58,7 +58,6 @@ class TracingAsyncQueueListener implements ListenerInterface
     {
         $job = $event->getMessage()->job();
 
-        SentrySdk::init();
         $this->continueTrace(
             name: $job::class,
             op: 'async_queue.job.handle',
