@@ -22,7 +22,6 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Rpc;
 use Hyperf\RpcClient;
 use Psr\Container\ContainerInterface;
-use Sentry\SentrySdk;
 use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
@@ -31,7 +30,7 @@ class RpcAspect extends AbstractAspect
 {
     use SpanStarter;
 
-    protected const CONTEXT = 'sentry.tracing.rpc.context';
+    protected const SPAN = 'sentry.tracing.rpc.span';
 
     protected const DATA = 'sentry.tracing.rpc.data';
 
@@ -53,30 +52,23 @@ class RpcAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $parent = SentrySdk::getCurrentHub()->getSpan();
-        if (! $parent) {
-            return $proceedingJoinPoint->process();
-        }
-
         return match ($proceedingJoinPoint->methodName) {
-            '__generateRpcPath' => $this->handleGenerateRpcPath($proceedingJoinPoint, $parent),
-            'send' => $this->handleSend($proceedingJoinPoint, $parent),
+            '__generateRpcPath' => $this->handleGenerateRpcPath($proceedingJoinPoint),
+            'send' => $this->handleSend($proceedingJoinPoint),
             default => $proceedingJoinPoint->process(),
         };
     }
 
-    private function handleGenerateRpcPath(ProceedingJoinPoint $proceedingJoinPoint, Span $parent)
+    private function handleGenerateRpcPath(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $path = $proceedingJoinPoint->process();
-        $span = $this->startSpan(
-            'rpc.send',
-            $path
-        );
+        $span = $this->startSpan('rpc.send', $path);
+
         if (! $span) {
             return $path;
         }
 
-        Context::set(static::CONTEXT, $span);
+        Context::set(static::SPAN, $span);
 
         $data = [];
 
@@ -87,8 +79,8 @@ class RpcAspect extends AbstractAspect
         Context::set(static::DATA, $data);
 
         if ($this->container->has(Rpc\Context::class)) {
-            $sentryTrace = $parent->toTraceparent();
-            $baggage = $parent->toBaggage();
+            $sentryTrace = $span->toTraceparent();
+            $baggage = $span->toBaggage();
             $rpcContext = $this->container->get(Rpc\Context::class);
             $rpcContext->set(TraceContext::RPC_CARRIER, [
                 'sentry-trace' => $sentryTrace,
@@ -99,17 +91,18 @@ class RpcAspect extends AbstractAspect
         return $path;
     }
 
-    private function handleSend(ProceedingJoinPoint $proceedingJoinPoint, Span $parent)
+    private function handleSend(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $data = (array) Context::get(static::DATA);
         if ($this->tagManager->has('rpc.arguments')) {
             $data[$this->tagManager->get('rpc.arguments')] = $proceedingJoinPoint->arguments['keys'];
         }
         /** @var Span|null $span */
-        $span = Context::get(static::CONTEXT);
+        $span = Context::get(static::SPAN);
 
         try {
             $result = $proceedingJoinPoint->process();
+
             if (! $span) {
                 return $result;
             }
@@ -131,9 +124,6 @@ class RpcAspect extends AbstractAspect
 
             throw $exception;
         } finally {
-            $span->setStatus(
-                isset($result['result']) ? SpanStatus::ok() : SpanStatus::internalError()
-            );
             $span->setData($data);
             $span->finish();
         }
