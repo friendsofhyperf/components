@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanContext;
+use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Database\Events\QueryExecuted;
@@ -23,6 +23,8 @@ use Hyperf\Event\Contract\ListenerInterface;
 
 class TracingDbQueryListener implements ListenerInterface
 {
+    use SpanStarter;
+
     public function __construct(
         protected Switcher $switcher,
         protected TagManager $tagManager
@@ -68,9 +70,13 @@ class TracingDbQueryListener implements ListenerInterface
         }
 
         $startTimestamp = microtime(true) - $event->time / 1000;
-        SpanContext::create('db.sql.query', $event->sql)
-            ->setData($data)
-            ->setStartTimestamp($startTimestamp)
-            ->finish($startTimestamp + $event->time / 1000);
+
+        $span = $this->startSpan(
+            'db.sql.query',
+            $event->sql,
+        );
+        $span->setData($data);
+        $span->setStartTimestamp($startTimestamp);
+        $span->finish($startTimestamp + $event->time / 1000);
     }
 }
