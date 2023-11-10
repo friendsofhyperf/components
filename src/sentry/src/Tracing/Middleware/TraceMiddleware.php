@@ -70,8 +70,6 @@ class TraceMiddleware implements MiddlewareInterface
 
             // Set http status code
             $transaction->setHttpStatus($response->getStatusCode());
-            // Set status
-            $transaction->setStatus(SpanStatus::ok());
 
             // Append sentry-trace header to response
             $traceId = (string) $transaction->getTraceId();
@@ -91,8 +89,6 @@ class TraceMiddleware implements MiddlewareInterface
             ]);
 
             throw $exception;
-        } finally {
-            $transaction->finish();
         }
 
         return $response;
