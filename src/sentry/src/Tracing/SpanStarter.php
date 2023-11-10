@@ -86,6 +86,7 @@ trait SpanStarter
         $context->setDescription($description);
 
         $transaction = $sentry->startTransaction($context);
+        $transaction->setStartTimestamp(microtime(true));
 
         $sentry->setSpan($transaction);
 
