@@ -19,6 +19,7 @@ use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\Transaction;
+use Sentry\Tracing\TransactionSource;
 
 use function Sentry\continueTrace;
 
@@ -41,7 +42,7 @@ trait SpanStarter
         return $span;
     }
 
-    protected function startRequestTransaction(ServerRequestInterface $request, string $name, string $op, ?string $description = null): Transaction
+    protected function startRequestTransaction(ServerRequestInterface $request, ...$options): Transaction
     {
         // Get sentry-trace and baggage
         $sentryTrace = $request->getHeaderLine('sentry-trace', '');
@@ -57,33 +58,30 @@ trait SpanStarter
             }
         }
 
-        return $this->continueTrace(
-            $name,
-            $op,
-            $description,
-            $sentryTrace,
-            $baggage
-        );
+        return $this->continueTrace($sentryTrace, $baggage, $options);
     }
 
-    protected function startCoroutineTransaction(Span $parent, string $name, string $op, ?string $description = null): Transaction
+    protected function startCoroutineTransaction(Span $parent, ...$options): Transaction
     {
-        return $this->continueTrace(
-            $name,
-            $op,
-            $description,
-            $parent->toTraceparent(),
-            $parent->toBaggage()
-        );
+        return $this->continueTrace($parent->toTraceparent(), $parent->toBaggage(), ...$options);
     }
 
-    protected function continueTrace(string $name, string $op, ?string $description = null, string $sentryTrace = '', string $baggage = ''): Transaction
+    protected function continueTrace(string $sentryTrace = '', string $baggage = '', ...$options): Transaction
     {
         $sentry = SentrySdk::getCurrentHub();
         $context = continueTrace($sentryTrace, $baggage);
-        $context->setName($name);
-        $context->setOp($op);
-        $context->setDescription($description);
+        if (isset($options['name'])) {
+            $context->setName($options['name']);
+        }
+        if (isset($options['op'])) {
+            $context->setOp($options['op']);
+        }
+        if (isset($options['description'])) {
+            $context->setDescription($options['description']);
+        }
+        if (isset($options['source']) && $options['source'] instanceof TransactionSource) {
+            $context->setSource($options['source']);
+        }
 
         $transaction = $sentry->startTransaction($context);
         $transaction->setStartTimestamp(microtime(true));

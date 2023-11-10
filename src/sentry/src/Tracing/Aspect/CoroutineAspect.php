@@ -54,12 +54,11 @@ class CoroutineAspect extends AbstractAspect
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent, $callingOnFunction) {
             SentrySdk::init();
 
-            $transaction = $this->startCoroutineTransaction(
-                $parent,
-                'coroutine',
-                'coroutine.create',
-                $callingOnFunction ?? '#' . Co::parentId()
-            );
+            $transaction = $this->startCoroutineTransaction($parent, [
+                'name' => 'coroutine',
+                'op' => 'coroutine.create',
+                'description' => $callingOnFunction ?? '#' . Co::parentId(),
+            ]);
 
             $coSpan = $this->startSpan('coroutine.execute', '#' . Co::id());
 
