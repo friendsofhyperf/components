@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
-use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use FriendsOfHyperf\Sentry\Util\CoroutineBacktraceHelper;
 use Hyperf\Coroutine\Coroutine as Co;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -41,15 +40,13 @@ class CoroutineAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (
-            ! $this->switcher->isTracingEnable('coroutine')
-            || ! $parent = TraceContext::getSpan()
-        ) {
+        if (! $this->switcher->isTracingEnable('coroutine')) {
             return $proceedingJoinPoint->process();
         }
 
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
         $callingOnFunction = CoroutineBacktraceHelper::foundCallingOnFunction();
+        $parent = SentrySdk::getCurrentHub()->getSpan();
 
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent, $callingOnFunction) {
             SentrySdk::init();
