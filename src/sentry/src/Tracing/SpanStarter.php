@@ -87,6 +87,7 @@ trait SpanStarter
 
         $transaction = $sentry->startTransaction($context);
         $transaction->setStartTimestamp(microtime(true));
+        $transaction->setStatus(SpanStatus::ok());
 
         $sentry->setSpan($transaction);
         TraceContext::setTransaction($transaction);
