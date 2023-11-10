@@ -60,7 +60,7 @@ trait SpanStarter
             }
         }
 
-        return $this->continueTrace($sentryTrace, $baggage, $options);
+        return $this->continueTrace($sentryTrace, $baggage, ...$options);
     }
 
     protected function startCoroutineTransaction(Span $parent, ...$options): Transaction
