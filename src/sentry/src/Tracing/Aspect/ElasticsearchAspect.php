@@ -71,7 +71,6 @@ class ElasticsearchAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
-            // $data['result'] = $result;
             if ($this->tagManager->has('elasticserach.result')) {
                 $data[$this->tagManager->get('elasticserach.result')] = json_encode($result, JSON_UNESCAPED_UNICODE);
             }
