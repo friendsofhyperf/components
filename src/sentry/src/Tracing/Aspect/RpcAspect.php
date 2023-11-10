@@ -94,9 +94,11 @@ class RpcAspect extends AbstractAspect
     private function handleSend(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $data = (array) Context::get(static::DATA);
+
         if ($this->tagManager->has('rpc.arguments')) {
             $data[$this->tagManager->get('rpc.arguments')] = $proceedingJoinPoint->arguments['keys'];
         }
+
         /** @var Span|null $span */
         $span = Context::get(static::SPAN);
 
