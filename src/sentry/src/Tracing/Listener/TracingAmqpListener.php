@@ -58,12 +58,11 @@ class TracingAmqpListener implements ListenerInterface
         $message = $event->getMessage();
 
         $transaction = $this->continueTrace(
-            $message::class,
-            'amqp.consume',
-            'message:' . $message::class,
+            name: 'amqp.consume',
+            op: 'message:' . $message::class,
+            description: $message::class,
+            source: TransactionSource::custom()
         );
-        // TODO metadata
-        // $context->setSource(TransactionSource::custom());
 
         // If this transaction is not sampled, we can stop here to prevent doing work for nothing
         if (! $transaction->getSampled()) {
