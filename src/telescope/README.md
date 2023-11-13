@@ -17,13 +17,13 @@ hyperf 版本的望远镜
 ## 安装组件
 
 ```shell
-composer require guandeng/hyperf-telescope:~3.0.0
+composer require friendsofhyperf/telescope:~3.0.0
 ```
 
 ## 发布配置
 
 ```shell
-php bin/hyperf.php vendor:publish guandeng/hyperf-telescope
+php bin/hyperf.php vendor:publish friendsofhyperf/telescope
 ```
 
 ## 添加监听器(请求端)
