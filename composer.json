@@ -66,6 +66,7 @@
         "hyperf/etcd": "~3.1.0",
         "hyperf/filesystem": "~3.1.0",
         "hyperf/framework": "~3.1.0",
+        "hyperf/grpc-client": "~3.1.0",
         "hyperf/grpc-server": "~3.1.0",
         "hyperf/guzzle": "~3.1.0",
         "hyperf/http-server": "~3.1.0",
@@ -141,6 +142,7 @@
         "friendsofhyperf/recaptcha": "*",
         "friendsofhyperf/sentry": "*",
         "friendsofhyperf/support": "*",
+        "friendsofhyperf/telescope": "*",
         "friendsofhyperf/tinker": "*",
         "friendsofhyperf/trigger": "*",
         "friendsofhyperf/validated-dto": "*"
@@ -195,6 +197,7 @@
             "FriendsOfHyperf\\ReCaptcha\\": "src/recaptcha/src/",
             "FriendsOfHyperf\\Sentry\\": "src/sentry/src/",
             "FriendsOfHyperf\\Support\\": "src/support/src/",
+            "FriendsOfHyperf\\Telescope\\": "src/telescope/src/",
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
             "FriendsOfHyperf\\Trigger\\": "src/trigger/src/",
             "FriendsOfHyperf\\ValidatedDTO\\": "src/validated-dto/src/",
@@ -245,6 +248,7 @@
                 "FriendsOfHyperf\\ReCaptcha\\ConfigProvider",
                 "FriendsOfHyperf\\Sentry\\ConfigProvider",
                 "FriendsOfHyperf\\Support\\ConfigProvider",
+                "FriendsOfHyperf\\Telescope\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
                 "FriendsOfHyperf\\Trigger\\ConfigProvider",
                 "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider"
