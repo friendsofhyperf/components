@@ -31,7 +31,7 @@ class InstallCommand extends Command
 
         $output = new NullOutput();
 
-        $input = new ArrayInput(['command' => 'vendor:publish', 'package' => 'guandeng/hyperf-telescope']);
+        $input = new ArrayInput(['command' => 'vendor:publish', 'package' => 'friendsofhyperf/telescope']);
         $exitCode = $application->run($input, $output);
         if (! $exitCode) {
             $this->info('publish successfully');
