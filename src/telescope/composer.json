@@ -1,0 +1,55 @@
+{
+    "name": "friendsofhyperf/telescope",
+    "description": "An elegant debug assistant for the hyperf framework.",
+    "keywords": [
+        "swoole",
+        "hyperf",
+        "debugging"
+    ],
+    "license": "MIT",
+    "require": {
+        "php": ">=8.0",
+        "hyperf/framework": "~3.0.0",
+        "hyperf/view": "~3.0.0",
+        "hyperf/support": "~3.0.0",
+        "hyperf/event": "~3.0.0",
+        "hyperf/view-engine": "~3.0.0",
+        "ramsey/uuid": "^4.7",
+        "nesbot/carbon": "^2.71",
+        "hyperf/command": "~3.0.0",
+        "guzzlehttp/guzzle": "^6.0|^7.0"
+    },
+    "require-dev": {
+        "hyperf/http-server": "~3.0.42",
+        "swow/psr7-plus": "^1.1",
+        "huangdijia/php-coding-standard": "^1.2|^2.0",
+        "phpstan/phpstan": "^1.0",
+        "phpstan/phpstan-deprecation-rules": "^1.0",
+        "hyperf/db-connection": "~3.0.0",
+        "hyperf/redis": "~3.0.0",
+        "monolog/monolog": "^2.0",
+        "hyperf/grpc-client": "~3.0.0",
+        "swoole/ide-helper": "dev-master"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Telescope\\": "src/"
+        }
+    },
+    "suggest": {
+        "ext-swoole": "Required to use swoole engine.",
+        "hyperf/dispatcher": "Required to use BootApplication event.",
+        "hyperf/command": "Required to use Command annotation.",
+        "hyperf/database": "Required to use Database annotation.",
+        "hyperf/db-connection": "Required to use db-connection annotation.",
+        "hyperf/event": "Required to use Event annotation.",
+        "hyperf/http-message": "Required to use http-message annotation."
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Telescope\\ConfigProvider"
+        }
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}
