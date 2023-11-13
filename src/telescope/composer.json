@@ -9,13 +9,13 @@
     "license": "MIT",
     "require": {
         "php": ">=8.1",
+        "hyperf/command": "~3.1.0",
+        "hyperf/event": "~3.1.0",
         "hyperf/framework": "~3.1.0",
         "hyperf/support": "~3.1.0",
-        "hyperf/event": "~3.1.0",
         "hyperf/view-engine": "~3.1.0",
-        "ramsey/uuid": "^4.7",
         "nesbot/carbon": "^2.71",
-        "hyperf/command": "~3.1.0"
+        "ramsey/uuid": "^4.7"
     },
     "autoload": {
         "psr-4": {

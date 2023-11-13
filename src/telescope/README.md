@@ -17,7 +17,7 @@ hyperf 版本的望远镜
 ## 安装组件
 
 ```shell
-composer require guandeng/hyperf-telescope:dev-main
+composer require guandeng/hyperf-telescope:~3.1.0
 ```
 
 ## 发布配置
