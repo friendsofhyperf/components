@@ -60,10 +60,10 @@ class ViewController
     public function renderStaticFile(string $file)
     {
         $files = [
-            'app.js' => [__DIR__ . '/../../public/vendor/telescope/app.js', 'application/javascript'],
-            'app.css' => [__DIR__ . '/../../public/vendor/telescope/app.css', 'text/css'],
-            'app-dark.css' => [__DIR__ . '/../../public/vendor/telescope/app-dark.css', 'text/css'],
-            'favicon.ico' => [__DIR__ . '/../../public/vendor/telescope/favicon.ico', 'image/x-icon'],
+            'app.js' => [__DIR__ . '/../../public/telescope/app.js', 'application/javascript'],
+            'app.css' => [__DIR__ . '/../../public/telescope/app.css', 'text/css'],
+            'app-dark.css' => [__DIR__ . '/../../public/telescope/app-dark.css', 'text/css'],
+            'favicon.ico' => [__DIR__ . '/../../public/telescope/favicon.ico', 'image/x-icon'],
         ];
 
         if (! isset($this->caches[$file])) {
