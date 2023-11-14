@@ -12,22 +12,22 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
-use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use FriendsOfHyperf\Sentry\Util\CoroutineBacktraceHelper;
 use Hyperf\Coroutine\Coroutine as Co;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\SentrySdk;
-use Sentry\Tracing\SpanContext as SentrySpanContext;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
 use function Hyperf\Coroutine\defer;
-use function Sentry\continueTrace;
 
 class CoroutineAspect extends AbstractAspect
 {
+    use SpanStarter;
+
     public array $classes = [
         'Hyperf\Coroutine\Coroutine::create',
     ];
@@ -45,38 +45,23 @@ class CoroutineAspect extends AbstractAspect
         }
 
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
-        $parent = TraceContext::getSpan();
         $callingOnFunction = CoroutineBacktraceHelper::foundCallingOnFunction();
+        $parent = SentrySdk::getCurrentHub()->getSpan();
 
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent, $callingOnFunction) {
-            $sentry = SentrySdk::init();
-            $sentryTrace = $parent->toTraceparent();
-            $baggage = $parent->toBaggage();
+            $transaction = $this->startCoroutineTransaction(
+                $parent,
+                name: 'coroutine',
+                op: 'coroutine.create',
+                description: $callingOnFunction ?? '#' . Co::parentId(),
+            );
 
-            $context = continueTrace($sentryTrace, $baggage);
-            $context->setName('coroutine');
-            $context->setOp('coroutine.create');
-            $context->setDescription($callingOnFunction ?? '#' . Co::parentId());
+            $span = $this->startSpan('coroutine.execute', '#' . Co::id());
 
-            $transaction = $sentry->startTransaction($context);
-            TraceContext::setTransaction($transaction);
-
-            $coContext = new SentrySpanContext();
-            $coContext->setOp('coroutine.execute');
-            $coContext->setDescription('#' . Co::id());
-            $coContext->setStartTimestamp(microtime(true));
-            $coSpan = $transaction->startChild($coContext);
-
-            $sentry->setSpan($coSpan);
-            TraceContext::setSpan($coSpan);
-
-            defer(function () use ($sentry, $transaction, $coContext, $coSpan) {
-                $coContext->setEndTimestamp(microtime(true));
-                $coSpan->finish();
-                $sentry->setSpan($transaction);
+            defer(function () use ($transaction, $span) {
+                $span->finish();
+                SentrySdk::getCurrentHub()->setSpan($transaction);
                 $transaction->finish();
-                // TraceContext::clearSpan();
-                // TraceContext::clearTransaction();
             });
 
             $data = [];
@@ -87,7 +72,6 @@ class CoroutineAspect extends AbstractAspect
 
             try {
                 $callable();
-                $transaction->setStatus(SpanStatus::ok());
             } catch (Throwable $exception) {
                 $transaction->setStatus(SpanStatus::internalError());
                 $transaction->setTags([
@@ -102,7 +86,7 @@ class CoroutineAspect extends AbstractAspect
 
                 throw $exception;
             } finally {
-                $coContext->setData($data);
+                $span->setData($data);
             }
         };
 

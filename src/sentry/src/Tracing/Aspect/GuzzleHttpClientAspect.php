@@ -12,15 +12,15 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanContext;
+use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
-use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use GuzzleHttp\Client;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
+use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
@@ -30,6 +30,8 @@ use Throwable;
  */
 class GuzzleHttpClientAspect extends AbstractAspect
 {
+    use SpanStarter;
+
     public array $classes = [
         Client::class . '::request',
         Client::class . '::requestAsync',
@@ -91,20 +93,23 @@ class GuzzleHttpClientAspect extends AbstractAspect
             $data[$this->tagManager->get('guzzle.request.options')] = $arguments['options'] ?? [];
         }
 
-        $context = SpanContext::create(
-            'http.client',
-            $method . ' ' . (string) $uri
-        );
-
-        $parent = TraceContext::getSpan();
+        $parent = SentrySdk::getCurrentHub()->getSpan();
         $options['headers'] = array_replace($options['headers'] ?? [], [
             'sentry-trace' => $parent->toTraceparent(),
             'baggage' => $parent->toBaggage(),
         ]);
         $proceedingJoinPoint->arguments['keys']['options']['headers'] = $options['headers'];
 
+        $span = $this->startSpan(
+            'http.client',
+            $method . ' ' . (string) $uri
+        );
+
         try {
             $result = $proceedingJoinPoint->process();
+            if (! $span) {
+                return $result;
+            }
 
             if ($result instanceof ResponseInterface) {
                 if ($this->tagManager->has('guzzle.response.status')) {
@@ -117,11 +122,9 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     $data[$this->tagManager->get('guzzle.response.headers')] = $result->getHeaders();
                 }
             }
-
-            $context->setStatus(SpanStatus::ok());
         } catch (Throwable $exception) {
-            $context->setStatus(SpanStatus::internalError());
-            $context->setTags([
+            $span->setStatus(SpanStatus::internalError());
+            $span->setTags([
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
@@ -133,7 +136,8 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
             throw $exception;
         } finally {
-            $context->setData($data)->finish();
+            $span->setData($data);
+            $span->finish();
         }
 
         return $result;

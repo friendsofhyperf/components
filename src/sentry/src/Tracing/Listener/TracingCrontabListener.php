@@ -12,20 +12,20 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
-use FriendsOfHyperf\Sentry\Tracing\TraceContext;
-use Hyperf\Crontab\Crontab;
 use Hyperf\Crontab\Event\AfterExecute;
 use Hyperf\Crontab\Event\BeforeExecute;
 use Hyperf\Crontab\Event\FailToExecute;
 use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
-use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 
 class TracingCrontabListener implements ListenerInterface
 {
+    use SpanStarter;
+
     public function __construct(
         protected Switcher $switcher,
         protected TagManager $tagManager
@@ -54,17 +54,28 @@ class TracingCrontabListener implements ListenerInterface
 
     protected function startTransaction(BeforeExecute $event): void
     {
-        $sentry = SentrySdk::init();
-        /** @var Crontab $crontab */
         $crontab = $event->crontab;
-        $context = new TransactionContext();
-        $context->setName($crontab->getName() ?: '<unnamed crontab>');
-        $context->setSource(TransactionSource::custom());
-        $context->setOp('crontab.execute');
-        $context->setDescription($crontab->getMemo());
-        $context->setStartTimestamp(microtime(true));
 
+        $this->continueTrace(
+            name: $crontab->getName() ?: '<unnamed crontab>',
+            op: 'crontab.execute',
+            description: $crontab->getMemo(),
+            source: TransactionSource::task()
+        );
+    }
+
+    protected function finishTransaction(AfterExecute|FailToExecute $event): void
+    {
+        $transaction = SentrySdk::getCurrentHub()->getTransaction();
+
+        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
+        if (! $transaction || ! $transaction->getSampled()) {
+            return;
+        }
+
+        $crontab = $event->crontab;
         $data = [];
+        $tags = [];
 
         if ($this->tagManager->has('crontab.rule')) {
             $data[$this->tagManager->get('crontab.rule')] = $crontab->getRule();
@@ -78,31 +89,6 @@ class TracingCrontabListener implements ListenerInterface
                 'is_on_one_server' => $crontab->isOnOneServer(),
             ];
         }
-
-        $context->setData($data);
-
-        $transaction = $sentry->startTransaction($context);
-
-        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
-        if (! $transaction->getSampled()) {
-            return;
-        }
-
-        TraceContext::setTransaction($transaction);
-        $sentry->setSpan($transaction);
-        TraceContext::setSpan($transaction);
-    }
-
-    protected function finishTransaction(AfterExecute|FailToExecute $event): void
-    {
-        $transaction = TraceContext::getTransaction();
-
-        if (! $transaction) {
-            return;
-        }
-
-        $data = [];
-        $tags = [];
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError());
@@ -120,6 +106,7 @@ class TracingCrontabListener implements ListenerInterface
         $transaction->setData($data);
         $transaction->setTags($tags);
 
+        SentrySdk::getCurrentHub()->setSpan($transaction);
         $transaction->finish(microtime(true));
     }
 }

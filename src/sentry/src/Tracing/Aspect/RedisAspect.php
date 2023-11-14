@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanContext;
+use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -26,6 +26,8 @@ use Throwable;
  */
 class RedisAspect extends AbstractAspect
 {
+    use SpanStarter;
+
     public array $classes = [
         Redis::class . '::__call',
     ];
@@ -55,20 +57,23 @@ class RedisAspect extends AbstractAspect
             $data[$this->tagManager->get('redis.arguments')] = $arguments['arguments'];
         }
 
-        $context = SpanContext::create(
+        $span = $this->startSpan(
             sprintf('redis.%s', $arguments['name']),
             sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name'])
         );
 
         try {
             $result = $proceedingJoinPoint->process();
+            if (! $span) {
+                return $result;
+            }
+
             if ($this->tagManager->has('redis.result')) {
                 $data[$this->tagManager->get('redis.result')] = $result;
             }
-            $context->setStatus(SpanStatus::ok());
         } catch (Throwable $exception) {
-            $context->setStatus(SpanStatus::internalError());
-            $context->setTags([
+            $span->setStatus(SpanStatus::internalError());
+            $span->setTags([
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
@@ -80,7 +85,8 @@ class RedisAspect extends AbstractAspect
 
             throw $exception;
         } finally {
-            $context->setData($data)->finish();
+            $span->setData($data);
+            $span->finish();
         }
 
         return $result;
