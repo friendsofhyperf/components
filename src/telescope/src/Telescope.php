@@ -11,52 +11,13 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope;
 
-use Closure;
-use Hyperf\Context\ApplicationContext;
-use Hyperf\Contract\ConfigInterface;
+use function Hyperf\Config\config;
 
 class Telescope
 {
-    /**
-     * The callbacks that filter the entries that should be recorded.
-     */
-    public static array $filterUsing = [];
+    public const SYNC = 0;
 
-    /**
-     * The callbacks that filter the batches that should be recorded.
-     */
-    public static array $filterBatchUsing = [];
-
-    /**
-     * The callback executed after queuing a new entry.
-     *
-     * @var Closure
-     */
-    public static $afterRecordingHook;
-
-    /**
-     * The callbacks executed after storing the entries.
-     *
-     * @var Closure[]
-     */
-    public static array $afterStoringHooks = [];
-
-    /**
-     * The callbacks that add tags to the record.
-     *
-     * @var Closure[]
-     */
-    public static array $tagUsing = [];
-
-    /**
-     * The list of queued entries to be stored.
-     */
-    public static array $entriesQueue = [];
-
-    /**
-     * The list of queued entry updates.
-     */
-    public static array $updatesQueue = [];
+    public const ASYNC = 1;
 
     /**
      * The list of hidden request headers.
@@ -151,16 +112,12 @@ class Telescope
 
     public static function getAppName(): string
     {
-        $container = ApplicationContext::getContainer();
-        $config = $container->get(ConfigInterface::class);
-        return $config->get('telescope.app.name', '') ? '[' . $config->get('telescope.app.name', '') . '] ' : '';
+        return config('telescope.app.name', '') ? '[' . config('telescope.app.name', '') . '] ' : '';
     }
 
     public static function getQuerySlow(): int
     {
-        $container = ApplicationContext::getContainer();
-        $config = $container->get(ConfigInterface::class);
-        return $config->get('telescope.database.query_slow', 50);
+        return config('telescope.database.query_slow', 50);
     }
 
     protected static function record(string $type, IncomingEntry $entry): void
@@ -168,7 +125,10 @@ class Telescope
         $batchId = (string) TelescopeContext::getBatchId();
         $subBatchId = (string) TelescopeContext::getSubBatchId();
         $entry->batchId($batchId)->subBatchId($subBatchId)->type($type)->user();
-        // $entry->create();
-        TelescopeContext::addEntry($entry);
+        match (config('telescope.save_mode', 0)) {
+            self::ASYNC => TelescopeContext::addEntry($entry),
+            self::SYNC => $entry->create(),
+            default => $entry->create(),
+        };
     }
 }

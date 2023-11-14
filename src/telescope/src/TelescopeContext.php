@@ -17,11 +17,11 @@ use function Hyperf\Coroutine\defer;
 
 class TelescopeContext
 {
-    public const BATCH_ID = 'telescope.batch_id';
+    public const BATCH_ID = 'telescope.context.batch_id';
 
-    public const SUB_BATCH_ID = 'telescope.sub_batch_id';
+    public const SUB_BATCH_ID = 'telescope.context.sub_batch_id';
 
-    public const ENTRIES = 'telescope.entries';
+    public const ENTRIES = 'telescope.context.entries';
 
     public static function setBatchId(string $batchId): ?string
     {
@@ -54,7 +54,7 @@ class TelescopeContext
                 foreach ($entries as $entry) {
                     $entry->create();
                 }
-                Context::set(self::ENTRIES, []);
+                Context::destroy(self::ENTRIES);
             });
         }
 
