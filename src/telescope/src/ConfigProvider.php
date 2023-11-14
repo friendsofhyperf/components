@@ -24,7 +24,7 @@ class ConfigProvider
                 Command\PruneCommand::class,
             ],
             'listeners' => [
-                Listener\CheckIsEnableRequestLifecycleListener::class,
+                Listener\SetRequestLifecycleListener::class,
                 Listener\CommandListener::class,
                 Listener\DbQueryListener::class,
                 Listener\ExceptionHandlerListener::class,
