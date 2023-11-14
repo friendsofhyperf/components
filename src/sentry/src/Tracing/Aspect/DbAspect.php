@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanContext;
+use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\DB\DB;
@@ -23,6 +23,8 @@ use Throwable;
 
 class DbAspect extends AbstractAspect
 {
+    use SpanStarter;
+
     public array $classes = [
         DB::class . '::__call',
     ];
@@ -40,10 +42,13 @@ class DbAspect extends AbstractAspect
         }
 
         $arguments = $proceedingJoinPoint->arguments['keys'];
-        $context = SpanContext::create(
+        $span = $this->startSpan(
             'Db::' . $arguments['name'],
             $proceedingJoinPoint->className . '::' . $arguments['name'] . '()'
         );
+        if (! $span) {
+            return $proceedingJoinPoint->process();
+        }
 
         $data = [];
 
@@ -60,10 +65,9 @@ class DbAspect extends AbstractAspect
             if ($this->tagManager->has('db.result')) {
                 $data[$this->tagManager->get('db.result')] = json_encode($result, JSON_UNESCAPED_UNICODE);
             }
-            $context->setStatus(SpanStatus::ok());
         } catch (Throwable $exception) {
-            $context->setStatus(SpanStatus::internalError());
-            $context->setTags([
+            $span->setStatus(SpanStatus::internalError());
+            $span->setTags([
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
@@ -75,7 +79,8 @@ class DbAspect extends AbstractAspect
 
             throw $exception;
         } finally {
-            $context->setData($data)->finish();
+            $span->setData($data);
+            $span->finish();
         }
 
         return $result;

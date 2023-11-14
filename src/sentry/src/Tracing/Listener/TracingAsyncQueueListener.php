@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
-use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\AsyncQueue\Event\AfterHandle;
 use Hyperf\AsyncQueue\Event\BeforeHandle;
 use Hyperf\AsyncQueue\Event\FailedHandle;
@@ -21,11 +21,12 @@ use Hyperf\AsyncQueue\Event\RetryHandle;
 use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
-use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 
 class TracingAsyncQueueListener implements ListenerInterface
 {
+    use SpanStarter;
+
     public function __construct(
         protected Switcher $switcher,
         protected TagManager $tagManager
@@ -55,32 +56,22 @@ class TracingAsyncQueueListener implements ListenerInterface
 
     protected function startTransaction(BeforeHandle $event): void
     {
-        $sentry = SentrySdk::init();
         $job = $event->getMessage()->job();
-        $context = new TransactionContext();
-        $context->setName($job::class);
-        $context->setSource(TransactionSource::custom());
-        $context->setOp('async_queue.job.handle');
-        $context->setDescription('job:' . $job::class);
-        $context->setStartTimestamp(microtime(true));
 
-        $transaction = $sentry->startTransaction($context);
-
-        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
-        if (! $transaction->getSampled()) {
-            return;
-        }
-
-        TraceContext::setTransaction($transaction);
-        $sentry->setSpan($transaction);
-        TraceContext::setSpan($transaction);
+        $this->continueTrace(
+            name: $job::class,
+            op: 'async_queue.job.handle',
+            description: 'job:' . $job::class,
+            source: TransactionSource::custom()
+        );
     }
 
     protected function finishTransaction(AfterHandle|RetryHandle|FailedHandle $event): void
     {
-        $transaction = TraceContext::getTransaction();
+        $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
-        if (! $transaction) {
+        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
+        if (! $transaction || ! $transaction->getSampled()) {
             return;
         }
 
@@ -103,6 +94,7 @@ class TracingAsyncQueueListener implements ListenerInterface
         $transaction->setData($data);
         $transaction->setTags($tags);
 
+        SentrySdk::getCurrentHub()->setSpan($transaction);
         $transaction->finish(microtime(true));
     }
 }

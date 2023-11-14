@@ -12,19 +12,20 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
-use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Kafka\Event\AfterConsume;
 use Hyperf\Kafka\Event\BeforeConsume;
 use Hyperf\Kafka\Event\FailToConsume;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
-use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 
 class TracingKafkaListener implements ListenerInterface
 {
+    use SpanStarter;
+
     public function __construct(
         protected Switcher $switcher,
         protected TagManager $tagManager
@@ -53,16 +54,29 @@ class TracingKafkaListener implements ListenerInterface
 
     protected function startTransaction(BeforeConsume $event): void
     {
-        $sentry = SentrySdk::init();
         $consumer = $event->getConsumer();
-        $context = new TransactionContext();
-        $context->setName($consumer->getTopic());
-        $context->setSource(TransactionSource::custom());
-        $context->setOp('kafka.consume');
-        $context->setDescription($consumer::class);
-        $context->setStartTimestamp(microtime(true));
+
+        $this->continueTrace(
+            name: $consumer->getTopic(),
+            op: 'kafka.consume',
+            description: $consumer::class,
+            source: TransactionSource::custom()
+        );
+    }
+
+    protected function finishTransaction(AfterConsume|FailToConsume $event): void
+    {
+        $transaction = SentrySdk::getCurrentHub()->getTransaction();
+
+        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
+        if (! $transaction || ! $transaction->getSampled()) {
+            return;
+        }
+
+        $consumer = $event->getConsumer();
 
         $tags = [];
+        $data = [];
 
         if ($this->tagManager->has('kafka.topic')) {
             $tags[$this->tagManager->get('kafka.topic')] = $consumer->getTopic();
@@ -73,31 +87,6 @@ class TracingKafkaListener implements ListenerInterface
         if ($this->tagManager->has('kafka.pool')) {
             $tags[$this->tagManager->get('kafka.pool')] = (string) $consumer->getPool();
         }
-
-        $context->setTags($tags);
-
-        $transaction = $sentry->startTransaction($context);
-
-        // If this transaction is not sampled, we can stop here to prevent doing work for nothing
-        if (! $transaction->getSampled()) {
-            return;
-        }
-
-        TraceContext::setTransaction($transaction);
-        $sentry->setSpan($transaction);
-        TraceContext::setSpan($transaction);
-    }
-
-    protected function finishTransaction(AfterConsume|FailToConsume $event): void
-    {
-        $transaction = TraceContext::getTransaction();
-
-        if (! $transaction) {
-            return;
-        }
-
-        $data = [];
-        $tags = [];
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError());
@@ -115,6 +104,7 @@ class TracingKafkaListener implements ListenerInterface
         $transaction->setData($data);
         $transaction->setTags($tags);
 
+        SentrySdk::getCurrentHub()->setSpan($transaction);
         $transaction->finish(microtime(true));
     }
 }

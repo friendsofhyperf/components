@@ -13,18 +13,19 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\Annotation\Trace;
+use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
-use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\SentrySdk;
-use Sentry\Tracing\SpanContext as SentrySpanContext;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
 class TraceAnnotationAspect extends AbstractAspect
 {
+    use SpanStarter;
+
     public array $annotations = [
         Trace::class,
     ];
@@ -41,7 +42,7 @@ class TraceAnnotationAspect extends AbstractAspect
         /** @var Trace|null $annotation */
         $annotation = $metadata->method[Trace::class] ?? null;
 
-        if (! $annotation || ! $parent = TraceContext::getSpan()) {
+        if (! $annotation || ! $parent = SentrySdk::getCurrentHub()->getSpan()) {
             return $proceedingJoinPoint->process();
         }
 
@@ -53,25 +54,28 @@ class TraceAnnotationAspect extends AbstractAspect
             $data[$this->tagManager->get('annotation.arguments')] = $proceedingJoinPoint->arguments['keys'];
         }
 
-        $annotationContext = new SentrySpanContext();
-        $annotationContext->setOp($annotation->op ?? 'method');
-        $annotationContext->setDescription($annotation->description ?? sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName));
-        $annotationContext->setStartTimestamp(microtime(true));
-
-        $annotationSpan = $parent->startChild($annotationContext);
-
-        // Set current span as root
-        TraceContext::setSpan($annotationSpan);
+        $span = $this->startSpan(
+            $annotation->op ?? 'method',
+            $annotation->description ?? sprintf(
+                '%s::%s()',
+                $proceedingJoinPoint->className,
+                $proceedingJoinPoint->methodName
+            ),
+        );
 
         try {
             $result = $proceedingJoinPoint->process();
+
+            if (! $span) {
+                return $result;
+            }
+
             if ($this->tagManager->has('annotation.result')) {
                 $data[$this->tagManager->get('annotation.result')] = $result;
             }
-            $annotationSpan->setStatus(SpanStatus::ok());
         } catch (Throwable $exception) {
-            $annotationSpan->setStatus(SpanStatus::internalError());
-            $annotationSpan->setTags([
+            $span->setStatus(SpanStatus::internalError());
+            $span->setTags([
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
@@ -82,14 +86,11 @@ class TraceAnnotationAspect extends AbstractAspect
             }
             throw $exception;
         } finally {
-            $annotationContext->setData($data);
-            $annotationContext->setEndTimestamp(microtime(true));
-            SentrySdk::getCurrentHub()->setSpan($annotationSpan);
-            $annotationSpan->finish(microtime(true));
-            SentrySdk::getCurrentHub()->setSpan($parent);
+            $span->setData($data);
+            $span->finish(microtime(true));
 
-            // Reset root span
-            TraceContext::setSpan($parent);
+            // Reset root span TODO 待测试，span是平级
+            SentrySdk::getCurrentHub()->setSpan($parent);
         }
 
         return $result;

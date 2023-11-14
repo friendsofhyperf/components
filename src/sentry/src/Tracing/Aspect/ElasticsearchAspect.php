@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use Elasticsearch\Client;
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanContext;
+use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -23,6 +23,8 @@ use Throwable;
 
 class ElasticsearchAspect extends AbstractAspect
 {
+    use SpanStarter;
+
     public array $classes = [
         Client::class . '::bulk',
         Client::class . '::count',
@@ -51,10 +53,13 @@ class ElasticsearchAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $context = SpanContext::create(
+        $span = $this->startSpan(
             'elasticserach.' . $proceedingJoinPoint->methodName,
             sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
         );
+        if (! $span) {
+            return $proceedingJoinPoint->process();
+        }
 
         $data = [];
 
@@ -68,14 +73,12 @@ class ElasticsearchAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
-            // $data['result'] = $result;
             if ($this->tagManager->has('elasticserach.result')) {
                 $data[$this->tagManager->get('elasticserach.result')] = json_encode($result, JSON_UNESCAPED_UNICODE);
             }
-            $context->setStatus(SpanStatus::ok());
         } catch (Throwable $exception) {
-            $context->setStatus(SpanStatus::internalError());
-            $context->setTags([
+            $span->setStatus(SpanStatus::internalError());
+            $span->setTags([
                 'error' => true,
                 'exception.class' => $exception::class,
                 'exception.message' => $exception->getMessage(),
@@ -87,7 +90,8 @@ class ElasticsearchAspect extends AbstractAspect
 
             throw $exception;
         } finally {
-            $context->setData($data)->finish();
+            $span->setData($data);
+            $span->finish();
         }
 
         return $result;

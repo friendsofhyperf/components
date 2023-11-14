@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
+use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanContext;
+use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
-use FriendsOfHyperf\Sentry\Tracing\TraceContext;
 use Hyperf\Context\Context;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -22,12 +22,15 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Rpc;
 use Hyperf\RpcClient;
 use Psr\Container\ContainerInterface;
+use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
 class RpcAspect extends AbstractAspect
 {
-    protected const CONTEXT = 'sentry.tracing.rpc.context';
+    use SpanStarter;
+
+    protected const SPAN = 'sentry.tracing.rpc.span';
 
     protected const DATA = 'sentry.tracing.rpc.data';
 
@@ -49,72 +52,84 @@ class RpcAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $parent = TraceContext::getSpan();
+        return match ($proceedingJoinPoint->methodName) {
+            '__generateRpcPath' => $this->handleGenerateRpcPath($proceedingJoinPoint),
+            'send' => $this->handleSend($proceedingJoinPoint),
+            default => $proceedingJoinPoint->process(),
+        };
+    }
 
-        if ($proceedingJoinPoint->methodName === '__generateRpcPath') {
-            $path = $proceedingJoinPoint->process();
-            $context = SpanContext::create('rpc.send', $path);
-            Context::set(static::CONTEXT, $context);
+    private function handleGenerateRpcPath(ProceedingJoinPoint $proceedingJoinPoint)
+    {
+        $path = $proceedingJoinPoint->process();
+        $span = $this->startSpan('rpc.send', $path);
 
-            $data = [];
-
-            if ($this->tagManager->has('rpc.coroutine.id')) {
-                $data[$this->tagManager->get('rpc.coroutine.id')] = Coroutine::id();
-            }
-
-            Context::set(static::DATA, $data);
-
-            if ($this->container->has(Rpc\Context::class)) {
-                $sentryTrace = $parent->toTraceparent();
-                $baggage = $parent->toBaggage();
-                $rpcContext = $this->container->get(Rpc\Context::class);
-                $rpcContext->set(TraceContext::RPC_CARRIER, [
-                    'sentry-trace' => $sentryTrace,
-                    'baggage' => $baggage,
-                ]);
-            }
-
+        if (! $span) {
             return $path;
         }
 
-        if ($proceedingJoinPoint->methodName === 'send') {
-            /** @var array $data */
-            $data = (array) Context::get(static::DATA);
-            if ($this->tagManager->has('rpc.arguments')) {
-                $data[$this->tagManager->get('rpc.arguments')] = $proceedingJoinPoint->arguments['keys'];
-            }
-            /** @var SpanContext|null $context */
-            $context = Context::get(static::CONTEXT);
+        Context::set(static::SPAN, $span);
 
-            try {
-                $result = $proceedingJoinPoint->process();
-                if ($this->tagManager->has('rpc.result')) {
-                    $data[$this->tagManager->get('rpc.result')] = $result;
-                }
-            } catch (Throwable $exception) {
-                $context->setStatus(SpanStatus::internalError());
-                $context->setTags([
-                    'error' => true,
-                    'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
-                    'exception.code' => $exception->getCode(),
-                ]);
-                if ($this->tagManager->has('rpc.exception.stack_trace')) {
-                    $data[$this->tagManager->get('rpc.exception.stack_trace')] = (string) $exception;
-                }
+        $data = [];
 
-                throw $exception;
-            } finally {
-                $context?->setStatus(
-                    isset($result['result']) ? SpanStatus::ok() : SpanStatus::internalError()
-                )
-                    ->setData($data)
-                    ->finish();
-            }
-
-            return $result;
+        if ($this->tagManager->has('rpc.coroutine.id')) {
+            $data[$this->tagManager->get('rpc.coroutine.id')] = Coroutine::id();
         }
 
-        return $proceedingJoinPoint->process();
+        Context::set(static::DATA, $data);
+
+        if ($this->container->has(Rpc\Context::class)) {
+            $sentryTrace = $span->toTraceparent();
+            $baggage = $span->toBaggage();
+            $rpcContext = $this->container->get(Rpc\Context::class);
+            $rpcContext->set(Constants::RPC_CARRIER, [
+                'sentry-trace' => $sentryTrace,
+                'baggage' => $baggage,
+            ]);
+        }
+
+        return $path;
+    }
+
+    private function handleSend(ProceedingJoinPoint $proceedingJoinPoint)
+    {
+        $data = (array) Context::get(static::DATA);
+
+        if ($this->tagManager->has('rpc.arguments')) {
+            $data[$this->tagManager->get('rpc.arguments')] = $proceedingJoinPoint->arguments['keys'];
+        }
+
+        /** @var Span|null $span */
+        $span = Context::get(static::SPAN);
+
+        try {
+            $result = $proceedingJoinPoint->process();
+
+            if (! $span) {
+                return $result;
+            }
+
+            if ($this->tagManager->has('rpc.result')) {
+                $data[$this->tagManager->get('rpc.result')] = $result;
+            }
+        } catch (Throwable $exception) {
+            $span->setStatus(SpanStatus::internalError());
+            $span->setTags([
+                'error' => true,
+                'exception.class' => $exception::class,
+                'exception.message' => $exception->getMessage(),
+                'exception.code' => $exception->getCode(),
+            ]);
+            if ($this->tagManager->has('rpc.exception.stack_trace')) {
+                $data[$this->tagManager->get('rpc.exception.stack_trace')] = (string) $exception;
+            }
+
+            throw $exception;
+        } finally {
+            $span->setData($data);
+            $span->finish();
+        }
+
+        return $result;
     }
 }
