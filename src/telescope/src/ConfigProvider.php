@@ -51,6 +51,12 @@ class ConfigProvider
                     'source' => __DIR__ . '/../publish/telescope.php',
                     'destination' => BASE_PATH . '/config/autoload/telescope.php',
                 ],
+                [
+                    'id' => 'migrations',
+                    'description' => 'The migrations file of hyperf telescope',
+                    'source' => __DIR__ . '/../migrations/2020_08_03_064816_telescope_entries.php',
+                    'destination' => BASE_PATH . '/migrations/2020_08_03_064816_telescope_entries.php',
+                ],
             ],
         ];
     }

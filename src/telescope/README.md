@@ -1,32 +1,38 @@
-# Hyperf-telescope
+# telescope
 
-hyperf 版本的望远镜
+An elegant debug assistant for the hyperf framework.
 
-## 功能点
+## Functions
 
-- [x] 记录request请求
-- [x] 记录异常错误
-- [x] 记录sql语句
-- [x] 记录grpc service请求
-- [x] 记录redis
-- [x] 记录log
-- [x] 记录command
-- [x] 记录event
-- [x] 记录http client
+- [x] request
+- [x] exception
+- [x] sql
+- [x] grpc client
+- [x] redis
+- [x] log
+- [x] command
+- [x] event
+- [x] http client
 
-## 安装组件
+## Installation
 
 ```shell
 composer require friendsofhyperf/telescope:~3.1.0
 ```
 
-## 发布配置
+## Publish
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/telescope
 ```
 
-## 添加监听器(请求端)
+## Migrate
+
+```shell
+php bin/hyperf.php migrate
+```
+
+## Add Listener
 
 ```php
 <?php
@@ -39,7 +45,7 @@ return [
 
 ```
 
-## 添加中间件
+## Add Middleware
 
 ```php
 <?php
@@ -54,9 +60,9 @@ return [
 
 ```
 
-> TelescopeMiddleware 与 RequestHandledListener，二选一即可。
+> TelescopeMiddleware or RequestHandledListener, you can choose one of them.
 
-## 修改.env
+## Add env
 
 ```env
 # telescope
@@ -76,10 +82,12 @@ TELESCOPE_ENABLE_GUZZLE=true
 TELESCOPE_SERVER_ENABLE=true
 ```
 
-## 访问地址
+## Visit
 
 `http://127.0.0.1:9509/telescope/requests`
 
-<img src="./requests.jpg">
-<img src="./grpc.jpg">
-<img src="./exception.jpg">
+<img src="./requests.jpg />
+
+<img src="./grpc.jpg" />
+
+<img src="./exception.jpg" />
