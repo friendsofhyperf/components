@@ -165,6 +165,8 @@ class TraceMiddleware implements MiddlewareInterface
             'request.received',
         );
 
+        SentrySdk::getCurrentHub()->setSpan($span);
+
         defer(function () use ($transaction, $span) {
             $span->finish();
 
