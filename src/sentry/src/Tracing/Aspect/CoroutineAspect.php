@@ -56,8 +56,7 @@ class CoroutineAspect extends AbstractAspect
                 description: $callingOnFunction ?? '#' . Co::parentId(),
             );
 
-            $span = $this->startSpan('coroutine.execute', '#' . Co::id());
-            SentrySdk::getCurrentHub()->setSpan($span);
+            $span = $this->startSpan('coroutine.execute', '#' . Co::id(), true);
 
             defer(function () use ($transaction, $span) {
                 $span->finish();
