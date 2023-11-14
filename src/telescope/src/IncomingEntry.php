@@ -71,13 +71,10 @@ class IncomingEntry
     public function __construct(array $content)
     {
         $this->uuid = (string) Str::orderedUuid()->toString();
-
         $timezone = config('telescope.timezone') ?: date_default_timezone_get();
         $this->recordedAt = Carbon::now()->setTimezone($timezone)->toDateTimeString();
-
-        $this->content = array_merge($content, ['hostname' => gethostname()]);
-
-        // $this->tags = ['hostname:'.gethostname()];
+        $this->content = array_merge($content, ['hostname' => $hostname = gethostname()]);
+        $this->tags = ['hostname:' . $hostname];
     }
 
     /**
@@ -145,7 +142,7 @@ class IncomingEntry
     /**
      * Set the currently authenticated user.
      *
-     * @param \Illuminate\Contracts\Auth\Authenticatable $user
+     * @param object $user
      * @return $this
      */
     public function user($user = null): static
@@ -287,11 +284,10 @@ class IncomingEntry
     public function create()
     {
         foreach ($this->tags as $tag) {
-            $tagItem = [
+            TelescopeEntryTagModel::create([
                 'entry_uuid' => $this->uuid,
                 'tag' => $tag,
-            ];
-            TelescopeEntryTagModel::create($tagItem);
+            ]);
         }
         TelescopeEntryModel::create($this->toArray());
     }
