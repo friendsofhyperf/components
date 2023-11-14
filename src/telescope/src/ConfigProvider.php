@@ -31,11 +31,12 @@ class ConfigProvider
                 Listener\SetupTelescopeServerListener::class,
             ],
             'aspects' => [
-                Aspect\GrpcClientAspect::class,
-                Aspect\RedisAspect::class,
-                Aspect\LogAspect::class,
+                Aspect\CoroutineAspect::class,
                 Aspect\EventAspect::class,
+                Aspect\GrpcClientAspect::class,
                 Aspect\HttpClientAspect::class,
+                Aspect\LogAspect::class,
+                Aspect\RedisAspect::class,
             ],
             'annotations' => [
                 'scan' => [
