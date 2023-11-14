@@ -19,17 +19,13 @@ class Telescope
 {
     /**
      * The callbacks that filter the entries that should be recorded.
-     *
-     * @var array
      */
-    public static $filterUsing = [];
+    public static array $filterUsing = [];
 
     /**
      * The callbacks that filter the batches that should be recorded.
-     *
-     * @var array
      */
-    public static $filterBatchUsing = [];
+    public static array $filterBatchUsing = [];
 
     /**
      * The callback executed after queuing a new entry.
@@ -41,85 +37,67 @@ class Telescope
     /**
      * The callbacks executed after storing the entries.
      *
-     * @var Closure
+     * @var Closure[]
      */
-    public static $afterStoringHooks = [];
+    public static array $afterStoringHooks = [];
 
     /**
      * The callbacks that add tags to the record.
      *
      * @var Closure[]
      */
-    public static $tagUsing = [];
+    public static array $tagUsing = [];
 
     /**
      * The list of queued entries to be stored.
-     *
-     * @var array
      */
-    public static $entriesQueue = [];
+    public static array $entriesQueue = [];
 
     /**
      * The list of queued entry updates.
-     *
-     * @var array
      */
-    public static $updatesQueue = [];
+    public static array $updatesQueue = [];
 
     /**
      * The list of hidden request headers.
-     *
-     * @var array
      */
-    public static $hiddenRequestHeaders = [
+    public static array $hiddenRequestHeaders = [
         'authorization',
         'php-auth-pw',
     ];
 
     /**
      * The list of hidden request parameters.
-     *
-     * @var array
      */
-    public static $hiddenRequestParameters = [
+    public static array $hiddenRequestParameters = [
         'password',
         'password_confirmation',
     ];
 
     /**
      * The list of hidden response parameters.
-     *
-     * @var array
      */
-    public static $hiddenResponseParameters = [];
+    public static array $hiddenResponseParameters = [];
 
     /**
      * Indicates if Telescope should ignore events fired by Laravel.
-     *
-     * @var bool
      */
-    public static $ignoreFrameworkEvents = true;
+    public static bool $ignoreFrameworkEvents = true;
 
     /**
      * Indicates if Telescope should use the dark theme.
-     *
-     * @var bool
      */
-    public static $useDarkTheme = false;
+    public static bool $useDarkTheme = false;
 
     /**
      * Indicates if Telescope should record entries.
-     *
-     * @var bool
      */
-    public static $shouldRecord = false;
+    public static bool $shouldRecord = false;
 
     /**
      * Indicates if Telescope migrations will be run.
-     *
-     * @var bool
      */
-    public static $runsMigrations = true;
+    public static bool $runsMigrations = true;
 
     public static function recordCache(IncomingEntry $entry): void
     {
@@ -190,6 +168,7 @@ class Telescope
         $batchId = (string) TelescopeContext::getBatchId();
         $subBatchId = (string) TelescopeContext::getSubBatchId();
         $entry->batchId($batchId)->subBatchId($subBatchId)->type($type)->user();
-        $entry->create();
+        // $entry->create();
+        TelescopeContext::addEntry($entry);
     }
 }
