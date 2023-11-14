@@ -10,13 +10,6 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Telescope\Telescope;
 
-/*
- * This file is part of friendsofhyperf/components.
- *
- * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/main/README.md
- * @contact  huangdijia@gmail.com
- */
 use function Hyperf\Support\env;
 
 return [
