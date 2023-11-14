@@ -11,115 +11,54 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope;
 
-use Closure;
-use Hyperf\Context\ApplicationContext;
-use Hyperf\Contract\ConfigInterface;
+use function Hyperf\Config\config;
 
 class Telescope
 {
-    /**
-     * The callbacks that filter the entries that should be recorded.
-     *
-     * @var array
-     */
-    public static $filterUsing = [];
+    public const SYNC = 0;
 
-    /**
-     * The callbacks that filter the batches that should be recorded.
-     *
-     * @var array
-     */
-    public static $filterBatchUsing = [];
-
-    /**
-     * The callback executed after queuing a new entry.
-     *
-     * @var Closure
-     */
-    public static $afterRecordingHook;
-
-    /**
-     * The callbacks executed after storing the entries.
-     *
-     * @var Closure
-     */
-    public static $afterStoringHooks = [];
-
-    /**
-     * The callbacks that add tags to the record.
-     *
-     * @var Closure[]
-     */
-    public static $tagUsing = [];
-
-    /**
-     * The list of queued entries to be stored.
-     *
-     * @var array
-     */
-    public static $entriesQueue = [];
-
-    /**
-     * The list of queued entry updates.
-     *
-     * @var array
-     */
-    public static $updatesQueue = [];
+    public const ASYNC = 1;
 
     /**
      * The list of hidden request headers.
-     *
-     * @var array
      */
-    public static $hiddenRequestHeaders = [
+    public static array $hiddenRequestHeaders = [
         'authorization',
         'php-auth-pw',
     ];
 
     /**
      * The list of hidden request parameters.
-     *
-     * @var array
      */
-    public static $hiddenRequestParameters = [
+    public static array $hiddenRequestParameters = [
         'password',
         'password_confirmation',
     ];
 
     /**
      * The list of hidden response parameters.
-     *
-     * @var array
      */
-    public static $hiddenResponseParameters = [];
+    public static array $hiddenResponseParameters = [];
 
     /**
      * Indicates if Telescope should ignore events fired by Laravel.
-     *
-     * @var bool
      */
-    public static $ignoreFrameworkEvents = true;
+    public static bool $ignoreFrameworkEvents = true;
 
     /**
      * Indicates if Telescope should use the dark theme.
-     *
-     * @var bool
      */
-    public static $useDarkTheme = false;
+    public static bool $useDarkTheme = false;
 
     /**
      * Indicates if Telescope should record entries.
-     *
-     * @var bool
      */
-    public static $shouldRecord = false;
+    public static bool $shouldRecord = false;
 
     /**
      * Indicates if Telescope migrations will be run.
-     *
-     * @var bool
      */
-    public static $runsMigrations = true;
+    public static bool $runsMigrations = true;
 
     public static function recordCache(IncomingEntry $entry): void
     {
@@ -173,16 +112,12 @@ class Telescope
 
     public static function getAppName(): string
     {
-        $container = ApplicationContext::getContainer();
-        $config = $container->get(ConfigInterface::class);
-        return $config->get('telescope.app.name', '') ? '[' . $config->get('telescope.app.name', '') . '] ' : '';
+        return config('telescope.app.name', '') ? '[' . config('telescope.app.name', '') . '] ' : '';
     }
 
     public static function getQuerySlow(): int
     {
-        $container = ApplicationContext::getContainer();
-        $config = $container->get(ConfigInterface::class);
-        return $config->get('telescope.database.query_slow', 50);
+        return config('telescope.database.query_slow', 50);
     }
 
     protected static function record(string $type, IncomingEntry $entry): void
@@ -190,6 +125,10 @@ class Telescope
         $batchId = (string) TelescopeContext::getBatchId();
         $subBatchId = (string) TelescopeContext::getSubBatchId();
         $entry->batchId($batchId)->subBatchId($subBatchId)->type($type)->user();
-        $entry->create();
+        match (config('telescope.save_mode', 0)) {
+            self::ASYNC => TelescopeContext::addEntry($entry),
+            self::SYNC => $entry->create(),
+            default => $entry->create(),
+        };
     }
 }

@@ -13,25 +13,15 @@ namespace FriendsOfHyperf\Telescope;
 
 use Hyperf\Context\Context;
 
+use function Hyperf\Coroutine\defer;
+
 class TelescopeContext
 {
-    public const TELESCOPE = 'telescope.telescope';
+    public const BATCH_ID = 'telescope.context.batch_id';
 
-    public const ROOT = 'telescope.root';
+    public const SUB_BATCH_ID = 'telescope.context.sub_batch_id';
 
-    public const BATCH_ID = 'telescope.batch_id';
-
-    public const SUB_BATCH_ID = 'telescope.sub_batch_id';
-
-    public static function setTracer($tracer)
-    {
-        return Context::set(self::TELESCOPE, $tracer);
-    }
-
-    public static function getRoot()
-    {
-        return Context::get(self::ROOT) ?: null;
-    }
+    public const ENTRIES = 'telescope.context.entries';
 
     public static function setBatchId(string $batchId): ?string
     {
@@ -51,5 +41,26 @@ class TelescopeContext
     public static function getSubBatchId(): ?string
     {
         return Context::get(self::SUB_BATCH_ID) ?: null;
+    }
+
+    public static function addEntry(IncomingEntry $entry): void
+    {
+        if (! Context::has(self::ENTRIES)) {
+            Context::set(self::ENTRIES, []);
+
+            defer(function () {
+                /** @var IncomingEntry[] $entries */
+                $entries = Context::get(self::ENTRIES);
+                foreach ($entries as $entry) {
+                    $entry->create();
+                }
+                Context::destroy(self::ENTRIES);
+            });
+        }
+
+        $entries = Context::get(self::ENTRIES);
+        $entries[] = $entry;
+
+        Context::set(self::ENTRIES, $entries);
     }
 }

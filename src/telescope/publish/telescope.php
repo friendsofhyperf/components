@@ -8,6 +8,8 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+use FriendsOfHyperf\Telescope\Telescope;
+
 use function Hyperf\Support\env;
 
 return [
@@ -36,4 +38,5 @@ return [
         'host' => env('TELESCOPE_SERVER_HOST', '0.0.0.0'),
         'port' => (int) env('TELESCOPE_SERVER_PORT', 9509),
     ],
+    'save_mode' => Telescope::SYNC,
 ];
