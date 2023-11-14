@@ -61,8 +61,8 @@ class TraceAnnotationAspect extends AbstractAspect
                 $proceedingJoinPoint->className,
                 $proceedingJoinPoint->methodName
             ),
+            true
         );
-        SentrySdk::getCurrentHub()->setSpan($span);
 
         try {
             $result = $proceedingJoinPoint->process();
