@@ -43,7 +43,7 @@ class TelescopeContext
         return Context::get(self::SUB_BATCH_ID) ?: null;
     }
 
-    public static function addEntry(IncomingEntry $entry)
+    public static function addEntry(IncomingEntry $entry): void
     {
         if (! Context::has(self::ENTRIES)) {
             Context::set(self::ENTRIES, []);
@@ -61,6 +61,6 @@ class TelescopeContext
         $entries = Context::get(self::ENTRIES);
         $entries[] = $entry;
 
-        return Context::set(self::ENTRIES, $entries);
+        Context::set(self::ENTRIES, $entries);
     }
 }
