@@ -26,7 +26,7 @@ use function Sentry\continueTrace;
 
 trait SpanStarter
 {
-    protected function startSpan(?string $op = null, ?string $description = null): ?Span
+    protected function startSpan(?string $op = null, ?string $description = null, bool $asParent = false): ?Span
     {
         if (! $parent = SentrySdk::getCurrentHub()->getSpan()) {
             return null;
@@ -37,6 +37,10 @@ trait SpanStarter
         $span->setDescription($description);
         $span->setStatus(SpanStatus::ok());
         $span->setStartTimestamp(microtime(true));
+
+        if ($asParent) {
+            SentrySdk::getCurrentHub()->setSpan($span);
+        }
 
         return $span;
     }
