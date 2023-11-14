@@ -38,9 +38,6 @@ trait SpanStarter
         $span->setStatus(SpanStatus::ok());
         $span->setStartTimestamp(microtime(true));
 
-        SentrySdk::getCurrentHub()->setSpan($span);
-        TraceContext::setSpan($span);
-
         return $span;
     }
 

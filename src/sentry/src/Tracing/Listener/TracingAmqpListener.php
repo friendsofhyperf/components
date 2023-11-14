@@ -57,9 +57,9 @@ class TracingAmqpListener implements ListenerInterface
         $message = $event->getMessage();
 
         $this->continueTrace(
-            name: 'amqp.consume',
-            op: 'message:' . $message::class,
-            description: $message::class,
+            name: $message::class,
+            op: 'amqp.consume',
+            description: 'message:' . $message::class,
             source: TransactionSource::custom()
         );
     }
