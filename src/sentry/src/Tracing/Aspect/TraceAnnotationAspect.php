@@ -62,6 +62,7 @@ class TraceAnnotationAspect extends AbstractAspect
                 $proceedingJoinPoint->methodName
             ),
         );
+        SentrySdk::getCurrentHub()->setSpan($span);
 
         try {
             $result = $proceedingJoinPoint->process();
@@ -89,7 +90,7 @@ class TraceAnnotationAspect extends AbstractAspect
             $span->setData($data);
             $span->finish(microtime(true));
 
-            // Reset root span TODO 待测试，span是平级
+            // Reset root span
             SentrySdk::getCurrentHub()->setSpan($parent);
         }
 
