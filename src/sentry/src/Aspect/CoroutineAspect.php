@@ -33,9 +33,10 @@ class CoroutineAspect extends AbstractAspect
     {
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
         $keys = $this->keys;
+        $cid = Co::id();
 
-        $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $keys) {
-            Context::copy(Co::pid(), $keys);
+        $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $cid, $keys) {
+            Context::copy($cid, $keys);
 
             try {
                 $callable();
