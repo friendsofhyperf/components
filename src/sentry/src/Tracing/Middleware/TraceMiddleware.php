@@ -125,20 +125,11 @@ class TraceMiddleware implements MiddlewareInterface
         );
 
         // Set data
-        $data = [
-            'url' => $path,
-            'http.request.method' => strtoupper($request->getMethod()),
-        ];
+        $data = [];
         $tags = [];
 
         if ($this->tagManager->has('request.route.params') && $routeParams) {
             $data[$this->tagManager->get('request.route.params')] = $routeParams;
-        }
-        if ($this->tagManager->has('request.query_params') && $queryParams = $request->getQueryParams()) {
-            $data[$this->tagManager->get('request.query_params')] = $queryParams;
-        }
-        if ($this->tagManager->has('request.body') && $parsedBody = $request->getParsedBody()) {
-            $data[$this->tagManager->get('request.body')] = $parsedBody;
         }
 
         // Set tags
