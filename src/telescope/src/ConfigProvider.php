@@ -31,6 +31,7 @@ class ConfigProvider
                 Listener\SetupTelescopeServerListener::class,
             ],
             'aspects' => [
+                Aspect\CacheAspect::class,
                 Aspect\CoroutineAspect::class,
                 Aspect\EventAspect::class,
                 Aspect\GrpcClientAspect::class,
