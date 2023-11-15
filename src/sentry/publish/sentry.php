@@ -156,9 +156,6 @@ return [
             'request' => [
                 'http.path' => 'http.path',
                 'http.method' => 'http.method',
-                'header' => 'request.header',
-                'query_params' => 'request.query_params',
-                'body' => 'request.body',
                 'route.params' => 'route.params',
                 'route.callback' => 'route.callback',
                 'exception.stack_trace' => 'exception.stack_trace',
