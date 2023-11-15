@@ -17,8 +17,10 @@ use FriendsOfHyperf\Telescope\Telescope;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Redis\Redis;
+use Psr\Container\ContainerInterface;
 
 use function Hyperf\Collection\collect;
+use function Hyperf\Config\config;
 use function Hyperf\Tappable\tap;
 
 /**
@@ -30,7 +32,7 @@ class RedisAspect extends AbstractAspect
         Redis::class . '::__call',
     ];
 
-    public function __construct(protected SwitchManager $switcherManager)
+    public function __construct(protected SwitchManager $switcherManager, protected ContainerInterface $container)
     {
     }
 
@@ -56,7 +58,7 @@ class RedisAspect extends AbstractAspect
 
     private function formatCommand($command, $parameters)
     {
-        $parameters = collect($parameters)->map(function ($parameter) {
+        $parameters = collect($parameters)->map(function ($parameter, $key) use ($command) {
             if (is_array($parameter)) {
                 return collect($parameter)->map(function ($value, $key) {
                     if (is_array($value)) {
@@ -66,7 +68,12 @@ class RedisAspect extends AbstractAspect
                     return is_int($key) ? $value : "{$key} {$value}";
                 })->implode(' ');
             }
-
+            if ($command == 'set' && $key == 1 && $pack = config('cache.default.packer', '')) {
+                $unpack = @$this->container->get($pack)->unpack((string) $parameter);
+                if ($unpack !== false) {
+                    $parameter = $unpack;
+                }
+            }
             return $parameter;
         })->implode(' ');
 
