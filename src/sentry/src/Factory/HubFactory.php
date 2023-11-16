@@ -70,14 +70,12 @@ class HubFactory
             return array_merge($integrations, $userIntegrations);
         });
 
-        $client = (function () {
-            if (version_compare(Client::SDK_VERSION, '4.0.0', '<')) {
-                $this->transport = null; // Make the transport is new created before get client
-            }
-            return $this->getClient();
-        })->call($clientBuilder);
+        // Make the transport is new created before get client in sentry-sdk 3.x
+        if (method_exists($this, 'createTransportInstance')) {
+            (function () { $this->transport = null; })->call($clientBuilder);
+        }
 
-        return new Hub($client);
+        return new Hub($clientBuilder->getClient());
     }
 
     /**
