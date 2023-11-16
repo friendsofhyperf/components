@@ -26,9 +26,9 @@ class TelescopeContext
 
     public const CACHE_PACKER = 'telescope.context.cache_packer';
 
-    public static function setBatchId(string $batchId): ?string
+    public static function setBatchId(string $batchId): void
     {
-        return Context::set(self::BATCH_ID, $batchId);
+        Context::set(self::BATCH_ID, $batchId);
     }
 
     public static function getBatchId(): ?string
@@ -36,9 +36,9 @@ class TelescopeContext
         return Context::get(self::BATCH_ID) ?: null;
     }
 
-    public static function setSubBatchId(string $batchId): ?string
+    public static function setSubBatchId(string $batchId): void
     {
-        return Context::set(self::SUB_BATCH_ID, $batchId);
+        Context::set(self::SUB_BATCH_ID, $batchId);
     }
 
     public static function getSubBatchId(): ?string
@@ -46,16 +46,16 @@ class TelescopeContext
         return Context::get(self::SUB_BATCH_ID) ?: null;
     }
 
+    public static function setCachePacker(PackerInterface $packer): void
+    {
+        Context::set(self::CACHE_PACKER, $packer);
+    }
+
     public static function getCachePacker(): ?PackerInterface
     {
         /** @var PackerInterface|null $packer */
         $packer = Context::get(self::CACHE_PACKER);
         return $packer instanceof PackerInterface ? $packer : null;
-    }
-
-    public static function setCachePacker(PackerInterface $packer): void
-    {
-        Context::set(self::CACHE_PACKER, $packer);
     }
 
     public static function addEntry(IncomingEntry $entry): void
@@ -73,6 +73,7 @@ class TelescopeContext
             });
         }
 
+        /** @var IncomingEntry[] $entries */
         $entries = Context::get(self::ENTRIES);
         $entries[] = $entry;
 

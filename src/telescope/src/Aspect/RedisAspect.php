@@ -76,7 +76,7 @@ class RedisAspect extends AbstractAspect
             ) {
                 try {
                     $unpacked = $packer->unpack((string) $parameter);
-                    $parameter = match(true) {
+                    $parameter = match (true) {
                         is_null($unpacked) => 'null',
                         is_array($unpacked) => json_encode($unpacked),
                         default => $unpacked,
