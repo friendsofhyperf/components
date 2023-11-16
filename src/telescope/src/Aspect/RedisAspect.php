@@ -76,7 +76,6 @@ class RedisAspect extends AbstractAspect
                         $parameter = is_array($unpack) ? json_encode($unpack) : $unpack;
                     }
                 } catch (Throwable $e) {
-                    var_dump($e->getMessage());
                 }
             }
             return $parameter;
