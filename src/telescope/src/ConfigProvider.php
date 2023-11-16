@@ -32,6 +32,7 @@ class ConfigProvider
             ],
             'aspects' => [
                 Aspect\CoroutineAspect::class,
+                Aspect\CacheAspect::class,
                 Aspect\EventAspect::class,
                 Aspect\GrpcClientAspect::class,
                 Aspect\HttpClientAspect::class,
