@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Telescope\Aspect;
 use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Redis\Redis;
@@ -21,7 +22,6 @@ use Psr\Container\ContainerInterface;
 use Throwable;
 
 use function Hyperf\Collection\collect;
-use function Hyperf\Config\config;
 use function Hyperf\Tappable\tap;
 
 /**
@@ -69,11 +69,11 @@ class RedisAspect extends AbstractAspect
                     return is_int($key) ? $value : "{$key} {$value}";
                 })->implode(' ');
             }
-            if ($command == 'set' && $key == 1 && $pack = config('cache.default.packer', '')) {
+            if ($command == 'set' && $key == 1 && $pack = TelescopeContext::getCachePacker()) {
                 try {
                     $unpack = $this->container->get($pack)->unpack((string) $parameter);
                     if ($unpack !== false) {
-                        $parameter = is_array($unpack) ? json_encode($unpack) : $unpack;
+                        $parameter = is_null($unpack) ? 'null' : (is_array($unpack) ? json_encode($unpack) : $unpack);
                     }
                 } catch (Throwable $e) {
                 }

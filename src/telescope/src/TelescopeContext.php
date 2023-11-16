@@ -23,6 +23,8 @@ class TelescopeContext
 
     public const ENTRIES = 'telescope.context.entries';
 
+    public const CACHE_PACKER = 'telescope.context.cache_packer';
+
     public static function setBatchId(string $batchId): ?string
     {
         return Context::set(self::BATCH_ID, $batchId);
@@ -41,6 +43,16 @@ class TelescopeContext
     public static function getSubBatchId(): ?string
     {
         return Context::get(self::SUB_BATCH_ID) ?: null;
+    }
+
+    public static function getCachePacker(): ?string
+    {
+        return Context::get(self::CACHE_PACKER) ?: null;
+    }
+
+    public static function setCachePacker(string $packer): ?string
+    {
+        return Context::set(self::CACHE_PACKER, $packer);
     }
 
     public static function addEntry(IncomingEntry $entry): void
