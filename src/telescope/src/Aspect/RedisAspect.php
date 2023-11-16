@@ -18,6 +18,7 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Redis\Redis;
 use Psr\Container\ContainerInterface;
+use Throwable;
 
 use function Hyperf\Collection\collect;
 use function Hyperf\Config\config;
@@ -69,9 +70,13 @@ class RedisAspect extends AbstractAspect
                 })->implode(' ');
             }
             if ($command == 'set' && $key == 1 && $pack = config('cache.default.packer', '')) {
-                $unpack = @$this->container->get($pack)->unpack((string) $parameter);
-                if ($unpack !== false) {
-                    $parameter = is_array($unpack) ? json_encode($unpack) : $unpack;
+                try {
+                    $unpack = $this->container->get($pack)->unpack((string) $parameter);
+                    if ($unpack !== false) {
+                        $parameter = is_array($unpack) ? json_encode($unpack) : $unpack;
+                    }
+                } catch (Throwable $e) {
+                    var_dump($e->getMessage());
                 }
             }
             return $parameter;
