@@ -18,7 +18,6 @@ use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Redis\Redis;
-use Psr\Container\ContainerInterface;
 use Throwable;
 
 use function Hyperf\Collection\collect;
@@ -33,7 +32,7 @@ class RedisAspect extends AbstractAspect
         Redis::class . '::__call',
     ];
 
-    public function __construct(protected SwitchManager $switcherManager, protected ContainerInterface $container)
+    public function __construct(protected SwitchManager $switcherManager)
     {
     }
 
@@ -59,33 +58,37 @@ class RedisAspect extends AbstractAspect
 
     private function formatCommand(string $command, array $parameters): string
     {
-        $parameters = collect($parameters)->map(function ($parameter, $key) use ($command) {
-            if (is_array($parameter)) {
-                return collect($parameter)->map(function ($value, $key) {
-                    if (is_array($value)) {
-                        return json_encode($value);
-                    }
+        $parameters = collect($parameters)
+            ->map(function ($parameter, $key) use ($command) {
+                if (is_array($parameter)) {
+                    return collect($parameter)
+                        ->map(function ($value, $key) {
+                            if (is_array($value)) {
+                                return json_encode($value);
+                            }
 
-                    return is_int($key) ? $value : "{$key} {$value}";
-                })->implode(' ');
-            }
-            if (
-                $command == 'set'
-                && $key == 1
-                && $packer = TelescopeContext::getCachePacker()
-            ) {
-                try {
-                    $unpacked = $packer->unpack((string) $parameter);
-                    $parameter = match (true) {
-                        is_null($unpacked) => 'null',
-                        is_array($unpacked) => json_encode($unpacked),
-                        default => $unpacked,
-                    };
-                } catch (Throwable $e) {
+                            return is_int($key) ? $value : "{$key} {$value}";
+                        })
+                        ->implode(' ');
                 }
-            }
-            return $parameter;
-        })->implode(' ');
+                if (
+                    $command == 'set'
+                    && $key == 1
+                    && $packer = TelescopeContext::getCachePacker()
+                ) {
+                    try {
+                        $unpacked = $packer->unpack((string) $parameter);
+                        $parameter = match (true) {
+                            is_null($unpacked) => 'null',
+                            is_array($unpacked) => json_encode($unpacked),
+                            default => $unpacked,
+                        };
+                    } catch (Throwable $e) {
+                    }
+                }
+                return $parameter;
+            })
+            ->implode(' ');
 
         return "{$command} {$parameters}";
     }
