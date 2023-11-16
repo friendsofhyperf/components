@@ -39,7 +39,7 @@ class ConfigProvider
                 Command\TestCommand::class,
             ],
             'dependencies' => [
-                \Sentry\ClientBuilderInterface::class => Factory\ClientBuilderFactory::class,
+                \Sentry\ClientBuilder::class => Factory\ClientBuilderFactory::class,
                 \Sentry\State\HubInterface::class => Factory\HubFactory::class,
             ],
             'listeners' => [

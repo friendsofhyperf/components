@@ -23,12 +23,12 @@ use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Guzzle\CoroutineHandler;
-use Sentry\HttpClient\HttpClientFactory;
 
 class SentryHttpClientFactoryAspect extends AbstractAspect
 {
     public array $classes = [
-        HttpClientFactory::class . '::resolveClient',
+        // 3.x
+        'Sentry\HttpClient\HttpClientFactory::resolveClient',
     ];
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)

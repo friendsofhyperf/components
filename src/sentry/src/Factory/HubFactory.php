@@ -16,7 +16,7 @@ use FriendsOfHyperf\Sentry\Integration\RequestFetcher;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
-use Sentry\ClientBuilderInterface;
+use Sentry\ClientBuilder;
 use Sentry\Integration as SdkIntegration;
 use Sentry\State\Hub;
 
@@ -30,7 +30,7 @@ class HubFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        $clientBuilder = $container->get(ClientBuilderInterface::class);
+        $clientBuilder = $container->get(ClientBuilder::class);
         $options = $clientBuilder->getOptions();
         $userIntegrations = $this->resolveIntegrationsFromUserConfig($container);
 
