@@ -1,4 +1,4 @@
-# telescope
+# Telescope
 
 An elegant debug assistant for the hyperf framework.
 
@@ -86,7 +86,7 @@ TELESCOPE_SERVER_ENABLE=true
 
 `http://127.0.0.1:9509/telescope/requests`
 
-<img src="./requests.jpg />
+<img src="./requests.jpg" />
 
 <img src="./grpc.jpg" />
 
