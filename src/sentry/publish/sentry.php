@@ -28,6 +28,14 @@ return [
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#traces-sample-rate
     'traces_sample_rate' => env('SENTRY_TRACES_SAMPLE_RATE') === null ? null : (float) env('SENTRY_TRACES_SAMPLE_RATE'),
 
+    // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#traces-sampler
+    // 'traces_sampler' => function (Sentry\Tracing\SamplingContext $context): float {
+    //     if (str_contains($context->getTransactionContext()->getDescription(), '/health')) {
+    //         return 0;
+    //     }
+    //     return env('SENTRY_TRACES_SAMPLE_RATE') === null ? 1.0 : (float) env('SENTRY_TRACES_SAMPLE_RATE');
+    // },
+
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#profiles-sample-rate
     'profiles_sample_rate' => env('SENTRY_PROFILES_SAMPLE_RATE') === null ? null : (float) env('SENTRY_PROFILES_SAMPLE_RATE'),
 
