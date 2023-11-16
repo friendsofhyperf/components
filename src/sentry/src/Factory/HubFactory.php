@@ -37,7 +37,7 @@ class HubFactory
 
         $options->setIntegrations(static function (array $integrations) use ($options, $userIntegrations, $container) {
             if ($options->hasDefaultIntegrations()) {
-                // Remove the default error and fatal exception listeners to let Laravel handle those
+                // Remove the default error and fatal exception listeners to let handle those
                 // itself. These event are still bubbling up through the documented changes in the users
                 // `ExceptionHandler` of their application or through the log channel integration to Sentry
                 $integrations = array_filter($integrations, static function (SdkIntegration\IntegrationInterface $integration): bool {
@@ -54,8 +54,8 @@ class HubFactory
                     }
 
                     // We also remove the default request integration so it can be readded
-                    // after with a Laravel specific request fetcher. This way we can resolve
-                    // the request from Laravel instead of constructing it from the global state
+                    // after with a specific request fetcher. This way we can resolve
+                    // the request from instead of constructing it from the global state
                     if ($integration instanceof SdkIntegration\RequestIntegration) {
                         return false;
                     }

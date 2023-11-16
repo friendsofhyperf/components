@@ -59,7 +59,7 @@ class ClientBuilderFactory
             $userConfig
         );
 
-        // When we get no environment from the (user) configuration we default to the Laravel environment
+        // When we get no environment from the (user) configuration we default to the environment
         if (empty($options['environment'])) {
             $options['environment'] = env('APP_ENV', 'production');
         }
