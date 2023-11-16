@@ -40,8 +40,9 @@ class CacheAspect extends AbstractAspect
                 return;
             }
 
+            /** @var \Hyperf\Contract\PackerInterface $packer */
             $packer = (fn () => $this->packer)->call($driver);
-            TelescopeContext::setCachePacker(get_class($packer));
+            TelescopeContext::setCachePacker($packer);
         });
     }
 }

@@ -69,9 +69,13 @@ class RedisAspect extends AbstractAspect
                     return is_int($key) ? $value : "{$key} {$value}";
                 })->implode(' ');
             }
-            if ($command == 'set' && $key == 1 && $pack = TelescopeContext::getCachePacker()) {
+            if (
+                $command == 'set'
+                && $key == 1
+                && $packer = TelescopeContext::getCachePacker()
+            ) {
                 try {
-                    $unpack = $this->container->get($pack)->unpack((string) $parameter);
+                    $unpack = ${$packer}->unpack((string) $parameter);
                     if ($unpack !== false) {
                         $parameter = is_null($unpack) ? 'null' : (is_array($unpack) ? json_encode($unpack) : $unpack);
                     }
