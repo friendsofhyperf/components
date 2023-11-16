@@ -57,7 +57,7 @@ class RedisAspect extends AbstractAspect
         });
     }
 
-    private function formatCommand($command, $parameters)
+    private function formatCommand(string $command, array $parameters): string
     {
         $parameters = collect($parameters)->map(function ($parameter, $key) use ($command) {
             if (is_array($parameter)) {
@@ -75,10 +75,12 @@ class RedisAspect extends AbstractAspect
                 && $packer = TelescopeContext::getCachePacker()
             ) {
                 try {
-                    $unpack = ${$packer}->unpack((string) $parameter);
-                    if ($unpack !== false) {
-                        $parameter = is_null($unpack) ? 'null' : (is_array($unpack) ? json_encode($unpack) : $unpack);
-                    }
+                    $unpacked = $packer->unpack((string) $parameter);
+                    $parameter = match(true) {
+                        is_null($unpacked) => 'null',
+                        is_array($unpacked) => json_encode($unpacked),
+                        default => $unpacked,
+                    };
                 } catch (Throwable $e) {
                 }
             }
