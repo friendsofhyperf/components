@@ -71,7 +71,7 @@ class RedisAspect extends AbstractAspect
             if ($command == 'set' && $key == 1 && $pack = config('cache.default.packer', '')) {
                 $unpack = @$this->container->get($pack)->unpack((string) $parameter);
                 if ($unpack !== false) {
-                    $parameter = $unpack;
+                    $parameter = is_array($unpack) ? json_encode($unpack) : $unpack;
                 }
             }
             return $parameter;
