@@ -79,6 +79,9 @@ return [
         'vendor:publish',
     ],
 
+    // For sentry-sdk 4.x
+    'enable_tracing' => env('SENTRY_ENABLE_TRACING', true),
+
     // Performance monitoring specific configuration
     'tracing' => [
         'enable' => [

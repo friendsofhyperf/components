@@ -34,6 +34,11 @@ class ClientBuilderFactory
     {
         $userConfig = $container->get(ConfigInterface::class)->get('sentry', []);
 
+        // Compatibility with sentry-sdk 4.x when the user has not set the `enable_tracing` option
+        if (! isset($userConfig['enable_tracing'])) {
+            $userConfig['enable_tracing'] = true;
+        }
+
         if (isset($userConfig['dont_report']) && ! isset($userConfig['ignore_exceptions'])) {
             $userConfig['ignore_exceptions'] = $userConfig['dont_report'];
             unset($userConfig['dont_report']);
