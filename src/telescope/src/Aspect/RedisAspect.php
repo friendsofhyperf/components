@@ -14,9 +14,11 @@ namespace FriendsOfHyperf\Telescope\Aspect;
 use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Redis\Redis;
+use Throwable;
 
 use function Hyperf\Collection\collect;
 use function Hyperf\Tappable\tap;
@@ -54,21 +56,39 @@ class RedisAspect extends AbstractAspect
         });
     }
 
-    private function formatCommand($command, $parameters)
+    private function formatCommand(string $command, array $parameters): string
     {
-        $parameters = collect($parameters)->map(function ($parameter) {
-            if (is_array($parameter)) {
-                return collect($parameter)->map(function ($value, $key) {
-                    if (is_array($value)) {
-                        return json_encode($value);
+        $parameters = collect($parameters)
+            ->map(function ($parameter, $key) use ($command) {
+                if (is_array($parameter)) {
+                    return collect($parameter)
+                        ->map(function ($value, $key) {
+                            if (is_array($value)) {
+                                return json_encode($value);
+                            }
+
+                            return is_int($key) ? $value : "{$key} {$value}";
+                        })
+                        ->implode(' ');
+                }
+                if (
+                    $command == 'set'
+                    && $key == 1
+                    && $packer = TelescopeContext::getCachePacker()
+                ) {
+                    try {
+                        $unpacked = $packer->unpack((string) $parameter);
+                        $parameter = match (true) {
+                            is_null($unpacked) => 'null',
+                            is_array($unpacked) => json_encode($unpacked),
+                            default => $unpacked,
+                        };
+                    } catch (Throwable $e) {
                     }
-
-                    return is_int($key) ? $value : "{$key} {$value}";
-                })->implode(' ');
-            }
-
-            return $parameter;
-        })->implode(' ');
+                }
+                return $parameter;
+            })
+            ->implode(' ');
 
         return "{$command} {$parameters}";
     }
