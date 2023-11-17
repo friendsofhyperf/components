@@ -33,9 +33,22 @@ class ClientBuilderFactory
     {
         $userConfig = $container->get(ConfigInterface::class)->get('sentry', []);
 
+        if (! isset($userConfig['enable_tracing'])) {
+            $userConfig['enable_tracing'] = true;
+        }
+
         foreach (static::SPECIFIC_OPTIONS as $specificOptionName) {
             if (isset($userConfig[$specificOptionName])) {
                 unset($userConfig[$specificOptionName]);
+            }
+        }
+
+        if (isset($userConfig['logger'])) {
+            if (is_string($userConfig['logger']) && $container->has($userConfig['logger'])) {
+                $userConfig['logger'] = $container->get($userConfig['logger']);
+            }
+            if (! $userConfig['logger'] instanceof \Psr\Log\LoggerInterface) {
+                unset($userConfig['logger']);
             }
         }
 
