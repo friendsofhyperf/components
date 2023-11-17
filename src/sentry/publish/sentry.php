@@ -42,6 +42,9 @@ return [
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#send-default-pii
     'send_default_pii' => env('SENTRY_SEND_DEFAULT_PII', false),
 
+    // Must instanceof Psr\Log\LoggerInterface
+    // 'logger' => Hyperf\Contract\StdoutLoggerInterface::class,
+
     'enable' => [
         'amqp' => env('SENTRY_ENABLE_AMQP', true),
         'async_queue' => env('SENTRY_ENABLE_ASYNC_QUEUE', true),
