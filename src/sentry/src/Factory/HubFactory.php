@@ -16,7 +16,6 @@ use FriendsOfHyperf\Sentry\Integration\RequestFetcher;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
-use Sentry\Client;
 use Sentry\ClientBuilder;
 use Sentry\Integration as SdkIntegration;
 use Sentry\State\Hub;
@@ -69,11 +68,6 @@ class HubFactory
 
             return array_merge($integrations, $userIntegrations);
         });
-
-        // Make the transport is new created before get client in sentry-sdk 3.x
-        if (method_exists($this, 'createTransportInstance')) {
-            (function () { $this->transport = null; })->call($clientBuilder);
-        }
 
         return new Hub($clientBuilder->getClient());
     }

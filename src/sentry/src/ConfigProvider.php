@@ -26,7 +26,6 @@ class ConfigProvider
                 Aspect\LoggerAspect::class,
                 Aspect\RedisAspect::class,
                 Aspect\SingletonAspect::class,
-                Aspect\SentryHttpClientFactoryAspect::class,
                 Tracing\Aspect\CoroutineAspect::class,
                 Tracing\Aspect\DbAspect::class,
                 Tracing\Aspect\ElasticsearchAspect::class,
