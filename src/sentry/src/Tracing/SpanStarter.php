@@ -22,6 +22,7 @@ use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\Transaction;
 use Sentry\Tracing\TransactionSource;
 
+use function Hyperf\Tappable\tap;
 use function Sentry\continueTrace;
 
 trait SpanStarter
@@ -71,7 +72,10 @@ trait SpanStarter
 
     protected function continueTrace(string $sentryTrace = '', string $baggage = '', ...$options): Transaction
     {
-        $sentry = SentrySdk::init();
+        $sentry = SentrySdk::setCurrentHub(
+            tap(clone SentrySdk::getCurrentHub(), fn ($sentry) => $sentry->pushScope())
+        );
+
         $context = continueTrace($sentryTrace, $baggage);
         if (isset($options['name'])) {
             $context->setName($options['name']);
