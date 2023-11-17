@@ -32,10 +32,7 @@ class ClientBuilderFactory
     public function __invoke(ContainerInterface $container)
     {
         $userConfig = $container->get(ConfigInterface::class)->get('sentry', []);
-
-        if (! isset($userConfig['enable_tracing'])) {
-            $userConfig['enable_tracing'] = true;
-        }
+        $userConfig['enable_tracing'] ??= true;
 
         foreach (static::SPECIFIC_OPTIONS as $specificOptionName) {
             if (isset($userConfig[$specificOptionName])) {
