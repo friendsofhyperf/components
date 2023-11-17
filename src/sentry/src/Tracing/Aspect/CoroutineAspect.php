@@ -28,6 +28,8 @@ class CoroutineAspect extends AbstractAspect
 {
     use SpanStarter;
 
+    public ?int $priority = PHP_INT_MAX;
+
     public array $classes = [
         'Hyperf\Coroutine\Coroutine::create',
     ];

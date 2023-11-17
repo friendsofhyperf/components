@@ -25,7 +25,7 @@
         "hyperf/guzzle": "~3.0.0",
         "hyperf/support": "~3.0.1",
         "hyperf/tappable": "~3.0.0",
-        "sentry/sdk": "^3.4.0"
+        "sentry/sentry": "^4.0"
     },
     "suggest": {
         "hyperf/crontab": "Required to use the crontab event (~3.0.42).",

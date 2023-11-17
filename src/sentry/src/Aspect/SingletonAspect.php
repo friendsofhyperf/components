@@ -19,7 +19,6 @@ class SingletonAspect extends AbstractAspect
 {
     public array $classes = [
         \Sentry\EventType::class . '::getInstance',
-        \Sentry\ResponseStatus::class . '::getInstance',
         \Sentry\Integration\IntegrationRegistry::class . '::getInstance',
         \Sentry\State\HubAdapter::class . '::getInstance',
         \Sentry\Tracing\SpanStatus::class . '::getInstance',
