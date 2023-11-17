@@ -37,6 +37,10 @@ class Switcher
             return false;
         }
 
+        if (! $this->config->get('sentry.enable_tracing', true)) {
+            return false;
+        }
+
         return (bool) $this->config->get('sentry.tracing.enable.' . $key, false);
     }
 

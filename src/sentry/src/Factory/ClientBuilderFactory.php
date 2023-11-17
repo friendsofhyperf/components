@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Factory;
 
 use FriendsOfHyperf\Sentry\Version;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
 
@@ -33,16 +32,20 @@ class ClientBuilderFactory
     public function __invoke(ContainerInterface $container)
     {
         $userConfig = $container->get(ConfigInterface::class)->get('sentry', []);
-
-        if (isset($userConfig['dont_report']) && ! isset($userConfig['ignore_exceptions'])) {
-            $userConfig['ignore_exceptions'] = $userConfig['dont_report'];
-            unset($userConfig['dont_report']);
-            $container->get(StdoutLoggerInterface::class)->warning('The `dont_report` option is deprecated and will be removed in v3.1, use `ignore_exceptions` instead.');
-        }
+        $userConfig['enable_tracing'] ??= true;
 
         foreach (static::SPECIFIC_OPTIONS as $specificOptionName) {
             if (isset($userConfig[$specificOptionName])) {
                 unset($userConfig[$specificOptionName]);
+            }
+        }
+
+        if (isset($userConfig['logger'])) {
+            if (is_string($userConfig['logger']) && $container->has($userConfig['logger'])) {
+                $userConfig['logger'] = $container->get($userConfig['logger']);
+            }
+            if (! $userConfig['logger'] instanceof \Psr\Log\LoggerInterface) {
+                unset($userConfig['logger']);
             }
         }
 
@@ -54,7 +57,7 @@ class ClientBuilderFactory
             $userConfig
         );
 
-        // When we get no environment from the (user) configuration we default to the Laravel environment
+        // When we get no environment from the (user) configuration we default to the environment
         if (empty($options['environment'])) {
             $options['environment'] = env('APP_ENV', 'production');
         }

@@ -19,7 +19,7 @@ return [
     // Example with dynamic git hash: trim(exec('git log --pretty="%h" -n1 HEAD'))
     'release' => env('SENTRY_RELEASE'),
 
-    // When left empty or `null` the Laravel environment will be used (usually discovered from `APP_ENV` in your `.env`)
+    // When left empty or `null` the environment will be used (usually discovered from `APP_ENV` in your `.env`)
     'environment' => env('APP_ENV', 'production'),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#sample-rate
@@ -41,6 +41,9 @@ return [
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#send-default-pii
     'send_default_pii' => env('SENTRY_SEND_DEFAULT_PII', false),
+
+    // Must instanceof Psr\Log\LoggerInterface
+    // 'logger' => Hyperf\Contract\StdoutLoggerInterface::class,
 
     'enable' => [
         'amqp' => env('SENTRY_ENABLE_AMQP', true),
@@ -78,6 +81,9 @@ return [
         'tinker',
         'vendor:publish',
     ],
+
+    // Switch tracing on/off
+    'enable_tracing' => env('SENTRY_ENABLE_TRACING', true),
 
     // Performance monitoring specific configuration
     'tracing' => [
