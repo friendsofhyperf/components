@@ -20,6 +20,8 @@ php bin/hyperf.php vendor:publish friendsofhyperf/sentry
 
 ## Enable Request Lifecycle
 
+> will auto config in `SetRequestLifecycleListener.php`
+
 ```php
 # config/autoload/server.php
 return [
@@ -47,13 +49,16 @@ return [
 ```php
 <?php
 
+# use it send customer log to sentry
+//\FriendsOfHyperf\Helpers\logs('project-name', 'sentry')->warning('this is a test warning issue!');
+
 return [
     // ...
     'sentry' => [
         'handler' => [
             'class' => FriendsOfHyperf\Sentry\SentryHandler::class,
             'constructor' => [
-                'level' => \Monolog\Logger::DEBUG,
+                'level' => \Monolog\Level::Debug,
             ],
         ],
         'formatter' => [
@@ -68,6 +73,19 @@ return [
     // ...
 ];
 
+```
+
+## Sentry Running log
+
+```php
+<?php
+
+# config/autoload/sentry.php
+return [
+    // ...
+    'logger' => Hyperf\Contract\StdoutLoggerInterface::class,
+    // ...
+];
 ```
 
 ## Annotation
@@ -105,23 +123,6 @@ return [
 ];
 ```
 
-## Fix un-support `native-curl`
-
-- Check
-
-```shell
-php --ri swoole |grep curl
-# curl-native => enabled
-```
-
-- Fix
-
-```php
-composer require php-http/guzzle6-adapter
-# or
-composer require php-http/guzzle7-adapter
-```
-
-## Sponsor
+## Donate
 
 If you like this project, Buy me a cup of coffee. [ [Alipay](https://hdj.me/images/alipay.jpg) | [WePay](https://hdj.me/images/wechat-pay.jpg) ]
