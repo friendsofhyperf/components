@@ -46,10 +46,11 @@ return [
 
 ## Register Logger Handler
 
-> use it send customer log to sentry
-
 ```php
 <?php
+
+# use it send customer log to sentry
+//\FriendsOfHyperf\Helpers\logs('project-name', 'sentry')->warning('this is a test warning issue!');
 
 return [
     // ...
@@ -57,7 +58,7 @@ return [
         'handler' => [
             'class' => FriendsOfHyperf\Sentry\SentryHandler::class,
             'constructor' => [
-                'level' => \Monolog\Logger::DEBUG,
+                'level' => \Monolog\Level::Debug,
             ],
         ],
         'formatter' => [
