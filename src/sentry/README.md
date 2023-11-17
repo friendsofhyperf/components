@@ -20,6 +20,8 @@ php bin/hyperf.php vendor:publish friendsofhyperf/sentry
 
 ## Enable Request Lifecycle
 
+> will auto config in `SetRequestLifecycleListener.php`
+
 ```php
 # config/autoload/server.php
 return [
@@ -43,6 +45,8 @@ return [
 ```
 
 ## Register Logger Handler
+
+> use it send customer log to sentry
 
 ```php
 <?php
@@ -68,6 +72,19 @@ return [
     // ...
 ];
 
+```
+
+## Sentry Running log
+
+```php
+<?php
+
+# config/autoload/sentry.php
+return [
+    // ...
+    'logger' => Hyperf\Contract\StdoutLoggerInterface::class,
+    // ...
+];
 ```
 
 ## Annotation
@@ -103,23 +120,6 @@ return [
     //     FriendsOfHyperf\Sentry\Tracing\Middleware\TraceMiddleware::class,
     // ],
 ];
-```
-
-## Fix un-support `native-curl`
-
-- Check
-
-```shell
-php --ri swoole |grep curl
-# curl-native => enabled
-```
-
-- Fix
-
-```php
-composer require php-http/guzzle6-adapter
-# or
-composer require php-http/guzzle7-adapter
 ```
 
 ## Donate
