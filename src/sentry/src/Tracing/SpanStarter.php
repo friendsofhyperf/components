@@ -97,7 +97,6 @@ trait SpanStarter
         $transaction->setStatus(SpanStatus::ok());
 
         $sentry->setSpan($transaction);
-        TraceContext::setTransaction($transaction);
 
         return $transaction;
     }
