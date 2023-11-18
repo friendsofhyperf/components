@@ -49,7 +49,7 @@ class TelescopeContext
     }
 
     /**
-     * @deprecated The method has been deprecated and its usage is discouraged.
+     * @deprecated the method has been deprecated and its usage is discouraged
      */
     public static function setCachePacker(PackerInterface $packer): void
     {
@@ -57,7 +57,7 @@ class TelescopeContext
     }
 
     /**
-     * @deprecated The method has been deprecated and its usage is discouraged.
+     * @deprecated the method has been deprecated and its usage is discouraged
      */
     public static function getCachePacker(): ?PackerInterface
     {
