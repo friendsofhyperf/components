@@ -48,11 +48,17 @@ class TelescopeContext
         return Context::get(self::SUB_BATCH_ID) ?: null;
     }
 
+    /**
+     * @deprecated The method has been deprecated and its usage is discouraged.
+     */
     public static function setCachePacker(PackerInterface $packer): void
     {
         Context::set(self::CACHE_PACKER, $packer);
     }
 
+    /**
+     * @deprecated The method has been deprecated and its usage is discouraged.
+     */
     public static function getCachePacker(): ?PackerInterface
     {
         /** @var PackerInterface|null $packer */
