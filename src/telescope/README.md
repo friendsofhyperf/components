@@ -13,6 +13,7 @@ An elegant debug assistant for the hyperf framework.
 - [x] command
 - [x] event
 - [x] http client
+- [x] cache
 
 ## Installation
 
@@ -78,6 +79,7 @@ TELESCOPE_ENABLE_EXCEPTION=true
 TELESCOPE_ENABLE_JOB=true
 TELESCOPE_ENABLE_DB=true
 TELESCOPE_ENABLE_GUZZLE=true
+TELESCOPE_ENABLE_CACHE=true
 
 TELESCOPE_SERVER_ENABLE=true
 ```

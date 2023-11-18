@@ -26,6 +26,8 @@ class TelescopeContext
 
     public const CACHE_PACKER = 'telescope.context.cache_packer';
 
+    public const CACHE_DRIVER = 'telescope.context.cache_driver';
+
     public static function setBatchId(string $batchId): void
     {
         Context::set(self::BATCH_ID, $batchId);
@@ -46,16 +48,32 @@ class TelescopeContext
         return Context::get(self::SUB_BATCH_ID) ?: null;
     }
 
+    /**
+     * @deprecated the method has been deprecated and its usage is discouraged
+     */
     public static function setCachePacker(PackerInterface $packer): void
     {
         Context::set(self::CACHE_PACKER, $packer);
     }
 
+    /**
+     * @deprecated the method has been deprecated and its usage is discouraged
+     */
     public static function getCachePacker(): ?PackerInterface
     {
         /** @var PackerInterface|null $packer */
         $packer = Context::get(self::CACHE_PACKER);
         return $packer instanceof PackerInterface ? $packer : null;
+    }
+
+    public static function getCacheDriver(): ?string
+    {
+        return Context::get(self::CACHE_DRIVER) ?: null;
+    }
+
+    public static function setCacheDriver(string $driver): void
+    {
+        Context::set(self::CACHE_DRIVER, $driver);
     }
 
     public static function addEntry(IncomingEntry $entry): void
