@@ -15,16 +15,20 @@ use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeContext;
+use Hyperf\Contract\PackerInterface;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Redis\Redis;
+use Psr\Container\ContainerInterface;
 use Throwable;
 
 use function Hyperf\Collection\collect;
+use function Hyperf\Config\config;
 use function Hyperf\Tappable\tap;
 
 /**
  * @property string $poolName
+ * @property PackerInterface $packer
  */
 class RedisAspect extends AbstractAspect
 {
@@ -32,7 +36,7 @@ class RedisAspect extends AbstractAspect
         Redis::class . '::__call',
     ];
 
-    public function __construct(protected SwitchManager $switcherManager)
+    public function __construct(protected SwitchManager $switcherManager, protected ContainerInterface $container)
     {
     }
 
@@ -74,16 +78,20 @@ class RedisAspect extends AbstractAspect
                 if (
                     $command == 'set'
                     && $key == 1
-                    && $packer = TelescopeContext::getCachePacker()
+                    && $driver = TelescopeContext::getCacheDriver()
                 ) {
-                    try {
-                        $unpacked = $packer->unpack((string) $parameter);
-                        $parameter = match (true) {
-                            is_null($unpacked) => 'null',
-                            is_array($unpacked) => json_encode($unpacked),
-                            default => $unpacked,
-                        };
-                    } catch (Throwable $e) {
+                    $packer = config('cache.' . $driver . '.packer', '');
+                    $packer = $this->container->get($packer);
+                    if ($packer instanceof PackerInterface) {
+                        try {
+                            $unpacked = $packer->unpack((string) $parameter);
+                            $parameter = match (true) {
+                                is_null($unpacked) => 'null',
+                                is_array($unpacked) => json_encode($unpacked),
+                                default => $unpacked,
+                            };
+                        } catch (Throwable $e) {
+                        }
                     }
                 }
                 return $parameter;

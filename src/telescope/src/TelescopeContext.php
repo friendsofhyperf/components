@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope;
 
 use Hyperf\Context\Context;
-use Hyperf\Contract\PackerInterface;
 
 use function Hyperf\Coroutine\defer;
 
@@ -24,7 +23,7 @@ class TelescopeContext
 
     public const ENTRIES = 'telescope.context.entries';
 
-    public const CACHE_PACKER = 'telescope.context.cache_packer';
+    public const CACHE_DRIVER = 'telescope.context.cache_driver';
 
     public static function setBatchId(string $batchId): void
     {
@@ -46,16 +45,14 @@ class TelescopeContext
         return Context::get(self::SUB_BATCH_ID) ?: null;
     }
 
-    public static function setCachePacker(PackerInterface $packer): void
+    public static function getCacheDriver(): ?string
     {
-        Context::set(self::CACHE_PACKER, $packer);
+        return Context::get(self::CACHE_DRIVER) ?: null;
     }
 
-    public static function getCachePacker(): ?PackerInterface
+    public static function setCacheDriver(string $driver): void
     {
-        /** @var PackerInterface|null $packer */
-        $packer = Context::get(self::CACHE_PACKER);
-        return $packer instanceof PackerInterface ? $packer : null;
+        Context::set(self::CACHE_DRIVER, $driver);
     }
 
     public static function addEntry(IncomingEntry $entry): void

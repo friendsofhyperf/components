@@ -27,6 +27,7 @@ return [
         'job' => env('TELESCOPE_ENABLE_JOB', false),
         'db' => env('TELESCOPE_ENABLE_DB', false),
         'guzzle' => env('TELESCOPE_ENABLE_GUZZLE', false),
+        'cache' => env('TELESCOPE_ENABLE_CACHE', false),
     ],
     'timezone' => env('TELESCOPE_TIMEZONE', 'Asia/Shanghai'),
     'database' => [
