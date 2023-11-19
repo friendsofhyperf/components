@@ -16,11 +16,13 @@ use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Collection\Arr;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Event\RequestReceived;
 use Hyperf\HttpServer\Event\RequestTerminated;
 use Hyperf\HttpServer\Router\Dispatched;
+use Hyperf\Rpc;
 use Hyperf\Stringable\Str;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -57,10 +59,14 @@ class RequestHandledListener implements ListenerInterface
         $request = $event->request;
 
         if (! $batchId = $request->getHeaderLine('batch-id')) {
-            $batchId = Str::orderedUuid()->toString();
-        } else {
+            $batchId = $this->getRpcBatchId();
+        }
+
+        if ($batchId) {
             $subBatchId = Str::orderedUuid()->toString();
             TelescopeContext::setSubBatchId($subBatchId);
+        } else {
+            $batchId = Str::orderedUuid()->toString();
         }
 
         TelescopeContext::setBatchId($batchId);
@@ -178,5 +184,21 @@ class RequestHandledListener implements ListenerInterface
         }
 
         return $data;
+    }
+
+    protected function getRpcBatchId(): string
+    {
+        $carrier = $this->getRpcContext();
+        return $carrier['batch-id'] ?? '';
+    }
+
+    protected function getRpcContext(): array
+    {
+        $container = ApplicationContext::getContainer();
+        if (! $container->has(Rpc\Context::class)) {
+            return [];
+        }
+        $rpcContext = $container->get(Rpc\Context::class);
+        return (array) $rpcContext->get('telescope.carrier');
     }
 }

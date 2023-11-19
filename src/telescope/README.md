@@ -14,6 +14,7 @@ An elegant debug assistant for the hyperf framework.
 - [x] event
 - [x] http client
 - [x] cache
+- [x] rpc client
 
 ## Installation
 
@@ -80,6 +81,7 @@ TELESCOPE_ENABLE_JOB=true
 TELESCOPE_ENABLE_DB=true
 TELESCOPE_ENABLE_GUZZLE=true
 TELESCOPE_ENABLE_CACHE=true
+TELESCOPE_ENABLE_RPC=true
 
 TELESCOPE_SERVER_ENABLE=true
 ```
