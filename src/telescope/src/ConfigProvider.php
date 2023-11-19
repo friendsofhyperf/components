@@ -38,6 +38,7 @@ class ConfigProvider
                 Aspect\HttpClientAspect::class,
                 Aspect\LogAspect::class,
                 Aspect\RedisAspect::class,
+                Aspect\RpcAspect::class,
             ],
             'annotations' => [
                 'scan' => [
