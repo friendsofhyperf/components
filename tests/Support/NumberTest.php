@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Tests\Support;
 
 use FriendsOfHyperf\Support\Number;
+use FriendsOfHyperf\Support\Numberable;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -20,6 +21,11 @@ use PHPUnit\Framework\TestCase;
  */
 class NumberTest extends TestCase
 {
+    public function testOf()
+    {
+        $this->assertEquals(new Numberable(10), Number::of(10));
+    }
+
     public function testFormat()
     {
         $this->needsIntlExtension();

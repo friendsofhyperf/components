@@ -11,9 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tests\Support;
 
+use FriendsOfHyperf\Support\Number;
+use FriendsOfHyperf\Support\Numberable;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
+use function FriendsOfHyperf\Support\number;
 use function FriendsOfHyperf\Support\retry;
 
 /**
@@ -115,5 +118,15 @@ class FunctionsTest extends TestCase
         $this->assertEquals(4, $attempts);
 
         $this->assertEqualsWithDelta(0.05 + 0.1 + 0.2, microtime(true) - $startTime, 0.05);
+    }
+
+    public function testNumber()
+    {
+        $numberable = number(10);
+
+        $this->assertInstanceOf(Numberable::class, $numberable);
+        $this->assertSame(10, $numberable->value());
+
+        $this->assertEquals(Number::of(10), number(10));
     }
 }

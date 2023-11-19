@@ -58,3 +58,16 @@ function retry($times, callable $callback, $sleepMilliseconds = 0, $when = null)
         goto beginning;
     }
 }
+
+if (! function_exists('number')) {
+    /**
+     * Get a new numberable object from the given number.
+     *
+     * @param int|float $number
+     * @return Numberable|mixed
+     */
+    function number($number)
+    {
+        return Number::of($number);
+    }
+}
