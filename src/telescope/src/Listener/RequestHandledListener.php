@@ -89,6 +89,7 @@ class RequestHandledListener implements ListenerInterface
         if ($this->incomingRequest($psr7Request)) {
             /** @var Dispatched $dispatched */
             $dispatched = $psr7Request->getAttribute(Dispatched::class);
+            $serverName = $dispatched->serverName ?? 'http';
 
             $entry = IncomingEntry::make([
                 'ip_address' => $psr7Request->getServerParams()['remote_addr'] ?? 'unknown',
@@ -105,7 +106,7 @@ class RequestHandledListener implements ListenerInterface
                 'memory' => round(memory_get_peak_usage(true) / 1024 / 1025, 1),
             ]);
 
-            if (Str::contains($psr7Request->getHeaderLine('content-type'), 'application/grpc')) {
+            if (in_array($serverName, ['grpc', 'jsonrpc-http', 'rpc'])) {
                 Telescope::recordService($entry);
             } else {
                 Telescope::recordRequest($entry);

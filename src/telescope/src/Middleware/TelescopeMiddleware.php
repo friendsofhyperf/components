@@ -16,8 +16,10 @@ use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Collection\Arr;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\HttpServer\Router\Dispatched;
+use Hyperf\Rpc;
 use Hyperf\Stringable\Str;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -40,20 +42,21 @@ class TelescopeMiddleware implements MiddlewareInterface
             return $handler->handle($request);
         }
 
-        $batchId = $request->getHeaderLine('batch-id');
-        if (! $batchId) {
-            $batchId = Str::orderedUuid()->toString();
-        } else {
+        if (! $batchId = $request->getHeaderLine('batch-id')) {
+            $batchId = $this->getRpcBatchId();
+        }
+
+        if ($batchId) {
             $subBatchId = Str::orderedUuid()->toString();
             TelescopeContext::setSubBatchId($subBatchId);
+        } else {
+            $batchId = Str::orderedUuid()->toString();
         }
+
         TelescopeContext::setBatchId($batchId);
 
         $response = $handler->handle($request);
-
-        if ($batchId) {
-            $response = $response->withHeader('batch-id', $batchId);
-        }
+        $response = $response->withHeader('batch-id', $batchId);
 
         defer(fn () => $this->requestHandled($request, $response));
 
@@ -73,7 +76,8 @@ class TelescopeMiddleware implements MiddlewareInterface
         if ($this->incomingRequest($psr7Request)) {
             /** @var Dispatched $dispatched */
             $dispatched = $psr7Request->getAttribute(Dispatched::class);
-            $middlewares = $this->config->get('middlewares.' . ($dispatched->serverName ?? 'http'), []);
+            $serverName = $dispatched->serverName ?? 'http';
+            $middlewares = $this->config->get('middlewares.' . $serverName, []);
 
             $entry = IncomingEntry::make([
                 'ip_address' => $psr7Request->getServerParams()['remote_addr'],
@@ -90,7 +94,7 @@ class TelescopeMiddleware implements MiddlewareInterface
                 'memory' => round(memory_get_peak_usage(true) / 1024 / 1025, 1),
             ]);
 
-            if (Str::contains($psr7Request->getHeaderLine('content-type'), 'application/grpc')) {
+            if (in_array($serverName, ['grpc', 'jsonrpc-http', 'rpc'])) {
                 Telescope::recordService($entry);
             } else {
                 Telescope::recordRequest($entry);
@@ -112,7 +116,7 @@ class TelescopeMiddleware implements MiddlewareInterface
         return true;
     }
 
-    protected function response(ResponseInterface $response): string
+    protected function response(ResponseInterface $response): string|array
     {
         $stream = $response->getBody();
         if ($stream->isSeekable()) {
@@ -129,7 +133,7 @@ class TelescopeMiddleware implements MiddlewareInterface
             ) {
                 return $this->contentWithinLimits($content)
                 ? $this->hideParameters(json_decode($content, true), Telescope::$hiddenResponseParameters)
-                : 'Purged By Telescope';
+                : 'Purged By Hyperf Telescope';
             }
             if (Str::startsWith(strtolower($response->getHeaderLine('content-type') ?? ''), 'text/plain')) {
                 return $this->contentWithinLimits($content) ? $content : 'Purged By Hyperf Telescope';
@@ -165,5 +169,21 @@ class TelescopeMiddleware implements MiddlewareInterface
         }
 
         return $data;
+    }
+
+    protected function getRpcBatchId(): string
+    {
+        $carrier = $this->getRpcContext();
+        return $carrier['batch-id'] ?? '';
+    }
+
+    protected function getRpcContext(): array
+    {
+        $container = ApplicationContext::getContainer();
+        if (! $container->has(Rpc\Context::class)) {
+            return [];
+        }
+        $rpcContext = $container->get(Rpc\Context::class);
+        return (array) $rpcContext->get('telescope.carrier');
     }
 }
