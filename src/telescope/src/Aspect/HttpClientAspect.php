@@ -59,7 +59,7 @@ class HttpClientAspect extends AbstractAspect
         $headers = $options['headers'] ?? [];
 
         $result = $proceedingJoinPoint->process();
-        
+
         $response = [];
         if ($result instanceof ResponseInterface) {
             $response['status'] = $result->getStatusCode();
