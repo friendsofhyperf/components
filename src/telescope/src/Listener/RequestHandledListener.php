@@ -16,20 +16,30 @@ use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Collection\Arr;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Event\RequestReceived;
 use Hyperf\HttpServer\Event\RequestTerminated;
 use Hyperf\HttpServer\Router\Dispatched;
+use Hyperf\Rpc;
+use Hyperf\Server\Event;
 use Hyperf\Stringable\Str;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Swow\Psr7\Message\ResponsePlusInterface;
 
+use function Hyperf\Collection\collect;
+use function Hyperf\Config\config;
+
 class RequestHandledListener implements ListenerInterface
 {
-    public function __construct(protected SwitchManager $switchManager, protected ConfigInterface $config)
-    {
+    public function __construct(
+        protected ContainerInterface $container,
+        protected ConfigInterface $config,
+        protected SwitchManager $switchManager
+    ) {
     }
 
     public function listen(): array
@@ -57,10 +67,14 @@ class RequestHandledListener implements ListenerInterface
         $request = $event->request;
 
         if (! $batchId = $request->getHeaderLine('batch-id')) {
-            $batchId = Str::orderedUuid()->toString();
-        } else {
+            $batchId = $this->getRpcBatchId();
+        }
+
+        if ($batchId) {
             $subBatchId = Str::orderedUuid()->toString();
             TelescopeContext::setSubBatchId($subBatchId);
+        } else {
+            $batchId = Str::orderedUuid()->toString();
         }
 
         TelescopeContext::setBatchId($batchId);
@@ -83,6 +97,7 @@ class RequestHandledListener implements ListenerInterface
         if ($this->incomingRequest($psr7Request)) {
             /** @var Dispatched $dispatched */
             $dispatched = $psr7Request->getAttribute(Dispatched::class);
+            $serverName = $dispatched->serverName ?? 'http';
 
             $entry = IncomingEntry::make([
                 'ip_address' => $psr7Request->getServerParams()['remote_addr'] ?? 'unknown',
@@ -99,7 +114,11 @@ class RequestHandledListener implements ListenerInterface
                 'memory' => round(memory_get_peak_usage(true) / 1024 / 1025, 1),
             ]);
 
-            if (Str::contains($psr7Request->getHeaderLine('content-type'), 'application/grpc')) {
+            $serverConfig = collect(config('server.servers'))->firstWhere('name', $serverName);
+            $handlerClass = $serverConfig['callbacks'][Event::ON_RECEIVE][0] ?? $serverConfig['callbacks'][Event::ON_REQUEST][0] ?? null;
+            $handler = is_string($handlerClass) && $this->container->has($handlerClass) ? $this->container->get($handlerClass) : null;
+
+            if ($handler && ($handler instanceof \Hyperf\RpcServer\Server || $handler instanceof \Hyperf\GrpcServer\Server || $handler instanceof \Hyperf\JsonRpc\HttpServer)) {
                 Telescope::recordService($entry);
             } else {
                 Telescope::recordRequest($entry);
@@ -178,5 +197,21 @@ class RequestHandledListener implements ListenerInterface
         }
 
         return $data;
+    }
+
+    protected function getRpcBatchId(): string
+    {
+        $carrier = $this->getRpcContext();
+        return $carrier['batch-id'] ?? '';
+    }
+
+    protected function getRpcContext(): array
+    {
+        $container = ApplicationContext::getContainer();
+        if (! $container->has(Rpc\Context::class)) {
+            return [];
+        }
+        $rpcContext = $container->get(Rpc\Context::class);
+        return (array) $rpcContext->get('telescope.carrier');
     }
 }
