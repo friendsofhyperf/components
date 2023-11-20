@@ -20,17 +20,21 @@ use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\Rpc;
+use Hyperf\Server\Event;
 use Hyperf\Stringable\Str;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+use function Hyperf\Config\config;
 use function Hyperf\Coroutine\defer;
 
 class TelescopeMiddleware implements MiddlewareInterface
 {
     public function __construct(
+        protected ContainerInterface $container,
         protected ConfigInterface $config,
         protected SwitchManager $switchManager
     ) {
@@ -94,7 +98,11 @@ class TelescopeMiddleware implements MiddlewareInterface
                 'memory' => round(memory_get_peak_usage(true) / 1024 / 1025, 1),
             ]);
 
-            if (in_array($serverName, ['grpc', 'jsonrpc-http', 'rpc'])) {
+            $serverConfig = config('server.servers.' . $serverName);
+            $handlerClass = $serverConfig['callbacks'][Event::ON_RECEIVE][0] ?? $serverConfig['callbacks'][Event::ON_REQUEST][0] ?? null;
+            $handler = is_string($handlerClass) && $this->container->has($handlerClass) ? $this->container->get($handlerClass) : null;
+
+            if ($handler && ($handler instanceof \Hyperf\RpcServer\Server || $handler instanceof \Hyperf\GrpcServer\Server)) {
                 Telescope::recordService($entry);
             } else {
                 Telescope::recordRequest($entry);
