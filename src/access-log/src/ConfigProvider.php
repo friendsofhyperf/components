@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\AccessLog;
 
-use FriendsOfHyperf\AccessLog\Listener\RequestTerminatedListener;
-
 class ConfigProvider
 {
     public function __invoke(): array
@@ -22,7 +20,8 @@ class ConfigProvider
                 Handler::class => HandlerFactory::class,
             ],
             'listeners' => [
-                RequestTerminatedListener::class,
+                Listener\RequestTerminatedListener::class,
+                Listener\SetRequestLifecycleListener::class,
             ],
             'publish' => [
                 [
