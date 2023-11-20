@@ -14,7 +14,7 @@ An elegant debug assistant for the hyperf framework.
 - [x] event
 - [x] http client
 - [x] cache
-- [x] rpc client
+- [x] rpc server/client
 
 ## Installation
 
