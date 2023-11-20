@@ -23,15 +23,23 @@ use Hyperf\HttpServer\Event\RequestReceived;
 use Hyperf\HttpServer\Event\RequestTerminated;
 use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\Rpc;
+use Hyperf\Server\Event;
 use Hyperf\Stringable\Str;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Swow\Psr7\Message\ResponsePlusInterface;
 
+use function Hyperf\Collection\collect;
+use function Hyperf\Config\config;
+
 class RequestHandledListener implements ListenerInterface
 {
-    public function __construct(protected SwitchManager $switchManager, protected ConfigInterface $config)
-    {
+    public function __construct(
+        protected ContainerInterface $container,
+        protected ConfigInterface $config,
+        protected SwitchManager $switchManager
+    ) {
     }
 
     public function listen(): array
@@ -106,7 +114,11 @@ class RequestHandledListener implements ListenerInterface
                 'memory' => round(memory_get_peak_usage(true) / 1024 / 1025, 1),
             ]);
 
-            if (in_array($serverName, ['grpc', 'jsonrpc-http', 'rpc'])) {
+            $serverConfig = collect(config('server.servers'))->firstWhere('name', $serverName);
+            $handlerClass = $serverConfig['callbacks'][Event::ON_RECEIVE][0] ?? $serverConfig['callbacks'][Event::ON_REQUEST][0] ?? null;
+            $handler = is_string($handlerClass) && $this->container->has($handlerClass) ? $this->container->get($handlerClass) : null;
+
+            if ($handler && ($handler instanceof \Hyperf\RpcServer\Server || $handler instanceof \Hyperf\GrpcServer\Server || $handler instanceof \Hyperf\JsonRpc\HttpServer)) {
                 Telescope::recordService($entry);
             } else {
                 Telescope::recordRequest($entry);
