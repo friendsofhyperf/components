@@ -369,10 +369,11 @@ function object_get($object, $key = '', $default = null)
  */
 function preg_replace_array(string $pattern, array $replacements, string $subject): string
 {
-    return preg_replace_callback($pattern, function () use (&$replacements) {
-        foreach ($replacements as $key => $value) {
+    return preg_replace_callback($pattern, function ($matches) use (&$replacements) {
+        if (! empty($replacements)) {
             return array_shift($replacements);
         }
+        return $matches[0];
     }, $subject);
 }
 
