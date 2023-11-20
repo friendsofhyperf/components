@@ -17,9 +17,11 @@ use FriendsOfHyperf\Telescope\Telescope;
 use GuzzleHttp\Client;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Psr\Http\Message\ResponseInterface;
 
-use function Hyperf\Tappable\tap;
-
+/**
+ * @property array $config
+ */
 class HttpClientAspect extends AbstractAspect
 {
     public array $classes = [
@@ -33,29 +35,46 @@ class HttpClientAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (! $this->switcherManager->isEnable('guzzle')) {
-                return;
-            }
-            $options = $proceedingJoinPoint->arguments['keys']['options'];
-            if (isset($options['no_aspect']) && $options['no_aspect'] === true) {
-                return;
-            }
-            $arguments = $proceedingJoinPoint->arguments;
-            $method = $arguments['keys']['method'] ?? 'Null';
-            $uri = $arguments['keys']['uri'] ?? 'Null';
-            $headers = $options['headers'] ?? [];
+        if (! $this->switcherManager->isEnable('guzzle')) {
+            return $proceedingJoinPoint->process();
+        }
+        $startTime = microtime(true);
+        $instance = $proceedingJoinPoint->getInstance();
+        $arguments = $proceedingJoinPoint->arguments;
+        $options = $arguments['keys']['options'] ?? [];
+        $guzzleConfig = (fn () => $this->config ?? [])->call($instance);
 
-            Telescope::recordClientRequest(IncomingEntry::make([
-                'method' => $method,
-                'uri' => $uri,
-                'headers' => $headers,
-                'payload' => '',
-                'response_status' => 0,
-                'response_headers' => '',
-                'response' => '',
-                'duration' => 0,
-            ]));
-        });
+        if (($options['no_telescope_aspect'] ?? null) === true || ($guzzleConfig['no_telescope_aspect'] ?? null) === true) {
+            return $proceedingJoinPoint->process();
+        }
+
+        // Disable the aspect for the requestAsync method.
+        if ($proceedingJoinPoint->methodName == 'request') {
+            $proceedingJoinPoint->arguments['keys']['options']['no_telescope_aspect'] = true;
+        }
+
+        $arguments = $proceedingJoinPoint->arguments;
+        $method = $arguments['keys']['method'] ?? 'GET';
+        $uri = $arguments['keys']['uri'] ?? '';
+        $headers = $options['headers'] ?? [];
+
+        $result = $proceedingJoinPoint->process();
+
+        $response = [];
+        if ($result instanceof ResponseInterface) {
+            $response['status'] = $result->getStatusCode();
+            $response['reason'] = $result->getReasonPhrase();
+            $response['headers'] = $result->getHeaders();
+        }
+        Telescope::recordClientRequest(IncomingEntry::make([
+            'method' => $method,
+            'uri' => $uri,
+            'headers' => $headers,
+            'response_status' => $response['status'] ?? 0,
+            'response_headers' => $response['headers'] ?? '',
+            'response' => $response,
+            'duration' => floor((microtime(true) - $startTime) * 1000),
+        ]));
+        return $result;
     }
 }

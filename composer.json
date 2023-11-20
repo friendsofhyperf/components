@@ -67,6 +67,7 @@
         "hyperf/framework": "~3.0.0",
         "hyperf/grpc-client": "~3.0.0",
         "hyperf/grpc-server": "~3.0.0",
+        "hyperf/json-rpc": "~3.0.0",
         "hyperf/guzzle": "~3.0.0",
         "hyperf/http-server": "~3.0.20",
         "hyperf/http2-client": "~3.0.0",
