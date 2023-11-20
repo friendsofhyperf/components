@@ -20,6 +20,7 @@ class ConfigProvider
         return [
             'aspects' => [
                 Aspect\BreadcrumbAspect::class,
+                Aspect\CacheAspect::class,
                 Aspect\CoroutineAspect::class,
                 Aspect\GuzzleHttpClientAspect::class,
                 Aspect\LoggerAspect::class,

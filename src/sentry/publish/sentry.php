@@ -58,6 +58,7 @@ return [
     ],
 
     'breadcrumbs' => [
+        'cache' => env('SENTRY_BREADCRUMBS_CACHE', true),
         'sql_queries' => env('SENTRY_BREADCRUMBS_SQL_QUERIES', true),
         'sql_bindings' => env('SENTRY_BREADCRUMBS_SQL_BINDINGS', true),
         'sql_transaction' => env('SENTRY_BREADCRUMBS_SQL_TRANSACTION', true),
