@@ -22,16 +22,13 @@
         "hyperf/exception-handler": "~3.1.0",
         "hyperf/framework": "~3.1.0",
         "hyperf/http-server": "~3.1.0",
-        "hyperf/guzzle": "~3.1.0",
         "hyperf/support": "~3.1.0",
         "hyperf/tappable": "~3.1.0",
         "sentry/sdk": "^4.0"
     },
     "suggest": {
         "hyperf/crontab": "Required to use the crontab event (~3.1.0).",
-        "hyperf/database": "Required to use the crontab event (~3.1.0).",
-        "php-http/guzzle6-adapter": "Required to use the Guzzle transport (^1.0|^2.0).",
-        "php-http/guzzle7-adapter": "Required to use the Guzzle transport (^1.0)."
+        "hyperf/database": "Required to use the crontab event (~3.1.0)."
     },
     "config": {
         "sort-packages": true
