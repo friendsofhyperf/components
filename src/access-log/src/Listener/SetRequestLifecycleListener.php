@@ -32,6 +32,10 @@ class SetRequestLifecycleListener implements ListenerInterface
 
     public function process(object $event): void
     {
+        if (! $this->config->get('access_log.enable', false)) {
+            return;
+        }
+
         $servers = $this->config->get('server.servers', []);
 
         foreach ($servers as &$server) {

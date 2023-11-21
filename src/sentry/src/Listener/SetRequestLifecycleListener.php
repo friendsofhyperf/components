@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Listener;
 
+use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
@@ -19,8 +20,10 @@ use Hyperf\Server\Event;
 
 class SetRequestLifecycleListener implements ListenerInterface
 {
-    public function __construct(protected ConfigInterface $config)
-    {
+    public function __construct(
+        protected ConfigInterface $config,
+        protected Switcher $switcher
+    ) {
     }
 
     public function listen(): array
@@ -32,6 +35,10 @@ class SetRequestLifecycleListener implements ListenerInterface
 
     public function process(object $event): void
     {
+        if (! $this->switcher->isEnable('request')) {
+            return;
+        }
+
         $servers = $this->config->get('server.servers', []);
 
         foreach ($servers as &$server) {
