@@ -65,7 +65,7 @@ class ClientBuilderFactory
 
         return tap(ClientBuilder::create($options), function (ClientBuilder $clientBuilder) {
             $clientBuilder->setSdkIdentifier(Version::SDK_IDENTIFIER);
-            $sdkVersion = Composer::getVersions()['friendsofhyperf/sentry'] ??  Version::SDK_VERSION;
+            $sdkVersion = Composer::getVersions()['friendsofhyperf/sentry'] ?? Version::SDK_VERSION;
             $clientBuilder->setSdkVersion($sdkVersion);
         });
     }
