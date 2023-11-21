@@ -155,7 +155,6 @@ class TinkerCaster
     {
         $refObject = new ReflectionObject($redis);
         $refProperty = $refObject->getProperty('poolName');
-        $refProperty->setAccessible(true);
 
         return [
             Caster::PREFIX_PROTECTED . 'poolName' => (string) $refProperty->getValue($redis),

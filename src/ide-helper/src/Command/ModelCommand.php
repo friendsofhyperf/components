@@ -762,7 +762,6 @@ class ModelCommand extends HyperfCommand
             return false;
         }
         $fkProp = $reflectionObj->getProperty('foreignKey');
-        $fkProp->setAccessible(true);
 
         return isset($this->nullableColumns[$fkProp->getValue($relation)]);
     }

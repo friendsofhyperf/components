@@ -86,7 +86,6 @@ class MacroCommand extends HyperfCommand
                     $shortName = $reflection->getShortName();
 
                     $property = $reflection->getProperty('macros');
-                    $property->setAccessible(true);
                     $macros = $property->getValue(null);
 
                     if (empty($macros)) {
