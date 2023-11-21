@@ -21,7 +21,7 @@
         "hyperf/event": "~3.0.0",
         "hyperf/exception-handler": "~3.0.0",
         "hyperf/framework": "~3.0.0",
-        "hyperf/http-server": "~3.0.43",
+        "hyperf/http-server": "~3.0.45",
         "hyperf/support": "~3.0.1",
         "hyperf/tappable": "~3.0.0",
         "sentry/sentry": "^4.0"

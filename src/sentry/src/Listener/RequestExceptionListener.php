@@ -11,7 +11,10 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Listener;
 
-use Hyperf\HttpServer\Event;
+use Hyperf\HttpServer\Event\RequestReceived;
+use Hyperf\HttpServer\Event\RequestTerminated;
+use Hyperf\RpcServer\Event\RequestReceived as RpcRequestReceived;
+use Hyperf\RpcServer\Event\RequestTerminated as RpcRequestTerminated;
 use Sentry\SentrySdk;
 
 class RequestExceptionListener extends CaptureExceptionListener
@@ -19,13 +22,15 @@ class RequestExceptionListener extends CaptureExceptionListener
     public function listen(): array
     {
         return [
-            Event\RequestReceived::class,
-            Event\RequestTerminated::class,
+            RequestReceived::class,
+            RequestTerminated::class,
+            RpcRequestReceived::class,
+            RpcRequestTerminated::class,
         ];
     }
 
     /**
-     * @param Event\RequestTerminated $event
+     * @param RequestTerminated $event
      */
     public function process(object $event): void
     {
@@ -34,7 +39,7 @@ class RequestExceptionListener extends CaptureExceptionListener
         }
 
         match ($event::class) {
-            Event\RequestTerminated::class => $this->captureException($event->exception),
+            RequestTerminated::class, RpcRequestTerminated::class => $this->captureException($event->exception),
             default => SentrySdk::init(),
         };
     }
