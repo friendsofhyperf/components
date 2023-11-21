@@ -43,7 +43,6 @@ class RegisterPropertyHandlerListener implements ListenerInterface
         PropertyHandlerManager::register(Lock::class, function ($object, $currentClassName, $targetClassName, $property, $annotation) {
             if ($annotation instanceof Lock) {
                 $reflectionProperty = ReflectionManager::reflectProperty($currentClassName, $property);
-                $reflectionProperty->setAccessible(true);
 
                 $name = $annotation->name;
                 $seconds = (int) $annotation->seconds;
