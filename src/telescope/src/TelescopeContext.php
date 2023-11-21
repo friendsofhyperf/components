@@ -28,6 +28,8 @@ class TelescopeContext
 
     public const CACHE_DRIVER = 'telescope.context.cache_driver';
 
+    public const MIDDLEWARES = 'telescope.context.middlwares';
+
     public static function setBatchId(string $batchId): void
     {
         Context::set(self::BATCH_ID, $batchId);
@@ -64,6 +66,16 @@ class TelescopeContext
         /** @var PackerInterface|null $packer */
         $packer = Context::get(self::CACHE_PACKER);
         return $packer instanceof PackerInterface ? $packer : null;
+    }
+
+    public static function getMiddlwares(): ?array
+    {
+        return Context::get(self::MIDDLEWARES) ?: null;
+    }
+
+    public static function setMiddlwares(array $middlwares): void
+    {
+        Context::set(self::MIDDLEWARES, $middlwares);
     }
 
     public static function getCacheDriver(): ?string
