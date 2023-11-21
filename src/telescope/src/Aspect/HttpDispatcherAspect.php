@@ -16,6 +16,7 @@ use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Dispatcher\HttpDispatcher;
+use Hyperf\RpcServer\RequestDispatcher;
 
 use function Hyperf\Tappable\tap;
 
@@ -23,6 +24,7 @@ class HttpDispatcherAspect extends AbstractAspect
 {
     public array $classes = [
         HttpDispatcher::class . '::dispatch',
+        RequestDispatcher::class . '::dispatch',
     ];
 
     public function __construct(protected SwitchManager $switcherManager)
