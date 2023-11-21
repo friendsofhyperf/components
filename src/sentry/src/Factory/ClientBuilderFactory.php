@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Factory;
 
 use FriendsOfHyperf\Sentry\Version;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Support\Composer;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
 
@@ -64,7 +65,8 @@ class ClientBuilderFactory
 
         return tap(ClientBuilder::create($options), function (ClientBuilder $clientBuilder) {
             $clientBuilder->setSdkIdentifier(Version::SDK_IDENTIFIER);
-            $clientBuilder->setSdkVersion(Version::SDK_VERSION);
+            $sdkVersion = Composer::getVersions()['friendsofhyperf/sentry'] ?? Version::SDK_VERSION;
+            $clientBuilder->setSdkVersion($sdkVersion);
         });
     }
 }
