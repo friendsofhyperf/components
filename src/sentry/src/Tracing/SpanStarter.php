@@ -16,6 +16,7 @@ use Hyperf\Context\ApplicationContext;
 use Hyperf\Rpc\Context as RpcContext;
 use Psr\Http\Message\ServerRequestInterface;
 use Sentry\SentrySdk;
+use Sentry\State\HubInterface;
 use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
@@ -72,8 +73,8 @@ trait SpanStarter
 
     protected function continueTrace(string $sentryTrace = '', string $baggage = '', ...$options): Transaction
     {
-        $sentry = SentrySdk::setCurrentHub(
-            tap(clone SentrySdk::getCurrentHub(), fn ($sentry) => $sentry->pushScope())
+        $hub = SentrySdk::setCurrentHub(
+            tap(clone SentrySdk::getCurrentHub(), fn (HubInterface $hub) => $hub->pushScope())
         );
 
         $context = continueTrace($sentryTrace, $baggage);
@@ -92,11 +93,11 @@ trait SpanStarter
             $context->setSource(TransactionSource::custom());
         }
 
-        $transaction = $sentry->startTransaction($context);
+        $transaction = $hub->startTransaction($context);
         $transaction->setStartTimestamp(microtime(true));
         $transaction->setStatus(SpanStatus::ok());
 
-        $sentry->setSpan($transaction);
+        $hub->setSpan($transaction);
 
         return $transaction;
     }
