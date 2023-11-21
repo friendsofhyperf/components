@@ -29,10 +29,10 @@ class RequestIpIntegration implements IntegrationInterface
     public function setupOnce(): void
     {
         Scope::addGlobalEventProcessor(function (Event $event): Event {
-            $sentry = SentrySdk::getCurrentHub();
-            $self = $sentry->getIntegration(self::class);
+            $hub = SentrySdk::getCurrentHub();
+            $self = $hub->getIntegration(self::class);
 
-            if (! $self instanceof self || ! $sentry->getClient()?->getOptions()->shouldSendDefaultPii()) {
+            if (! $self instanceof self || ! $hub->getClient()?->getOptions()->shouldSendDefaultPii()) {
                 return $event;
             }
 
