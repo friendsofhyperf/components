@@ -68,14 +68,14 @@ class TelescopeContext
         return $packer instanceof PackerInterface ? $packer : null;
     }
 
-    public static function getMiddlwares(): ?array
+    public static function getMiddlewares(): ?array
     {
         return Context::get(self::MIDDLEWARES) ?: null;
     }
 
-    public static function setMiddlwares(array $middlwares): void
+    public static function setMiddlewares(array $middlewares): void
     {
-        Context::set(self::MIDDLEWARES, $middlwares);
+        Context::set(self::MIDDLEWARES, $middlewares);
     }
 
     public static function getCacheDriver(): ?string

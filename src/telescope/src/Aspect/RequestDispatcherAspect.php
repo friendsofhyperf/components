@@ -20,7 +20,7 @@ use Hyperf\RpcServer\RequestDispatcher;
 
 use function Hyperf\Tappable\tap;
 
-class HttpDispatcherAspect extends AbstractAspect
+class RequestDispatcherAspect extends AbstractAspect
 {
     public array $classes = [
         HttpDispatcher::class . '::dispatch',
@@ -39,7 +39,7 @@ class HttpDispatcherAspect extends AbstractAspect
             }
 
             $middlewares = $proceedingJoinPoint->arguments['keys']['params'][1];
-            TelescopeContext::setMiddlwares($middlewares);
+            TelescopeContext::setMiddlewares($middlewares);
         });
     }
 }
