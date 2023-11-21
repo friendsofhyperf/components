@@ -92,6 +92,9 @@ class RequestHandledListener implements ListenerInterface
         $psr7Request = $event->request;
         $psr7Response = $event->response;
         $middlewares = $this->config->get('middlewares.' . ($event->server ?? 'http'), []);
+        $middlewares = collect($middlewares)->map(function ($priority, $middleware) {
+            return is_int($middleware) ? $priority : $middleware;
+        })->values()->all();
         $startTime = $psr7Request->getServerParams()['request_time_float'];
 
         if ($this->incomingRequest($psr7Request)) {
