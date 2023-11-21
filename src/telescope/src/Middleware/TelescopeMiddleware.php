@@ -83,7 +83,9 @@ class TelescopeMiddleware implements MiddlewareInterface
             $dispatched = $psr7Request->getAttribute(Dispatched::class);
             $serverName = $dispatched->serverName ?? 'http';
             $middlewares = $this->config->get('middlewares.' . $serverName, []);
-
+            $middlewares = collect($middlewares)->map(function ($priority, $middleware) {
+                return is_int($middleware) ? $priority : $middleware;
+            })->values()->all();
             $entry = IncomingEntry::make([
                 'ip_address' => $psr7Request->getServerParams()['remote_addr'],
                 'uri' => $psr7Request->getRequestTarget(),
