@@ -28,7 +28,7 @@ class TelescopeContext
 
     public const CACHE_DRIVER = 'telescope.context.cache_driver';
 
-    public const MIDDLEWARES = 'telescope.context.middlwares';
+    public const MIDDLEWARES = 'telescope.context.middlewares';
 
     public static function setBatchId(string $batchId): void
     {
