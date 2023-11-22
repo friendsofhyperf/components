@@ -68,4 +68,9 @@ class TelescopeEntryModel extends Model
     {
         return $this->uuid;
     }
+
+    public function tags()
+    {
+        return $this->hasMany(TelescopeEntryTagModel::class, 'entry_uuid', 'uuid');
+    }
 }
