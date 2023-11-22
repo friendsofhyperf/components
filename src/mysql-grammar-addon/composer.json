@@ -1,6 +1,13 @@
 {
     "name": "friendsofhyperf/mysql-grammar-addon",
     "description": "The MySqlGrammar addon for Hyperf.",
+    "keywords": [
+        "dev",
+        "hyperf",
+        "mysql",
+        "grammar",
+        "addon"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [
