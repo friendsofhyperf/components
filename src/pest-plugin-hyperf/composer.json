@@ -2,6 +2,7 @@
     "name": "friendsofhyperf/pest-plugin-hyperf",
     "description": "The Pest Hyperf Plugin.",
     "keywords": [
+        "dev",
         "php",
         "framework",
         "pest",
