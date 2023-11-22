@@ -13,9 +13,6 @@ use FriendsOfHyperf\Telescope\Telescope;
 use function Hyperf\Support\env;
 
 return [
-    'app' => [
-        'name' => env('APP_NAME', ''),
-    ],
     'enable' => [
         'request' => env('TELESCOPE_ENABLE_REQUEST', false),
         'command' => env('TELESCOPE_ENABLE_COMMAND', false),

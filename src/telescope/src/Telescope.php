@@ -110,9 +110,12 @@ class Telescope
         static::record(EntryType::CLIENT_REQUEST, $entry);
     }
 
+    /**
+     * @deprecated the method has been deprecated and its usage is discouraged
+     */
     public static function getAppName(): string
     {
-        return config('telescope.app.name', '') ? '[' . config('telescope.app.name', '') . '] ' : '';
+        return config('app_name', '') ? '[' . config('app_name', '') . '] ' : '';
     }
 
     public static function getQuerySlow(): int

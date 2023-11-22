@@ -54,7 +54,7 @@ class DbQueryListener implements ListenerInterface
             Telescope::recordQuery(IncomingEntry::make([
                 'connection' => $event->connectionName,
                 'bindings' => [],
-                'sql' => Telescope::getAppName() . $sql,
+                'sql' => $sql,
                 'time' => number_format($event->time, 2, '.', ''),
                 'slow' => $event->time >= $optionSlow,
                 'hash' => md5($sql),
