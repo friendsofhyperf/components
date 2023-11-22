@@ -12,15 +12,16 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Aspect;
 
 use FriendsOfHyperf\Telescope\IncomingEntry;
-use FriendsOfHyperf\Telescope\Severity;
 use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Stringable\Str;
+use Monolog\Level;
 use Monolog\Logger;
 use UnitEnum;
 
+use function Hyperf\Config\config;
 use function Hyperf\Tappable\tap;
 
 class LogAspect extends AbstractAspect
@@ -46,12 +47,14 @@ class LogAspect extends AbstractAspect
             if (Str::contains($message, 'telescope')) {
                 return;
             }
-            if ($proceedingJoinPoint->getInstance()->getName() == 'sql') {
+            $name = $proceedingJoinPoint->getInstance()->getName();
+            $ignoreLogs = config('telescope.ignore_logs');
+            if ($ignoreLogs && in_array($name, $ignoreLogs)) {
                 return;
             }
             Telescope::recordLog(
                 IncomingEntry::make([
-                    'level' => (string) $this->getLogLevel($level),
+                    'level' => $this->getLogLevel($level),
                     'message' => $message,
                     'context' => $context,
                 ])
@@ -60,17 +63,20 @@ class LogAspect extends AbstractAspect
     }
 
     /**
-     * Translates Monolog log levels to Sentry Severity.
+     * Translates Monolog log levels.
      */
-    protected function getLogLevel(int $logLevel): Severity
+    protected function getLogLevel(int $level): string
     {
-        return match ($logLevel) {
-            Logger::DEBUG => Severity::debug(),
-            Logger::NOTICE, Logger::INFO => Severity::info(),
-            Logger::WARNING => Severity::warning(),
-            Logger::ALERT, Logger::EMERGENCY, Logger::CRITICAL => Severity::fatal(),
-            Logger::ERROR => Severity::error(),
-            default => Severity::error(),
+        $logLevel = match (Level::fromValue($level)) {
+            Level::Debug => Level::Debug,
+            Level::Info => Level::Info,
+            Level::Notice => Level::Notice,
+            Level::Error => Level::Error,
+            Level::Critical => Level::Critical,
+            Level::Alert => Level::Alert,
+            Level::Emergency => Level::Emergency,
+            default => Level::Error,
         };
+        return strtolower($logLevel->getName());
     }
 }
