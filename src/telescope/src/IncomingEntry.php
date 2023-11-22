@@ -74,7 +74,7 @@ class IncomingEntry
         $timezone = config('telescope.timezone') ?: date_default_timezone_get();
         $this->recordedAt = Carbon::now()->setTimezone($timezone)->toDateTimeString();
         $this->content = array_merge($content, ['hostname' => $hostname = gethostname()]);
-        $this->tags = ['hostname:' . $hostname];
+        $this->tags = ['hostname:' . $hostname, 'app_name:' . config('app_name', '')];
     }
 
     /**
