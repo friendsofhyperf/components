@@ -39,6 +39,7 @@ class ConfigProvider
                 Aspect\LogAspect::class,
                 Aspect\RedisAspect::class,
                 Aspect\RpcAspect::class,
+                Aspect\RequestDispatcherAspect::class,
             ],
             'annotations' => [
                 'scan' => [

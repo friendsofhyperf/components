@@ -91,10 +91,6 @@ class RequestHandledListener implements ListenerInterface
 
         $psr7Request = $event->request;
         $psr7Response = $event->response;
-        $middlewares = $this->config->get('middlewares.' . ($event->server ?? 'http'), []);
-        $middlewares = collect($middlewares)->map(function ($priority, $middleware) {
-            return is_int($middleware) ? $priority : $middleware;
-        })->values()->all();
         $startTime = $psr7Request->getServerParams()['request_time_float'];
 
         if ($this->incomingRequest($psr7Request)) {
@@ -107,7 +103,7 @@ class RequestHandledListener implements ListenerInterface
                 'uri' => $psr7Request->getRequestTarget(),
                 'method' => $psr7Request->getMethod(),
                 'controller_action' => $dispatched->handler ? $dispatched->handler->callback : '',
-                'middleware' => $middlewares,
+                'middleware' => TelescopeContext::getMiddlewares(),
                 'headers' => $psr7Request->getHeaders(),
                 'payload' => $psr7Request->getParsedBody(),
                 'session' => '',
