@@ -48,7 +48,7 @@ class LogAspect extends AbstractAspect
                 return;
             }
             $name = $proceedingJoinPoint->getInstance()->getName();
-            $ignoreLogs = config('telescope.ignore_logs');
+            $ignoreLogs = config('telescope.ignore_logs', []);
             if ($ignoreLogs && in_array($name, $ignoreLogs)) {
                 return;
             }
