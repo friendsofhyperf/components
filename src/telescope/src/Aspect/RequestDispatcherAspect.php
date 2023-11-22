@@ -38,8 +38,8 @@ class RequestDispatcherAspect extends AbstractAspect
                 return;
             }
 
-            $middlewares = $proceedingJoinPoint->arguments['keys']['params'][1];
-            TelescopeContext::setMiddlewares($middlewares);
+            $middlewares = $proceedingJoinPoint->arguments['keys']['params'][1] ?? null;
+            $middlewares && TelescopeContext::setMiddlewares($middlewares);
         });
     }
 }
