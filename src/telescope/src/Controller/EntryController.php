@@ -17,6 +17,7 @@ use FriendsOfHyperf\Telescope\Model\TelescopeEntryTagModel;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
+use Hyperf\Stringable\Str;
 use Psr\Container\ContainerInterface;
 
 abstract class EntryController
@@ -35,7 +36,10 @@ abstract class EntryController
         $before = $this->request->input('before');
         $limit = $this->request->input('take', 50);
         $tag = $this->request->input('tag');
-        $query = TelescopeEntryModel::where('type', $this->entryType())->orderByDesc('sequence');
+        $query = TelescopeEntryModel::query()
+            ->with('tags')
+            ->where('type', $this->entryType())
+            ->orderByDesc('sequence');
 
         if ($before) {
             $query->where('sequence', '<', $before);
@@ -50,6 +54,12 @@ abstract class EntryController
         foreach ($entries as &$item) {
             if (isset($item['content']['response'])) {
                 $item['content']['response'] = '';
+            }
+            $item['tag'] = '';
+            foreach ($item['tags'] as $key => $val) {
+                if (Str::startsWith($val['tag'], 'app_name:')) {
+                    $item['tag'] = $val['tag'];
+                }
             }
         }
 

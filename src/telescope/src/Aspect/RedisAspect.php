@@ -54,7 +54,7 @@ class RedisAspect extends AbstractAspect
 
             Telescope::recordRedis(IncomingEntry::make([
                 'connection' => $connection,
-                'command' => Telescope::getAppName() . $commands,
+                'command' => $commands,
                 'time' => number_format((microtime(true) - $startTime) * 1000, 2, '.', ''),
             ]));
         });

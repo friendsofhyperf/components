@@ -57,7 +57,7 @@ class EventAspect extends AbstractAspect
             $payload = $this->extractPayload($eventName, $payload);
 
             Telescope::recordEvent(IncomingEntry::make([
-                'name' => Telescope::getAppName() . $eventName,
+                'name' => $eventName,
                 'listeners' => $listenerNames,
                 'payload' => $payload,
                 'hash' => md5($eventName),
