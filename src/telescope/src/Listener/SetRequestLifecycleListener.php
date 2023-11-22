@@ -15,7 +15,8 @@ use FriendsOfHyperf\Telescope\SwitchManager;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
-use Hyperf\HttpServer\Server;
+use Hyperf\HttpServer\Server as HttpServer;
+use Hyperf\RpcServer\Server as RpcServer;
 use Hyperf\Server\Event;
 
 class SetRequestLifecycleListener implements ListenerInterface
@@ -43,13 +44,13 @@ class SetRequestLifecycleListener implements ListenerInterface
 
         foreach ($servers as &$server) {
             $callbacks = $server['callbacks'] ?? [];
-            $onRequestHandler = $callbacks[Event::ON_REQUEST][0] ?? null;
+            $handler = $callbacks[Event::ON_REQUEST][0] ?? $callbacks[Event::ON_RECEIVE][0] ?? null;
 
-            if (! $onRequestHandler) {
+            if (! $handler) {
                 continue;
             }
 
-            if ($onRequestHandler == Server::class || is_a($onRequestHandler, Server::class)) {
+            if (is_a($handler, HttpServer::class, true) || is_a($handler, RpcServer::class, true)) {
                 $server['options'] ??= [];
                 $server['options']['enable_request_lifecycle'] = true;
             }
