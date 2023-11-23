@@ -27,8 +27,8 @@ class ClearCommand extends Command
     public function handle()
     {
         $connection = config('telescope.database.connection');
-        Db::connection($connection)->table('telescope_entries')->truncate();
-        Db::connection($connection)->table('telescope_entries_tags')->truncate();
-        Db::connection($connection)->table('telescope_monitoring')->truncate();
+        Db::connection($connection)->table('telescope_entries')->delete();
+        Db::connection($connection)->table('telescope_entries_tags')->delete();
+        Db::connection($connection)->table('telescope_monitoring')->delete();
     }
 }
