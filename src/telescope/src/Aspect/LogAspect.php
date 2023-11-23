@@ -21,6 +21,7 @@ use Hyperf\Stringable\Str;
 use Monolog\Logger;
 use UnitEnum;
 
+use function Hyperf\Config\config;
 use function Hyperf\Tappable\tap;
 
 class LogAspect extends AbstractAspect
@@ -46,7 +47,9 @@ class LogAspect extends AbstractAspect
             if (Str::contains($message, 'telescope')) {
                 return;
             }
-            if ($proceedingJoinPoint->getInstance()->getName() == 'sql') {
+            $name = $proceedingJoinPoint->getInstance()->getName();
+            $ignoreLogs = config('telescope.ignore_logs', []);
+            if ($ignoreLogs && in_array($name, $ignoreLogs)) {
                 return;
             }
             Telescope::recordLog(
@@ -60,7 +63,7 @@ class LogAspect extends AbstractAspect
     }
 
     /**
-     * Translates Monolog log levels to Sentry Severity.
+     * Translates Monolog log levels.
      */
     protected function getLogLevel(int $logLevel): Severity
     {
