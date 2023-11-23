@@ -43,7 +43,7 @@ jobs:
         # php: ['8.3', '8.2', '8.1', '8.0']
         php: ['8.3']
         # swoole: ['5.1.0', '5.0.3', '4.8.13']
-        swoole: ['5.1.0']
+        swoole: ['master']
         exclude:
           - php: '8.2'
             swoole: '4.8.13'
