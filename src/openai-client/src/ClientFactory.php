@@ -39,6 +39,7 @@ final class ClientFactory
             ->withBaseUri($baseUri)
             ->withApiKey($apiKey)
             ->withOrganization($organization)
+            ->withHttpHeader('OpenAI-Beta', 'assistants=v1')
             ->withHttpClient($httpClient)
             ->make();
     }
