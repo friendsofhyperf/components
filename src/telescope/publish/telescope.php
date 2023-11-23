@@ -38,4 +38,6 @@ return [
         'port' => (int) env('TELESCOPE_SERVER_PORT', 9509),
     ],
     'save_mode' => Telescope::SYNC,
+    'ignore_logs' => [
+    ],
 ];
