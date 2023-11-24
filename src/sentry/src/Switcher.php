@@ -31,9 +31,9 @@ class Switcher
         return (bool) $this->config->get('sentry.breadcrumbs.' . $key, false);
     }
 
-    public function isTracingEnable(string $key): bool
+    public function isTracingEnable(string $key, bool $requireSpan = true): bool
     {
-        if (! SentrySdk::getCurrentHub()->getSpan()) {
+        if ($requireSpan && ! SentrySdk::getCurrentHub()->getSpan()) {
             return false;
         }
 

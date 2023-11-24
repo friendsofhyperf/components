@@ -48,6 +48,10 @@ class TracingAsyncQueueListener implements ListenerInterface
      */
     public function process(object $event): void
     {
+        if (! $this->switcher->isTracingEnable('async_queue', false)) {
+            return;
+        }
+
         match ($event::class) {
             BeforeHandle::class => $this->startTransaction($event),
             RetryHandle::class, FailedHandle::class, AfterHandle::class => $this->finishTransaction($event),
