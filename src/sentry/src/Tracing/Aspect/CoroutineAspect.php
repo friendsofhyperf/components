@@ -48,20 +48,22 @@ class CoroutineAspect extends AbstractAspect
 
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
         $callingOnFunction = CoroutineBacktraceHelper::foundCallingOnFunction();
-        $parent = SentrySdk::getCurrentHub()->getSpan();
+        $parent = $this->startSpan('coroutine.create', $callingOnFunction);
+        if ($this->tagManager->has('coroutine.id')) {
+            $parent->setData([
+                $this->tagManager->get('coroutine.id') => Co::id(),
+            ]);
+        }
 
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent, $callingOnFunction) {
             $transaction = $this->startCoroutineTransaction(
                 $parent,
                 name: 'coroutine',
-                op: 'coroutine.create',
-                description: $callingOnFunction ?? '#' . Co::parentId(),
+                op: 'coroutine.execute',
+                description: $callingOnFunction,
             );
 
-            $span = $this->startSpan('coroutine.execute', '#' . Co::id(), true);
-
-            defer(function () use ($transaction, $span) {
-                $span->finish();
+            defer(function () use ($transaction) {
                 SentrySdk::getCurrentHub()->setSpan($transaction);
                 $transaction->finish();
             });
@@ -88,9 +90,10 @@ class CoroutineAspect extends AbstractAspect
 
                 throw $exception;
             } finally {
-                $span->setData($data);
+                $transaction->setData($data);
             }
         };
+        $parent->finish();
 
         return $proceedingJoinPoint->process();
     }
