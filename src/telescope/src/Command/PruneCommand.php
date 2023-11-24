@@ -35,9 +35,6 @@ class PruneCommand extends Command
             ->where('created_at', '<', $created_at)
             ->delete();
         Db::connection($connection)
-            ->table('telescope_entries_tags')
-            ->delete();
-        Db::connection($connection)
             ->table('telescope_monitoring')
             ->delete();
     }
