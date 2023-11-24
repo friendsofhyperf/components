@@ -124,6 +124,7 @@ return [
             ],
             'coroutine' => [
                 'id' => 'coroutine.id',
+                'parent.id' => 'parent.id',
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
             'crontab' => [
