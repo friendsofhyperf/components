@@ -16,13 +16,14 @@ use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Collection\Arr;
-use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Event\RequestReceived;
 use Hyperf\HttpServer\Event\RequestTerminated;
 use Hyperf\HttpServer\Router\Dispatched;
-use Hyperf\Rpc;
+use Hyperf\Rpc\Context as RpcContext;
+use Hyperf\RpcServer\Event\RequestReceived as RpcRequestReceived;
+use Hyperf\RpcServer\Event\RequestTerminated as RpcRequestTerminated;
 use Hyperf\Server\Event;
 use Hyperf\Stringable\Str;
 use Psr\Container\ContainerInterface;
@@ -47,6 +48,8 @@ class RequestHandledListener implements ListenerInterface
         return [
             RequestReceived::class,
             RequestTerminated::class,
+            RpcRequestReceived::class,
+            RpcRequestTerminated::class,
         ];
     }
 
@@ -56,19 +59,16 @@ class RequestHandledListener implements ListenerInterface
             return;
         }
         match ($event::class) {
-            RequestReceived::class => $this->requestReceived($event),
-            RequestTerminated::class => $this->requestHandled($event),
+            RequestReceived::class, RpcRequestReceived::class => $this->requestReceived($event),
+            RequestTerminated::class, RpcRequestTerminated::class => $this->requestHandled($event),
             default => '', // fix phpstan error
         };
     }
 
-    public function requestReceived(RequestReceived $event)
+    public function requestReceived(RequestReceived|RpcRequestReceived $event)
     {
         $request = $event->request;
-
-        if (! $batchId = $request->getHeaderLine('batch-id')) {
-            $batchId = $this->getRpcBatchId();
-        }
+        $batchId = $request->getHeaderLine('batch-id') ?: $this->getRpcBatchId();
 
         if ($batchId) {
             $subBatchId = Str::orderedUuid()->toString();
@@ -80,7 +80,7 @@ class RequestHandledListener implements ListenerInterface
         TelescopeContext::setBatchId($batchId);
     }
 
-    public function requestHandled(RequestTerminated $event)
+    public function requestHandled(RequestTerminated|RpcRequestTerminated $event)
     {
         if (
             $event->response instanceof ResponsePlusInterface
@@ -117,7 +117,13 @@ class RequestHandledListener implements ListenerInterface
             $handlerClass = $serverConfig['callbacks'][Event::ON_RECEIVE][0] ?? $serverConfig['callbacks'][Event::ON_REQUEST][0] ?? null;
             $handler = is_string($handlerClass) && $this->container->has($handlerClass) ? $this->container->get($handlerClass) : null;
 
-            if ($handler && ($handler instanceof \Hyperf\RpcServer\Server || $handler instanceof \Hyperf\GrpcServer\Server || $handler instanceof \Hyperf\JsonRpc\HttpServer)) {
+            if (
+                $handler
+                && (
+                    is_a($handler, \Hyperf\RpcServer\Server::class, true)
+                    || is_a($handler, \Hyperf\JsonRpc\HttpServer::class, true)
+                )
+            ) {
                 Telescope::recordService($entry);
             } else {
                 Telescope::recordRequest($entry);
@@ -129,11 +135,7 @@ class RequestHandledListener implements ListenerInterface
     {
         $target = $psr7Request->getRequestTarget();
 
-        if (Str::contains($target, '.ico')) {
-            return false;
-        }
-
-        if (Str::contains($target, 'telescope') !== false) {
+        if (Str::contains($target, ['telescope', '.ico'])) {
             return false;
         }
 
@@ -200,17 +202,15 @@ class RequestHandledListener implements ListenerInterface
 
     protected function getRpcBatchId(): string
     {
-        $carrier = $this->getRpcContext();
-        return $carrier['batch-id'] ?? '';
+        return $this->getRpcContext()['batch-id'] ?? '';
     }
 
     protected function getRpcContext(): array
     {
-        $container = ApplicationContext::getContainer();
-        if (! $container->has(Rpc\Context::class)) {
+        if (! $this->container->has(RpcContext::class)) {
             return [];
         }
-        $rpcContext = $container->get(Rpc\Context::class);
-        return (array) $rpcContext->get('telescope.carrier');
+
+        return $this->container->get(RpcContext::class)->get('telescope.carrier', []);
     }
 }
