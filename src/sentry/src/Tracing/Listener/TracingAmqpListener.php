@@ -46,6 +46,10 @@ class TracingAmqpListener implements ListenerInterface
      */
     public function process(object $event): void
     {
+        if (! $this->switcher->isTracingEnable('amqp', false)) {
+            return;
+        }
+
         match ($event::class) {
             BeforeConsume::class => $this->startTransaction($event),
             AfterConsume::class, FailToConsume::class => $this->finishTransaction($event),

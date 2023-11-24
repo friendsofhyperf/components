@@ -46,6 +46,10 @@ class TracingCrontabListener implements ListenerInterface
      */
     public function process(object $event): void
     {
+        if (! $this->switcher->isTracingEnable('crontab', false)) {
+            return;
+        }
+
         match ($event::class) {
             BeforeExecute::class => $this->startTransaction($event),
             AfterExecute::class, FailToExecute::class => $this->finishTransaction($event),
