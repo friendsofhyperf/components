@@ -36,17 +36,6 @@ class SetRequestLifecycleListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        if (! $this->config->has($key = 'sentry.tracing.enable.request')) {
-            $this->config->set($key, true);
-        }
-
-        if (
-            ! $this->switcher->isEnable('request')
-            && ! $this->switcher->isTracingEnable('request')
-        ) {
-            return;
-        }
-
         $servers = $this->config->get('server.servers', []);
 
         foreach ($servers as &$server) {
