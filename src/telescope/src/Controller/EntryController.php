@@ -55,10 +55,11 @@ abstract class EntryController
             if (isset($item['content']['response'])) {
                 $item['content']['response'] = '';
             }
-            $item['tag'] = '';
+            $item['tag'] = $item['tag_value'] = '';
             foreach ($item['tags'] as $key => $val) {
                 if (Str::startsWith($val['tag'], 'app_name:')) {
-                    $item['tag'] = $val['tag'];
+                    $item['tag_value'] = $val['tag'];
+                    $item['tag'] = Str::substr($val['tag'], strlen('app_name:'));
                 }
             }
         }
@@ -79,7 +80,16 @@ abstract class EntryController
             $query->where('sub_batch_id', $entry->sub_batch_id);
         }
 
-        $batch = $query->orderByDesc('sequence')->get();
+        $batch = $query->with('tags')->orderByDesc('sequence')->get();
+        foreach ($batch as &$item) {
+            $item['tag'] = $item['tag_value'] = '';
+            foreach ($item['tags'] as $key => $val) {
+                if (Str::startsWith($val['tag'], 'app_name:')) {
+                    $item['tag_value'] = $val['tag'];
+                    $item['tag'] = Str::substr($val['tag'], strlen('app_name:'));
+                }
+            }
+        }
 
         return $this->response->json([
             'entry' => $entry,

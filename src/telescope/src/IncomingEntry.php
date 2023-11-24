@@ -283,12 +283,13 @@ class IncomingEntry
 
     public function create()
     {
+        TelescopeEntryModel::create($this->toArray());
+
         foreach ($this->tags as $tag) {
             TelescopeEntryTagModel::create([
                 'entry_uuid' => $this->uuid,
                 'tag' => $tag,
             ]);
         }
-        TelescopeEntryModel::create($this->toArray());
     }
 }
