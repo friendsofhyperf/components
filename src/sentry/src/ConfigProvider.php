@@ -52,7 +52,13 @@ class ConfigProvider
                 Listener\KafkaExceptionListener::class,
                 Listener\RequestExceptionListener::class,
                 Listener\SetRequestLifecycleListener::class,
+                Tracing\Listener\TracingAmqpListener::class,
+                Tracing\Listener\TracingAsyncQueueListener::class,
+                Tracing\Listener\TracingCommandListener::class,
+                Tracing\Listener\TracingCrontabListener::class,
                 Tracing\Listener\TracingDbQueryListener::class,
+                Tracing\Listener\TracingKafkaListener::class,
+                Tracing\Listener\TracingRequestListener::class,
             ],
             'annotations' => [
                 'scan' => [
