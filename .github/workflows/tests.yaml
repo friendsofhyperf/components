@@ -34,16 +34,16 @@ jobs:
       - name: Run Cs Fixer
         run: vendor/bin/php-cs-fixer fix src --dry-run --diff --verbose
   tests:
-    needs: cs-fix
+    # needs: cs-fix
     name: Test on PHP ${{ matrix.php }} with Swoole ${{ matrix.swoole }}
     runs-on: "${{ matrix.os }}"
     strategy:
       matrix:
-        os: [ubuntu-22.04]
+        os: [ubuntu-latest]
         # php: ['8.3', '8.2', '8.1', '8.0']
         php: ['8.3']
         # swoole: ['5.1.0', '5.0.3', '4.8.13']
-        swoole: ['master']
+        swoole: ['5.1.0']
         exclude:
           - php: '8.2'
             swoole: '4.8.13'
