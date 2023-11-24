@@ -52,7 +52,6 @@ class ConfigProvider
                 Listener\RequestExceptionListener::class,
                 Listener\SetRequestLifecycleListener::class,
                 Tracing\Listener\TracingDbQueryListener::class,
-                Tracing\Listener\TracingRequestListener::class,
             ],
             'annotations' => [
                 'scan' => [

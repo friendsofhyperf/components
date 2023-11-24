@@ -18,32 +18,6 @@ composer require friendsofhyperf/sentry
 php bin/hyperf.php vendor:publish friendsofhyperf/sentry
 ```
 
-## Enable Request Lifecycle
-
-> will auto config in `SetRequestLifecycleListener.php`
-
-```php
-# config/autoload/server.php
-return [
-    // ...
-    'servers' => [
-        [
-            'name' => 'http',
-            'type' => Server::SERVER_HTTP,
-            'host' => '0.0.0.0',
-            'port' => 9501,
-            'callbacks' => [
-                Event::ON_REQUEST => [Hyperf\HttpServer\Server::class, 'onRequest'],
-            ],
-            'options' => [
-                'enable_request_lifecycle' => true,
-            ],
-        ],
-    ],
-    // ...
-];
-```
-
 ## Register Logger Handler
 
 ```php
@@ -106,20 +80,20 @@ class Foo
 }
 ```
 
-## Trace
+## Tracing
 
 ```php
 <?php
 
-# config/autoload/middleware.php
+# config/autoload/listeners.php
 return [
-    'http' => [
-        FriendsOfHyperf\Sentry\Tracing\Middleware\TraceMiddleware::class => PHP_INT_MAX,
-    ],
-    // rpc
-    // 'rpc' => [
-    //     FriendsOfHyperf\Sentry\Tracing\Middleware\TraceMiddleware::class,
-    // ],
+    FriendsOfHyperf\Sentry\Tracing\Listener\TracingAmqpListener::class,
+    FriendsOfHyperf\Sentry\Tracing\Listener\TracingAsyncQueueListener::class,
+    FriendsOfHyperf\Sentry\Tracing\Listener\TracingCommandListener::class,
+    FriendsOfHyperf\Sentry\Tracing\Listener\TracingCrontabListener::class,
+    FriendsOfHyperf\Sentry\Tracing\Listener\TracingDbQueryListener::class,
+    FriendsOfHyperf\Sentry\Tracing\Listener\TracingKafkaListener::class,
+    FriendsOfHyperf\Sentry\Tracing\Listener\TracingRequestListener::class,
 ];
 ```
 
