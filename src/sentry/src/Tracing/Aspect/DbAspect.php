@@ -37,7 +37,7 @@ class DbAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('db')) {
+        if (! $this->switcher->isTracingSpanEnable('db')) {
             return $proceedingJoinPoint->process();
         }
 

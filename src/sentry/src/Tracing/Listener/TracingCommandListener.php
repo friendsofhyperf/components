@@ -59,7 +59,7 @@ class TracingCommandListener implements ListenerInterface
     public function process(object $event): void
     {
         if (
-            ! $this->switcher->isTracingEnable('command', false)
+            ! $this->switcher->isTracingEnable('command')
             || Str::is($this->ignoreCommands, $event->getCommand()->getName())
         ) {
             return;

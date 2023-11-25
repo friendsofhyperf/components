@@ -42,7 +42,7 @@ class CoroutineAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('coroutine')) {
+        if (! $this->switcher->isTracingSpanEnable('coroutine')) {
             return $proceedingJoinPoint->process();
         }
 

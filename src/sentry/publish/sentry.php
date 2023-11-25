@@ -89,22 +89,22 @@ return [
     // Performance monitoring specific configuration
     'tracing' => [
         'enable' => [
-            // transaction
             'amqp' => env('SENTRY_TRACING_ENABLE_AMQP', true),
             'async_queue' => env('SENTRY_TRACING_ENABLE_ASYNC_QUEUE', true),
             'command' => env('SENTRY_TRACING_ENABLE_COMMAND', true),
             'crontab' => env('SENTRY_TRACING_ENABLE_CRONTAB', true),
             'kafka' => env('SENTRY_TRACING_ENABLE_KAFKA', true),
-            'request' => env('SENTRY_TRACING_ENABLE_REQUEST', true),
-            // span
-            'coroutine' => env('SENTRY_TRACING_ENABLE_COROUTINE', true),
-            'db' => env('SENTRY_TRACING_ENABLE_DB', true),
-            'elasticsearch' => env('SENTRY_TRACING_ENABLE_ELASTICSEARCH', true),
-            'guzzle' => env('SENTRY_TRACING_ENABLE_GUZZLE', true),
-            'rpc' => env('SENTRY_TRACING_ENABLE_RPC', true),
-            'redis' => env('SENTRY_TRACING_ENABLE_REDIS', true),
-            'sql_queries' => env('SENTRY_TRACING_ENABLE_SQL_QUERIES', true),
             'missing_routes' => env('SENTRY_TRACING_ENABLE_MISSING_ROUTES', true),
+            'request' => env('SENTRY_TRACING_ENABLE_REQUEST', true),
+        ],
+        'spans' => [
+            'coroutine' => env('SENTRY_TRACING_SPANS_COROUTINE', true),
+            'db' => env('SENTRY_TRACING_SPANS_DB', true),
+            'elasticsearch' => env('SENTRY_TRACING_SPANS_ELASTICSEARCH', true),
+            'guzzle' => env('SENTRY_TRACING_SPANS_GUZZLE', true),
+            'rpc' => env('SENTRY_TRACING_SPANS_RPC', true),
+            'redis' => env('SENTRY_TRACING_SPANS_REDIS', true),
+            'sql_queries' => env('SENTRY_TRACING_SPANS_SQL_QUERIES', true),
         ],
         'tags' => [
             'amqp' => [

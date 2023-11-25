@@ -48,7 +48,7 @@ class RpcAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('rpc')) {
+        if (! $this->switcher->isTracingSpanEnable('rpc')) {
             return $proceedingJoinPoint->process();
         }
 

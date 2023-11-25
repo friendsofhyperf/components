@@ -46,7 +46,7 @@ class TracingAmqpListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if (! $this->switcher->isTracingEnable('amqp', false)) {
+        if (! $this->switcher->isTracingEnable('amqp')) {
             return;
         }
 
