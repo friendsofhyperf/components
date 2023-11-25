@@ -53,7 +53,7 @@ class TracingDbQueryListener implements ListenerInterface
      */
     protected function queryExecutedHandler(object $event): void
     {
-        if (! $this->switcher->isTracingEnable('sql_queries')) {
+        if (! $this->switcher->isTracingSpanEnable('sql_queries')) {
             return;
         }
 

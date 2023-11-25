@@ -46,7 +46,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('guzzle')) {
+        if (! $this->switcher->isTracingSpanEnable('guzzle')) {
             return $proceedingJoinPoint->process();
         }
 

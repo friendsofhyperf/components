@@ -31,17 +31,22 @@ class Switcher
         return (bool) $this->config->get('sentry.breadcrumbs.' . $key, false);
     }
 
-    public function isTracingEnable(string $key, bool $requireSpan = true): bool
+    public function isTracingEnable(string $key): bool
     {
-        if ($requireSpan && ! SentrySdk::getCurrentHub()->getSpan()) {
-            return false;
-        }
-
         if (! $this->config->get('sentry.enable_tracing', true)) {
             return false;
         }
 
         return (bool) $this->config->get('sentry.tracing.enable.' . $key, false);
+    }
+
+    public function isTracingSpanEnable(string $key): bool
+    {
+        if (! SentrySdk::getCurrentHub()->getSpan()) {
+            return false;
+        }
+
+        return (bool) $this->config->get('sentry.tracing.spans.' . $key, false);
     }
 
     public function isExceptionIgnored(string|Throwable $exception): bool

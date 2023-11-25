@@ -40,7 +40,7 @@ class RedisAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('redis')) {
+        if (! $this->switcher->isTracingSpanEnable('redis')) {
             return $proceedingJoinPoint->process();
         }
 
