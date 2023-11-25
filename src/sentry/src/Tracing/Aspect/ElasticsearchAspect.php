@@ -49,7 +49,7 @@ class ElasticsearchAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('elasticsearch')) {
+        if (! $this->switcher->isTracingSpanEnable('elasticsearch')) {
             return $proceedingJoinPoint->process();
         }
 

@@ -58,7 +58,7 @@ class TracingRequestListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        if (! $this->switcher->isTracingEnable('request', false)) {
+        if (! $this->switcher->isTracingEnable('request')) {
             return;
         }
 
