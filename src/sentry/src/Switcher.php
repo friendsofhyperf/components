@@ -42,7 +42,7 @@ class Switcher
 
     public function isTracingSpanEnable(string $key): bool
     {
-        if ( ! SentrySdk::getCurrentHub()->getSpan()) {
+        if (! SentrySdk::getCurrentHub()->getSpan()) {
             return false;
         }
 
