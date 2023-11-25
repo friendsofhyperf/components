@@ -37,13 +37,33 @@ class SetRequestLifecycleListener implements ListenerInterface
     public function process(object $event): void
     {
         $keys = [
+            'sentry.enable.amqp',
+            'sentry.enable.async_queue',
+            'sentry.enable.command',
+            'sentry.enable.crontab',
+            'sentry.enable.kafka',
+            'sentry.enable.request',
+            'sentry.breadcrumbs.cache',
+            'sentry.breadcrumbs.sql_queries',
+            'sentry.breadcrumbs.sql_bindings',
+            'sentry.breadcrumbs.sql_transaction',
+            'sentry.breadcrumbs.redis',
+            'sentry.breadcrumbs.guzzle',
+            'sentry.breadcrumbs.logs',
+            'sentry.enable_tracing',
             'sentry.tracing.enable.amqp',
             'sentry.tracing.enable.async_queue',
             'sentry.tracing.enable.command',
             'sentry.tracing.enable.crontab',
             'sentry.tracing.enable.kafka',
             'sentry.tracing.enable.request',
-            'sentry.enable_tracing',
+            'sentry.tracing.spans.coroutine',
+            'sentry.tracing.spans.db',
+            'sentry.tracing.spans.elasticsearch',
+            'sentry.tracing.spans.guzzle',
+            'sentry.tracing.spans.rpc',
+            'sentry.tracing.spans.redis',
+            'sentry.tracing.spans.sql_queries',
         ];
 
         foreach ($keys as $key) {
