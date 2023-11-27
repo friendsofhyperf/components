@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Facade;
 
 use Hyperf\HttpServer\Contract\RequestInterface as Accessor;
+use Override;
 
 /**
  * @method static array all()
@@ -62,6 +63,7 @@ use Hyperf\HttpServer\Contract\RequestInterface as Accessor;
  */
 class Request extends Facade
 {
+    #[Override]
     protected static function getFacadeAccessor()
     {
         return Accessor::class;

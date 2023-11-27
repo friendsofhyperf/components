@@ -12,12 +12,14 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Facade;
 
 use FriendsOfHyperf\Support\Pipeline\Hub;
+use Override;
 
 /**
  * @mixin Hub
  */
 class Pipeline extends Facade
 {
+    #[Override]
     protected static function getFacadeAccessor()
     {
         return Hub::class;

@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Facade;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Logger\Logger;
 use Hyperf\Logger\LoggerFactory;
+use Override;
 
 /**
  * @mixin LoggerFactory
@@ -39,6 +40,7 @@ class Log extends Facade
             ->get($name, $group);
     }
 
+    #[Override]
     protected static function getFacadeAccessor()
     {
         return LoggerFactory::class;

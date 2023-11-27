@@ -13,12 +13,14 @@ namespace FriendsOfHyperf\Facade;
 
 use Hyperf\View\Render;
 use Hyperf\View\RenderInterface as Accessor;
+use Override;
 
 /**
  * @mixin Render
  */
 class View extends Facade
 {
+    #[Override]
     protected static function getFacadeAccessor()
     {
         return Accessor::class;

@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Facade;
 use Hyperf\AsyncQueue\Driver\DriverFactory as Accessor;
 use Hyperf\AsyncQueue\Exception\InvalidDriverException;
 use Hyperf\AsyncQueue\JobInterface;
+use Override;
 
 /**
  * @mixin Accessor
@@ -30,6 +31,7 @@ class AsyncQueue extends Facade
         return self::get($queue)->push($job, $delay);
     }
 
+    #[Override]
     protected static function getFacadeAccessor()
     {
         return Accessor::class;
