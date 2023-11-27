@@ -17,7 +17,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * @deprecated since 3.0, will removed in 3.1, use \FriendsOfHyperf\Sentry\Tracing\Listener\TracingRequestListener instead.
+ * @deprecated since 3.0, will removed in 3.1.
  */
 class TraceMiddleware implements MiddlewareInterface
 {
