@@ -12,7 +12,7 @@ The sentry component for Hyperf.
 composer require friendsofhyperf/sentry
 ```
 
-## Publish Config File
+## Publish
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/sentry
@@ -82,19 +82,21 @@ class Foo
 
 ## Tracing
 
-```php
-<?php
-
-# config/autoload/listeners.php
-return [
-    FriendsOfHyperf\Sentry\Tracing\Listener\TracingAmqpListener::class,
-    FriendsOfHyperf\Sentry\Tracing\Listener\TracingAsyncQueueListener::class,
-    FriendsOfHyperf\Sentry\Tracing\Listener\TracingCommandListener::class,
-    FriendsOfHyperf\Sentry\Tracing\Listener\TracingCrontabListener::class,
-    FriendsOfHyperf\Sentry\Tracing\Listener\TracingDbQueryListener::class,
-    FriendsOfHyperf\Sentry\Tracing\Listener\TracingKafkaListener::class,
-    FriendsOfHyperf\Sentry\Tracing\Listener\TracingRequestListener::class,
-];
+```env
+SENTRY_TRACING_ENABLE_AMQP=true
+SENTRY_TRACING_ENABLE_ASYNC_QUEUE=true
+SENTRY_TRACING_ENABLE_COMMAND=true
+SENTRY_TRACING_ENABLE_CRONTAB=true
+SENTRY_TRACING_ENABLE_KAFKA=true
+SENTRY_TRACING_ENABLE_MISSING_ROUTES=true
+SENTRY_TRACING_ENABLE_REQUEST=true
+SENTRY_TRACING_SPANS_COROUTINE=true
+SENTRY_TRACING_SPANS_DB=true
+SENTRY_TRACING_SPANS_ELASTICSEARCH=true
+SENTRY_TRACING_SPANS_GUZZLE=true
+SENTRY_TRACING_SPANS_RPC=true
+SENTRY_TRACING_SPANS_REDIS=true
+SENTRY_TRACING_SPANS_SQL_QUERIES=true
 ```
 
 ## Donate
