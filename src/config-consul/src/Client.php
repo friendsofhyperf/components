@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\ConfigConsul;
 
 use FriendsOfHyperf\ConfigConsul\Consul\KVInterface;
 use Hyperf\Contract\ConfigInterface;
+use Override;
 
 class Client implements ClientInterface
 {
@@ -20,6 +21,7 @@ class Client implements ClientInterface
     {
     }
 
+    #[Override]
     public function pull(): array
     {
         $namespaces = $this->config->get('config_center.drivers.consul.namespaces', '');

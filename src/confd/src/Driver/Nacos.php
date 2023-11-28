@@ -19,6 +19,7 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Nacos\Application;
 use Hyperf\Nacos\Config;
 use InvalidArgumentException;
+use Override;
 use Psr\Container\ContainerInterface;
 
 use function Hyperf\Collection\collect;
@@ -44,6 +45,7 @@ class Nacos implements DriverInterface
     /**
      * get all listener config from nacos server.
      */
+    #[Override]
     public function fetch(): array
     {
         $listeners = $this->config->get('confd.drivers.nacos.listener_config', []);
