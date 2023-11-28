@@ -13,6 +13,7 @@ namespace Pest\Hyperf;
 
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
+use Override;
 use Pest\Contracts\Plugins\HandlesArguments;
 use Pest\Exceptions\InvalidOption;
 use Pest\Kernel;
@@ -25,6 +26,7 @@ final class Plugin implements HandlesArguments
 {
     use HandleArguments;
 
+    #[Override]
     public function handleArguments(array $arguments): array
     {
         $arguments = $this->prepend($arguments);

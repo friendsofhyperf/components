@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Facade;
 
 use Hyperf\Cache\Cache as Accessor;
+use Override;
 use Psr\SimpleCache\CacheInterface;
 
 /**
@@ -19,6 +20,7 @@ use Psr\SimpleCache\CacheInterface;
  */
 class Cache extends Facade
 {
+    #[Override]
     protected static function getFacadeAccessor()
     {
         return CacheInterface::class;

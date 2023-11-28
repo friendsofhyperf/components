@@ -15,6 +15,7 @@ use Hyperf\Kafka\Exception\ConnectionClosedException;
 use Hyperf\Kafka\Exception\TimeoutException;
 use Hyperf\Kafka\ProducerManager as Accessor;
 use longlang\phpkafka\Producer\ProduceMessage;
+use Override;
 
 /**
  * @mixin Accessor
@@ -42,6 +43,7 @@ class Kafka extends Facade
         return self::getProducer($queue)->sendBatch($produceMessages);
     }
 
+    #[Override]
     protected static function getFacadeAccessor()
     {
         return Accessor::class;

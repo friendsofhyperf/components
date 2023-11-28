@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Lock\Driver;
 
 use Hyperf\Cache\Driver\FileSystemDriver;
+use Override;
 
 use function Hyperf\Support\make;
 
@@ -36,6 +37,7 @@ class FileSystemLock extends AbstractLock
     /**
      * Attempt to acquire the lock.
      */
+    #[Override]
     public function acquire(): bool
     {
         if ($this->store->has($this->name)) {
@@ -48,6 +50,7 @@ class FileSystemLock extends AbstractLock
     /**
      * Release the lock.
      */
+    #[Override]
     public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
@@ -60,6 +63,7 @@ class FileSystemLock extends AbstractLock
     /**
      * Releases this lock in disregard of ownership.
      */
+    #[Override]
     public function forceRelease(): void
     {
         $this->store->delete($this->name);

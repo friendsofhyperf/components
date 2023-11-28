@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Lock\Driver;
 
 use Hyperf\Cache\CacheManager;
 use Hyperf\Context\ApplicationContext;
+use Override;
 use Psr\SimpleCache\CacheInterface;
 
 class CacheLock extends AbstractLock
@@ -38,6 +39,7 @@ class CacheLock extends AbstractLock
     /**
      * Attempt to acquire the lock.
      */
+    #[Override]
     public function acquire(): bool
     {
         if ($this->store->has($this->name)) {
@@ -50,6 +52,7 @@ class CacheLock extends AbstractLock
     /**
      * Release the lock.
      */
+    #[Override]
     public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
@@ -62,6 +65,7 @@ class CacheLock extends AbstractLock
     /**
      * Releases this lock regardless of ownership.
      */
+    #[Override]
     public function forceRelease(): void
     {
         $this->store->delete($this->name);

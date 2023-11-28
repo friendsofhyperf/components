@@ -15,6 +15,7 @@ use Carbon\Carbon;
 use Hyperf\Database\ConnectionInterface;
 use Hyperf\Database\Exception\QueryException;
 use Hyperf\DbConnection\Db;
+use Override;
 
 use function Hyperf\Support\optional;
 
@@ -42,6 +43,7 @@ class DatabaseLock extends AbstractLock
     /**
      * Attempt to acquire the lock.
      */
+    #[Override]
     public function acquire(): bool
     {
         $acquired = false;
@@ -71,6 +73,7 @@ class DatabaseLock extends AbstractLock
     /**
      * Release the lock.
      */
+    #[Override]
     public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
@@ -88,6 +91,7 @@ class DatabaseLock extends AbstractLock
     /**
      * Releases this lock in disregard of ownership.
      */
+    #[Override]
     public function forceRelease(): void
     {
         $this->connection->table($this->table)

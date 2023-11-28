@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Lock\Driver;
 
 use Hyperf\Redis\RedisProxy;
+use Override;
 
 use function Hyperf\Support\make;
 
@@ -41,6 +42,7 @@ class RedisLock extends AbstractLock
     /**
      * Attempt to acquire the lock.
      */
+    #[Override]
     public function acquire(): bool
     {
         if ($this->seconds > 0) {
@@ -53,6 +55,7 @@ class RedisLock extends AbstractLock
     /**
      * Release the lock.
      */
+    #[Override]
     public function release(): bool
     {
         return (bool) $this->store->eval(LuaScripts::releaseLock(), [$this->name, $this->owner], 1);
@@ -61,6 +64,7 @@ class RedisLock extends AbstractLock
     /**
      * Releases this lock in disregard of ownership.
      */
+    #[Override]
     public function forceRelease(): void
     {
         $this->store->del($this->name);
