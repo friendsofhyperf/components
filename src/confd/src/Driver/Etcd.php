@@ -15,6 +15,7 @@ use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Etcd\V3\KV;
+use Override;
 use Psr\Container\ContainerInterface;
 
 use function Hyperf\Collection\collect;
@@ -35,6 +36,7 @@ class Etcd implements DriverInterface
         ]);
     }
 
+    #[Override]
     public function fetch(): array
     {
         $namespace = (string) $this->config->get('confd.drivers.etcd.namespace', '');

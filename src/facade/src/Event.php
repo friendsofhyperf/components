@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Facade;
 
 use Hyperf\Event\EventDispatcher;
+use Override;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
@@ -19,6 +20,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  */
 class Event extends Facade
 {
+    #[Override]
     protected static function getFacadeAccessor()
     {
         return EventDispatcherInterface::class;

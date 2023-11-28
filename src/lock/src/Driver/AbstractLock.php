@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Lock\Driver;
 use FriendsOfHyperf\Lock\Exception\LockTimeoutException;
 use Hyperf\Stringable\Str;
 use Hyperf\Support\Traits\InteractsWithTime;
+use Override;
 
 abstract class AbstractLock implements LockInterface
 {
@@ -51,6 +52,7 @@ abstract class AbstractLock implements LockInterface
      * Attempt to acquire the lock.
      * @return mixed
      */
+    #[Override]
     public function get(?callable $callback = null)
     {
         $result = $this->acquire();
@@ -71,6 +73,7 @@ abstract class AbstractLock implements LockInterface
      * @return mixed
      * @throws LockTimeoutException
      */
+    #[Override]
     public function block(int $seconds, ?callable $callback = null)
     {
         $starting = $this->currentTime();

@@ -13,12 +13,14 @@ namespace FriendsOfHyperf\Facade;
 
 use Hyperf\Amqp\Message\ProducerMessageInterface;
 use Hyperf\Amqp\Producer as Accessor;
+use Override;
 
 /**
  * @method static bool produce(ProducerMessageInterface $producerMessage, bool $confirm = false, int $timeout = 5)
  */
 class AMQP extends Facade
 {
+    #[Override]
     protected static function getFacadeAccessor()
     {
         return Accessor::class;

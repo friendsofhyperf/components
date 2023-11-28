@@ -12,12 +12,14 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Facade;
 
 use Hyperf\Redis\Redis as Accessor;
+use Override;
 
 /**
  * @mixin Accessor
  */
 class Redis extends Facade
 {
+    #[Override]
     protected static function getFacadeAccessor()
     {
         return Accessor::class;

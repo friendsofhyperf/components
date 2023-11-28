@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\ConfigConsul;
 use Hyperf\Codec\Packer\JsonPacker;
 use Hyperf\ConfigCenter\AbstractDriver;
 use Hyperf\Contract\PackerInterface;
+use Override;
 use Psr\Container\ContainerInterface;
 
 class ConsulDriver extends AbstractDriver
@@ -33,6 +34,7 @@ class ConsulDriver extends AbstractDriver
         $this->packer = $container->get($this->config->get('config_center.drivers.consul.packer', JsonPacker::class));
     }
 
+    #[Override]
     protected function updateConfig(array $config): void
     {
         $configurations = $this->format($config);

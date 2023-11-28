@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Lock\Driver;
 
 use Hyperf\Cache\Driver\CoroutineMemoryDriver;
+use Override;
 use Psr\SimpleCache\CacheInterface;
 
 use function Hyperf\Support\make;
@@ -37,6 +38,7 @@ class CoroutineLock extends AbstractLock
     /**
      * Attempt to acquire the lock.
      */
+    #[Override]
     public function acquire(): bool
     {
         if ($this->store->has($this->name)) {
@@ -49,6 +51,7 @@ class CoroutineLock extends AbstractLock
     /**
      * Release the lock.
      */
+    #[Override]
     public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
@@ -61,6 +64,7 @@ class CoroutineLock extends AbstractLock
     /**
      * Releases this lock regardless of ownership.
      */
+    #[Override]
     public function forceRelease(): void
     {
         $this->store->delete($this->name);

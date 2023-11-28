@@ -13,12 +13,14 @@ namespace FriendsOfHyperf\Facade;
 
 use Hyperf\Config\Config as Accessor;
 use Hyperf\Contract\ConfigInterface;
+use Override;
 
 /**
  * @mixin Accessor
  */
 class Config extends Facade
 {
+    #[Override]
     protected static function getFacadeAccessor()
     {
         return ConfigInterface::class;

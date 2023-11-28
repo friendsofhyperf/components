@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Facade;
 
 use Hyperf\Di\Container;
+use Override;
 use Psr\Container\ContainerInterface;
 
 /**
@@ -19,6 +20,7 @@ use Psr\Container\ContainerInterface;
  */
 class DI extends Facade
 {
+    #[Override]
     protected static function getFacadeAccessor()
     {
         return ContainerInterface::class;
