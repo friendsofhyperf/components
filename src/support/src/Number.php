@@ -31,7 +31,6 @@ class Number
     /**
      * Format the given number according to the current locale.
      *
-     * @param ?string $locale
      * @return string|false
      */
     public static function format(int|float $number, ?int $precision = null, ?int $maxPrecision = null, ?string $locale = null)
@@ -52,7 +51,6 @@ class Number
     /**
      * Spell out the given number in the given locale.
      *
-     * @param ?string $locale
      * @return string
      */
     public static function spell(int|float $number, ?string $locale = null)
@@ -67,7 +65,6 @@ class Number
     /**
      * Convert the given number to ordinal form.
      *
-     * @param ?string $locale
      * @return string
      */
     public static function ordinal(int|float $number, ?string $locale = null)
@@ -82,7 +79,6 @@ class Number
     /**
      * Convert the given number to its percentage equivalent.
      *
-     * @param ?string $locale
      * @return string|false
      */
     public static function percentage(int|float $number, int $precision = 0, ?int $maxPrecision = null, ?string $locale = null)
@@ -103,7 +99,6 @@ class Number
     /**
      * Convert the given number to its currency equivalent.
      *
-     * @param ?string $locale
      * @return string|false
      */
     public static function currency(int|float $number, string $in = 'USD', ?string $locale = null)
@@ -137,30 +132,32 @@ class Number
      * @param int $number
      * @return string
      */
-    public static function forHumans(int|float $number, int $precision = 0, ?int $maxPrecision = null)
+    public static function abbreviate(int|float $number, int $precision = 0, ?int $maxPrecision = null)
     {
-        $units = [
-            3 => 'thousand',
-            6 => 'million',
-            9 => 'billion',
-            12 => 'trillion',
-            15 => 'quadrillion',
-        ];
+        return static::forHumans($number, $precision, $maxPrecision, abbreviate: true);
+    }
 
-        switch (true) {
-            case $number === 0:
-                return '0';
-            case $number < 0:
-                return sprintf('-%s', static::forHumans(abs($number), $precision, $maxPrecision));
-            case $number >= 1e15:
-                return sprintf('%s quadrillion', static::forHumans($number / 1e15, $precision, $maxPrecision));
-        }
-
-        $numberExponent = floor(log10($number));
-        $displayExponent = $numberExponent - ($numberExponent % 3);
-        $number /= pow(10, $displayExponent);
-
-        return trim(sprintf('%s %s', static::format($number, $precision, $maxPrecision), $units[$displayExponent] ?? ''));
+    /**
+     * Convert the number to its human readable equivalent.
+     *
+     * @param int $number
+     * @return string
+     */
+    public static function forHumans(int|float $number, int $precision = 0, ?int $maxPrecision = null, bool $abbreviate = false)
+    {
+        return static::summarize($number, $precision, $maxPrecision, $abbreviate ? [
+            3 => 'K',
+            6 => 'M',
+            9 => 'B',
+            12 => 'T',
+            15 => 'Q',
+        ] : [
+            3 => ' thousand',
+            6 => ' million',
+            9 => ' billion',
+            12 => ' trillion',
+            15 => ' quadrillion',
+        ]);
     }
 
     /**
@@ -186,7 +183,41 @@ class Number
     }
 
     /**
-     * Ensure the "intl" PHP extension is installed.
+     * Convert the number to its human readable equivalent.
+     *
+     * @param int $number
+     * @return string
+     */
+    protected static function summarize(int|float $number, int $precision = 0, ?int $maxPrecision = null, array $units = [])
+    {
+        if (empty($units)) {
+            $units = [
+                3 => 'K',
+                6 => 'M',
+                9 => 'B',
+                12 => 'T',
+                15 => 'Q',
+            ];
+        }
+
+        switch (true) {
+            case $number === 0:
+                return '0';
+            case $number < 0:
+                return sprintf('-%s', static::summarize(abs($number), $precision, $maxPrecision, $units));
+            case $number >= 1e15:
+                return sprintf('%s' . end($units), static::summarize($number / 1e15, $precision, $maxPrecision, $units));
+        }
+
+        $numberExponent = floor(log10($number));
+        $displayExponent = $numberExponent - ($numberExponent % 3);
+        $number /= pow(10, $displayExponent);
+
+        return trim(sprintf('%s%s', static::format($number, $precision, $maxPrecision), $units[$displayExponent] ?? ''));
+    }
+
+    /**
+     * Ensure the "intl" PHP exntension is installed.
      */
     protected static function ensureIntlExtensionIsInstalled()
     {
