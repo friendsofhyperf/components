@@ -1,6 +1,12 @@
 {
     "name": "friendsofhyperf/recaptcha",
     "description": "The Google recaptcha component for Hyperf.",
+    "keywords": [
+        "google",
+        "recaptcha",
+        "hyperf",
+        "v3.1"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [

@@ -1,6 +1,10 @@
 {
     "name": "friendsofhyperf/model-factory",
     "description": "The factory for Hyperf models.",
+    "keywords": [
+        "hyperf",
+        "v3.1"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [

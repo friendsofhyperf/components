@@ -1,6 +1,10 @@
 {
     "name": "friendsofhyperf/command-signals",
     "description": "The signals component for Hyperf Command.",
+    "keywords": [
+        "hyperf",
+        "v3.1"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [

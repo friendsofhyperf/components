@@ -9,7 +9,9 @@
         "unit",
         "test",
         "testing",
-        "plugin"
+        "plugin",
+        "hyperf",
+        "v3.1"
     ],
     "license": "MIT",
     "require": {

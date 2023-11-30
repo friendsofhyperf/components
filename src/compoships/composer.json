@@ -5,7 +5,8 @@
     "keywords": [
         "Hyperf",
         "Hyperf composite keys",
-        "Hyperf relationships"
+        "Hyperf relationships",
+        "v3.1"
     ],
     "authors": [
         {

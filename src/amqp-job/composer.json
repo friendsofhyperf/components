@@ -1,6 +1,10 @@
 {
     "name": "friendsofhyperf/amqp-job",
     "description": "The amqp job for Hyperf.",
+    "keywords": [
+        "hyperf",
+        "v3.1"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [
