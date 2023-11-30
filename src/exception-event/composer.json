@@ -1,6 +1,10 @@
 {
     "name": "friendsofhyperf/exception-event",
     "description": "The exception component for Hyperf.",
+    "keywords": [
+        "hyperf",
+        "v3.1"
+    ],
     "homepage": "https://github.com/friendsofhyperf/exception-event",
     "authors": [
         {

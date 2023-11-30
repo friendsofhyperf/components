@@ -4,7 +4,8 @@
     "keywords": [
         "swoole",
         "hyperf",
-        "debugging"
+        "debugging",
+        "v3.1"
     ],
     "license": "MIT",
     "require": {

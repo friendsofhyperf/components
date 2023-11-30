@@ -6,7 +6,8 @@
         "hyperf",
         "dto",
         "data transfer object",
-        "validation"
+        "validation",
+        "v3.1"
     ],
     "license": "MIT",
     "autoload": {

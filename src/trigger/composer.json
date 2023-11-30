@@ -1,6 +1,10 @@
 {
     "name": "friendsofhyperf/trigger",
     "description": "The MySQL Trigger component for Hyperf.",
+    "keywords": [
+        "hyperf",
+        "v3.1"
+    ],
     "type": "library",
     "require": {
         "php": ">=8.1.0",

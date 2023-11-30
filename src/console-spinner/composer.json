@@ -1,6 +1,10 @@
 {
     "name": "friendsofhyperf/console-spinner",
     "description": "The progress bar component For Hyperf.",
+    "keywords": [
+        "hyperf",
+        "v3.1"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [

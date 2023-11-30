@@ -1,6 +1,10 @@
 {
     "name": "friendsofhyperf/once",
     "description": "A magic memoization function for Hyperf.",
+    "keywords": [
+        "hyperf",
+        "v3.1"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [

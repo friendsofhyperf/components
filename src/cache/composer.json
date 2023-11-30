@@ -2,6 +2,10 @@
     "name": "friendsofhyperf/cache",
     "type": "library",
     "description": "The cache component for Hyperf.",
+    "keywords": [
+        "hyperf",
+        "v3.1"
+    ],
     "license": "MIT",
     "authors": [
         {

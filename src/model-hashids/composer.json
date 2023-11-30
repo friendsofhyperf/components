@@ -1,6 +1,10 @@
 {
     "name": "friendsofhyperf/model-hashids",
     "description": "The hashids for Hyperf models.",
+    "keywords": [
+        "hyperf",
+        "v3.1"
+    ],
     "type": "library",
     "license": "MIT",
     "authors": [

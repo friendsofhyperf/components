@@ -5,7 +5,8 @@
     "keywords": [
         "hyperf",
         "gateway-worker",
-        "websocket"
+        "websocket",
+        "v3.1"
     ],
     "homepage": "https://github.com/friendsofhyperf/gateway-worker",
     "license": "MIT",

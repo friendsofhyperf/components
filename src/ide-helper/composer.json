@@ -5,7 +5,8 @@
     "keywords": [
         "dev",
         "php",
-        "hyperf"
+        "hyperf",
+        "v3.1"
     ],
     "description": "The ide-helper component for Hyperf.",
     "support": {
