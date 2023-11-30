@@ -31,7 +31,6 @@ class Number
     /**
      * Format the given number according to the current locale.
      *
-     * @param ?string $locale
      * @return string|false
      */
     public static function format(int|float $number, ?int $precision = null, ?int $maxPrecision = null, ?string $locale = null)
@@ -52,7 +51,6 @@ class Number
     /**
      * Spell out the given number in the given locale.
      *
-     * @param ?string $locale
      * @return string
      */
     public static function spell(int|float $number, ?string $locale = null)
@@ -67,7 +65,6 @@ class Number
     /**
      * Convert the given number to ordinal form.
      *
-     * @param ?string $locale
      * @return string
      */
     public static function ordinal(int|float $number, ?string $locale = null)
@@ -82,7 +79,6 @@ class Number
     /**
      * Convert the given number to its percentage equivalent.
      *
-     * @param ?string $locale
      * @return string|false
      */
     public static function percentage(int|float $number, int $precision = 0, ?int $maxPrecision = null, ?string $locale = null)
@@ -103,7 +99,6 @@ class Number
     /**
      * Convert the given number to its currency equivalent.
      *
-     * @param ?string $locale
      * @return string|false
      */
     public static function currency(int|float $number, string $in = 'USD', ?string $locale = null)
@@ -222,7 +217,7 @@ class Number
     }
 
     /**
-     * Ensure the "intl" PHP extension is installed.
+     * Ensure the "intl" PHP exntension is installed.
      */
     protected static function ensureIntlExtensionIsInstalled()
     {
