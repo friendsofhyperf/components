@@ -36,9 +36,7 @@
         "symfony/http-foundation": "^5.3|^6.0",
         "symfony/process": "^5.3|^6.0",
         "symfony/uid": "^5.3|^6.0",
-        "symfony/var-dumper": "^5.3|^6.0",
-        "workerman/gateway-worker": "^4.0.0",
-        "workerman/gatewayclient": "^3.0.13"
+        "symfony/var-dumper": "^5.3|^6.0"
     },
     "require-dev": {
         "elasticsearch/elasticsearch": "^7.0",
@@ -120,7 +118,6 @@
         "friendsofhyperf/exception-event": "*",
         "friendsofhyperf/facade": "*",
         "friendsofhyperf/fast-paginate": "*",
-        "friendsofhyperf/gateway-worker": "*",
         "friendsofhyperf/grpc-validation": "*",
         "friendsofhyperf/helpers": "*",
         "friendsofhyperf/http-client": "*",
@@ -175,7 +172,6 @@
             "FriendsOfHyperf\\ExceptionEvent\\": "src/exception-event/src/",
             "FriendsOfHyperf\\Facade\\": "src/facade/src/",
             "FriendsOfHyperf\\FastPaginate\\": "src/fast-paginate/src/",
-            "FriendsOfHyperf\\GatewayWorker\\": "src/gateway-worker/src/",
             "FriendsOfHyperf\\GrpcValidation\\": "src/grpc-validation/src/",
             "FriendsOfHyperf\\Helpers\\": "src/helpers/src/",
             "FriendsOfHyperf\\Http\\Client\\": "src/http-client/src/",
