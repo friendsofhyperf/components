@@ -104,7 +104,6 @@
     "replace": {
         "friendsofhyperf/access-log": "*",
         "friendsofhyperf/amqp-job": "*",
-        "friendsofhyperf/async-task": "*",
         "friendsofhyperf/cache": "*",
         "friendsofhyperf/command-signals": "*",
         "friendsofhyperf/command-validation": "*",
@@ -157,7 +156,6 @@
         "psr-4": {
             "FriendsOfHyperf\\AccessLog\\": "src/access-log/src/",
             "FriendsOfHyperf\\AmqpJob\\": "src/amqp-job/src/",
-            "FriendsOfHyperf\\AsyncTask\\": "src/async-task/src/",
             "FriendsOfHyperf\\Cache\\": "src/cache/src/",
             "FriendsOfHyperf\\CommandSignals\\": "src/command-signals/src/",
             "FriendsOfHyperf\\CommandValidation\\": "src/command-validation/src/",
@@ -206,7 +204,6 @@
             "config": [
                 "FriendsOfHyperf\\AccessLog\\ConfigProvider",
                 "FriendsOfHyperf\\AmqpJob\\ConfigProvider",
-                "FriendsOfHyperf\\AsyncTask\\ConfigProvider",
                 "FriendsOfHyperf\\Cache\\ConfigProvider",
                 "FriendsOfHyperf\\CommandSignals\\ConfigProvider",
                 "FriendsOfHyperf\\CommandValidation\\ConfigProvider",
