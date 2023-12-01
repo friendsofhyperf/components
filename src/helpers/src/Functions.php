@@ -235,7 +235,7 @@ function environment(...$environments)
     $environment = di(Environment::class);
 
     if (count($environments) > 0) {
-        return $environment->environment(...$environments);
+        return $environment->is(...$environments);
     }
 
     return $environment;
