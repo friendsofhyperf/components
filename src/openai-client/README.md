@@ -74,11 +74,7 @@ For usage examples, take a look at the [openai-php/client](https://github.com/op
 
 ## Donate
 
-> If you like them, Buy me a cup of coffee.
-
-| Alipay | WeChat |
-|  ----  |  ----  |
-| <img src="https://hdj.me/images/alipay-min.jpg" width="200" height="200" />  | <img src="https://hdj.me/images/wechat-pay-min.jpg" width="200" height="200" /> |
+> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
 
 ## Contact
 
