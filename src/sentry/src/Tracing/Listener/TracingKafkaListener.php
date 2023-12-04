@@ -59,13 +59,11 @@ class TracingKafkaListener implements ListenerInterface
     protected function startTransaction(BeforeConsume $event): void
     {
         $consumer = $event->getConsumer();
-        $topic = $consumer->getTopic();
-        $name = is_array($topic) ? implode(',', $topic) : $topic;
 
         $this->continueTrace(
-            name: $name,
+            name: $consumer::class,
             op: 'kafka.consume',
-            description: $consumer::class,
+            description: 'consumer: ' . $consumer::class,
             source: TransactionSource::custom()
         );
     }
