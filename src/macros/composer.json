@@ -35,7 +35,7 @@
         "league/commonmark": "Required to use (^1.3|^2.0.2)",
         "opis/closure": "Required to use (^3.1)",
         "ramsey/uuid": "Required to generate UUIDs (^4.7)",
-        "symfony/uid": "Required to generate ULIDs (^6.0).",
+        "symfony/uid": "Required to generate ULIDs (^6.0|^7.0).",
         "voku/portable-ascii": "Required to use (^1.4|^1.5)"
     },
     "extra": {
