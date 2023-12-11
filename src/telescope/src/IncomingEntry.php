@@ -147,7 +147,7 @@ class IncomingEntry
      */
     public function user($user = null): static
     {
-        // to do 
+        // to do
         return $this;
     }
 
