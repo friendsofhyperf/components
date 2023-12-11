@@ -147,31 +147,7 @@ class IncomingEntry
      */
     public function user($user = null): static
     {
-        $authUser = null;
-        if (function_exists('auth')) {
-            $token = auth()->parseToken();
-
-            if ($token && auth()->check($token)) {
-                $authUser = auth()->user();
-            }
-        }
-
-        $user = $user ?: $authUser;
-
-        if (! is_null($user)) {
-            $this->content = array_merge($this->content, [
-                'user' => [
-                    'id' => $user->getKey(),
-                    'name' => $user->name ?? null,
-                    'email' => $user->email ?? null,
-                ],
-            ]);
-
-            $this->tags(['Auth:' . $user->getKey()]);
-        }
-
-        $this->user = $user;
-
+        // to do
         return $this;
     }
 
