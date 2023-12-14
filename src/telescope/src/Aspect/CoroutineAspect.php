@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Aspect;
 
 use FriendsOfHyperf\Telescope\TelescopeContext;
-use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Engine\Coroutine as Co;
@@ -36,7 +35,14 @@ class CoroutineAspect extends AbstractAspect
         $cid = Co::id();
 
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $cid, $keys) {
-            Context::copy($cid, $keys);
+            $from = Co::getContextFor($cid);
+            $current = Co::getContextFor();
+
+            foreach ($keys as $key) {
+                if (isset($from[$key])) {
+                    $current[$key] = $from[$key];
+                }
+            }
 
             $callable();
         };
