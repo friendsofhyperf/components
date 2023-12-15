@@ -20,7 +20,7 @@ use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Sentry\UserDataBag;
 
-class RequestIpIntegration implements IntegrationInterface
+class RequestIntegration implements IntegrationInterface
 {
     public function __construct(protected ContainerInterface $container)
     {
@@ -50,7 +50,7 @@ class RequestIpIntegration implements IntegrationInterface
         });
     }
 
-    public function getClientIp(): ?string
+    protected function getClientIp(): ?string
     {
         /** @var ServerRequestInterface|null $request */
         $request = Context::get(ServerRequestInterface::class);
