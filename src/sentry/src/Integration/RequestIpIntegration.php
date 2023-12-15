@@ -36,9 +36,15 @@ class RequestIpIntegration implements IntegrationInterface
                 return $event;
             }
 
-            $event->setUser(
-                UserDataBag::createFromUserIpAddress($this->getClientIp())
-            );
+            $ip = $this->getClientIp();
+
+            if (! $user = $event->getUser()) {
+                $user = UserDataBag::createFromUserIpAddress($ip);
+            } else {
+                $user->setIpAddress($ip);
+            }
+
+            $event->setUser($user);
 
             return $event;
         });
