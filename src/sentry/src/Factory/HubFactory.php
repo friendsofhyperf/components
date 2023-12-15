@@ -79,8 +79,8 @@ class HubFactory
     {
         $integrations = [
             new Integration(),
-            make(Integration\ExceptionContextIntegration::class),
-            make(Integration\RequestIntegration::class),
+            new Integration\ExceptionContextIntegration(),
+            new Integration\RequestIntegration(),
         ];
         $userIntegrations = $container->get(ConfigInterface::class)->get('sentry.integrations', []);
 
