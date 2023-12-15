@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Integration;
 
 use Hyperf\Context\Context;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Sentry\Event;
 use Sentry\Integration\IntegrationInterface;
@@ -22,10 +21,6 @@ use Sentry\UserDataBag;
 
 class RequestIntegration implements IntegrationInterface
 {
-    public function __construct(protected ContainerInterface $container)
-    {
-    }
-
     public function setupOnce(): void
     {
         Scope::addGlobalEventProcessor(function (Event $event): Event {
