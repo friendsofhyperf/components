@@ -8,8 +8,6 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use FriendsOfHyperf\Sentry\Integration;
-
 use function Hyperf\Support\env;
 
 return [
@@ -68,7 +66,6 @@ return [
     ],
 
     'integrations' => [
-        Integration\TraceIntegration::class,
     ],
 
     'ignore_exceptions' => [
