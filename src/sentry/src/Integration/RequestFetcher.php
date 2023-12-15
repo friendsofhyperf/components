@@ -19,6 +19,15 @@ class RequestFetcher implements RequestFetcherInterface
 {
     public function fetchRequest(): ?ServerRequestInterface
     {
-        return Context::get(ServerRequestInterface::class);
+        $request = Context::get(ServerRequestInterface::class);
+
+        if (! method_exists($request, 'withServerParams')) {
+            return $request;
+        }
+
+        return $request->withServerParams(array_merge(
+            $request->getServerParams(),
+            array_change_key_case($request->getServerParams(), CASE_UPPER)
+        ));
     }
 }
