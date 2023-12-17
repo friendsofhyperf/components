@@ -15,11 +15,8 @@ use Hyperf\Contract\ConfigInterface;
 
 class TagManager
 {
-    protected array $tags;
-
-    public function __construct(ConfigInterface $config)
+    public function __construct(private ConfigInterface $config)
     {
-        $this->tags = (array) $config->get('sentry.tracing.tags', []);
     }
 
     public function has(string $key): bool
@@ -30,7 +27,7 @@ class TagManager
 
         [$type, $key] = explode('.', $key, 2);
 
-        return isset($this->tags[$type][$key]);
+        return $this->config->has($this->buildTagKey($type, $key));
     }
 
     public function get(string $key): string
@@ -41,6 +38,11 @@ class TagManager
 
         [$type, $key] = explode('.', $key, 2);
 
-        return (string) ($this->tags[$type][$key] ?? $type . '.' . $key);
+        return $this->config->get($this->buildTagKey($type, $key)) ?? $type . '.' . $key;
+    }
+
+    private function buildTagKey(string $type, string $key): string
+    {
+        return sprintf('sentry.tracing.tags.%s.%s', $type, $key);
     }
 }
