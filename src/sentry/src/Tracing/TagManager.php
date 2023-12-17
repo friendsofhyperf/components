@@ -43,6 +43,6 @@ class TagManager
 
     private function buildTagKey(string $type, string $key): string
     {
-        return 'sentry.tracing.tags' . $type . '.' . $key;
+        return sprintf('sentry.tracing.tags.%s.%s', $type, $key);
     }
 }
