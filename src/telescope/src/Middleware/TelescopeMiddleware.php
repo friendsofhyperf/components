@@ -16,10 +16,9 @@ use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Collection\Arr;
-use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\HttpServer\Router\Dispatched;
-use Hyperf\Rpc;
+use Hyperf\Rpc\Context as RpcContext;
 use Hyperf\Server\Event;
 use Hyperf\Stringable\Str;
 use Psr\Container\ContainerInterface;
@@ -120,11 +119,8 @@ class TelescopeMiddleware implements MiddlewareInterface
     protected function incomingRequest(ServerRequestInterface $psr7Request): bool
     {
         $target = $psr7Request->getRequestTarget();
-        if (Str::contains($target, '.ico')) {
-            return false;
-        }
 
-        if (Str::contains($target, 'telescope') !== false) {
+        if (Str::contains($target, ['telescope', '.ico'])) {
             return false;
         }
 
@@ -188,17 +184,15 @@ class TelescopeMiddleware implements MiddlewareInterface
 
     protected function getRpcBatchId(): string
     {
-        $carrier = $this->getRpcContext();
-        return $carrier['batch-id'] ?? '';
+        return $this->getRpcContext()['batch-id'] ?? '';
     }
 
     protected function getRpcContext(): array
     {
-        $container = ApplicationContext::getContainer();
-        if (! $container->has(Rpc\Context::class)) {
+        if (! $this->container->has(RpcContext::class)) {
             return [];
         }
-        $rpcContext = $container->get(Rpc\Context::class);
-        return (array) $rpcContext->get('telescope.carrier');
+
+        return $this->container->get(RpcContext::class)->get('telescope.carrier', []);
     }
 }
