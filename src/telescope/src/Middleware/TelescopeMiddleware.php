@@ -102,7 +102,14 @@ class TelescopeMiddleware implements MiddlewareInterface
             $handlerClass = $serverConfig['callbacks'][Event::ON_RECEIVE][0] ?? $serverConfig['callbacks'][Event::ON_REQUEST][0] ?? null;
             $handler = is_string($handlerClass) && $this->container->has($handlerClass) ? $this->container->get($handlerClass) : null;
 
-            if ($handler && ($handler instanceof \Hyperf\RpcServer\Server || $handler instanceof \Hyperf\GrpcServer\Server || $handler instanceof \Hyperf\JsonRpc\HttpServer)) {
+            if (
+                $handler
+                && (
+                    is_a($handler, \Hyperf\RpcServer\Server::class, true)
+                    || is_a($handler, \Hyperf\JsonRpc\HttpServer::class, true)
+                    || is_a($handler, \Hyperf\GrpcServer\Server::class, true)
+                )
+            ) {
                 Telescope::recordService($entry);
             } else {
                 Telescope::recordRequest($entry);
