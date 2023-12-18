@@ -136,7 +136,9 @@ class RequestHandledListener implements ListenerInterface
     {
         $target = $psr7Request->getRequestTarget();
 
-        if (Str::contains($target, ['telescope', '.ico'])) {
+        if (Str::contains($target, ['telescope'])
+            || Str::endsWith($target, ['.ico'])
+        ) {
             return false;
         }
 
