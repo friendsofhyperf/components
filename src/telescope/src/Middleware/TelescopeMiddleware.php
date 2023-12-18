@@ -16,10 +16,9 @@ use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Collection\Arr;
-use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\HttpServer\Router\Dispatched;
-use Hyperf\Rpc;
+use Hyperf\Rpc\Context as RpcContext;
 use Hyperf\Server\Event;
 use Hyperf\Stringable\Str;
 use Psr\Container\ContainerInterface;
@@ -102,7 +101,14 @@ class TelescopeMiddleware implements MiddlewareInterface
             $handlerClass = $serverConfig['callbacks'][Event::ON_RECEIVE][0] ?? $serverConfig['callbacks'][Event::ON_REQUEST][0] ?? null;
             $handler = is_string($handlerClass) && $this->container->has($handlerClass) ? $this->container->get($handlerClass) : null;
 
-            if ($handler && ($handler instanceof \Hyperf\RpcServer\Server || $handler instanceof \Hyperf\GrpcServer\Server || $handler instanceof \Hyperf\JsonRpc\HttpServer)) {
+            if (
+                $handler
+                && (
+                    is_a($handler, \Hyperf\RpcServer\Server::class, true)
+                    || is_a($handler, \Hyperf\JsonRpc\HttpServer::class, true)
+                    || is_a($handler, \Hyperf\GrpcServer\Server::class, true)
+                )
+            ) {
                 Telescope::recordService($entry);
             } else {
                 Telescope::recordRequest($entry);
@@ -113,11 +119,10 @@ class TelescopeMiddleware implements MiddlewareInterface
     protected function incomingRequest(ServerRequestInterface $psr7Request): bool
     {
         $target = $psr7Request->getRequestTarget();
-        if (Str::contains($target, '.ico')) {
-            return false;
-        }
 
-        if (Str::contains($target, 'telescope') !== false) {
+        if (Str::contains($target, ['telescope'])
+            || Str::endsWith($target, ['.ico'])
+        ) {
             return false;
         }
 
@@ -181,17 +186,15 @@ class TelescopeMiddleware implements MiddlewareInterface
 
     protected function getRpcBatchId(): string
     {
-        $carrier = $this->getRpcContext();
-        return $carrier['batch-id'] ?? '';
+        return $this->getRpcContext()['batch-id'] ?? '';
     }
 
     protected function getRpcContext(): array
     {
-        $container = ApplicationContext::getContainer();
-        if (! $container->has(Rpc\Context::class)) {
+        if (! $this->container->has(RpcContext::class)) {
             return [];
         }
-        $rpcContext = $container->get(Rpc\Context::class);
-        return (array) $rpcContext->get('telescope.carrier');
+
+        return $this->container->get(RpcContext::class)->get('telescope.carrier', []);
     }
 }
