@@ -122,6 +122,7 @@ class RequestHandledListener implements ListenerInterface
                 && (
                     is_a($handler, \Hyperf\RpcServer\Server::class, true)
                     || is_a($handler, \Hyperf\JsonRpc\HttpServer::class, true)
+                    || is_a($handler, \Hyperf\GrpcServer\Server::class, true)
                 )
             ) {
                 Telescope::recordService($entry);
