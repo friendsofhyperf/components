@@ -128,8 +128,8 @@ class TelescopeInitListener implements ListenerInterface
             if ($entry->type === 'request') {
                 return [
                     'status:' . $entry->content['response_status'],
-                    'uri:'.
-                ]
+                    'uri:'. $entry->content['uri'],
+                ];
             }
         });
 
