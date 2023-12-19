@@ -40,4 +40,11 @@ return [
     'save_mode' => Telescope::SYNC,
     'ignore_logs' => [
     ],
+    'path' => env('TELESCOPE_PATH', 'telescope'),
+    'only_paths' => [
+        // 'api/*'
+    ],
+    'ignore_paths' => [
+        'nova-api*',
+    ],
 ];

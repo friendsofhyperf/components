@@ -134,15 +134,30 @@ class RequestHandledListener implements ListenerInterface
 
     protected function incomingRequest(ServerRequestInterface $psr7Request): bool
     {
-        $target = $psr7Request->getRequestTarget();
-
-        if (Str::contains($target, ['telescope'])
-            || Str::endsWith($target, ['.ico'])
-        ) {
-            return false;
+        if (! empty($only = config('telescope.only_paths', []))) {
+            return $this->is($psr7Request, $only);
         }
 
-        return true;
+        return ! $this->is(
+            $psr7Request,
+            collect([
+                'telescope-api*',
+                'vendor/telescope*',
+            ])
+                ->merge(config('telescope.ignore_paths', []))
+                ->unless(is_null(config('telescope.path', 'telescope')), function ($paths) {
+                    return $paths->prepend(config('telescope.path', 'telescope') . '*');
+                })
+                ->all()
+        );
+    }
+
+    protected function is($psr7Request, $patterns)
+    {
+        $path = $psr7Request->getRequestTarget();
+        $path = ltrim($path, '/');
+
+        return collect($patterns)->contains(fn ($pattern) => Str::is($pattern, $path));
     }
 
     protected function response(ResponseInterface $response): string|array
