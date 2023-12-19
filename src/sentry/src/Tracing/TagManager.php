@@ -26,12 +26,9 @@ class TagManager
         }
 
         [$type, $key] = explode('.', $key, 2);
+        $tags = $this->getTags($type);
 
-        $config = $this->config->get(
-            $this->buildTagKey($type)
-        );
-
-        return isset($config[$key]);
+        return isset($tags[$key]);
     }
 
     public function get(string $key): string
@@ -41,16 +38,16 @@ class TagManager
         }
 
         [$type, $key] = explode('.', $key, 2);
+        $tags = $this->getTags($type);
 
-        $config = $this->config->get(
-            $this->buildTagKey($type)
-        );
-
-        return $config[$key] ?? $type . '.' . $key;
+        return $tags[$key] ?? $type . '.' . $key;
     }
 
-    private function buildTagKey(string $type): string
+    private function getTags(string $type, mixed $default = []): array
     {
-        return sprintf('sentry.tracing.tags.%s', $type);
+        return $this->config->get(
+            sprintf('sentry.tracing.tags.%s', $type),
+            $default
+        );
     }
 }
