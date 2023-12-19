@@ -22,6 +22,7 @@ beforeEach(function () {
                     'foo' => [
                         'bar' => 'foo.bar',
                         'baz' => 'foo.baz',
+                        'bar.baz' => 'foo.bar.baz',
                     ],
                 ],
             ],
@@ -35,6 +36,7 @@ test('test has', function ($key, $expected) {
 })->with([
     ['foo.bar', true],
     ['foo.baz', true],
+    ['foo.bar.baz', true],
     ['foo.bay', false],
 ]);
 
@@ -43,5 +45,6 @@ test('test get', function ($key, $expected) {
 })->with([
     ['foo.bar', 'foo.bar'],
     ['foo.baz', 'foo.baz'],
+    ['foo.bar.baz', 'foo.bar.baz'],
     ['foo.bay', 'foo.bay'],
 ]);

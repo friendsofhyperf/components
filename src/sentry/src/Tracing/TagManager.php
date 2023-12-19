@@ -27,7 +27,11 @@ class TagManager
 
         [$type, $key] = explode('.', $key, 2);
 
-        return $this->config->has($this->buildTagKey($type, $key));
+        $config = $this->config->get(
+            $this->buildTagKey($type)
+        );
+
+        return isset($config[$key]);
     }
 
     public function get(string $key): string
@@ -38,11 +42,15 @@ class TagManager
 
         [$type, $key] = explode('.', $key, 2);
 
-        return $this->config->get($this->buildTagKey($type, $key)) ?? $type . '.' . $key;
+        $config = $this->config->get(
+            $this->buildTagKey($type)
+        );
+
+        return $config[$key] ?? $type . '.' . $key;
     }
 
-    private function buildTagKey(string $type, string $key): string
+    private function buildTagKey(string $type): string
     {
-        return sprintf('sentry.tracing.tags.%s.%s', $type, $key);
+        return sprintf('sentry.tracing.tags.%s', $type);
     }
 }
