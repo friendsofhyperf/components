@@ -27,11 +27,9 @@ class TagManager
 
         [$type, $key] = explode('.', $key, 2);
 
-        if (! $this->config->has($this->buildTagKey($type))) {
-            return false;
-        }
-
-        $config = $this->config->get($this->buildTagKey($type));
+        $config = $this->config->get(
+            $this->buildTagKey($type)
+        );
 
         return isset($config[$key]);
     }
@@ -44,7 +42,11 @@ class TagManager
 
         [$type, $key] = explode('.', $key, 2);
 
-        return $this->config->get($this->buildTagKey($type))[$key] ?? $type . '.' . $key;
+        $config = $this->config->get(
+            $this->buildTagKey($type)
+        );
+
+        return $config[$key] ?? $type . '.' . $key;
     }
 
     private function buildTagKey(string $type): string
