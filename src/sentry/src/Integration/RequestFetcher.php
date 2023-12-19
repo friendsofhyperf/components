@@ -21,7 +21,7 @@ class RequestFetcher implements RequestFetcherInterface
     {
         $request = Context::get(ServerRequestInterface::class);
 
-        if (! method_exists($request, 'withServerParams')) {
+        if (! $request || ! method_exists($request, 'withServerParams')) {
             return $request;
         }
 
