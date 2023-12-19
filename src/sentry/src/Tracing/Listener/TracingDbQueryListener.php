@@ -75,7 +75,8 @@ class TracingDbQueryListener implements ListenerInterface
             $pool = $this->container->get(PoolFactory::class)->getPool($event->connectionName);
             $data[$this->tagManager->get('sql_queries.db.pool')] = [
                 'name' => $event->connectionName,
-                'max' => $pool->getOption()->getMinConnections(),
+                'max' => $pool->getOption()->getMaxConnections(),
+                'max_idle_time' => $pool->getOption()->getMaxIdleTime(),
                 'idle' => $pool->getConnectionsInChannel(),
                 'using' => $pool->getCurrentConnections(),
             ];

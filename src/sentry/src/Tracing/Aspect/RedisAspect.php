@@ -58,7 +58,8 @@ class RedisAspect extends AbstractAspect
             $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
             $data[$this->tagManager->get('redis.pool')] = [
                 'name' => $poolName,
-                'max' => $pool->getOption()->getMinConnections(),
+                'max' => $pool->getOption()->getMaxConnections(),
+                'max_idle_time' => $pool->getOption()->getMaxIdleTime(),
                 'idle' => $pool->getConnectionsInChannel(),
                 'using' => $pool->getCurrentConnections(),
             ];
