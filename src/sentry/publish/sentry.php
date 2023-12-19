@@ -139,6 +139,7 @@ return [
             ],
             'db' => [
                 'coroutine.id' => 'coroutine.id',
+                'pool' => 'db.pool',
                 'query' => 'db.query',
                 // 'result' => 'db.result',
                 'exception.stack_trace' => 'exception.stack_trace',
@@ -168,9 +169,9 @@ return [
             ],
             'redis' => [
                 'coroutine.id' => 'coroutine.id',
-                'pool' => 'pool',
-                'arguments' => 'arguments',
-                // 'result' => 'result',
+                'pool' => 'redis.pool',
+                'arguments' => 'redis.arguments',
+                // 'result' => 'redis.result',
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
             'request' => [
@@ -183,14 +184,15 @@ return [
             ],
             'rpc' => [
                 'coroutine.id' => 'coroutine.id',
-                'arguments' => 'arguments',
+                'arguments' => 'rpc.arguments',
+                // 'result' => 'rpc.result',
                 'exception.stack_trace' => 'exception.stack_trace',
-                // 'result' => 'result',
             ],
             'sql_queries' => [
                 'coroutine.id' => 'coroutine.id',
                 'db.connection_name' => 'db.connection_name',
                 'db.bindings' => 'db.bindings',
+                'db.pool' => 'db.pool',
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
         ],

@@ -16,11 +16,16 @@ use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\DB\DB;
+use Hyperf\DB\Pool\PoolFactory;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Psr\Container\ContainerInterface;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
+/**
+ * @property string $poolName
+ */
 class DbAspect extends AbstractAspect
 {
     use SpanStarter;
@@ -30,6 +35,7 @@ class DbAspect extends AbstractAspect
     ];
 
     public function __construct(
+        protected ContainerInterface $container,
         protected Switcher $switcher,
         protected TagManager $tagManager
     ) {
@@ -58,6 +64,18 @@ class DbAspect extends AbstractAspect
 
         if ($this->tagManager->has('db.query')) {
             $data[$this->tagManager->get('db.query')] = json_encode($arguments['arguments'], JSON_UNESCAPED_UNICODE);
+        }
+
+        if ($this->tagManager->has('db.pool')) {
+            $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
+            /** @var \Hyperf\Pool\Pool $pool */
+            $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
+            $data[$this->tagManager->get('db.pool')] = [
+                'name' => $poolName,
+                'max' => $pool->getOption()->getMinConnections(),
+                'idle' => $pool->getConnectionsInChannel(),
+                'using' => $pool->getCurrentConnections(),
+            ];
         }
 
         try {
