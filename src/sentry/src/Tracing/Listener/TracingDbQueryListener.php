@@ -19,13 +19,16 @@ use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Database\Events\TransactionBeginning;
 use Hyperf\Database\Events\TransactionCommitted;
 use Hyperf\Database\Events\TransactionRolledBack;
+use Hyperf\DbConnection\Pool\PoolFactory;
 use Hyperf\Event\Contract\ListenerInterface;
+use Psr\Container\ContainerInterface;
 
 class TracingDbQueryListener implements ListenerInterface
 {
     use SpanStarter;
 
     public function __construct(
+        protected ContainerInterface $container,
         protected Switcher $switcher,
         protected TagManager $tagManager
     ) {
@@ -67,6 +70,15 @@ class TracingDbQueryListener implements ListenerInterface
         }
         if ($this->tagManager->has('sql_queries.db.connection_name')) {
             $data[$this->tagManager->get('sql_queries.db.connection_name')] = $event->connectionName;
+        }
+        if ($this->tagManager->has('sql_queries.db.pool')) {
+            $pool = $this->container->get(PoolFactory::class)->getPool($event->connectionName);
+            $data[$this->tagManager->get('sql_queries.db.pool')] = [
+                'name' => $event->connectionName,
+                'max' => $pool->getOption()->getMinConnections(),
+                'idle' => $pool->getConnectionsInChannel(),
+                'using' => $pool->getCurrentConnections(),
+            ];
         }
 
         $startTimestamp = microtime(true) - $event->time / 1000;

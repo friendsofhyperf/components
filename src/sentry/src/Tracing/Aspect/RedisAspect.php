@@ -17,7 +17,9 @@ use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Hyperf\Redis\Pool\PoolFactory;
 use Hyperf\Redis\Redis;
+use Psr\Container\ContainerInterface;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
@@ -33,6 +35,7 @@ class RedisAspect extends AbstractAspect
     ];
 
     public function __construct(
+        protected ContainerInterface $container,
         protected Switcher $switcher,
         protected TagManager $tagManager
     ) {
@@ -50,8 +53,15 @@ class RedisAspect extends AbstractAspect
         if ($this->tagManager->has('coroutine.id')) {
             $data[$this->tagManager->get('coroutine.id')] = Coroutine::id();
         }
-        if ($this->tagManager->has('pool')) {
-            $data[$this->tagManager->get('pool')] = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
+        if ($this->tagManager->has('redis.pool')) {
+            $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
+            $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
+            $data[$this->tagManager->get('redis.pool')] = [
+                'name' => $poolName,
+                'max' => $pool->getOption()->getMinConnections(),
+                'idle' => $pool->getConnectionsInChannel(),
+                'using' => $pool->getCurrentConnections(),
+            ];
         }
         if ($this->tagManager->has('redis.arguments')) {
             $data[$this->tagManager->get('redis.arguments')] = $arguments['arguments'];
