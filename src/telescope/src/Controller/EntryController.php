@@ -72,12 +72,13 @@ abstract class EntryController
 
     public function show($id)
     {
-        $entry = TelescopeEntryModel::find($id);
-        $entry->tags = TelescopeEntryTagModel::where('entry_uuid', $id)->pluck('tag')->toArray();
+        /** @var TelescopeEntryModel $entry */
+        $entry = TelescopeEntryModel::query()->find($id);
+        $entry->tags = TelescopeEntryTagModel::query()->where('entry_uuid', $id)->pluck('tag')->toArray(); /* @phpstan-ignore-line */
 
-        $query = TelescopeEntryModel::where('batch_id', $entry->batch_id);
+        $query = TelescopeEntryModel::query()->where('batch_id', $entry->batch_id); /* @phpstan-ignore-line */
         if ($this->entryType() == EntryType::SERVICE) {
-            $query->where('sub_batch_id', $entry->sub_batch_id);
+            $query->where('sub_batch_id', $entry->sub_batch_id); /* @phpstan-ignore-line */
         }
 
         $batch = $query->with('tags')->orderByDesc('sequence')->get();
@@ -107,7 +108,7 @@ abstract class EntryController
     /**
      * The watcher class for the controller.
      *
-     * @return string
+     * @return string|null
      */
     abstract protected function watcher();
 

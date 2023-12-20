@@ -12,6 +12,7 @@ parameters:
     - 'src/{openai-client}/*'
     - 'src/{pest-plugin-hyperf}/*'
     - 'src/pretty-console/src/resources/views/*/*'
+    - 'src/compoships/src/*/*'
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     # - '#Unsafe usage of new static\(\)#'

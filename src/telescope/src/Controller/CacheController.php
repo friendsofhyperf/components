@@ -43,8 +43,6 @@ class CacheController extends EntryController
 
     /**
      * The watcher class for the controller.
-     *
-     * @return string
      */
     protected function watcher()
     {

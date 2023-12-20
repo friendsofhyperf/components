@@ -13,16 +13,12 @@ namespace FriendsOfHyperf\Telescope\Command;
 
 use Hyperf\Command\Command;
 use Hyperf\DbConnection\Db;
-use Psr\Container\ContainerInterface;
 
 use function Hyperf\Config\config;
 
 class ClearCommand extends Command
 {
-    public function __construct(private ContainerInterface $container)
-    {
-        parent::__construct('telescope:clear');
-    }
+    protected ?string $signature = 'telescope:clear';
 
     public function handle()
     {

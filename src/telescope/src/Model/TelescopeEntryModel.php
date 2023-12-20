@@ -16,7 +16,7 @@ class TelescopeEntryModel extends Model
     /**
      * The name of the "updated at" column.
      *
-     * @var string
+     * @var ?string
      */
     public const UPDATED_AT = null;
 
@@ -66,7 +66,7 @@ class TelescopeEntryModel extends Model
 
     public function getIdAttribute()
     {
-        return $this->uuid;
+        return $this->uuid ?? null;
     }
 
     public function tags()

@@ -178,12 +178,12 @@ class RequestHandledListener implements ListenerInterface
                 is_array(json_decode($content, true))
                 && json_last_error() === JSON_ERROR_NONE
             ) {
-                return $this->contentWithinLimits($content)
+                return $this->contentWithinLimits($content) /* @phpstan-ignore-line */
                 ? $this->hideParameters(json_decode($content, true), Telescope::$hiddenResponseParameters)
                 : 'Purged By Hyperf Telescope';
             }
-            if (Str::startsWith(strtolower($response->getHeaderLine('content-type') ?? ''), 'text/plain')) {
-                return $this->contentWithinLimits($content) ? $content : 'Purged By Hyperf Telescope';
+            if (Str::startsWith(strtolower($response->getHeaderLine('content-type') ?: ''), 'text/plain')) {
+                return $this->contentWithinLimits($content) ? $content : 'Purged By Hyperf Telescope'; /* @phpstan-ignore-line */
             }
             if (Str::contains($response->getHeaderLine('content-type'), 'application/grpc') !== false) {
                 // to do for grpc
