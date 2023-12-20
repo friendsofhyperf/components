@@ -74,7 +74,7 @@ class SetRequestLifecycleListener implements ListenerInterface
 
         if (
             ! $this->switcher->isEnable('request')
-            && ! $this->switcher->isTracingEnable('request', false)
+            && ! $this->switcher->isTracingEnable('request')
         ) {
             return;
         }

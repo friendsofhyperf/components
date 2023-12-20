@@ -44,7 +44,7 @@ class TracingAsyncQueueListener implements ListenerInterface
     }
 
     /**
-     * @param BeforeHandle|AfterHandle $event
+     * @param BeforeHandle|AfterHandle|object $event
      */
     public function process(object $event): void
     {
@@ -55,6 +55,7 @@ class TracingAsyncQueueListener implements ListenerInterface
         match ($event::class) {
             BeforeHandle::class => $this->startTransaction($event),
             RetryHandle::class, FailedHandle::class, AfterHandle::class => $this->finishTransaction($event),
+            default => null,
         };
     }
 

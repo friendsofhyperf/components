@@ -30,7 +30,7 @@ class RequestExceptionListener extends CaptureExceptionListener
     }
 
     /**
-     * @param RequestTerminated $event
+     * @param RequestTerminated|object $event
      */
     public function process(object $event): void
     {

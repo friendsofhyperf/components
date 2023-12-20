@@ -50,8 +50,8 @@ trait SpanStarter
     protected function startRequestTransaction(ServerRequestInterface $request, ...$options): Transaction
     {
         // Get sentry-trace and baggage
-        $sentryTrace = $request->getHeaderLine('sentry-trace', '');
-        $baggage = $request->getHeaderLine('baggage', '');
+        $sentryTrace = $request->getHeaderLine('sentry-trace');
+        $baggage = $request->getHeaderLine('baggage');
         $container = $this->container ?? ApplicationContext::getContainer();
 
         if ($container->has(RpcContext::class)) {

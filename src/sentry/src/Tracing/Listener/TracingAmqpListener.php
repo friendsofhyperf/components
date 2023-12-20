@@ -42,7 +42,7 @@ class TracingAmqpListener implements ListenerInterface
     }
 
     /**
-     * @param BeforeConsume|AfterConsume|FailToConsume| $event
+     * @param BeforeConsume|AfterConsume|FailToConsume|object $event
      */
     public function process(object $event): void
     {
@@ -53,6 +53,7 @@ class TracingAmqpListener implements ListenerInterface
         match ($event::class) {
             BeforeConsume::class => $this->startTransaction($event),
             AfterConsume::class, FailToConsume::class => $this->finishTransaction($event),
+            default => null
         };
     }
 

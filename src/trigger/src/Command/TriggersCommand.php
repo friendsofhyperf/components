@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Trigger\Command;
 use FriendsOfHyperf\Trigger\Annotation\Trigger;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Di\Annotation\AnnotationCollector;
-use Psr\Container\ContainerInterface;
 
 use function Hyperf\Collection\collect;
 use function Hyperf\Support\class_basename;
@@ -24,11 +23,6 @@ class TriggersCommand extends HyperfCommand
     protected ?string $signature = 'describe:triggers {--C|connection= : connection} {--T|table= : Table}';
 
     protected string $description = 'List all triggers.';
-
-    public function __construct(ContainerInterface $container)
-    {
-        parent::__construct();
-    }
 
     public function handle()
     {

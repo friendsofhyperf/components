@@ -45,7 +45,7 @@ class Consumer
     private bool $stopped = false;
 
     public function __construct(
-        protected subscriberManager $subscriberManager,
+        protected SubscriberManager $subscriberManager,
         protected TriggerManager $triggerManager,
         protected string $connection = 'default',
         protected array $options = [],
@@ -186,9 +186,9 @@ class Consumer
             fn (ConfigBuilder $builder) => $builder->withUser($config['user'] ?? 'root')
                 ->withHost($config['host'] ?? '127.0.0.1')
                 ->withPassword($config['password'] ?? 'root')
-                ->withPort((int) $config['port'] ?? 3306)
+                ->withPort((int) ($config['port'] ?? 3306))
                 ->withSlaveId(random_int(100, 999))
-                ->withHeartbeatPeriod((float) $config['heartbeat_period'] ?? 3)
+                ->withHeartbeatPeriod((float) ($config['heartbeat_period'] ?? 3))
                 ->withDatabasesOnly($databasesOnly)
                 ->withTablesOnly($tablesOnly)
         );

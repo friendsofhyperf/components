@@ -37,7 +37,7 @@ class TriggerSubscriber extends AbstractSubscriber
         protected ?StdoutLoggerInterface $logger = null
     ) {
         $this->concurrent = new Concurrent(
-            (int) $consumer->getOption('concurrent.limit') ?? 1
+            (int) ($consumer->getOption('concurrent.limit') ?? 1)
         );
     }
 

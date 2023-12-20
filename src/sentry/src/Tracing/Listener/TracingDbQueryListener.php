@@ -48,6 +48,7 @@ class TracingDbQueryListener implements ListenerInterface
     {
         match (true) {
             $event instanceof QueryExecuted => $this->queryExecutedHandler($event),
+            default => null
         };
     }
 

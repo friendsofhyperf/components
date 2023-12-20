@@ -50,7 +50,9 @@ class HealthMonitor
         if ($container->has(StdoutLoggerInterface::class)) {
             $this->logger = $container->get(StdoutLoggerInterface::class);
         }
-        $this->timer = new Timer($this->logger);
+        $this->timer = new Timer(
+            $this->logger instanceof StdoutLoggerInterface ? $this->logger : null
+        );
     }
 
     public function process(): void

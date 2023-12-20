@@ -21,7 +21,7 @@ trait InteractsWithIO
     /**
      * Creates a DTO instance from a valid array.
      *
-     * @throws InvalidJsonException|ValidationException
+     * @throws InvalidJsonException
      */
     public static function fromArray(array $data, ?string $scene = null): static
     {
@@ -31,7 +31,7 @@ trait InteractsWithIO
     /**
      * Creates a DTO instance from a valid JSON string.
      *
-     * @throws InvalidJsonException|ValidationException
+     * @throws InvalidJsonException
      */
     public static function fromJson(string $json, ?string $scene = null): static
     {
@@ -47,7 +47,6 @@ trait InteractsWithIO
     /**
      * Creates a DTO instance from a Request.
      * @param \Hyperf\HttpServer\Contract\RequestInterface $request
-     * @throws ValidationException
      */
     public static function fromRequest(RequestInterface $request, ?string $scene = null): static
     {
@@ -56,8 +55,6 @@ trait InteractsWithIO
 
     /**
      * Creates a DTO instance from the given model.
-     *
-     * @throws ValidationException
      */
     public static function fromModel(Model $model, ?string $scene = null): static
     {
@@ -66,8 +63,6 @@ trait InteractsWithIO
 
     /**
      * Creates a DTO instance from the given command arguments.
-     *
-     * @throws ValidationException
      */
     public static function fromCommandArguments(Command $command, ?string $scene = null): static
     {
@@ -76,8 +71,6 @@ trait InteractsWithIO
 
     /**
      * Creates a DTO instance from the given command options.
-     *
-     * @throws ValidationException
      */
     public static function fromCommandOptions(Command $command, ?string $scene = null): static
     {
@@ -86,8 +79,6 @@ trait InteractsWithIO
 
     /**
      * Creates a DTO instance from the given command arguments and options.
-     *
-     * @throws ValidationException
      */
     public static function fromCommand(Command $command, ?string $scene = null): static
     {
