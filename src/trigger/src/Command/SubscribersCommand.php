@@ -16,7 +16,6 @@ use FriendsOfHyperf\Trigger\Subscriber\SnapshotSubscriber;
 use FriendsOfHyperf\Trigger\Subscriber\TriggerSubscriber;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Di\Annotation\AnnotationCollector;
-use Psr\Container\ContainerInterface;
 
 use function Hyperf\Collection\collect;
 
@@ -25,11 +24,6 @@ class SubscribersCommand extends HyperfCommand
     protected ?string $signature = 'describe:subscribers {--C|connection= : connection}';
 
     protected string $description = 'List all subscribers.';
-
-    public function __construct(ContainerInterface $container)
-    {
-        parent::__construct();
-    }
 
     public function handle()
     {

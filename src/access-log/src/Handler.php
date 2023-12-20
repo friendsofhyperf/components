@@ -74,7 +74,7 @@ class Handler
         $message = '';
 
         if ($formatterClass != AccessLogFormatter::class) {
-            $message = $this->formatter->format(compact('context'));
+            $message = $this->formatter->format(compact('context')); // @phpstan-ignore-line
             $context = [];
         }
 
@@ -98,9 +98,9 @@ class Handler
             ),
             'status' => $response->getStatusCode(),
             'body_bytes_sent' => $response->getBody()->getSize(),
-            'http_referer' => $request->getHeaderLine('referer') ?? '-',
-            'http_user_agent' => $request->getHeaderLine('user-agent') ?? '-',
-            'http_x_forwarded_for' => $request->getHeaderLine('x-forwarded-for') ?? '-',
+            'http_referer' => $request->getHeaderLine('referer') ?: '-',
+            'http_user_agent' => $request->getHeaderLine('user-agent') ?: '-',
+            'http_x_forwarded_for' => $request->getHeaderLine('x-forwarded-for') ?: '-',
             'request_time' => number_format(microtime(true) - $serverParams['request_time_float'], 3, '.', ''),
             'upstream_response_time' => '-',
             'upstream_addr' => '-',

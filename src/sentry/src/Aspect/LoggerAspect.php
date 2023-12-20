@@ -41,7 +41,7 @@ class LoggerAspect extends AbstractAspect
             }
 
             $level = $proceedingJoinPoint->arguments['keys']['level'];
-            $level = $level instanceof UnitEnum ? (int) $level->value : (int) $level;
+            $level = $level instanceof UnitEnum ? (int) $level->value : (int) $level; /* @phpstan-ignore-line */
             $message = $proceedingJoinPoint->arguments['keys']['message'];
             $context = $proceedingJoinPoint->arguments['keys']['context'];
             /** @var DateTimeImmutable|null $datetime */
@@ -54,7 +54,7 @@ class LoggerAspect extends AbstractAspect
             Integration::addBreadcrumb(new Breadcrumb(
                 (string) $this->getLogLevel($level),
                 Breadcrumb::TYPE_DEFAULT,
-                'log.' . Logger::getLevelName($level),
+                'log.' . Logger::getLevelName($level), /* @phpstan-ignore-line */
                 $message,
                 $context,
                 $datetime?->getTimestamp()

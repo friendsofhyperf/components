@@ -55,7 +55,7 @@ class SentryHandler extends AbstractProcessingHandler
      */
     public function __construct($level = Logger::DEBUG, bool $bubble = true, protected bool $reportExceptions = true, protected bool $useFormattedMessage = false)
     {
-        parent::__construct($level, $bubble);
+        parent::__construct($level, $bubble); /* @phpstan-ignore-line */
 
         $container = ApplicationContext::getContainer();
         $config = $container->get(ConfigInterface::class);
@@ -100,9 +100,7 @@ class SentryHandler extends AbstractProcessingHandler
             $logs[] = $this->processRecord($r);
         }
 
-        if ($logs) {
-            $record['context']['logs'] = (string) $this->getBatchFormatter()->formatBatch($logs);
-        }
+        $record['context']['logs'] = (string) $this->getBatchFormatter()->formatBatch($logs);
 
         $this->handle($record);
     }

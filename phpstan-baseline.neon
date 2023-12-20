@@ -1,0 +1,426 @@
+parameters:
+	ignoreErrors:
+		-
+			message: "#^Call to an undefined method Hyperf\\\\Database\\\\ConnectionInterface\\:\\:getPostProcessor\\(\\)\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Model.php
+
+		-
+			message: "#^Call to an undefined method Hyperf\\\\Database\\\\ConnectionInterface\\:\\:getQueryGrammar\\(\\)\\.$#"
+			count: 2
+			path: src/compoships/src/Database/Eloquent/Model.php
+
+		-
+			message: "#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#"
+			count: 2
+			path: src/compoships/src/Database/Eloquent/Model.php
+
+		-
+			message: "#^Cannot call method getTable\\(\\) on string\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Model.php
+
+		-
+			message: "#^Method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Model\\:\\:qualifyColumn\\(\\) should return string but returns array\\<string\\>\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Model.php
+
+		-
+			message: "#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#"
+			count: 9
+			path: src/compoships/src/Database/Eloquent/Relations/BelongsTo.php
+
+		-
+			message: "#^If condition is always false\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/BelongsTo.php
+
+		-
+			message: "#^Method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\BelongsTo\\:\\:getQualifiedForeignKey\\(\\) should return string but returns array\\<string\\>\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/BelongsTo.php
+
+		-
+			message: "#^Method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\BelongsTo\\:\\:getRelationExistenceQuery\\(\\) should return Hyperf\\\\Database\\\\Model\\\\Builder but returns Hyperf\\\\Database\\\\Query\\\\Builder\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/BelongsTo.php
+
+		-
+			message: "#^Offset \\*NEVER\\* does not exist on string\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/BelongsTo.php
+
+		-
+			message: "#^PHPDoc tag @extends contains generic type Hyperf\\\\Database\\\\Model\\\\Relations\\\\BelongsTo\\<Hyperf\\\\Database\\\\Model\\\\Model\\> but class Hyperf\\\\Database\\\\Model\\\\Relations\\\\BelongsTo is not generic\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/BelongsTo.php
+
+		-
+			message: "#^Parameter \\#1 \\$column of method Hyperf\\\\Database\\\\Query\\\\Builder\\:\\:whereIn\\(\\) expects string, array\\<int\\<0, max\\>, string\\> given\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/BelongsTo.php
+
+		-
+			message: "#^Parameter \\#2 \\$array of function array_map expects array, string given\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/BelongsTo.php
+
+		-
+			message: "#^Strict comparison using \\=\\=\\= between array and array\\{null\\} will always evaluate to false\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/BelongsTo.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/BelongsTo.php
+
+		-
+			message: "#^Call to an undefined method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasMany\\<TRelatedModel of FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\Model\\>\\:\\:qualifyRelatedColumn\\(\\)\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
+
+		-
+			message: "#^Call to an undefined method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasMany\\<TRelatedModel of FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\Model\\>\\:\\:qualifySubSelectColumn\\(\\)\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
+
+		-
+			message: "#^Call to an undefined static method Hyperf\\\\Database\\\\Model\\\\Relations\\\\HasMany\\:\\:addOneOfManyJoinSubQueryConstraints\\(\\)\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
+
+		-
+			message: "#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#"
+			count: 9
+			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
+
+		-
+			message: "#^Method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasMany\\:\\:getForeignKeyName\\(\\) should return string but returns array\\<string\\>\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
+
+		-
+			message: "#^Method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasMany\\:\\:getQualifiedParentKeyName\\(\\) should return string but returns array\\<string\\>\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
+
+		-
+			message: "#^Method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasMany\\:\\:getRelationExistenceQueryForSelfRelation\\(\\) should return Hyperf\\\\Database\\\\Model\\\\Builder but returns Hyperf\\\\Database\\\\Query\\\\Builder\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
+
+		-
+			message: "#^PHPDoc tag @extends contains generic type Hyperf\\\\Database\\\\Model\\\\Relations\\\\HasMany\\<FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\Model\\> but class Hyperf\\\\Database\\\\Model\\\\Relations\\\\HasMany is not generic\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
+
+		-
+			message: "#^PHPDoc tag @extends has invalid type FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\Model\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
+
+		-
+			message: "#^PHPDoc tag @template TRelatedModel for class FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasMany has invalid bound type FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\Model\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
+
+		-
+			message: "#^Call to an undefined method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasOne\\<TRelatedModel of Hyperf\\\\Database\\\\Model\\\\Model\\>\\:\\:qualifyRelatedColumn\\(\\)\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasOne.php
+
+		-
+			message: "#^Call to an undefined method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasOne\\<TRelatedModel of Hyperf\\\\Database\\\\Model\\\\Model\\>\\:\\:qualifySubSelectColumn\\(\\)\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasOne.php
+
+		-
+			message: "#^Call to an undefined static method Hyperf\\\\Database\\\\Model\\\\Relations\\\\HasOne\\:\\:addOneOfManyJoinSubQueryConstraints\\(\\)\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasOne.php
+
+		-
+			message: "#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#"
+			count: 11
+			path: src/compoships/src/Database/Eloquent/Relations/HasOne.php
+
+		-
+			message: "#^Method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasOne\\:\\:getDefaultFor\\(\\) should return Hyperf\\\\Database\\\\Model\\\\Model\\|null but empty return statement found\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasOne.php
+
+		-
+			message: "#^Method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasOne\\:\\:getForeignKeyName\\(\\) should return string but returns array\\<string\\>\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasOne.php
+
+		-
+			message: "#^Method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasOne\\:\\:getQualifiedParentKeyName\\(\\) should return string but returns array\\<string\\>\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasOne.php
+
+		-
+			message: "#^Method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasOne\\:\\:getRelationExistenceQueryForSelfRelation\\(\\) should return Hyperf\\\\Database\\\\Model\\\\Builder but returns Hyperf\\\\Database\\\\Query\\\\Builder\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasOne.php
+
+		-
+			message: "#^Offset \\*NEVER\\* does not exist on string\\.$#"
+			count: 2
+			path: src/compoships/src/Database/Eloquent/Relations/HasOne.php
+
+		-
+			message: "#^PHPDoc tag @extends contains generic type Hyperf\\\\Database\\\\Model\\\\Relations\\\\HasOne\\<Hyperf\\\\Database\\\\Model\\\\Model\\> but class Hyperf\\\\Database\\\\Model\\\\Relations\\\\HasOne is not generic\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Eloquent/Relations/HasOne.php
+
+		-
+			message: "#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Query/Builder.php
+
+		-
+			message: "#^Call to function is_array\\(\\) with string\\|null will always evaluate to false\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Query/Builder.php
+
+		-
+			message: "#^Result of && is always false\\.$#"
+			count: 1
+			path: src/compoships/src/Database/Query/Builder.php
+
+		-
+			message: "#^Call to an undefined method Hyperf\\\\Collection\\\\HigherOrderCollectionProxy\\:\\:__invoke\\(\\)\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Call to function is_null\\(\\) with GuzzleHttp\\\\Client will always evaluate to false\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Left side of && is always true\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Method FriendsOfHyperf\\\\Http\\\\Client\\\\PendingRequest\\:\\:runBeforeSendingCallbacks\\(\\) has invalid return type GuzzleHttp\\\\Psr7\\\\RequestInterface\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Method FriendsOfHyperf\\\\Http\\\\Client\\\\PendingRequest\\:\\:send\\(\\) should return FriendsOfHyperf\\\\Http\\\\Client\\\\Response but returns GuzzleHttp\\\\Promise\\\\PromiseInterface\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Negated boolean expression is always false\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^PHPDoc tag @param for parameter \\$response with type Illuminate\\\\Http\\\\Client\\\\Response is not subtype of native type FriendsOfHyperf\\\\Http\\\\Client\\\\ConnectionException\\|FriendsOfHyperf\\\\Http\\\\Client\\\\Response\\|GuzzleHttp\\\\Exception\\\\TransferException\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Parameter \\$request of method FriendsOfHyperf\\\\Http\\\\Client\\\\PendingRequest\\:\\:runBeforeSendingCallbacks\\(\\) has invalid type GuzzleHttp\\\\Psr7\\\\RequestInterface\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Parameter \\$response of method FriendsOfHyperf\\\\Http\\\\Client\\\\PendingRequest\\:\\:handlePromiseResponse\\(\\) has invalid type Illuminate\\\\Http\\\\Client\\\\Response\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Property FriendsOfHyperf\\\\Http\\\\Client\\\\PendingRequest\\:\\:\\$client \\(GuzzleHttp\\\\Client\\) on left side of \\?\\? is not nullable\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Property FriendsOfHyperf\\\\Http\\\\Client\\\\PendingRequest\\:\\:\\$pendingBody \\(string\\) does not accept null\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Property FriendsOfHyperf\\\\Http\\\\Client\\\\PendingRequest\\:\\:\\$retryDelay \\(Closure\\|int\\) on left side of \\?\\? is not nullable\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Property FriendsOfHyperf\\\\Http\\\\Client\\\\PendingRequest\\:\\:\\$tries \\(int\\) on left side of \\?\\? is not nullable\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Result of && is always false\\.$#"
+			count: 3
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Result of \\|\\| is always true\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Right side of && is always true\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Ternary operator condition is always true\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Unreachable statement \\- code above always terminates\\.$#"
+			count: 1
+			path: src/http-client/src/PendingRequest.php
+
+		-
+			message: "#^Call to an undefined method FriendsOfHyperf\\\\Http\\\\Client\\\\Factory\\:\\:setHandler\\(\\)\\.$#"
+			count: 1
+			path: src/http-client/src/Pool.php
+
+		-
+			message: "#^Method FriendsOfHyperf\\\\Http\\\\Client\\\\Response\\:\\:toException\\(\\) should return FriendsOfHyperf\\\\Http\\\\Client\\\\RequestException\\|null but return statement is missing\\.$#"
+			count: 1
+			path: src/http-client/src/Response.php
+
+		-
+			message: "#^Property FriendsOfHyperf\\\\Http\\\\Client\\\\Response\\:\\:\\$response \\(Psr\\\\Http\\\\Message\\\\ResponseInterface\\) does not accept Psr\\\\Http\\\\Message\\\\MessageInterface\\.$#"
+			count: 1
+			path: src/http-client/src/Response.php
+
+		-
+			message: "#^Property FriendsOfHyperf\\\\Http\\\\Client\\\\ResponseSequence\\:\\:\\$emptyResponse \\(GuzzleHttp\\\\Promise\\\\PromiseInterface\\) on left side of \\?\\? is not nullable\\.$#"
+			count: 1
+			path: src/http-client/src/ResponseSequence.php
+
+		-
+			message: "#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(ReflectionType\\)\\: mixed\\)\\|null, Closure\\(ReflectionNamedType\\)\\: string given\\.$#"
+			count: 1
+			path: src/ide-helper/src/Command/MacroCommand.php
+
+		-
+			message: "#^Method Hyperf\\\\Database\\\\Connection\\:\\:getDoctrineSchemaManager\\(\\) invoked with 1 parameter, 0 required\\.$#"
+			count: 1
+			path: src/ide-helper/src/Command/ModelCommand.php
+
+		-
+			message: "#^Constructor of class FriendsOfHyperf\\\\IdeHelper\\\\Method has an unused parameter \\$alias\\.$#"
+			count: 1
+			path: src/ide-helper/src/Method.php
+
+		-
+			message: "#^If condition is always true\\.$#"
+			count: 1
+			path: src/ide-helper/src/Method.php
+
+		-
+			message: "#^Parameter \\#1 \\$method of method FriendsOfHyperf\\\\IdeHelper\\\\Method\\:\\:getParameters\\(\\) expects ReflectionMethod, ReflectionFunctionAbstract given\\.$#"
+			count: 1
+			path: src/ide-helper/src/Method.php
+
+		-
+			message: "#^Parameter \\#1 \\$method of method FriendsOfHyperf\\\\IdeHelper\\\\Method\\:\\:initClassDefinedProperties\\(\\) expects ReflectionMethod, ReflectionFunctionAbstract given\\.$#"
+			count: 1
+			path: src/ide-helper/src/Method.php
+
+		-
+			message: "#^Parameter \\#1 \\$method of method FriendsOfHyperf\\\\IdeHelper\\\\Method\\:\\:initPhpDoc\\(\\) expects ReflectionMethod, ReflectionFunctionAbstract given\\.$#"
+			count: 1
+			path: src/ide-helper/src/Method.php
+
+		-
+			message: "#^Parameter \\#1 \\$reflectionMethod of method FriendsOfHyperf\\\\IdeHelper\\\\Method\\:\\:getInheritDoc\\(\\) expects ReflectionMethod, ReflectionFunctionAbstract given\\.$#"
+			count: 1
+			path: src/ide-helper/src/Method.php
+
+		-
+			message: "#^Call to an undefined method Hyperf\\\\Support\\\\Fluent\\:\\:references\\(\\)\\.$#"
+			count: 1
+			path: src/model-uid-addon/class_map/Hyperf/Database/Schema/ForeignIdColumnDefinition.php
+
+		-
+			message: "#^Parameter \\#1 \\$output of class FriendsOfHyperf\\\\PrettyConsole\\\\View\\\\Components\\\\TwoColumnDetail constructor expects Symfony\\\\Component\\\\Console\\\\Style\\\\SymfonyStyle, Symfony\\\\Component\\\\Console\\\\Output\\\\OutputInterface given\\.$#"
+			count: 1
+			path: src/pretty-console/src/QuestionHelper.php
+
+		-
+			message: "#^Parameter \\#2 \\$mutators of method FriendsOfHyperf\\\\PrettyConsole\\\\View\\\\Components\\\\Component\\:\\:mutate\\(\\) expects array\\<int, callable\\(string\\)\\: string\\>, array\\{'FriendsOfHyperf\\\\\\\\PrettyConsole\\\\\\\\View\\\\\\\\Components\\\\\\\\Mutators\\\\\\\\EnsureDynamicContentIsHighlighted', 'FriendsOfHyperf\\\\\\\\PrettyConsole\\\\\\\\View\\\\\\\\Components\\\\\\\\Mutators\\\\\\\\EnsurePunctuation', 'FriendsOfHyperf\\\\\\\\PrettyConsole\\\\\\\\View\\\\\\\\Components\\\\\\\\Mutators\\\\\\\\EnsureRelativePaths'\\} given\\.$#"
+			count: 1
+			path: src/pretty-console/src/View/Components/Alert.php
+
+		-
+			message: "#^Parameter \\#2 \\$mutators of method FriendsOfHyperf\\\\PrettyConsole\\\\View\\\\Components\\\\Component\\:\\:mutate\\(\\) expects array\\<int, callable\\(string\\)\\: string\\>, array\\{'FriendsOfHyperf\\\\\\\\PrettyConsole\\\\\\\\View\\\\\\\\Components\\\\\\\\Mutators\\\\\\\\EnsureDynamicContentIsHighlighted', 'FriendsOfHyperf\\\\\\\\PrettyConsole\\\\\\\\View\\\\\\\\Components\\\\\\\\Mutators\\\\\\\\EnsureNoPunctuation', 'FriendsOfHyperf\\\\\\\\PrettyConsole\\\\\\\\View\\\\\\\\Components\\\\\\\\Mutators\\\\\\\\EnsureRelativePaths'\\} given\\.$#"
+			count: 1
+			path: src/pretty-console/src/View/Components/BulletList.php
+
+		-
+			message: "#^Parameter \\#2 \\$mutators of method FriendsOfHyperf\\\\PrettyConsole\\\\View\\\\Components\\\\Component\\:\\:mutate\\(\\) expects array\\<int, callable\\(string\\)\\: string\\>, array\\{'FriendsOfHyperf\\\\\\\\PrettyConsole\\\\\\\\View\\\\\\\\Components\\\\\\\\Mutators\\\\\\\\EnsureDynamicContentIsHighlighted', 'FriendsOfHyperf\\\\\\\\PrettyConsole\\\\\\\\View\\\\\\\\Components\\\\\\\\Mutators\\\\\\\\EnsurePunctuation', 'FriendsOfHyperf\\\\\\\\PrettyConsole\\\\\\\\View\\\\\\\\Components\\\\\\\\Mutators\\\\\\\\EnsureRelativePaths'\\} given\\.$#"
+			count: 1
+			path: src/pretty-console/src/View/Components/Line.php
+
+		-
+			message: "#^Parameter \\#2 \\$mutators of method FriendsOfHyperf\\\\PrettyConsole\\\\View\\\\Components\\\\Component\\:\\:mutate\\(\\) expects array\\<int, callable\\(string\\)\\: string\\>, array\\{'FriendsOfHyperf\\\\\\\\PrettyConsole\\\\\\\\View\\\\\\\\Components\\\\\\\\Mutators\\\\\\\\EnsureDynamicContentIsHighlighted', 'FriendsOfHyperf\\\\\\\\PrettyConsole\\\\\\\\View\\\\\\\\Components\\\\\\\\Mutators\\\\\\\\EnsureNoPunctuation', 'FriendsOfHyperf\\\\\\\\PrettyConsole\\\\\\\\View\\\\\\\\Components\\\\\\\\Mutators\\\\\\\\EnsureRelativePaths'\\} given\\.$#"
+			count: 1
+			path: src/pretty-console/src/View/Components/Task.php
+
+		-
+			message: "#^Parameter \\#2 \\$mutators of method FriendsOfHyperf\\\\PrettyConsole\\\\View\\\\Components\\\\Component\\:\\:mutate\\(\\) expects array\\<int, callable\\(string\\)\\: string\\>, array\\{'FriendsOfHyperf\\\\\\\\PrettyConsole\\\\\\\\View\\\\\\\\Components\\\\\\\\Mutators\\\\\\\\EnsureDynamicContentIsHighlighted', 'FriendsOfHyperf\\\\\\\\PrettyConsole\\\\\\\\View\\\\\\\\Components\\\\\\\\Mutators\\\\\\\\EnsureNoPunctuation', 'FriendsOfHyperf\\\\\\\\PrettyConsole\\\\\\\\View\\\\\\\\Components\\\\\\\\Mutators\\\\\\\\EnsureRelativePaths'\\} given\\.$#"
+			count: 2
+			path: src/pretty-console/src/View/Components/TwoColumnDetail.php
+
+		-
+			message: "#^Variable \\$content might not be defined\\.$#"
+			count: 1
+			path: src/pretty-console/src/resources/views/components/alert.php
+
+		-
+			message: "#^Variable \\$elements might not be defined\\.$#"
+			count: 1
+			path: src/pretty-console/src/resources/views/components/bullet-list.php
+
+		-
+			message: "#^Variable \\$bgColor might not be defined\\.$#"
+			count: 1
+			path: src/pretty-console/src/resources/views/components/line.php
+
+		-
+			message: "#^Variable \\$content might not be defined\\.$#"
+			count: 1
+			path: src/pretty-console/src/resources/views/components/line.php
+
+		-
+			message: "#^Variable \\$fgColor might not be defined\\.$#"
+			count: 1
+			path: src/pretty-console/src/resources/views/components/line.php
+
+		-
+			message: "#^Variable \\$marginTop might not be defined\\.$#"
+			count: 1
+			path: src/pretty-console/src/resources/views/components/line.php
+
+		-
+			message: "#^Variable \\$title might not be defined\\.$#"
+			count: 2
+			path: src/pretty-console/src/resources/views/components/line.php
+
+		-
+			message: "#^Variable \\$first might not be defined\\.$#"
+			count: 1
+			path: src/pretty-console/src/resources/views/components/two-column-detail.php
+
+		-
+			message: "#^Variable \\$second might not be defined\\.$#"
+			count: 1
+			path: src/pretty-console/src/resources/views/components/two-column-detail.php

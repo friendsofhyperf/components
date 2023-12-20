@@ -42,17 +42,18 @@ class TracingKafkaListener implements ListenerInterface
     }
 
     /**
-     * @param BeforeConsume|AfterConsume|FailToConsume| $event
+     * @param BeforeConsume|AfterConsume|FailToConsume|object $event
      */
     public function process(object $event): void
     {
-        if (! $this->switcher->isTracingEnable('kafka', false)) {
+        if (! $this->switcher->isTracingEnable('kafka')) {
             return;
         }
 
         match ($event::class) {
             BeforeConsume::class => $this->startTransaction($event),
             AfterConsume::class, FailToConsume::class => $this->finishTransaction($event),
+            default => null,
         };
     }
 

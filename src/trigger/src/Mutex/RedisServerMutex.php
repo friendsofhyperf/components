@@ -43,13 +43,13 @@ class RedisServerMutex implements ServerMutexInterface
         array $options = [],
         protected ?StdoutLoggerInterface $logger = null
     ) {
-        $this->expires = (int) $options['expires'] ?? 60;
-        $this->keepaliveInterval = (int) $options['keepalive_interval'] ?? 10;
+        $this->expires = (int) ($options['expires'] ?? 60);
+        $this->keepaliveInterval = (int) ($options['keepalive_interval'] ?? 10);
         $this->name = $name ?? sprintf('trigger:server:%s', $this->connection);
         $this->owner = $owner ?? Util::getInternalIp();
         $this->connection = $options['connection'];
         $this->timer = new Timer($logger);
-        $this->retryInterval = (int) $options['retry_interval'] ?? 10;
+        $this->retryInterval = (int) ($options['retry_interval'] ?? 10);
     }
 
     public function attempt(callable $callback = null): void

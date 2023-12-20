@@ -35,7 +35,7 @@ class QueriesRelationshipsAspect extends AbstractAspect
             $types = $model->newModelQuery()->distinct()->pluck($relation->getMorphType())->filter()->all();
 
             foreach ($types as &$type) {
-                $type = $model::getActualClassNameForMorph($type) ?? $type;
+                $type = $model::getActualClassNameForMorph($type) ?: $type;
             }
 
             $proceedingJoinPoint->arguments['keys']['types'] = $types;

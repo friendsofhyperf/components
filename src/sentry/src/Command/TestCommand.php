@@ -95,7 +95,7 @@ class TestCommand extends HyperfCommand
      * @param mixed $command
      * @param mixed $arg
      */
-    protected function generateTestException($command, $arg): ?Exception
+    protected function generateTestException($command, $arg): ?Throwable
     {
         // Do something silly
         try {

@@ -137,15 +137,14 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     /**
      * Cast the given value to a DTO instance.
      *
-     * @param \Illuminate\Database\Eloquent\Model $model
+     * @param \Hyperf\Database\Model\Model $model
      * @param string $key
      * @param mixed $value
      * @param array $attributes
-     * @return $this
      *
      * @throws ValidationException|MissingCastTypeException|CastTargetException
      */
-    public function get($model, $key, $value, $attributes)
+    public function get($model, $key, $value, $attributes): static
     {
         $arrayCast = new ArrayCast();
 
@@ -546,11 +545,8 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     {
         $config = null;
 
-        if (
-            ApplicationContext::hasContainer()
-            && $container = ApplicationContext::getContainer()
-        ) {
-            $config = $container->get(ConfigInterface::class)?->get('dto');
+        if (ApplicationContext::hasContainer()) {
+            $config = ApplicationContext::getContainer()->get(ConfigInterface::class)?->get('dto');
         }
 
         if (! empty($config) && array_key_exists('require_casting', $config)) {

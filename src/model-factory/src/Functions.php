@@ -26,11 +26,11 @@ use TypeError;
  */
 function factory(string $class)
 {
-    $container = ApplicationContext::getContainer();
-
-    if (is_null($container)) {
+    if (! ApplicationContext::hasContainer()) {
         return null;
     }
+
+    $container = ApplicationContext::getContainer();
 
     $factory = $container->get(Factory::class);
     $arguments = func_get_args();

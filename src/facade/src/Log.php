@@ -15,6 +15,7 @@ use Hyperf\Context\ApplicationContext;
 use Hyperf\Logger\Logger;
 use Hyperf\Logger\LoggerFactory;
 use Override;
+use TypeError;
 
 /**
  * @method static void emergency(string|\Stringable $message, array $context = [])

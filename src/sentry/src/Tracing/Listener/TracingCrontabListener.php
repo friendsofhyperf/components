@@ -42,7 +42,7 @@ class TracingCrontabListener implements ListenerInterface
     }
 
     /**
-     * @param BeforeExecute|AfterExecute|FailToExecute $event
+     * @param BeforeExecute|AfterExecute|FailToExecute|object $event
      */
     public function process(object $event): void
     {
@@ -53,6 +53,7 @@ class TracingCrontabListener implements ListenerInterface
         match ($event::class) {
             BeforeExecute::class => $this->startTransaction($event),
             AfterExecute::class, FailToExecute::class => $this->finishTransaction($event),
+            default => null,
         };
     }
 

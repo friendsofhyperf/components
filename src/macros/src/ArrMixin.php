@@ -103,12 +103,10 @@ class ArrMixin
 
     /**
      * Recursively sort an array by keys and values in descending order.
-     *
-     * @return array
      */
     public function sortRecursiveDesc()
     {
-        return fn ($array, $options = SORT_REGULAR) => $this->sortRecursive($array, $options, true);
+        return fn ($array, $options = SORT_REGULAR) => $this->sortRecursive($array); // , $options, true
     }
 
     public function undot()

@@ -177,7 +177,7 @@ class Request implements ArrayAccess
             return $this->json();
         }
 
-        return $this->data ?? [];
+        return $this->data ?: [];
     }
 
     /**

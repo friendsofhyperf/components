@@ -37,7 +37,7 @@ class DbQueryListener implements ListenerInterface
     }
 
     /**
-     * @param QueryExecuted|TransactionBeginning|TransactionCommitted|TransactionRolledBack $event
+     * @param QueryExecuted|TransactionBeginning|TransactionCommitted|TransactionRolledBack|object $event
      */
     public function process(object $event): void
     {
@@ -46,6 +46,7 @@ class DbQueryListener implements ListenerInterface
             $event instanceof TransactionBeginning => $this->transactionHandler($event),
             $event instanceof TransactionCommitted => $this->transactionHandler($event),
             $event instanceof TransactionRolledBack => $this->transactionHandler($event),
+            default => null
         };
     }
 
@@ -82,7 +83,7 @@ class DbQueryListener implements ListenerInterface
      */
     protected function transactionHandler(object $event): void
     {
-        if (! $this->switcher->isBreadcrumbEnable('sql_transaction', false)) {
+        if (! $this->switcher->isBreadcrumbEnable('sql_transaction')) {
             return;
         }
 

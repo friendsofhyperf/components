@@ -90,7 +90,7 @@ class Method
 
     public function isInstanceCall(): bool
     {
-        return ! ($this->method->isClosure() || $this->method->isStatic());
+        return ! ($this->method->isClosure() || (is_callable([$this->method, 'isStatic']) && $this->method->isStatic()));
     }
 
     public function getRootMethodCall(): string

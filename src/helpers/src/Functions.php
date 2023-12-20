@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Helpers;
 use Carbon\Carbon;
 use Closure;
 use Countable;
+use DateTimeZone;
 use Exception;
 use FriendsOfHyperf\AsyncTask\Task as AsyncTask;
 use FriendsOfHyperf\AsyncTask\TaskInterface as AsyncTaskInterface;
@@ -35,6 +36,7 @@ use Hyperf\Kafka\ProducerManager;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Stringable\Str;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
+use InvalidArgumentException;
 use longlang\phpkafka\Producer\ProduceMessage;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -105,7 +107,6 @@ function blank($value): bool
  *
  * If an array is passed, we'll assume you want to put to the cache.
  *
- * @param  dynamic  key|key,default|data,expiration|null
  * @return CacheInterface|mixed
  * @throws Exception
  */
@@ -186,18 +187,15 @@ function di(string $abstract = null, array $parameters = [])
     }
 
     if (is_null($abstract)) {
-        throw new \InvalidArgumentException('Invalid argument $abstract');
+        throw new InvalidArgumentException('Invalid argument $abstract');
     }
 
     return new $abstract(...array_values($parameters));
 }
 
 /**
- * @param AsyncTaskInterface|Closure|JobInterface|ProduceMessage|ProducerMessageInterface $job
+ * @param AsyncTaskInterface|Closure|JobInterface|ProduceMessage|ProducerMessageInterface|object $job
  * @return bool
- * @throws TypeError
- * @throws InvalidDriverException
- * @throws InvalidArgumentException
  */
 function dispatch($job, ...$arguments)
 {
@@ -221,14 +219,13 @@ function dispatch($job, ...$arguments)
             ->getProducer((string) ($arguments[0] ?? 'default'))
             ->sendBatch([$job]),
         $job instanceof AsyncTaskInterface => AsyncTask::deliver($job, ...$arguments),
-        default => throw new \InvalidArgumentException('Not Support job type.')
+        default => throw new InvalidArgumentException('Not Support job type.')
     };
 }
 
 /**
  * @param mixed $environments
  * @return bool|Environment
- * @throws TypeError
  */
 function environment(...$environments)
 {
@@ -267,7 +264,6 @@ function filled($value): bool
 
 /**
  * @param string|Stringable $message
- * @throws TypeError
  */
 function info($message, array $context = [], bool $backtrace = false)
 {
@@ -276,13 +272,11 @@ function info($message, array $context = [], bool $backtrace = false)
         $context['backtrace'] = sprintf('%s:%s', $traces[0]['file'], $traces[0]['line']);
     }
 
-    return logs()->info($message, $context);
+    logs()->info($message, $context);
 }
 
 /**
  * @param string|Stringable|null $message
- * @return LoggerInterface|void
- * @throws TypeError
  */
 function logger($message = null, array $context = [], bool $backtrace = false)
 {
@@ -292,15 +286,12 @@ function logger($message = null, array $context = [], bool $backtrace = false)
 
     if ($backtrace) {
         $traces = debug_backtrace();
-        $context['backtrace'] = sprintf('%s:%s', $traces['file'], $traces['line']);
+        $context['backtrace'] = array_map(fn ($trace) => sprintf('%s:%s', $trace['file'], $trace['line']), $traces);
     }
 
-    return logs()->debug($message, $context);
+    logs()->debug($message, $context);
 }
 
-/**
- * @throws TypeError
- */
 function logs(string $name = 'hyperf', string $group = 'default'): LoggerInterface
 {
     return di(LoggerFactory::class)->get($name, $group);
@@ -378,7 +369,6 @@ function resolve(string|callable $abstract, array $parameters = [])
  * @param array|string|null $key
  * @param mixed $default
  * @return array|mixed|RequestInterface
- * @throws TypeError
  */
 function request($key = null, $default = null)
 {
@@ -445,7 +435,8 @@ function session($key = null, $default = null)
     }
 
     if (is_array($key)) {
-        return $session->put($key);
+        $session->put($key);
+        return;
     }
 
     return $session->get($key, $default);
@@ -454,7 +445,7 @@ function session($key = null, $default = null)
 /**
  * Create a new Carbon instance for the current date.
  *
- * @param \DateTimeZone|string|null $tz
+ * @param DateTimeZone|string|null $tz
  */
 function today($tz = null): Carbon
 {
@@ -512,7 +503,6 @@ function throw_unless($condition, $exception, ...$parameters)
 /**
  * Create a new Validator instance.
  * @return ValidatorFactoryInterface|ValidatorInterface
- * @throws TypeError
  */
 function validator(array $data = [], array $rules = [], array $messages = [], array $customAttributes = [])
 {
@@ -540,7 +530,6 @@ function when($expr, $value = null, $default = null)
 
 /**
  * Get client IP.
- * @throws TypeError
  */
 function get_client_ip(): string
 {

@@ -29,7 +29,7 @@ class Nacos implements DriverInterface
 {
     private Application $client;
 
-    public function __construct(private ContainerInterface $container, private ConfigInterface $config, private StdoutLoggerInterface $logger)
+    public function __construct(private ConfigInterface $config, private StdoutLoggerInterface $logger)
     {
         $config = $this->config->get('confd.drivers.nacos.client') ?: $this->config->get('nacos', []);
 
