@@ -13,9 +13,7 @@ namespace FriendsOfHyperf\Confd\Driver;
 
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Etcd\V3\KV;
-use Psr\Container\ContainerInterface;
 
 use function Hyperf\Collection\collect;
 use function Hyperf\Support\make;
@@ -24,7 +22,7 @@ class Etcd implements DriverInterface
 {
     private KV $client;
 
-    public function __construct(private ContainerInterface $container, private ConfigInterface $config, private StdoutLoggerInterface $logger)
+    public function __construct(private ConfigInterface $config)
     {
         $this->client = make(EtcdClient::class, [
             'uri' => (string) $this->config->get('confd.drivers.etcd.client.uri', ''),

@@ -181,7 +181,7 @@ class EnvWriter implements WriterInterface
             return true;
         }
 
-        return file_put_contents($this->path, $this->content, LOCK_EX) !== false ?? true;
+        return file_put_contents($this->path, $this->content, LOCK_EX) !== false;
     }
 
     /**
