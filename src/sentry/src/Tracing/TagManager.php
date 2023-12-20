@@ -26,7 +26,7 @@ class TagManager
         }
 
         [$type, $key] = explode('.', $key, 2);
-        $tags = $this->getTags($type);
+        $tags = $this->fetchTags($type);
 
         return isset($tags[$key]);
     }
@@ -38,12 +38,12 @@ class TagManager
         }
 
         [$type, $key] = explode('.', $key, 2);
-        $tags = $this->getTags($type);
+        $tags = $this->fetchTags($type);
 
         return $tags[$key] ?? $type . '.' . $key;
     }
 
-    private function getTags(string $type, mixed $default = []): array
+    private function fetchTags(string $type, mixed $default = []): array
     {
         return $this->config->get(
             sprintf('sentry.tracing.tags.%s', $type),
