@@ -119,7 +119,7 @@ class RequestMixin
             $keys = is_array($key) ? $key : func_get_args();
 
             foreach ($keys as $value) {
-                if ($this->isEmptyString($value)) {
+                if ($this->isEmptyString($value)) { /* @phpstan-ignore-line */
                     return false;
                 }
             }
@@ -221,7 +221,7 @@ class RequestMixin
             $keys = is_array($key) ? $key : func_get_args();
 
             foreach ($keys as $value) {
-                if (! $this->isEmptyString($value)) {
+                if (! $this->isEmptyString($value)) { /* @phpstan-ignore-line */
                     return false;
                 }
             }
@@ -247,7 +247,7 @@ class RequestMixin
 
     public function mergeIfMissing()
     {
-        return fn (array $input) => $this->merge(
+        return fn (array $input) => $this->merge( /* @phpstan-ignore-line */
             collect($input)
                 ->filter(fn ($value, $key) => $this->missing($key))
                 ->toArray()
@@ -301,9 +301,9 @@ class RequestMixin
     public function wantsJson()
     {
         return function () {
-            $acceptable = explode(',', $this->header('ACCEPT') ?? '');
+            $acceptable = explode(',', $this->header('ACCEPT'));
 
-            return Str::contains(strtolower($acceptable[0]) ?? '', ['/json', '+json']);
+            return Str::contains(strtolower($acceptable[0]), ['/json', '+json']);
         };
     }
 

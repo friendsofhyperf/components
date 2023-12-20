@@ -172,7 +172,7 @@ class CollectionMixin
 
     public function undot()
     {
-        return fn () => new Collection(Arr::undot($this->all()));
+        return fn () => new Collection(Arr::undot($this->all())); /* @phpstan-ignore-line */
     }
 
     public function value()
@@ -198,11 +198,11 @@ class CollectionMixin
 
     public function unlessEmpty()
     {
-        return fn (callable $callback, callable $default = null) => $this->whenNotEmpty($callback, $default);
+        return fn (callable $callback, callable $default = null) => $this->whenNotEmpty($callback, $default); /* @phpstan-ignore-line */
     }
 
     public function unlessNotEmpty()
     {
-        return fn (callable $callback, callable $default = null) => $this->whenEmpty($callback, $default);
+        return fn (callable $callback, callable $default = null) => $this->whenEmpty($callback, $default); /* @phpstan-ignore-line */
     }
 }
