@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope;
 
+use Closure;
 use Hyperf\Collection\Arr;
+
 use function Hyperf\Config\config;
 
 class Telescope
@@ -69,7 +71,7 @@ class Telescope
     /**
      * The callbacks that filter the entries that should be recorded.
      */
-    public static  array $filterUsing = [];
+    public static array $filterUsing = [];
 
     public static function recordCache(IncomingEntry $entry): void
     {
@@ -139,7 +141,7 @@ class Telescope
      *
      * @return static
      */
-    public static function tag(\Closure $callback)
+    public static function tag(Closure $callback)
     {
         static::$tagUsing[] = $callback;
 
@@ -151,7 +153,7 @@ class Telescope
      *
      * @return static
      */
-    public static function filter(\Closure $callback)
+    public static function filter(Closure $callback)
     {
         static::$filterUsing[] = $callback;
 
