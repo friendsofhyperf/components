@@ -15,7 +15,6 @@ use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Etcd\V3\KV;
 use Override;
-use Psr\Container\ContainerInterface;
 
 use function Hyperf\Collection\collect;
 use function Hyperf\Support\make;

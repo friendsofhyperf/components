@@ -20,7 +20,6 @@ use Hyperf\Nacos\Application;
 use Hyperf\Nacos\Config;
 use InvalidArgumentException;
 use Override;
-use Psr\Container\ContainerInterface;
 
 use function Hyperf\Collection\collect;
 use function Hyperf\Support\make;

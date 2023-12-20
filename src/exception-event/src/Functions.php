@@ -19,6 +19,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
+use Throwable;
 
 /**
  * @param string|Throwable $exception
@@ -26,7 +27,7 @@ use RuntimeException;
 function report($exception = 'RuntimeException', ...$parameters)
 {
     if (is_string($exception)) {
-        $exception = class_exists($exception) ? new $exception(...$parameters) : new RuntimeException($exception, ...$parameters);
+        $exception = class_exists($exception) ? new $exception(...$parameters) : new RuntimeException($exception, ...$parameters); // @phpstan-ignore-line
     }
 
     if (ApplicationContext::hasContainer()) {
@@ -49,13 +50,12 @@ function report($exception = 'RuntimeException', ...$parameters)
  * @param string|Throwable $exception
  * @param array ...$parameters
  * @return T
- * @throws TypeError
  */
 function report_if($condition, $exception = 'RuntimeException', ...$parameters)
 {
     if ($condition) {
         if (is_string($exception)) {
-            $exception = class_exists($exception) ? new $exception(...$parameters) : new RuntimeException($exception, ...$parameters);
+            $exception = class_exists($exception) ? new $exception(...$parameters) : new RuntimeException($exception, ...$parameters); // @phpstan-ignore-line
         }
 
         report($exception);
@@ -71,13 +71,12 @@ function report_if($condition, $exception = 'RuntimeException', ...$parameters)
  * @param string|Throwable $exception
  * @param array ...$parameters
  * @return T
- * @throws TypeError
  */
 function report_unless($condition, $exception = 'RuntimeException', ...$parameters)
 {
     if (! $condition) {
         if (is_string($exception)) {
-            $exception = class_exists($exception) ? new $exception(...$parameters) : new RuntimeException($exception, ...$parameters);
+            $exception = class_exists($exception) ? new $exception(...$parameters) : new RuntimeException($exception, ...$parameters); // @phpstan-ignore-line
         }
 
         report($exception);

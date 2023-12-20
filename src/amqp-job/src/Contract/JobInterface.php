@@ -32,7 +32,7 @@ interface JobInterface
     public function getTimeout(): int;
 
     /**
-     * @return Result|void
+     * @return \Hyperf\Amqp\Result|void
      */
     public function handle();
 
