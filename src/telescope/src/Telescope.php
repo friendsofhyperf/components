@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope;
 
+use Closure;
+use Hyperf\Collection\Arr;
+
 use function Hyperf\Config\config;
 
 class Telescope
@@ -59,6 +62,16 @@ class Telescope
      * Indicates if Telescope migrations will be run.
      */
     public static bool $runsMigrations = true;
+
+    /**
+     * The callbacks that add tags to the record.
+     */
+    public static array $tagUsing = [];
+
+    /**
+     * The callbacks that filter the entries that should be recorded.
+     */
+    public static array $filterUsing = [];
 
     public static function recordCache(IncomingEntry $entry): void
     {
@@ -123,11 +136,57 @@ class Telescope
         return config('telescope.database.query_slow', 50);
     }
 
+    /**
+     * Add a callback that adds tags to the record.
+     *
+     * @return static
+     */
+    public static function tag(Closure $callback)
+    {
+        static::$tagUsing[] = $callback;
+
+        return new static();
+    }
+
+    /**
+     * Set the callback that filters the entries that should be recorded.
+     *
+     * @return static
+     */
+    public static function filter(Closure $callback)
+    {
+        static::$filterUsing[] = $callback;
+
+        return new static();
+    }
+
+    /**
+     * Determine if the given entry should be recorded.
+     */
+    protected static function shouldRecord(IncomingEntry $entry): bool
+    {
+        foreach (static::$filterUsing as $callback) {
+            if (! $callback($entry)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     protected static function record(string $type, IncomingEntry $entry): void
     {
         $batchId = (string) TelescopeContext::getBatchId();
         $subBatchId = (string) TelescopeContext::getSubBatchId();
         $entry->batchId($batchId)->subBatchId($subBatchId)->type($type)->user();
+
+        if (! static::shouldRecord($entry)) {
+            return;
+        }
+
+        $entry->tags(Arr::collapse(array_map(function ($tagCallback) use ($entry) {
+            return $tagCallback($entry);
+        }, static::$tagUsing)));
+
         match (config('telescope.save_mode', 0)) {
             self::ASYNC => TelescopeContext::addEntry($entry),
             self::SYNC => $entry->create(),
