@@ -54,7 +54,7 @@ class TracingCommandListener implements ListenerInterface
     }
 
     /**
-     * @param BeforeHandle|AfterExecute $event
+     * @param BeforeHandle|AfterExecute|object $event
      */
     public function process(object $event): void
     {
@@ -68,6 +68,7 @@ class TracingCommandListener implements ListenerInterface
         match ($event::class) {
             BeforeHandle::class => $this->startTransaction($event),
             AfterExecute::class => $this->finishTransaction($event),
+            default => null,
         };
     }
 

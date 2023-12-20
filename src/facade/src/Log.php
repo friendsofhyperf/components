@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Facade;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Logger\Logger;
 use Hyperf\Logger\LoggerFactory;
+use TypeError;
 
 /**
  * @mixin LoggerFactory

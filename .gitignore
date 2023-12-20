@@ -7,3 +7,5 @@ composer.lock
 bin/co-pest
 *.bak
 rumtime
+phpunit.xml
+phpstan.neon

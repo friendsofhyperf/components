@@ -81,9 +81,9 @@ jobs:
           composer update -o
       - name: Setup PHPStan
         run: |
-          sed -i 's/{openai-client}/openai-client/g' phpstan.neon
-          sed -i 's/{pest-plugin-hyperf}/pest-plugin-hyperf/g' phpstan.neon
-          cat phpstan.neon
+          sed -i 's/{openai-client}/openai-client/g' phpstan.neon.dist
+          sed -i 's/{pest-plugin-hyperf}/pest-plugin-hyperf/g' phpstan.neon.dist
+          cat phpstan.neon.dist
         if: matrix.php == '8.0'
       - name: Run Analyse
         run: |

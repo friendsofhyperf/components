@@ -41,7 +41,7 @@ class Macro extends Method
         // Add macro parameters if they are missed in original docblock
         if (! $this->phpdoc->hasTag('param')) {
             foreach ($method->getParameters() as $parameter) {
-                $type = $parameter->hasType() ? $parameter->getType()->getName() : 'mixed';
+                $type = $parameter->hasType() ? $parameter->getType()->getName() : 'mixed'; /* @phpstan-ignore-line */
                 $type .= $parameter->hasType() && $parameter->getType()->allowsNull() ? '|null' : '';
 
                 $name = $parameter->isVariadic() ? '...' : '';
@@ -56,8 +56,8 @@ class Macro extends Method
             $builder = EloquentBuilder::class;
             $return = $method->getReturnType();
 
-            $type = $return->getName();
-            $type .= $this->root === "\\{$builder}" && $return->getName() === $builder ? '|static' : '';
+            $type = $return->getName(); /* @phpstan-ignore-line */
+            $type .= $this->root === "\\{$builder}" && $return->getName() === $builder ? '|static' : ''; /* @phpstan-ignore-line */
             $type .= $return->allowsNull() ? '|null' : '';
 
             $this->phpdoc->appendTag(Tag::createInstance("@return {$type}"));
@@ -68,7 +68,7 @@ class Macro extends Method
     {
         $enclosingClass = $this->method->getClosureScopeClass();
 
-        /** @var ReflectionMethod $enclosingMethod */
+        /** @var ReflectionMethod|null $enclosingMethod */
         $enclosingMethod = Collection::make($enclosingClass->getMethods())
             ->first(function (ReflectionMethod $method) {
                 return $method->getStartLine() <= $this->method->getStartLine()

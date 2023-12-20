@@ -68,7 +68,7 @@ class FastPaginate
 
         return collect($base->columns)
             ->filter(function ($column) use ($orders, $base) {
-                $column = $column instanceof Expression ? $column->getValue($base->grammar) : $base->grammar->wrap($column);
+                $column = $column instanceof Expression ? $column->getValue() : $base->grammar->wrap($column);
                 foreach ($orders as $order) {
                     // If we're ordering by this column, then we need to
                     // keep it in the inner query.
@@ -80,9 +80,9 @@ class FastPaginate
                 // Otherwise we don't.
                 return false;
             })
-            ->each(function ($column) use ($base) {
+            ->each(function ($column) {
                 if ($column instanceof Expression) {
-                    $column = $column->getValue($base->grammar);
+                    $column = $column->getValue();
                 }
 
                 if (str_contains($column, '?')) {
@@ -128,7 +128,7 @@ class FastPaginate
             // This is the copy of the query that becomes
             // the inner query that selects keys only.
             /** @var Paginator $paginator */
-            $paginator = $this->clone()
+            $paginator = $this->clone() /* @phpstan-ignore-line */
                 // Only select the primary key, we'll get the full
                 // records in a second query below.
                 ->select($innerSelectColumns)
@@ -139,7 +139,7 @@ class FastPaginate
                 ->{$paginationMethod}($perPage, ['*'], $pageName, $page);
 
             // Get the key values from the records on the current page without mutating them.
-            $ids = $paginator->getCollection()->map->getRawOriginal($key)->toArray();
+            $ids = $paginator->getCollection()->map->getRawOriginal($key)->toArray(); /* @phpstan-ignore-line */
 
             if (in_array($model->getKeyType(), ['int', 'integer'])) {
                 /* @phpstan-ignore-next-line */
@@ -152,7 +152,7 @@ class FastPaginate
             // The $paginator is full of records that are primary keys only. Here,
             // we create a new paginator with all of the *stats* from the index-
             // only paginator, but the *items* from the outer query.
-            $items = $this->simplePaginate($perPage, $columns, $pageName, 1)->getCollection();
+            $items = $this->simplePaginate($perPage, $columns, $pageName, 1)->getCollection(); /* @phpstan-ignore-line */
 
             return Closure::fromCallable($paginatorOutput)->call($this, $items, $paginator);
         };

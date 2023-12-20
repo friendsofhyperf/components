@@ -41,9 +41,9 @@ class TriggerManager
         }
 
         foreach ($queue as $value) {
+            /** @var Trigger $property */
             [$class, $property] = $value;
 
-            /** @var Trigger $property */
             foreach ($property->events as $eventType) {
                 $config = $this->config->get('trigger.connections.' . $property->connection);
                 $property->table ??= class_basename($class);

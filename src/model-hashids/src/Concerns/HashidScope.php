@@ -24,11 +24,11 @@ class HashidScope implements Scope
     public function extend(Builder $builder)
     {
         $builder->macro('findByHashid', function (Builder $builder, $hashid) {
-            return $builder->byHashid($hashid)->first();
+            return $builder->byHashid($hashid)->first(); /* @phpstan-ignore-line */
         });
 
         $builder->macro('findByHashidOrFail', function (Builder $builder, $hashid) {
-            return $builder->byHashid($hashid)->firstOrFail();
+            return $builder->byHashid($hashid)->firstOrFail(); /* @phpstan-ignore-line */
         });
 
         $builder->macro('byHashid', function (Builder $builder, $hashid) {
@@ -36,7 +36,7 @@ class HashidScope implements Scope
 
             return $builder->where(
                 $model->qualifyColumn($model->getKeyName()),
-                $model->hashidToId($hashid)
+                $model->hashidToId($hashid) /* @phpstan-ignore-line */
             );
         });
     }

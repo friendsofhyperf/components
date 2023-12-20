@@ -79,7 +79,7 @@ interface CacheInterface
      *
      * @template TCacheValue
      *
-     * @param array|string $key
+     * @param string[]|string $key
      * @param (Closure(): TCacheValue)|TCacheValue $default
      * @return (TCacheValue is null ? mixed : TCacheValue)
      */
@@ -95,11 +95,11 @@ interface CacheInterface
      *
      * @template TCacheValue
      *
-     * @param array|string $key
+     * @param string[]|string $key
      * @param (Closure(): TCacheValue)|TCacheValue $default
      * @return (TCacheValue is null ? mixed : TCacheValue)
      */
-    public function pull(string $key, $default = null);
+    public function pull($key, $default = null);
 
     /**
      * Get an item from the cache, or execute the given Closure and store the result.

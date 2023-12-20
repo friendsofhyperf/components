@@ -25,7 +25,7 @@ use Sentry\Tracing\SpanStatus;
 use Throwable;
 
 /**
- * @method array getConfig
+ * @method array getConfig()
  * @property array $config
  */
 class GuzzleHttpClientAspect extends AbstractAspect

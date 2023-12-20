@@ -26,7 +26,7 @@ class SentrySdk
     /**
      * @var HubInterface|null The current hub
      */
-    private static $currentHub;
+    private static $currentHub; /** @phpstan-ignore-line */
 
     /**
      * Constructor.

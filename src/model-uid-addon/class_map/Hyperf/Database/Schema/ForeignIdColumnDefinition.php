@@ -13,6 +13,9 @@ namespace Hyperf\Database\Schema;
 
 use Hyperf\Stringable\Str;
 
+/**
+ * @property string $name
+ */
 class ForeignIdColumnDefinition extends ColumnDefinition
 {
     /**

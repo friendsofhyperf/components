@@ -20,7 +20,7 @@ namespace FriendsOfHyperf\ExceptionEvent{
     use RuntimeException;
 
     /**
-     * @param string|Throwable $exception
+     * @param string|\Throwable $exception
      */
     function report($exception = 'RuntimeException', ...$parameters)
     {
@@ -45,16 +45,16 @@ namespace FriendsOfHyperf\ExceptionEvent{
      * @template T
      *
      * @param T $condition
-     * @param string|Throwable $exception
+     * @param string|\Throwable $exception
      * @param array ...$parameters
      * @return T
-     * @throws TypeError
+     * @throws \TypeError
      */
     function report_if($condition, $exception = 'RuntimeException', ...$parameters)
     {
         if ($condition) {
             if (is_string($exception)) {
-                $exception = class_exists($exception) ? new $exception(...$parameters) : new RuntimeException($exception, ...$parameters);
+                $exception = class_exists($exception) ? new $exception(...$parameters) : new RuntimeException($exception, ...$parameters); /* @phpstan-ignore-line */
             }
 
             report($exception);
@@ -67,16 +67,16 @@ namespace FriendsOfHyperf\ExceptionEvent{
      * @template T
      *
      * @param T $condition
-     * @param string|Throwable $exception
+     * @param string|\Throwable $exception
      * @param array ...$parameters
      * @return T
-     * @throws TypeError
+     * @throws \TypeError
      */
     function report_unless($condition, $exception = 'RuntimeException', ...$parameters)
     {
         if (! $condition) {
             if (is_string($exception)) {
-                $exception = class_exists($exception) ? new $exception(...$parameters) : new RuntimeException($exception, ...$parameters);
+                $exception = class_exists($exception) ? new $exception(...$parameters) : new RuntimeException($exception, ...$parameters); /* @phpstan-ignore-line */
             }
 
             report($exception);
@@ -89,7 +89,7 @@ namespace FriendsOfHyperf\ExceptionEvent{
 namespace {
     if (! function_exists('report')) {
         /**
-         * @param string|Throwable $exception
+         * @param string|\Throwable $exception
          * @deprecated since 3.1, use `\FriendsOfHyperf\ExceptionEvent\report` instead.
          */
         function report($exception = 'RuntimeException', ...$parameters)
@@ -103,10 +103,10 @@ namespace {
          * @template T
          *
          * @param T $condition
-         * @param string|Throwable $exception
+         * @param string|\Throwable $exception
          * @param array ...$parameters
          * @return T
-         * @throws TypeError
+         * @throws \TypeError
          * @deprecated since 3.1, use `\FriendsOfHyperf\ExceptionEvent\report_if` instead.
          */
         function report_if($condition, $exception = 'RuntimeException', ...$parameters)
@@ -120,10 +120,10 @@ namespace {
          * @template T
          *
          * @param T $condition
-         * @param string|Throwable $exception
+         * @param string|\Throwable $exception
          * @param array ...$parameters
          * @return T
-         * @throws TypeError
+         * @throws \TypeError
          * @deprecated since 3.1, use `\FriendsOfHyperf\ExceptionEvent\report_unless` instead.
          */
         function report_unless($condition, $exception = 'RuntimeException', ...$parameters)

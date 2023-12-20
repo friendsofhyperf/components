@@ -41,7 +41,6 @@ class DTOCast implements Castable
         } catch (ValidationException $exception) {
             throw $exception;
         } catch (Throwable $exception) {
-            throw $exception;
             throw new CastException($property);
         }
 

@@ -20,7 +20,7 @@ use Psr\Http\Message\ResponseInterface;
 use Sentry\Breadcrumb;
 
 /**
- * @method array getConfig
+ * @method array getConfig()
  * @property array $config
  */
 class GuzzleHttpClientAspect extends AbstractAspect

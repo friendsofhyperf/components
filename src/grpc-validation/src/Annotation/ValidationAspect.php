@@ -69,7 +69,7 @@ class ValidationAspect extends AbstractAspect
             $scene = $annotation->scene ?: $proceedingJoinPoint->methodName;
             /** @var FormRequest $formRequest */
             $formRequest = $this->container->get($annotation->formRequest)->scene($scene);
-            $rules = $formRequest->rules();
+            $rules = method_exists($formRequest, 'rules') ? $formRequest->rules() : [];
             $messages = $formRequest->messages();
         } else {
             $rules = $annotation->rules;

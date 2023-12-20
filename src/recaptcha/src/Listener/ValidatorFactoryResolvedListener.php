@@ -45,7 +45,7 @@ class ValidatorFactoryResolvedListener implements ListenerInterface
                 $version
             ] = [
                 $parameters[0] ?? '',
-                (float) $parameters[1] ?? 0.34,
+                (float) ($parameters[1] ?? 0.34),
                 $parameters[2] ?? '',
                 $parameters[3] ?? 'v3',
             ];

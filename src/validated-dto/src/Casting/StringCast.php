@@ -23,7 +23,7 @@ class StringCast implements Castable
     {
         try {
             return (string) $value;
-        } catch (Throwable) {
+        } catch (Throwable) { /* @phpstan-ignore-line */
             throw new CastException($property);
         }
     }

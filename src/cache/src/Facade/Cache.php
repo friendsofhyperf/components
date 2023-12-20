@@ -12,6 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Cache\Facade;
 
 use Closure;
+use DateInterval;
+use DateTimeInterface;
 use FriendsOfHyperf\Cache\CacheInterface;
 use FriendsOfHyperf\Cache\CacheManager;
 use Hyperf\Context\ApplicationContext;
@@ -156,7 +158,7 @@ class Cache
      * @param (Closure(): TCacheValue)|TCacheValue $default
      * @return (TCacheValue is null ? mixed : TCacheValue)
      */
-    public static function pull(string $key, $default = null)
+    public static function pull($key, $default = null)
     {
         return self::__callStatic(__FUNCTION__, func_get_args());
     }

@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Helpers\Command;
 
+use Exception;
 use Hyperf\Contract\ApplicationInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\NullOutput;
+use TypeError;
 
 use function FriendsOfHyperf\Helpers\di;
 
