@@ -85,7 +85,6 @@ if (! function_exists('cache')) {
      *
      * If an array is passed, we'll assume you want to put to the cache.
      *
-     * @param  dynamic  key|key,default|data,expiration|null
      * @return CacheInterface|mixed
      * @throws \Exception
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\cache` instead.
@@ -156,9 +155,6 @@ if (! function_exists('dispatch')) {
     /**
      * @param AsyncTaskInterface|Closure|JobInterface|ProduceMessage|ProducerMessageInterface $job
      * @return bool
-     * @throws TypeError
-     * @throws InvalidDriverException
-     * @throws InvalidArgumentException
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\dispatch` instead.
      */
     function dispatch($job, ...$arguments)
@@ -225,13 +221,15 @@ if (! function_exists('info')) {
 if (! function_exists('logger')) {
     /**
      * @param string|\Stringable|null $message
-     * @return LoggerInterface|void
      * @throws TypeError
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\logger` instead.
      */
     function logger($message = null, array $context = [], bool $backtrace = false)
     {
-        return FriendsOfHyperf\Helpers\logger($message, $context, $backtrace);
+        if (is_null($message)) {
+            return FriendsOfHyperf\Helpers\logger();
+        }
+        FriendsOfHyperf\Helpers\logger($message, $context, $backtrace);
     }
 }
 
