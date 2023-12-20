@@ -42,7 +42,7 @@ class TaskHandleListener implements ListenerInterface
     }
 
     /**
-     * @param FailedHandle $event
+     * @param FailedHandle|object $event
      */
     public function process(object $event): void
     {
