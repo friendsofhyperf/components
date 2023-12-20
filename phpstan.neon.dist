@@ -5,11 +5,13 @@
 # includes:
 #   - vendor/phpstan/phpstan-deprecation-rules/rules.neon
 parameters:
+  level: 5
   excludePaths:
     - 'src/*/output/*'
     - 'src/gateway-worker/publish/gatewayworker.php'
     - 'src/{openai-client}/*'
     - 'src/{pest-plugin-hyperf}/*'
+    - 'src/pretty-console/src/resources/views/*/*'
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     # - '#Unsafe usage of new static\(\)#'
@@ -42,4 +44,5 @@ parameters:
     - '#Function GuzzleHttp\\Psr7\\get_message_body_summary not found.#'
     - '#.*should either be compatible with ArrayAccess::offset\w+.*#'
     - '#Unsafe usage of new static\(\)\.#'
+    - '#Constant BASE_PATH not found.#'
     
