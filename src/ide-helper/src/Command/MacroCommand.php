@@ -67,7 +67,7 @@ class MacroCommand extends HyperfCommand
             ->mapWithKeys(function ($path, $class) {
                 try {
                     $reflection = new ReflectionClass($class);
-                    $traits = array_keys($reflection->getTraits() ?? []);
+                    $traits = array_keys($reflection->getTraits());
 
                     if (empty($traits) || ! in_array(Macroable::class, $traits)) {
                         return [];

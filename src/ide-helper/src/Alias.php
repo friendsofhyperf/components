@@ -19,6 +19,7 @@ use Closure;
 use Exception;
 use PDOException;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionFunction;
 use ReflectionFunctionAbstract;
 use ReflectionMethod;
@@ -55,7 +56,7 @@ class Alias
     protected ?string $extendsNamespace;
 
     /**
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
     public function __construct(protected string $alias, string $facade, protected array $magicMethods = [], protected array $interfaces = [])
     {
@@ -187,7 +188,6 @@ class Alias
      * Get the docblock for this alias.
      *
      * @param string $prefix
-     * @return mixed
      */
     public function getDocComment($prefix = "\t\t"): string
     {

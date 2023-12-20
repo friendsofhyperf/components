@@ -11,8 +11,6 @@ parameters:
     - 'src/gateway-worker/publish/gatewayworker.php'
     - 'src/{openai-client}/*'
     - 'src/{pest-plugin-hyperf}/*'
-    - 'src/pretty-console/src/resources/views/*/*'
-    - 'src/compoships/src/*/*'
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     # - '#Unsafe usage of new static\(\)#'
