@@ -74,7 +74,7 @@ class Handler
         $message = '';
 
         if ($formatterClass != AccessLogFormatter::class) {
-            $message = $this->formatter->format(compact('context'));
+            $message = $this->formatter->format(compact('context')); // @phpstan-ignore-line
             $context = [];
         }
 
