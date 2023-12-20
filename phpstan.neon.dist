@@ -2,8 +2,9 @@
 # Fortunately, You can ingore it by the following config.
 #
 # vendor/bin/phpstan analyse app --memory-limit 200M -l 0
-# includes:
-#   - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+includes:
+  # - vendor/phpstan/phpstan-deprecation-rules/rules.neon
+  - phpstan-baseline.neon
 parameters:
   level: 5
   excludePaths:
