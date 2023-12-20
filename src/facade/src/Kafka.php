@@ -26,9 +26,9 @@ class Kafka extends Facade
      * @throws ConnectionClosedException
      * @throws TimeoutException
      */
-    public static function send(ProduceMessage $produceMessage, $queue = 'default')
+    public static function send(ProduceMessage $produceMessage, $queue = 'default'): void
     {
-        return self::getProducer($queue)->sendBatch([$produceMessage]);
+        self::getProducer($queue)->sendBatch([$produceMessage]);
     }
 
     /**
@@ -37,9 +37,9 @@ class Kafka extends Facade
      * @throws ConnectionClosedException
      * @throws TimeoutException
      */
-    public static function sendBatch($produceMessages, $queue = 'default')
+    public static function sendBatch($produceMessages, $queue = 'default'): void
     {
-        return self::getProducer($queue)->sendBatch($produceMessages);
+        self::getProducer($queue)->sendBatch($produceMessages);
     }
 
     protected static function getFacadeAccessor()
