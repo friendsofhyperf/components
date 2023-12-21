@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Aspect;
 
 use FriendsOfHyperf\Telescope\IncomingEntry;
-use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Event\EventDispatcher;
@@ -30,14 +30,14 @@ class EventAspect extends AbstractAspect
         EventDispatcher::class . '::dispatch',
     ];
 
-    public function __construct(protected SwitchManager $switcherManager, protected ListenerProviderInterface $listeners)
+    public function __construct(protected TelescopeConfig $telescopeConfig, protected ListenerProviderInterface $listeners)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (! $this->switcherManager->isEnable('event')) {
+            if (! $this->telescopeConfig->isEnable('event')) {
                 return;
             }
 

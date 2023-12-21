@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Middleware;
 
 use FriendsOfHyperf\Telescope\IncomingEntry;
-use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
@@ -36,13 +36,13 @@ class TelescopeMiddleware implements MiddlewareInterface
     public function __construct(
         protected ContainerInterface $container,
         protected ConfigInterface $config,
-        protected SwitchManager $switchManager
+        protected TelescopeConfig $telescopeConfig
     ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (! $this->switchManager->isEnable('request')) {
+        if (! $this->telescopeConfig->isEnable('request')) {
             return $handler->handle($request);
         }
 

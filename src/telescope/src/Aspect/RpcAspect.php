@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Aspect;
 
-use FriendsOfHyperf\Telescope\SwitchManager;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -26,14 +26,14 @@ class RpcAspect extends AbstractAspect
         AbstractServiceClient::class . '::__generateRpcPath',
     ];
 
-    public function __construct(protected SwitchManager $switcherManager, protected Context $context)
+    public function __construct(protected TelescopeConfig $telescopeConfig, protected Context $context)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function () {
-            if (static::class == self::class && $this->switcherManager->isEnable('rpc') === false) {
+            if (static::class == self::class && $this->telescopeConfig->isEnable('rpc') === false) {
                 return;
             }
 

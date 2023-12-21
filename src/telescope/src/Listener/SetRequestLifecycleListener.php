@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Listener;
 
-use FriendsOfHyperf\Telescope\SwitchManager;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
@@ -23,7 +23,7 @@ class SetRequestLifecycleListener implements ListenerInterface
 {
     public function __construct(
         protected ConfigInterface $config,
-        protected SwitchManager $switchManager,
+        protected TelescopeConfig $telescopeConfig,
     ) {
     }
 
@@ -36,7 +36,7 @@ class SetRequestLifecycleListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        if (! $this->switchManager->isEnable('request')) {
+        if (! $this->telescopeConfig->isEnable('request')) {
             return;
         }
 

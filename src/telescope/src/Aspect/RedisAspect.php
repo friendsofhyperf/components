@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Aspect;
 
 use FriendsOfHyperf\Telescope\IncomingEntry;
-use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Contract\PackerInterface;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -36,7 +36,7 @@ class RedisAspect extends AbstractAspect
         Redis::class . '::__call',
     ];
 
-    public function __construct(protected SwitchManager $switcherManager, protected ContainerInterface $container)
+    public function __construct(protected TelescopeConfig $telescopeConfig, protected ContainerInterface $container)
     {
     }
 
@@ -44,7 +44,7 @@ class RedisAspect extends AbstractAspect
     {
         $startTime = microtime(true);
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint, $startTime) {
-            if (! $this->switcherManager->isEnable('redis')) {
+            if (! $this->telescopeConfig->isEnable('redis')) {
                 return;
             }
 

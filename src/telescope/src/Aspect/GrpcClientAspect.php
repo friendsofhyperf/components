@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Aspect;
 
-use FriendsOfHyperf\Telescope\SwitchManager;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -24,7 +24,7 @@ class GrpcClientAspect extends AbstractAspect
         GrpcClient::class . '::send',
     ];
 
-    public function __construct(protected SwitchManager $switcherManager)
+    public function __construct(protected TelescopeConfig $telescopeConfig)
     {
     }
 
@@ -38,7 +38,7 @@ class GrpcClientAspect extends AbstractAspect
 
     private function processSend(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if ($this->switcherManager->isEnable('grpc')) {
+        if ($this->telescopeConfig->isEnable('grpc')) {
             $carrier = [];
             $carrier['batch-id'] = TelescopeContext::getBatchId();
             /** @var Request $request */

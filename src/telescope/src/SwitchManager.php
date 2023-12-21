@@ -11,16 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope;
 
-use Hyperf\Contract\ConfigInterface;
-
-class SwitchManager
+/**
+ * @deprecated use FriendsOfHyperf\Telescope\TelescopeConfig instead
+ */
+class SwitchManager extends TelescopeConfig
 {
-    public function __construct(protected ConfigInterface $config)
-    {
-    }
-
-    public function isEnable(string $key): bool
-    {
-        return (bool) $this->config->get("telescope.enable.{$key}", false);
-    }
 }

@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Listener;
 
 use FriendsOfHyperf\Telescope\IncomingEntry;
-use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Collection\Arr;
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -21,7 +21,7 @@ use Hyperf\Stringable\Str;
 
 class DbQueryListener implements ListenerInterface
 {
-    public function __construct(private SwitchManager $switchManager)
+    public function __construct(private TelescopeConfig $telescopeConfig)
     {
     }
 
@@ -37,7 +37,7 @@ class DbQueryListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if ($this->switchManager->isEnable('db') === false) {
+        if ($this->telescopeConfig->isEnable('db') === false) {
             return;
         }
         if ($event instanceof QueryExecuted) {

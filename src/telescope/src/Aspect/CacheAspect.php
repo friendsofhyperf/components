@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Aspect;
 
 use FriendsOfHyperf\Telescope\IncomingEntry;
-use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Cache\CacheManager;
 use Hyperf\Contract\PackerInterface;
@@ -36,7 +36,7 @@ class CacheAspect extends AbstractAspect
         'Hyperf\Cache\Driver\*Driver::set',
     ];
 
-    public function __construct(protected SwitchManager $switcherManager)
+    public function __construct(protected TelescopeConfig $telescopeConfig)
     {
     }
 
@@ -57,7 +57,7 @@ class CacheAspect extends AbstractAspect
     protected function processGetDriver($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($driver) use ($proceedingJoinPoint) {
-            if (! $this->switcherManager->isEnable('redis')) {
+            if (! $this->telescopeConfig->isEnable('redis')) {
                 return;
             }
 
@@ -69,7 +69,7 @@ class CacheAspect extends AbstractAspect
     protected function processDriverFetch($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (! $this->switcherManager->isEnable('cache')) {
+            if (! $this->telescopeConfig->isEnable('cache')) {
                 return;
             }
 
@@ -86,7 +86,7 @@ class CacheAspect extends AbstractAspect
     protected function processDriverGet($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (! $this->switcherManager->isEnable('cache')) {
+            if (! $this->telescopeConfig->isEnable('cache')) {
                 return;
             }
 
@@ -102,7 +102,7 @@ class CacheAspect extends AbstractAspect
     protected function processDriverSet($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function () use ($proceedingJoinPoint) {
-            if (! $this->switcherManager->isEnable('cache')) {
+            if (! $this->telescopeConfig->isEnable('cache')) {
                 return;
             }
 
