@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Telescope;
 
 use Closure;
 use Hyperf\Collection\Arr;
+use Hyperf\Context\ApplicationContext;
 
 use function Hyperf\Config\config;
 
@@ -128,12 +129,13 @@ class Telescope
      */
     public static function getAppName(): string
     {
-        return config('app_name', '') ? '[' . config('app_name', '') . '] ' : '';
+        $appName = static::getConfig()->getAppName();
+        return $appName ? '[' . $appName . '] ' : '';
     }
 
     public static function getQuerySlow(): int
     {
-        return config('telescope.database.query_slow', 50);
+        return static::getConfig()->getDatabaseQuerySlow();
     }
 
     /**
@@ -158,6 +160,11 @@ class Telescope
         static::$filterUsing[] = $callback;
 
         return new static();
+    }
+
+    public static function getConfig(): TelescopeConfig
+    {
+        return ApplicationContext::getContainer()->get(TelescopeConfig::class);
     }
 
     /**

@@ -16,12 +16,12 @@ use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Cache\CacheManager;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\PackerInterface;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Stringable\Str;
 
-use function Hyperf\Config\config;
 use function Hyperf\Tappable\tap;
 
 /**
@@ -36,8 +36,10 @@ class CacheAspect extends AbstractAspect
         'Hyperf\Cache\Driver\*Driver::set',
     ];
 
-    public function __construct(protected TelescopeConfig $telescopeConfig)
-    {
+    public function __construct(
+        protected ConfigInterface $config,
+        protected TelescopeConfig $telescopeConfig
+    ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -118,6 +120,6 @@ class CacheAspect extends AbstractAspect
     protected function getCacheKey(string $key): string
     {
         $driver = TelescopeContext::getCacheDriver();
-        return config('cache.' . $driver . '.prefix', '') . $key;
+        return $this->config->get('cache.' . $driver . '.prefix', '') . $key;
     }
 }

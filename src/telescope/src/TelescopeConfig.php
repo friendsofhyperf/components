@@ -79,9 +79,14 @@ class TelescopeConfig
         return (bool) $this->get('enable.' . $key, false);
     }
 
+    public function getAppName(): string
+    {
+        return (string) $this->config->get('app_name', '');
+    }
+
     public function getTimezone(): string
     {
-        return (string) $this->get('timezone', 'Asia/Shanghai');
+        return (string) $this->get('timezone', date_default_timezone_get());
     }
 
     public function getSaveMode(): int

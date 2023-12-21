@@ -11,10 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Command;
 
+use FriendsOfHyperf\Telescope\Telescope;
 use Hyperf\Command\Command;
 use Hyperf\DbConnection\Db;
-
-use function Hyperf\Config\config;
 
 class ClearCommand extends Command
 {
@@ -22,7 +21,7 @@ class ClearCommand extends Command
 
     public function handle()
     {
-        $connection = config('telescope.database.connection');
+        $connection = Telescope::getConfig()->getDatabaseConnection();
         Db::connection($connection)->table('telescope_entries')->delete();
         Db::connection($connection)->table('telescope_entries_tags')->delete();
         Db::connection($connection)->table('telescope_monitoring')->delete();
