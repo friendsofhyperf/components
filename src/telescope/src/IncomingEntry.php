@@ -16,8 +16,6 @@ use FriendsOfHyperf\Telescope\Model\TelescopeEntryModel;
 use FriendsOfHyperf\Telescope\Model\TelescopeEntryTagModel;
 use Hyperf\Stringable\Str;
 
-use function Hyperf\Config\config;
-
 class IncomingEntry
 {
     /**
@@ -71,10 +69,13 @@ class IncomingEntry
     public function __construct(array $content)
     {
         $this->uuid = (string) Str::orderedUuid()->toString();
-        $timezone = config('telescope.timezone') ?: date_default_timezone_get();
+        $timezone = Telescope::getConfig()->getTimezone();
         $this->recordedAt = Carbon::now()->setTimezone($timezone)->toDateTimeString();
         $this->content = array_merge($content, ['hostname' => $hostname = gethostname()]);
-        $this->tags = ['hostname:' . $hostname, 'app_name:' . config('app_name', '')];
+        $this->tags = [
+            'hostname:' . $hostname,
+            'app_name:' . Telescope::getConfig()->getAppName(),
+        ];
     }
 
     /**

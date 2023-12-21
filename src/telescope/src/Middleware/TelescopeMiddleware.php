@@ -12,11 +12,10 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Middleware;
 
 use FriendsOfHyperf\Telescope\IncomingEntry;
-use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Collection\Arr;
-use Hyperf\Contract\ConfigInterface;
 use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\Rpc\Context as RpcContext;
 use Hyperf\Server\Event;
@@ -35,14 +34,13 @@ class TelescopeMiddleware implements MiddlewareInterface
 {
     public function __construct(
         protected ContainerInterface $container,
-        protected ConfigInterface $config,
-        protected SwitchManager $switchManager
+        protected TelescopeConfig $telescopeConfig
     ) {
     }
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        if (! $this->switchManager->isEnable('request')) {
+        if (! $this->telescopeConfig->isEnable('request')) {
             return $handler->handle($request);
         }
 
@@ -118,32 +116,11 @@ class TelescopeMiddleware implements MiddlewareInterface
 
     protected function incomingRequest(ServerRequestInterface $psr7Request): bool
     {
-        if (! empty($only = config('telescope.only_paths', []))) {
-            return $this->is($psr7Request, $only);
+        if ($this->telescopeConfig->isPatchOnly($psr7Request)) {
+            return true;
         }
 
-        return ! $this->is(
-            $psr7Request,
-            collect([
-                '*favicon.ico',
-                'telescope-api*',
-                'vendor/telescope*',
-            ])
-                ->merge(config('telescope.ignore_paths', []))
-                ->unless(is_null(config('telescope.path', 'telescope')), function ($paths) {
-                    return $paths->prepend(config('telescope.path', 'telescope') . '*');
-                })
-                ->all()
-        );
-    }
-
-    protected function is($psr7Request, $patterns)
-    {
-        $uri = $psr7Request->getUri();
-        $path = $uri->getPath();
-        $path = rawurldecode(trim($path, '/'));
-
-        return collect($patterns)->contains(fn ($pattern) => Str::is($pattern, $path));
+        return ! $this->telescopeConfig->isPathIgnored($psr7Request);
     }
 
     protected function response(ResponseInterface $response): string|array

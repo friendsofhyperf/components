@@ -12,10 +12,9 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Command;
 
 use Carbon\Carbon;
+use FriendsOfHyperf\Telescope\Telescope;
 use Hyperf\Command\Command;
 use Hyperf\DbConnection\Db;
-
-use function Hyperf\Config\config;
 
 class PruneCommand extends Command
 {
@@ -23,7 +22,7 @@ class PruneCommand extends Command
 
     public function handle()
     {
-        $connection = config('telescope.database.connection');
+        $connection = Telescope::getConfig()->getDatabaseConnection();
         $created_at = Carbon::now()->subHours($this->input->getOption('hours'));
         Db::connection($connection)->table('telescope_entries')
             ->where('created_at', '<', $created_at)

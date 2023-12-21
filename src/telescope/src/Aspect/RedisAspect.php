@@ -12,9 +12,10 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Aspect;
 
 use FriendsOfHyperf\Telescope\IncomingEntry;
-use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\PackerInterface;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -23,7 +24,6 @@ use Psr\Container\ContainerInterface;
 use Throwable;
 
 use function Hyperf\Collection\collect;
-use function Hyperf\Config\config;
 use function Hyperf\Tappable\tap;
 
 /**
@@ -36,15 +36,18 @@ class RedisAspect extends AbstractAspect
         Redis::class . '::__call',
     ];
 
-    public function __construct(protected SwitchManager $switcherManager, protected ContainerInterface $container)
-    {
+    public function __construct(
+        protected ContainerInterface $container,
+        protected ConfigInterface $config,
+        protected TelescopeConfig $telescopeConfig,
+    ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $startTime = microtime(true);
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint, $startTime) {
-            if (! $this->switcherManager->isEnable('redis')) {
+            if (! $this->telescopeConfig->isEnable('redis')) {
                 return;
             }
 
@@ -80,7 +83,7 @@ class RedisAspect extends AbstractAspect
                     && $key == 1
                     && $driver = TelescopeContext::getCacheDriver()
                 ) {
-                    $packer = config('cache.' . $driver . '.packer', '');
+                    $packer = $this->config->get('cache.' . $driver . '.packer', '');
                     $packer = $this->container->get($packer);
                     if ($packer instanceof PackerInterface) {
                         try {

@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Telescope;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Stringable\Str;
+use Psr\Http\Message\ServerRequestInterface;
 
 class TelescopeConfig
 {
@@ -78,9 +79,14 @@ class TelescopeConfig
         return (bool) $this->get('enable.' . $key, false);
     }
 
+    public function getAppName(): string
+    {
+        return (string) $this->config->get('app_name', '');
+    }
+
     public function getTimezone(): string
     {
-        return (string) $this->get('timezone', 'Asia/Shanghai');
+        return (string) $this->get('timezone', date_default_timezone_get());
     }
 
     public function getSaveMode(): int
@@ -122,8 +128,12 @@ class TelescopeConfig
         return (array) $this->get('only_paths', []);
     }
 
-    public function isPatchOnly(string $path): bool
+    public function isPatchOnly(ServerRequestInterface|string $path): bool
     {
+        if ($path instanceof ServerRequestInterface) {
+            $path = $path->getUri()->getPath();
+        }
+
         if (empty($this->getOnlyPaths())) {
             return false;
         }
@@ -141,14 +151,19 @@ class TelescopeConfig
             '*favicon.ico',
             'telescope-api*',
             'vendor/telescope*',
+            $this->getPath() . '*',
         ];
         $ignorePaths = (array) $this->get('ignore_paths', []);
 
         return array_merge($defaultIgnorePaths, $ignorePaths);
     }
 
-    public function isPathIgnored(string $path): bool
+    public function isPathIgnored(ServerRequestInterface|string $path): bool
     {
-        return Str::is($this->getIgnorePaths(), $path);
+        if ($path instanceof ServerRequestInterface) {
+            $path = $path->getUri()->getPath();
+        }
+
+        return Str::is($this->getIgnorePaths(), rawurldecode(trim($path, '/')));
     }
 }

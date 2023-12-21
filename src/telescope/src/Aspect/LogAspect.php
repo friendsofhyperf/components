@@ -13,15 +13,14 @@ namespace FriendsOfHyperf\Telescope\Aspect;
 
 use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Severity;
-use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Stringable\Str;
 use Monolog\Logger;
 use UnitEnum;
 
-use function Hyperf\Config\config;
 use function Hyperf\Tappable\tap;
 
 class LogAspect extends AbstractAspect
@@ -30,14 +29,14 @@ class LogAspect extends AbstractAspect
         Logger::class . '::addRecord',
     ];
 
-    public function __construct(protected SwitchManager $switcherManager)
+    public function __construct(protected TelescopeConfig $telescopeConfig)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (! $this->switcherManager->isEnable('log')) {
+            if (! $this->telescopeConfig->isEnable('log')) {
                 return;
             }
             $level = $proceedingJoinPoint->arguments['keys']['level'];
@@ -48,8 +47,7 @@ class LogAspect extends AbstractAspect
                 return;
             }
             $name = $proceedingJoinPoint->getInstance()->getName();
-            $ignoreLogs = config('telescope.ignore_logs', []);
-            if ($ignoreLogs && in_array($name, $ignoreLogs)) {
+            if ($this->telescopeConfig->isLogIgnored($name)) {
                 return;
             }
             Telescope::recordLog(

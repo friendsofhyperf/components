@@ -45,6 +45,6 @@ return [
         // 'api/*'
     ],
     'ignore_paths' => [
-        'nova-api*',
+        // 'nova-api*',
     ],
 ];

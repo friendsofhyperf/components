@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Listener;
 
 use FriendsOfHyperf\Telescope\Server\Server;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
@@ -20,8 +21,10 @@ use Hyperf\Server\ServerInterface;
 
 class SetupTelescopeServerListener implements ListenerInterface
 {
-    public function __construct(private ConfigInterface $config)
-    {
+    public function __construct(
+        private ConfigInterface $config,
+        private TelescopeConfig $telescopeConfig,
+    ) {
     }
 
     public function listen(): array
@@ -33,12 +36,13 @@ class SetupTelescopeServerListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        if (! $this->config->get('telescope.server.enable', false)) {
+        if (! $this->telescopeConfig->isServerEnable()) {
             return;
         }
 
-        $host = $this->config->get('telescope.server.host', '0.0.0.0');
-        $port = (int) $this->config->get('telescope.server.port', 9509);
+        $host = $this->telescopeConfig->getServerHost();
+        $port = $this->telescopeConfig->getServerPort();
+
         $servers = $this->config->get('server.servers');
 
         $servers[] = [

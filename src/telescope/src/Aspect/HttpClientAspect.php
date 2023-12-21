@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Aspect;
 
 use FriendsOfHyperf\Telescope\IncomingEntry;
-use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use GuzzleHttp\Client;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -29,13 +29,13 @@ class HttpClientAspect extends AbstractAspect
         Client::class . '::requestAsync',
     ];
 
-    public function __construct(protected SwitchManager $switcherManager)
+    public function __construct(protected TelescopeConfig $telescopeConfig)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcherManager->isEnable('guzzle')) {
+        if (! $this->telescopeConfig->isEnable('guzzle')) {
             return $proceedingJoinPoint->process();
         }
         $startTime = microtime(true);
