@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Listener;
 
 use Hyperf\Kafka\Event;
-use Sentry\SentrySdk;
 
 class KafkaExceptionListener extends CaptureExceptionListener
 {
@@ -35,7 +34,7 @@ class KafkaExceptionListener extends CaptureExceptionListener
 
         match ($event::class) {
             Event\FailToConsume::class => $this->captureException($event->getThrowable()),
-            default => SentrySdk::init(),
+            default => $this->setupSentrySdk(),
         };
     }
 }

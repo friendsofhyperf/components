@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Listener;
 
 use Hyperf\Command\Event;
-use Sentry\SentrySdk;
 
 class CommandExceptionListener extends CaptureExceptionListener
 {
@@ -35,7 +34,7 @@ class CommandExceptionListener extends CaptureExceptionListener
 
         match ($event::class) {
             Event\FailToHandle::class => $this->captureException($event->getThrowable()),
-            default => SentrySdk::init(),
+            default => $this->setupSentrySdk(),
         };
     }
 }

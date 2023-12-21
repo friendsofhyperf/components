@@ -15,7 +15,6 @@ use Hyperf\HttpServer\Event\RequestReceived;
 use Hyperf\HttpServer\Event\RequestTerminated;
 use Hyperf\RpcServer\Event\RequestReceived as RpcRequestReceived;
 use Hyperf\RpcServer\Event\RequestTerminated as RpcRequestTerminated;
-use Sentry\SentrySdk;
 
 class RequestExceptionListener extends CaptureExceptionListener
 {
@@ -40,7 +39,7 @@ class RequestExceptionListener extends CaptureExceptionListener
 
         match ($event::class) {
             RequestTerminated::class, RpcRequestTerminated::class => $this->captureException($event->exception),
-            default => SentrySdk::init(),
+            default => $this->setupSentrySdk(),
         };
     }
 }
