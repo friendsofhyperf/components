@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
+use Hyperf\Context\Context;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
@@ -20,6 +21,8 @@ use Throwable;
 
 abstract class CaptureExceptionListener implements ListenerInterface
 {
+    public const SETUP = 'sentry.context.setup';
+
     public function __construct(protected ContainerInterface $container, protected Switcher $switcher)
     {
     }
@@ -42,5 +45,19 @@ abstract class CaptureExceptionListener implements ListenerInterface
         } finally {
             $hub->getClient()?->flush();
         }
+    }
+
+    protected function setupSentrySdk(): void
+    {
+        if (Context::has(static::SETUP)) {
+            if ($this->container->has(StdoutLoggerInterface::class)) {
+                $this->container->get(StdoutLoggerInterface::class)->warning('SentrySdk has been setup.');
+            }
+
+            return;
+        }
+
+        SentrySdk::init();
+        Context::set(static::SETUP, true);
     }
 }

@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Crontab\Event;
-use Sentry\SentrySdk;
 
 class CrontabExceptionListener extends CaptureExceptionListener
 {
@@ -40,7 +39,7 @@ class CrontabExceptionListener extends CaptureExceptionListener
 
         match ($event::class) {
             Event\FailToExecute::class => $this->captureException($event->throwable),
-            default => SentrySdk::init(),
+            default => $this->setupSentrySdk(),
         };
     }
 }
