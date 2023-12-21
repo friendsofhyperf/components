@@ -141,6 +141,7 @@ class RequestHandledListener implements ListenerInterface
         return ! $this->is(
             $psr7Request,
             collect([
+                '*favicon.ico',
                 'telescope-api*',
                 'vendor/telescope*',
             ])
@@ -154,8 +155,9 @@ class RequestHandledListener implements ListenerInterface
 
     protected function is($psr7Request, $patterns)
     {
-        $path = $psr7Request->getRequestTarget();
-        $path = ltrim($path, '/');
+        $uri = $psr7Request->getUri();
+        $path = $uri->getPath();
+        $path = rawurldecode(trim($path, '/'));
 
         return collect($patterns)->contains(fn ($pattern) => Str::is($pattern, $path));
     }
