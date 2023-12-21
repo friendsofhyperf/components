@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Listener;
 
 use FriendsOfHyperf\Telescope\IncomingEntry;
-use FriendsOfHyperf\Telescope\SwitchManager;
 use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Command\Event\AfterExecute;
 use Hyperf\Event\Contract\ListenerInterface;
 
@@ -23,7 +23,7 @@ use Hyperf\Event\Contract\ListenerInterface;
  */
 class CommandListener implements ListenerInterface
 {
-    public function __construct(private SwitchManager $switchManager)
+    public function __construct(private TelescopeConfig $telescopeConfig)
     {
     }
 
@@ -39,7 +39,7 @@ class CommandListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if ($this->switchManager->isEnable('command') === false) {
+        if ($this->telescopeConfig->isEnable('command') === false) {
             return;
         }
 

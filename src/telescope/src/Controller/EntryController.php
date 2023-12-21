@@ -119,20 +119,6 @@ abstract class EntryController
      */
     protected function status()
     {
-        // if (! config('telescope.enabled', false)) {
-        //     return 'disabled';
-        // }
-
-        // if (cache('telescope:pause-recording', false)) {
-        //     return 'paused';
-        // }
-
-        // $watcher = config('telescope.watchers.'.$this->watcher());
-
-        // if (! $watcher || (isset($watcher['enabled']) && ! $watcher['enabled'])) {
-        //     return 'off';
-        // }
-
         return 'enabled';
     }
 }

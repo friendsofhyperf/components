@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Model;
 
-use function Hyperf\Config\config;
+use FriendsOfHyperf\Telescope\Telescope;
 
 abstract class Model extends \Hyperf\DbConnection\Model\Model
 {
     public function getConnectionName()
     {
-        return config('telescope.database.connection', 'default');
+        return Telescope::getConfig()->getDatabaseConnection();
     }
 }

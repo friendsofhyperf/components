@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Aspect;
 
-use FriendsOfHyperf\Telescope\SwitchManager;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -27,14 +27,14 @@ class RequestDispatcherAspect extends AbstractAspect
         RequestDispatcher::class . '::dispatch',
     ];
 
-    public function __construct(protected SwitchManager $switcherManager)
+    public function __construct(protected TelescopeConfig $telescopeConfig)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function () use ($proceedingJoinPoint) {
-            if (! $this->switcherManager->isEnable('request')) {
+            if (! $this->telescopeConfig->isEnable('request')) {
                 return;
             }
 
