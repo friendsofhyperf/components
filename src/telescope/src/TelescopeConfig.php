@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Telescope;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Stringable\Str;
+use Psr\Http\Message\ServerRequestInterface;
 
 class TelescopeConfig
 {
@@ -122,8 +123,12 @@ class TelescopeConfig
         return (array) $this->get('only_paths', []);
     }
 
-    public function isPatchOnly(string $path): bool
+    public function isPatchOnly(ServerRequestInterface|string $path): bool
     {
+        if ($path instanceof ServerRequestInterface) {
+            $path = $path->getUri()->getPath();
+        }
+
         if (empty($this->getOnlyPaths())) {
             return false;
         }
@@ -147,8 +152,12 @@ class TelescopeConfig
         return array_merge($defaultIgnorePaths, $ignorePaths);
     }
 
-    public function isPathIgnored(string $path): bool
+    public function isPathIgnored(ServerRequestInterface|string $path): bool
     {
+        if ($path instanceof ServerRequestInterface) {
+            $path = $path->getUri()->getPath();
+        }
+
         return Str::is($this->getIgnorePaths(), $path);
     }
 }

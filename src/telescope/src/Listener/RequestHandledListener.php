@@ -132,11 +132,11 @@ class RequestHandledListener implements ListenerInterface
 
     protected function incomingRequest(ServerRequestInterface $psr7Request): bool
     {
-        if ($this->telescopeConfig->isPatchOnly($psr7Request->getUri()->getPath())) {
+        if ($this->telescopeConfig->isPatchOnly($psr7Request)) {
             return true;
         }
 
-        return ! $this->telescopeConfig->isPathIgnored($psr7Request->getUri()->getPath());
+        return ! $this->telescopeConfig->isPathIgnored($psr7Request);
     }
 
     protected function response(ResponseInterface $response): string|array
