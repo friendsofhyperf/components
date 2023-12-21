@@ -21,7 +21,6 @@ use Hyperf\Stringable\Str;
 use Monolog\Logger;
 use UnitEnum;
 
-use function Hyperf\Config\config;
 use function Hyperf\Tappable\tap;
 
 class LogAspect extends AbstractAspect

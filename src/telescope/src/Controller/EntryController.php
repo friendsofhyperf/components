@@ -119,7 +119,6 @@ abstract class EntryController
      */
     protected function status()
     {
-
         return 'enabled';
     }
 }
