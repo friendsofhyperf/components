@@ -17,6 +17,7 @@ use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\GrpcServer\CoreMiddleware;
+use Throwable;
 
 use function Hyperf\Tappable\tap;
 
@@ -27,14 +28,16 @@ class CoreMiddlewareAspect extends AbstractAspect
         CoreMiddleware::class . '::handleResponse',
     ];
 
-    public function __construct(protected TelescopeConfig $telescopeConfig) {}
+    public function __construct(protected TelescopeConfig $telescopeConfig) 
+    {
+    }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return match ($proceedingJoinPoint->methodName) {
             'parseMethodParameters' => $this->processParseMethodParameters($proceedingJoinPoint),
-            'handleResponse'        => $this->processHandleResponse($proceedingJoinPoint),
-            default                 => $proceedingJoinPoint->process(),
+            'handleResponse' => $this->processHandleResponse($proceedingJoinPoint),
+            default => $proceedingJoinPoint->process(),
         };
     }
 
@@ -42,14 +45,14 @@ class CoreMiddlewareAspect extends AbstractAspect
     protected function processParseMethodParameters($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) {
-            if (static::class == self::class && !$this->telescopeConfig->isEnable('grpc') ) {
+            if (static::class == self::class && ! $this->telescopeConfig->isEnable('grpc')) {
                 return;
             }
             try {
-                $req     = $result[0];
+                $req = $result[0];
                 $request = $req->serializeToJsonString();
                 TelescopeContext::setGrpcRequest($request);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 return;
             }
         });
@@ -59,7 +62,7 @@ class CoreMiddlewareAspect extends AbstractAspect
     protected function processHandleResponse($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (static::class == self::class && !$this->telescopeConfig->isEnable('grpc') ) {
+            if (static::class == self::class && ! $this->telescopeConfig->isEnable('grpc')) {
                 return;
             }
             // 获取参数
@@ -68,7 +71,7 @@ class CoreMiddlewareAspect extends AbstractAspect
             try {
                 $response = $message->serializeToJsonString();
                 TelescopeContext::setGrpcResponse($response);
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 return;
             }
         });
