@@ -88,7 +88,7 @@ class TelescopeMiddleware implements MiddlewareInterface
                 'payload' => $this->getRequestPayload($psr7Request),
                 'session' => '',
                 'response_status' => $psr7Response->getStatusCode(),
-                'response' => $this->response($psr7Response),
+                'response' => $this->getResponsePayload($psr7Response),
                 'duration' => $startTime ? floor((microtime(true) - $startTime) * 1000) : null,
                 'memory' => round(memory_get_peak_usage(true) / 1024 / 1025, 1),
             ]);
@@ -110,7 +110,7 @@ class TelescopeMiddleware implements MiddlewareInterface
         return ! $this->telescopeConfig->isPathIgnored($psr7Request);
     }
 
-    protected function response(ResponseInterface $response): string|array
+    protected function getResponsePayload(ResponseInterface $response): string|array
     {
         $stream = $response->getBody();
         if ($stream->isSeekable()) {
