@@ -101,7 +101,7 @@ class RequestHandledListener implements ListenerInterface
                 'controller_action' => $dispatched->handler ? $dispatched->handler->callback : '',
                 'middleware' => TelescopeContext::getMiddlewares(),
                 'headers' => $psr7Request->getHeaders(),
-                'payload' => $this->request($psr7Request),
+                'payload' => $this->getRequestPayload($psr7Request),
                 'session' => '',
                 'response_status' => $psr7Response->getStatusCode(),
                 'response' => $this->response($psr7Response),
@@ -219,15 +219,12 @@ class RequestHandledListener implements ListenerInterface
         return false;
     }
 
-    protected function request(ServerRequestInterface $request): array|string
+    protected function getRequestPayload(ServerRequestInterface $psr7Request): array|string
     {
-        $dispatched = $request->getAttribute(Dispatched::class);
-        $serverName = $dispatched->serverName ?? 'http';
-
-        if ($serverName != 'grpc') {
-            return $request->getParsedBody();
+        if ($psr7Request->getHeaderLine('content-type') != 'application/grpc') {
+            return $psr7Request->getParsedBody();
         }
-        $req = TelescopeContext::getGrpcRequest();
-        return $req ? json_decode($req, true) : '';
+        $request = TelescopeContext::getGrpcRequest();
+        return $request ? json_decode($request, true) : '';
     }
 }

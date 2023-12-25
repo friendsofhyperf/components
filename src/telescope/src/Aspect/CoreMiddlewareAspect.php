@@ -45,7 +45,7 @@ class CoreMiddlewareAspect extends AbstractAspect
     protected function processParseMethodParameters($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) {
-            if (static::class == self::class && ! $this->telescopeConfig->isEnable('grpc')) {
+            if (! $this->telescopeConfig->isEnable('grpc')) {
                 return;
             }
             try {
@@ -62,7 +62,7 @@ class CoreMiddlewareAspect extends AbstractAspect
     protected function processHandleResponse($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (static::class == self::class && ! $this->telescopeConfig->isEnable('grpc')) {
+            if (! $this->telescopeConfig->isEnable('grpc')) {
                 return;
             }
             // 获取参数
