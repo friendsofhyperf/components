@@ -94,8 +94,6 @@ class RequestHandledListener implements ListenerInterface
         if ($this->incomingRequest($psr7Request)) {
             /** @var Dispatched $dispatched */
             $dispatched = $psr7Request->getAttribute(Dispatched::class);
-            $serverName = $dispatched->serverName ?? 'http';
-
             $entry = IncomingEntry::make([
                 'ip_address' => $psr7Request->getServerParams()['remote_addr'] ?? 'unknown',
                 'uri' => $psr7Request->getRequestTarget(),
@@ -103,7 +101,7 @@ class RequestHandledListener implements ListenerInterface
                 'controller_action' => $dispatched->handler ? $dispatched->handler->callback : '',
                 'middleware' => TelescopeContext::getMiddlewares(),
                 'headers' => $psr7Request->getHeaders(),
-                'payload' => $psr7Request->getParsedBody(),
+                'payload' => $this->request($psr7Request),
                 'session' => '',
                 'response_status' => $psr7Response->getStatusCode(),
                 'response' => $this->response($psr7Response),
@@ -111,18 +109,7 @@ class RequestHandledListener implements ListenerInterface
                 'memory' => round(memory_get_peak_usage(true) / 1024 / 1025, 1),
             ]);
 
-            $serverConfig = collect(config('server.servers'))->firstWhere('name', $serverName);
-            $handlerClass = $serverConfig['callbacks'][Event::ON_RECEIVE][0] ?? $serverConfig['callbacks'][Event::ON_REQUEST][0] ?? null;
-            $handler = is_string($handlerClass) && $this->container->has($handlerClass) ? $this->container->get($handlerClass) : null;
-
-            if (
-                $handler
-                && (
-                    is_a($handler, \Hyperf\RpcServer\Server::class, true)
-                    || is_a($handler, \Hyperf\JsonRpc\HttpServer::class, true)
-                    || is_a($handler, \Hyperf\GrpcServer\Server::class, true)
-                )
-            ) {
+            if ($this->isRpcRequest($psr7Request)) {
                 Telescope::recordService($entry);
             } else {
                 Telescope::recordRequest($entry);
@@ -165,8 +152,8 @@ class RequestHandledListener implements ListenerInterface
                 return $this->contentWithinLimits($content) ? $content : 'Purged By Hyperf Telescope'; /* @phpstan-ignore-line */
             }
             if (Str::contains($response->getHeaderLine('content-type'), 'application/grpc') !== false) {
-                // to do for grpc
-                return 'Purged By Hyperf Telescope';
+                $resp = TelescopeContext::getGrpcResponse();
+                return $resp ? json_decode($resp, true) : 'Purged By Hyperf Telescope';
             }
         }
 
@@ -209,5 +196,38 @@ class RequestHandledListener implements ListenerInterface
         }
 
         return $this->container->get(RpcContext::class)->get('telescope.carrier', []);
+    }
+
+    protected function isRpcRequest(ServerRequestInterface $psr7Request): bool
+    {
+        $dispatched   = $psr7Request->getAttribute(Dispatched::class);
+        $serverName   = $dispatched->serverName ?? 'http';
+        $serverConfig = collect(config('server.servers'))->firstWhere('name', $serverName);
+        $handlerClass = $serverConfig['callbacks'][Event::ON_RECEIVE][0] ?? $serverConfig['callbacks'][Event::ON_REQUEST][0] ?? null;
+        $handler      = is_string($handlerClass) && $this->container->has($handlerClass) ? $this->container->get($handlerClass) : null;
+        if (
+            $handler
+            && (
+                is_a($handler, \Hyperf\RpcServer\Server::class, true)
+                || is_a($handler, \Hyperf\JsonRpc\HttpServer::class, true)
+                || is_a($handler, \Hyperf\GrpcServer\Server::class, true)
+            )
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
+    protected function request(ServerRequestInterface $request): array|string
+    {
+        $dispatched = $request->getAttribute(Dispatched::class);
+        $serverName = $dispatched->serverName ?? 'http';
+
+        if ($serverName != 'grpc') {
+            return $request->getParsedBody();
+        }
+        $req = TelescopeContext::getGrpcRequest();
+        return $req ? json_decode($req, true) : '';
     }
 }
