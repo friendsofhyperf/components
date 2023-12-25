@@ -33,6 +33,9 @@ class CoreMiddlewareAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        if (! $this->telescopeConfig->isEnable('grpc')) {
+            return $proceedingJoinPoint->process();
+        }
         return match ($proceedingJoinPoint->methodName) {
             'parseMethodParameters' => $this->processParseMethodParameters($proceedingJoinPoint),
             'handleResponse' => $this->processHandleResponse($proceedingJoinPoint),
@@ -44,9 +47,6 @@ class CoreMiddlewareAspect extends AbstractAspect
     protected function processParseMethodParameters($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) {
-            if (! $this->telescopeConfig->isEnable('grpc')) {
-                return;
-            }
             try {
                 $req = $result[0];
                 $request = $req->serializeToJsonString();
@@ -61,9 +61,6 @@ class CoreMiddlewareAspect extends AbstractAspect
     protected function processHandleResponse($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (! $this->telescopeConfig->isEnable('grpc')) {
-                return;
-            }
             // 获取参数
             $params = $proceedingJoinPoint->arguments;
             $message = $params['keys']['message'];
