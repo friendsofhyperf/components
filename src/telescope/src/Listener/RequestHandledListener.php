@@ -126,7 +126,7 @@ class RequestHandledListener implements ListenerInterface
         return ! $this->telescopeConfig->isPathIgnored($psr7Request);
     }
 
-    protected function response(ResponseInterface $response): string|array
+    protected function response(ResponseInterface $response): array|string
     {
         $stream = $response->getBody();
 
@@ -200,11 +200,11 @@ class RequestHandledListener implements ListenerInterface
 
     protected function isRpcRequest(ServerRequestInterface $psr7Request): bool
     {
-        $dispatched   = $psr7Request->getAttribute(Dispatched::class);
-        $serverName   = $dispatched->serverName ?? 'http';
+        $dispatched = $psr7Request->getAttribute(Dispatched::class);
+        $serverName = $dispatched->serverName ?? 'http';
         $serverConfig = collect(config('server.servers'))->firstWhere('name', $serverName);
         $handlerClass = $serverConfig['callbacks'][Event::ON_RECEIVE][0] ?? $serverConfig['callbacks'][Event::ON_REQUEST][0] ?? null;
-        $handler      = is_string($handlerClass) && $this->container->has($handlerClass) ? $this->container->get($handlerClass) : null;
+        $handler = is_string($handlerClass) && $this->container->has($handlerClass) ? $this->container->get($handlerClass) : null;
         if (
             $handler
             && (
