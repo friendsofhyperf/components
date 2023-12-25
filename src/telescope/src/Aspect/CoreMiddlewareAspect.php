@@ -2,12 +2,11 @@
 
 declare(strict_types=1);
 /**
- * This file is part of Hyperf.
+ * This file is part of friendsofhyperf/components.
  *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
+ * @contact  huangdijia@gmail.com
  */
 
 namespace FriendsOfHyperf\Telescope\Aspect;
@@ -28,7 +27,7 @@ class CoreMiddlewareAspect extends AbstractAspect
         CoreMiddleware::class . '::handleResponse',
     ];
 
-    public function __construct(protected TelescopeConfig $telescopeConfig) 
+    public function __construct(protected TelescopeConfig $telescopeConfig)
     {
     }
 
