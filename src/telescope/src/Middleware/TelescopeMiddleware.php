@@ -25,6 +25,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Throwable;
 
 use function Hyperf\Collection\collect;
 use function Hyperf\Config\config;
@@ -132,9 +133,14 @@ class TelescopeMiddleware implements MiddlewareInterface
             if (Str::startsWith(strtolower($response->getHeaderLine('content-type') ?: ''), 'text/plain')) {
                 return $this->contentWithinLimits($content) ? $content : 'Purged By Hyperf Telescope'; /* @phpstan-ignore-line */
             }
-            if (Str::contains($response->getHeaderLine('content-type'), 'application/grpc') !== false) {
-                $resp = TelescopeContext::getGrpcResponse();
-                return $resp ? json_decode($resp, true) : 'Purged By Hyperf Telescope';
+            if (Str::contains($response->getHeaderLine('content-type'), 'application/grpc')) {
+                if ($grpcResponse = TelescopeContext::getGrpcResponse()) {
+                    try {
+                        return json_decode($grpcResponse, true);
+                    } catch (Throwable $e) {
+                    }
+                }
+                return 'Purged By Hyperf Telescope';
             }
         }
 
