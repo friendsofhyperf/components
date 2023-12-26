@@ -67,7 +67,7 @@ class TelescopeMiddleware implements MiddlewareInterface
 
     /**
      * @param ServerRequestInterface $request
-     * @param \Psr\Http\Message\ResponseInterface $response
+     * @param ResponseInterface $response
      */
     public function requestHandled($request, $response)
     {

@@ -54,7 +54,7 @@ trait HasRelationships
      * @param array|string|null $foreignKey
      * @param array|string|null $localKey
      *
-     * @return \FriendsOfHyperf\Compoships\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
     public function hasOne($related, $foreignKey = null, $localKey = null)
     {
@@ -88,7 +88,7 @@ trait HasRelationships
      * @param array|string|null $foreignKey
      * @param array|string|null $localKey
      *
-     * @return \FriendsOfHyperf\Compoships\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     public function hasMany($related, $foreignKey = null, $localKey = null)
     {
@@ -123,7 +123,7 @@ trait HasRelationships
      * @param array|string|null $ownerKey
      * @param string $relation
      *
-     * @return \FriendsOfHyperf\Compoships\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     public function belongsTo($related, $foreignKey = null, $ownerKey = null, $relation = null)
     {
@@ -161,7 +161,7 @@ trait HasRelationships
      * @param array|string $foreignKey
      * @param array|string $localKey
      *
-     * @return \FriendsOfHyperf\Compoships\Database\Eloquent\Relations\HasOne
+     * @return HasOne
      */
     protected function newHasOne(Builder $query, Model $parent, $foreignKey, $localKey)
     {
@@ -174,7 +174,7 @@ trait HasRelationships
      * @param array|string $foreignKey
      * @param array|string $localKey
      *
-     * @return \FriendsOfHyperf\Compoships\Database\Eloquent\Relations\HasMany
+     * @return HasMany
      */
     protected function newHasMany(Builder $query, Model $parent, $foreignKey, $localKey)
     {
@@ -188,7 +188,7 @@ trait HasRelationships
      * @param array|string $ownerKey
      * @param string $relation
      *
-     * @return \FriendsOfHyperf\Compoships\Database\Eloquent\Relations\BelongsTo
+     * @return BelongsTo
      */
     protected function newBelongsTo(Builder $query, Model $child, $foreignKey, $ownerKey, $relation)
     {

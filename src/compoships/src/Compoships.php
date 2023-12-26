@@ -47,7 +47,7 @@ trait Compoships
     /**
      * Configure Eloquent to use Compoships Query Builder.
      *
-     * @return \FriendsOfHyperf\Compoships\Database\Query\Builder|static
+     * @return Database\Query\Builder|static
      */
     protected function newBaseQueryBuilder()
     {

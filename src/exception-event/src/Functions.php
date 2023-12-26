@@ -106,7 +106,7 @@ namespace {
          * @param string|\Throwable $exception
          * @param array ...$parameters
          * @return T
-         * @throws \TypeError
+         * @throws TypeError
          * @deprecated since 3.1, use `\FriendsOfHyperf\ExceptionEvent\report_if` instead.
          */
         function report_if($condition, $exception = 'RuntimeException', ...$parameters)
@@ -123,7 +123,7 @@ namespace {
          * @param string|\Throwable $exception
          * @param array ...$parameters
          * @return T
-         * @throws \TypeError
+         * @throws TypeError
          * @deprecated since 3.1, use `\FriendsOfHyperf\ExceptionEvent\report_unless` instead.
          */
         function report_unless($condition, $exception = 'RuntimeException', ...$parameters)
