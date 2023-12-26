@@ -30,6 +30,10 @@ class TelescopeContext
 
     public const MIDDLEWARES = 'telescope.context.middlewares';
 
+    public const GRPC_REQUEST_PAYLOAD = 'telescope.context.grpc.request.payload';
+
+    public const GRPC_RESPONSE_PAYLOAD = 'telescope.context.grpc.response.payload';
+
     public static function setBatchId(string $batchId): void
     {
         Context::set(self::BATCH_ID, $batchId);
@@ -108,5 +112,25 @@ class TelescopeContext
         $entries[] = $entry;
 
         Context::set(self::ENTRIES, $entries);
+    }
+
+    public static function setGrpcRequestPayload(array $payload): void
+    {
+        Context::set(self::GRPC_REQUEST_PAYLOAD, $payload);
+    }
+
+    public static function getGrpcRequestPayload(): ?array
+    {
+        return Context::get(self::GRPC_REQUEST_PAYLOAD) ?: null;
+    }
+
+    public static function setGrpcResponsePayload(array $payload): void
+    {
+        Context::set(self::GRPC_RESPONSE_PAYLOAD, $payload);
+    }
+
+    public static function getGrpcResponsePayload(): ?array
+    {
+        return Context::get(self::GRPC_RESPONSE_PAYLOAD) ?: null;
     }
 }
