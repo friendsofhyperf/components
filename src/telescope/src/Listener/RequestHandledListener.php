@@ -200,11 +200,7 @@ class RequestHandledListener implements ListenerInterface
 
     protected function isRpcRequest(ServerRequestInterface $psr7Request): bool
     {
-        $dispatched = $psr7Request->getAttribute(Dispatched::class);
-        $serverName = $dispatched->serverName ?? 'http';
-        $serverConfig = collect(config('server.servers'))->firstWhere('name', $serverName);
-        $handlerClass = $serverConfig['callbacks'][Event::ON_RECEIVE][0] ?? $serverConfig['callbacks'][Event::ON_REQUEST][0] ?? null;
-        $handler = is_string($handlerClass) && $this->container->has($handlerClass) ? $this->container->get($handlerClass) : null;
+        $handler = $this->pareseHandler($psr7Request);
         if (
             $handler
             && (
@@ -219,12 +215,24 @@ class RequestHandledListener implements ListenerInterface
         return false;
     }
 
+    protected function pareseHandler(ServerRequestInterface $psr7Request): mixed
+    {
+        $dispatched = $psr7Request->getAttribute(Dispatched::class);
+        $serverName = $dispatched->serverName ?? 'http';
+        $serverConfig = collect(config('server.servers'))->firstWhere('name', $serverName);
+        $handlerClass = $serverConfig['callbacks'][Event::ON_RECEIVE][0] ?? $serverConfig['callbacks'][Event::ON_REQUEST][0] ?? null;
+        return is_string($handlerClass) && $this->container->has($handlerClass) ? $this->container->get($handlerClass) : null;
+    }
+
     protected function getRequestPayload(ServerRequestInterface $psr7Request): array|string
     {
-        if ($psr7Request->getHeaderLine('content-type') != 'application/grpc') {
-            return $psr7Request->getParsedBody();
+        $handler = $this->pareseHandler($psr7Request);
+        if ($handler
+            && is_a($handler, \Hyperf\GrpcServer\Server::class, true)
+            && $request = TelescopeContext::getGrpcRequest()
+        ) {
+            return json_decode($request, true);
         }
-        $request = TelescopeContext::getGrpcRequest();
-        return $request ? json_decode($request, true) : '';
+        return $psr7Request->getParsedBody();
     }
 }

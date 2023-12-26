@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Telescope\Aspect;
 
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;
+use Google\Protobuf\Internal\Message;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\GrpcServer\CoreMiddleware;
@@ -20,7 +21,7 @@ use Throwable;
 
 use function Hyperf\Tappable\tap;
 
-class CoreMiddlewareAspect extends AbstractAspect
+class GrpcCoreMiddlewareAspect extends AbstractAspect
 {
     public array $classes = [
         CoreMiddleware::class . '::parseMethodParameters',
@@ -50,10 +51,10 @@ class CoreMiddlewareAspect extends AbstractAspect
             try {
                 $req = $result[0];
                 $request = $req->serializeToJsonString();
-                TelescopeContext::setGrpcRequest($request);
             } catch (Throwable $e) {
                 return;
             }
+            TelescopeContext::setGrpcRequest($request ?? '');
         });
     }
 
@@ -63,13 +64,17 @@ class CoreMiddlewareAspect extends AbstractAspect
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
             // 获取参数
             $params = $proceedingJoinPoint->arguments;
+            /** @var ?Message $message */
             $message = $params['keys']['message'];
+            if (is_null($message)) {
+                return;
+            }
             try {
                 $response = $message->serializeToJsonString();
-                TelescopeContext::setGrpcResponse($response);
             } catch (Throwable $e) {
                 return;
             }
+            TelescopeContext::setGrpcResponse($response ?? '');
         });
     }
 }
