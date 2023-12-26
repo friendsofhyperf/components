@@ -50,31 +50,30 @@ class GrpcCoreMiddlewareAspect extends AbstractAspect
         return tap($proceedingJoinPoint->process(), function ($result) {
             try {
                 $req = $result[0];
-                $request = $req->serializeToJsonString();
+                $requestPayload = $req->serializeToJsonString();
             } catch (Throwable $e) {
                 return;
             }
-            TelescopeContext::setGrpcRequest($request);
+            TelescopeContext::setGrpcRequest($requestPayload);
         });
     }
 
     // 处理响应
     protected function processHandleResponse($proceedingJoinPoint)
     {
-        return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
+        return tap($proceedingJoinPoint->process(), function () use ($proceedingJoinPoint) {
             // 获取参数
-            $params = $proceedingJoinPoint->arguments;
             /** @var ?Message $message */
-            $message = $params['keys']['message'];
+            $message = $proceedingJoinPoint->arguments['keys']['message'];
             if (is_null($message)) {
                 return;
             }
             try {
-                $response = $message->serializeToJsonString();
+                $responsePayload = $message->serializeToJsonString();
             } catch (Throwable $e) {
                 return;
             }
-            TelescopeContext::setGrpcResponse($response);
+            TelescopeContext::setGrpcResponse($responsePayload);
         });
     }
 }
