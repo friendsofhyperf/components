@@ -121,7 +121,7 @@ class TelescopeContext
 
     public static function getGrpcRequest(): ?string
     {
-        return Context::get(self::GRPC_REQUEST);
+        return Context::get(self::GRPC_REQUEST) ?: null;
     }
 
     public static function setGrpcResponse(string $response): void
@@ -131,6 +131,6 @@ class TelescopeContext
 
     public static function getGrpcResponse(): ?string
     {
-        return Context::get(self::GRPC_RESPONSE);
+        return Context::get(self::GRPC_RESPONSE) ?: null;
     }
 }
