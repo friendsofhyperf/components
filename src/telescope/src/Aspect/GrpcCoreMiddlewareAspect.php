@@ -54,7 +54,7 @@ class GrpcCoreMiddlewareAspect extends AbstractAspect
             } catch (Throwable $e) {
                 return;
             }
-            TelescopeContext::setGrpcRequest($request ?? '');
+            TelescopeContext::setGrpcRequest($request);
         });
     }
 
@@ -74,7 +74,7 @@ class GrpcCoreMiddlewareAspect extends AbstractAspect
             } catch (Throwable $e) {
                 return;
             }
-            TelescopeContext::setGrpcResponse($response ?? '');
+            TelescopeContext::setGrpcResponse($response);
         });
     }
 }
