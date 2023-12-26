@@ -138,6 +138,11 @@ class Telescope
         return static::getConfig()->getDatabaseQuerySlow();
     }
 
+    public static function getPath(): string
+    {
+        return static::getConfig()->getPath();
+    }
+
     /**
      * Add a callback that adds tags to the record.
      *
