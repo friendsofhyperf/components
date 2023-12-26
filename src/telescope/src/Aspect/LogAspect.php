@@ -43,7 +43,7 @@ class LogAspect extends AbstractAspect
             $level = $level instanceof UnitEnum ? (int) $level->value : (int) $level; /* @phpstan-ignore-line */
             $message = $proceedingJoinPoint->arguments['keys']['message'];
             $context = $proceedingJoinPoint->arguments['keys']['context'];
-            if (Str::contains($message, 'telescope')) {
+            if (Str::contains($message, Telescope::getPath())) {
                 return;
             }
             $name = $proceedingJoinPoint->getInstance()->getName();
