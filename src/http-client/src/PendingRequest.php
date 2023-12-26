@@ -59,7 +59,7 @@ class PendingRequest
     /**
      * The Guzzle client instance.
      *
-     * @var \GuzzleHttp\Client
+     * @var Client
      */
     protected $client;
 
@@ -108,7 +108,7 @@ class PendingRequest
     /**
      * The request cookies.
      *
-     * @var \GuzzleHttp\Cookie\CookieJar
+     * @var CookieJar
      */
     protected $cookies;
 
@@ -951,7 +951,7 @@ class PendingRequest
     /**
      * Build the Guzzle client.
      *
-     * @return \GuzzleHttp\Client
+     * @return Client
      */
     public function buildClient()
     {
@@ -961,8 +961,8 @@ class PendingRequest
     /**
      * Create new Guzzle client.
      *
-     * @param \GuzzleHttp\HandlerStack $handlerStack
-     * @return \GuzzleHttp\Client
+     * @param HandlerStack $handlerStack
+     * @return Client
      */
     public function createClient($handlerStack)
     {
@@ -975,7 +975,7 @@ class PendingRequest
     /**
      * Build the Guzzle client handler stack.
      *
-     * @return \GuzzleHttp\HandlerStack
+     * @return HandlerStack
      */
     public function buildHandlerStack()
     {
@@ -997,8 +997,8 @@ class PendingRequest
     /**
      * Add the necessary handlers to the given handler stack.
      *
-     * @param \GuzzleHttp\HandlerStack $handlerStack
-     * @return \GuzzleHttp\HandlerStack
+     * @param HandlerStack $handlerStack
+     * @return HandlerStack
      */
     public function pushHandlers($handlerStack)
     {
@@ -1213,7 +1213,7 @@ class PendingRequest
     /**
      * Create a new response instance using the given PSR response.
      *
-     * @param \Psr\Http\Message\MessageInterface $response
+     * @param MessageInterface $response
      * @return Response
      */
     protected function newResponse($response)
@@ -1464,7 +1464,7 @@ class PendingRequest
     /**
      * Retrieve a reusable Guzzle client.
      *
-     * @return \GuzzleHttp\Client
+     * @return Client
      */
     protected function getReusableClient()
     {

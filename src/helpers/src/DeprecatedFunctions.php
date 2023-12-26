@@ -86,7 +86,7 @@ if (! function_exists('cache')) {
      * If an array is passed, we'll assume you want to put to the cache.
      *
      * @return CacheInterface|mixed
-     * @throws \Exception
+     * @throws Exception
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\cache` instead.
      */
     function cache()
@@ -368,7 +368,7 @@ if (! function_exists('today')) {
     /**
      * Create a new Carbon instance for the current date.
      *
-     * @param \DateTimeZone|string|null $tz
+     * @param DateTimeZone|string|null $tz
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\today` instead.
      */
     function today($tz = null): Carbon
@@ -387,7 +387,7 @@ if (! function_exists('throw_if')) {
      * @param string|\Throwable $exception
      * @param array ...$parameters
      * @return T
-     * @throws \Throwable
+     * @throws Throwable
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\throw_if` instead.
      */
     function throw_if($condition, $exception, ...$parameters)
@@ -406,7 +406,7 @@ if (! function_exists('throw_unless')) {
      * @param string|\Throwable $exception
      * @param array ...$parameters
      * @return T
-     * @throws \Throwable
+     * @throws Throwable
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\throw_unless` instead.
      */
     function throw_unless($condition, $exception, ...$parameters)

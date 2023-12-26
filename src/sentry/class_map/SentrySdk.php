@@ -19,7 +19,7 @@ use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
 
 /**
- * @see \Sentry\SentrySdk
+ * @see SentrySdk
  */
 class SentrySdk
 {

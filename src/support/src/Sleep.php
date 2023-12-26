@@ -38,7 +38,7 @@ class Sleep
     /**
      * The total duration to sleep.
      *
-     * @var \Carbon\CarbonInterval
+     * @var CarbonInterval
      */
     public $duration;
 
