@@ -40,6 +40,7 @@ class ConfigProvider
                 Aspect\RedisAspect::class,
                 Aspect\RpcAspect::class,
                 Aspect\RequestDispatcherAspect::class,
+                Aspect\GrpcCoreMiddlewareAspect::class,
             ],
             'annotations' => [
                 'scan' => [
