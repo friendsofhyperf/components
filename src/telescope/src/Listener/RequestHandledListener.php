@@ -226,11 +226,8 @@ class RequestHandledListener implements ListenerInterface
     protected function getRequestPayload(ServerRequestInterface $psr7Request): array|string
     {
         $handler = $this->parseHandler($psr7Request);
-        if ($handler
-            && is_a($handler, \Hyperf\GrpcServer\Server::class, true)
-            && $payload = TelescopeContext::getGrpcRequestPayload()
-        ) {
-            return $payload;
+        if ($handler && is_a($handler, \Hyperf\GrpcServer\Server::class, true)) {
+            return TelescopeContext::getGrpcRequestPayload() ?: '';
         }
         return $psr7Request->getParsedBody();
     }
