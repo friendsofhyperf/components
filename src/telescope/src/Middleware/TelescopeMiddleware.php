@@ -25,7 +25,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-use Throwable;
 
 use function Hyperf\Collection\collect;
 use function Hyperf\Config\config;
@@ -133,14 +132,8 @@ class TelescopeMiddleware implements MiddlewareInterface
             if (Str::startsWith(strtolower($response->getHeaderLine('content-type') ?: ''), 'text/plain')) {
                 return $this->contentWithinLimits($content) ? $content : 'Purged By Hyperf Telescope'; /* @phpstan-ignore-line */
             }
-            if (Str::contains($response->getHeaderLine('content-type'), 'application/grpc')) {
-                if ($grpcResponse = TelescopeContext::getGrpcResponse()) {
-                    try {
-                        return json_decode($grpcResponse, true);
-                    } catch (Throwable $e) {
-                    }
-                }
-                return 'Purged By Hyperf Telescope';
+            if (Str::contains($response->getHeaderLine('content-type'), 'application/grpc') !== false) {
+                return TelescopeContext::getGrpcResponsePayload() ?: 'Purged By Hyperf Telescope';
             }
         }
 
@@ -187,7 +180,7 @@ class TelescopeMiddleware implements MiddlewareInterface
 
     protected function isRpcRequest(ServerRequestInterface $psr7Request): bool
     {
-        $handler = $this->pareseHandler($psr7Request);
+        $handler = $this->parseHandler($psr7Request);
         if (
             $handler
             && (
@@ -202,7 +195,7 @@ class TelescopeMiddleware implements MiddlewareInterface
         return false;
     }
 
-    protected function pareseHandler(ServerRequestInterface $psr7Request): mixed
+    protected function parseHandler(ServerRequestInterface $psr7Request): mixed
     {
         $dispatched = $psr7Request->getAttribute(Dispatched::class);
         $serverName = $dispatched->serverName ?? 'http';
@@ -213,13 +206,14 @@ class TelescopeMiddleware implements MiddlewareInterface
 
     protected function getRequestPayload(ServerRequestInterface $psr7Request): array|string
     {
-        $handler = $this->pareseHandler($psr7Request);
+        $handler = $this->parseHandler($psr7Request);
         if ($handler
             && is_a($handler, \Hyperf\GrpcServer\Server::class, true)
-            && $request = TelescopeContext::getGrpcRequest()
+            && $payload = TelescopeContext::getGrpcRequestPayload()
         ) {
-            return json_decode($request, true);
+            return $payload ?? '';
         }
+
         return $psr7Request->getParsedBody();
     }
 }

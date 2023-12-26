@@ -45,35 +45,35 @@ class GrpcCoreMiddlewareAspect extends AbstractAspect
     }
 
     // 处理请求
-    protected function processParseMethodParameters($proceedingJoinPoint)
+    protected function processParseMethodParameters(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) {
             try {
-                $req = $result[0];
-                $requestPayload = $req->serializeToJsonString();
+                /** @var Message $message */
+                $message = $result[0];
+                $payload = json_decode($message->serializeToJsonString(), true);
             } catch (Throwable $e) {
                 return;
             }
-            TelescopeContext::setGrpcRequest($requestPayload);
+            TelescopeContext::setGrpcRequestPayload($payload);
         });
     }
 
     // 处理响应
-    protected function processHandleResponse($proceedingJoinPoint)
+    protected function processHandleResponse(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        return tap($proceedingJoinPoint->process(), function () use ($proceedingJoinPoint) {
-            // 获取参数
-            /** @var ?Message $message */
-            $message = $proceedingJoinPoint->arguments['keys']['message'];
+        return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
+            /** @var Message|null $message */
+            $message = $proceedingJoinPoint->arguments['keys']['message'] ?? null;
             if (is_null($message)) {
                 return;
             }
             try {
-                $responsePayload = $message->serializeToJsonString();
+                $payload = json_decode($message->serializeToJsonString(), true);
             } catch (Throwable $e) {
                 return;
             }
-            TelescopeContext::setGrpcResponse($responsePayload);
+            TelescopeContext::setGrpcResponsePayload($payload);
         });
     }
 }
