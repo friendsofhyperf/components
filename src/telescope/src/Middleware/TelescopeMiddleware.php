@@ -211,7 +211,7 @@ class TelescopeMiddleware implements MiddlewareInterface
             && is_a($handler, \Hyperf\GrpcServer\Server::class, true)
             && $payload = TelescopeContext::getGrpcRequestPayload()
         ) {
-            return $payload ?: '';
+            return $payload;
         }
 
         return $psr7Request->getParsedBody();
