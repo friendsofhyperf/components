@@ -47,7 +47,7 @@ class DbQueryListener implements ListenerInterface
                     $sql = Str::replaceFirst('?', "'{$value}'", $sql);
                 }
             }
-            if (Str::contains($sql, 'telescope')) {
+            if (Str::contains($sql, Telescope::getPath())) {
                 return;
             }
             $optionSlow = Telescope::getQuerySlow();
