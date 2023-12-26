@@ -37,11 +37,14 @@ class ExceptionHandlerDispatcherAspect extends AbstractAspect
     {
         return tap($proceedingJoinPoint->process(), function ($responseHandled) use ($proceedingJoinPoint) {
             /** @var Throwable|null $exception */
-            $exception = $proceedingJoinPoint->getArguments()[0][0] ?? null;
-            $request = Context::get(ServerRequestInterface::class);
-            $response = Context::get(ResponseInterface::class);
+            $exception = isset($proceedingJoinPoint->arguments['variadic'])
+                ? ($proceedingJoinPoint->getArguments()[0] ?? null)
+                : ($proceedingJoinPoint->getArguments()[0][0] ?? null);
 
             if ($exception && $exception instanceof Throwable) {
+                $request = Context::get(ServerRequestInterface::class);
+                $response = Context::get(ResponseInterface::class);
+
                 $this->eventDispatcher->dispatch(new ExceptionDispatched($exception, $request, $response));
             }
         });
