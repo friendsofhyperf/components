@@ -137,7 +137,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     /**
      * Cast the given value to a DTO instance.
      *
-     * @param \Hyperf\Database\Model\Model $model
+     * @param Model $model
      * @param string $key
      * @param mixed $value
      * @param array $attributes
@@ -154,7 +154,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     /**
      * Prepare the value for storage.
      *
-     * @param \Hyperf\Database\Model\Model $model
+     * @param Model $model
      * @param string $key
      * @param mixed $value
      * @param array $attributes

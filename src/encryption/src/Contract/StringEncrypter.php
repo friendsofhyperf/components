@@ -16,14 +16,14 @@ interface StringEncrypter
     /**
      * Encrypt a string without serialization.
      *
-     * @throws \FriendsOfHyperf\Encryption\Contract\EncryptException
+     * @throws EncryptException
      */
     public function encryptString(string $value): string;
 
     /**
      * Decrypt the given string without unserialization.
      *
-     * @throws \FriendsOfHyperf\Encryption\Contract\DecryptException
+     * @throws DecryptException
      */
     public function decryptString(string $payload): string;
 }

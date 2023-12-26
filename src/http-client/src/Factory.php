@@ -206,7 +206,7 @@ class Factory
      * @param array|string|null $body
      * @param int $status
      * @param array $headers
-     * @return \GuzzleHttp\Promise\PromiseInterface
+     * @return PromiseInterface
      */
     public static function response($body = null, $status = 200, $headers = [])
     {
