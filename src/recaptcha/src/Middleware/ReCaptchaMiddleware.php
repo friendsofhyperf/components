@@ -21,7 +21,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 /**
- * @property \Psr\Http\Message\ResponseInterface $response
+ * @property ResponseInterface $response
  */
 abstract class ReCaptchaMiddleware implements MiddlewareInterface
 {
