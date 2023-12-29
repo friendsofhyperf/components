@@ -101,7 +101,7 @@ class Env
      * Get the possible option for this environment variable.
      *
      * @param string $key
-     * @return \PhpOption\Option|\PhpOption\Some
+     * @return Option|\PhpOption\Some
      */
     protected static function getOption($key)
     {

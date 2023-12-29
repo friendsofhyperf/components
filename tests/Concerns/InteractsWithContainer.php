@@ -21,7 +21,7 @@ use Psr\Container\ContainerInterface;
 trait InteractsWithContainer
 {
     /**
-     * @var \Hyperf\Di\Container|null
+     * @var Container|null
      */
     protected ?ContainerInterface $container = null;
 
