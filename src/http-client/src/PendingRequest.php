@@ -1307,7 +1307,7 @@ class PendingRequest
     /**
      * Handle the response of an asynchronous request.
      *
-     * @param \Illuminate\Http\Client\Response $response
+     * @param Response $response
      * @param string $method
      * @param string $url
      * @param array $options

@@ -482,7 +482,7 @@ This works with all `Castable`, including `DTOCast` and `ModelCast` for nested d
 
 This works with arrays and JSON strings. This will validate the data and also cast the data for the given DTO.
 
-This will throw a `Illuminate\Validation\ValidationException` exception if the data is not valid for the DTO.
+This will throw a `Hyperf\Validation\ValidationException` exception if the data is not valid for the DTO.
 
 This will throw a `FriendsOfHyperf\ValidatedDTO\Exception\CastException` exception if the property is not a valid
 array or valid JSON string.

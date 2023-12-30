@@ -98,7 +98,7 @@ The user responsible for a particular task is the user _currently_ in charge for
 ```php
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Hyperf\Database\Model\Model;
 
 class User extends Model
 {
