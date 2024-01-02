@@ -32,9 +32,7 @@ class AsyncHttpClient extends \Sentry\HttpClient\HttpClient
         $this->loop();
 
         $chan = $this->chan;
-        $chan->push(function () use ($request, $options) {
-            parent::sendRequest($request, $options);
-        });
+        $chan->push(fn ()  => parent::sendRequest($request, $options));
 
         return new Response(202, [], 'Waiting for sendRequest');
     }
