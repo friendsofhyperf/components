@@ -11,9 +11,21 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry;
 
+use Hyperf\Support\Composer;
+
 final class Version
 {
     public const SDK_IDENTIFIER = 'sentry.php.hyperf';
 
     public const SDK_VERSION = '3.1.0';
+
+    public static function getSdkIdentifier(): string
+    {
+        return self::SDK_IDENTIFIER;
+    }
+
+    public static function getSdkVersion(): string
+    {
+        return Composer::getVersions()['friendsofhyperf/sentry'] ?? self::SDK_VERSION;
+    }
 }

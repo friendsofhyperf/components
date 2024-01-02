@@ -65,20 +65,21 @@ class ClientBuilderFactory
             $options['environment'] = env('APP_ENV', 'production');
         }
 
+        $sdkVersion = Composer::getVersions()['friendsofhyperf/sentry'] ?? Version::SDK_VERSION;
+
         if (
             ! isset($options['http_client'])
             || ! $options['http_client'] instanceof HttpClientInterface
         ) {
             $options['http_client'] = make(HttpClientInterface::class, [
-                'sdkIdentifier' => Version::SDK_IDENTIFIER,
-                'sdkVersion' => Version::SDK_VERSION,
+                'sdkIdentifier' => Version::getSdkIdentifier(),
+                'sdkVersion' => Version::getSdkVersion(),
             ]);
         }
 
-        return tap(ClientBuilder::create($options), function (ClientBuilder $clientBuilder) {
-            $clientBuilder->setSdkIdentifier(Version::SDK_IDENTIFIER);
-            $sdkVersion = Composer::getVersions()['friendsofhyperf/sentry'] ?? Version::SDK_VERSION;
-            $clientBuilder->setSdkVersion($sdkVersion);
-        });
+        return tap(
+            ClientBuilder::create($options),
+            fn (ClientBuilder $clientBuilder) => $clientBuilder->setSdkIdentifier(Version::getSdkIdentifier())->setSdkVersion(Version::getSdkVersion())
+        );
     }
 }
