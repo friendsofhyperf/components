@@ -80,7 +80,6 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
                         } else {
                             Coroutine::create($closure);
                         }
-                        $closure();
                     } catch (Throwable) {
                         break;
                     } finally {
