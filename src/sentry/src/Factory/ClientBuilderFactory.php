@@ -16,8 +16,10 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Support\Composer;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
+use Sentry\HttpClient\HttpClientInterface;
 
 use function Hyperf\Support\env;
+use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
 
 class ClientBuilderFactory
@@ -61,6 +63,16 @@ class ClientBuilderFactory
         // When we get no environment from the (user) configuration we default to the environment
         if (empty($options['environment'])) {
             $options['environment'] = env('APP_ENV', 'production');
+        }
+
+        if (
+            ! isset($options['http_client'])
+            || ! $options['http_client'] instanceof HttpClientInterface
+        ) {
+            $options['http_client'] = make(HttpClientInterface::class, [
+                'sdkIdentifier' => Version::SDK_IDENTIFIER,
+                'sdkVersion' => Version::SDK_VERSION,
+            ]);
         }
 
         return tap(ClientBuilder::create($options), function (ClientBuilder $clientBuilder) {
