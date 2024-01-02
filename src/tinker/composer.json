@@ -30,6 +30,7 @@
         "hyperf/support": "~3.0.1",
         "hyperf/tappable": "~3.0.0",
         "psy/psysh": "^0.10.0|^0.11.0"
+        "psy/psysh": "^0.10.0|^0.11.0|^0.12.0"
     },
     "suggest": {
         "hyperf/utils": "Suggest for using `Hyperf\\Utils\\Collection` and `\\Hyperf\\Utils\\Stringable`.",
