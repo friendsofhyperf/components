@@ -12,8 +12,10 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\HttpClient;
 
 use Closure;
+use FriendsOfHyperf\Sentry\Version;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
+use Hyperf\Coroutine\Concurrent;
 use Hyperf\Coroutine\Coroutine;
 use Sentry\HttpClient\Request;
 use Sentry\HttpClient\Response;
@@ -21,11 +23,22 @@ use Sentry\Options;
 use Swoole\Coroutine\Channel;
 use Throwable;
 
-class AsyncHttpClient extends \Sentry\HttpClient\HttpClient
+class HttpClient extends \Sentry\HttpClient\HttpClient
 {
     protected ?Channel $chan = null;
 
-    protected int $channelSize = 65535;
+    protected ?Concurrent $concurrent = null;
+
+    public function __construct(
+        protected int $channelSize = 65535,
+        int $concurrentLimit = 100,
+    ) {
+        parent::__construct(Version::getSdkIdentifier(), Version::getSdkVersion());
+
+        if ($concurrentLimit > 0) {
+            $this->concurrent = new Concurrent($concurrentLimit);
+        }
+    }
 
     public function sendRequest(Request $request, Options $options): Response
     {
@@ -62,6 +75,11 @@ class AsyncHttpClient extends \Sentry\HttpClient\HttpClient
                         break 2;
                     }
                     try {
+                        if ($this->concurrent) {
+                            $this->concurrent->create($closure);
+                        } else {
+                            Coroutine::create($closure);
+                        }
                         $closure();
                     } catch (Throwable) {
                         break;

@@ -13,13 +13,11 @@ namespace FriendsOfHyperf\Sentry\Factory;
 
 use FriendsOfHyperf\Sentry\Version;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Support\Composer;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
 use Sentry\HttpClient\HttpClientInterface;
 
 use function Hyperf\Support\env;
-use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
 
 class ClientBuilderFactory
@@ -65,16 +63,11 @@ class ClientBuilderFactory
             $options['environment'] = env('APP_ENV', 'production');
         }
 
-        $sdkVersion = Composer::getVersions()['friendsofhyperf/sentry'] ?? Version::SDK_VERSION;
-
         if (
-            ! isset($options['http_client'])
-            || ! $options['http_client'] instanceof HttpClientInterface
+            ! ($options['http_client'] ?? null) instanceof HttpClientInterface
+            && $container->has(HttpClientInterface::class)
         ) {
-            $options['http_client'] = make(HttpClientInterface::class, [
-                'sdkIdentifier' => Version::getSdkIdentifier(),
-                'sdkVersion' => Version::getSdkVersion(),
-            ]);
+            $options['http_client'] = $container->get(HttpClientInterface::class);
         }
 
         return tap(
