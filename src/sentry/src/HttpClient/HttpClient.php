@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\HttpClient;
 
 use Closure;
-use FriendsOfHyperf\Sentry\Version;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Concurrent;
@@ -30,10 +29,12 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
     protected ?Concurrent $concurrent = null;
 
     public function __construct(
+        string $sdkIdentifier,
+        string $sdkVersion,
         protected int $channelSize = 65535,
         int $concurrentLimit = 100,
     ) {
-        parent::__construct(Version::getSdkIdentifier(), Version::getSdkVersion());
+        parent::__construct($sdkIdentifier, $sdkVersion);
 
         if ($concurrentLimit > 0) {
             $this->concurrent = new Concurrent($concurrentLimit);

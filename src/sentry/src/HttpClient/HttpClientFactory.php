@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\HttpClient;
 
+use FriendsOfHyperf\Sentry\Version;
 use Psr\Container\ContainerInterface;
 
 class HttpClientFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        return new HttpClient();
+        return new HttpClient(Version::getSdkIdentifier(), Version::getSdkVersion());
     }
 }
