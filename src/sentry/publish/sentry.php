@@ -197,4 +197,8 @@ return [
             ],
         ],
     ],
+
+    'http_timeout' => (float) env('SENTRY_HTTP_TIMEOUT', 2.0),
+    'http_chanel_size' => (int) env('SENTRY_HTTP_CHANEL_SIZE', 65535),
+    'http_concurrent_limit' => (int) env('SENTRY_HTTP_CONCURRENT_LIMIT', 100),
 ];

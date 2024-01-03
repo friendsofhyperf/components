@@ -13,9 +13,9 @@ namespace FriendsOfHyperf\Sentry\Factory;
 
 use FriendsOfHyperf\Sentry\Version;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Support\Composer;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
+use Sentry\HttpClient\HttpClientInterface;
 
 use function Hyperf\Support\env;
 use function Hyperf\Tappable\tap;
@@ -28,6 +28,8 @@ class ClientBuilderFactory
         'integrations',
         'enable',
         'tracing',
+        'http_chanel_size',
+        'http_concurrent_limit',
     ];
 
     public function __invoke(ContainerInterface $container)
@@ -63,10 +65,16 @@ class ClientBuilderFactory
             $options['environment'] = env('APP_ENV', 'production');
         }
 
-        return tap(ClientBuilder::create($options), function (ClientBuilder $clientBuilder) {
-            $clientBuilder->setSdkIdentifier(Version::SDK_IDENTIFIER);
-            $sdkVersion = Composer::getVersions()['friendsofhyperf/sentry'] ?? Version::SDK_VERSION;
-            $clientBuilder->setSdkVersion($sdkVersion);
-        });
+        if (
+            ! ($options['http_client'] ?? null) instanceof HttpClientInterface
+            && $container->has(HttpClientInterface::class)
+        ) {
+            $options['http_client'] = $container->get(HttpClientInterface::class);
+        }
+
+        return tap(
+            ClientBuilder::create($options),
+            fn (ClientBuilder $clientBuilder) => $clientBuilder->setSdkIdentifier(Version::getSdkIdentifier())->setSdkVersion(Version::getSdkVersion())
+        );
     }
 }
