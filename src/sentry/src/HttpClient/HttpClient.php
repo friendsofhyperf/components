@@ -17,10 +17,10 @@ use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Concurrent;
 use Hyperf\Coroutine\Coroutine;
+use Hyperf\Engine\Channel;
 use Sentry\HttpClient\Request;
 use Sentry\HttpClient\Response;
 use Sentry\Options;
-use Swoole\Coroutine\Channel;
 use Throwable;
 
 class HttpClient extends \Sentry\HttpClient\HttpClient
