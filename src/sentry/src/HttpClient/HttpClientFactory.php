@@ -12,12 +12,19 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\HttpClient;
 
 use FriendsOfHyperf\Sentry\Version;
+use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 
 class HttpClientFactory
 {
     public function __invoke(ContainerInterface $container)
     {
-        return new HttpClient(Version::getSdkIdentifier(), Version::getSdkVersion());
+        $config = $container->get(ConfigInterface::class);
+        return new HttpClient(
+            Version::getSdkIdentifier(),
+            Version::getSdkVersion(),
+            (int) $config->get('sentry.http_client_chanel_size', 65535),
+            (int) $config->get('sentry.http_client_concurrent_limit', 100)
+        );
     }
 }

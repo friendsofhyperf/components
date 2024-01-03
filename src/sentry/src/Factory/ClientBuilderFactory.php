@@ -28,6 +28,8 @@ class ClientBuilderFactory
         'integrations',
         'enable',
         'tracing',
+        'http_client_chanel_size',
+        'http_client_concurrent_limit',
     ];
 
     public function __invoke(ContainerInterface $container)
