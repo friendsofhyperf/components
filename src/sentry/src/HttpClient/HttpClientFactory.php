@@ -23,8 +23,8 @@ class HttpClientFactory
         return new HttpClient(
             Version::getSdkIdentifier(),
             Version::getSdkVersion(),
-            (int) $config->get('sentry.http_client_chanel_size', 65535),
-            (int) $config->get('sentry.http_client_concurrent_limit', 100)
+            (int) $config->get('sentry.http_chanel_size', 65535),
+            (int) $config->get('sentry.http_concurrent_limit', 100)
         );
     }
 }
