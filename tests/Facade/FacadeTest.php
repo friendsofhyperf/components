@@ -28,13 +28,13 @@ test('test Log Macroable', function () {
     $this->mock(
         LoggerFactory::class,
         function ($mock) {
-            $mock->shouldReceive('get')->andReturn(m::mock(\Psr\Log\LoggerInterface::class, [
+            $mock->shouldReceive('get')->andReturn(m::mock(Psr\Log\LoggerInterface::class, [
                 'info' => null,
             ]));
         }
     );
 
-    expect(Log::channel('hyperf', 'default'))->toBeInstanceOf(\Psr\Log\LoggerInterface::class);
+    expect(Log::channel('hyperf', 'default'))->toBeInstanceOf(Psr\Log\LoggerInterface::class);
 
     /* @phpstan-ignore-next-line */
     expect(Log::info('test'))->toBeEmpty();

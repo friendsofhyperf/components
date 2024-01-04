@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 test('isLocal', function ($string, $method) {
-    $env = new \FriendsOfHyperf\Support\Environment($string);
+    $env = new FriendsOfHyperf\Support\Environment($string);
     expect($env->{$method}())->toBeTrue();
 })->with([
     ['local', 'isLocal'],

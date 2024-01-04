@@ -15,7 +15,7 @@ use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Mockery as m;
 
-uses(\FriendsOfHyperf\Tests\TestCase::class)->in('*/*');
+uses(FriendsOfHyperf\Tests\TestCase::class)->in('*/*');
 uses()->group('config-consul')->in('ConfigConsul');
 uses()->group('facade')->in('Facade');
 uses()->group('fast-paginate')->in('FastPaginate');
