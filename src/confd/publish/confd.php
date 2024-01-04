@@ -15,7 +15,7 @@ return [
 
     'drivers' => [
         'etcd' => [
-            'driver' => \FriendsOfHyperf\Confd\Driver\Etcd::class,
+            'driver' => FriendsOfHyperf\Confd\Driver\Etcd::class,
             'client' => [
                 'uri' => env('ETCD_URI', ''),
                 'version' => 'v3beta',
@@ -29,7 +29,7 @@ return [
             ],
         ],
         'nacos' => [
-            'driver' => \FriendsOfHyperf\Confd\Driver\Nacos::class,
+            'driver' => FriendsOfHyperf\Confd\Driver\Nacos::class,
             'client' => [
                 'host' => '127.0.0.1',
                 'port' => 8848,

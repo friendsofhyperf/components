@@ -36,8 +36,8 @@ uses(TestCase::class)->beforeEach(function () {
 
 uses(MakeStringable::class)->beforeAll(function () {
     $bootApplication = (object) [];
-    (new \FriendsOfHyperf\Macros\Listener\RegisterMixinListener())->process($bootApplication);
-    (new \FriendsOfHyperf\FastPaginate\Listener\RegisterMixinListener())->process($bootApplication);
+    (new FriendsOfHyperf\Macros\Listener\RegisterMixinListener())->process($bootApplication);
+    (new FriendsOfHyperf\FastPaginate\Listener\RegisterMixinListener())->process($bootApplication);
 })->in('Macros', 'FastPaginate', 'Helpers');
 
 /*

@@ -31,14 +31,14 @@ test('test Log Macroable', function () {
     ApplicationContext::setContainer(
         m::mock(ContainerInterface::class, [
             'get' => m::mock(LoggerFactory::class, [
-                'get' => m::mock(\Psr\Log\LoggerInterface::class, [
+                'get' => m::mock(Psr\Log\LoggerInterface::class, [
                     'info' => null,
                 ]),
             ]),
         ])
     );
 
-    expect(Log::channel('hyperf', 'default'))->toBeInstanceOf(\Psr\Log\LoggerInterface::class);
+    expect(Log::channel('hyperf', 'default'))->toBeInstanceOf(Psr\Log\LoggerInterface::class);
 
     expect(Log::info('test'))->toBeEmpty();
 });
