@@ -74,7 +74,7 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
                         break 2;
                     }
                     /** @var Closure|null $closure */
-                    $closure = $this->chan?->pop();
+                    $closure = $this->chan->pop();
                     if (! $closure || ! $closure instanceof Closure) {
                         break 2;
                     }
