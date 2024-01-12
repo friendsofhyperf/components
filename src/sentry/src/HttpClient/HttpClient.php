@@ -70,9 +70,12 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
         Coroutine::create(function () {
             while (true) {
                 while (true) {
+                    if (! $this->chan?->isAvailable()) {
+                        break 2;
+                    }
                     /** @var Closure|null $closure */
                     $closure = $this->chan?->pop();
-                    if (! $closure) {
+                    if (! $closure || ! $closure instanceof Closure) {
                         break 2;
                     }
                     try {
