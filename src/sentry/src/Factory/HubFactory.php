@@ -32,9 +32,9 @@ class HubFactory
     {
         $clientBuilder = $container->get(ClientBuilder::class);
         $options = $clientBuilder->getOptions();
-        $userConfig = $this->getUserConfig($container);
+        $userConfig = (array) $container->get(ConfigInterface::class)->get('sentry', []);
 
-        /** @var array<array-key, class-string>|callable $userConfig */
+        /** @var array<array-key, class-string>|callable $userIntegrationOption */
         $userIntegrationOption = $userConfig['integrations'] ?? [];
 
         $userIntegrations = $this->resolveIntegrationsFromUserConfig(
@@ -117,11 +117,5 @@ class HubFactory
         }
 
         return $integrations;
-    }
-
-    protected function getUserConfig(ContainerInterface $container): array
-    {
-        $config = $container->get(ConfigInterface::class)->get('sentry', []);
-        return empty($config) ? [] : $config;
     }
 }
