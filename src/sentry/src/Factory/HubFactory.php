@@ -32,9 +32,16 @@ class HubFactory
     {
         $clientBuilder = $container->get(ClientBuilder::class);
         $options = $clientBuilder->getOptions();
-        $userIntegrations = $this->resolveIntegrationsFromUserConfig($container);
+        $userConfig = (array) $container->get(ConfigInterface::class)->get('sentry', []);
 
-        $options->setIntegrations(static function (array $integrations) use ($options, $userIntegrations, $container) {
+        /** @var array<array-key, class-string>|callable $userIntegrationOption */
+        $userIntegrationOption = $userConfig['integrations'] ?? [];
+
+        $userIntegrations = $this->resolveIntegrationsFromUserConfig(
+            \is_array($userIntegrationOption) ? $userIntegrationOption : []
+        );
+
+        $options->setIntegrations(static function (array $integrations) use ($options, $userIntegrations, $userIntegrationOption, $container) {
             if ($options->hasDefaultIntegrations()) {
                 // Remove the default error and fatal exception listeners to let handle those
                 // itself. These event are still bubbling up through the documented changes in the users
@@ -61,12 +68,26 @@ class HubFactory
 
                     return true;
                 });
+
+                $requestFetcher = $container->get(RequestFetcher::class);
+                $integrations[] = new SdkIntegration\RequestIntegration($requestFetcher);
             }
 
-            $requestFetcher = $container->get(RequestFetcher::class);
-            $integrations[] = new SdkIntegration\RequestIntegration($requestFetcher);
+            $integrations = array_merge(
+                $integrations,
+                [
+                    new Integration(),
+                    new Integration\ExceptionContextIntegration(),
+                    new Integration\RequestIntegration(),
+                ],
+                $userIntegrations
+            );
 
-            return array_merge($integrations, $userIntegrations);
+            if (\is_callable($userIntegrationOption)) {
+                return $userIntegrationOption($integrations);
+            }
+
+            return $integrations;
         });
 
         return new Hub($clientBuilder->getClient());
@@ -75,14 +96,9 @@ class HubFactory
     /**
      * @return SdkIntegration\IntegrationInterface[]
      */
-    protected function resolveIntegrationsFromUserConfig(ContainerInterface $container): array
+    protected function resolveIntegrationsFromUserConfig(array $userIntegrations): array
     {
-        $integrations = [
-            new Integration(),
-            new Integration\ExceptionContextIntegration(),
-            new Integration\RequestIntegration(),
-        ];
-        $userIntegrations = $container->get(ConfigInterface::class)->get('sentry.integrations', []);
+        $integrations = [];
 
         foreach ($userIntegrations as $userIntegration) {
             if ($userIntegration instanceof SdkIntegration\IntegrationInterface) {
