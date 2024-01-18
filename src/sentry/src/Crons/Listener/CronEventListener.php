@@ -15,6 +15,7 @@ use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Crontab\Event;
 use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\CheckInStatus;
@@ -22,8 +23,11 @@ use Sentry\SentrySdk;
 
 class CronEventListener implements ListenerInterface
 {
-    public function __construct(protected ConfigInterface $config, protected Switcher $switcher)
-    {
+    public function __construct(
+        protected ConfigInterface $config,
+        protected Switcher $switcher,
+        protected StdoutLoggerInterface $logger
+    ) {
     }
 
     public function listen(): array
@@ -56,6 +60,11 @@ class CronEventListener implements ListenerInterface
         if ($event instanceof Event\BeforeExecute) {
             // Create a crontab schedule object
             $rule = $event->crontab->getRule();
+            $rules = explode(' ', $rule);
+            if (count($rules) > 5) {
+                $this->logger->warning(sprintf('Crontab rule %s is not supported by sentry', $rule));
+                return;
+            }
             $monitorSchedule = \Sentry\MonitorSchedule::crontab($rule);
             // Create a config object
             $monitorConfig = new \Sentry\MonitorConfig(
