@@ -39,6 +39,9 @@ class CronEventListener implements ListenerInterface
         ];
     }
 
+    /**
+     * @param Event\BeforeExecute|Event\AfterExecute|Event\FailToExecute $event
+     */
     public function process(object $event): void
     {
         if (! $this->switcher->isCronsEnable()) {
@@ -57,8 +60,8 @@ class CronEventListener implements ListenerInterface
             return;
         }
 
+        // Notify Sentry your job is running
         if ($event instanceof Event\BeforeExecute) {
-            // Create a crontab schedule object
             $rule = $event->crontab->getRule();
             $rules = explode(' ', $rule);
             if (count($rules) > 5) {
@@ -66,14 +69,12 @@ class CronEventListener implements ListenerInterface
                 return;
             }
             $monitorSchedule = \Sentry\MonitorSchedule::crontab($rule);
-            // Create a config object
             $monitorConfig = new \Sentry\MonitorConfig(
                 schedule: $monitorSchedule,
                 checkinMargin: (int) ($options['checkin_margin'] ?? $this->config->get('sentry.crons.checkin_margin', 5)),
                 maxRuntime: (int) ($options['max_runtime'] ?? $this->config->get('sentry.crons.max_runtime', 15)),
                 timezone: $event->crontab->getTimezone() ?? date_default_timezone_get(),
             );
-            // Notify Sentry your job is running
             $checkInId = $hub->captureCheckIn(
                 slug: $slug,
                 status: CheckInStatus::inProgress(),
@@ -82,13 +83,13 @@ class CronEventListener implements ListenerInterface
             Context::set(Constants::CRON_CHECKIN_ID, $checkInId);
         }
 
+        // Notify Sentry your job has completed successfully
         if ($event instanceof Event\AfterExecute) {
             /** @var string $checkInId */
             $checkInId = Context::get(Constants::CRON_CHECKIN_ID);
             if (! $checkInId) {
                 return;
             }
-            // Notify Sentry your job has completed successfully
             $hub->captureCheckIn(
                 slug: $slug,
                 status: CheckInStatus::ok(),
@@ -96,13 +97,13 @@ class CronEventListener implements ListenerInterface
             );
         }
 
+        // Notify Sentry your job has failed
         if ($event instanceof Event\FailToExecute) {
             /** @var string $checkInId */
             $checkInId = Context::get(Constants::CRON_CHECKIN_ID);
             if (! $checkInId) {
                 return;
             }
-            // Notify Sentry your job has failed
             $hub->captureCheckIn(
                 slug: $slug,
                 status: CheckInStatus::error(),
