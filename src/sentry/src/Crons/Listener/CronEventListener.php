@@ -64,16 +64,28 @@ class CronEventListener implements ListenerInterface
         if ($event instanceof Event\BeforeExecute) {
             $rule = $event->crontab->getRule();
             $rules = explode(' ', $rule);
+
             if (count($rules) > 5) {
                 $this->logger->warning(sprintf('Crontab rule %s is not supported by sentry', $rule));
                 return;
             }
+
+            $checkinMargin = (int) ($options['checkin_margin'] ?? $this->config->get('sentry.crons.checkin_margin', 5));
+            $maxRuntime = (int) ($options['max_runtime'] ?? $this->config->get('sentry.crons.max_runtime', 15));
+            $timezone = null;
+
+            if (method_exists($event->crontab, 'getTimezone')) {
+                $timezone = $event->crontab->getTimezone();
+            }
+
+            $timezone ??= $this->config->get('sentry.crons.timezone', date_default_timezone_get());
+
             $monitorSchedule = \Sentry\MonitorSchedule::crontab($rule);
             $monitorConfig = new \Sentry\MonitorConfig(
                 schedule: $monitorSchedule,
-                checkinMargin: (int) ($options['checkin_margin'] ?? $this->config->get('sentry.crons.checkin_margin', 5)),
-                maxRuntime: (int) ($options['max_runtime'] ?? $this->config->get('sentry.crons.max_runtime', 15)),
-                timezone: $event->crontab->getTimezone() ?? date_default_timezone_get(),
+                checkinMargin: $checkinMargin,
+                maxRuntime: $maxRuntime,
+                timezone: $timezone,
             );
             $checkInId = $hub->captureCheckIn(
                 slug: $slug,
