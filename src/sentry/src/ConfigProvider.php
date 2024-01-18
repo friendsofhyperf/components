@@ -53,6 +53,7 @@ class ConfigProvider
                 Listener\KafkaExceptionListener::class,
                 Listener\RequestExceptionListener::class,
                 Listener\SetRequestLifecycleListener::class,
+                Crons\Listener\CronEventListener::class,
                 Tracing\Listener\TracingAmqpListener::class,
                 Tracing\Listener\TracingAsyncQueueListener::class,
                 Tracing\Listener\TracingCommandListener::class,

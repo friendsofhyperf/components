@@ -198,6 +198,13 @@ return [
         ],
     ],
 
+    'crons' => [
+        'enable' => env('SENTRY_CRONS_ENABLE', true),
+        'checkin_margin' => (int) env('SENTRY_CRONS_CHECKIN_MARGIN', 5),
+        'max_runtime' => (int) env('SENTRY_CRONS_MAX_RUNTIME', 15),
+        'timezone' => env('SENTRY_CRONS_TIMEZONE', date_default_timezone_get()),
+    ],
+
     'http_timeout' => (float) env('SENTRY_HTTP_TIMEOUT', 2.0),
     'http_chanel_size' => (int) env('SENTRY_HTTP_CHANEL_SIZE', 65535),
     'http_concurrent_limit' => (int) env('SENTRY_HTTP_CONCURRENT_LIMIT', 100),
