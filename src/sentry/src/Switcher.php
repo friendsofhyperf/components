@@ -61,4 +61,9 @@ class Switcher
 
         return false;
     }
+
+    public function isCronsEnable(): bool
+    {
+        return (bool) $this->config->get('sentry.crons.enable', true);
+    }
 }
