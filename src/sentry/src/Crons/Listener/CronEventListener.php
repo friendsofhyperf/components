@@ -80,7 +80,9 @@ class CronEventListener implements ListenerInterface
                 monitorConfig: $monitorConfig,
             );
             Context::set(Constants::CRON_CHECKIN_ID, $checkInId);
-        } elseif ($event instanceof Event\AfterExecute) {
+        }
+
+        if ($event instanceof Event\AfterExecute) {
             /** @var string $checkInId */
             $checkInId = Context::get(Constants::CRON_CHECKIN_ID);
             if (! $checkInId) {
@@ -92,7 +94,9 @@ class CronEventListener implements ListenerInterface
                 status: CheckInStatus::ok(),
                 checkInId: $checkInId,
             );
-        } elseif ($event instanceof Event\FailToExecute) {
+        }
+
+        if ($event instanceof Event\FailToExecute) {
             /** @var string $checkInId */
             $checkInId = Context::get(Constants::CRON_CHECKIN_ID);
             if (! $checkInId) {
