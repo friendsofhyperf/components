@@ -24,12 +24,13 @@ class ClientBuilderFactory
 {
     public const SPECIFIC_OPTIONS = [
         'breadcrumbs',
+        'crons',
+        'enable',
         'ignore_commands',
         'integrations',
-        'enable',
-        'tracing',
         'http_chanel_size',
         'http_concurrent_limit',
+        'tracing',
     ];
 
     public function __invoke(ContainerInterface $container)
