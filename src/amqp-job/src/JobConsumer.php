@@ -27,6 +27,8 @@ abstract class JobConsumer extends ConsumerMessage
             $logger = $this->container->get(LoggerInterface::class);
         } elseif ($this->container->has(StdoutLoggerInterface::class)) {
             $logger = $this->container->get(StdoutLoggerInterface::class);
+        } else {
+            $logger = null;
         }
 
         if (! $data instanceof JobInterface) {
