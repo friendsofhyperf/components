@@ -24,7 +24,7 @@
         "hyperf/http-server": "~3.0.45",
         "hyperf/support": "~3.0.1",
         "hyperf/tappable": "~3.0.0",
-        "sentry/sentry": "^4.0"
+        "sentry/sentry": "^4.4.0"
     },
     "suggest": {
         "hyperf/crontab": "Required to use the crontab event (~3.0.42).",
