@@ -70,28 +70,37 @@ class CronEventListener implements ListenerInterface
                 return;
             }
 
-            $checkinMargin = (int) ($options['checkin_margin'] ?? $this->config->get('sentry.crons.checkin_margin', 5));
-            $maxRuntime = (int) ($options['max_runtime'] ?? $this->config->get('sentry.crons.max_runtime', 15));
-            $timezone = null;
+            $updateMonitorConfig = (bool) ($options['update_monitor_config'] ?? true);
+            $monitorConfig = null;
 
-            if (method_exists($event->crontab, 'getTimezone')) {
-                $timezone = $event->crontab->getTimezone();
+            if ($updateMonitorConfig) {
+                $monitorSchedule = \Sentry\MonitorSchedule::crontab($rule);
+                $checkinMargin = (int) ($options['checkin_margin'] ?? $this->config->get('sentry.crons.checkin_margin', 5));
+                $maxRuntime = (int) ($options['max_runtime'] ?? $this->config->get('sentry.crons.max_runtime', 15));
+                $timezone = null;
+                if (method_exists($event->crontab, 'getTimezone')) {
+                    $timezone = $event->crontab->getTimezone();
+                }
+                $timezone ??= $this->config->get('sentry.crons.timezone', date_default_timezone_get());
+                $failureIssueThreshold = isset($options['failure_issue_threshold']) ? (int) $options['failure_issue_threshold'] : null;
+                $recoveryThreshold = isset($options['recovery_threshold']) ? (int) $options['recovery_threshold'] : null;
+
+                $monitorConfig = new \Sentry\MonitorConfig(
+                    schedule: $monitorSchedule,
+                    checkinMargin: $checkinMargin,
+                    maxRuntime: $maxRuntime,
+                    timezone: $timezone,
+                    failureIssueThreshold: $failureIssueThreshold,
+                    recoveryThreshold: $recoveryThreshold,
+                );
             }
 
-            $timezone ??= $this->config->get('sentry.crons.timezone', date_default_timezone_get());
-
-            $monitorSchedule = \Sentry\MonitorSchedule::crontab($rule);
-            $monitorConfig = new \Sentry\MonitorConfig(
-                schedule: $monitorSchedule,
-                checkinMargin: $checkinMargin,
-                maxRuntime: $maxRuntime,
-                timezone: $timezone,
-            );
             $checkInId = $hub->captureCheckIn(
                 slug: $slug,
                 status: CheckInStatus::inProgress(),
                 monitorConfig: $monitorConfig,
             );
+
             Context::set(Constants::CRON_CHECKIN_ID, $checkInId);
         }
 
