@@ -97,6 +97,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
         $options['headers'] = array_replace($options['headers'] ?? [], [
             'sentry-trace' => $parent->toTraceparent(),
             'baggage' => $parent->toBaggage(),
+            'traceparent' => $parent->toW3CTraceparent(),
         ]);
         $proceedingJoinPoint->arguments['keys']['options']['headers'] = $options['headers'];
 
