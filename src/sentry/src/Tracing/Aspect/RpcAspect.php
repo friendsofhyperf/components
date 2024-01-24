@@ -79,12 +79,11 @@ class RpcAspect extends AbstractAspect
         Context::set(static::DATA, $data);
 
         if ($this->container->has(Rpc\Context::class)) {
-            $sentryTrace = $span->toTraceparent();
-            $baggage = $span->toBaggage();
             $rpcContext = $this->container->get(Rpc\Context::class);
             $rpcContext->set(Constants::RPC_CARRIER, [
-                'sentry-trace' => $sentryTrace,
-                'baggage' => $baggage,
+                'sentry-trace' => $span->toTraceparent(),
+                'baggage' => $span->toBaggage(),
+                'traceparent' => $span->toW3CTraceparent(),
             ]);
         }
 
