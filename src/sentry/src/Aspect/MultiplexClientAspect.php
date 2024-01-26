@@ -26,14 +26,17 @@ class MultiplexClientAspect extends AbstractAspect
     {
         /** @var Client $instance */
         $instance = $proceedingJoinPoint->getInstance();
-        $arguments = $proceedingJoinPoint->arguments['keys'];
-        if (isset($arguments['data']) && is_string($arguments['data'])) {
-            $data = json_decode($arguments['data'], true);
+        $data = $proceedingJoinPoint->arguments['keys']['data'] ?? null;
+
+        if ($data && is_string($data)) {
+            $data = json_decode($data, true);
+
             if (! isset($data[Constant::HOST]) && is_callable([$instance, $method = 'getName'])) {
                 $data[Constant::HOST] = $instance->{$method}();
                 $proceedingJoinPoint->arguments['keys']['data'] = json_encode($data, JSON_UNESCAPED_UNICODE);
             }
         }
+
         return $proceedingJoinPoint->process();
     }
 }
