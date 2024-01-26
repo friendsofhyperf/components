@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Sentry\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\RpcMultiplex\Constant;
+use Hyperf\Stringable\Str;
 use Multiplex\Socket\Client;
 
 class MultiplexClientAspect extends AbstractAspect
@@ -28,7 +29,7 @@ class MultiplexClientAspect extends AbstractAspect
         $instance = $proceedingJoinPoint->getInstance();
         $data = $proceedingJoinPoint->arguments['keys']['data'] ?? null;
 
-        if ($data && is_string($data)) {
+        if ($data && Str::isJson($data)) {
             $data = json_decode($data, true);
 
             if (! isset($data[Constant::HOST]) && is_callable([$instance, $method = 'getName'])) {
