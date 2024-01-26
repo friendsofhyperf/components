@@ -25,6 +25,7 @@ class ConfigProvider
                 Aspect\GuzzleHttpClientAspect::class,
                 Aspect\LoggerAspect::class,
                 Aspect\RedisAspect::class,
+                Aspect\MultiplexClientAspect::class,
                 Aspect\SingletonAspect::class,
                 Tracing\Aspect\CoroutineAspect::class,
                 Tracing\Aspect\DbAspect::class,
