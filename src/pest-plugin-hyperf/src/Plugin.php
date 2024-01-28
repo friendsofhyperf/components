@@ -59,7 +59,7 @@ final class Plugin implements HandlesArguments
 
         /* @phpstan-ignore-next-line */
         \Swoole\Coroutine\run(static function () use (&$code, $kernel, $arguments) {
-            $code = $kernel->handle($arguments);
+            $code = $kernel->handle($arguments, []);
             Timer::clearAll();
             CoordinatorManager::until(Constants::WORKER_EXIT)->resume();
         });
