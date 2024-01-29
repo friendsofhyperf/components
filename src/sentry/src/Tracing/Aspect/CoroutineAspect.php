@@ -99,6 +99,7 @@ class CoroutineAspect extends AbstractAspect
                 $transaction->setData($data);
             }
         };
+
         $parent->finish();
 
         return $proceedingJoinPoint->process();
