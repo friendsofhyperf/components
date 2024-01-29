@@ -24,12 +24,24 @@ class CoroutineBacktraceHelper
         'Hyperf\Coroutine\parallel', 'parallel',
     ];
 
+    protected static array $breakFunctions = [
+        'Multiplex\Socket\Client->loop', 'Multiplex\Socket\Client->heartbeat',
+    ];
+
     public static function foundCallingOnFunction(): ?string
     {
         $found = false;
+
         foreach (debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS) as $backtrace) {
-            $function = static::compactFunction($backtrace['function'], $backtrace['class'] ?? null, $backtrace['type'] ?? null);
-            if (in_array($function, static::$skipFunctions)) {
+            $function = static::compactFunction(
+                $backtrace['function'],
+                $backtrace['class'] ?? null,
+                $backtrace['type'] ?? null
+            );
+            if (in_array($function, static::$breakFunctions, true)) {
+                break;
+            }
+            if (in_array($function, static::$skipFunctions, true)) {
                 continue;
             }
             if ($found === true) {
@@ -39,6 +51,7 @@ class CoroutineBacktraceHelper
                 $found = true;
             }
         }
+
         return null;
     }
 

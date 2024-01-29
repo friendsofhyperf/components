@@ -46,9 +46,15 @@ class CoroutineAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $callable = $proceedingJoinPoint->arguments['keys']['callable'];
         $callingOnFunction = CoroutineBacktraceHelper::foundCallingOnFunction();
+
+        if (! $callingOnFunction) {
+            return $proceedingJoinPoint->process();
+        }
+
+        $callable = $proceedingJoinPoint->arguments['keys']['callable'];
         $parent = $this->startSpan('coroutine.create', $callingOnFunction);
+
         if ($this->tagManager->has('coroutine.id')) {
             $parent->setData([
                 $this->tagManager->get('coroutine.id') => Co::id(),
@@ -93,6 +99,7 @@ class CoroutineAspect extends AbstractAspect
                 $transaction->setData($data);
             }
         };
+
         $parent->finish();
 
         return $proceedingJoinPoint->process();
