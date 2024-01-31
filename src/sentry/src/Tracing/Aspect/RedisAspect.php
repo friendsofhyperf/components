@@ -53,6 +53,7 @@ class RedisAspect extends AbstractAspect
         if ($this->tagManager->has('coroutine.id')) {
             $data[$this->tagManager->get('coroutine.id')] = Coroutine::id();
         }
+
         if ($this->tagManager->has('redis.pool')) {
             $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
             $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
@@ -64,6 +65,7 @@ class RedisAspect extends AbstractAspect
                 'using' => $pool->getCurrentConnections(),
             ];
         }
+
         if ($this->tagManager->has('redis.arguments')) {
             $data[$this->tagManager->get('redis.arguments')] = $arguments['arguments'];
         }
@@ -75,6 +77,7 @@ class RedisAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
+
             if (! $span) {
                 return $result;
             }

@@ -108,6 +108,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
+
             if (! $span) {
                 return $result;
             }

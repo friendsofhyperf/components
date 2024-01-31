@@ -89,6 +89,11 @@ class TracingDbQueryListener implements ListenerInterface
             'db.sql.query',
             $event->sql,
         );
+
+        if (! $span) {
+            return;
+        }
+
         $span->setData($data);
         $span->setStartTimestamp($startTimestamp);
         $span->finish($startTimestamp + $event->time / 1000);
