@@ -53,7 +53,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
         return with($proceedingJoinPoint->process(), function ($result) {
             if (is_array($result)) {
                 $job = array_is_list($result) ? head($result) : $result['job'] ?? null;
-                $span = $this->startSpan('async_queue.push', $job ? $job::class : null);
+                $span = $this->startSpan('async_queue.job.dispatch', $job ? $job::class : null);
                 $carrier = [
                     'sentry-trace' => $span->toTraceparent(),
                     'baggage' => $span->toBaggage(),
