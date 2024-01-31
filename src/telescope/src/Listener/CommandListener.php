@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Telescope\Listener;
 use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
+use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Command\Event\AfterExecute;
 use Hyperf\Event\Contract\ListenerInterface;
 
@@ -44,13 +45,19 @@ class CommandListener implements ListenerInterface
         }
 
         $command = $event->getCommand();
+
+        if (in_array($command->getName(), $this->telescopeConfig->getIgnoreCommands())) {
+            return;
+        }
+
         $arguments = (fn () => $this->input->getArguments())->call($command);
         $options = (fn () => $this->input->getOptions())->call($command);
-        $name = $command->getName();
         $exitCode = (fn () => $this->exitCode)->call($command);
 
+        TelescopeContext::getOrSetBatch((string) TelescopeContext::getBatchId());
+
         Telescope::recordCommand(IncomingEntry::make([
-            'command' => $name,
+            'command' => $command->getName(),
             'exit_code' => $exitCode,
             'arguments' => $arguments,
             'options' => $options,

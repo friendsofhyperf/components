@@ -68,14 +68,7 @@ class RequestHandledListener implements ListenerInterface
         $request = $event->request;
         $batchId = $request->getHeaderLine('batch-id') ?: $this->getRpcBatchId();
 
-        if ($batchId) {
-            $subBatchId = Str::orderedUuid()->toString();
-            TelescopeContext::setSubBatchId($subBatchId);
-        } else {
-            $batchId = Str::orderedUuid()->toString();
-        }
-
-        TelescopeContext::setBatchId($batchId);
+        TelescopeContext::getOrSetBatch($batchId);
     }
 
     public function requestHandled(RequestTerminated|RpcRequestTerminated $event)
