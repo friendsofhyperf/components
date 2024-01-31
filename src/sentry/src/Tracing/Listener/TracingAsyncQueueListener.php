@@ -20,6 +20,7 @@ use Hyperf\AsyncQueue\Event\BeforeHandle;
 use Hyperf\AsyncQueue\Event\FailedHandle;
 use Hyperf\AsyncQueue\Event\RetryHandle;
 use Hyperf\Context\Context;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
@@ -63,7 +64,7 @@ class TracingAsyncQueueListener implements ListenerInterface
 
     protected function startTransaction(BeforeHandle $event): void
     {
-        $carrier = Context::get(Constants::JOB_CARRIER, []);
+        $carrier = Context::get(Constants::JOB_CARRIER, [], Coroutine::parentId());
         $sentryTrace = $baggage = '';
 
         if (! empty($carrier['sentry-trace']) && ! empty($carrier['baggage'])) {
