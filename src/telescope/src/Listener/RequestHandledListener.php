@@ -106,7 +106,7 @@ class RequestHandledListener implements ListenerInterface
                 'response_status' => $psr7Response->getStatusCode(),
                 'response' => $this->getResponsePayload($psr7Response),
                 'duration' => $startTime ? floor((microtime(true) - $startTime) * 1000) : null,
-                'memory' => round(memory_get_peak_usage(true) / 1024 / 1025, 1),
+                'memory' => round(memory_get_peak_usage(true) / 1024 / 1024, 1),
             ]);
 
             if ($this->isRpcRequest($psr7Request)) {
