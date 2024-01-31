@@ -57,6 +57,7 @@ class ElasticsearchAspect extends AbstractAspect
             'elasticserach.' . $proceedingJoinPoint->methodName,
             sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
         );
+
         if (! $span) {
             return $proceedingJoinPoint->process();
         }
