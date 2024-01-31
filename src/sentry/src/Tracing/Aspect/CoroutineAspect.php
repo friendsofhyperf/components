@@ -42,7 +42,7 @@ class CoroutineAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnable('coroutine')) {
+        if (! $this->switcher->isTracingSpanEnable('coroutine') || Switcher::isDisableCoroutineTracing()) {
             return $proceedingJoinPoint->process();
         }
 
@@ -54,6 +54,10 @@ class CoroutineAspect extends AbstractAspect
 
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
         $parent = $this->startSpan('coroutine.create', $callingOnFunction);
+
+        if (! $parent) {
+            return $proceedingJoinPoint->process();
+        }
 
         if ($this->tagManager->has('coroutine.id')) {
             $parent->setData([
