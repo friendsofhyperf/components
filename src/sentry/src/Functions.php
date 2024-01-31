@@ -24,7 +24,7 @@ use function Hyperf\Tappable\tap;
 use function Sentry\continueTrace as sentryContinueTrace;
 
 /**
- * @return array{baggage: array<string, string>, sentry-trace: string, traceparent: string}
+ * @return array {baggage: array<string, string>, sentry-trace: string, traceparent: string}
  */
 function sentryCarrier(Span $span): array
 {
