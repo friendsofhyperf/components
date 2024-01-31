@@ -15,7 +15,9 @@ class Constants
 {
     public const RPC_CARRIER = 'sentry.tracing.rpc_carrier';
 
-    public const DISABLE_COROUTINE_TRACING = 'sentry.tracing.disable_coroutine_tracing';
+    public const JOB_CARRIER = 'sentry.tracing.job_carrier';
 
     public const CRON_CHECKIN_ID = 'sentry.crons.checkin_id';
+
+    public const DISABLE_COROUTINE_TRACING = 'sentry.tracing.disable_coroutine_tracing';
 }
