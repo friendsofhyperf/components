@@ -70,11 +70,11 @@ class Switcher
 
     public static function disableCoroutineTracing(): void
     {
-        Context::set(Constants::COROUTINE_TRACING, false);
+        Context::set(Constants::DISABLE_COROUTINE_TRACING, true);
     }
 
     public static function isDisableCoroutineTracing(): bool
     {
-        return Context::get(Constants::COROUTINE_TRACING, true) === false;
+        return (bool) Context::get(Constants::DISABLE_COROUTINE_TRACING);
     }
 }
