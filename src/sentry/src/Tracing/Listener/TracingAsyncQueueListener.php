@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
+use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
@@ -18,6 +19,7 @@ use Hyperf\AsyncQueue\Event\AfterHandle;
 use Hyperf\AsyncQueue\Event\BeforeHandle;
 use Hyperf\AsyncQueue\Event\FailedHandle;
 use Hyperf\AsyncQueue\Event\RetryHandle;
+use Hyperf\Context\Context;
 use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
@@ -61,9 +63,19 @@ class TracingAsyncQueueListener implements ListenerInterface
 
     protected function startTransaction(BeforeHandle $event): void
     {
+        $carrier = Context::get(Constants::JOB_CARRIER, []);
+        $sentryTrace = $baggage = '';
+
+        if (! empty($carrier['sentry-trace']) && ! empty($carrier['baggage'])) {
+            $sentryTrace = $carrier['sentry-trace'] ?? $carrier['traceparent'];
+            $baggage = $carrier['baggage'];
+        }
+
         $job = $event->getMessage()->job();
 
         $this->continueTrace(
+            sentryTrace: $sentryTrace,
+            baggage: $baggage,
             name: $job::class,
             op: 'async_queue.job.handle',
             description: 'job:' . $job::class,
