@@ -64,6 +64,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
                 } elseif (isset($result['job'])) {
                     $result[Constants::JOB_CARRIER] = $carrier;
                 }
+                $span?->finish();
             }
 
             return $result;
