@@ -48,14 +48,7 @@ class TelescopeMiddleware implements MiddlewareInterface
             $batchId = $this->getRpcBatchId();
         }
 
-        if ($batchId) {
-            $subBatchId = Str::orderedUuid()->toString();
-            TelescopeContext::setSubBatchId($subBatchId);
-        } else {
-            $batchId = Str::orderedUuid()->toString();
-        }
-
-        TelescopeContext::setBatchId($batchId);
+        TelescopeContext::getOrSetBatch($batchId);
 
         $response = $handler->handle($request);
         $response = $response->withHeader('batch-id', $batchId);

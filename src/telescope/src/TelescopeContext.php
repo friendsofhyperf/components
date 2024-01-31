@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Telescope;
 
 use Hyperf\Context\Context;
 use Hyperf\Contract\PackerInterface;
+use Hyperf\Stringable\Str;
 
 use function Hyperf\Coroutine\defer;
 
@@ -132,5 +133,17 @@ class TelescopeContext
     public static function getGrpcResponsePayload(): ?array
     {
         return Context::get(self::GRPC_RESPONSE_PAYLOAD) ?: null;
+    }
+
+    public static function getOrSetBatch(string $batchId): void
+    {
+        if ($batchId) {
+            $subBatchId = Str::orderedUuid()->toString();
+            self::setSubBatchId($subBatchId);
+        } else {
+            $batchId = Str::orderedUuid()->toString();
+        }
+
+        self::setBatchId($batchId);
     }
 }
