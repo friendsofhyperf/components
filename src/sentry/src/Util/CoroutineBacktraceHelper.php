@@ -26,6 +26,7 @@ class CoroutineBacktraceHelper
 
     protected static array $breakFunctions = [
         'Multiplex\Socket\Client->loop', 'Multiplex\Socket\Client->heartbeat',
+        'FriendsOfHyperf\Sentry\HttpClient\HttpClient->loop',
     ];
 
     public static function foundCallingOnFunction(): ?string
