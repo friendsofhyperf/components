@@ -15,8 +15,8 @@ use Closure;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Concurrent;
-use Hyperf\Coroutine\Coroutine;
 use Hyperf\Engine\Channel;
+use Hyperf\Engine\Coroutine;
 use Sentry\HttpClient\Request;
 use Sentry\HttpClient\Response;
 use Sentry\Options;
@@ -68,28 +68,31 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
         $this->chan = new Channel($this->channelSize);
 
         Coroutine::create(function () {
-            while (true) {
+            try {
                 while (true) {
-                    /** @var Closure|null $closure */
-                    $closure = $this->chan?->pop();
-                    if (! $closure) {
-                        break 2;
-                    }
-                    try {
-                        if ($this->concurrent) {
-                            $this->concurrent->create($closure);
-                        } else {
-                            Coroutine::create($closure);
+                    while (true) {
+                        /** @var Closure|null $closure */
+                        $closure = $this->chan?->pop();
+                        if (! $closure) {
+                            break 2;
                         }
-                    } catch (Throwable) {
-                        break;
-                    } finally {
-                        $closure = null;
+                        try {
+                            if ($this->concurrent) {
+                                $this->concurrent->create($closure);
+                            } else {
+                                Coroutine::create($closure);
+                            }
+                        } catch (Throwable) {
+                            break;
+                        } finally {
+                            $closure = null;
+                        }
                     }
                 }
+            } catch (Throwable $e) {
+            } finally {
+                $this->close();
             }
-
-            $this->close();
         });
 
         Coroutine::create(function () {
