@@ -56,7 +56,7 @@ class KafkaProducerAspect extends AbstractAspect
             ->setValue($carrier);
         $proceedingJoinPoint->arguments['keys']['headers'] = $headers;
 
-        return $proceedingJoinPoint->process();
+        return tap($proceedingJoinPoint->process(), fn () => $span->finish());
     }
 
     protected function sendBatchAsync(ProceedingJoinPoint $proceedingJoinPoint)
