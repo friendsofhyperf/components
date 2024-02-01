@@ -28,15 +28,42 @@ class KafkaProducerAspect extends AbstractAspect
     use SpanStarter;
 
     public array $classes = [
-        'longlang\phpkafka\Producer\Producer::sendBatch',
+        'Hyperf\Kafka\Producer::sendAsync',
+        'Hyperf\Kafka\Producer::sendBatchAsync',
     ];
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        return match ($proceedingJoinPoint->methodName) {
+            'sendAsync' => $this->sendAsync($proceedingJoinPoint),
+            'sendBatchAsync' => $this->sendBatchAsync($proceedingJoinPoint),
+            default => $proceedingJoinPoint->process(),
+        };
+    }
+
+    protected function sendAsync(ProceedingJoinPoint $proceedingJoinPoint)
+    {
+        $span = $this->startSpan('kafka.send');
+        $carrier = json_encode([
+            'sentry-trace' => $span->toTraceparent(),
+            'baggage' => $span->toBaggage(),
+            'traceparent' => $span->toW3CTraceparent(),
+        ]);
+
+        $headers = $proceedingJoinPoint->arguments['keys']['headers'] ?? [];
+        $headers[] = (new RecordHeader())
+            ->setHeaderKey(Constants::JOB_CARRIER)
+            ->setValue($carrier);
+        $proceedingJoinPoint->arguments['keys']['headers'] = $headers;
+
+        return $proceedingJoinPoint->process();
+    }
+
+    protected function sendBatchAsync(ProceedingJoinPoint $proceedingJoinPoint)
+    {
         /** @var ProduceMessage[] $messages */
         $messages = $proceedingJoinPoint->arguments['keys']['messages'] ?? [];
-        $op = count($messages) > 1 ? 'kafka.send_batch' : 'kafka.send';
-        $span = $this->startSpan($op);
+        $span = $this->startSpan('kafka.send_batch');
         $carrier = json_encode([
             'sentry-trace' => $span->toTraceparent(),
             'baggage' => $span->toBaggage(),
