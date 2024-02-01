@@ -30,6 +30,7 @@ class ConfigProvider
                 Tracing\Aspect\DbAspect::class,
                 Tracing\Aspect\ElasticsearchAspect::class,
                 Tracing\Aspect\GuzzleHttpClientAspect::class,
+                Tracing\Aspect\KafkaProducerAspect::class,
                 Tracing\Aspect\RpcAspect::class,
                 Tracing\Aspect\RedisAspect::class,
                 Tracing\Aspect\TraceAnnotationAspect::class,
