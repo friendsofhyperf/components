@@ -11,40 +11,52 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\MonologHook\Aspect;
 
+use Hyperf\Context\Context;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Monolog\Handler\SyslogUdp\UdpSocket;
-use Swoole\Coroutine\Client;
 
 use function Hyperf\Coroutine\defer;
 
+/**
+ * @property string $ip
+ * @property int $port
+ */
 class UdpSocketAspect extends AbstractAspect
 {
     public array $classes = [
-        UdpSocket::class . '::send',
-        UdpSocket::class . '::close',
+        UdpSocket::class . '::getSocket',
     ];
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         if (Coroutine::inCoroutine()) {
-            if ($proceedingJoinPoint->methodName == 'close') {
-                return;
-            }
-
-            /** @var string $chunk */
-            $chunk = $proceedingJoinPoint->arguments['keys']['chunk'] ?? '';
             [$ip, $port] = (fn () => [$this->ip, $this->port])->call($proceedingJoinPoint->getInstance());
 
-            $socket = new Client(SWOOLE_SOCK_UDP);
-            $socket->connect($ip, $port, 0.5);
+            $key = sprintf(
+                '%s::%s@%s:%s',
+                $proceedingJoinPoint->className,
+                $proceedingJoinPoint->methodName,
+                $ip,
+                $port
+            );
 
-            defer(fn () => $socket->close());
+            return Context::getOrSet($key, function () use ($port) {
+                $domain = AF_INET;
+                $protocol = SOL_UDP;
 
-            $socket->send($chunk);
+                if ($port === 0) { // Check if we are using unix sockets.
+                    $domain = AF_UNIX;
+                    $protocol = IPPROTO_IP;
+                }
 
-            return;
+                $socket = socket_create($domain, SOCK_DGRAM, $protocol);
+
+                defer(fn () => socket_close($socket));
+
+                return $socket;
+            });
         }
 
         return $proceedingJoinPoint->process();
