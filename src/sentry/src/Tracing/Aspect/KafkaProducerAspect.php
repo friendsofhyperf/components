@@ -43,7 +43,10 @@ class KafkaProducerAspect extends AbstractAspect
 
     protected function sendAsync(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $span = $this->startSpan('kafka.send');
+        $span = $this->startSpan(
+            'kafka.send',
+            sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
+        );
         $carrier = json_encode([
             'sentry-trace' => $span->toTraceparent(),
             'baggage' => $span->toBaggage(),
@@ -63,7 +66,10 @@ class KafkaProducerAspect extends AbstractAspect
     {
         /** @var ProduceMessage[] $messages */
         $messages = $proceedingJoinPoint->arguments['keys']['messages'] ?? [];
-        $span = $this->startSpan('kafka.send_batch');
+        $span = $this->startSpan(
+            'kafka.send_batch',
+            sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
+        );
         $carrier = json_encode([
             'sentry-trace' => $span->toTraceparent(),
             'baggage' => $span->toBaggage(),
