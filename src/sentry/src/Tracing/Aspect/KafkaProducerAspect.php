@@ -35,7 +35,7 @@ class KafkaProducerAspect extends AbstractAspect
     {
         /** @var ProduceMessage[] $messages */
         $messages = $proceedingJoinPoint->arguments['keys']['messages'] ?? [];
-        $op = count($messages) > 1 ? 'kafka.producer.send_batch' : 'kafka.producer.send';
+        $op = count($messages) > 1 ? 'kafka.send_batch' : 'kafka.send';
         $span = $this->startSpan($op);
         $carrier = json_encode([
             'sentry-trace' => $span->toTraceparent(),
