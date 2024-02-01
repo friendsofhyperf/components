@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
+use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
@@ -18,6 +19,7 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Kafka\Event\AfterConsume;
 use Hyperf\Kafka\Event\BeforeConsume;
 use Hyperf\Kafka\Event\FailToConsume;
+use longlang\phpkafka\Consumer\ConsumeMessage;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionSource;
@@ -60,8 +62,21 @@ class TracingKafkaListener implements ListenerInterface
     protected function startTransaction(BeforeConsume $event): void
     {
         $consumer = $event->getConsumer();
+        $message = $event->getData();
+        $carrier = [];
+
+        if ($message instanceof ConsumeMessage) {
+            foreach ($message->getHeaders() as $header) {
+                if ($header->getHeaderKey() === Constants::JOB_CARRIER) {
+                    $carrier = json_decode($header->getValue(), true);
+                    break;
+                }
+            }
+        }
 
         $this->continueTrace(
+            sentryTrace: $carrier['sentry-trace'] ?? '',
+            baggage: $carrier['baggage'] ?? '',
             name: $consumer::class,
             op: 'kafka.consume',
             description: 'consumer: ' . $consumer::class,
