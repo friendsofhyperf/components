@@ -13,9 +13,7 @@ namespace FriendsOfHyperf\Sentry;
 
 class Constants
 {
-    public const RPC_CARRIER = 'sentry.tracing.rpc_carrier';
-
-    public const JOB_CARRIER = 'sentry.tracing.job_carrier';
+    public const TRACE_CARRIER = 'sentry.tracing.trace_carrier';
 
     public const CRON_CHECKIN_ID = 'sentry.crons.checkin_id';
 

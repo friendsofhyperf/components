@@ -62,7 +62,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
                 if (array_is_list($result)) {
                     $result[] = $carrier;
                 } elseif (isset($result['job'])) {
-                    $result[Constants::JOB_CARRIER] = $carrier;
+                    $result[Constants::TRACE_CARRIER] = $carrier;
                 }
                 $span?->finish();
             }
@@ -80,11 +80,11 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
             if (array_is_list($data)) {
                 $carrier = end($data);
             } elseif (isset($data['job'])) {
-                $carrier = $data[Constants::JOB_CARRIER] ?? [];
+                $carrier = $data[Constants::TRACE_CARRIER] ?? [];
             }
         }
 
-        Context::set(Constants::JOB_CARRIER, $carrier);
+        Context::set(Constants::TRACE_CARRIER, $carrier);
 
         return $proceedingJoinPoint->process();
     }

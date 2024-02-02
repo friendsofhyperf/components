@@ -55,11 +55,11 @@ class AmqpProducerAspect extends AbstractAspect
         /** @var ProducerMessage $message */
         $message = $proceedingJoinPoint->arguments['keys']['message'];
         $headers[] = (new RecordHeader())
-            ->setHeaderKey(Constants::JOB_CARRIER)
+            ->setHeaderKey(Constants::TRACE_CARRIER)
             ->setValue($carrier);
         (function () use ($carrier) {
             $this->properties['application_headers'] ??= new AMQPTable();
-            $this->properties['application_headers']->set(Constants::JOB_CARRIER, $carrier);
+            $this->properties['application_headers']->set(Constants::TRACE_CARRIER, $carrier);
         })->call($message);
 
         return tap($proceedingJoinPoint->process(), fn () => $span->finish());

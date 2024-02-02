@@ -55,7 +55,7 @@ class KafkaProducerAspect extends AbstractAspect
 
         $headers = $proceedingJoinPoint->arguments['keys']['headers'] ?? [];
         $headers[] = (new RecordHeader())
-            ->setHeaderKey(Constants::JOB_CARRIER)
+            ->setHeaderKey(Constants::TRACE_CARRIER)
             ->setValue($carrier);
         $proceedingJoinPoint->arguments['keys']['headers'] = $headers;
 
@@ -79,7 +79,7 @@ class KafkaProducerAspect extends AbstractAspect
         foreach ($messages as $message) {
             (
                 fn () => $this->headers[] = (new RecordHeader())
-                    ->setHeaderKey(Constants::JOB_CARRIER)
+                    ->setHeaderKey(Constants::TRACE_CARRIER)
                     ->setValue($carrier)
             )->call($message);
         }

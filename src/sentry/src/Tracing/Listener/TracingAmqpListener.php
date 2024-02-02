@@ -70,8 +70,8 @@ class TracingAmqpListener implements ListenerInterface
             $amqpMessage = $event->getAMQPMessage();
             /** @var AMQPTable|null $applicationHeaders */
             $applicationHeaders = $amqpMessage->get('application_headers');
-            if ($applicationHeaders && isset($applicationHeaders[Constants::JOB_CARRIER])) {
-                $carrier = json_decode($applicationHeaders[Constants::JOB_CARRIER], true);
+            if ($applicationHeaders && isset($applicationHeaders[Constants::TRACE_CARRIER])) {
+                $carrier = json_decode($applicationHeaders[Constants::TRACE_CARRIER], true);
                 [$sentryTrace, $baggage] = [
                     $carrier['sentry-trace'] ?? '',
                     $carrier['baggage'] ?? '',
