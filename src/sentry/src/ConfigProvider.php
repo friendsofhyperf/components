@@ -26,6 +26,8 @@ class ConfigProvider
                 Aspect\LoggerAspect::class,
                 Aspect\RedisAspect::class,
                 Aspect\SingletonAspect::class,
+                Tracing\Aspect\AmqpProducerAspect::class,
+                Tracing\Aspect\AsyncQueueJobMessageAspect::class,
                 Tracing\Aspect\CoroutineAspect::class,
                 Tracing\Aspect\DbAspect::class,
                 Tracing\Aspect\ElasticsearchAspect::class,
