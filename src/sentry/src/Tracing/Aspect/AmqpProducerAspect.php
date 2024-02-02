@@ -13,10 +13,10 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
+use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\Amqp\Message\ProducerMessage;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use longlang\phpkafka\Protocol\RecordBatch\RecordHeader;
 use PhpAmqpLib\Wire\AMQPTable;
 
 use function Hyperf\Tappable\tap;
@@ -31,6 +31,10 @@ class AmqpProducerAspect extends AbstractAspect
     public array $classes = [
         'Hyperf\Amqp\Producer::produceMessage',
     ];
+
+    public function __construct(protected CarrierPacker $packer)
+    {
+    }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
@@ -53,14 +57,7 @@ class AmqpProducerAspect extends AbstractAspect
             'amqp.produce',
             sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
         );
-        $carrier = json_encode([
-            'sentry-trace' => $span->toTraceparent(),
-            'baggage' => $span->toBaggage(),
-            'traceparent' => $span->toW3CTraceparent(),
-        ]);
-        $headers[] = (new RecordHeader())
-            ->setHeaderKey(Constants::TRACE_CARRIER)
-            ->setValue($carrier);
+        $carrier = $this->packer->pack($span);
         (function () use ($carrier) {
             $this->properties['application_headers'] ??= new AMQPTable();
             $this->properties['application_headers']->set(Constants::TRACE_CARRIER, $carrier);

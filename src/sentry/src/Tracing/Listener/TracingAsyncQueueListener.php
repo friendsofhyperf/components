@@ -15,6 +15,7 @@ use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
+use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\AsyncQueue\Event\AfterHandle;
 use Hyperf\AsyncQueue\Event\BeforeHandle;
 use Hyperf\AsyncQueue\Event\FailedHandle;
@@ -32,7 +33,8 @@ class TracingAsyncQueueListener implements ListenerInterface
 
     public function __construct(
         protected Switcher $switcher,
-        protected TagManager $tagManager
+        protected TagManager $tagManager,
+        protected CarrierPacker $packer
     ) {
     }
 
@@ -64,12 +66,13 @@ class TracingAsyncQueueListener implements ListenerInterface
 
     protected function startTransaction(BeforeHandle $event): void
     {
-        $carrier = Context::get(Constants::TRACE_CARRIER, [], Coroutine::parentId());
         $sentryTrace = $baggage = '';
 
-        if (! empty($carrier['sentry-trace']) && ! empty($carrier['baggage'])) {
-            $sentryTrace = $carrier['sentry-trace'] ?? $carrier['traceparent'];
-            $baggage = $carrier['baggage'];
+        /** @var string|null $carrier */
+        $carrier = Context::get(Constants::TRACE_CARRIER, null, Coroutine::parentId());
+
+        if ($carrier) {
+            [$sentryTrace, $baggage] = $this->packer->unpack($carrier);
         }
 
         $job = $event->getMessage()->job();

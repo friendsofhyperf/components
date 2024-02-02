@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
+use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use longlang\phpkafka\Producer\ProduceMessage;
@@ -32,6 +33,10 @@ class KafkaProducerAspect extends AbstractAspect
         'Hyperf\Kafka\Producer::sendBatchAsync',
     ];
 
+    public function __construct(protected CarrierPacker $packer)
+    {
+    }
+
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return match ($proceedingJoinPoint->methodName) {
@@ -47,12 +52,7 @@ class KafkaProducerAspect extends AbstractAspect
             'kafka.send',
             sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
         );
-        $carrier = json_encode([
-            'sentry-trace' => $span->toTraceparent(),
-            'baggage' => $span->toBaggage(),
-            'traceparent' => $span->toW3CTraceparent(),
-        ]);
-
+        $carrier = $this->packer->pack($span);
         $headers = $proceedingJoinPoint->arguments['keys']['headers'] ?? [];
         $headers[] = (new RecordHeader())
             ->setHeaderKey(Constants::TRACE_CARRIER)
@@ -70,11 +70,7 @@ class KafkaProducerAspect extends AbstractAspect
             'kafka.send_batch',
             sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
         );
-        $carrier = json_encode([
-            'sentry-trace' => $span->toTraceparent(),
-            'baggage' => $span->toBaggage(),
-            'traceparent' => $span->toW3CTraceparent(),
-        ]);
+        $carrier = $this->packer->pack($span);
 
         foreach ($messages as $message) {
             (

@@ -15,6 +15,7 @@ use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
+use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\Context\Context;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -42,7 +43,8 @@ class RpcAspect extends AbstractAspect
     public function __construct(
         protected ContainerInterface $container,
         protected Switcher $switcher,
-        protected TagManager $tagManager
+        protected TagManager $tagManager,
+        protected CarrierPacker $packer
     ) {
     }
 
@@ -80,11 +82,7 @@ class RpcAspect extends AbstractAspect
 
         if ($this->container->has(Rpc\Context::class)) {
             $rpcContext = $this->container->get(Rpc\Context::class);
-            $rpcContext->set(Constants::TRACE_CARRIER, [
-                'sentry-trace' => $span->toTraceparent(),
-                'baggage' => $span->toBaggage(),
-                'traceparent' => $span->toW3CTraceparent(),
-            ]);
+            $rpcContext->set(Constants::TRACE_CARRIER, $this->packer->pack($span));
         }
 
         return $path;
