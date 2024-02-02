@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
+use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
@@ -18,6 +19,8 @@ use Hyperf\Amqp\Event\AfterConsume;
 use Hyperf\Amqp\Event\BeforeConsume;
 use Hyperf\Amqp\Event\FailToConsume;
 use Hyperf\Event\Contract\ListenerInterface;
+use PhpAmqpLib\Message\AMQPMessage;
+use PhpAmqpLib\Wire\AMQPTable;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionSource;
@@ -60,8 +63,25 @@ class TracingAmqpListener implements ListenerInterface
     protected function startTransaction(BeforeConsume $event): void
     {
         $message = $event->getMessage();
+        $sentryTrace = $baggage = '';
+
+        if (method_exists($event, 'getAMQPMessage')) {
+            /** @var AMQPMessage $amqpMessage */
+            $amqpMessage = $event->getAMQPMessage();
+            /** @var AMQPTable|null $applicationHeaders */
+            $applicationHeaders = $amqpMessage->get('application_headers');
+            if ($applicationHeaders && isset($applicationHeaders[Constants::TRACE_CARRIER])) {
+                $carrier = json_decode($applicationHeaders[Constants::TRACE_CARRIER], true);
+                [$sentryTrace, $baggage] = [
+                    $carrier['sentry-trace'] ?? '',
+                    $carrier['baggage'] ?? '',
+                ];
+            }
+        }
 
         $this->continueTrace(
+            sentryTrace: $sentryTrace,
+            baggage: $baggage,
             name: $message::class,
             op: 'amqp.consume',
             description: 'message:' . $message::class,
