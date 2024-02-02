@@ -42,6 +42,13 @@ class AmqpProducerAspect extends AbstractAspect
 
     protected function produceMessage(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        /** @var ProducerMessage|null $producerMessage */
+        $producerMessage = $proceedingJoinPoint->arguments['keys']['producerMessage'] ?? null;
+
+        if (! $producerMessage) {
+            return $proceedingJoinPoint->process();
+        }
+
         $span = $this->startSpan(
             'amqp.produce',
             sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
@@ -51,16 +58,13 @@ class AmqpProducerAspect extends AbstractAspect
             'baggage' => $span->toBaggage(),
             'traceparent' => $span->toW3CTraceparent(),
         ]);
-
-        /** @var ProducerMessage $message */
-        $message = $proceedingJoinPoint->arguments['keys']['message'];
         $headers[] = (new RecordHeader())
             ->setHeaderKey(Constants::TRACE_CARRIER)
             ->setValue($carrier);
         (function () use ($carrier) {
             $this->properties['application_headers'] ??= new AMQPTable();
             $this->properties['application_headers']->set(Constants::TRACE_CARRIER, $carrier);
-        })->call($message);
+        })->call($producerMessage);
 
         return tap($proceedingJoinPoint->process(), fn () => $span->finish());
     }
