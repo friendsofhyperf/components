@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
+use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\AsyncQueue\JobMessage;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -31,8 +32,10 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
         JobMessage::class . '::__unserialize',
     ];
 
-    public function __construct(protected Switcher $switcher)
-    {
+    public function __construct(
+        protected Switcher $switcher,
+        protected CarrierPacker $packer
+    ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -54,11 +57,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
             if (is_array($result)) {
                 $job = array_is_list($result) ? head($result) : $result['job'] ?? null;
                 $span = $this->startSpan('async_queue.job.dispatch', $job ? $job::class : null);
-                $carrier = [
-                    'sentry-trace' => $span->toTraceparent(),
-                    'baggage' => $span->toBaggage(),
-                    'traceparent' => $span->toW3CTraceparent(),
-                ];
+                $carrier = $this->packer->pack($span);
                 if (array_is_list($result)) {
                     $result[] = $carrier;
                 } elseif (isset($result['job'])) {
@@ -74,17 +73,19 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     protected function handleUnserialize(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $data = $proceedingJoinPoint->arguments['keys']['data'] ?? [];
-        $carrier = [];
+        $carrier = '';
 
         if (is_array($data)) {
             if (array_is_list($data)) {
                 $carrier = end($data);
             } elseif (isset($data['job'])) {
-                $carrier = $data[Constants::TRACE_CARRIER] ?? [];
+                $carrier = $data[Constants::TRACE_CARRIER] ?? '';
             }
         }
 
-        Context::set(Constants::TRACE_CARRIER, $carrier);
+        if ($carrier) {
+            Context::set(Constants::TRACE_CARRIER, $carrier);
+        }
 
         return $proceedingJoinPoint->process();
     }

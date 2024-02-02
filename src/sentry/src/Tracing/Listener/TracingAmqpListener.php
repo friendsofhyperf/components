@@ -15,6 +15,7 @@ use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
+use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\Amqp\Event\AfterConsume;
 use Hyperf\Amqp\Event\BeforeConsume;
 use Hyperf\Amqp\Event\FailToConsume;
@@ -31,7 +32,8 @@ class TracingAmqpListener implements ListenerInterface
 
     public function __construct(
         protected Switcher $switcher,
-        protected TagManager $tagManager
+        protected TagManager $tagManager,
+        protected CarrierPacker $packer
     ) {
     }
 
@@ -71,11 +73,7 @@ class TracingAmqpListener implements ListenerInterface
             /** @var AMQPTable|null $applicationHeaders */
             $applicationHeaders = $amqpMessage->get('application_headers');
             if ($applicationHeaders && isset($applicationHeaders[Constants::TRACE_CARRIER])) {
-                $carrier = json_decode($applicationHeaders[Constants::TRACE_CARRIER], true);
-                [$sentryTrace, $baggage] = [
-                    $carrier['sentry-trace'] ?? '',
-                    $carrier['baggage'] ?? '',
-                ];
+                [$sentryTrace, $baggage] = $this->packer->unpack($applicationHeaders[Constants::TRACE_CARRIER]);
             }
         }
 
