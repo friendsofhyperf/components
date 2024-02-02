@@ -64,7 +64,7 @@ class TracingAsyncQueueListener implements ListenerInterface
 
     protected function startTransaction(BeforeHandle $event): void
     {
-        $carrier = Context::get(Constants::JOB_CARRIER, [], Coroutine::parentId());
+        $carrier = Context::get(Constants::TRACE_CARRIER, [], Coroutine::parentId());
         $sentryTrace = $baggage = '';
 
         if (! empty($carrier['sentry-trace']) && ! empty($carrier['baggage'])) {

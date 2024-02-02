@@ -67,7 +67,7 @@ class TracingKafkaListener implements ListenerInterface
 
         if ($message instanceof ConsumeMessage) {
             foreach ($message->getHeaders() as $header) {
-                if ($header->getHeaderKey() === Constants::JOB_CARRIER) {
+                if ($header->getHeaderKey() === Constants::TRACE_CARRIER) {
                     $carrier = json_decode($header->getValue(), true);
                     break;
                 }
