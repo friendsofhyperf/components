@@ -15,9 +15,9 @@ use FriendsOfHyperf\Trigger\Annotation\Subscriber;
 use FriendsOfHyperf\Trigger\Traits\Logger;
 use Hyperf\Collection\Arr;
 use Hyperf\Di\Annotation\AnnotationCollector;
+use SplPriorityQueue;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use SplPriorityQueue;
 
 class SubscriberManager
 {
