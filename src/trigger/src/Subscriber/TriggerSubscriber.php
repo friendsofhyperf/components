@@ -14,12 +14,12 @@ namespace FriendsOfHyperf\Trigger\Subscriber;
 use FriendsOfHyperf\Trigger\Consumer;
 use FriendsOfHyperf\Trigger\Traits\Logger;
 use FriendsOfHyperf\Trigger\TriggerManager;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coroutine\Concurrent;
 use MySQLReplication\Definitions\ConstEventsNames;
 use MySQLReplication\Event\DTO\EventDTO;
 use MySQLReplication\Event\DTO\RowsDTO;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 use Throwable;
 
 use function Hyperf\Support\call;
@@ -30,17 +30,15 @@ class TriggerSubscriber extends AbstractSubscriber
 
     protected Concurrent $concurrent;
 
-    protected ?LoggerInterface $logger = null;
-
     public function __construct(
         protected ContainerInterface $container,
         protected TriggerManager $triggerManager,
-        protected Consumer $consumer
+        protected Consumer $consumer,
+        protected ?StdoutLoggerInterface $logger = null
     ) {
         $this->concurrent = new Concurrent(
             (int) ($consumer->getOption('concurrent.limit') ?? 1)
         );
-        $this->logger = $this->getLogger();
     }
 
     public static function getSubscribedEvents(): array
