@@ -13,10 +13,10 @@ namespace FriendsOfHyperf\Trigger\Mutex;
 
 use FriendsOfHyperf\Trigger\Traits\Logger;
 use FriendsOfHyperf\Trigger\Util;
-use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coordinator\Timer;
 use Hyperf\Redis\Redis;
+use Psr\Log\LoggerInterface;
 use RedisException;
 use Throwable;
 
@@ -36,12 +36,13 @@ class RedisServerMutex implements ServerMutexInterface
 
     protected string $connection = 'default';
 
+    protected ?LoggerInterface $logger = null;
+
     public function __construct(
         protected Redis $redis,
         protected ?string $name = null,
         protected ?string $owner = null,
-        array $options = [],
-        protected ?StdoutLoggerInterface $logger = null
+        array $options = []
     ) {
         $this->expires = (int) ($options['expires'] ?? 60);
         $this->keepaliveInterval = (int) ($options['keepalive_interval'] ?? 10);
@@ -50,6 +51,7 @@ class RedisServerMutex implements ServerMutexInterface
         $this->connection = $options['connection'];
         $this->timer = new Timer($logger);
         $this->retryInterval = (int) ($options['retry_interval'] ?? 10);
+        $this->logger = $this->getLogger();
     }
 
     public function attempt(callable $callback = null): void
