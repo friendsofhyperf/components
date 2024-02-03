@@ -15,13 +15,13 @@ use FriendsOfHyperf\Trigger\Consumer;
 use FriendsOfHyperf\Trigger\Event\OnReplicationStop;
 use FriendsOfHyperf\Trigger\Snapshot\BinLogCurrentSnapshotInterface;
 use FriendsOfHyperf\Trigger\Traits\Logger;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coordinator\Timer;
 use Hyperf\Coroutine\Coroutine;
 use MySQLReplication\BinLog\BinLogCurrent;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Log\LoggerInterface;
 
 class HealthMonitor
 {
@@ -39,7 +39,7 @@ class HealthMonitor
 
     protected Timer $timer;
 
-    protected ?LoggerInterface $logger = null;
+    protected ?StdoutLoggerInterface $logger = null;
 
     public function __construct(protected ContainerInterface $container, protected Consumer $consumer)
     {
@@ -47,8 +47,12 @@ class HealthMonitor
         $this->monitorInterval = (int) $consumer->getOption('health_monitor.interval', 10);
         $this->snapShortInterval = (int) $consumer->getOption('snapshot.interval', 10);
         $this->binLogCurrentSnapshot = $consumer->getBinLogCurrentSnapshot();
-        $this->logger = $this->getLogger();
-        $this->timer = new Timer($this->logger);
+        if ($container->has(StdoutLoggerInterface::class)) {
+            $this->logger = $container->get(StdoutLoggerInterface::class);
+        }
+        $this->timer = new Timer(
+            $this->logger instanceof StdoutLoggerInterface ? $this->logger : null
+        );
     }
 
     public function process(): void

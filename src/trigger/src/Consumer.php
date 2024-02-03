@@ -18,13 +18,13 @@ use FriendsOfHyperf\Trigger\Subscriber\SnapshotSubscriber;
 use FriendsOfHyperf\Trigger\Subscriber\TriggerSubscriber;
 use FriendsOfHyperf\Trigger\Traits\Logger;
 use Hyperf\Collection\Arr;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Coroutine;
 use MySQLReplication\Config\ConfigBuilder;
 use MySQLReplication\MySQLReplicationFactory;
 use MySQLReplication\Socket\SocketException;
-use Psr\Log\LoggerInterface;
 
 use function Hyperf\Support\make;
 use function Hyperf\Support\retry;
@@ -35,8 +35,6 @@ class Consumer
     use Logger;
 
     protected ?string $name = null;
-
-    protected ?LoggerInterface $logger = null;
 
     private ?HealthMonitor $healthMonitor = null;
 
@@ -50,7 +48,8 @@ class Consumer
         protected SubscriberManager $subscriberManager,
         protected TriggerManager $triggerManager,
         protected string $connection = 'default',
-        protected array $options = []
+        protected array $options = [],
+        protected ?StdoutLoggerInterface $logger = null
     ) {
         if (isset($options['name'])) {
             $this->name = $options['name'];
@@ -71,8 +70,6 @@ class Consumer
         if ($this->getOption('health_monitor.enable', true)) {
             $this->healthMonitor = make(HealthMonitor::class, ['consumer' => $this]);
         }
-
-        $this->logger = $this->getLogger();
     }
 
     public function start(): void

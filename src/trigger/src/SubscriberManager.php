@@ -12,24 +12,17 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Trigger;
 
 use FriendsOfHyperf\Trigger\Annotation\Subscriber;
-use FriendsOfHyperf\Trigger\Traits\Logger;
 use Hyperf\Collection\Arr;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Di\Annotation\AnnotationCollector;
-use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 use SplPriorityQueue;
 
 class SubscriberManager
 {
-    use Logger;
-
     protected array $subscribers = [];
 
-    protected ?LoggerInterface $logger = null;
-
-    public function __construct(protected ContainerInterface $container)
+    public function __construct(protected ?StdoutLoggerInterface $logger = null)
     {
-        $this->logger = $this->getLogger();
     }
 
     public function register()
@@ -47,7 +40,7 @@ class SubscriberManager
             $this->subscribers[$property->connection] ??= [];
             $this->subscribers[$property->connection][] = $class;
 
-            $this->logger?->debug(sprintf(
+            $this->logger->debug(sprintf(
                 '[trigger.%s] %s registered by %s process by %s.',
                 $property->connection,
                 $this::class,
