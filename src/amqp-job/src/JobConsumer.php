@@ -24,7 +24,8 @@ abstract class JobConsumer extends ConsumerMessage
     public function consumeMessage($data, AMQPMessage $message): Result
     {
         $logger = match (true) {
-            $this->container->has(LoggerInterface::class) => $this->container->get(LoggerInterface::class),
+            $this->container->has(LoggerInterface::class) => $this->container->get(LoggerInterface::class), // Will removed at v3.2
+            $this->container->has(Contract\LoggerInterface::class) => $this->container->get(Contract\LoggerInterface::class),
             $this->container->has(StdoutLoggerInterface::class) => $this->container->get(StdoutLoggerInterface::class),
             default => null,
         };

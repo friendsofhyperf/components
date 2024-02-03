@@ -9,11 +9,8 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\AmqpJob;
+namespace FriendsOfHyperf\AmqpJob\Contract;
 
-/**
- * @deprecated since v3.1, use FriendsOfHyperf\AmqpJob\Contract\LoggerInterface instead, will removed at v3.2.
- */
-interface LoggerInterface extends Contract\LoggerInterface
+interface LoggerInterface extends \Psr\Log\LoggerInterface
 {
 }
