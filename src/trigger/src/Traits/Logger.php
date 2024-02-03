@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Trigger\Traits;
 
+use FriendsOfHyperf\Trigger\Contact\LoggerInterface as ContactLoggerInterface;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Log\LoggerInterface;
@@ -61,10 +62,10 @@ trait Logger
 
         $container = ApplicationContext::getContainer();
 
-        if ($container->has(StdoutLoggerInterface::class)) {
-            return $container->get(StdoutLoggerInterface::class);
-        }
-
-        return null;
+        return match (true) {
+            $container->has(ContactLoggerInterface::class) => $container->get(ContactLoggerInterface::class),
+            $container->has(StdoutLoggerInterface::class) => $container->get(StdoutLoggerInterface::class),
+            default => null,
+        };
     }
 }
