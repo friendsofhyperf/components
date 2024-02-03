@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Confd;
 
+use FriendsOfHyperf\Confd\Contract\LoggerInterface;
 use FriendsOfHyperf\Confd\Driver\DriverInterface;
 use FriendsOfHyperf\Confd\Driver\Etcd;
 use FriendsOfHyperf\Confd\Event\ConfigChanged;
@@ -38,10 +39,11 @@ class Confd
         $class = $this->config->get(sprintf('confd.drivers.%s.driver', $driver), Etcd::class);
         $this->driver = $container->get($class);
         $this->interval = (int) $this->config->get('confd.interval', 1);
-        $logger = null;
-        if ($container->has(StdoutLoggerInterface::class)) {
-            $logger = $container->get(StdoutLoggerInterface::class);
-        }
+        $logger = match (true) {
+            $container->has(LoggerInterface::class) => $container->get(LoggerInterface::class),
+            $container->has(StdoutLoggerInterface::class) => $container->get(StdoutLoggerInterface::class),
+            default => null,
+        };
         $this->timer = new Timer($logger);
     }
 
