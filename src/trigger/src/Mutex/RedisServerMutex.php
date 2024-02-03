@@ -49,9 +49,9 @@ class RedisServerMutex implements ServerMutexInterface
         $this->name = $name ?? sprintf('trigger:server:%s', $this->connection);
         $this->owner = $owner ?? Util::getInternalIp();
         $this->connection = $options['connection'];
-        $this->timer = new Timer($logger);
-        $this->retryInterval = (int) ($options['retry_interval'] ?? 10);
         $this->logger = $this->getLogger();
+        $this->timer = new Timer($this->logger);
+        $this->retryInterval = (int) ($options['retry_interval'] ?? 10);
     }
 
     public function attempt(callable $callback = null): void
