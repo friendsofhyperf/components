@@ -11,6 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Confd\Contract;
 
-class LoggerInterface extends \Psr\Log\LoggerInterface
+interface LoggerInterface extends \Psr\Log\LoggerInterface
 {
 }
