@@ -15,12 +15,9 @@ parameters:
     -
       message: '#Undefined variable: \$this#'
       paths:
-        - src/closure-command/publish/console.php
         - src/macros/src/collection.php
         - src/macros/src/stringable.php
         - src/macros/src/request.php
-        - src/model-uid-addon/macros/str.php
-        - src/model-uid-addon/macros/blueprint.php
         - src/tinker/src/TinkerCaster.php
         - tests/*.php
     -
