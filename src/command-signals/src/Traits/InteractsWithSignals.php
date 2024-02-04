@@ -12,32 +12,32 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\CommandSignals\Traits;
 
 use FriendsOfHyperf\CommandSignals\SignalRegistry;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
-use TypeError;
 
 use function Hyperf\Coroutine\defer;
 use function Hyperf\Support\make;
 
 trait InteractsWithSignals
 {
-    protected ?SignalRegistry $SignalRegistry = null;
+    protected ?SignalRegistry $signalRegistry = null;
 
     /**
      * Define a callback to be run when the given signal(s) occurs.
      *
-     * @param callable(int $signal): void $callback
-     * @throws TypeError
-     * @throws NotFoundExceptionInterface
-     * @throws ContainerExceptionInterface
+     * @param int|int[] $signo
+     * @param callable(int $signo): void $callback
      */
     protected function trap(array|int $signo, callable $callback): void
     {
-        if (! $this->SignalRegistry) {
-            $this->SignalRegistry = make(SignalRegistry::class);
-            defer(fn () => $this->SignalRegistry->unregister());
+        if (! $this->signalRegistry) {
+            $this->signalRegistry = make(SignalRegistry::class);
+            defer(fn () => $this->signalRegistry->unregister());
         }
 
-        $this->SignalRegistry->register($signo, $callback);
+        $this->signalRegistry->register($signo, $callback);
+    }
+
+    protected function untrap(array|int|null $signo = null): void
+    {
+        $this->signalRegistry?->unregister($signo);
     }
 }
