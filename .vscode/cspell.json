@@ -51,6 +51,7 @@
         "Traceparent",
         "ucsplit",
         "undot",
+        "untrap",
         "Wireable"
     ]
 }
