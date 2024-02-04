@@ -31,7 +31,6 @@
         "psy/psysh": "^0.10.0|^0.11.0",
         "ramsey/uuid": "^4.7",
         "sentry/sentry": "^4.4.0",
-        "spatie/once": "^3.0",
         "symfony/console": "^5.3|^6.0|^7.0",
         "symfony/http-foundation": "^5.3|^6.0|^7.0",
         "symfony/process": "^5.3|^6.0|^7.0",
@@ -105,9 +104,7 @@
         "voku/portable-ascii": "^1.4|^1.5"
     },
     "replace": {
-        "friendsofhyperf/access-log": "*",
         "friendsofhyperf/amqp-job": "*",
-        "friendsofhyperf/async-task": "*",
         "friendsofhyperf/cache": "*",
         "friendsofhyperf/command-signals": "*",
         "friendsofhyperf/command-validation": "*",
@@ -134,7 +131,6 @@
         "friendsofhyperf/model-observer": "*",
         "friendsofhyperf/monolog-hook": "*",
         "friendsofhyperf/mysql-grammar-addon": "*",
-        "friendsofhyperf/once": "*",
         "friendsofhyperf/openai-client": "*",
         "friendsofhyperf/pest-plugin-hyperf": "*",
         "friendsofhyperf/pretty-console": "*",
@@ -159,9 +155,7 @@
             "src/validated-dto/src/Functions.php"
         ],
         "psr-4": {
-            "FriendsOfHyperf\\AccessLog\\": "src/access-log/src/",
             "FriendsOfHyperf\\AmqpJob\\": "src/amqp-job/src/",
-            "FriendsOfHyperf\\AsyncTask\\": "src/async-task/src/",
             "FriendsOfHyperf\\Cache\\": "src/cache/src/",
             "FriendsOfHyperf\\CommandSignals\\": "src/command-signals/src/",
             "FriendsOfHyperf\\CommandValidation\\": "src/command-validation/src/",
@@ -188,7 +182,6 @@
             "FriendsOfHyperf\\ModelObserver\\": "src/model-observer/src/",
             "FriendsOfHyperf\\MonologHook\\": "src/monolog-hook/src/",
             "FriendsOfHyperf\\MySqlGrammarAddon\\": "src/mysql-grammar-addon/src/",
-            "FriendsOfHyperf\\Once\\": "src/once/src/",
             "FriendsOfHyperf\\OpenAi\\": "src/openai-client/src/",
             "FriendsOfHyperf\\PrettyConsole\\": "src/pretty-console/src/",
             "FriendsOfHyperf\\ReCaptcha\\": "src/recaptcha/src/",
@@ -209,7 +202,6 @@
     "extra": {
         "hyperf": {
             "config": [
-                "FriendsOfHyperf\\AccessLog\\ConfigProvider",
                 "FriendsOfHyperf\\AmqpJob\\ConfigProvider",
                 "FriendsOfHyperf\\AsyncTask\\ConfigProvider",
                 "FriendsOfHyperf\\Cache\\ConfigProvider",
@@ -237,7 +229,6 @@
                 "FriendsOfHyperf\\ModelObserver\\ConfigProvider",
                 "FriendsOfHyperf\\MonologHook\\ConfigProvider",
                 "FriendsOfHyperf\\MySqlGrammarAddon\\ConfigProvider",
-                "FriendsOfHyperf\\Once\\ConfigProvider",
                 "FriendsOfHyperf\\OpenAi\\ConfigProvider",
                 "FriendsOfHyperf\\PrettyConsole\\ConfigProvider",
                 "FriendsOfHyperf\\ReCaptcha\\ConfigProvider",

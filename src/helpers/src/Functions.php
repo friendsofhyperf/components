@@ -218,7 +218,7 @@ function dispatch($job, ...$arguments)
         $job instanceof ProduceMessage => di(ProducerManager::class)
             ->getProducer((string) ($arguments[0] ?? 'default'))
             ->sendBatch([$job]),
-        $job instanceof AsyncTaskInterface => AsyncTask::deliver($job, ...$arguments),
+        class_exists(AsyncTask::class) && interface_exists(AsyncTaskInterface::class) && $job instanceof AsyncTaskInterface => AsyncTask::deliver($job, ...$arguments), // Will removed at v3.2
         default => throw new InvalidArgumentException('Not Support job type.')
     };
 }
