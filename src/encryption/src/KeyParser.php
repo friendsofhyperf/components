@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Encryption;
 
 use Hyperf\Stringable\Str;
-use RuntimeException;
 
 use function Hyperf\Tappable\tap;
 
@@ -33,7 +32,7 @@ class KeyParser
     /**
      * Extract the encryption key from the given configuration.
      *
-     * @throws RuntimeException
+     * @throws Exception\MissingKeyException
      */
     protected function key(array $config): string
     {
