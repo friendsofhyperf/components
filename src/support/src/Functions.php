@@ -58,21 +58,3 @@ function retry($times, callable $callback, $sleepMilliseconds = 0, $when = null)
         goto beginning;
     }
 }
-
-/**
- * Ensures a callable is only called once, and returns the result on subsequent calls.
- *
- * @template  TReturnType
- *
- * @param callable(): TReturnType $callback
- * @return TReturnType
- */
-function once(callable $callback)
-{
-    $onceable = Onceable::tryFromTrace(
-        debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2),
-        $callback,
-    );
-
-    return $onceable ? Once::instance()->value($onceable) : call_user_func($callback);
-}
