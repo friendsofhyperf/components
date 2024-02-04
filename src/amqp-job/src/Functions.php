@@ -15,26 +15,33 @@ use FriendsOfHyperf\AmqpJob\Contract\JobInterface;
 use Hyperf\Amqp\Producer;
 use Hyperf\Context\ApplicationContext;
 
-function dispatch(JobInterface $payload, ?string $exchange = null, string|array|null $routingKey = null, ?string $pool = null, ?bool $confirm = null, ?int $timeout = null): bool
-{
-    $message = new JobMessage($payload);
-    $exchange = $exchange ?? $payload->getExchange();
-    $routingKey = $routingKey ?? $payload->getRoutingKey();
-    $poolName = $pool ?? $payload->getPoolName();
+function dispatch(
+    JobInterface $payload,
+    ?string $exchange = null,
+    string|array|null $routingKey = null,
+    ?string $pool = null,
+    ?bool $confirm = null,
+    ?int $timeout = null
+): bool {
+    $message = (new JobMessage($payload))
+        ->when(
+            $exchange ?? $payload->getExchange(),
+            fn (JobMessage $message, $exchange) => $message->setExchange($exchange)
+        )
+        ->when(
+            $routingKey ?? $payload->getRoutingKey(),
+            fn (JobMessage $message, $routingKey) => $message->setRoutingKey($routingKey)
+        )
+        ->when(
+            $pool ?? $payload->getPoolName(),
+            fn (JobMessage $message, $poolName) => $message->setPoolName($poolName)
+        );
 
-    if ($exchange !== null) {
-        $message->setExchange($exchange);
-    }
-    if ($routingKey !== null) {
-        $message->setRoutingKey($routingKey);
-    }
-    if ($poolName !== null) {
-        $message->setPoolName($poolName);
-    }
-
-    return ApplicationContext::getContainer()->get(Producer::class)->produce(
-        $message,
-        $confirm ?? $payload->getConfirm(),
-        $timeout ?? $payload->getTimeout()
-    );
+    return ApplicationContext::getContainer()
+        ->get(Producer::class)
+        ->produce(
+            $message,
+            $confirm ?? $payload->getConfirm(),
+            $timeout ?? $payload->getTimeout()
+        );
 }

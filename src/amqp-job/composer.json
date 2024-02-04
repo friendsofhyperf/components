@@ -21,6 +21,7 @@
         "friendsofhyperf/support": "~3.1.0",
         "hyperf/di": "~3.1.0",
         "hyperf/codec": "~3.1.0",
+        "hyperf/conditionable": "~3.1.0",
         "hyperf/config": "~3.1.0",
         "hyperf/context": "~3.1.0",
         "hyperf/logger": "~3.1.0",

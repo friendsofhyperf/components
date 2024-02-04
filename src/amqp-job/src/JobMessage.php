@@ -14,10 +14,13 @@ namespace FriendsOfHyperf\AmqpJob;
 use FriendsOfHyperf\AmqpJob\Contract\JobInterface;
 use FriendsOfHyperf\AmqpJob\Contract\Packer;
 use Hyperf\Amqp\Message\ProducerMessage;
+use Hyperf\Conditionable\Conditionable;
 use Hyperf\Context\ApplicationContext;
 
 class JobMessage extends ProducerMessage
 {
+    use Conditionable;
+
     public function __construct(JobInterface $payload)
     {
         if (! $payload->getJobId()) {
