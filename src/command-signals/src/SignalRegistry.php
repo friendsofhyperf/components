@@ -19,6 +19,9 @@ use function Hyperf\Coroutine\parallel;
 
 class SignalRegistry
 {
+    /**
+     * @var array<int, callable[]>
+     */
     protected array $signalHandlers = [];
 
     /**
@@ -26,12 +29,14 @@ class SignalRegistry
      */
     protected array $handling = [];
 
-    protected bool $unregistered = false;
-
-    public function __construct(protected int $timeout = 1, protected int $concurrent = 0)
+    public function __construct(protected int $timeout = 1, protected int $concurrentLimit = 0)
     {
     }
 
+    /**
+     * @param int|int[] $signo
+     * @param callable(int $signo): void $signalHandler
+     */
     public function register(int|array $signo, callable $signalHandler): void
     {
         if (is_array($signo)) {
@@ -49,9 +54,19 @@ class SignalRegistry
         $this->handleSignal($signo);
     }
 
-    public function unregister(): void
+    /**
+     * @param int|int[]|null $signo
+     */
+    public function unregister(int|array|null $signo = null): void
     {
-        $this->unregistered = true;
+        match (true) {
+            // Unregister all signals
+            is_null($signo) => $this->signalHandlers = [],
+            // Unregister multiple signals
+            is_array($signo) => array_map(fn ($s) => isset($this->signalHandlers[$s]) && $this->signalHandlers[$s] = [], $signo),
+            // Unregister single signal
+            default => $this->signalHandlers[$signo] = [],
+        };
     }
 
     protected function handleSignal(int $signo): void
@@ -61,13 +76,9 @@ class SignalRegistry
 
             while (true) {
                 if (Signal::wait($signo, $this->timeout)) {
-                    $callbacks = array_map(fn ($callback) => fn () => $callback($signo), $this->signalHandlers[$signo]);
+                    $callbacks = array_map(fn ($callback) => fn () => $callback($signo), $this->signalHandlers[$signo] ?? []);
 
-                    return parallel($callbacks, $this->concurrent);
-                }
-
-                if ($this->unregistered) {
-                    break;
+                    return parallel($callbacks, $this->concurrentLimit);
                 }
             }
         });
