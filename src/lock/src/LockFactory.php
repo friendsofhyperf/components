@@ -35,7 +35,9 @@ class LockFactory
             throw new InvalidArgumentException(sprintf('The lock config %s is invalid.', $driver));
         }
 
+        /** @var class-string<LockInterface> $driverClass */
         $driverClass = $this->config->get("lock.{$driver}.driver", RedisLock::class);
+        /** @var array{config:array} $constructor */
         $constructor = $this->config->get("lock.{$driver}.constructor", ['config' => []]);
 
         return make($driverClass, [
