@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Trigger\Traits;
 
-use FriendsOfHyperf\Trigger\Contact\LoggerInterface as ContactLoggerInterface;
+use FriendsOfHyperf\Trigger\Contact\LoggerInterface as LoggerContact;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Log\LoggerInterface;
@@ -46,7 +46,6 @@ trait Logger
     {
         return sprintf(
             '[trigger%s] %s %s',
-            /* @phpstan-ignore-next-line */
             isset($this->connection) ? ".{$this->connection}" : 'default',
             $message,
             $context ? json_encode($context, JSON_UNESCAPED_UNICODE) : ''
@@ -55,7 +54,6 @@ trait Logger
 
     protected function getLogger(): ?LoggerInterface
     {
-        /* @phpstan-ignore-next-line */
         if (isset($this->logger) && $this->logger instanceof LoggerInterface) {
             return $this->logger;
         }
@@ -63,7 +61,7 @@ trait Logger
         $container = ApplicationContext::getContainer();
 
         return match (true) {
-            $container->has(ContactLoggerInterface::class) => $container->get(ContactLoggerInterface::class),
+            $container->has(LoggerContact::class) => $container->get(LoggerContact::class),
             $container->has(StdoutLoggerInterface::class) => $container->get(StdoutLoggerInterface::class),
             default => null,
         };
