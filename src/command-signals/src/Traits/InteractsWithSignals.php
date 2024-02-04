@@ -36,8 +36,8 @@ trait InteractsWithSignals
         $this->signalRegistry->register($signo, $callback);
     }
 
-    protected function untrap(): void
+    protected function untrap(array|int|null $signo = null): void
     {
-        $this->signalRegistry?->unregister();
+        $this->signalRegistry?->unregister($signo);
     }
 }
