@@ -64,6 +64,9 @@ class SignalRegistry
         };
     }
 
+    /**
+     * @param callable(int $signo): void $signalHandler
+     */
     protected function pushSignalHandler(int $signo, callable $signalHandler): void
     {
         $this->signalHandlers[$signo] ??= [];
