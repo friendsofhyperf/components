@@ -14,51 +14,45 @@ namespace FriendsOfHyperf\ExceptionEvent;
 use FriendsOfHyperf\ExceptionEvent\Event\ExceptionDispatched;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Context\Context;
-use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RuntimeException;
 use Throwable;
 
-/**
- * @param string|Throwable $exception
- */
-function report($exception = 'RuntimeException', ...$parameters)
+function report(string|Throwable $exception = 'RuntimeException', ...$parameters)
 {
     if (is_string($exception)) {
-        $exception = class_exists($exception) ? new $exception(...$parameters) : new RuntimeException($exception, ...$parameters); // @phpstan-ignore-line
+        $exception = class_exists($exception) ? new $exception(...$parameters) : new RuntimeException($exception, ...$parameters);
     }
 
-    if (ApplicationContext::hasContainer()) {
-        /** @var ServerRequestInterface $request */
-        $request = Context::get(ServerRequestInterface::class);
-        /** @var ResponseInterface $response */
-        $response = Context::get(ResponseInterface::class);
-        /** @var ContainerInterface $container */
-        $container = ApplicationContext::getContainer();
-        /** @var EventDispatcherInterface $eventDispatcher */
-        $eventDispatcher = $container->get(EventDispatcherInterface::class);
-        $eventDispatcher->dispatch(new ExceptionDispatched($exception, $request, $response));
+    if (! ApplicationContext::hasContainer()) {
+        return;
     }
+
+    $container = ApplicationContext::getContainer();
+
+    if (! $container->get(EventDispatcherInterface::class)) {
+        return;
+    }
+
+    /** @var ServerRequestInterface|null $request */
+    $request = Context::get(ServerRequestInterface::class);
+    /** @var ResponseInterface|null $response */
+    $response = Context::get(ResponseInterface::class);
+    $container->get(EventDispatcherInterface::class)->dispatch(new ExceptionDispatched($exception, $request, $response));
 }
 
 /**
  * @template T
  *
  * @param T $condition
- * @param string|Throwable $exception
- * @param array ...$parameters
  * @return T
  */
-function report_if($condition, $exception = 'RuntimeException', ...$parameters)
+function report_if($condition, string|Throwable $exception = 'RuntimeException', ...$parameters)
 {
     if ($condition) {
-        if (is_string($exception)) {
-            $exception = class_exists($exception) ? new $exception(...$parameters) : new RuntimeException($exception, ...$parameters); // @phpstan-ignore-line
-        }
-
-        report($exception);
+        report($exception, ...$parameters);
     }
 
     return $condition;
@@ -68,18 +62,12 @@ function report_if($condition, $exception = 'RuntimeException', ...$parameters)
  * @template T
  *
  * @param T $condition
- * @param string|Throwable $exception
- * @param array ...$parameters
  * @return T
  */
-function report_unless($condition, $exception = 'RuntimeException', ...$parameters)
+function report_unless($condition, string|Throwable $exception = 'RuntimeException', ...$parameters)
 {
     if (! $condition) {
-        if (is_string($exception)) {
-            $exception = class_exists($exception) ? new $exception(...$parameters) : new RuntimeException($exception, ...$parameters); // @phpstan-ignore-line
-        }
-
-        report($exception);
+        report($exception, ...$parameters);
     }
 
     return $condition;
