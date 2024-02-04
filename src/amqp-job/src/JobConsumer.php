@@ -43,7 +43,7 @@ abstract class JobConsumer extends ConsumerMessage
                 return $ack;
             }
 
-            return Result::tryFrom((string) $ack) ?? Result::ACK; // @phpstan-ignore-line
+            return Result::tryFrom((string) $ack) ?? Result::ACK;
         } catch (Throwable $e) {
             $logger?->error((string) $e);
 
