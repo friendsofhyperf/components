@@ -40,13 +40,12 @@ class SignalRegistry
     public function register(int|array $signo, callable $signalHandler): void
     {
         if (is_array($signo)) {
-            array_map(fn ($s) => $this->pushSignalHandler((int) $s, $signalHandler), $signo);
+            array_map(fn ($s) => $this->register((int) $s, $signalHandler), $signo);
             return;
         }
 
         $this->pushSignalHandler($signo, $signalHandler);
-
-        $this->handleSignal($signo);
+        $this->waitSignal($signo);
     }
 
     /**
@@ -73,7 +72,7 @@ class SignalRegistry
         $this->signalHandlers[$signo][] = $signalHandler;
     }
 
-    protected function handleSignal(int $signo): void
+    protected function waitSignal(int $signo): void
     {
         if (isset($this->handling[$signo])) {
             return;
