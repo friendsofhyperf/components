@@ -105,7 +105,6 @@
         "voku/portable-ascii": "^1.4|^1.5"
     },
     "replace": {
-        "friendsofhyperf/access-log": "*",
         "friendsofhyperf/amqp-job": "*",
         "friendsofhyperf/async-task": "*",
         "friendsofhyperf/cache": "*",
@@ -159,7 +158,6 @@
             "src/validated-dto/src/Functions.php"
         ],
         "psr-4": {
-            "FriendsOfHyperf\\AccessLog\\": "src/access-log/src/",
             "FriendsOfHyperf\\AmqpJob\\": "src/amqp-job/src/",
             "FriendsOfHyperf\\AsyncTask\\": "src/async-task/src/",
             "FriendsOfHyperf\\Cache\\": "src/cache/src/",
@@ -209,7 +207,6 @@
     "extra": {
         "hyperf": {
             "config": [
-                "FriendsOfHyperf\\AccessLog\\ConfigProvider",
                 "FriendsOfHyperf\\AmqpJob\\ConfigProvider",
                 "FriendsOfHyperf\\AsyncTask\\ConfigProvider",
                 "FriendsOfHyperf\\Cache\\ConfigProvider",

@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       repo:
-        description: 'Input repo name to split, e.g. access-log, cache, etc.'
+        description: 'Input repo name to split, e.g. sentry, cache, etc.'
         required: false
         default: ''
 
