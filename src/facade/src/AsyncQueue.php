@@ -12,22 +12,23 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Facade;
 
 use Hyperf\AsyncQueue\Driver\DriverFactory as Accessor;
-use Hyperf\AsyncQueue\Exception\InvalidDriverException;
 use Hyperf\AsyncQueue\JobInterface;
 use Override;
 
 /**
  * @mixin Accessor
+ * @property string|null $queue
  */
 class AsyncQueue extends Facade
 {
     /**
      * Push a job to the queue.
      * @return bool
-     * @throws InvalidDriverException
      */
-    public static function push(JobInterface $job, int $delay = 0, string $queue = 'default')
+    public static function push(JobInterface $job, int $delay = 0, ?string $queue = null)
     {
+        $queue = (fn ($queue) => $this->queue ?? $queue)->call($job, $queue);
+
         return self::get($queue)->push($job, $delay);
     }
 
