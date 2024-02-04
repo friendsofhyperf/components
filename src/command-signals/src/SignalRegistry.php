@@ -40,16 +40,11 @@ class SignalRegistry
     public function register(int|array $signo, callable $signalHandler): void
     {
         if (is_array($signo)) {
-            array_map(fn ($s) => $this->register((int) $s, $signalHandler), $signo);
+            array_map(fn ($s) => $this->pushSignalHandler((int) $s, $signalHandler), $signo);
             return;
         }
 
-        $this->signalHandlers[$signo] ??= [];
-        $this->signalHandlers[$signo][] = $signalHandler;
-
-        if ($this->isSignalHandling($signo)) {
-            return;
-        }
+        $this->pushSignalHandler($signo, $signalHandler);
 
         $this->handleSignal($signo);
     }
@@ -69,8 +64,18 @@ class SignalRegistry
         };
     }
 
+    protected function pushSignalHandler(int $signo, callable $signalHandler): void
+    {
+        $this->signalHandlers[$signo] ??= [];
+        $this->signalHandlers[$signo][] = $signalHandler;
+    }
+
     protected function handleSignal(int $signo): void
     {
+        if (isset($this->handling[$signo])) {
+            return;
+        }
+
         $this->handling[$signo] = Coroutine::create(function () use ($signo) {
             defer(fn () => posix_kill(posix_getpid(), $signo));
 
@@ -82,10 +87,5 @@ class SignalRegistry
                 }
             }
         });
-    }
-
-    protected function isSignalHandling(int $signo): bool
-    {
-        return isset($this->handling[$signo]);
     }
 }
