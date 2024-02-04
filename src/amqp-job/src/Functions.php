@@ -15,20 +15,26 @@ use FriendsOfHyperf\AmqpJob\Contract\JobInterface;
 use Hyperf\Amqp\Producer;
 use Hyperf\Context\ApplicationContext;
 
-function dispatch(JobInterface $payload, ?string $exchange = null, string|array|null $routingKey = null, ?string $pool = null, ?bool $confirm = null, ?int $timeout = null): bool
-{
+function dispatch(
+    JobInterface $payload,
+    ?string $exchange = null,
+    string|array|null $routingKey = null,
+    ?string $pool = null,
+    ?bool $confirm = null,
+    ?int $timeout = null
+): bool {
     $message = (new JobMessage($payload))
         ->when(
             $exchange ?? $payload->getExchange(),
-            fn ($message, $exchange) => $message->setExchange($exchange)
+            fn (JobMessage $message, $exchange) => $message->setExchange($exchange)
         )
         ->when(
             $routingKey ?? $payload->getRoutingKey(),
-            fn ($message, $routingKey) => $message->setRoutingKey($routingKey)
+            fn (JobMessage $message, $routingKey) => $message->setRoutingKey($routingKey)
         )
         ->when(
             $pool ?? $payload->getPoolName(),
-            fn ($message, $poolName) => $message->setPoolName($poolName)
+            fn (JobMessage $message, $poolName) => $message->setPoolName($poolName)
         );
 
     return ApplicationContext::getContainer()
