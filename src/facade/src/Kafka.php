@@ -11,35 +11,38 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Facade;
 
-use Hyperf\Kafka\Exception\ConnectionClosedException;
-use Hyperf\Kafka\Exception\TimeoutException;
 use Hyperf\Kafka\ProducerManager as Accessor;
 use longlang\phpkafka\Producer\ProduceMessage;
 
 /**
  * @mixin Accessor
+ * @property string|null $queue
  */
 class Kafka extends Facade
 {
-    /**
-     * @param string $queue
-     * @throws ConnectionClosedException
-     * @throws TimeoutException
-     */
-    public static function send(ProduceMessage $produceMessage, $queue = 'default'): void
+    public static function send(ProduceMessage $produceMessage, ?string $queue = null): void
     {
+        $queue = (fn ($queue) => $this->queue ?? $queue)->call($produceMessage, $queue);
         self::getProducer($queue)->sendBatch([$produceMessage]);
     }
 
     /**
      * @param ProduceMessage[] $produceMessages
-     * @param string $queue
-     * @throws ConnectionClosedException
-     * @throws TimeoutException
      */
-    public static function sendBatch($produceMessages, $queue = 'default'): void
+    public static function sendBatch($produceMessages, ?string $queue = null): void
     {
-        self::getProducer($queue)->sendBatch($produceMessages);
+        /** @var array<string,ProduceMessage[]> */
+        $groupMessages = [];
+        $queue ??= 'default';
+
+        foreach ($produceMessages as $message) {
+            $queue = (fn ($queue) => $this->queue ?? $queue)->call($message, $queue);
+            $groupMessages[$queue][] = $message;
+        }
+
+        foreach ($groupMessages as $queue => $messages) {
+            self::getProducer($queue)->sendBatch($messages);
+        }
     }
 
     protected static function getFacadeAccessor()

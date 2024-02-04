@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Facade;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Logger\Logger;
 use Hyperf\Logger\LoggerFactory;
-use TypeError;
 
 /**
  * @mixin LoggerFactory
@@ -31,7 +30,6 @@ class Log extends Facade
      * @param string $name
      * @param string $group
      * @return \Psr\Log\LoggerInterface
-     * @throws TypeError
      */
     public static function channel($name = 'hyperf', $group = 'default')
     {
