@@ -20,6 +20,8 @@ class ConfigProvider
         return [
             'dependencies' => [
                 Encrypter::class => EncrypterFactory::class,
+                Contract\Encrypter::class => fn ($container) => $container->get(Encrypter::class),
+                Contract\StringEncrypter::class => fn ($container) => $container->get(Encrypter::class),
             ],
             'listeners' => [
                 BootEncryptionListener::class,
