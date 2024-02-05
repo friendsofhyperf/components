@@ -26,10 +26,8 @@ class Encrypter implements EncrypterContract, StringEncrypter
 
     /**
      * The previous / legacy encryption keys.
-     *
-     * @var array
      */
-    protected $previousKeys = [];
+    protected array $previousKeys = [];
 
     /**
      * The algorithm used for encryption.
@@ -88,10 +86,9 @@ class Encrypter implements EncrypterContract, StringEncrypter
     /**
      * Encrypt the given value.
      *
-     * @param mixed $value
      * @throws EncryptException
      */
-    public function encrypt($value, bool $serialize = true): string
+    public function encrypt(mixed $value, bool $serialize = true): string
     {
         $iv = random_bytes(openssl_cipher_iv_length(strtolower($this->cipher)));
         $value = \openssl_encrypt(
