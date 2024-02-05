@@ -53,9 +53,17 @@ class Number
      *
      * @return string
      */
-    public static function spell(int|float $number, ?string $locale = null)
+    public static function spell(int|float $number, ?string $locale = null, ?int $after = null, ?int $until = null)
     {
         static::ensureIntlExtensionIsInstalled();
+
+        if (! is_null($after) && $number <= $after) {
+            return static::format($number, locale: $locale);
+        }
+
+        if (! is_null($until) && $number >= $until) {
+            return static::format($number, locale: $locale);
+        }
 
         $formatter = new NumberFormatter($locale ?? static::$locale, NumberFormatter::SPELLOUT);
 
@@ -127,10 +135,9 @@ class Number
     }
 
     /**
-     * Convert the number to its human readable equivalent.
+     * Convert the number to its human-readable equivalent.
      *
-     * @param int $number
-     * @return string
+     * @return bool|string
      */
     public static function abbreviate(int|float $number, int $precision = 0, ?int $maxPrecision = null)
     {
@@ -138,10 +145,9 @@ class Number
     }
 
     /**
-     * Convert the number to its human readable equivalent.
+     * Convert the number to its human-readable equivalent.
      *
-     * @param int $number
-     * @return string
+     * @return bool|string
      */
     public static function forHumans(int|float $number, int $precision = 0, ?int $maxPrecision = null, bool $abbreviate = false)
     {
@@ -222,7 +228,9 @@ class Number
     protected static function ensureIntlExtensionIsInstalled()
     {
         if (! extension_loaded('intl')) {
-            throw new RuntimeException('The "intl" PHP extension is required to use this method.');
+            $method = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'];
+
+            throw new RuntimeException('The "intl" PHP extension is required to use the [' . $method . '] method.');
         }
     }
 }
