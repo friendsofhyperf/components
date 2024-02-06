@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ModelObserver\Annotation;
 
 use Attribute;
+use Hyperf\Database\Model\Model;
 use Hyperf\Di\Annotation\AbstractAnnotation;
 
 #[Attribute(Attribute::TARGET_CLASS)]
@@ -20,7 +21,12 @@ class Observer extends AbstractAnnotation
     /**
      * @param string|string[] $model
      */
-    public function __construct(public string|array $model, public int $priority = 0)
-    {
+    public function __construct(
+        /**
+         * @var class-string<Model>|class-string<Model>[]
+         */
+        public string|array $model,
+        public int $priority = 0
+    ) {
     }
 }
