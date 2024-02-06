@@ -16,19 +16,23 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Database\Model\Factory;
 use Psr\Container\ContainerInterface;
 
+use function Hyperf\Tappable\tap;
+
 class FactoryInvoker
 {
     public function __invoke(ContainerInterface $container)
     {
         $config = $container->get(ConfigInterface::class);
-        $factory = new Factory(
-            FakerFactory::create('en_US')
+
+        return tap(
+            new Factory(
+                FakerFactory::create('en_US')
+            ),
+            function ($factory) use ($config) {
+                if (is_dir($path = $config->get('model_factory.path', ''))) {
+                    $factory->load($path);
+                }
+            }
         );
-
-        if (is_dir($path = $config->get('model_factory.path', ''))) {
-            $factory->load($path);
-        }
-
-        return $factory;
     }
 }
