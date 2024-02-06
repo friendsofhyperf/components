@@ -34,8 +34,8 @@ trait Logger
         $container = ApplicationContext::getContainer();
 
         return match (true) {
-            $container->has(StdoutLoggerInterface::class) => $container->get(StdoutLoggerInterface::class),
             $container->has(LoggerContract::class) => $container->get(LoggerContract::class),
+            $container->has(StdoutLoggerInterface::class) => $container->get(StdoutLoggerInterface::class),
             default => null,
         };
     }
