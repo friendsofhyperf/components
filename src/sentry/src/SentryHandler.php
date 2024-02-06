@@ -168,22 +168,14 @@ class SentryHandler extends AbstractProcessingHandler
      */
     protected function getLogLevel(int $logLevel): Severity
     {
-        switch ($logLevel) {
-            case Logger::DEBUG:
-                return Severity::debug();
-            case Logger::NOTICE:
-            case Logger::INFO:
-                return Severity::info();
-            case Logger::WARNING:
-                return Severity::warning();
-            case Logger::ALERT:
-            case Logger::EMERGENCY:
-            case Logger::CRITICAL:
-                return Severity::fatal();
-            case Logger::ERROR:
-            default:
-                return Severity::error();
-        }
+        return match ($logLevel) {
+            Logger::DEBUG => Severity::debug(),
+            Logger::NOTICE, Logger::INFO => Severity::info(),
+            Logger::WARNING => Severity::warning(),
+            Logger::ALERT, Logger::EMERGENCY, Logger::CRITICAL => Severity::fatal(),
+            Logger::ERROR => Severity::error(),
+            default => Severity::error(),
+        };
     }
 
     /**

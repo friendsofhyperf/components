@@ -120,29 +120,13 @@ final class Severity implements Stringable
      */
     public static function fromError(int $severity): self
     {
-        switch ($severity) {
-            case E_DEPRECATED:
-            case E_USER_DEPRECATED:
-            case E_WARNING:
-            case E_USER_WARNING:
-                return self::warning();
-            case E_ERROR:
-            case E_PARSE:
-            case E_CORE_ERROR:
-            case E_CORE_WARNING:
-            case E_COMPILE_ERROR:
-            case E_COMPILE_WARNING:
-                return self::fatal();
-            case E_RECOVERABLE_ERROR:
-            case E_USER_ERROR:
-                return self::error();
-            case E_NOTICE:
-            case E_USER_NOTICE:
-            case E_STRICT:
-                return self::info();
-            default:
-                return self::error();
-        }
+        return match ($severity) {
+            E_DEPRECATED, E_USER_DEPRECATED, E_WARNING, E_USER_WARNING => self::warning(),
+            E_ERROR, E_PARSE, E_CORE_ERROR, E_CORE_WARNING, E_COMPILE_ERROR, E_COMPILE_WARNING => self::fatal(),
+            E_RECOVERABLE_ERROR, E_USER_ERROR => self::error(),
+            E_NOTICE, E_USER_NOTICE, E_STRICT => self::info(),
+            default => self::error(),
+        };
     }
 
     /**
