@@ -12,10 +12,10 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Confd\Command;
 
 use FriendsOfHyperf\Confd\Confd;
+use FriendsOfHyperf\Confd\Traits\Logger;
 use FriendsOfHyperf\Confd\Writer\EnvWriter;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Container\ContainerInterface;
 use Throwable;
 
@@ -23,6 +23,8 @@ use function Hyperf\Support\make;
 
 class EnvCommand extends HyperfCommand
 {
+    use Logger;
+
     protected ?string $signature = 'confd:env {--E|env-path= : Path of .env.}';
 
     protected string $description = 'Upgrade .env by confd.';
@@ -30,9 +32,9 @@ class EnvCommand extends HyperfCommand
     public function __construct(
         protected ContainerInterface $container,
         protected ConfigInterface $config,
-        protected StdoutLoggerInterface $logger,
         protected Confd $confd
     ) {
+        $this->resolveLogger();
         parent::__construct();
     }
 
@@ -51,9 +53,9 @@ class EnvCommand extends HyperfCommand
 
             $writer->setValues($values)->write();
 
-            $this->logger->info($path . ' is updated.');
+            $this->logger?->info($path . ' is updated.');
         } catch (Throwable $e) {
-            $this->logger->error((string) $e);
+            $this->logger?->error((string) $e);
             return $this->exitCode = 1;
         }
     }

@@ -23,12 +23,7 @@ abstract class JobConsumer extends ConsumerMessage
 {
     public function consumeMessage($data, AMQPMessage $message): Result
     {
-        $logger = match (true) {
-            $this->container->has(LoggerInterface::class) => $this->container->get(LoggerInterface::class), // Will removed at v3.2
-            $this->container->has(Contract\LoggerInterface::class) => $this->container->get(Contract\LoggerInterface::class),
-            $this->container->has(StdoutLoggerInterface::class) => $this->container->get(StdoutLoggerInterface::class),
-            default => null,
-        };
+        $logger = $this->resolveLoggerInstance();
 
         if (! $data instanceof JobInterface) {
             $logger?->error(sprintf('The message is not an instance of %s.', JobInterface::class));
@@ -66,5 +61,21 @@ abstract class JobConsumer extends ConsumerMessage
         $packer = $this->getContainer()->get(Packer::class);
 
         return $packer->unpack($data);
+    }
+
+    protected function resolveLoggerInstance(): ?\Psr\Log\LoggerInterface
+    {
+        static $logger = null;
+
+        if ($logger) {
+            return $logger;
+        }
+
+        return $logger = match (true) {
+            $this->container->has(LoggerInterface::class) => $this->container->get(LoggerInterface::class), // Will removed at v3.2
+            $this->container->has(Contract\LoggerInterface::class) => $this->container->get(Contract\LoggerInterface::class),
+            $this->container->has(StdoutLoggerInterface::class) => $this->container->get(StdoutLoggerInterface::class),
+            default => null,
+        };
     }
 }

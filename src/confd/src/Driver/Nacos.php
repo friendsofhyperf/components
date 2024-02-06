@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Confd\Driver;
 
+use FriendsOfHyperf\Confd\Traits\Logger;
 use Hyperf\Codec\Json;
 use Hyperf\Codec\Xml;
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Nacos\Application;
 use Hyperf\Nacos\Config;
 use InvalidArgumentException;
@@ -26,9 +26,11 @@ use function Hyperf\Support\make;
 
 class Nacos implements DriverInterface
 {
+    use Logger;
+
     private Application $client;
 
-    public function __construct(private ConfigInterface $config, private StdoutLoggerInterface $logger)
+    public function __construct(private ConfigInterface $config)
     {
         $config = $this->config->get('confd.drivers.nacos.client') ?: $this->config->get('nacos', []);
 
@@ -39,6 +41,8 @@ class Nacos implements DriverInterface
         $this->client = make(NacosClient::class, [
             'config' => $this->buildNacosConfig($config),
         ]);
+
+        $this->resolveLogger();
     }
 
     /**
@@ -94,7 +98,7 @@ class Nacos implements DriverInterface
         $response = $this->client->config->get($dataId, $group, $tenant);
 
         if ($response->getStatusCode() !== 200) {
-            $this->logger->error(sprintf('The config of %s.%s.%s read failed from Nacos.', $group, $tenant, $dataId));
+            $this->logger?->error(sprintf('The config of %s.%s.%s read failed from Nacos.', $group, $tenant, $dataId));
             return [];
         }
 
