@@ -11,17 +11,16 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Facade;
 
-use League\Flysystem\Filesystem as Accessor;
 use Override;
 
 /**
- * @mixin Accessor
+ * @mixin \League\Flysystem\Filesystem
  */
 class Filesystem extends Facade
 {
     #[Override]
     protected static function getFacadeAccessor()
     {
-        return Accessor::class;
+        return \League\Flysystem\Filesystem::class;
     }
 }

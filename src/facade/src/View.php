@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Facade;
 
 use Hyperf\View\Render;
-use Hyperf\View\RenderInterface as Accessor;
+use Hyperf\View\RenderInterface;
 use Override;
 
 /**
@@ -23,6 +23,6 @@ class View extends Facade
     #[Override]
     protected static function getFacadeAccessor()
     {
-        return Accessor::class;
+        return RenderInterface::class;
     }
 }

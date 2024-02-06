@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Facade;
 
 use Hyperf\HttpMessage\Cookie\CookieJar;
-use Hyperf\HttpMessage\Cookie\CookieJarInterface as Accessor;
+use Hyperf\HttpMessage\Cookie\CookieJarInterface;
 use Override;
 
 /**
@@ -42,6 +42,6 @@ class Cookie extends Facade
     #[Override]
     protected static function getFacadeAccessor()
     {
-        return Accessor::class;
+        return CookieJarInterface::class;
     }
 }

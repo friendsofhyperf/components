@@ -12,25 +12,22 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Facade;
 
 use Hyperf\Context\ApplicationContext;
+use Hyperf\Di\Exception\NotFoundException;
 use RuntimeException;
 
 abstract class Facade
 {
     /**
      * The resolved object instances.
-     *
-     * @var array
      */
-    protected static $resolvedInstance;
+    protected static array $resolvedInstance = [];
 
     /**
      * Handle dynamic, static calls to the object.
      *
-     * @param string $method
-     * @param array $args
      * @return mixed
      */
-    public static function __callStatic($method, $args)
+    public static function __callStatic(string $method, array $arguments)
     {
         $instance = static::getFacadeRoot();
 
@@ -38,7 +35,7 @@ abstract class Facade
             throw new RuntimeException('A facade root has not been set.');
         }
 
-        return $instance->{$method}(...$args);
+        return $instance->{$method}(...$arguments);
     }
 
     /**
@@ -54,10 +51,9 @@ abstract class Facade
     /**
      * Resolve the facade root instance from the container.
      *
-     * @param object|string $name
      * @return mixed
      */
-    protected static function resolveFacadeInstance($name)
+    protected static function resolveFacadeInstance(object|string $name)
     {
         if (is_object($name)) {
             return $name;
@@ -67,9 +63,11 @@ abstract class Facade
             return static::$resolvedInstance[$name];
         }
 
-        if (ApplicationContext::getContainer()->has($name)) {
-            return static::$resolvedInstance[$name] = ApplicationContext::getContainer()->get($name);
+        if (! ApplicationContext::getContainer()->has($name)) {
+            throw new NotFoundException(sprintf('Entry %s not found.', $name));
         }
+
+        return static::$resolvedInstance[$name] = ApplicationContext::getContainer()->get($name);
     }
 
     /**
