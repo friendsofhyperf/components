@@ -1,10 +1,12 @@
 #!/usr/bin/env php
 <?php
+
+declare(strict_types=1);
 /**
  * This file is part of friendsofhyperf/components.
  *
  * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/3.x/README.md
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
 use Symfony\Component\Finder\Finder;
@@ -31,6 +33,7 @@ $configProviders = [];
 $replaces = [];
 
 foreach ($files as $file) {
+    $file = (string) $file->getRealPath();
     $component = basename(dirname($file));
     $composerJson = json_decode(file_get_contents($file));
 
@@ -43,6 +46,14 @@ foreach ($files as $file) {
     //     }
     // }
 
+    if (! isset($composerJson->authors)) {
+        $composerJson->authors = [
+            [
+                'name' => 'huangdijia',
+                'email' => 'huangdijia@gmail.com',
+            ],
+        ];
+    }
     $composerJson->license = 'MIT';
     $composerJson->support = [
         'issues' => 'https://github.com/friendsofhyperf/components/issues',
