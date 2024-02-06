@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Facade;
 
 use Hyperf\Amqp\Message\ProducerMessageInterface;
-use Hyperf\Amqp\Producer as Accessor;
+use Hyperf\Amqp\Producer;
 use Override;
 
 /**
@@ -23,6 +23,6 @@ class AMQP extends Facade
     #[Override]
     protected static function getFacadeAccessor()
     {
-        return Accessor::class;
+        return Producer::class;
     }
 }

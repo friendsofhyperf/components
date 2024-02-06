@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Facade;
 
-use Hyperf\AsyncQueue\Driver\DriverFactory as Accessor;
+use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\AsyncQueue\JobInterface;
 use Override;
 
 /**
- * @mixin Accessor
+ * @mixin DriverFactory
  * @property string|null $queue
  */
 class AsyncQueue extends Facade
@@ -35,6 +35,6 @@ class AsyncQueue extends Facade
     #[Override]
     protected static function getFacadeAccessor()
     {
-        return Accessor::class;
+        return DriverFactory::class;
     }
 }

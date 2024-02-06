@@ -11,11 +11,11 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Facade;
 
-use Hyperf\HttpServer\Contract\ResponseInterface as Accessor;
+use Hyperf\HttpServer\Contract\ResponseInterface;
 use Override;
 
 /**
- * @mixin Accessor
+ * @mixin ResponseInterface
  * @mixin \Psr\Http\Message\ResponseInterface
  */
 class Response extends Facade
@@ -23,6 +23,6 @@ class Response extends Facade
     #[Override]
     protected static function getFacadeAccessor()
     {
-        return Accessor::class;
+        return ResponseInterface::class;
     }
 }

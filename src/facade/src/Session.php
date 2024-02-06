@@ -11,17 +11,17 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Facade;
 
-use Hyperf\Contract\SessionInterface as Accessor;
+use Hyperf\Contract\SessionInterface;
 use Override;
 
 /**
- * @mixin Accessor
+ * @mixin SessionInterface
  */
 class Session extends Facade
 {
     #[Override]
     protected static function getFacadeAccessor()
     {
-        return Accessor::class;
+        return SessionInterface::class;
     }
 }

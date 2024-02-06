@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Facade;
 
-use Hyperf\HttpServer\Contract\RequestInterface as Accessor;
+use Hyperf\HttpServer\Contract\RequestInterface;
 use Override;
 
 /**
@@ -59,13 +59,13 @@ use Override;
  * @method static self|mixed whenFilled(string $key, callable $callback, callable $default = null);
  * @method static self|mixed whenHas(string $key, callable $callback, callable $default = null);
  * @method static bool isJson()
- * @mixin Accessor
+ * @mixin RequestInterface
  */
 class Request extends Facade
 {
     #[Override]
     protected static function getFacadeAccessor()
     {
-        return Accessor::class;
+        return RequestInterface::class;
     }
 }

@@ -11,17 +11,17 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Facade;
 
-use Hyperf\Contract\TranslatorInterface as Accessor;
+use Hyperf\Contract\TranslatorInterface;
 use Override;
 
 /**
- * @mixin Accessor
+ * @mixin TranslatorInterface
  */
 class Translator extends Facade
 {
     #[Override]
     protected static function getFacadeAccessor()
     {
-        return Accessor::class;
+        return TranslatorInterface::class;
     }
 }

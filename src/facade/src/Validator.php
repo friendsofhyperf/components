@@ -11,17 +11,17 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Facade;
 
-use Hyperf\Validation\Contract\ValidatorFactoryInterface as Accessor;
+use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Override;
 
 /**
- * @mixin Accessor
+ * @mixin ValidatorFactoryInterface
  */
 class Validator extends Facade
 {
     #[Override]
     protected static function getFacadeAccessor()
     {
-        return Accessor::class;
+        return ValidatorFactoryInterface::class;
     }
 }

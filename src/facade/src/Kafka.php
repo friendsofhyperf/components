@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Facade;
 
-use Hyperf\Kafka\ProducerManager as Accessor;
+use Hyperf\Kafka\ProducerManager;
 use longlang\phpkafka\Producer\ProduceMessage;
 use Override;
 
 /**
- * @mixin Accessor
+ * @mixin ProducerManager
  * @property string|null $queue
  */
 class Kafka extends Facade
@@ -49,6 +49,6 @@ class Kafka extends Facade
     #[Override]
     protected static function getFacadeAccessor()
     {
-        return Accessor::class;
+        return ProducerManager::class;
     }
 }
