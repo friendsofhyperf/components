@@ -11,20 +11,21 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Confd;
 
-use FriendsOfHyperf\Confd\Contract\LoggerInterface;
 use FriendsOfHyperf\Confd\Driver\DriverInterface;
 use FriendsOfHyperf\Confd\Driver\Etcd;
 use FriendsOfHyperf\Confd\Event\ConfigChanged;
 use FriendsOfHyperf\Confd\Event\WatchDispatched;
+use FriendsOfHyperf\Confd\Traits\Logger;
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\Timer;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class Confd
 {
+    use Logger;
+
     private DriverInterface $driver;
 
     private Timer $timer;
@@ -39,11 +40,7 @@ class Confd
         $class = $this->config->get(sprintf('confd.drivers.%s.driver', $driver), Etcd::class);
         $this->driver = $container->get($class);
         $this->interval = (int) $this->config->get('confd.interval', 1);
-        $logger = match (true) {
-            $container->has(LoggerInterface::class) => $container->get(LoggerInterface::class),
-            $container->has(StdoutLoggerInterface::class) => $container->get(StdoutLoggerInterface::class),
-            default => null,
-        };
+        $logger = $this->resolveLoggerInstance();
         $this->timer = new Timer($logger);
     }
 
