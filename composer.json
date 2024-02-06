@@ -203,7 +203,6 @@
         "hyperf": {
             "config": [
                 "FriendsOfHyperf\\AmqpJob\\ConfigProvider",
-                "FriendsOfHyperf\\AsyncTask\\ConfigProvider",
                 "FriendsOfHyperf\\Cache\\ConfigProvider",
                 "FriendsOfHyperf\\CommandSignals\\ConfigProvider",
                 "FriendsOfHyperf\\CommandValidation\\ConfigProvider",
