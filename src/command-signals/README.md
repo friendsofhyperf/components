@@ -1,6 +1,5 @@
 # Command Signals
 
-[![Latest Test](https://github.com/friendsofhyperf/command-signals/workflows/tests/badge.svg)](https://github.com/friendsofhyperf/command-signals/actions)
 [![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/command-signals)](https://packagist.org/packages/friendsofhyperf/command-signals)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/command-signals)](https://packagist.org/packages/friendsofhyperf/command-signals)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/command-signals)](https://github.com/friendsofhyperf/command-signals)
