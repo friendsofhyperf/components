@@ -306,46 +306,6 @@ parameters:
 			path: src/http-client/src/ResponseSequence.php
 
 		-
-			message: "#^Parameter \\#1 \\$callback of function array_map expects \\(callable\\(ReflectionType\\)\\: mixed\\)\\|null, Closure\\(ReflectionNamedType\\)\\: string given\\.$#"
-			count: 1
-			path: src/ide-helper/src/Command/MacroCommand.php
-
-		-
-			message: "#^Method Hyperf\\\\Database\\\\Connection\\:\\:getDoctrineSchemaManager\\(\\) invoked with 1 parameter, 0 required\\.$#"
-			count: 1
-			path: src/ide-helper/src/Command/ModelCommand.php
-
-		-
-			message: "#^Constructor of class FriendsOfHyperf\\\\IdeHelper\\\\Method has an unused parameter \\$alias\\.$#"
-			count: 1
-			path: src/ide-helper/src/Method.php
-
-		-
-			message: "#^If condition is always true\\.$#"
-			count: 1
-			path: src/ide-helper/src/Method.php
-
-		-
-			message: "#^Parameter \\#1 \\$method of method FriendsOfHyperf\\\\IdeHelper\\\\Method\\:\\:getParameters\\(\\) expects ReflectionMethod, ReflectionFunctionAbstract given\\.$#"
-			count: 1
-			path: src/ide-helper/src/Method.php
-
-		-
-			message: "#^Parameter \\#1 \\$method of method FriendsOfHyperf\\\\IdeHelper\\\\Method\\:\\:initClassDefinedProperties\\(\\) expects ReflectionMethod, ReflectionFunctionAbstract given\\.$#"
-			count: 1
-			path: src/ide-helper/src/Method.php
-
-		-
-			message: "#^Parameter \\#1 \\$method of method FriendsOfHyperf\\\\IdeHelper\\\\Method\\:\\:initPhpDoc\\(\\) expects ReflectionMethod, ReflectionFunctionAbstract given\\.$#"
-			count: 1
-			path: src/ide-helper/src/Method.php
-
-		-
-			message: "#^Parameter \\#1 \\$reflectionMethod of method FriendsOfHyperf\\\\IdeHelper\\\\Method\\:\\:getInheritDoc\\(\\) expects ReflectionMethod, ReflectionFunctionAbstract given\\.$#"
-			count: 1
-			path: src/ide-helper/src/Method.php
-
-		-
 			message: "#^Call to an undefined method Hyperf\\\\Support\\\\Fluent\\:\\:references\\(\\)\\.$#"
 			count: 1
 			path: src/model-uid-addon/class_map/Hyperf/Database/Schema/ForeignIdColumnDefinition.php
