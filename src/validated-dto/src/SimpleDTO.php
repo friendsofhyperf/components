@@ -35,6 +35,7 @@ use Hyperf\Database\Model\Model;
 use Hyperf\Validation\ValidationException;
 use ReflectionClass;
 use ReflectionProperty;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use UnitEnum;
 
 abstract class SimpleDTO implements BaseDTO, CastsAttributes
@@ -490,7 +491,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             || $value instanceof Collection
             || $value instanceof ValidatedDTO
             || $value instanceof Model
-            || is_object($value);
+            || (is_object($value) && ! ($value instanceof UploadedFile));
     }
 
     private function formatArrayableValue(mixed $value): array|int|string

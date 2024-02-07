@@ -25,6 +25,7 @@ use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\UserNestedCollectionDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\UserNestedDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\ValidatedDTOInstance;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\ValidatedEnumDTO;
+use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\ValidatedFileDTO;
 use FriendsOfHyperf\ValidatedDTO\Exception\InvalidJsonException;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
 use Hyperf\Command\Command;
@@ -33,6 +34,7 @@ use Hyperf\Validation\ValidationException;
 use Mockery as m;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 beforeEach(function () {
     $this->subject_name = faker()->name();
@@ -441,3 +443,25 @@ it('maps nested data to flat data before export', function () {
         ->and($user->email)
         ->toBe('john.doe@example.com');
 });
+
+it('validates that ValidatedDTO can be instantiated with file validation rules', function () {
+    $uploadedFile = m::mock(UploadedFile::class, [
+        'getClientOriginalName' => 'avatar.jpg',
+        'getMimeType' => 'image/jpeg',
+        'getError' => 0,
+    ]);
+    $validatedDTO = ValidatedFileDTO::fromArray(['file' => $uploadedFile]);
+
+    expect($validatedDTO->validator->passes())
+        ->toBeTrue();
+});
+
+it('validates that ValidateDTO cannot be instantiated with wrong mime type')
+    ->expect(function () {
+        $uploadedFile = m::mock(UploadedFile::class, [
+            'getClientOriginalName' => 'document.pdf',
+            'getMimeType' => 'application/pdf',
+            'getError' => 0,
+        ]);
+        ValidatedFileDTO::fromArray(['file' => $uploadedFile]);
+    })->throws(ValidationException::class);
