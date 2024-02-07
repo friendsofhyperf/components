@@ -32,6 +32,7 @@ use Hyperf\Contract\CastsAttributes;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Database\Model\Model;
+use Hyperf\HttpMessage\Upload\UploadedFile;
 use Hyperf\Validation\ValidationException;
 use ReflectionClass;
 use ReflectionProperty;
@@ -490,7 +491,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             || $value instanceof Collection
             || $value instanceof ValidatedDTO
             || $value instanceof Model
-            || is_object($value);
+            || (is_object($value) && ! ($value instanceof UploadedFile));
     }
 
     private function formatArrayableValue(mixed $value): array|int|string
