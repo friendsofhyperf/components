@@ -446,8 +446,8 @@ it('maps nested data to flat data before export', function () {
 
 it('validates that ValidatedDTO can be instantiated with file validation rules', function () {
     $uploadedFile = m::mock(UploadedFile::class, [
-        'getClientFilename' => 'avatar.jpg',
-        'getClientMediaType' => 'image/jpeg',
+        'clientFilename' => 'avatar.jpg',
+        'clientMediaType' => 'image/jpeg',
     ]);
     $validatedDTO = ValidatedFileDTO::fromArray(['file' => $uploadedFile]);
 
@@ -458,8 +458,8 @@ it('validates that ValidatedDTO can be instantiated with file validation rules',
 it('validates that ValidateDTO cannot be instantiated with wrong mime type')
     ->expect(function () {
         $uploadedFile = m::mock(UploadedFile::class, [
-            'getClientFilename' => 'document.pdf',
-            'getClientMediaType' => 'application/pdf',
+            'clientFilename' => 'document.pdf',
+            'clientMediaType' => 'application/pdf',
         ]);
         ValidatedFileDTO::fromArray(['file' => $uploadedFile]);
     })->throws(ValidationException::class);
