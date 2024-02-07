@@ -90,6 +90,7 @@ use Psr\Http\Message\UriInterface;
  * @method static string getRequestTarget()
  * @method static static setRequestTarget(string $requestTarget)
  * @method static static withRequestTarget(mixed $requestTarget)
+ * @see \Swow\Psr7\Message\RequestPlusInterface
  */
 class Request
 {

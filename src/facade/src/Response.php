@@ -51,7 +51,7 @@ use Psr\Http\Message\StreamInterface;
  * @method static string getReasonPhrase()
  * @method static static setStatus(int $code, string $reasonPhrase = '')
  * @method static static withStatus($code, $reasonPhrase = '')
- * @mixin \Swow\Psr7\Message\ResponsePlusInterface
+ * @see \Swow\Psr7\Message\ResponsePlusInterface
  */
 class Response
 {
