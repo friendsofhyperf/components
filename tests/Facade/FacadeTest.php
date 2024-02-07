@@ -16,11 +16,7 @@ use Mockery as m;
 test()->expect('FriendsOfHyperf\Facade')
     ->classes()
     ->toExtend(FriendsOfHyperf\Facade\Facade::class)
-    ->ignoring([
-        'FriendsOfHyperf\Facade\ConfigProvider',
-        'FriendsOfHyperf\Facade\Request',
-        'FriendsOfHyperf\Facade\Response',
-    ]);
+    ->ignoring('FriendsOfHyperf\Facade\ConfigProvider');
 
 test('test Cache Macroable', function () {
     Cache::macro('test', fn () => null);
