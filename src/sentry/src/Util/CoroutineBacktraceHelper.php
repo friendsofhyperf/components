@@ -28,6 +28,11 @@ class CoroutineBacktraceHelper
         'Multiplex\Socket\Client->loop', 'Multiplex\Socket\Client->heartbeat',
         'FriendsOfHyperf\Sentry\HttpClient\HttpClient->loop',
         'Hyperf\Kafka\Producer->loop',
+        'Hyperf\Metric\Listener\OnMetricFactoryReady->process',
+        'Hyperf\Metric\Listener\QueueWatcher->process',
+        'Hyperf\Metric\Listener\OnBeforeHandle->process',
+        'Hyperf\Metric\Listener\OnBeforeHandle->spawnHandle',
+        'Hyperf\Metric\Adapter\Prometheus\MetricFactory->scrapeHandle',
     ];
 
     public static function foundCallingOnFunction(): ?string
