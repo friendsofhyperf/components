@@ -11,9 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Facade;
 
-use Hyperf\Context\RequestContext;
-use Psr\Http\Message\StreamInterface;
-use Psr\Http\Message\UriInterface;
+use Hyperf\HttpServer\Contract\RequestInterface;
+use Override;
 
 /**
  * @method static array all()
@@ -60,48 +59,13 @@ use Psr\Http\Message\UriInterface;
  * @method static self|mixed whenFilled(string $key, callable $callback, callable $default = null);
  * @method static self|mixed whenHas(string $key, callable $callback, callable $default = null);
  * @method static bool isJson()
- * @method static string getProtocolVersion()
- * @method static static setProtocolVersion(string $version)
- * @method static static withProtocolVersion(mixed $version)
- * @method static bool hasHeader(mixed $name)
- * @method static array getHeader(mixed $name)
- * @method static string getHeaderLine(mixed $name)
- * @method static static setHeader(string $name, mixed $value)
- * @method static static withHeader(mixed $name, mixed $value)
- * @method static static addHeader(string $name, mixed $value)
- * @method static static withAddedHeader(mixed $name, mixed $value)
- * @method static static unsetHeader(string $name)
- * @method static static withoutHeader(mixed $name)
- * @method static array getHeaders()
- * @method static array getStandardHeaders()
- * @method static static setHeaders(array $headers)
- * @method static static withHeaders(array $headers)
- * @method static bool shouldKeepAlive()
- * @method static StreamInterface getBody()
- * @method static static setBody(StreamInterface $body)
- * @method static static withBody(StreamInterface $body)
- * @method static string toString(bool $withoutBody = false)
- * @method static string getMethod()
- * @method static static setMethod(string $method)
- * @method static static withMethod(mixed $method)
- * @method static UriInterface getUri()
- * @method static static setUri(UriInterface|string $uri, ?bool $preserveHost = null)
- * @method static static withUri(UriInterface $uri, $preserveHost = null)
- * @method static string getRequestTarget()
- * @method static static setRequestTarget(string $requestTarget)
- * @method static static withRequestTarget(mixed $requestTarget)
- * @see \Swow\Psr7\Message\RequestPlusInterface
+ * @mixin RequestInterface
  */
-class Request
+class Request extends Facade
 {
-    public static function __callStatic($name, $arguments)
+    #[Override]
+    protected static function getFacadeAccessor()
     {
-        if (str_starts_with($name, 'with')) {
-            return RequestContext::set(
-                RequestContext::get()->{$name}(...$arguments)
-            );
-        }
-
-        return RequestContext::get()->{$name}(...$arguments);
+        return RequestInterface::class;
     }
 }
