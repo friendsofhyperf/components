@@ -32,10 +32,10 @@ use Hyperf\Contract\CastsAttributes;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Database\Model\Model;
+use Hyperf\HttpMessage\Upload\UploadedFile;
 use Hyperf\Validation\ValidationException;
 use ReflectionClass;
 use ReflectionProperty;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use UnitEnum;
 
 abstract class SimpleDTO implements BaseDTO, CastsAttributes

@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Tests\ValidatedDTO\Datasets;
 
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Hyperf\HttpMessage\Upload\UploadedFile;
 
 class ValidatedFileDTO extends ValidatedDTO
 {

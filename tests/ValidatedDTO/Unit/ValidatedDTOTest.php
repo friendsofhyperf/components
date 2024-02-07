@@ -30,11 +30,11 @@ use FriendsOfHyperf\ValidatedDTO\Exception\InvalidJsonException;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
 use Hyperf\Command\Command;
 use Hyperf\Database\Model\Model;
+use Hyperf\HttpMessage\Upload\UploadedFile;
 use Hyperf\Validation\ValidationException;
 use Mockery as m;
 use Psr\Http\Message\RequestInterface;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 beforeEach(function () {
     $this->subject_name = faker()->name();
@@ -446,9 +446,8 @@ it('maps nested data to flat data before export', function () {
 
 it('validates that ValidatedDTO can be instantiated with file validation rules', function () {
     $uploadedFile = m::mock(UploadedFile::class, [
-        'getClientOriginalName' => 'avatar.jpg',
-        'getMimeType' => 'image/jpeg',
-        'getError' => 0,
+        'getClientFilename' => 'avatar.jpg',
+        'getClientMediaType' => 'image/jpeg',
     ]);
     $validatedDTO = ValidatedFileDTO::fromArray(['file' => $uploadedFile]);
 
@@ -459,9 +458,8 @@ it('validates that ValidatedDTO can be instantiated with file validation rules',
 it('validates that ValidateDTO cannot be instantiated with wrong mime type')
     ->expect(function () {
         $uploadedFile = m::mock(UploadedFile::class, [
-            'getClientOriginalName' => 'document.pdf',
-            'getMimeType' => 'application/pdf',
-            'getError' => 0,
+            'getClientFilename' => 'document.pdf',
+            'getClientMediaType' => 'application/pdf',
         ]);
         ValidatedFileDTO::fromArray(['file' => $uploadedFile]);
     })->throws(ValidationException::class);
