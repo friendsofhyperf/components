@@ -116,7 +116,6 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     protected function handleSerialize(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return with($proceedingJoinPoint->process(), function ($result) {
-            /** @var string|null $carrier */
             if (is_array($result) && $carrier = Context::get(Constants::TRACE_CARRIER)) {
                 if (array_is_list($result)) {
                     $result[] = $carrier;
