@@ -93,20 +93,20 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     protected function buildSpanDataOfRedisDriver(RedisDriver $driver): array
     {
         $data = [];
-        /** @var \Hyperf\AsyncQueue\Driver\ChannelConfig $channelConfig */
-        $channelConfig = (fn () => $this->channel)->call($driver);
-        /** @var string $channel */
-        $channel = $channelConfig->getChannel();
+
         if ($this->tagManager->has('async_queue.channel')) {
+            /** @var \Hyperf\AsyncQueue\Driver\ChannelConfig $channelConfig */
+            $channelConfig = (fn () => $this->channel)->call($driver);
+            /** @var string $channel */
+            $channel = $channelConfig->getChannel();
             $data[$this->tagManager->get('async_queue.channel')] = $channel;
         }
 
-        /** @var \Hyperf\Redis\RedisProxy $redis */
-        $redis = (fn () => $this->redis)->call($driver);
-        /** @var string $poolName */
-        $poolName = (fn () => $this->poolName)->call($redis);
-
-        if ($poolName && $this->tagManager->has('async_queue.redis_pool')) {
+        if ($this->tagManager->has('async_queue.redis_pool')) {
+            /** @var \Hyperf\Redis\RedisProxy $redis */
+            $redis = (fn () => $this->redis)->call($driver);
+            /** @var string $poolName */
+            $poolName = (fn () => $this->poolName ?? 'default')->call($redis);
             $data[$this->tagManager->get('async_queue.redis_pool')] = $poolName;
         }
 
