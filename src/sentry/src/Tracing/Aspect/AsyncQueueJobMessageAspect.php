@@ -77,7 +77,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
             };
 
             if (count($data)) {
-                $span->setData($data);
+                $span?->setData($data);
             }
 
             $carrier = $this->packer->pack($span);
@@ -116,6 +116,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     protected function handleSerialize(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return with($proceedingJoinPoint->process(), function ($result) {
+            /** @var string|null $carrier */
             if (is_array($result) && $carrier = Context::get(Constants::TRACE_CARRIER)) {
                 if (array_is_list($result)) {
                     $result[] = $carrier;
@@ -130,8 +131,9 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
 
     protected function handleUnserialize(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        /** @var array $data */
         $data = $proceedingJoinPoint->arguments['keys']['data'] ?? [];
-        $carrier = '';
+        $carrier = null;
 
         if (is_array($data)) {
             if (array_is_list($data)) {
@@ -141,6 +143,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
             }
         }
 
+        /** @var string|null $carrier */
         if ($carrier) {
             Context::set(Constants::TRACE_CARRIER, $carrier);
         }
