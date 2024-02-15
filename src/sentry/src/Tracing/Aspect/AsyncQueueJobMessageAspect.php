@@ -64,7 +64,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     {
         try {
             $span = $this->startSpan(
-                'async_queue.job.push',
+                'async_queue.job.publish',
                 $proceedingJoinPoint->arguments['keys']['job']::class
             );
             $data = [];
