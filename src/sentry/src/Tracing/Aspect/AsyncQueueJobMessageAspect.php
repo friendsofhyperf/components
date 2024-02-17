@@ -14,26 +14,34 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
+use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Util\CarrierPacker;
-use Hyperf\AsyncQueue\JobMessage;
+use Hyperf\AsyncQueue\Driver\RedisDriver;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Throwable;
 
-use function Hyperf\Collection\head;
 use function Hyperf\Support\with;
 
+/**
+ * @property \Hyperf\AsyncQueue\Driver\ChannelConfig $channel
+ * @property \Hyperf\Redis\RedisProxy $redis
+ * @property string $poolName
+ */
 class AsyncQueueJobMessageAspect extends AbstractAspect
 {
     use SpanStarter;
 
     public array $classes = [
-        JobMessage::class . '::__serialize',
-        JobMessage::class . '::__unserialize',
+        'Hyperf\AsyncQueue\Driver\*Driver::push',
+        'Hyperf\AsyncQueue\JobMessage::__serialize',
+        'Hyperf\AsyncQueue\JobMessage::__unserialize',
     ];
 
     public function __construct(
         protected Switcher $switcher,
+        protected TagManager $tagManager,
         protected CarrierPacker $packer
     ) {
     }
@@ -45,25 +53,75 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
         }
 
         return match ($proceedingJoinPoint->methodName) {
+            'push' => $this->handlePush($proceedingJoinPoint),
             '__serialize' => $this->handleSerialize($proceedingJoinPoint),
             '__unserialize' => $this->handleUnserialize($proceedingJoinPoint),
             default => $proceedingJoinPoint->process()
         };
     }
 
+    public function handlePush(ProceedingJoinPoint $proceedingJoinPoint)
+    {
+        try {
+            $span = $this->startSpan(
+                'async_queue.job.publish',
+                $proceedingJoinPoint->arguments['keys']['job']::class
+            );
+            $data = [];
+
+            /** @var \Hyperf\AsyncQueue\Driver\Driver $driver */
+            $driver = $proceedingJoinPoint->getInstance();
+            $data += match (true) {
+                $driver instanceof RedisDriver => $this->buildSpanDataOfRedisDriver($driver),
+                default => []
+            };
+
+            if (count($data)) {
+                $span?->setData($data);
+            }
+
+            $carrier = $this->packer->pack($span);
+            Context::set(Constants::TRACE_CARRIER, $carrier);
+
+            return $proceedingJoinPoint->process();
+        } catch (Throwable) {
+        } finally {
+            $span?->finish();
+        }
+    }
+
+    protected function buildSpanDataOfRedisDriver(RedisDriver $driver): array
+    {
+        $data = [];
+
+        if ($this->tagManager->has('async_queue.channel')) {
+            /** @var \Hyperf\AsyncQueue\Driver\ChannelConfig $channelConfig */
+            $channelConfig = (fn () => $this->channel)->call($driver);
+            /** @var string $channel */
+            $channel = $channelConfig->getChannel();
+            $data[$this->tagManager->get('async_queue.channel')] = $channel;
+        }
+
+        if ($this->tagManager->has('async_queue.redis_pool')) {
+            /** @var \Hyperf\Redis\RedisProxy $redis */
+            $redis = (fn () => $this->redis)->call($driver);
+            /** @var string $poolName */
+            $poolName = (fn () => $this->poolName ?? 'default')->call($redis);
+            $data[$this->tagManager->get('async_queue.redis_pool')] = $poolName;
+        }
+
+        return $data;
+    }
+
     protected function handleSerialize(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return with($proceedingJoinPoint->process(), function ($result) {
-            if (is_array($result)) {
-                $job = array_is_list($result) ? head($result) : $result['job'] ?? null;
-                $span = $this->startSpan('async_queue.job.dispatch', $job ? $job::class : null);
-                $carrier = $this->packer->pack($span);
+            if (is_array($result) && $carrier = Context::get(Constants::TRACE_CARRIER)) {
                 if (array_is_list($result)) {
                     $result[] = $carrier;
                 } elseif (isset($result['job'])) {
                     $result[Constants::TRACE_CARRIER] = $carrier;
                 }
-                $span?->finish();
             }
 
             return $result;
@@ -72,8 +130,9 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
 
     protected function handleUnserialize(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        /** @var array $data */
         $data = $proceedingJoinPoint->arguments['keys']['data'] ?? [];
-        $carrier = '';
+        $carrier = null;
 
         if (is_array($data)) {
             if (array_is_list($data)) {
@@ -83,6 +142,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
             }
         }
 
+        /** @var string|null $carrier */
         if ($carrier) {
             Context::set(Constants::TRACE_CARRIER, $carrier);
         }

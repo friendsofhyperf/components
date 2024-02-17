@@ -119,6 +119,8 @@ return [
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
             'async_queue' => [
+                'channel' => 'async_queue.channel',
+                'redis_pool' => 'async_queue.redis_pool',
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
             'command' => [
