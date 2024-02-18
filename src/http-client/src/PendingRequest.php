@@ -149,6 +149,11 @@ class PendingRequest
     protected $tries = 1;
 
     /**
+     * @var int[]|null
+     */
+    protected $backoff;
+
+    /**
      * The number of milliseconds to wait between retries.
      *
      * @var Closure|int
@@ -603,7 +608,11 @@ class PendingRequest
      */
     public function retry(int|array $times, Closure|int $sleepMilliseconds = 0, ?callable $when = null, bool $throw = true)
     {
-        $this->tries = is_array($times) ? count($times) + 1 : $times;
+        if (is_array($times)) {
+            $this->backoff = $times;
+            $times = count($times) + 1;
+        }
+        $this->tries = $times;
         $this->retryDelay = $sleepMilliseconds;
         $this->retryThrow = $throw;
         $this->retryWhenCallback = $when;
@@ -865,7 +874,7 @@ class PendingRequest
 
         $shouldRetry = null;
 
-        return retry($this->tries ?: 1, function ($attempt) use ($method, $url, $options, &$shouldRetry) {
+        return retry($this->backoff ?? ($this->tries ?: 1), function ($attempt) use ($method, $url, $options, &$shouldRetry) {
             try {
                 return tap($this->newResponse($this->sendRequest($method, $url, $options)), function ($response) use ($attempt, &$shouldRetry) {
                     $this->populateResponse($response);
