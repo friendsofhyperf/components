@@ -109,7 +109,7 @@ class PendingRequest
     /**
      * The request cookies.
      *
-     * @var array
+     * @var CookieJar
      */
     protected $cookies;
 
@@ -144,7 +144,7 @@ class PendingRequest
     /**
      * The number of times to try the request.
      *
-     * @var int|array
+     * @var int
      */
     protected $tries = 1;
 
@@ -603,7 +603,7 @@ class PendingRequest
      */
     public function retry(int|array $times, Closure|int $sleepMilliseconds = 0, ?callable $when = null, bool $throw = true)
     {
-        $this->tries = $times;
+        $this->tries = is_array($times) ? count($times) + 1 : $times;
         $this->retryDelay = $sleepMilliseconds;
         $this->retryThrow = $throw;
         $this->retryWhenCallback = $when;
@@ -865,7 +865,7 @@ class PendingRequest
 
         $shouldRetry = null;
 
-        return retry($this->tries ?? 1, function ($attempt) use ($method, $url, $options, &$shouldRetry) {
+        return retry($this->tries ?: 1, function ($attempt) use ($method, $url, $options, &$shouldRetry) {
             try {
                 return tap($this->newResponse($this->sendRequest($method, $url, $options)), function ($response) use ($attempt, &$shouldRetry) {
                     $this->populateResponse($response);
