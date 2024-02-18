@@ -34,6 +34,7 @@ use Hyperf\Macroable\Macroable;
 use Hyperf\Stringable\Str;
 use Hyperf\Stringable\Stringable;
 use JsonSerializable;
+use OutOfBoundsException;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
 use RuntimeException;
@@ -108,7 +109,7 @@ class PendingRequest
     /**
      * The request cookies.
      *
-     * @var CookieJar
+     * @var array
      */
     protected $cookies;
 
@@ -143,7 +144,7 @@ class PendingRequest
     /**
      * The number of times to try the request.
      *
-     * @var int
+     * @var int|array
      */
     protected $tries = 1;
 
@@ -600,7 +601,7 @@ class PendingRequest
      *
      * @return $this
      */
-    public function retry(int $times, Closure|int $sleepMilliseconds = 0, ?callable $when = null, bool $throw = true)
+    public function retry(int|array $times, Closure|int $sleepMilliseconds = 0, ?callable $when = null, bool $throw = true)
     {
         $this->tries = $times;
         $this->retryDelay = $sleepMilliseconds;
@@ -896,7 +897,7 @@ class PendingRequest
                     }
                 });
             } catch (ConnectException $e) {
-                $this->dispatchConnectionFailedEvent();
+                $this->dispatchConnectionFailedEvent(new Request($e->getRequest()));
 
                 throw new ConnectionException($e->getMessage(), 0, $e);
             }
@@ -1251,9 +1252,9 @@ class PendingRequest
                     $this->dispatchResponseReceivedEvent($response);
                 });
             })
-            ->otherwise(function (TransferException $e) {
+            ->otherwise(function (OutOfBoundsException|TransferException $e) {
                 if ($e instanceof ConnectException) {
-                    $this->dispatchConnectionFailedEvent();
+                    $this->dispatchConnectionFailedEvent(new Request($e->getRequest()));
 
                     return new ConnectionException($e->getMessage(), 0, $e);
                 }
@@ -1480,10 +1481,10 @@ class PendingRequest
     /**
      * Dispatch the ConnectionFailed event if a dispatcher is available.
      */
-    protected function dispatchConnectionFailedEvent()
+    protected function dispatchConnectionFailedEvent(Request $request)
     {
         if ($dispatcher = $this->factory?->getDispatcher()) {
-            $dispatcher->dispatch(new ConnectionFailed($this->request));
+            $dispatcher->dispatch(new ConnectionFailed($request));
         }
     }
 }

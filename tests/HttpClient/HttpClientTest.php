@@ -22,6 +22,7 @@ use FriendsOfHyperf\Http\Client\Request;
 use FriendsOfHyperf\Http\Client\RequestException;
 use FriendsOfHyperf\Http\Client\Response;
 use FriendsOfHyperf\Http\Client\ResponseSequence;
+use FriendsOfHyperf\Support\Sleep;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Promise\PromiseInterface;
 use GuzzleHttp\Psr7\Response as Psr7Response;
@@ -1936,6 +1937,34 @@ class HttpClientTest extends TestCase
         $this->assertEquals('Foo bar', $exception->getMessage());
 
         $this->factory->assertSentCount(1);
+    }
+
+    public function testRequestsWillBeWaitingSleepMillisecondsReceivedInBackoffArray()
+    {
+        Sleep::fake();
+
+        $this->factory->fake([
+            '*' => $this->factory->sequence()
+                ->push(['error'], 500)
+                ->push(['error'], 500)
+                ->push(['error'], 500)
+                ->push(['ok'], 200),
+        ]);
+
+        $this->factory
+            ->retry([50, 100, 200], 0, null, true)
+            ->get('http://foo.com/get');
+
+        $this->factory->assertSentCount(4);
+
+        // Make sure we waited 300ms for the first two attempts
+        Sleep::assertSleptTimes(3);
+
+        Sleep::assertSequence([
+            Sleep::usleep(50_000),
+            Sleep::usleep(100_000),
+            Sleep::usleep(200_000),
+        ]);
     }
 
     public function testMiddlewareRunsWhenFaked()
