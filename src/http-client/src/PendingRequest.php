@@ -604,6 +604,7 @@ class PendingRequest
     /**
      * Specify the number of times the request should be attempted.
      *
+     * @param int[]|int $times
      * @return $this
      */
     public function retry(int|array $times, Closure|int $sleepMilliseconds = 0, ?callable $when = null, bool $throw = true)
