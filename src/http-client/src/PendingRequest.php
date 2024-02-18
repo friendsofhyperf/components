@@ -34,6 +34,7 @@ use Hyperf\Macroable\Macroable;
 use Hyperf\Stringable\Str;
 use Hyperf\Stringable\Stringable;
 use JsonSerializable;
+use OutOfBoundsException;
 use Psr\Http\Message\MessageInterface;
 use Psr\Http\Message\RequestInterface;
 use RuntimeException;
@@ -148,6 +149,11 @@ class PendingRequest
     protected $tries = 1;
 
     /**
+     * @var int[]|null
+     */
+    protected $backoff;
+
+    /**
      * The number of milliseconds to wait between retries.
      *
      * @var Closure|int
@@ -218,11 +224,11 @@ class PendingRequest
     protected $request;
 
     /**
-     * The Guzzle request options that are mergable via array_merge_recursive.
+     * The Guzzle request options that are mergeable via array_merge_recursive.
      *
      * @var array
      */
-    protected $mergableOptions = [
+    protected $mergeableOptions = [
         'cookies',
         'form_params',
         'headers',
@@ -598,10 +604,15 @@ class PendingRequest
     /**
      * Specify the number of times the request should be attempted.
      *
+     * @param int[]|int $times
      * @return $this
      */
-    public function retry(int $times, Closure|int $sleepMilliseconds = 0, ?callable $when = null, bool $throw = true)
+    public function retry(int|array $times, Closure|int $sleepMilliseconds = 0, ?callable $when = null, bool $throw = true)
     {
+        if (is_array($times)) {
+            $this->backoff = $times;
+            $times = count($times) + 1;
+        }
         $this->tries = $times;
         $this->retryDelay = $sleepMilliseconds;
         $this->retryThrow = $throw;
@@ -619,7 +630,7 @@ class PendingRequest
     {
         return tap($this, function () use ($options) {
             $this->options = array_replace_recursive(
-                array_merge_recursive($this->options, Arr::only($options, $this->mergableOptions)),
+                array_merge_recursive($this->options, Arr::only($options, $this->mergeableOptions)),
                 $options
             );
         });
@@ -864,7 +875,7 @@ class PendingRequest
 
         $shouldRetry = null;
 
-        return retry($this->tries ?? 1, function ($attempt) use ($method, $url, $options, &$shouldRetry) {
+        return retry($this->backoff ?? ($this->tries ?: 1), function ($attempt) use ($method, $url, $options, &$shouldRetry) {
             try {
                 return tap($this->newResponse($this->sendRequest($method, $url, $options)), function ($response) use ($attempt, &$shouldRetry) {
                     $this->populateResponse($response);
@@ -896,7 +907,7 @@ class PendingRequest
                     }
                 });
             } catch (ConnectException $e) {
-                $this->dispatchConnectionFailedEvent();
+                $this->dispatchConnectionFailedEvent(new Request($e->getRequest()));
 
                 throw new ConnectionException($e->getMessage(), 0, $e);
             }
@@ -1083,7 +1094,7 @@ class PendingRequest
     public function mergeOptions(...$options)
     {
         return array_replace_recursive(
-            array_merge_recursive($this->options, Arr::only($options, $this->mergableOptions)),
+            array_merge_recursive($this->options, Arr::only($options, $this->mergeableOptions)),
             ...$options
         );
     }
@@ -1251,9 +1262,9 @@ class PendingRequest
                     $this->dispatchResponseReceivedEvent($response);
                 });
             })
-            ->otherwise(function (TransferException $e) {
+            ->otherwise(function (OutOfBoundsException|TransferException $e) {
                 if ($e instanceof ConnectException) {
-                    $this->dispatchConnectionFailedEvent();
+                    $this->dispatchConnectionFailedEvent(new Request($e->getRequest()));
 
                     return new ConnectionException($e->getMessage(), 0, $e);
                 }
@@ -1480,10 +1491,10 @@ class PendingRequest
     /**
      * Dispatch the ConnectionFailed event if a dispatcher is available.
      */
-    protected function dispatchConnectionFailedEvent()
+    protected function dispatchConnectionFailedEvent(Request $request)
     {
         if ($dispatcher = $this->factory?->getDispatcher()) {
-            $dispatcher->dispatch(new ConnectionFailed($this->request));
+            $dispatcher->dispatch(new ConnectionFailed($request));
         }
     }
 }
