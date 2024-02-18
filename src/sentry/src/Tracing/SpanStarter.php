@@ -62,8 +62,10 @@ trait SpanStarter
         if ($container->has(RpcContext::class)) {
             $rpcContext = $container->get(RpcContext::class);
             $carrier = $rpcContext->get(Constants::TRACE_CARRIER);
-            $packer = $container->get(CarrierPacker::class);
-            [$sentryTrace, $baggage] = $packer->unpack($carrier);
+            if ($carrier) {
+                $packer = $container->get(CarrierPacker::class);
+                [$sentryTrace, $baggage] = $packer->unpack($carrier);
+            }
         }
 
         return $this->continueTrace($sentryTrace, $baggage, ...$options);
