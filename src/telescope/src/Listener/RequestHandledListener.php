@@ -29,6 +29,7 @@ use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Swow\Psr7\Message\ResponsePlusInterface;
+use Throwable;
 
 use function Hyperf\Collection\collect;
 use function Hyperf\Config\config;
@@ -123,11 +124,15 @@ class RequestHandledListener implements ListenerInterface
     {
         $stream = $response->getBody();
 
-        if ($stream->isSeekable()) {
-            $stream->rewind();
-        }
+        try {
+            if ($stream->isSeekable()) {
+                $stream->rewind();
+            }
 
-        $content = $stream->getContents();
+            $content = $stream->getContents();
+        } catch (Throwable $e) {
+            return 'Purged By Hyperf Telescope: ' . $e->getMessage();
+        }
 
         if (is_string($content)) {
             if (! $this->contentWithinLimits($content)) {
