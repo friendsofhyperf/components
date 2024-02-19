@@ -130,8 +130,8 @@ class RequestHandledListener implements ListenerInterface
             }
 
             $content = $stream->getContents();
-        }catch (Throwable $e){
-            return 'Purged By Hyperf Telescope: '. $e->getMessage();
+        } catch (Throwable $e) {
+            return 'Purged By Hyperf Telescope: ' . $e->getMessage();
         }
 
         if (is_string($content)) {
