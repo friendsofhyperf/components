@@ -17,8 +17,10 @@ use FriendsOfHyperf\Confd\Event\ConfigChanged;
 use FriendsOfHyperf\Confd\Event\WatchDispatched;
 use FriendsOfHyperf\Confd\Traits\Logger;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Engine\Coroutine;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Throwable;
 
 class Confd
 {
@@ -33,6 +35,7 @@ class Confd
         $driver = $this->config->get('confd.default', 'etcd');
         $class = $this->config->get(sprintf('confd.drivers.%s.driver', $driver), Etcd::class);
         $this->driver = $container->get($class);
+        $this->resolveLogger();
     }
 
     public function fetch(): array
@@ -42,8 +45,18 @@ class Confd
 
     public function watch(): void
     {
+        // Fetch first
+        Coroutine::create(function () {
+            try {
+                $this->previous = $this->fetch();
+            } catch (Throwable $e) {
+                $this->logger?->error($e->getMessage());
+            }
+        });
+
         $watches = (array) $this->config->get('confd.watches', []);
 
+        // Loop fetch
         $this->driver->loop(function ($current) use ($watches) {
             foreach ($current as $key => $value) {
                 if (isset($this->previous[$key]) && $this->previous[$key] !== $value) {
