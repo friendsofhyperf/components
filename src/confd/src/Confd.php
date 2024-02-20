@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Confd;
 use FriendsOfHyperf\Confd\Driver\DriverInterface;
 use FriendsOfHyperf\Confd\Driver\Etcd;
 use FriendsOfHyperf\Confd\Event\ConfigChanged;
+use FriendsOfHyperf\Confd\Event\WatchDispatched;
 use FriendsOfHyperf\Confd\Traits\Logger;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
@@ -41,10 +42,17 @@ class Confd
 
     public function watch(): void
     {
-        $this->driver->loop(function ($current) {
+        $watches = (array) $this->config->get('confd.watches', []);
+
+        $this->driver->loop(function ($current) use ($watches) {
             foreach ($current as $key => $value) {
                 if (isset($this->previous[$key]) && $this->previous[$key] !== $value) {
-                    $this->event(new ConfigChanged($current, $this->previous, array_diff_assoc($current, $this->previous)));
+                    $this->event(new ConfigChanged($current, $this->previous, $changes = array_diff_assoc($current, $this->previous)));
+
+                    if (in_array($key, $watches, true)) {
+                        $this->event(new WatchDispatched($changes));
+                    }
+
                     break;
                 }
             }
