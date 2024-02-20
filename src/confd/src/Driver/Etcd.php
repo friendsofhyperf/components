@@ -11,8 +11,10 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Confd\Driver;
 
+use FriendsOfHyperf\Confd\Traits\Logger;
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Coordinator\Timer;
 use Hyperf\Etcd\V3\KV;
 use Override;
 
@@ -21,7 +23,11 @@ use function Hyperf\Support\make;
 
 class Etcd implements DriverInterface
 {
+    use Logger;
+
     private KV $client;
+
+    private Timer $timer;
 
     public function __construct(private ConfigInterface $config)
     {
@@ -32,6 +38,18 @@ class Etcd implements DriverInterface
                 'timeout' => (int) $this->config->get('confd.drivers.etcd.client.timeout', 10),
             ],
         ]);
+
+        $this->resolveLogger();
+        $this->timer = new Timer($this->logger);
+    }
+
+    public function loop(callable $callback): void
+    {
+        $interval = (int) $this->config->get('confd.interval', 1);
+
+        $this->timer->tick($interval, function () use ($callback) {
+            $callback($this->fetch());
+        });
     }
 
     #[Override]

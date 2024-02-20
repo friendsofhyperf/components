@@ -16,7 +16,7 @@ use Hyperf\Codec\Json;
 use Hyperf\Codec\Xml;
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Engine\Channel;
+use Hyperf\Coordinator\Timer;
 use Hyperf\Nacos\Application;
 use Hyperf\Nacos\Config;
 use Hyperf\Nacos\Module;
@@ -34,6 +34,8 @@ class Nacos implements DriverInterface
 
     private Application $client;
 
+    private Timer $timer;
+
     public function __construct(private ConfigInterface $config)
     {
         $config = $this->config->get('confd.drivers.nacos.client') ?: $this->config->get('nacos', []);
@@ -47,6 +49,39 @@ class Nacos implements DriverInterface
         ]);
 
         $this->resolveLogger();
+        $this->timer = new Timer($this->logger);
+    }
+
+    public function loop(callable $callback): void
+    {
+        $isGrpcEnabled = $this->config->get('confd.drivers.nacos.client.grpc.enable', false);
+
+        if ($isGrpcEnabled) {
+            foreach ($this->config->get('confd.drivers.nacos.listener_config', []) as $options) {
+                $dataId = $options['data_id'];
+                $group = $options['group'];
+                $tenant = $options['tenant'] ?? null;
+                $type = $options['type'] ?? null;
+                $client = $this->client->grpc->get($tenant, Module::CONFIG);
+                $client->listenConfig($group, $dataId, new ConfigChangeNotifyRequestHandler(function (ConfigQueryResponse $response) use ($callback, $dataId, $type) {
+                    $config = $response->getContent();
+                    $values = $this->mapping([
+                        $dataId => $this->decode($config, $type),
+                    ]);
+                    $callback($values);
+                }));
+            }
+            foreach ($this->client->grpc->moduleClients(Module::CONFIG) as $client) {
+                $client->listen();
+            }
+            return;
+        }
+
+        $interval = (int) $this->config->get('confd.interval', 1);
+
+        $this->timer->tick($interval, function () use ($callback) {
+            $callback($this->fetch());
+        });
     }
 
     /**
@@ -55,12 +90,17 @@ class Nacos implements DriverInterface
     #[Override]
     public function fetch(): array
     {
-        $listeners = $this->config->get('confd.drivers.nacos.listener_config', []);
-        $mapping = (array) $this->config->get('confd.drivers.nacos.mapping', []);
-
+        $listeners = (array) $this->config->get('confd.drivers.nacos.listener_config', []);
         $values = collect($listeners)
             ->map(fn ($options) => $this->pull($options))
             ->toArray();
+
+        return $this->mapping($values);
+    }
+
+    protected function mapping(array $values): array
+    {
+        $mapping = (array) $this->config->get('confd.drivers.nacos.mapping', []);
 
         return collect($mapping)
             ->filter(fn ($envKey, $configKey) => Arr::has($values, $configKey))
@@ -99,13 +139,6 @@ class Nacos implements DriverInterface
      */
     protected function pull(array $options = []): array|string
     {
-        $isGrpcEnabled = $this->config->get('confd.drivers.nacos.client.grpc.enable', false);
-
-        return $isGrpcEnabled ? $this->pullByGrpc($options) : $this->pullByHttp($options);
-    }
-
-    protected function pullByHttp(array $options = []): array|string
-    {
         $dataId = $options['data_id'];
         $group = $options['group'];
         $tenant = $options['tenant'] ?? null;
@@ -119,24 +152,6 @@ class Nacos implements DriverInterface
         }
 
         return $this->decode((string) $response->getBody(), $type);
-    }
-
-    protected function pullByGrpc(array $options = []): array|string
-    {
-        $dataId = $options['data_id'];
-        $group = $options['group'];
-        $tenant = $options['tenant'] ?? null;
-        $type = $options['type'] ?? null;
-
-        $client = $this->client->grpc->get($tenant, Module::CONFIG);
-        $chan = new Channel(1);
-        $client->listenConfig($group, $dataId, new ConfigChangeNotifyRequestHandler(fn (ConfigQueryResponse $response) => $chan->push($response->getContent())));
-        foreach ($this->client->grpc->moduleClients(Module::CONFIG) as $client) {
-            $client->listen();
-        }
-        $config = $chan->pop();
-
-        return $this->decode($config, $type);
     }
 
     protected function decode(string $body, ?string $type = null): mixed

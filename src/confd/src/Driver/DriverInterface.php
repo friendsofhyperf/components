@@ -14,4 +14,6 @@ namespace FriendsOfHyperf\Confd\Driver;
 interface DriverInterface
 {
     public function fetch(): array;
+
+    public function loop(callable $callback): void;
 }
