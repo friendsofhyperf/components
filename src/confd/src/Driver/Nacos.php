@@ -16,8 +16,12 @@ use Hyperf\Codec\Json;
 use Hyperf\Codec\Xml;
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Coordinator\Timer;
 use Hyperf\Nacos\Application;
 use Hyperf\Nacos\Config;
+use Hyperf\Nacos\Module;
+use Hyperf\Nacos\Protobuf\ListenHandler\ConfigChangeNotifyRequestHandler;
+use Hyperf\Nacos\Protobuf\Response\ConfigQueryResponse;
 use InvalidArgumentException;
 use Override;
 
@@ -29,6 +33,8 @@ class Nacos implements DriverInterface
     use Logger;
 
     private Application $client;
+
+    private Timer $timer;
 
     public function __construct(private ConfigInterface $config)
     {
@@ -43,6 +49,39 @@ class Nacos implements DriverInterface
         ]);
 
         $this->resolveLogger();
+        $this->timer = new Timer($this->logger);
+    }
+
+    public function loop(callable $callback): void
+    {
+        $isGrpcEnabled = $this->config->get('confd.drivers.nacos.client.grpc.enable', false);
+
+        if ($isGrpcEnabled) {
+            foreach ($this->config->get('confd.drivers.nacos.listener_config', []) as $options) {
+                $dataId = $options['data_id'];
+                $group = $options['group'];
+                $tenant = $options['tenant'] ?? null;
+                $type = $options['type'] ?? null;
+                $client = $this->client->grpc->get($tenant, Module::CONFIG);
+                $client->listenConfig($group, $dataId, new ConfigChangeNotifyRequestHandler(function (ConfigQueryResponse $response) use ($callback, $dataId, $type) {
+                    $config = $response->getContent();
+                    $values = $this->mapping([
+                        $dataId => $this->decode($config, $type),
+                    ]);
+                    $callback($values);
+                }));
+            }
+            foreach ($this->client->grpc->moduleClients(Module::CONFIG) as $client) {
+                $client->listen();
+            }
+            return;
+        }
+
+        $interval = (int) $this->config->get('confd.interval', 1);
+
+        $this->timer->tick($interval, function () use ($callback) {
+            $callback($this->fetch());
+        });
     }
 
     /**
@@ -51,12 +90,17 @@ class Nacos implements DriverInterface
     #[Override]
     public function fetch(): array
     {
-        $listeners = $this->config->get('confd.drivers.nacos.listener_config', []);
-        $mapping = (array) $this->config->get('confd.drivers.nacos.mapping', []);
-
+        $listeners = (array) $this->config->get('confd.drivers.nacos.listener_config', []);
         $values = collect($listeners)
             ->map(fn ($options) => $this->pull($options))
             ->toArray();
+
+        return $this->mapping($values);
+    }
+
+    protected function mapping(array $values): array
+    {
+        $mapping = (array) $this->config->get('confd.drivers.nacos.mapping', []);
 
         return collect($mapping)
             ->filter(fn ($envKey, $configKey) => Arr::has($values, $configKey))
@@ -79,7 +123,12 @@ class Nacos implements DriverInterface
             'base_uri' => $baseUri,
             'username' => $config['username'] ?? null,
             'password' => $config['password'] ?? null,
+            'access_key' => $config['access_key'] ?? null,
+            'access_secret' => $config['access_secret'] ?? null,
             'guzzle_config' => $config['guzzle']['config'] ?? null,
+            'host' => $config['host'] ?? null,
+            'port' => $config['port'] ?? null,
+            'grpc' => $config['grpc'] ?? [],
         ]);
     }
 
@@ -98,7 +147,7 @@ class Nacos implements DriverInterface
         $response = $this->client->config->get($dataId, $group, $tenant);
 
         if ($response->getStatusCode() !== 200) {
-            $this->logger?->error(sprintf('The config of %s.%s.%s read failed from Nacos.', $group, $tenant, $dataId));
+            $this->logger->error(sprintf('The config of %s.%s.%s read failed from Nacos.', $group, $tenant, $dataId));
             return [];
         }
 
