@@ -55,6 +55,8 @@ class Confd
 
     protected function event(object $event): void
     {
-        $this->container->get(EventDispatcherInterface::class)?->dispatch($event);
+        if ($this->container->has(EventDispatcherInterface::class)) {
+            $this->container->get(EventDispatcherInterface::class)->dispatch($event);
+        }
     }
 }
