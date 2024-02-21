@@ -38,27 +38,30 @@ class Nacos implements DriverInterface
 
     private bool $isGrpcEnabled = false;
 
+    private array $listenerConfig = [];
+
+    private array $mapping = [];
+
     public function __construct(private ConfigInterface $config)
     {
         $config = $this->config->get('confd.drivers.nacos.client') ?: $this->config->get('nacos', []);
-        $this->isGrpcEnabled = (bool) ($config['grpc']['enable'] ?? false);
 
         if (empty($config)) {
             throw new InvalidArgumentException('Nacos config is invalid.');
         }
 
-        $this->client = make(NacosClient::class, [
-            'config' => $this->buildNacosConfig($config),
-        ]);
-
         $this->resolveLogger();
+        $this->isGrpcEnabled = (bool) ($config['grpc']['enable'] ?? false);
+        $this->listenerConfig = (array) $this->config->get('confd.drivers.nacos.listener_config', []);
+        $this->mapping = (array) $this->config->get('confd.drivers.nacos.mapping', []);
+        $this->client = make(NacosClient::class, ['config' => $this->buildNacosConfig($config)]);
         $this->timer = new Timer($this->logger);
     }
 
     public function loop(callable $callback): void
     {
         if ($this->isGrpcEnabled) {
-            foreach ($this->config->get('confd.drivers.nacos.listener_config', []) as $options) {
+            foreach ($this->listenerConfig as $options) {
                 $dataId = $options['data_id'];
                 $group = $options['group'];
                 $tenant = $options['tenant'] ?? null;
@@ -91,8 +94,7 @@ class Nacos implements DriverInterface
     #[Override]
     public function fetch(): array
     {
-        $listeners = (array) $this->config->get('confd.drivers.nacos.listener_config', []);
-        $values = collect($listeners)
+        $values = collect($this->listenerConfig)
             ->map(fn ($options) => $this->pull($options))
             ->toArray();
 
@@ -101,9 +103,7 @@ class Nacos implements DriverInterface
 
     protected function mapping(array $values): array
     {
-        $mapping = (array) $this->config->get('confd.drivers.nacos.mapping', []);
-
-        return collect($mapping)
+        return collect($this->mapping)
             ->filter(fn ($envKey, $configKey) => Arr::has($values, $configKey))
             ->mapWithKeys(fn ($envKey, $configKey) => [$envKey => Arr::get($values, $configKey)])
             ->toArray();
