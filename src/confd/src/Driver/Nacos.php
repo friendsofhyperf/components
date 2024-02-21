@@ -36,9 +36,12 @@ class Nacos implements DriverInterface
 
     private Timer $timer;
 
+    private bool $isGrpcEnabled = false;
+
     public function __construct(private ConfigInterface $config)
     {
         $config = $this->config->get('confd.drivers.nacos.client') ?: $this->config->get('nacos', []);
+        $this->isGrpcEnabled = (bool) ($config['grpc']['enable'] ?? false);
 
         if (empty($config)) {
             throw new InvalidArgumentException('Nacos config is invalid.');
@@ -54,9 +57,7 @@ class Nacos implements DriverInterface
 
     public function loop(callable $callback): void
     {
-        $isGrpcEnabled = $this->config->get('confd.drivers.nacos.client.grpc.enable', false);
-
-        if ($isGrpcEnabled) {
+        if ($this->isGrpcEnabled) {
             foreach ($this->config->get('confd.drivers.nacos.listener_config', []) as $options) {
                 $dataId = $options['data_id'];
                 $group = $options['group'];
