@@ -161,7 +161,7 @@ abstract class ValidatedDTO extends SimpleDTO
     private function rulesList(): array
     {
         return [
-            ...$this->rules(),
+            ...$this->getRules(),
             ...$this->dtoRules,
         ];
     }
