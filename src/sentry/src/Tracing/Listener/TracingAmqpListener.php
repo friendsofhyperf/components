@@ -71,7 +71,7 @@ class TracingAmqpListener implements ListenerInterface
             /** @var AMQPMessage $amqpMessage */
             $amqpMessage = $event->getAMQPMessage();
             /** @var AMQPTable|null $applicationHeaders */
-            $applicationHeaders = $amqpMessage->get('application_headers');
+            $applicationHeaders = $amqpMessage->has('application_headers') ? $amqpMessage->get('application_headers') : null;
             if ($applicationHeaders && isset($applicationHeaders[Constants::TRACE_CARRIER])) {
                 [$sentryTrace, $baggage] = $this->packer->unpack($applicationHeaders[Constants::TRACE_CARRIER]);
             }
