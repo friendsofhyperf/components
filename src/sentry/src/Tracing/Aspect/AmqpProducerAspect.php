@@ -22,7 +22,7 @@ use PhpAmqpLib\Wire\AMQPTable;
 use function Hyperf\Tappable\tap;
 
 /**
- * @property array{application_headers:?AMQPTable} $properties
+ * @property array{application_headers?:AMQPTable} $properties
  */
 class AmqpProducerAspect extends AbstractAspect
 {
@@ -57,6 +57,10 @@ class AmqpProducerAspect extends AbstractAspect
             'amqp.produce',
             sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
         );
+        if (! $span) {
+            return $proceedingJoinPoint->process();
+        }
+
         $carrier = $this->packer->pack($span);
         (function () use ($carrier) {
             $this->properties['application_headers'] ??= new AMQPTable();
