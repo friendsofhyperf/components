@@ -52,6 +52,11 @@ class KafkaProducerAspect extends AbstractAspect
             'kafka.send',
             sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
         );
+
+        if (! $span) {
+            return $proceedingJoinPoint->process();
+        }
+
         $carrier = $this->packer->pack($span);
         $headers = $proceedingJoinPoint->arguments['keys']['headers'] ?? [];
         $headers[] = (new RecordHeader())
@@ -70,6 +75,11 @@ class KafkaProducerAspect extends AbstractAspect
             'kafka.send_batch',
             sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
         );
+
+        if (! $span) {
+            return $proceedingJoinPoint->process();
+        }
+
         $carrier = $this->packer->pack($span);
 
         foreach ($messages as $message) {

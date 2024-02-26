@@ -62,11 +62,16 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
 
     public function handlePush(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        $span = $this->startSpan(
+            'async_queue.job.publish',
+            $proceedingJoinPoint->arguments['keys']['job']::class
+        );
+
+        if (! $span) {
+            return $proceedingJoinPoint->process();
+        }
+
         try {
-            $span = $this->startSpan(
-                'async_queue.job.publish',
-                $proceedingJoinPoint->arguments['keys']['job']::class
-            );
             $data = [];
 
             /** @var \Hyperf\AsyncQueue\Driver\Driver $driver */
