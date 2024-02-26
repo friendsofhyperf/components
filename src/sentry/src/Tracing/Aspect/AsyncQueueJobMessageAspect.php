@@ -82,7 +82,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
             };
 
             if (count($data)) {
-                $span?->setData($data);
+                $span->setData($data);
             }
 
             $carrier = $this->packer->pack($span);
@@ -91,7 +91,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         } catch (Throwable) {
         } finally {
-            $span?->finish();
+            $span->finish();
         }
     }
 
