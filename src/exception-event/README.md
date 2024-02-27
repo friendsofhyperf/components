@@ -8,13 +8,9 @@ The exception component for Hyperf.
 
 ## Installation
 
-```bash
+```shell
 composer require friendsofhyperf/exception-event
 ```
-
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
 
 ## Contact
 

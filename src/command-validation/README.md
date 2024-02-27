@@ -56,10 +56,6 @@ class FooCommand extends HyperfCommand
 }
 ```
 
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
-
 ## Contact
 
 - [Twitter](https://twitter.com/huangdijia)

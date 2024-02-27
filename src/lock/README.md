@@ -10,13 +10,13 @@ The lock component for Hyperf. [中文说明](README_CN.md)
 
 - Require
 
-```bash
+```shell
 composer require friendsofhyperf/lock
 ```
 
 - Publish
 
-```bash
+```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/lock -i config
 ```
 
@@ -83,10 +83,6 @@ class Foo
     }
 }
 ```
-
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
 
 ## Contact
 

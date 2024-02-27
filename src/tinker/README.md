@@ -8,19 +8,19 @@ The Powerful REPL for Hyperf.
 
 ## Installation
 
-```bash
+```shell
 composer require friendsofhyperf/tinker
 ```
 
 ## Publish Config
 
-```bash
+```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/tinker
 ```
 
 ## Usage
 
-```bash
+```shell
 php bin/hyperf.php tinker
 ```
 
@@ -28,7 +28,7 @@ php bin/hyperf.php tinker
 
 * run command
 
-````bash
+````shell
 Psy Shell v0.10.4 (PHP 7.3.11 — cli)
 >>> $a=1
 => 1
@@ -43,7 +43,7 @@ Psy Shell v0.10.4 (PHP 7.3.11 — cli)
 
 * The help command
 
-```bash
+```shell
 >>> help
   help             Show a list of commands. Type `help [foo]` for information about [foo].      Aliases: ?
   ls               List local, instance or class variables, methods and constants.              Aliases: dir
@@ -72,7 +72,7 @@ Psy Shell v0.10.4 (PHP 7.3.11 — cli)
 
 * get hyperf env
 
-```bash
+```shell
 Psy Shell v0.10.4 (PHP 7.2.34 — cli)
 >>> env("APP_NAME")
 => "skeleton"
@@ -81,7 +81,7 @@ Psy Shell v0.10.4 (PHP 7.2.34 — cli)
 
 * query db
 
-```bash
+```shell
 ➜  t.hyperf.com git:(master) ✗ php bin/hyperf.php tinker
 [DEBUG] Event Hyperf\Framework\Event\BootApplication handled by Hyperf\Config\Listener\RegisterPropertyHandlerListener listener.
 [DEBUG] Event Hyperf\Framework\Event\BootApplication handled by Hyperf\Paginator\Listener\PageResolverListener listener.
@@ -151,7 +151,7 @@ object(App\Model\User)#81816 (28) {
 
 * show doc
 
-```bash
+```shell
 >>> doc md5
 function md5($str, $raw_output = unknown)
 
@@ -163,7 +163,7 @@ PHP manual not found
 
 * show class
 
-```bash
+```shell
 >>> show App\Model\User
  7: /**
  8:  */
@@ -191,10 +191,6 @@ PHP manual not found
 
 >>>
 ```
-
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
 
 ## Contact
 

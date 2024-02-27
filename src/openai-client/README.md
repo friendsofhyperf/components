@@ -16,13 +16,13 @@
 
 First, install OpenAI via the [Composer](https://getcomposer.org/) package manager:
 
-```bash
+```shell
 composer require friendsofhyperf/openai-client
 ```
 
 Next, publish the configuration file:
 
-```bash
+```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/openai-client
 ```
 
@@ -71,10 +71,6 @@ $result = $client->completions()->create([
 ## Usage
 
 For usage examples, take a look at the [openai-php/client](https://github.com/openai-php/client) repository.
-
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
 
 ## Contact
 

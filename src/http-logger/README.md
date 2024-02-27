@@ -10,13 +10,13 @@ The http logger component for Hyperf.
 
 - Request
 
-```bash
+```shell
 composer require "friendsofhyperf/http-logger
 ```
 
 - Publish
 
-```bash
+```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/http-logger
 ```
 
@@ -29,10 +29,6 @@ return [
     ],
 ];
 ```
-
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
 
 ## Contact
 

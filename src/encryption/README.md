@@ -8,26 +8,22 @@ The encryption component for Hyperf.
 
 ## Installation
 
-```bash
+```shell
 composer require friendsofhyperf/encryption
 ```
 
 ## Publish Config
 
-```bash
+```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/encryption
 ```
 
 ## Usage
 
-```bash
+```shell
 $encryptString = encrypt($string);
 $decryptString = decrypt($encryptString);
 ```
-
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
 
 ## Contact
 

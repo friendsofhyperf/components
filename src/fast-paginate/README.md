@@ -64,10 +64,6 @@ Some community results so far:
 * [20 seconds --> 2 seconds](https://twitter.com/1ralphmorris/status/1484242437618941957)
 * [2 seconds --> .2 seconds](https://twitter.com/julioelpoeta/status/1549524738980077568)
 
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
-
 ## Contact
 
 - [Twitter](https://twitter.com/huangdijia)

@@ -8,7 +8,7 @@ The progress bar component For Hyperf.
 
 ## Installation
 
-```bash
+```shell
 composer require friendsofhyperf/console-spinner
 ```
 
@@ -16,7 +16,7 @@ composer require friendsofhyperf/console-spinner
 
 - Optional
 
-```bash
+```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/console-spinner
 ```
 
@@ -58,10 +58,6 @@ $this->withSpinner(User::all(), function($user) {
     // Do your stuff with $user
 }, 'Loading...');
 ```
-
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
 
 ## Contact
 
