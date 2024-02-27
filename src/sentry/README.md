@@ -99,10 +99,6 @@ SENTRY_TRACING_SPANS_REDIS=true
 SENTRY_TRACING_SPANS_SQL_QUERIES=true
 ```
 
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
-
 ## Contact
 
 - [Twitter](https://twitter.com/huangdijia)

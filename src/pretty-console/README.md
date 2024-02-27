@@ -40,10 +40,6 @@ class FooCommand extends HyperfCommand
 - [nunomaduro/termwind](https://github.com/nunomaduro/termwind)
 - [The idea from pr of laravel](https://github.com/laravel/framework/pull/43065)
 
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
-
 ## Contact
 
 - [Twitter](https://twitter.com/huangdijia)

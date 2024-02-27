@@ -8,7 +8,7 @@ The HTTP Client component for Hyperf, from Laravel.
 
 ## Installation
 
-```bash
+```shell
 composer require friendsofhyperf/http-client
 ```
 
@@ -21,10 +21,6 @@ $response = Http::get('https://example.com');
 ```
 
 see https://laravel.com/docs/9.x/http-client
-
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
 
 ## Contact
 

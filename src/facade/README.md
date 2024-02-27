@@ -8,7 +8,7 @@ The commonly used facades for Hyperf.
 
 ## Installation
 
-```bash
+```shell
 composer require friendsofhyperf/facade
 ```
 
@@ -32,10 +32,6 @@ composer require friendsofhyperf/facade
 - [x] Translator
 - [x] Validator
 - [x] View
-
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
 
 ## Contact
 

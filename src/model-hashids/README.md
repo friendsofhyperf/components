@@ -191,10 +191,6 @@ Route::get('/user/{user}/items/{item}', function (User $user, Item $item) {
 
 ```
 
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
-
 ## Contact
 
 - [Twitter](https://twitter.com/huangdijia)

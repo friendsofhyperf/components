@@ -10,13 +10,13 @@ MySQL trigger component for Hyperf, Based on a great work of creators：[moln/ph
 
 - Request
 
-```bash
+```shell
 composer require friendsofhyperf/trigger
 ```
 
 - Publish
 
-```bash
+```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/trigger
 ```
 
@@ -77,10 +77,6 @@ class BarSubscriber extends AbstractEventSubscriber
     }
 }
 ```
-
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
 
 ## Contact
 

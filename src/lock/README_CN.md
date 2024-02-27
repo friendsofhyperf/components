@@ -6,13 +6,13 @@ Hyperf 原子锁组件。[English Document](README.md)
 
 - 安装依赖
 
-```bash
+```shell
 composer require friendsofhyperf/lock
 ```
 
 - 发布配置
 
-```bash
+```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/lock -i config
 ```
 

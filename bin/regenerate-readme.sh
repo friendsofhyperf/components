@@ -57,7 +57,7 @@ echo "|Repository|Stable Version|Total Downloads|Monthly Downloads|"
 echo "|--|--|--|--|"
 
 for REPO in ${REPOS}; do
-    printf "|%s|%s|%s|%s|%s|\n" \
+    printf "|%s|%s|%s|%s|\n" \
         "$(repository ${REPO})" \
         "$(latest_stable_version ${REPO})" \
         "$(total_downloads ${REPO})" \
@@ -67,10 +67,6 @@ done
 echo
 
 cat <<EOF
-## Donate
-
-> If you like them, Buy me a cup of coffee. [Alipay](https://hdj.me/images/alipay-min.jpg) | [WeChat](https://hdj.me/images/wechat-pay-min.jpg)
-
 ## Contact
 
 - [Twitter](https://twitter.com/huangdijia)
