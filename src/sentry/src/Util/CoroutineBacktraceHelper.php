@@ -33,6 +33,7 @@ class CoroutineBacktraceHelper
         'Hyperf\Metric\Listener\OnBeforeHandle->process',
         'Hyperf\Metric\Listener\OnBeforeHandle->spawnHandle',
         'Hyperf\Metric\Adapter\Prometheus\MetricFactory->scrapeHandle',
+        'Hyperf\Amqp\AMQPConnection->loop', 'Hyperf\Amqp\AMQPConnection->heartbeat',
     ];
 
     public static function foundCallingOnFunction(): ?string
