@@ -40,7 +40,7 @@
         "workerman/gatewayclient": "^3.0.13"
     },
     "require-dev": {
-        "elasticsearch/elasticsearch": "^7.0",
+        "elasticsearch/elasticsearch": "^7.0|^8.0",
         "friendsofhyperf/rector": "dev-main",
         "hashids/hashids": "^4.1|^5.0",
         "huangdijia/php-coding-standard": "^1.1",
