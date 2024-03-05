@@ -29,7 +29,8 @@
     "suggest": {
         "hyperf/amqp": "Required to use the amqp event (~3.0.0).",
         "hyperf/crontab": "Required to use the crontab event (~3.0.42).",
-        "hyperf/database": "Required to use the crontab event (~3.0.0)."
+        "hyperf/database": "Required to use the crontab event (~3.0.0).",
+        "elasticsearch/elasticsearch": "Required to use the elasticsearch client (^7.0|^8.0)."
     },
     "config": {
         "sort-packages": true
