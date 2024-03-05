@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Elasticsearch;
 
 use Elastic\Elasticsearch\ClientBuilder;
-use Hyperf\Coroutine\Coroutine;
 use Hyperf\Guzzle\ClientFactory as GuzzleClientFactory;
 
 class ClientBuilderFactory
@@ -24,12 +23,9 @@ class ClientBuilderFactory
     public function create(array $options = [])
     {
         $builder = ClientBuilder::create();
-
-        if (Coroutine::inCoroutine()) {
-            $builder->setHttpClient(
-                $this->guzzleClientFactory->create($options)
-            );
-        }
+        $builder->setHttpClient(
+            $this->guzzleClientFactory->create($options)
+        );
 
         return $builder;
     }
