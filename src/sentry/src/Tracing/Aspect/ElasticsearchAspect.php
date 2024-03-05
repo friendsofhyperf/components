@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use Elasticsearch\Client;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Tracing\TagManager;
@@ -26,19 +25,32 @@ class ElasticsearchAspect extends AbstractAspect
     use SpanStarter;
 
     public array $classes = [
-        Client::class . '::bulk',
-        Client::class . '::count',
-        Client::class . '::create',
-        Client::class . '::get',
-        Client::class . '::getSource',
-        Client::class . '::index',
-        Client::class . '::mget',
-        Client::class . '::msearch',
-        Client::class . '::scroll',
-        Client::class . '::search',
-        Client::class . '::update',
-        Client::class . '::updateByQuery',
-        Client::class . '::search',
+        // v7.x
+        'Elasticsearch\Client::bulk',
+        'Elasticsearch\Client::count',
+        'Elasticsearch\Client::create',
+        'Elasticsearch\Client::get',
+        'Elasticsearch\Client::getSource',
+        'Elasticsearch\Client::index',
+        'Elasticsearch\Client::mget',
+        'Elasticsearch\Client::msearch',
+        'Elasticsearch\Client::scroll',
+        'Elasticsearch\Client::search',
+        'Elasticsearch\Client::update',
+        'Elasticsearch\Client::updateByQuery',
+        // v8.x
+        'Elastic\Elasticsearch\Client::bulk',
+        'Elastic\Elasticsearch\Client::count',
+        'Elastic\Elasticsearch\Client::create',
+        'Elastic\Elasticsearch\Client::get',
+        'Elastic\Elasticsearch\Client::getSource',
+        'Elastic\Elasticsearch\Client::index',
+        'Elastic\Elasticsearch\Client::mget',
+        'Elastic\Elasticsearch\Client::msearch',
+        'Elastic\Elasticsearch\Client::scroll',
+        'Elastic\Elasticsearch\Client::search',
+        'Elastic\Elasticsearch\Client::update',
+        'Elastic\Elasticsearch\Client::updateByQuery',
     ];
 
     public function __construct(
