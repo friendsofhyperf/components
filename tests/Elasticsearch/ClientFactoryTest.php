@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Tests\Elasticsearch;
 
 use Elastic\Elasticsearch\ClientBuilder;
+use Elastic\Transport\Exception\NoNodeAvailableException;
 use FriendsOfHyperf\Elasticsearch\ClientBuilderFactory;
 use FriendsOfHyperf\Tests\TestCase;
 use GuzzleHttp\Client;
@@ -36,5 +37,20 @@ class ClientFactoryTest extends TestCase
         $clientBuilder = $clientFactory->create();
 
         $this->assertInstanceOf(ClientBuilder::class, $clientBuilder);
+    }
+
+    public function testHostNotReached()
+    {
+        $this->expectException(NoNodeAvailableException::class);
+
+        /** @var GuzzleClientFactory $clientFactory */
+        $clientFactory = $this->mock(GuzzleClientFactory::class, function ($mock) {
+            $mock->shouldReceive('create')->once()->with([])->andReturn(new Client());
+        });
+        $clientFactory = new ClientBuilderFactory($clientFactory);
+
+        $client = $clientFactory->create()->setHosts(['http://127.0.0.1:9201'])->build();
+
+        $client->info();
     }
 }
