@@ -8,14 +8,19 @@
         "elasticsearch"
     ],
     "description": "Elasticsearch client for hyperf",
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\Elasticsearch\\": "src/"
-        }
-    },
-    "autoload-dev": {
-        "psr-4": {
-            "HyperfTest\\Elasticsearch\\": "tests/"
         }
     },
     "require": {
@@ -28,7 +33,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-master": "3.1-dev"
+            "dev-main": "3.1-dev"
         }
     }
 }
