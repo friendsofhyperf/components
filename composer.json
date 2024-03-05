@@ -198,8 +198,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "FriendsOfHyperf\\Tests\\": "tests/",
-            "HyperfTest\\Elasticsearch\\": "src/elasticsearch/tests/"
+            "FriendsOfHyperf\\Tests\\": "tests/"
         }
     },
     "extra": {
