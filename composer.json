@@ -113,6 +113,7 @@
         "friendsofhyperf/config-consul": "*",
         "friendsofhyperf/console-spinner": "*",
         "friendsofhyperf/di-plus": "*",
+        "friendsofhyperf/elasticsearch": "*",
         "friendsofhyperf/encryption": "*",
         "friendsofhyperf/exception-event": "*",
         "friendsofhyperf/facade": "*",
@@ -164,6 +165,7 @@
             "FriendsOfHyperf\\ConfigConsul\\": "src/config-consul/src/",
             "FriendsOfHyperf\\ConsoleSpinner\\": "src/console-spinner/src/",
             "FriendsOfHyperf\\DiPlus\\": "src/di-plus/src/",
+            "FriendsOfHyperf\\Elasticsearch\\": "src/elasticsearch/src/",
             "FriendsOfHyperf\\Encryption\\": "src/encryption/src/",
             "FriendsOfHyperf\\ExceptionEvent\\": "src/exception-event/src/",
             "FriendsOfHyperf\\Facade\\": "src/facade/src/",
@@ -196,7 +198,8 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "FriendsOfHyperf\\Tests\\": "tests/"
+            "FriendsOfHyperf\\Tests\\": "tests/",
+            "HyperfTest\\Elasticsearch\\": "src/elasticsearch/tests/"
         }
     },
     "extra": {
