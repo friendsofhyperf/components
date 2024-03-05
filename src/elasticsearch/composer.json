@@ -1,0 +1,39 @@
+{
+    "name": "friendsofhyperf/elasticsearch",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "php",
+        "swoole",
+        "elasticsearch"
+    ],
+    "description": "Elasticsearch client for hyperf",
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Elasticsearch\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=8.1",
+        "elasticsearch/elasticsearch": "^7.0",
+        "hyperf/guzzle": "~3.1.0"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        }
+    }
+}
