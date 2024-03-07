@@ -17,7 +17,6 @@ use ReflectionClass;
 use Symfony\Component\Console\Helper\SymfonyQuestionHelper;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-use function FriendsOfHyperf\Helpers\app;
 use function Hyperf\Support\with;
 use function Hyperf\Tappable\tap;
 use function Termwind\render;
@@ -90,12 +89,13 @@ abstract class Component
     protected function mutate($data, $mutators)
     {
         foreach ($mutators as $mutator) {
+            $mutator = new $mutator();
             if (is_iterable($data)) {
                 foreach ($data as $key => $value) {
-                    $data[$key] = app($mutator)->__invoke($value);
+                    $data[$key] = $mutator($value);
                 }
             } else {
-                $data = app($mutator)->__invoke($data);
+                $data = $mutator($data);
             }
         }
 

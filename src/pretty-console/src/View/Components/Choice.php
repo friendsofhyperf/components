@@ -21,13 +21,17 @@ class Choice extends Component
      * @param string $question
      * @param array<array-key, string> $choices
      * @param mixed $default
+     * @param mixed|null $attempts
+     * @param mixed $multiple
      * @return mixed
      */
-    public function render($question, $choices, $default = null)
+    public function render($question, $choices, $default = null, $attempts = null, $multiple = false)
     {
         return $this->usingQuestionHelper(
             fn () => $this->output->askQuestion(
-                new ChoiceQuestion($question, $choices, $default)
+                (new ChoiceQuestion($question, $choices, $default))
+                    ->setMaxAttempts($attempts)
+                    ->setMultiselect($multiple)
             ),
         );
     }
