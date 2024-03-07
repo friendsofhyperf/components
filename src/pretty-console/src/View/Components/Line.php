@@ -54,7 +54,7 @@ class Line extends Component
         ]);
 
         $this->renderView('line', array_merge(static::$styles[$style], [
-            'marginTop' => 0,
+            'marginTop' => 1,
             'content' => $string,
         ]), $verbosity);
     }
