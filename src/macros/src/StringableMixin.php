@@ -21,6 +21,12 @@ use Hyperf\Stringable\Stringable;
  */
 class StringableMixin
 {
+    public function apa()
+    {
+        /* @phpstan-ignore-next-line */
+        return fn () => new static(Str::apa($this->value));
+    }
+
     public function headline()
     {
         /* @phpstan-ignore-next-line */

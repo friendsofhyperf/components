@@ -14,6 +14,18 @@ namespace Hyperf\Stringable;
 class Str
 {
     /**
+     * Convert the given string to APA-style title case.
+     *
+     * See: https://apastyle.apa.org/style-grammar-guidelines/capitalization/title-case
+     *
+     * @param string $value
+     * @return string
+     */
+    public static function apa($value)
+    {
+    }
+
+    /**
      * Set the callable that will be used to generate UUIDs.
      */
     public static function createUuidsUsing(callable $factory = null)
