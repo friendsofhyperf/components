@@ -14,6 +14,15 @@ namespace Hyperf\Stringable;
 class Stringable
 {
     /**
+     * Convert the given string to APA-style title case.
+     *
+     * @return static
+     */
+    public function apa()
+    {
+    }
+
+    /**
      * Convert the given string to title case for each word.
      *
      * @return static
