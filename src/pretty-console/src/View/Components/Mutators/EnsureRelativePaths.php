@@ -21,9 +21,9 @@ class EnsureRelativePaths
      */
     public function __invoke($string)
     {
-        // if (app()->has('path.base')) {
-        //     $string = str_replace(base_path() . '/', '', $string);
-        // }
+        if (defined('BASE_PATH')) {
+            $string = str_replace(rtrim(BASE_PATH, '/') . '/', '', $string);
+        }
 
         return $string;
     }
