@@ -18,7 +18,7 @@
         "source": "https://github.com/friendsofhyperf/components"
     },
     "require": {
-        "friendsofhyperf/helpers": "~3.1.0",
+        "hyperf/command": "~3.1.13",
         "hyperf/contract": "~3.1.0",
         "hyperf/stringable": "~3.1.0",
         "hyperf/support": "~3.1.0",
