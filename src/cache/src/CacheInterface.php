@@ -114,6 +114,19 @@ interface CacheInterface
     public function remember($key, $ttl, Closure $callback);
 
     /**
+     * Get an item from the cache, or execute the given Closure and store the result.
+     *
+     * @template TCacheValue
+     *
+     * @param string $key
+     * @param DateInterval|DateTimeInterface|int|null $ttl
+     * @param Closure(): TCacheValue $callback
+     * @param mixed $default
+     * @return TCacheValue
+     */
+    public function rememberAsync($key, $ttl, Closure $callback, $default);
+
+    /**
      * Get an item from the cache, or execute the given Closure and store the result forever.
      *
      * @template TCacheValue

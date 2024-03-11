@@ -20,6 +20,7 @@ use FriendsOfHyperf\Cache\Event\CacheMissed;
 use FriendsOfHyperf\Cache\Event\KeyForgotten;
 use FriendsOfHyperf\Cache\Event\KeyWritten;
 use Hyperf\Cache\Driver\DriverInterface;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Macroable\Macroable;
 use Hyperf\Support\Traits\InteractsWithTime;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -197,6 +198,19 @@ class Cache implements CacheInterface
         $this->put($key, $value = $callback(), $ttl);
 
         return $value;
+    }
+
+    public function rememberAsync($key, $ttl, Closure $callback, $default = null)
+    {
+        $value = $this->get($key);
+
+        if (! is_null($value)) {
+            return $value;
+        }
+
+        Coroutine::create(fn () => $this->put($key, $callback(), $ttl));
+
+        return $default;
     }
 
     public function rememberForever($key, Closure $callback)
