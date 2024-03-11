@@ -114,7 +114,7 @@ interface CacheInterface
     public function remember($key, $ttl, Closure $callback);
 
     /**
-     * Get an item from the cache, or execute the given Closure and store the result.
+     * Get an item from the cache, or async execute the given Closure and store the result.
      *
      * @template TCacheValue
      *
