@@ -26,6 +26,9 @@
         "hyperf/tappable": "~3.1.0",
         "nesbot/carbon": "^2.0"
     },
+    "suggest": {
+        "hyperf/coroutine": "Required to use coroutine for rememberAsync.(~3.1.0)"
+    },
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\Cache\\": "src/"
