@@ -124,7 +124,7 @@ interface CacheInterface
      * @param mixed $default
      * @return TCacheValue
      */
-    public function rememberAsync($key, $ttl, Closure $callback, $default);
+    public function rememberAsync($key, $ttl, Closure $callback, $default = null);
 
     /**
      * Get an item from the cache, or execute the given Closure and store the result forever.
