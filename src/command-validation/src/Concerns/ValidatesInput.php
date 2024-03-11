@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\CommandValidation\Concerns;
 
-use FriendsOfHyperf\CommandValidation\ValidationException;
 use Hyperf\Context\ApplicationContext;
-use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
+use Hyperf\Validation\ValidationException;
+use RuntimeException;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
 
 trait ValidatesInput
 {
@@ -47,7 +49,7 @@ trait ValidatesInput
      *
      * @throws ValidationException
      */
-    protected function validateInput(): void
+    protected function setUpValidatesInput(InputInterface $input, OutputInterface $output): void
     {
         if (empty($rules = $this->rules())) {
             return;
@@ -55,25 +57,17 @@ trait ValidatesInput
 
         $container = ApplicationContext::getContainer();
 
+        if (! $container->has(ValidatorFactoryInterface::class)) {
+            throw new RuntimeException('Please install hyperf/validation to use the validate method.');
+        }
+
         $validator = $container->get(ValidatorFactoryInterface::class)->make(
-            array_merge($this->input->getArguments(), $this->input->getOptions()),
+            array_merge($input->getArguments(), $input->getOptions()),
             $rules,
             $this->messages(),
             $this->attributes()
         );
 
-        if ($validator->fails()) {
-            throw new ValidationException($validator);
-        }
-    }
-
-    /**
-     * Display the validation errors for the given validator.
-     */
-    protected function displayFailedValidationErrors(ValidatorInterface $validator): void
-    {
-        foreach ($validator->errors()->all() as $error) {
-            $this->output->error($error);
-        }
+        $validator->validate();
     }
 }

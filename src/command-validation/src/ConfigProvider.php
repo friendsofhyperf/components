@@ -11,16 +11,10 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\CommandValidation;
 
-use FriendsOfHyperf\CommandValidation\Aspect\ValidationAspect;
-
 class ConfigProvider
 {
     public function __invoke(): array
     {
-        return [
-            'aspects' => [
-                ValidationAspect::class,
-            ],
-        ];
+        return [];
     }
 }
