@@ -208,6 +208,10 @@ class Cache implements CacheInterface
             return $value;
         }
 
+        // Cache the value of default first
+        $this->put($key, $default, $ttl);
+
+        // Cache the value of callback delay
         Coroutine::create(fn () => $this->put($key, $callback(), $ttl));
 
         return $default;
