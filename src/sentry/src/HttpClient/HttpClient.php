@@ -28,7 +28,9 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
 
     protected ?Concurrent $concurrent = null;
 
-    protected bool $waitingWorkerExit = false;
+    protected ?Coroutine $waitingWorkerExit = null;
+
+    protected bool $workerExited = false;
 
     public function __construct(
         string $sdkIdentifier,
@@ -67,6 +69,10 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
             return;
         }
 
+        if ($this->workerExited) {
+            return;
+        }
+
         $this->chan = new Channel($this->channelSize);
 
         Coroutine::create(function () {
@@ -97,13 +103,13 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
             }
         });
 
-        if (! $this->waitingWorkerExit) {
-            Coroutine::create(function () {
-                if (CoordinatorManager::until(Constants::WORKER_EXIT)->yield()) {
-                    $this->close();
-                }
-            });
-            $this->waitingWorkerExit = true;
-        }
+        $this->waitingWorkerExit ??= Coroutine::create(function () {
+            try {
+                CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
+                $this->close();
+                $this->workerExited = true;
+            } catch (Throwable) {
+            }
+        });
     }
 }
