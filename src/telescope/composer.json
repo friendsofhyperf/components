@@ -15,7 +15,7 @@
         "hyperf/framework": "~3.1.0",
         "hyperf/support": "~3.1.0",
         "hyperf/view-engine": "~3.1.0",
-        "nesbot/carbon": "^2.71",
+        "nesbot/carbon": "^2.71|^3.0",
         "ramsey/uuid": "^4.7"
     },
     "autoload": {
