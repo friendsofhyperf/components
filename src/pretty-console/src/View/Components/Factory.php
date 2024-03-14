@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\PrettyConsole\View\Components;
 use InvalidArgumentException;
 use Symfony\Component\Console\Style\SymfonyStyle;
 
-use function FriendsOfHyperf\Helpers\throw_unless;
 use function Hyperf\Support\with;
 
 /**
@@ -62,10 +61,12 @@ class Factory
     {
         $component = '\FriendsOfHyperf\PrettyConsole\View\Components\\' . ucfirst($method);
 
-        throw_unless(class_exists($component), new InvalidArgumentException(sprintf(
-            'Console component [%s] not found.',
-            $method
-        )));
+        if (! class_exists($component)) {
+            throw new InvalidArgumentException(sprintf(
+                'Console component [%s] is not found.',
+                $method
+            ));
+        }
 
         return with(new $component($this->output))->render(...$parameters);
     }
