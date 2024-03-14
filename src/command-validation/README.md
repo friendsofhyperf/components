@@ -21,7 +21,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use FriendsOfHyperf\CommandValidation\Concerns\ValidatesInput;
+use FriendsOfHyperf\CommandValidation\Traits\ValidatesInput;
 use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Command\Annotation\Command;
 
@@ -40,7 +40,7 @@ class FooCommand extends HyperfCommand
         $this->info(sprintf('Hello %s.', $this->input->getArgument('name')));
     }
 
-    public function rules(): array
+    protected function rules(): array
     {
         return [
             'name' => 'required',

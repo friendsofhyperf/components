@@ -14,7 +14,7 @@
         }
     ],
     "require": {
-        "hyperf/command": "~3.1.0",
+        "hyperf/command": "~3.1.13",
         "hyperf/context": "~3.1.0",
         "hyperf/di": "~3.1.0",
         "hyperf/stringable": "~3.1.0",
