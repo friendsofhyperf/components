@@ -23,7 +23,7 @@
         "hyperf/context": "~3.1.0",
         "hyperf/macroable": "~3.1.0",
         "hyperf/stringable": "~3.1.0",
-        "hyperf/support": "~3.1.0",
+        "hyperf/support": "~3.1.13",
         "hyperf/tappable": "~3.1.0",
         "laravel/serializable-closure": "^1.0",
         "nesbot/carbon": "^2.0|^3.0"

@@ -301,6 +301,8 @@ function logs(string $name = 'hyperf', string $group = 'default'): LoggerInterfa
  * Create a new Carbon instance for the current time.
  *
  * @param DateTimeZone|string|null $tz
+ *
+ * @deprecated since 3.1, use Hyperf\Support\now() instead, will removed at 3.2
  */
 function now($tz = null): Carbon
 {
@@ -446,6 +448,8 @@ function session($key = null, $default = null)
  * Create a new Carbon instance for the current date.
  *
  * @param DateTimeZone|string|null $tz
+ *
+ * @deprecated since 3.1, use Hyperf\Support\today() instead, will removed at 3.2
  */
 function today($tz = null): Carbon
 {
