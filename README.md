@@ -52,6 +52,14 @@ The most popular components for Hyperf.
 - [Twitter](https://twitter.com/huangdijia)
 - [Gmail](mailto:huangdijia@gmail.com)
 
+## Contributors
+
+<a href="https://github.com/friendsofhyperf/components/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=friendsofhyperf/components" />
+</a>
+
+> Made with [contrib.rocks](https://contrib.rocks).
+
 ## License
 
 [MIT](LICENSE)
