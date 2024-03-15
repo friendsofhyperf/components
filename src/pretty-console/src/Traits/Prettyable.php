@@ -19,7 +19,7 @@ trait Prettyable
 {
     protected ?Factory $components = null;
 
-    protected function setUpPrettyable(InputInterface $input, OutputInterface $output): void
+    protected function setUpPrettyable(?InputInterface $input, OutputInterface $output): void
     {
         $this->components ??= new Factory($output);
     }

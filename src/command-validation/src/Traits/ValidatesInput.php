@@ -49,7 +49,7 @@ trait ValidatesInput
      *
      * @throws ValidationException
      */
-    protected function setUpValidatesInput(InputInterface $input, OutputInterface $output): void
+    protected function setUpValidatesInput(?InputInterface $input, ?OutputInterface $output): void
     {
         if (empty($rules = $this->rules())) {
             return;
