@@ -47,18 +47,18 @@ The most popular components for Hyperf.
 |[trigger](https://github.com/friendsofhyperf/trigger)|[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/trigger/v)](https://packagist.org/packages/friendsofhyperf/trigger)|[![Total Downloads](https://poser.pugx.org/friendsofhyperf/trigger/downloads)](https://packagist.org/packages/friendsofhyperf/trigger)|[![Monthly Downloads](https://poser.pugx.org/friendsofhyperf/trigger/d/monthly)](https://packagist.org/packages/friendsofhyperf/trigger)|
 |[validated-dto](https://github.com/friendsofhyperf/validated-dto)|[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/validated-dto/v)](https://packagist.org/packages/friendsofhyperf/validated-dto)|[![Total Downloads](https://poser.pugx.org/friendsofhyperf/validated-dto/downloads)](https://packagist.org/packages/friendsofhyperf/validated-dto)|[![Monthly Downloads](https://poser.pugx.org/friendsofhyperf/validated-dto/d/monthly)](https://packagist.org/packages/friendsofhyperf/validated-dto)|
 
-## Contact
-
-- [Twitter](https://twitter.com/huangdijia)
-- [Gmail](mailto:huangdijia@gmail.com)
-
 ## Contributors
 
 <a href="https://github.com/friendsofhyperf/components/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=friendsofhyperf/components" />
 </a>
 
-> Made with [contrib.rocks](https://contrib.rocks).
+<!-- Made with [contrib.rocks](https://contrib.rocks). -->
+
+## Contact
+
+- [Twitter](https://twitter.com/huangdijia)
+- [Gmail](mailto:huangdijia@gmail.com)
 
 ## License
 
