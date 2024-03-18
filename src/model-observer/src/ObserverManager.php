@@ -77,10 +77,9 @@ class ObserverManager
         }
 
         foreach ($queues as $model => $queue) {
-            if (! isset(self::$container[$model])) {
-                self::$container[$model] = [];
-            }
+            self::$container[$model] ??= [];
 
+            /** @var class-string[] $queue */
             foreach ($queue as $observer) {
                 if (! in_array($observer, self::$container[$model], true)) {
                     self::$container[$model][] = $observer;
