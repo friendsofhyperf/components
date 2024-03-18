@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ModelObserver\Listener;
 
+use FriendsOfHyperf\ModelObserver\Contract\ShouldCoroutine;
 use FriendsOfHyperf\ModelObserver\ObserverManager;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Database\Model\Events\Booted;
 use Hyperf\Database\Model\Events\Booting;
 use Hyperf\Database\Model\Events\Created;
@@ -81,7 +83,11 @@ class ObserverListener implements ListenerInterface
                 continue;
             }
 
-            $observer->{$method}($model);
+            if ($observer instanceof ShouldCoroutine) {
+                Coroutine::create(fn () => $observer->{$method}($model));
+            } else {
+                $observer->{$method}($model);
+            }
         }
     }
 }
