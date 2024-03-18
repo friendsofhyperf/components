@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ModelObserver;
 
+use FriendsOfHyperf\ModelObserver\Annotation\ObservedBy;
 use FriendsOfHyperf\ModelObserver\Annotation\Observer;
 use Hyperf\Database\Model\Model;
 use Hyperf\Di\Annotation\AnnotationCollector;
+use Hyperf\Di\Annotation\MultipleAnnotation;
 use Hyperf\Stdlib\SplPriorityQueue;
 
 class ObserverManager
@@ -27,21 +29,50 @@ class ObserverManager
     {
         /** @var array<class-string<Model>,SplPriorityQueue> $queues */
         $queues = [];
-        /** @var array<class-string,Observer> */
+
+        /** @var array<class-string,MultipleAnnotation> */
         $classes = AnnotationCollector::getClassesByAnnotation(Observer::class);
 
-        foreach ($classes as $class => $property) {
-            /** @var class-string<Model>[] */
-            $models = (array) $property->model;
-            $priority = $property->priority;
+        foreach ($classes as $class => $multiAnnotation) {
+            /** @var Observer[] $annotations */
+            $annotations = $multiAnnotation->toAnnotations();
 
-            foreach ($models as $model) {
-                if (! $model || ! class_exists($model)) {
-                    continue;
+            foreach ($annotations as $annotation) {
+                /** @var class-string<Model>[] $models */
+                $models = (array) $annotation->model;
+                $priority = $annotation->priority;
+
+                foreach ($models as $model) {
+                    if (! $model || ! class_exists($model)) {
+                        continue;
+                    }
+
+                    $queues[$model] ??= new SplPriorityQueue();
+                    $queues[$model]->insert($class, $priority);
                 }
+            }
+        }
 
-                $queues[$model] ??= new SplPriorityQueue();
-                $queues[$model]->insert($class, $priority);
+        /** @var array<class-string,MultipleAnnotation> */
+        $classes = AnnotationCollector::getClassesByAnnotation(ObservedBy::class);
+
+        foreach ($classes as $model => $multiAnnotation) {
+            /** @var ObservedBy[] $annotations */
+            $annotations = $multiAnnotation->toAnnotations();
+
+            foreach ($annotations as $annotation) {
+                /** @var class-string[] $classes */
+                $classes = (array) $annotation->classes;
+                $priority = $annotation->priority;
+
+                foreach ($classes as $class) {
+                    if (! $class || ! class_exists($class)) {
+                        continue;
+                    }
+
+                    $queues[$model] ??= new SplPriorityQueue();
+                    $queues[$model]->insert($class, $priority);
+                }
             }
         }
 
@@ -51,7 +82,9 @@ class ObserverManager
             }
 
             foreach ($queue as $observer) {
-                self::$container[$model][] = $observer;
+                if (! in_array($observer, self::$container[$model], true)) {
+                    self::$container[$model][] = $observer;
+                }
             }
         }
     }
