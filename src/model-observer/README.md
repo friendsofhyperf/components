@@ -71,6 +71,20 @@ class FooObserver
 }
 ```
 
+- Binding at model
+
+```php
+namespace App\Model;
+
+use App\Observer\FooObserver;
+
+#[ObservedBy(FooObserver::class)]
+class User extends Model
+{
+    // ...
+}
+```
+
 ## Methods
 
 - `booting`

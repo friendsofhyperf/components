@@ -12,20 +12,16 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ModelObserver\Annotation;
 
 use Attribute;
-use Hyperf\Database\Model\Model;
 use Hyperf\Di\Annotation\AbstractMultipleAnnotation;
 
 #[Attribute(Attribute::TARGET_CLASS | Attribute::IS_REPEATABLE)]
-class Observer extends AbstractMultipleAnnotation
+class ObservedBy extends AbstractMultipleAnnotation
 {
-    /**
-     * @param string|string[] $model
-     */
     public function __construct(
         /**
-         * @var class-string<Model>|class-string<Model>[]
+         * @var class-string|class-string[]
          */
-        public string|array $model,
+        public string|array $classes,
         public int $priority = 0
     ) {
     }
