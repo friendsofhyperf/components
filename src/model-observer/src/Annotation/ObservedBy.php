@@ -19,7 +19,7 @@ class ObservedBy extends AbstractMultipleAnnotation
 {
     public function __construct(
         /**
-         * @var class-string<class-string>|class-string<class-string>[]
+         * @var class-string|class-string[]
          */
         public string|array $classes,
         public int $priority = 0
