@@ -31,7 +31,7 @@ class Hub implements HubInterface
     /**
      * Create a new Hub instance.
      */
-    public function __construct(ContainerInterface $container = null)
+    public function __construct(?ContainerInterface $container = null)
     {
         $this->container = $container;
     }

@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Trigger\Mutex;
 
 interface ServerMutexInterface
 {
-    public function attempt(callable $callback = null);
+    public function attempt(?callable $callback = null);
 
     public function release(bool $force = false);
 }

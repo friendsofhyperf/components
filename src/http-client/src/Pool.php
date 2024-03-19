@@ -42,7 +42,7 @@ class Pool
     /**
      * Create a new requests pool.
      */
-    public function __construct(Factory $factory = null)
+    public function __construct(?Factory $factory = null)
     {
         $this->factory = $factory ?: new Factory();
         $this->handler = Utils::chooseHandler();

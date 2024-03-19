@@ -240,7 +240,7 @@ class PendingRequest
     /**
      * Create a new HTTP Client instance.
      */
-    public function __construct(Factory $factory = null, array $middleware = [])
+    public function __construct(?Factory $factory = null, array $middleware = [])
     {
         $this->factory = $factory;
         $this->middleware = new Collection($middleware);
@@ -688,7 +688,7 @@ class PendingRequest
      *
      * @return $this
      */
-    public function throw(callable $callback = null)
+    public function throw(?callable $callback = null)
     {
         $this->throwCallback = $callback ?: fn () => null;
 

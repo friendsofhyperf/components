@@ -129,7 +129,7 @@ class Factory
     /**
      * Create a new factory instance.
      */
-    public function __construct(EventDispatcherInterface $dispatcher = null)
+    public function __construct(?EventDispatcherInterface $dispatcher = null)
     {
         $this->dispatcher = $dispatcher;
 
