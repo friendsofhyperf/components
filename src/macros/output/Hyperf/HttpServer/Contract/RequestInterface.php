@@ -142,14 +142,14 @@ interface RequestInterface
      *
      * @return $this|mixed
      */
-    public function whenFilled(string $key, callable $callback, callable $default = null);
+    public function whenFilled(string $key, callable $callback, ?callable $default = null);
 
     /**
      * Apply the callback if the request contains the given input item key.
      *
      * @return $this|mixed
      */
-    public function whenHas(string $key, callable $callback, callable $default = null);
+    public function whenHas(string $key, callable $callback, ?callable $default = null);
 
     /**
      * Determine if the request is sending JSON.
