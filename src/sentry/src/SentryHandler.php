@@ -21,8 +21,8 @@ use Monolog\Logger;
 use Monolog\LogRecord;
 use Sentry\Breadcrumb;
 use Sentry\Event;
+use Sentry\SentrySdk;
 use Sentry\Severity;
-use Sentry\State\HubInterface;
 use Sentry\State\Scope;
 use Throwable;
 
@@ -38,11 +38,6 @@ class SentryHandler extends AbstractProcessingHandler
      *             software. Can be any string (git commit, version number).
      */
     protected string $release;
-
-    /**
-     * The hub object that sends the message to the server.
-     */
-    protected HubInterface $hub;
 
     /**
      *  The formatter to use for the logs generated via handleBatch().
@@ -65,7 +60,6 @@ class SentryHandler extends AbstractProcessingHandler
         if ($release = $config->get('sentry.release')) {
             $this->release = $release;
         }
-        $this->hub = $container->get(HubInterface::class);
     }
 
     public function handleBatch(array $records): void
@@ -158,7 +152,7 @@ class SentryHandler extends AbstractProcessingHandler
      */
     public function addBreadcrumb(Breadcrumb $crumb): self
     {
-        $this->hub->addBreadcrumb($crumb);
+        SentrySdk::getCurrentHub()->addBreadcrumb($crumb);
 
         return $this;
     }
@@ -191,7 +185,7 @@ class SentryHandler extends AbstractProcessingHandler
             return;
         }
 
-        $this->hub->withScope(
+        SentrySdk::getCurrentHub()->withScope(
             function (Scope $scope) use ($record, $isException, $exception) {
                 if (! empty($record['context']['extra'])) {
                     foreach ($record['context']['extra'] as $key => $tag) {
@@ -252,9 +246,9 @@ class SentryHandler extends AbstractProcessingHandler
                 );
 
                 if ($isException) {
-                    $this->hub->captureException($exception);
+                    SentrySdk::getCurrentHub()->captureException($exception);
                 } else {
-                    $this->hub->captureMessage(
+                    SentrySdk::getCurrentHub()->captureMessage(
                         $this->useFormattedMessage || empty($record['message'])
                             ? $record['formatted']
                             : $record['message']
