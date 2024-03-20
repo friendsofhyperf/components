@@ -1,0 +1,41 @@
+{
+    "name": "friendsofhyperf/model-scope",
+    "description": "The model scope component for Hyperf.",
+    "keywords": [
+        "hyperf",
+        "v3.1"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
+    "require": {
+        "hyperf/di": "~3.1.0",
+        "hyperf/event": "~3.1.0",
+        "hyperf/stdlib": "~3.1.0"
+    },
+    "suggest": {
+        "hyperf/database": "Required to use (~3.1.0)"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\ModelScope\\": "src/"
+        }
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\ModelScope\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        }
+    }
+}

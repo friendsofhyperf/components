@@ -71,7 +71,7 @@ class FooObserver
 }
 ```
 
-- Binding at model
+- Binding on model
 
 ```php
 namespace App\Model;
