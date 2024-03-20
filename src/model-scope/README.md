@@ -41,7 +41,7 @@ class AncientScope implements Scope
 namespace App\Model;
  
 use App\Model\Scope\AncientScope;
-use Hyperf\Database\Model\Attributes\ScopedBy;
+use FriendsOfHyperf\ModelScope\Annotation\ScopedBy;
  
 #[ScopedBy(AncientScope::class)]
 class User extends Model
