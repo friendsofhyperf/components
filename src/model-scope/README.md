@@ -14,7 +14,7 @@ composer require friendsofhyperf/model-scope
 
 ## Usage
 
-- Custom scope
+- Define a scope
 
 ```php
 namespace App\Model\Scope;
