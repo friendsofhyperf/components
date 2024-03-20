@@ -1,6 +1,6 @@
 {
     "name": "friendsofhyperf/model-scope",
-    "description": "The model scope component for Hyperf.",
+    "description": "The model scope annotation for Hyperf.",
     "keywords": [
         "hyperf",
         "v3.1"

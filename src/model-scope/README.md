@@ -43,7 +43,7 @@ namespace App\Model;
 use App\Model\Scope\AncientScope;
 use Hyperf\Database\Model\Attributes\ScopedBy;
  
-#[ScopedBy([AncientScope::class])]
+#[ScopedBy(AncientScope::class)]
 class User extends Model
 {
     //
