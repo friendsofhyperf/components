@@ -142,7 +142,8 @@
         "friendsofhyperf/telescope": "*",
         "friendsofhyperf/tinker": "*",
         "friendsofhyperf/trigger": "*",
-        "friendsofhyperf/validated-dto": "*"
+        "friendsofhyperf/validated-dto": "*",
+        "friendsofhyperf/nestedset": "*"
     },
     "autoload": {
         "files": [
@@ -195,7 +196,8 @@
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
             "FriendsOfHyperf\\Trigger\\": "src/trigger/src/",
             "FriendsOfHyperf\\ValidatedDTO\\": "src/validated-dto/src/",
-            "Pest\\Hyperf\\": "src/pest-plugin-hyperf/src/"
+            "Pest\\Hyperf\\": "src/pest-plugin-hyperf/src/",
+            "FriendsOfHyperf\\Nestedset\\": "src/nestedset/src/"
         }
     },
     "autoload-dev": {
@@ -241,7 +243,8 @@
                 "FriendsOfHyperf\\Telescope\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
                 "FriendsOfHyperf\\Trigger\\ConfigProvider",
-                "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider"
+                "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider",
+                "FriendsOfHyperf\\Nestedset\\ConfigProvider"
             ]
         }
     },

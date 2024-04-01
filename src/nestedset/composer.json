@@ -1,0 +1,44 @@
+{
+  "name": "friendsofhyperf/nestedset",
+  "description": "Effective tree structures in Hyperf 3.x",
+  "type": "library",
+  "keywords": [
+    "hyperf",
+    "nestedset",
+    "v3.1"
+  ],
+  "homepage": "https://github.com/friendsofhyperf/nestedset",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "huangdijia",
+      "email": "huangdijia@gmail.com"
+    }
+  ],
+  "require": {
+    "php": ">=8.1",
+    "hyperf/database": "^3.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "FriendsOfHyperf\\Nestedset\\": "src/"
+    }
+  },
+  "extra": {
+    "hyperf": {
+      "config": "FriendsOfHyperf\\Nestedset\\ConfigProvider"
+    },
+    "branch-alias": {
+      "dev-main": "3.1-dev"
+    }
+  },
+  "config": {
+    "sort-packages": true
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "support": {
+    "issues": "https://github.com/friendsofhyperf/components/issues",
+    "source": "https://github.com/friendsofhyperf/components"
+  }
+}
