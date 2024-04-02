@@ -11,13 +11,24 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tests\Nestedset;
 
-use Category;
+use FriendsOfHyperf\Tests\Nestedset\Stub\Category;
+use Hyperf\Config\Config;
 use Hyperf\Context\ApplicationContext;
+use Hyperf\Contract\ConfigInterface;
+use Hyperf\Database\ConnectionResolverInterface;
+use Hyperf\Database\Model\Register;
 use Hyperf\Database\Query\Grammars\Grammar as QueryGrammar;
 use Hyperf\Database\Schema\Schema as Capsule;
+use Hyperf\DbConnection\Connection;
+use Hyperf\DbConnection\Pool\DbPool;
 use Hyperf\Di\Container;
 use Hyperf\Di\Definition\DefinitionSource;
+use Hyperf\Event\EventDispatcherFactory;
+use Hyperf\Event\ListenerProviderFactory;
+use Mockery;
 use PHPUnit\Framework\TestCase;
+use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\EventDispatcher\ListenerProviderInterface;
 
 /**
  * @internal
@@ -27,18 +38,29 @@ class NodeTest extends TestCase
 {
     public static function setUpBeforeClass(): void
     {
-        ApplicationContext::setContainer(new Container(new DefinitionSource([])));
-
-        ApplicationContext::getContainer()->set(\Hyperf\Database\ConnectionResolverInterface::class, new Capsule());
+        $container = ApplicationContext::setContainer(new Container(new DefinitionSource([])));
+        $container->define(ListenerProviderInterface::class, ListenerProviderFactory::class);
+        $container->define(EventDispatcherInterface::class, EventDispatcherFactory::class);
+        $config = include __DIR__ . '/data/databases.php';
+        $container->set(ConfigInterface::class, new Config([
+            'databases' => $config,
+        ]));
+        $stdoutLog = Mockery::mock(\Hyperf\Contract\StdoutLoggerInterface::class);
+        $container->set(\Hyperf\Contract\StdoutLoggerInterface::class, $stdoutLog);
+        $connection = new Connection($container, new DbPool($container, 'default'), $config['default']);
+        $resolver = Mockery::mock(ConnectionResolverInterface::class);
+        $container->set('pdo', $connection);
+        $resolver->allows('getDefaultConnection')->andReturn('default');
+        $resolver->allows('setDefaultConnection')->andReturn(true);
+        $resolver->allows('connection')->andReturn($connection);
+        Register::setConnectionResolver($resolver);
+        $connection->unprepared(file_get_contents(__DIR__ . '/data/create_categories.sql'));
+        ApplicationContext::getContainer()->set(ConnectionResolverInterface::class, $resolver);
     }
 
     public function setUp(): void
     {
-        $data = include __DIR__ . '/data/categories.php';
-
-        Category::resetActionsPerformed();
-
-        date_default_timezone_set('America/Denver');
+        $data = require __DIR__ . '/data/categories.php';
     }
 
     public function tearDown(): void
@@ -57,7 +79,7 @@ class NodeTest extends TestCase
     {
         $checks = [];
 
-        $connection = Capsule::connection();
+        $connection = $this->getPdo();
 
         /**
          * @var QueryGrammar $grammar
@@ -85,7 +107,7 @@ class NodeTest extends TestCase
         $actual = $connection->selectOne($sql);
 
         $this->assertEquals(null, $actual->errors, "The tree structure of {$table} is broken!");
-        $actual = (array) Capsule::connection()->selectOne($sql);
+        $actual = (array) $this->getPdo()->selectOne($sql);
 
         $this->assertEquals(['errors' => null], $actual, "The tree structure of {$table} is broken!");
     }
@@ -116,6 +138,7 @@ class NodeTest extends TestCase
 
     /**
      * @param mixed $withTrashed
+     * @param mixed $name
      *
      * @return Category
      */
@@ -1005,6 +1028,11 @@ class NodeTest extends TestCase
         $category->refreshNode();
 
         $this->assertEquals(1, $category->getParentId());
+    }
+
+    private function getPdo(): Connection
+    {
+        return ApplicationContext::getContainer()->get('pdo');
     }
 }
 

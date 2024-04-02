@@ -8,9 +8,16 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use Hyperf\Database\Model\Model;
 
-class Category extends Model
+namespace FriendsOfHyperf\Tests\Nestedset\Stub;
+
+use FriendsOfHyperf;
+use Hyperf;
+
+/**
+ * @mixin FriendsOfHyperf\Nestedset\QueryBuilder
+ */
+class Category extends Hyperf\DbConnection\Model\Model
 {
     use Hyperf\Database\Model\SoftDeletes;
     use FriendsOfHyperf\Nestedset\NodeTrait;

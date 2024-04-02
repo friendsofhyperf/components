@@ -30,6 +30,7 @@ class AncestorsRelation extends BaseRelation
     }
 
     /**
+     * @param mixed $related
      * @return bool
      */
     protected function matches(Model $model, $related)
@@ -47,6 +48,10 @@ class AncestorsRelation extends BaseRelation
     }
 
     /**
+     * @param mixed $hash
+     * @param mixed $table
+     * @param mixed $lft
+     * @param mixed $rgt
      * @return string
      */
     protected function relationExistenceCondition($hash, $table, $lft, $rgt)

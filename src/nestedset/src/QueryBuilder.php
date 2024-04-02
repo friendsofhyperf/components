@@ -57,13 +57,8 @@ class QueryBuilder extends Builder
      * Get plain node data.
      *
      * @since 2.0
-     *
-     * @param mixed $id
-     * @param bool $required
-     *
-     * @return array
      */
-    public function getPlainNodeData($id, $required = false)
+    public function getPlainNodeData(mixed $id, bool $required = false): array
     {
         return array_values($this->getNodeData($id, $required));
     }
@@ -132,6 +127,7 @@ class QueryBuilder extends Builder
 
     /**
      * @param bool $andSelf
+     * @param mixed $id
      *
      * @return $this
      */
@@ -141,6 +137,7 @@ class QueryBuilder extends Builder
     }
 
     /**
+     * @param mixed $id
      * @return QueryBuilder
      */
     public function whereAncestorOrSelf($id)
@@ -163,6 +160,7 @@ class QueryBuilder extends Builder
     }
 
     /**
+     * @param mixed $id
      * @return \Kalnoy\Nestedset\Collection
      */
     public function ancestorsAndSelf($id, array $columns = ['*'])
@@ -268,6 +266,7 @@ class QueryBuilder extends Builder
     /**
      * @param string $boolean
      * @param bool $not
+     * @param mixed $id
      *
      * @return $this
      */
@@ -296,6 +295,7 @@ class QueryBuilder extends Builder
     }
 
     /**
+     * @param mixed $id
      * @return Collection
      */
     public function descendantsAndSelf($id, array $columns = ['*'])
@@ -430,11 +430,9 @@ class QueryBuilder extends Builder
     /**
      * Order by node position.
      *
-     * @param string $dir
-     *
      * @return $this
      */
-    public function defaultOrder($dir = 'asc')
+    public function defaultOrder(string $dir = 'asc'): static
     {
         $this->query->orders = null;
 
@@ -575,10 +573,8 @@ class QueryBuilder extends Builder
      * Get whether the tree is broken.
      *
      * @since 2.0
-     *
-     * @return bool
      */
-    public function isBroken()
+    public function isBroken(): bool
     {
         return $this->getTotalErrors() > 0;
     }
@@ -680,6 +676,7 @@ class QueryBuilder extends Builder
 
     /**
      * @param bool $delete
+     * @param mixed $root
      *
      * @return int
      */
@@ -709,6 +706,9 @@ class QueryBuilder extends Builder
     }
 
     /**
+     * @param mixed $id
+     * @param mixed $operator
+     * @param mixed $boolean
      * @return $this
      */
     protected function whereIsBeforeOrAfter($id, $operator, $boolean)
@@ -996,6 +996,7 @@ class QueryBuilder extends Builder
 
     /**
      * @param int $cut
+     * @param mixed|null $parentId
      *
      * @return int
      * @internal param int $fixed

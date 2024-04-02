@@ -8,6 +8,19 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+
+namespace FriendsOfHyperf\Tests\Nestedset\Stub;
+
+use FriendsOfHyperf;
+use Hyperf;
+
+/**
+ * This file is part of friendsofhyperf/components.
+ *
+ * @see     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ */
 class MenuItem extends Hyperf\Database\Model\Model
 {
     use FriendsOfHyperf\Nestedset\NodeTrait;

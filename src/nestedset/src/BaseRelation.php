@@ -160,6 +160,7 @@ abstract class BaseRelation extends Relation
     }
 
     /**
+     * @param mixed $related
      * @return bool
      */
     abstract protected function matches(Model $model, $related);
@@ -171,6 +172,10 @@ abstract class BaseRelation extends Relation
     abstract protected function addEagerConstraint($query, $model);
 
     /**
+     * @param mixed $hash
+     * @param mixed $table
+     * @param mixed $lft
+     * @param mixed $rgt
      * @return string
      */
     abstract protected function relationExistenceCondition($hash, $table, $lft, $rgt);

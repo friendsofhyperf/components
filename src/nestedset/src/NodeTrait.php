@@ -55,7 +55,8 @@ trait NodeTrait
      */
     public static function bootNodeTrait()
     {
-        static::saving(function ($model) {
+        self::saved()
+        static::saving(function (Model $model) {
             return $model->callPendingAction();
         });
 
@@ -79,10 +80,7 @@ trait NodeTrait
         }
     }
 
-    /**
-     * @return bool
-     */
-    public static function usesSoftDelete()
+    public static function usesSoftDelete(): bool
     {
         static $softDelete;
 
@@ -379,6 +377,9 @@ trait NodeTrait
     }
 
     /**
+     * @param mixed $lft
+     * @param mixed $rgt
+     * @param mixed $parentId
      * @return $this
      */
     public function rawNode($lft, $rgt, $parentId)
@@ -432,6 +433,7 @@ trait NodeTrait
 
     /**
      * @since 2.0
+     * @param mixed $query
      */
     public function newEloquentBuilder($query)
     {
@@ -825,6 +827,7 @@ trait NodeTrait
     }
 
     /**
+     * @param mixed $value
      * @return $this
      */
     public function setLft($value)
@@ -835,6 +838,7 @@ trait NodeTrait
     }
 
     /**
+     * @param mixed $value
      * @return $this
      */
     public function setRgt($value)
@@ -845,6 +849,7 @@ trait NodeTrait
     }
 
     /**
+     * @param mixed $value
      * @return $this
      */
     public function setParentId($value)
@@ -1082,6 +1087,7 @@ trait NodeTrait
 
     /**
      * Restore the descendants.
+     * @param mixed $deletedAt
      */
     protected function restoreDescendants($deletedAt)
     {
@@ -1098,10 +1104,7 @@ trait NodeTrait
         return null;
     }
 
-    /**
-     * @return array
-     */
-    protected function getArrayableRelations()
+    protected function getArrayableRelations(): array
     {
         $result = parent::getArrayableRelations();
 
