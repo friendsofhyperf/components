@@ -11,7 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Nestedset;
 
-use Hyperf\Collection\Collection;
+use Hyperf\Collection\Arr;
+use Hyperf\Database\Model\Collection as ModelCollection;
 use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\BelongsTo;
 use Hyperf\Database\Model\Relations\HasMany;
@@ -151,7 +152,7 @@ trait NodeTrait
     /**
      * Get the node siblings and the node itself.
      *
-     * @return \Kalnoy\Nestedset\QueryBuilder
+     * @return QueryBuilder
      */
     public function siblingsAndSelf()
     {
@@ -162,7 +163,7 @@ trait NodeTrait
     /**
      * Get query for the node siblings and the node itself.
      *
-     * @return \Hyperf\Database\Model\Collection
+     * @return Collection
      */
     public function getSiblingsAndSelf(array $columns = ['*'])
     {
@@ -525,7 +526,7 @@ trait NodeTrait
         $instance->save();
 
         // Now create children
-        $relation = new EloquentCollection();
+        $relation = new ModelCollection();
 
         foreach ((array) $children as $child) {
             $relation->add($child = static::create($child, $instance));
