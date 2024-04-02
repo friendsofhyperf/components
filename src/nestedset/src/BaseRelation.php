@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Nestedset;
 
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Collection;
-use Hyperf\Database\Model\Collection as EloquentCollection;
+use Hyperf\Database\Model\Collection as ModelCollection;
 use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\Relation;
 use InvalidArgumentException;
@@ -98,7 +98,7 @@ abstract class BaseRelation extends Relation
      * Match the eagerly loaded results to their parents.
      * @param mixed $relation
      */
-    public function match(array $models, EloquentCollection $results, $relation)
+    public function match(array $models, ModelCollection $results, $relation)
     {
         foreach ($models as $model) {
             $related = $this->matchForModel($model, $results);
@@ -133,7 +133,7 @@ abstract class BaseRelation extends Relation
     /**
      * @return Collection
      */
-    protected function matchForModel(Model $model, EloquentCollection $results)
+    protected function matchForModel(Model $model, ModelCollection $results)
     {
         $result = $this->related->newCollection();
 
