@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Nestedset;
 
-use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\Constraint;
 
@@ -25,6 +24,7 @@ class AncestorsRelation extends BaseRelation
         if (! Constraint::isConstraint()) {
             return;
         }
+
         $this->query->whereAncestorOf($this->parent)
             ->applyNestedSetScope();
     }
@@ -37,7 +37,11 @@ class AncestorsRelation extends BaseRelation
         return $related->isAncestorOf($model);
     }
 
-    protected function addEagerConstraint(Builder $query, Model $model): void
+    /**
+     * @param QueryBuilder $query
+     * @param Model $model
+     */
+    protected function addEagerConstraint($query, $model)
     {
         $query->orWhereAncestorOf($model);
     }

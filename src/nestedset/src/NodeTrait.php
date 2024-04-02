@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Nestedset;
 
 use Hyperf\Collection\Arr;
-use Hyperf\Database\Model\Collection as ModelCollection;
 use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\BelongsTo;
 use Hyperf\Database\Model\Relations\HasMany;
@@ -46,8 +45,10 @@ trait NodeTrait
 
     /**
      * Whether the node has moved since last save.
+     *
+     * @var bool
      */
-    protected bool $moved = false;
+    protected $moved = false;
 
     /**
      * Sign on model events.
@@ -59,6 +60,7 @@ trait NodeTrait
         });
 
         static::deleting(function ($model) {
+            // We will need fresh data to delete node safely
             $model->refreshNode();
         });
 
@@ -77,7 +79,10 @@ trait NodeTrait
         }
     }
 
-    public static function usesSoftDelete(): bool
+    /**
+     * @return bool
+     */
+    public static function usesSoftDelete()
     {
         static $softDelete;
 
@@ -93,26 +98,24 @@ trait NodeTrait
     /**
      * Refresh node's crucial attributes.
      */
-    public function refreshNode(): void
+    public function refreshNode()
     {
         if (! $this->exists || static::$actionsPerformed === 0) {
             return;
         }
 
         $attributes = $this->newNestedSetQuery()->getNodeData($this->getKey());
-        $this->attributes = value(
-            function ($attributes, $origin) {
-                return array_merge($origin, $attributes);
-            },
-            $this->attributes,
-            $attributes
-        );
+
+        $this->attributes = array_merge($this->attributes, $attributes);
+        //        $this->original = array_merge($this->original, $attributes);
     }
 
     /**
      * Relation to the parent.
+     *
+     * @return BelongsTo
      */
-    public function parent(): BelongsTo
+    public function parent()
     {
         return $this->belongsTo(get_class($this), $this->getParentIdName())
             ->setModel($this);
@@ -120,8 +123,10 @@ trait NodeTrait
 
     /**
      * Relation to children.
+     *
+     * @return HasMany
      */
-    public function children(): HasMany
+    public function children()
     {
         return $this->hasMany(get_class($this), $this->getParentIdName())
             ->setModel($this);
@@ -152,7 +157,7 @@ trait NodeTrait
     /**
      * Get the node siblings and the node itself.
      *
-     * @return QueryBuilder
+     * @return \Kalnoy\Nestedset\QueryBuilder
      */
     public function siblingsAndSelf()
     {
@@ -163,7 +168,7 @@ trait NodeTrait
     /**
      * Get query for the node siblings and the node itself.
      *
-     * @return Collection
+     * @return \Illuminate\Database\Eloquent\Collection
      */
     public function getSiblingsAndSelf(array $columns = ['*'])
     {
@@ -374,9 +379,6 @@ trait NodeTrait
     }
 
     /**
-     * @param mixed $lft
-     * @param mixed $rgt
-     * @param mixed $parentId
      * @return $this
      */
     public function rawNode($lft, $rgt, $parentId)
@@ -430,7 +432,6 @@ trait NodeTrait
 
     /**
      * @since 2.0
-     * @param mixed $query
      */
     public function newEloquentBuilder($query)
     {
@@ -492,7 +493,7 @@ trait NodeTrait
     }
 
     /**
-     * @return QueryBuilder
+     * @return self
      */
     public static function scoped(array $attributes)
     {
@@ -526,7 +527,7 @@ trait NodeTrait
         $instance->save();
 
         // Now create children
-        $relation = new ModelCollection();
+        $relation = new EloquentCollection();
 
         foreach ((array) $children as $child) {
             $relation->add($child = static::create($child, $instance));
@@ -751,8 +752,7 @@ trait NodeTrait
     public function isDescendantOf(self $other)
     {
         return $this->getLft() > $other->getLft()
-            && $this->getLft() < $other->getRgt()
-            && $this->isSameScope($other);
+            && $this->getLft() < $other->getRgt();
     }
 
     /**
@@ -825,7 +825,6 @@ trait NodeTrait
     }
 
     /**
-     * @param mixed $value
      * @return $this
      */
     public function setLft($value)
@@ -836,7 +835,6 @@ trait NodeTrait
     }
 
     /**
-     * @param mixed $value
      * @return $this
      */
     public function setRgt($value)
@@ -847,7 +845,6 @@ trait NodeTrait
     }
 
     /**
-     * @param mixed $value
      * @return $this
      */
     public function setParentId($value)
@@ -876,9 +873,11 @@ trait NodeTrait
     /**
      * Set an action.
      *
+     * @param string $action
+     *
      * @return $this
      */
-    protected function setNodeAction(string $action): static
+    protected function setNodeAction($action)
     {
         $this->pending = func_get_args();
 
@@ -908,7 +907,10 @@ trait NodeTrait
         $this->moved = call_user_func_array([$this, $method], $parameters);
     }
 
-    protected function actionRaw(): bool
+    /**
+     * @return bool
+     */
+    protected function actionRaw()
     {
         return true;
     }
@@ -933,16 +935,22 @@ trait NodeTrait
 
     /**
      * Get the lower bound.
+     *
+     * @return int
      */
-    protected function getLowerBound(): int
+    protected function getLowerBound()
     {
         return (int) $this->newNestedSetQuery()->max($this->getRgtName());
     }
 
     /**
      * Append or prepend a node to the parent.
+     *
+     * @param bool $prepend
+     *
+     * @return bool
      */
-    protected function actionAppendOrPrepend(self $parent, bool $prepend = false): bool
+    protected function actionAppendOrPrepend(self $parent, $prepend = false)
     {
         $parent->refreshNode();
 
@@ -960,11 +968,13 @@ trait NodeTrait
     /**
      * Apply parent model.
      *
+     * @param Model|null $value
+     *
      * @return $this
      */
-    protected function setParent(?Model $value = null): static
+    protected function setParent($value)
     {
-        $this->setParentId($value?->getKey())
+        $this->setParentId($value ? $value->getKey() : null)
             ->setRelation('parent', $value);
 
         return $this;
@@ -972,8 +982,12 @@ trait NodeTrait
 
     /**
      * Insert node before or after another node.
+     *
+     * @param bool $after
+     *
+     * @return bool
      */
-    protected function actionBeforeOrAfter(self $node, bool $after = false): bool
+    protected function actionBeforeOrAfter(self $node, $after = false)
     {
         $node->refreshNode();
 
@@ -1068,7 +1082,6 @@ trait NodeTrait
 
     /**
      * Restore the descendants.
-     * @param mixed $deletedAt
      */
     protected function restoreDescendants($deletedAt)
     {
@@ -1137,7 +1150,7 @@ trait NodeTrait
     protected function assertNodeExists(self $node)
     {
         if (! $node->getLft() || ! $node->getRgt()) {
-            throw new LogicException('Node must exists.');
+            throw new LogicException('Node must exist.');
         }
 
         return $this;
@@ -1154,20 +1167,5 @@ trait NodeTrait
                 throw new LogicException('Nodes must be in the same scope');
             }
         }
-    }
-
-    protected function isSameScope(self $node): bool
-    {
-        if (! $scoped = $this->getScopeAttributes()) {
-            return true;
-        }
-
-        foreach ($scoped as $attr) {
-            if ($this->getAttribute($attr) != $node->getAttribute($attr)) {
-                return false;
-            }
-        }
-
-        return true;
     }
 }

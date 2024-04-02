@@ -11,28 +11,54 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Nestedset;
 
-use Hyperf\Database\Model\Builder;
-use Hyperf\Database\Model\Collection;
-use Hyperf\Database\Model\Collection as ModelCollection;
+use Hyperf\Database\Model\Builder as EloquentBuilder;
+use Hyperf\Database\Model\Collection as EloquentCollection;
 use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\Relation;
+use Hyperf\Database\Query\Builder;
 use InvalidArgumentException;
+
+use function Hyperf\Support\optional;
 
 abstract class BaseRelation extends Relation
 {
-    protected int $selfJoinCount = 0;
+    /**
+     * @var QueryBuilder
+     */
+    protected $query;
 
-    public function __construct(Builder $query, Model $parent)
+    /**
+     * @var NodeTrait|Model
+     */
+    protected $parent;
+
+    /**
+     * The count of self joins.
+     *
+     * @var int
+     */
+    protected static $selfJoinCount = 0;
+
+    /**
+     * AncestorsRelation constructor.
+     */
+    public function __construct(QueryBuilder $builder, Model $model)
     {
-        if (! NestedSet::isNode($parent)) {
+        if (! NestedSet::isNode($model)) {
             throw new InvalidArgumentException('Model must be node.');
         }
-        parent::__construct($query, $parent);
+
+        parent::__construct($builder, $model);
     }
 
+    /**
+     * @param array $columns
+     *
+     * @return mixed
+     */
     public function getRelationExistenceQuery(
-        Builder $query,
-        Builder $parentQuery,
+        EloquentBuilder $query,
+        EloquentBuilder $parent,
         $columns = ['*']
     ) {
         $query = $this->getParent()->replicate()->newScopedQuery()->select($columns);
@@ -59,10 +85,23 @@ abstract class BaseRelation extends Relation
      * Initialize the relation on a set of models.
      *
      * @param string $relation
+     *
+     * @return array
      */
-    public function initRelation(array $models, $relation): array
+    public function initRelation(array $models, $relation)
     {
         return $models;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRelationQuery(
+        EloquentBuilder $query,
+        EloquentBuilder $parent,
+        array $columns = ['*']
+    ) {
+        return $this->getRelationExistenceQuery($query, $parent, $columns);
     }
 
     /**
@@ -70,10 +109,15 @@ abstract class BaseRelation extends Relation
      */
     public function getRelationCountHash(bool $incrementJoinCount = true): string
     {
-        return 'nested_set_' . ($incrementJoinCount ? $this->selfJoinCount++ : $this->selfJoinCount);
+        return 'nested_set_' . ($incrementJoinCount ? static::$selfJoinCount++ : static::$selfJoinCount);
     }
 
-    public function getResults(): Collection
+    /**
+     * Get the results of the relationship.
+     *
+     * @return mixed
+     */
+    public function getResults(): EloquentCollection
     {
         return $this->query->get();
     }
@@ -83,10 +127,15 @@ abstract class BaseRelation extends Relation
      */
     public function addEagerConstraints(array $models): void
     {
+        // The first model in the array is always the parent, so add the scope constraints based on that model.
+        // @link https://github.com/laravel/framework/pull/25240
+        // @link https://github.com/lazychaser/laravel-nestedset/issues/351
+        optional(reset($models))->applyNestedSetScope($this->query);
+
         $this->query->whereNested(function (Builder $inner) use ($models) {
             // We will use this query in order to apply constraints to the
             // base query builder
-            $outer = $this->parent->newQuery()->setQuery($inner->getQuery());
+            $outer = $this->parent->newQuery()->setQuery($inner);
 
             foreach ($models as $model) {
                 $this->addEagerConstraint($outer, $model);
@@ -96,9 +145,10 @@ abstract class BaseRelation extends Relation
 
     /**
      * Match the eagerly loaded results to their parents.
-     * @param mixed $relation
+     *
+     * @param string $relation
      */
-    public function match(array $models, ModelCollection $results, $relation)
+    public function match(array $models, EloquentCollection $results, $relation): array
     {
         foreach ($models as $model) {
             $related = $this->matchForModel($model, $results);
@@ -110,30 +160,22 @@ abstract class BaseRelation extends Relation
     }
 
     /**
-     * Get the plain foreign key.
-     *
-     * @return mixed
+     * @return bool
      */
-    public function getForeignKeyName(): string
-    {
-        return NestedSet::PARENT_ID;
-    }
-
-    abstract protected function matches(Model $model, $related): bool;
-
-    abstract protected function addEagerConstraint(Builder $query, Model $model): void;
-
-    abstract protected function relationExistenceCondition(
-        string $hash,
-        string $table,
-        string $lft,
-        string $rgt
-    ): string;
+    abstract protected function matches(Model $model, $related);
 
     /**
-     * @return Collection
+     * @param QueryBuilder $query
+     * @param Model $model
      */
-    protected function matchForModel(Model $model, ModelCollection $results)
+    abstract protected function addEagerConstraint($query, $model);
+
+    /**
+     * @return string
+     */
+    abstract protected function relationExistenceCondition($hash, $table, $lft, $rgt);
+
+    protected function matchForModel(Model $model, EloquentCollection $results): EloquentCollection
     {
         $result = $this->related->newCollection();
 

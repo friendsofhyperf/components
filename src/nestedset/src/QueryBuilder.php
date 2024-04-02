@@ -95,10 +95,8 @@ class QueryBuilder extends Builder
     public function whereAncestorOf($id, $andSelf = false, $boolean = 'and')
     {
         $keyName = $this->model->getTable() . '.' . $this->model->getKeyName();
-        $model = null;
 
         if (NestedSet::isNode($id)) {
-            $model = $id;
             $value = '?';
 
             $this->query->addBinding($id->getRgt());
@@ -118,7 +116,7 @@ class QueryBuilder extends Builder
             $value = '(' . $valueQuery->toSql() . ')';
         }
 
-        $this->query->whereNested(function ($inner) use ($model, $value, $andSelf, $id, $keyName) {
+        $this->query->whereNested(function ($inner) use ($value, $andSelf, $id, $keyName) {
             [$lft, $rgt] = $this->wrappedColumns();
             $wrappedTable = $this->query->getGrammar()->wrapTable($this->model->getTable());
 
@@ -127,11 +125,6 @@ class QueryBuilder extends Builder
             if (! $andSelf) {
                 $inner->where($keyName, '<>', $id);
             }
-            if ($model !== null) {
-                // we apply scope only when Node was passed as $id.
-                // In other cases, according to docs, query should be scoped() before calling this method
-                $model->applyNestedSetScope($inner);
-            }
         }, $boolean);
 
         return $this;
@@ -139,7 +132,6 @@ class QueryBuilder extends Builder
 
     /**
      * @param bool $andSelf
-     * @param mixed $id
      *
      * @return $this
      */
@@ -149,7 +141,6 @@ class QueryBuilder extends Builder
     }
 
     /**
-     * @param mixed $id
      * @return QueryBuilder
      */
     public function whereAncestorOrSelf($id)
@@ -164,7 +155,7 @@ class QueryBuilder extends Builder
      *
      * @param mixed $id
      *
-     * @return Collection
+     * @return \Kalnoy\Nestedset\Collection
      */
     public function ancestorsOf($id, array $columns = ['*'])
     {
@@ -172,8 +163,7 @@ class QueryBuilder extends Builder
     }
 
     /**
-     * @param mixed $id
-     * @return Collection
+     * @return \Kalnoy\Nestedset\Collection
      */
     public function ancestorsAndSelf($id, array $columns = ['*'])
     {
@@ -188,13 +178,12 @@ class QueryBuilder extends Builder
      * @param array $values
      * @param string $boolean
      * @param bool $not
-     * @param Query $query
      *
      * @return $this
      */
-    public function whereNodeBetween($values, $boolean = 'and', $not = false, $query = null)
+    public function whereNodeBetween($values, $boolean = 'and', $not = false)
     {
-        ($query ?? $this->query)->whereBetween($this->model->getTable() . '.' . $this->model->getLftName(), $values, $boolean, $not);
+        $this->query->whereBetween($this->model->getTable() . '.' . $this->model->getLftName(), $values, $boolean, $not);
 
         return $this;
     }
@@ -231,26 +220,19 @@ class QueryBuilder extends Builder
         $not = false,
         $andSelf = false
     ) {
-        $this->query->whereNested(function (Query $inner) use ($id, $andSelf, $not) {
-            if (NestedSet::isNode($id)) {
-                $id->applyNestedSetScope($inner);
-                $data = $id->getBounds();
-            } else {
-                // we apply scope only when Node was passed as $id.
-                // In other cases, according to docs, query should be scoped() before calling this method
-                $data = $this->model->newNestedSetQuery()
-                    ->getPlainNodeData($id, true);
-            }
+        if (NestedSet::isNode($id)) {
+            $data = $id->getBounds();
+        } else {
+            $data = $this->model->newNestedSetQuery()
+                ->getPlainNodeData($id, true);
+        }
 
-            // Don't include the node
-            if (! $andSelf) {
-                ++$data[0];
-            }
+        // Don't include the node
+        if (! $andSelf) {
+            ++$data[0];
+        }
 
-            return $this->whereNodeBetween($data, 'and', $not, $inner);
-        }, $boolean);
-
-        return $this;
+        return $this->whereNodeBetween($data, $boolean, $not);
     }
 
     /**
@@ -286,7 +268,6 @@ class QueryBuilder extends Builder
     /**
      * @param string $boolean
      * @param bool $not
-     * @param mixed $id
      *
      * @return $this
      */
@@ -315,7 +296,6 @@ class QueryBuilder extends Builder
     }
 
     /**
-     * @param mixed $id
      * @return Collection
      */
     public function descendantsAndSelf($id, array $columns = ['*'])
@@ -700,7 +680,6 @@ class QueryBuilder extends Builder
 
     /**
      * @param bool $delete
-     * @param mixed $root
      *
      * @return int
      */
@@ -730,9 +709,6 @@ class QueryBuilder extends Builder
     }
 
     /**
-     * @param mixed $id
-     * @param mixed $operator
-     * @param mixed $boolean
      * @return $this
      */
     protected function whereIsBeforeOrAfter($id, $operator, $boolean)
@@ -855,9 +831,9 @@ class QueryBuilder extends Builder
 
         return new Expression(
             'case ' .
-                              "when {$col} between {$lft} and {$rgt} then {$col}{$distance} " . // Move the node
-                              "when {$col} between {$from} and {$to} then {$col}{$height} " . // Move other nodes
-                              "else {$col} end"
+            "when {$col} between {$lft} and {$rgt} then {$col}{$distance} " . // Move the node
+            "when {$col} between {$from} and {$to} then {$col}{$height} " . // Move other nodes
+            "else {$col} end"
         );
     }
 
@@ -1020,7 +996,6 @@ class QueryBuilder extends Builder
 
     /**
      * @param int $cut
-     * @param mixed|null $parentId
      *
      * @return int
      * @internal param int $fixed

@@ -23,7 +23,7 @@ class Collection extends BaseCollection
      *
      * @return $this
      */
-    public function linkNodes()
+    public function linkNodes(): static
     {
         if ($this->isEmpty()) {
             return $this;
@@ -61,7 +61,7 @@ class Collection extends BaseCollection
      *
      * @return Collection
      */
-    public function toTree($root = false)
+    public function toTree($root = false): static
     {
         if ($this->isEmpty()) {
             return new static();
@@ -109,7 +109,7 @@ class Collection extends BaseCollection
      *
      * @return int
      */
-    protected function getRootNodeId($root = false)
+    protected function getRootNodeId($root = false): bool|int
     {
         if (NestedSet::isNode($root)) {
             return $root->getKey();

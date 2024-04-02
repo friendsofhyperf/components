@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Nestedset;
 
-use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\Constraint;
 
@@ -20,31 +19,38 @@ class DescendantsRelation extends BaseRelation
     /**
      * Set the base constraints on the relation query.
      */
-    public function addConstraints(): void
+    public function addConstraints()
     {
         if (! Constraint::isConstraint()) {
             return;
         }
+
         $this->query->whereDescendantOf($this->parent)
             ->applyNestedSetScope();
     }
 
-    protected function addEagerConstraint(Builder $query, Model $model): void
+    /**
+     * @param QueryBuilder $query
+     * @param Model $model
+     */
+    protected function addEagerConstraint($query, $model)
     {
         $query->orWhereDescendantOf($model);
     }
 
-    protected function matches(Model $model, $related): mixed
+    /**
+     * @return mixed
+     */
+    protected function matches(Model $model, $related)
     {
         return $related->isDescendantOf($model);
     }
 
-    protected function relationExistenceCondition(
-        string $hash,
-        string $table,
-        string $lft,
-        string $rgt
-    ): string {
+    /**
+     * @return string
+     */
+    protected function relationExistenceCondition($hash, $table, $lft, $rgt)
+    {
         return "{$hash}.{$lft} between {$table}.{$lft} + 1 and {$table}.{$rgt}";
     }
 }
