@@ -162,7 +162,7 @@ trait NodeTrait
     /**
      * Get query for the node siblings and the node itself.
      *
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Hyperf\Database\Model\Collection
      */
     public function getSiblingsAndSelf(array $columns = ['*'])
     {
@@ -373,6 +373,9 @@ trait NodeTrait
     }
 
     /**
+     * @param mixed $lft
+     * @param mixed $rgt
+     * @param mixed $parentId
      * @return $this
      */
     public function rawNode($lft, $rgt, $parentId)
@@ -426,6 +429,7 @@ trait NodeTrait
 
     /**
      * @since 2.0
+     * @param mixed $query
      */
     public function newEloquentBuilder($query)
     {
@@ -820,6 +824,7 @@ trait NodeTrait
     }
 
     /**
+     * @param mixed $value
      * @return $this
      */
     public function setLft($value)
@@ -830,6 +835,7 @@ trait NodeTrait
     }
 
     /**
+     * @param mixed $value
      * @return $this
      */
     public function setRgt($value)
@@ -840,6 +846,7 @@ trait NodeTrait
     }
 
     /**
+     * @param mixed $value
      * @return $this
      */
     public function setParentId($value)
@@ -1060,6 +1067,7 @@ trait NodeTrait
 
     /**
      * Restore the descendants.
+     * @param mixed $deletedAt
      */
     protected function restoreDescendants($deletedAt)
     {

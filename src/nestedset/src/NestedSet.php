@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Nestedset;
 
+use Hyperf\Database\Schema\Blueprint;
+
 class NestedSet
 {
     /**
@@ -40,8 +42,6 @@ class NestedSet
 
     /**
      * Add default nested set columns to the table. Also create an index.
-     *
-     * @param \Illuminate\Database\Schema\Blueprint $table
      */
     public static function columns(Blueprint $table)
     {
@@ -54,8 +54,6 @@ class NestedSet
 
     /**
      * Drop NestedSet columns.
-     *
-     * @param \Illuminate\Database\Schema\Blueprint $table
      */
     public static function dropColumns(Blueprint $table)
     {
