@@ -35,6 +35,7 @@ use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Kafka\ProducerManager;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Stringable\Str;
+use Hyperf\Support\Fluent;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use InvalidArgumentException;
 use longlang\phpkafka\Producer\ProduceMessage;
@@ -260,6 +261,16 @@ function event(object $event)
 function filled($value): bool
 {
     return ! blank($value);
+}
+
+/**
+ * Create an Fluent object from the given value.
+ *
+ * @param object|array $value
+ */
+function fluent($value): Fluent
+{
+    return new Fluent($value);
 }
 
 /**
