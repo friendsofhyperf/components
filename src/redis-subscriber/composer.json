@@ -1,0 +1,29 @@
+{
+  "name": "friendsofhyperf/redis-subscriber",
+  "description": "Redis native protocol Subscriber based on Swoole coroutine",
+  "type": "library",
+  "keywords": [
+    "swoole",
+    "redis",
+    "subscriber"
+  ],
+  "authors": [
+    {
+      "name": "liu,jian",
+      "email": "coder.keda@gmail.com"
+    },
+    {
+      "name": "huangdijia",
+      "email": "huangdijia@gmail.com"
+    }
+  ],
+  "require": {
+    "php": "~8.1.0",
+    "ext-swoole": ">=5.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "FriendsOfHyperf\\Redis\\Subscriber\\": "src/"
+    }
+  }
+}
