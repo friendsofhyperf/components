@@ -42,6 +42,7 @@
         "onceable",
         "openai",
         "phpredis",
+        "pmessage",
         "preprod",
         "Prettyable",
         "protobuf",
