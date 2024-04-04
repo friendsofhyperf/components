@@ -29,9 +29,9 @@ final class SubscriberTest extends TestCase
     public function testSubscribe(): void
     {
         $sub = new Subscriber('127.0.0.1', 6379, '', 5);
-        $sub->subscribe('foo', 'bar');
-        $sub->subscribe('foo1', 'bar1');
-        $sub->unsubscribe('foo', 'bar');
+        $sub->subscribe('foo');
+        $sub->subscribe('foo1');
+        $sub->unsubscribe('foo');
 
         go(function () {
             $redis = new Redis();
@@ -59,9 +59,9 @@ final class SubscriberTest extends TestCase
     public function testPsubscribe(): void
     {
         $sub = new Subscriber('127.0.0.1', 6379, '', 5);
-        $sub->psubscribe('foo.*', 'bar');
-        $sub->psubscribe('foo1.*', 'bar1');
-        $sub->punsubscribe('foo.*', 'bar');
+        $sub->psubscribe('foo.*');
+        $sub->psubscribe('foo1.*');
+        $sub->punsubscribe('foo.*');
 
         go(function () {
             $redis = new Redis();
