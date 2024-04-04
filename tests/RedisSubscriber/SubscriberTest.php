@@ -35,7 +35,6 @@ final class SubscriberTest extends TestCase
         $sub->subscribe('foo');
         $sub->subscribe('foo1');
         $sub->unsubscribe('foo');
-        defer(fn () => $sub->close());
 
         go(function () {
             $redis = new Redis();
@@ -57,6 +56,8 @@ final class SubscriberTest extends TestCase
             $this->assertEquals($data->payload, 'foo1data');
             break;
         }
+
+        $sub->close();
     }
 
     public function testPsubscribe(): void
@@ -65,7 +66,6 @@ final class SubscriberTest extends TestCase
         $sub->psubscribe('bar.*');
         $sub->psubscribe('bar1.*');
         $sub->punsubscribe('bar.*');
-        defer(fn () => $sub->close());
 
         go(function () {
             $redis = new Redis();
@@ -88,5 +88,7 @@ final class SubscriberTest extends TestCase
             $this->assertEquals($data->payload, 'bar1data');
             break;
         }
+
+        $sub->close();
     }
 }
