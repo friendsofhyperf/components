@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Tests\RedisSubscriber;
 
 use FriendsOfHyperf\Redis\Subscriber\Subscriber;
-use PHPUnit\Framework\TestCase;
+use FriendsOfHyperf\Tests\TestCase;
 use Redis;
 
 /**
