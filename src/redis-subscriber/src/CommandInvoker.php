@@ -90,7 +90,7 @@ class CommandInvoker
                 $message = new Message();
                 $message->channel = $buffer[4];
                 $message->payload = $buffer[6];
-                $timerID = $this->timer->after(30 * 1000, function () use ($message) {
+                $timerID = $this->timer->after(30, function () use ($message) {
                     $this->logger?->error(sprintf('Message channel (%s) is 30 seconds full, disconnected', $message->channel));
                     $this->interrupt();
                 });
@@ -117,7 +117,7 @@ class CommandInvoker
                 $message->pattern = $buffer[4];
                 $message->channel = $buffer[6];
                 $message->payload = $buffer[8];
-                $timerID = $this->timer->after(30 * 1000, function () use ($message) {
+                $timerID = $this->timer->after(30, function () use ($message) {
                     $this->logger?->error(sprintf('Message channel (%s) is 30 seconds full, disconnected', $message->channel));
                     $this->interrupt();
                 });
