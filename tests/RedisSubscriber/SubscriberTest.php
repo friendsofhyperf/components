@@ -29,7 +29,7 @@ final class SubscriberTest extends TestCase
     public function testSubscribe(): void
     {
         $sub = new Subscriber('127.0.0.1', 6379, '', 5);
-        $sub->subscribe('foo', 'bar'); // 订阅失败将抛出异常
+        $sub->subscribe('foo', 'bar');
         $sub->subscribe('foo1', 'bar1');
         $sub->unsubscribe('foo', 'bar');
 
@@ -43,9 +43,8 @@ final class SubscriberTest extends TestCase
         $chan = $sub->channel();
         while (true) {
             $data = $chan->pop();
-            if (empty($data)) { // 手动close与redis异常断开都会导致返回false
+            if (empty($data)) {
                 if (! $sub->closed) {
-                    // redis异常断开处理
                     var_dump('Redis connection is disconnected abnormally');
                 }
                 break;
@@ -60,7 +59,7 @@ final class SubscriberTest extends TestCase
     public function testPsubscribe(): void
     {
         $sub = new Subscriber('127.0.0.1', 6379, '', 5);
-        $sub->psubscribe('foo.*', 'bar'); // 订阅失败将抛出异常
+        $sub->psubscribe('foo.*', 'bar');
         $sub->psubscribe('foo1.*', 'bar1');
         $sub->punsubscribe('foo.*', 'bar');
 
@@ -74,9 +73,8 @@ final class SubscriberTest extends TestCase
         $chan = $sub->channel();
         while (true) {
             $data = $chan->pop();
-            if (empty($data)) { // 手动close与redis异常断开都会导致返回false
+            if (empty($data)) {
                 if (! $sub->closed) {
-                    // redis异常断开处理
                     var_dump('Redis connection is disconnected abnormally');
                 }
                 break;
