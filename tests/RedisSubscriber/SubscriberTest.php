@@ -59,15 +59,15 @@ final class SubscriberTest extends TestCase
     public function testPsubscribe(): void
     {
         $sub = new Subscriber('127.0.0.1', 6379, '', 5);
-        $sub->psubscribe('foo.*');
-        $sub->psubscribe('foo1.*');
-        $sub->punsubscribe('foo.*');
+        $sub->psubscribe('bar.*');
+        $sub->psubscribe('bar1.*');
+        $sub->punsubscribe('bar.*');
 
         go(function () {
             $redis = new Redis();
             $redis->connect('127.0.0.1', 6379);
-            $redis->publish('foo.1', 'foodata');
-            $redis->publish('foo1.1', 'foo1data');
+            $redis->publish('bar.1', 'bardata');
+            $redis->publish('bar1.1', 'bar1data');
         });
 
         $chan = $sub->channel();
@@ -79,9 +79,9 @@ final class SubscriberTest extends TestCase
                 }
                 break;
             }
-            $this->assertEquals($data->pattern, 'foo1.*');
-            $this->assertEquals($data->channel, 'foo1.1');
-            $this->assertEquals($data->payload, 'foo1data');
+            $this->assertEquals($data->pattern, 'bar1.*');
+            $this->assertEquals($data->channel, 'bar1.1');
+            $this->assertEquals($data->payload, 'bar1data');
             break;
         }
         $sub->close();
