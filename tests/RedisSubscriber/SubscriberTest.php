@@ -24,7 +24,7 @@ final class SubscriberTest extends TestCase
 {
     protected function setUp(): void
     {
-        $this->markTestSkipped();
+        // $this->markTestSkipped();
     }
 
     public function testSubscribe(): void

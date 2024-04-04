@@ -65,5 +65,7 @@ jobs:
         run: composer update -o
       - name: Run Analyse
         run: composer analyse src
+      - name: Setup Redis
+        run: docker run --name redis -p 6379:6379 -d redis &
       - name: Run Test Cases
         run: php vendor/bin/pest --parallel
