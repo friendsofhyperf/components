@@ -13,6 +13,8 @@ namespace FriendsOfHyperf\Tests\RedisSubscriber;
 
 use FriendsOfHyperf\Redis\Subscriber\Subscriber;
 use FriendsOfHyperf\Tests\TestCase;
+use Hyperf\Coordinator\Constants;
+use Hyperf\Coordinator\CoordinatorManager;
 use Redis;
 
 /**
@@ -24,6 +26,7 @@ final class SubscriberTest extends TestCase
     protected function setUp(): void
     {
         // $this->markTestSkipped();
+        CoordinatorManager::clear(Constants::WORKER_EXIT);
     }
 
     public function testSubscribe(): void
