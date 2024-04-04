@@ -16,7 +16,6 @@ use PHPUnit\Framework\TestCase;
 use Redis;
 
 /**
- * @skip
  * @internal
  * @coversNothing
  */
