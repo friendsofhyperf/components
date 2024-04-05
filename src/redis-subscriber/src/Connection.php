@@ -11,36 +11,34 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Redis\Subscriber;
 
-use Swoole\Coroutine\Client;
-use Swoole\Exception;
+use FriendsOfHyperf\Redis\Subscriber\Exception\SocketException;
+use Hyperf\Engine\Contract\SocketInterface;
+use Hyperf\Engine\Socket;
+use Hyperf\Engine\Socket\SocketFactory;
+use Hyperf\Engine\Socket\SocketOption;
 
 class Connection
 {
     public const EOF = "\r\n";
 
-    public string $host = '';
-
-    public int $port = 6379;
-
-    public float $timeout = 0.0;
-
-    protected Client $client;
+    /**
+     * @var Socket
+     */
+    protected SocketInterface $client;
 
     protected bool $closed = false;
 
-    public function __construct(string $host, int $port, float $timeout = 5.0)
-    {
-        $this->host = $host;
-        $this->port = $port;
-        $this->timeout = $timeout;
-        $client = new Client(SWOOLE_SOCK_TCP);
-        $client->set([
+    public function __construct(
+        public string $host = '',
+        public int $port = 6379,
+        public float $timeout = 5.0
+    ) {
+        $options = new SocketOption($this->host, $this->port, $this->timeout, [
             'open_eof_check' => true,
             'package_eof' => static::EOF,
         ]);
-        if (! $client->connect($host, $port, $timeout)) {
-            throw new Exception(sprintf('Redis connect failed (host: %s, port: %s) %d %s', $host, $port, $client->errCode, $client->errMsg));
-        }
+        /** @var Socket $client fixed for phpstan */
+        $client = (new SocketFactory())->make($options);
         $this->client = $client;
     }
 
@@ -48,11 +46,12 @@ class Connection
     {
         $len = strlen($data);
         $size = $this->client->send($data);
+
         if ($size === false) {
-            throw new Exception($this->client->errMsg, $this->client->errCode);
+            throw new SocketException($this->client->errMsg, $this->client->errCode);
         }
         if ($len !== $size) {
-            throw new Exception('The sending data is incomplete, it may be that the socket has been closed by the peer.');
+            throw new SocketException('The sending data is incomplete, it may be that the socket has been closed by the peer.');
         }
         return true;
     }
@@ -63,7 +62,7 @@ class Connection
      */
     public function recv()
     {
-        return $this->client->recv(-1);
+        return $this->client->recv(timeout: -1);
     }
 
     public function close(): void
@@ -74,7 +73,7 @@ class Connection
             if ($errMsg == '' && $errCode == 0) {
                 return;
             }
-            throw new Exception($errMsg, $errCode);
+            throw new SocketException($errMsg, $errCode);
         }
         $this->closed = true;
     }

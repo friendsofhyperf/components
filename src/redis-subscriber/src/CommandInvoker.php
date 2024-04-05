@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Redis\Subscriber;
 
+use FriendsOfHyperf\Redis\Subscriber\Exception\SocketException;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\Timer;
 use Hyperf\Coroutine\Coroutine;
@@ -42,18 +43,20 @@ class CommandInvoker
     }
 
     /**
-     * Receive.
-     * @throws \Swoole\Exception
+     * @throws SocketException
      */
     public function receive(Connection $connection)
     {
         $buffer = null;
+
         while (true) {
             $line = $connection->recv();
+
             if ($line === false || $line === '') {
                 $this->interrupt();
                 break;
             }
+
             $line = substr($line, 0, -strlen(static::CRLF));
 
             if ($line == '+OK') {
@@ -61,17 +64,7 @@ class CommandInvoker
                 continue;
             }
 
-            if ($line == '*3') {
-                if (! empty($buffer)) {
-                    $this->resultChannel->push($buffer);
-                    $buffer = null;
-                }
-                $buffer[] = $line;
-                continue;
-            }
-
-            $buffer[] = $line;
-
+            $buffer = explode(static::CRLF, $line);
             $type = $buffer[2] ?? false;
 
             if ($type == 'subscribe' && count($buffer) == 6) {

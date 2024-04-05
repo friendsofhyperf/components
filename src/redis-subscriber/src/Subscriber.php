@@ -11,10 +11,10 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Redis\Subscriber;
 
+use FriendsOfHyperf\Redis\Subscriber\Exception\SocketException;
 use FriendsOfHyperf\Redis\Subscriber\Exception\SubscribeException;
 use FriendsOfHyperf\Redis\Subscriber\Exception\UnsubscribeException;
 use Hyperf\Contract\StdoutLoggerInterface;
-use Swoole\Exception;
 use Throwable;
 
 class Subscriber
@@ -35,8 +35,9 @@ class Subscriber
     }
 
     /**
-     * @throws Exception
+     * @throws SocketException
      * @throws Throwable
+     * @throws SubscribeException
      */
     public function subscribe(string ...$channels)
     {
@@ -53,8 +54,9 @@ class Subscriber
     }
 
     /**
-     * @throws Exception
+     * @throws SocketException
      * @throws Throwable
+     * @throws UnsubscribeException
      */
     public function unsubscribe(string ...$channels)
     {
@@ -71,8 +73,9 @@ class Subscriber
     }
 
     /**
-     * @throws Exception
+     * @throws SocketException
      * @throws Throwable
+     * @throws SubscribeException
      */
     public function psubscribe(string ...$channels)
     {
@@ -89,8 +92,9 @@ class Subscriber
     }
 
     /**
-     * @throws Exception
+     * @throws SocketException
      * @throws Throwable
+     * @throws UnsubscribeException
      */
     public function punsubscribe(string ...$channels)
     {
@@ -115,7 +119,7 @@ class Subscriber
     }
 
     /**
-     * @throws Exception
+     * @throws SocketException
      */
     public function close()
     {
@@ -124,7 +128,7 @@ class Subscriber
     }
 
     /**
-     * @throws Exception
+     * @throws SocketException
      */
     public function ping(int $timeout = 1)
     {
@@ -132,7 +136,7 @@ class Subscriber
     }
 
     /**
-     * @throws Exception
+     * @throws SocketException
      */
     protected function connect()
     {
