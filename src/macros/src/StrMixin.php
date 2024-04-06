@@ -32,7 +32,7 @@ class StrMixin
 
     public function createUuidsUsing()
     {
-        return fn (callable $factory = null) => UuidContainer::$uuidFactory = $factory;
+        return fn (?callable $factory = null) => UuidContainer::$uuidFactory = $factory;
     }
 
     public function flushCache()

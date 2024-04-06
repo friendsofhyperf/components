@@ -188,21 +188,21 @@ class CollectionMixin
 
     public function whenEmpty()
     {
-        return fn (callable $callback, callable $default = null) => $this->when($this->isEmpty(), $callback, $default);
+        return fn (callable $callback, ?callable $default = null) => $this->when($this->isEmpty(), $callback, $default);
     }
 
     public function whenNotEmpty()
     {
-        return fn (callable $callback, callable $default = null) => $this->when($this->isNotEmpty(), $callback, $default);
+        return fn (callable $callback, ?callable $default = null) => $this->when($this->isNotEmpty(), $callback, $default);
     }
 
     public function unlessEmpty()
     {
-        return fn (callable $callback, callable $default = null) => $this->whenNotEmpty($callback, $default); /* @phpstan-ignore-line */
+        return fn (callable $callback, ?callable $default = null) => $this->whenNotEmpty($callback, $default); /* @phpstan-ignore-line */
     }
 
     public function unlessNotEmpty()
     {
-        return fn (callable $callback, callable $default = null) => $this->whenEmpty($callback, $default); /* @phpstan-ignore-line */
+        return fn (callable $callback, ?callable $default = null) => $this->whenEmpty($callback, $default); /* @phpstan-ignore-line */
     }
 }

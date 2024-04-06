@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Lock{
     use FriendsOfHyperf\Lock\Driver\LockInterface;
     use Hyperf\Context\ApplicationContext;
 
-    function lock(string $name = null, int $seconds = 0, ?string $owner = null, string $driver = 'default'): LockFactory|LockInterface
+    function lock(?string $name = null, int $seconds = 0, ?string $owner = null, string $driver = 'default'): LockFactory|LockInterface
     {
         $factory = ApplicationContext::getContainer()->get(LockFactory::class);
 
@@ -33,7 +33,7 @@ namespace {
         /**
          * @deprecated 3.1, use `\FriendsOfHyperf\Lock\lock()` instead.
          */
-        function lock(string $name = null, int $seconds = 0, ?string $owner = null, string $driver = 'default'): LockFactory|LockInterface
+        function lock(?string $name = null, int $seconds = 0, ?string $owner = null, string $driver = 'default'): LockFactory|LockInterface
         {
             return \FriendsOfHyperf\Lock\lock($name, $seconds, $owner, $driver);
         }

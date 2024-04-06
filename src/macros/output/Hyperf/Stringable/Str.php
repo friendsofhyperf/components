@@ -16,7 +16,7 @@ class Str
     /**
      * Set the callable that will be used to generate UUIDs.
      */
-    public static function createUuidsUsing(callable $factory = null)
+    public static function createUuidsUsing(?callable $factory = null)
     {
     }
 

@@ -59,7 +59,7 @@ use function Hyperf\Tappable\tap;
  *
  * @return Closure|ContainerInterface|T
  */
-function app(string|callable $abstract = null, array $parameters = [])
+function app(string|callable|null $abstract = null, array $parameters = [])
 {
     if (is_callable($abstract)) {
         return Closure::fromCallable($abstract);
@@ -158,7 +158,7 @@ function cache()
  *
  * @return Cookie|CookieJarInterface
  */
-function cookie(?string $name = null, string $value = null, int $minutes = 0, string $path = null, string $domain = null, bool $secure = false, bool $httpOnly = true, bool $raw = false, ?string $sameSite = null)
+function cookie(?string $name = null, ?string $value = null, int $minutes = 0, ?string $path = null, ?string $domain = null, bool $secure = false, bool $httpOnly = true, bool $raw = false, ?string $sameSite = null)
 {
     if (is_null($name)) {
         return di(CookieJarInterface::class);
@@ -190,7 +190,7 @@ function class_namespace($class): string
  *
  * @return ContainerInterface|T
  */
-function di(string $abstract = null, array $parameters = [])
+function di(?string $abstract = null, array $parameters = [])
 {
     if (ApplicationContext::hasContainer()) {
         /** @var \Hyperf\Contract\ContainerInterface $container */

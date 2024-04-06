@@ -19,7 +19,7 @@ use Throwable;
  * @throws Throwable
  * @deprecated since 3.1, use `Hyperf\Support\retry` instead.
  */
-function retry(int $times, callable $callback, int $sleep = 0, callable $when = null)
+function retry(int $times, callable $callback, int $sleep = 0, ?callable $when = null)
 {
     $attempts = 0;
 

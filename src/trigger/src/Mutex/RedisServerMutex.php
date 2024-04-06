@@ -52,7 +52,7 @@ class RedisServerMutex implements ServerMutexInterface
         $this->retryInterval = (int) ($options['retry_interval'] ?? 10);
     }
 
-    public function attempt(callable $callback = null): void
+    public function attempt(?callable $callback = null): void
     {
         // Waiting for the server mutex.
         $this->timer->tick($this->retryInterval, function () {

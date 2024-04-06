@@ -38,7 +38,7 @@ if (! function_exists('app')) {
      * @return Closure|ContainerInterface|T
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\app` instead.
      */
-    function app(string|callable $abstract = null, array $parameters = [])
+    function app(string|callable|null $abstract = null, array $parameters = [])
     {
         return FriendsOfHyperf\Helpers\app($abstract, $parameters);
     }
@@ -115,7 +115,7 @@ if (! function_exists('cookie')) {
      * @return Cookie|CookieJarInterface
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\cookie` instead.
      */
-    function cookie(?string $name = null, string $value = null, int $minutes = 0, string $path = null, string $domain = null, bool $secure = false, bool $httpOnly = true, bool $raw = false, ?string $sameSite = null)
+    function cookie(?string $name = null, ?string $value = null, int $minutes = 0, ?string $path = null, ?string $domain = null, bool $secure = false, bool $httpOnly = true, bool $raw = false, ?string $sameSite = null)
     {
         return FriendsOfHyperf\Helpers\cookie($name, $value, $minutes, $path, $domain, $secure, $httpOnly, $raw, $sameSite);
     }
@@ -145,7 +145,7 @@ if (! function_exists('di')) {
      * @return ContainerInterface|T
      * @deprecated since 3.1, use `\FriendsOfHyperf\Helpers\di` instead.
      */
-    function di(string $abstract = null, array $parameters = [])
+    function di(?string $abstract = null, array $parameters = [])
     {
         return FriendsOfHyperf\Helpers\di($abstract, $parameters);
     }
