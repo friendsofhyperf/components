@@ -32,7 +32,7 @@ class CoroutineLock extends AbstractLock
         parent::__construct($name, $seconds, $owner);
 
         $constructor = array_merge(['prefix' => ''], $constructor);
-        $this->store = make(CoroutineMemoryDriver::class, $constructor);
+        $this->store = make(CoroutineMemoryDriver::class, ['config' => $constructor]);
     }
 
     /**
