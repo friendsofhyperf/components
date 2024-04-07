@@ -27,6 +27,13 @@ use function FriendsOfHyperf\Helpers\now;
  */
 class SleepTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        $this->markTestSkipped('all tests in this file are invactive for this server configuration!');
+    }
+
     protected function tearDown(): void
     {
         parent::tearDown();

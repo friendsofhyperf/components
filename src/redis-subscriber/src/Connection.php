@@ -49,11 +49,7 @@ class Connection
         return true;
     }
 
-    /**
-     * Recv.
-     * @return string|bool
-     */
-    public function recv()
+    public function recv(): string|bool
     {
         return $this->socket->recvAll();
     }
