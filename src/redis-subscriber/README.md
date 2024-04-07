@@ -1,5 +1,9 @@
 # Redis Subscriber
 
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/redis-subscriber)](https://packagist.org/packages/friendsofhyperf/redis-subscriber)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/redis-subscriber)](https://packagist.org/packages/friendsofhyperf/redis-subscriber)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/redis-subscriber)](https://github.com/friendsofhyperf/redis-subscriber)
+
 Forked from [mix-php/redis-subscriber](https://github.com/mix-php/redis-subscriber)
 
 Redis native protocol Subscriber based on Swoole coroutine
