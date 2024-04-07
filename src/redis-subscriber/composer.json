@@ -1,31 +1,41 @@
 {
-  "name": "friendsofhyperf/redis-subscriber",
-  "description": "Redis native protocol Subscriber based on Swoole coroutine",
-  "type": "library",
-  "keywords": [
-    "swoole",
-    "redis",
-    "subscriber"
-  ],
-  "authors": [
-    {
-      "name": "liu,jian",
-      "email": "coder.keda@gmail.com"
+    "name": "friendsofhyperf/redis-subscriber",
+    "description": "Redis native protocol Subscriber based on Swoole coroutine",
+    "type": "library",
+    "keywords": [
+        "swoole",
+        "redis",
+        "subscriber"
+    ],
+    "authors": [
+        {
+            "name": "liu,jian",
+            "email": "coder.keda@gmail.com"
+        },
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "require": {
+        "php": "~8.1.0",
+        "hyperf/coordinator": "~3.1.0",
+        "hyperf/coroutine": "~3.1.0",
+        "hyperf/engine": "^2.1"
     },
-    {
-      "name": "huangdijia",
-      "email": "huangdijia@gmail.com"
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Redis\\Subscriber\\": "src/"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        }
+    },
+    "license": "MIT",
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
     }
-  ],
-  "require": {
-    "php": "~8.1.0",
-    "hyperf/coordinator": "~3.1.0",
-    "hyperf/coroutine": "~3.1.0",
-    "hyperf/engine": "^2.1"
-  },
-  "autoload": {
-    "psr-4": {
-      "FriendsOfHyperf\\Redis\\Subscriber\\": "src/"
-    }
-  }
 }

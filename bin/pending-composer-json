@@ -59,6 +59,9 @@ foreach ($files as $file) {
         'issues' => 'https://github.com/friendsofhyperf/components/issues',
         'source' => 'https://github.com/friendsofhyperf/components',
     ];
+    if (! isset($composerJson->extra)) {
+        $composerJson->extra = new stdClass();
+    }
     $composerJson->extra->{'branch-alias'} = [
         'dev-main' => '3.1-dev',
     ];
