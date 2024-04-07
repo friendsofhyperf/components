@@ -267,7 +267,7 @@
             "@composer test:unit",
             "@composer test:types"
         ],
-        "pending": [
+        "repo:pending": [
             "./bin/pending-repositories.sh",
             "@php ./bin/pending-composer-json",
             "@php ./bin/composer-json-fixer",
