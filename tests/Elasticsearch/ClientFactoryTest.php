@@ -39,6 +39,7 @@ class ClientFactoryTest extends TestCase
 
     public function testHostNotReached()
     {
+        $this->expectException(\GuzzleHttp\Exception\RequestException::class);
         $this->expectException(NoNodeAvailableException::class);
 
         /** @var GuzzleClientFactory $clientFactory */
