@@ -18,7 +18,7 @@ use Hyperf\Engine\Socket\SocketOption;
 
 class Connection
 {
-    protected SocketInterface $client;
+    protected SocketInterface $socket;
 
     protected bool $closed = false;
 
@@ -31,13 +31,13 @@ class Connection
             'open_eof_check' => true,
             'package_eof' => Constants::EOF,
         ]);
-        $this->client = (new SocketFactory())->make($options);
+        $this->socket = (new SocketFactory())->make($options);
     }
 
     public function send(string $data): bool
     {
         $len = strlen($data);
-        $size = $this->client->sendAll($data);
+        $size = $this->socket->sendAll($data);
 
         if ($size === false) {
             throw new SocketException('Failed to send data to the socket.');
@@ -45,6 +45,7 @@ class Connection
         if ($len !== $size) {
             throw new SocketException('The sending data is incomplete, it may be that the socket has been closed by the peer.');
         }
+
         return true;
     }
 
@@ -54,14 +55,15 @@ class Connection
      */
     public function recv()
     {
-        return $this->client->recvAll(timeout: -1);
+        return $this->socket->recvAll();
     }
 
     public function close(): void
     {
-        if (! $this->closed && ! $this->client->close()) {
+        if (! $this->closed && ! $this->socket->close()) {
             throw new SocketException('Failed to close the socket.');
         }
+
         $this->closed = true;
     }
 }

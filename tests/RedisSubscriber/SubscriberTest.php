@@ -17,6 +17,8 @@ use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Redis;
 
+use function Hyperf\Coroutine\go;
+
 /**
  * @internal
  * @coversNothing
