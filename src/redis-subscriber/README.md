@@ -6,15 +6,15 @@
 
 Forked from [mix-php/redis-subscriber](https://github.com/mix-php/redis-subscriber)
 
-Redis native protocol Subscriber based on Swoole coroutine
+A Redis native protocol Subscriber based on Swoole coroutine
 
-基于 Swoole 协程的 Redis 原生协议订阅库
+A Redis native protocol subscription library based on Swoole coroutine
 
-使用 Socket 直接连接 Redis 服务器，不依赖 phpredis 扩展，该订阅器有如下优点：
+It connects directly to the Redis server using a Socket, independent of the phpredis extension. This subscriber has the following advantages:
 
-- 平滑修改：可随时增加、取消订阅通道，实现无缝切换通道的需求。
-- 跨协程安全关闭：可在任意时刻关闭订阅。
-- 通道获取消息：该库封装风格参考 golang 语言 [go-redis](https://github.com/go-redis/redis) 库封装，通过 channel 获取订阅的消息。
+- Smooth modification: Subscriptions can be added or canceled at any time, fulfilling the need for seamless channel switching.
+- Safe closure across coroutines: Subscription can be closed at any moment.
+- Channel message retrieval: This library's encapsulation style is inspired by the [go-redis](https://github.com/go-redis/redis) library in the Go language, retrieving subscribed messages through a channel.
 
 ## Installation
 
@@ -22,20 +22,20 @@ Redis native protocol Subscriber based on Swoole coroutine
 composer require friendsofhyperf/redis-subscriber
 ```
 
-## 订阅频道
+## Subscribing to Channels
 
-- 连接、订阅失败会抛出异常
+- Connection or subscription failures will throw an exception
 
 ```php
-$sub = new \FriendsOfHyperf\Redis\Subscriber\Subscriber('127.0.0.1', 6379, '', 5); // 连接失败将抛出异常
-$sub->subscribe('foo', 'bar'); // 订阅失败将抛出异常
+$sub = new \FriendsOfHyperf\Redis\Subscriber\Subscriber('127.0.0.1', 6379, '', 5); // Connection failure will throw an exception
+$sub->subscribe('foo', 'bar'); // Subscription failure will throw an exception
 
 $chan = $sub->channel();
 while (true) {
     $data = $chan->pop();
-    if (empty($data)) { // 手动close与redis异常断开都会导致返回false
+    if (empty($data)) { // Manual close or abnormal disconnection from Redis will return false
         if (!$sub->closed) {
-            // redis异常断开处理
+            // Handle abnormal disconnection from Redis
             var_dump('Redis connection is disconnected abnormally');
         }
         break;
@@ -44,7 +44,7 @@ while (true) {
 }
 ```
 
-接收到订阅消息：
+Receiving subscribed messages:
 
 ```shell
 object(FriendsOfHyperf\Redis\Subscriber\Message)#8 (2) {
@@ -55,16 +55,16 @@ object(FriendsOfHyperf\Redis\Subscriber\Message)#8 (2) {
 }
 ```
 
-## 全部方法
+## All Methods
 
-| 方法 | 描述 |
+| Method | Description |
 | --- | --- |
-| subscribe(string ...$channels) : void | 增加订阅 |
-| unsubscribe(string ...$channels) : void | 取消订阅 |
-| psubscribe(string ...$channels) : void | 增加通配订阅 |
-| punsubscribe(string ...$channels) : void | 取消通配订阅 |
-| channel() : Hyperf\Engine\Channel | 获取消息通道 |
-| close() : void | 关闭订阅 |
+| subscribe(string ...$channels) : void | Add subscriptions |
+| unsubscribe(string ...$channels) : void | Cancel subscriptions |
+| psubscribe(string ...$channels) : void | Add pattern subscriptions |
+| punsubscribe(string ...$channels) : void | Cancel pattern subscriptions |
+| channel() : Hyperf\Engine\Channel | Retrieve the message channel |
+| close() : void | Close the subscription |
 
 ## License
 
