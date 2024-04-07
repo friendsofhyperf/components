@@ -1,9 +1,3 @@
-# friendsofhyperf/components
-
-[![Latest Test](https://github.com/friendsofhyperf/components/workflows/tests/badge.svg)](https://github.com/friendsofhyperf/components/actions) [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/components/v)](https://packagist.org/packages/friendsofhyperf/components) [![License](https://poser.pugx.org/friendsofhyperf/components/license)](https://packagist.org/packages/friendsofhyperf/components) [![PHP Version Require](https://poser.pugx.org/friendsofhyperf/components/require/php)](https://packagist.org/packages/friendsofhyperf/components)
-
-The most popular components for Hyperf.
-
 ## Repositories
 
 |Repository|Stable Version|Total Downloads|Monthly Downloads|
@@ -49,19 +43,3 @@ The most popular components for Hyperf.
 |[trigger](https://github.com/friendsofhyperf/trigger)|[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/trigger/v)](https://packagist.org/packages/friendsofhyperf/trigger)|[![Total Downloads](https://poser.pugx.org/friendsofhyperf/trigger/downloads)](https://packagist.org/packages/friendsofhyperf/trigger)|[![Monthly Downloads](https://poser.pugx.org/friendsofhyperf/trigger/d/monthly)](https://packagist.org/packages/friendsofhyperf/trigger)|
 |[validated-dto](https://github.com/friendsofhyperf/validated-dto)|[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/validated-dto/v)](https://packagist.org/packages/friendsofhyperf/validated-dto)|[![Total Downloads](https://poser.pugx.org/friendsofhyperf/validated-dto/downloads)](https://packagist.org/packages/friendsofhyperf/validated-dto)|[![Monthly Downloads](https://poser.pugx.org/friendsofhyperf/validated-dto/d/monthly)](https://packagist.org/packages/friendsofhyperf/validated-dto)|
 
-## Contributors
-
-<a href="https://github.com/friendsofhyperf/components/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=friendsofhyperf/components" />
-</a>
-
-<!-- Made with [contrib.rocks](https://contrib.rocks). -->
-
-## Contact
-
-- [Twitter](https://twitter.com/huangdijia)
-- [Gmail](mailto:huangdijia@gmail.com)
-
-## License
-
-[MIT](LICENSE)

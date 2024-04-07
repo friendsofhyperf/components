@@ -41,16 +41,6 @@ function license() {
     echo "[![License](https://poser.pugx.org/friendsofhyperf/$1/license)](https://packagist.org/packages/friendsofhyperf/$1)"
 }
 
-echo "# friendsofhyperf/components"
-echo 
-printf "%s %s %s %s\n" \
-    "$(github_actions components)" \
-    "$(latest_stable_version components)" \
-    "$(license components)" \
-    "$(php_version_require components)"
-echo
-echo "The most popular components for Hyperf."
-echo 
 echo "## Repositories"
 echo
 echo "|Repository|Stable Version|Total Downloads|Monthly Downloads|"
@@ -65,22 +55,3 @@ for REPO in ${REPOS}; do
 done
 
 echo
-
-cat <<EOF
-## Contributors
-
-<a href="https://github.com/friendsofhyperf/components/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=friendsofhyperf/components" />
-</a>
-
-<!-- Made with [contrib.rocks](https://contrib.rocks). -->
-
-## Contact
-
-- [Twitter](https://twitter.com/huangdijia)
-- [Gmail](mailto:huangdijia@gmail.com)
-
-## License
-
-[MIT](LICENSE)
-EOF
