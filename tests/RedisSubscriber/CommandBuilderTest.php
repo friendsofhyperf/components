@@ -17,7 +17,7 @@ use PHPUnit\Framework\TestCase;
  */
 final class CommandBuilderTest extends TestCase
 {
-    public function test(): void
+    public function testCommandBuilder(): void
     {
         $this->assertEquals(CommandBuilder::build(null), "$-1\r\n");
         $this->assertEquals(CommandBuilder::build(1), ":1\r\n");
