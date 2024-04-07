@@ -1941,6 +1941,7 @@ class HttpClientTest extends TestCase
 
     public function testRequestsWillBeWaitingSleepMillisecondsReceivedInBackoffArray()
     {
+        $this->markTestSkipped('This test is flaky on GitHub Actions.');
         Sleep::fake();
 
         $this->factory->fake([

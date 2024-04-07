@@ -38,14 +38,21 @@ class Sleep
     /**
      * The total duration to sleep.
      *
-     * @var CarbonInterval
+     * @var \Carbon\CarbonInterval
      */
     public $duration;
 
     /**
+     * Keep Carbon's "now" in sync when sleeping.
+     *
+     * @var bool
+     */
+    protected static $syncWithCarbon = false;
+
+    /**
      * The pending duration to sleep.
      *
-     * @var float|int|null
+     * @var int|float|null
      */
     protected $pending;
 
@@ -73,7 +80,7 @@ class Sleep
     /**
      * Create a new class instance.
      *
-     * @param DateInterval|float|int $duration
+     * @param int|float|DateInterval $duration
      */
     public function __construct($duration)
     {
@@ -95,6 +102,10 @@ class Sleep
 
         if (static::$fake) {
             static::$sequence[] = $this->duration;
+
+            if (static::$syncWithCarbon) {
+                Carbon::setTestNow(Carbon::now()->add($this->duration));
+            }
 
             foreach (static::$fakeSleepCallbacks as $callback) {
                 $callback($this->duration);
@@ -123,7 +134,7 @@ class Sleep
     /**
      * Sleep for the given duration.
      *
-     * @param DateInterval|float|int $duration
+     * @param DateInterval|int|float $duration
      * @return static
      */
     public static function for($duration)
@@ -140,7 +151,7 @@ class Sleep
     public static function until($timestamp)
     {
         if (is_numeric($timestamp)) {
-            $timestamp = Carbon::createFromTimestamp($timestamp);
+            $timestamp = Carbon::createFromTimestamp($timestamp, date_default_timezone_get());
         }
 
         return new static(Carbon::now()->diff($timestamp));
@@ -160,7 +171,7 @@ class Sleep
     /**
      * Sleep for the given number of seconds.
      *
-     * @param float|int $duration
+     * @param int|float $duration
      * @return static
      */
     public static function sleep($duration)
@@ -259,7 +270,7 @@ class Sleep
     /**
      * Add additional time to sleep for.
      *
-     * @param float|int $duration
+     * @param int|float $duration
      * @return $this
      */
     public function and($duration)
@@ -273,13 +284,15 @@ class Sleep
      * Stay awake and capture any attempts to sleep.
      *
      * @param bool $value
+     * @param bool $syncWithCarbon
      */
-    public static function fake($value = true)
+    public static function fake($value = true, $syncWithCarbon = false)
     {
         static::$fake = $value;
 
         static::$sequence = [];
         static::$fakeSleepCallbacks = [];
+        static::$syncWithCarbon = $syncWithCarbon;
     }
 
     /**
@@ -359,7 +372,7 @@ class Sleep
         }
 
         foreach (static::$sequence as $duration) {
-            PHPUnit::assertSame(0, $duration->totalMicroseconds, vsprintf('Unexpected sleep duration of [%s] found.', [
+            PHPUnit::assertSame(0, (int) $duration->totalMicroseconds, vsprintf('Unexpected sleep duration of [%s] found.', [
                 $duration->cascade()->forHumans([
                     'options' => 0,
                     'minimumUnit' => 'microsecond',
@@ -405,9 +418,19 @@ class Sleep
     }
 
     /**
+     * Indicate that Carbon's "now" should be kept in sync when sleeping.
+     *
+     * @param mixed $value
+     */
+    public static function syncWithCarbon($value = true)
+    {
+        static::$syncWithCarbon = $value;
+    }
+
+    /**
      * Sleep for the given duration. Replaces any previously defined duration.
      *
-     * @param DateInterval|float|int $duration
+     * @param DateInterval|int|float $duration
      * @return $this
      */
     protected function duration($duration)
@@ -433,7 +456,7 @@ class Sleep
     /**
      * Resolve the pending duration.
      *
-     * @return float|int
+     * @return int|float
      */
     protected function pullPending()
     {
