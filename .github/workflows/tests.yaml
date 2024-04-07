@@ -68,6 +68,5 @@ jobs:
       - name: Setup Redis
         run: |
           docker run --name redis -p 6379:6379 -d redis
-          lsof -i:6379
       - name: Run Test Cases
         run: php vendor/bin/pest --parallel
