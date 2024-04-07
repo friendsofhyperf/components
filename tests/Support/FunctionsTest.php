@@ -22,13 +22,6 @@ use function FriendsOfHyperf\Support\retry;
  */
 class FunctionsTest extends TestCase
 {
-    protected function setUp(): void
-    {
-        parent::setUp();
-
-        $this->markTestSkipped('all tests in this file are invactive for this server configuration!');
-    }
-
     public function testRetry()
     {
         $startTime = microtime(true);
