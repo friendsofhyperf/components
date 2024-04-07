@@ -271,7 +271,7 @@
             "./bin/pending-repositories.sh",
             "@php ./bin/pending-composer-json",
             "@php ./bin/composer-json-fixer",
-            "./bin/regenerate-readme.sh > README.md"
+            "./bin/regenerate-readme.sh > src/.github/profile/README.md"
         ]
     }
 }
