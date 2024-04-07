@@ -52,7 +52,7 @@ function retry($times, callable $callback, $sleepMilliseconds = 0, $when = null)
         $sleepMilliseconds = $backoff[$attempts - 1] ?? $sleepMilliseconds;
 
         if ($sleepMilliseconds) {
-            Sleep::usleep(value($sleepMilliseconds, $attempts, $e) * 1000);
+            usleep(value($sleepMilliseconds, $attempts, $e) * 1000);
         }
 
         goto beginning;
