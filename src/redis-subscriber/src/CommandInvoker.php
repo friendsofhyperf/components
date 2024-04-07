@@ -62,7 +62,16 @@ class CommandInvoker
                 continue;
             }
 
-            $buffer = explode(Constants::CRLF, $line);
+            if ($line == '*3') {
+                if (! empty($buffer)) {
+                    $this->resultChannel->push($buffer);
+                    $buffer = null;
+                }
+                $buffer[] = $line;
+                continue;
+            }
+
+            $buffer[] = $line;
             $type = $buffer[2] ?? false;
 
             if ($type == 'subscribe' && count($buffer) == 6) {

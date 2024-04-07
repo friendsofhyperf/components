@@ -55,7 +55,7 @@ class Connection
      */
     public function recv()
     {
-        return $this->socket->recvAll();
+        return $this->socket->recvPacket(timeout: 0);
     }
 
     public function close(): void
