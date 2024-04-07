@@ -19,8 +19,6 @@ use Hyperf\Engine\Socket\SocketOption;
 
 class Connection
 {
-    public const EOF = "\r\n";
-
     /**
      * @var Socket
      */
@@ -35,7 +33,7 @@ class Connection
     ) {
         $options = new SocketOption($this->host, $this->port, $this->timeout, [
             'open_eof_check' => true,
-            'package_eof' => static::EOF,
+            'package_eof' => Constants::EOF,
         ]);
         /** @var Socket $client fixed for phpstan */
         $client = (new SocketFactory())->make($options);

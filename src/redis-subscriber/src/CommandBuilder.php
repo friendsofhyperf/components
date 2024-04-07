@@ -22,8 +22,6 @@ use function strlen;
 
 class CommandBuilder
 {
-    public const CRLF = "\r\n";
-
     /**
      * @param int|string|array<mixed>|null $args
      * @return string the serialized string
@@ -31,18 +29,18 @@ class CommandBuilder
     public static function build(mixed $args): string
     {
         if ($args == 'ping') {
-            return 'PING' . static::CRLF;
+            return 'PING' . Constants::CRLF;
         }
 
         switch (true) {
             case is_null($args):
-                return '$-1' . static::CRLF;
+                return '$-1' . Constants::CRLF;
             case is_int($args):
-                return ':' . $args . static::CRLF;
+                return ':' . $args . Constants::CRLF;
             case is_string($args):
-                return '$' . strlen($args) . static::CRLF . $args . static::CRLF;
+                return '$' . strlen($args) . Constants::CRLF . $args . Constants::CRLF;
             case is_array($args):
-                $result = '*' . count($args) . static::CRLF;
+                $result = '*' . count($args) . Constants::CRLF;
                 foreach ($args as $arg) {
                     $result .= static::build($arg);
                 }

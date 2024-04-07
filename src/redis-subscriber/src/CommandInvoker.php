@@ -20,8 +20,6 @@ use Throwable;
 
 class CommandInvoker
 {
-    public const CRLF = "\r\n";
-
     protected Channel $resultChannel;
 
     protected Channel $messageChannel;
@@ -57,14 +55,14 @@ class CommandInvoker
                 break;
             }
 
-            $line = substr($line, 0, -strlen(static::CRLF));
+            $line = substr($line, 0, -strlen(Constants::CRLF));
 
             if ($line == '+OK') {
                 $this->resultChannel->push($line);
                 continue;
             }
 
-            $buffer = explode(static::CRLF, $line);
+            $buffer = explode(Constants::CRLF, $line);
             $type = $buffer[2] ?? false;
 
             if ($type == 'subscribe' && count($buffer) == 6) {
