@@ -13,16 +13,12 @@ namespace FriendsOfHyperf\Redis\Subscriber;
 
 use FriendsOfHyperf\Redis\Subscriber\Exception\SocketException;
 use Hyperf\Engine\Contract\SocketInterface;
-use Hyperf\Engine\Socket;
 use Hyperf\Engine\Socket\SocketFactory;
 use Hyperf\Engine\Socket\SocketOption;
 
 class Connection
 {
-    /**
-     * @var Socket
-     */
-    protected SocketInterface $client;
+    protected SocketInterface $socket;
 
     protected bool $closed = false;
 
@@ -35,22 +31,21 @@ class Connection
             'open_eof_check' => true,
             'package_eof' => Constants::EOF,
         ]);
-        /** @var Socket $client fixed for phpstan */
-        $client = (new SocketFactory())->make($options);
-        $this->client = $client;
+        $this->socket = (new SocketFactory())->make($options);
     }
 
     public function send(string $data): bool
     {
         $len = strlen($data);
-        $size = $this->client->send($data);
+        $size = $this->socket->sendAll($data);
 
         if ($size === false) {
-            throw new SocketException($this->client->errMsg, $this->client->errCode);
+            throw new SocketException('Failed to send data to the socket.');
         }
         if ($len !== $size) {
             throw new SocketException('The sending data is incomplete, it may be that the socket has been closed by the peer.');
         }
+
         return true;
     }
 
@@ -60,19 +55,15 @@ class Connection
      */
     public function recv()
     {
-        return $this->client->recv(timeout: -1);
+        return $this->socket->recvPacket(timeout: 0);
     }
 
     public function close(): void
     {
-        if (! $this->closed && ! $this->client->close()) {
-            $errMsg = $this->client->errMsg;
-            $errCode = $this->client->errCode;
-            if ($errMsg == '' && $errCode == 0) {
-                return;
-            }
-            throw new SocketException($errMsg, $errCode);
+        if (! $this->closed && ! $this->socket->close()) {
+            throw new SocketException('Failed to close the socket.');
         }
+
         $this->closed = true;
     }
 }

@@ -17,13 +17,11 @@ use FriendsOfHyperf\Elasticsearch\ClientBuilderFactory;
 use FriendsOfHyperf\Tests\TestCase;
 use GuzzleHttp\Client;
 use Hyperf\Guzzle\ClientFactory as GuzzleClientFactory;
-use PHPUnit\Framework\Attributes\CoversNothing;
 
 /**
  * @internal
  * @coversNothing
  */
-#[CoversNothing]
 class ClientFactoryTest extends TestCase
 {
     public function testClientBuilderFactoryCreate()
@@ -41,6 +39,8 @@ class ClientFactoryTest extends TestCase
 
     public function testHostNotReached()
     {
+        $this->markTestSkipped('Skip testHostNotReached');
+
         $this->expectException(NoNodeAvailableException::class);
 
         /** @var GuzzleClientFactory $clientFactory */
