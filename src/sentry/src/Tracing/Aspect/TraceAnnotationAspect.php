@@ -58,7 +58,7 @@ class TraceAnnotationAspect extends AbstractAspect
             if ($this->tagManager->has('annotation.arguments')) {
                 $data[$this->tagManager->get('annotation.arguments')] = $proceedingJoinPoint->arguments['keys']['arguments'] ?? $proceedingJoinPoint->arguments['keys'];
             }
-        }else{
+        } else {
             if ($this->tagManager->has('annotation.arguments')) {
                 $data[$this->tagManager->get('annotation.arguments')] = $proceedingJoinPoint->arguments['keys'];
             }
