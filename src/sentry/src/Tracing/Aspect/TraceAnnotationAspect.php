@@ -54,12 +54,17 @@ class TraceAnnotationAspect extends AbstractAspect
             $data[$this->tagManager->get('annotation.arguments')] = $proceedingJoinPoint->arguments['keys'];
         }
 
+        $methodName = $proceedingJoinPoint->methodName;
+        if (in_array($methodName, ['__call', '__callStatic'])) {
+            $methodName = $proceedingJoinPoint->arguments['keys']['name'] ?? $proceedingJoinPoint->methodName;
+        }
+
         $span = $this->startSpan(
             $annotation->op ?? 'method',
             $annotation->description ?? sprintf(
                 '%s::%s()',
                 $proceedingJoinPoint->className,
-                $proceedingJoinPoint->methodName
+                $methodName
             ),
             true
         );
