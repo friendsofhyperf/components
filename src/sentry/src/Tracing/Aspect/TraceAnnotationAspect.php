@@ -50,8 +50,18 @@ class TraceAnnotationAspect extends AbstractAspect
         if ($this->tagManager->has('annotation.coroutine.id')) {
             $data[$this->tagManager->get('annotation.coroutine.id')] = Coroutine::id();
         }
-        if ($this->tagManager->has('annotation.arguments')) {
-            $data[$this->tagManager->get('annotation.arguments')] = $proceedingJoinPoint->arguments['keys'];
+
+        $methodName = $proceedingJoinPoint->methodName;
+        if (in_array($methodName, ['__call', '__callStatic'])) {
+            $methodName = $proceedingJoinPoint->arguments['keys']['name'] ?? $proceedingJoinPoint->methodName;
+
+            if ($this->tagManager->has('annotation.arguments')) {
+                $data[$this->tagManager->get('annotation.arguments')] = $proceedingJoinPoint->arguments['keys']['arguments'] ?? $proceedingJoinPoint->arguments['keys'];
+            }
+        } else {
+            if ($this->tagManager->has('annotation.arguments')) {
+                $data[$this->tagManager->get('annotation.arguments')] = $proceedingJoinPoint->arguments['keys'];
+            }
         }
 
         $span = $this->startSpan(
@@ -59,7 +69,7 @@ class TraceAnnotationAspect extends AbstractAspect
             $annotation->description ?? sprintf(
                 '%s::%s()',
                 $proceedingJoinPoint->className,
-                $proceedingJoinPoint->methodName
+                $methodName
             ),
             true
         );
