@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Redis\Subscriber;
 
 class Message
 {
-    public string $pattern;
+    public ?string $pattern = null;
 
     public string $channel;
 

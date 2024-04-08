@@ -35,15 +35,54 @@ class CommandInvoker
         $this->pingChannel = new Channel();
         $this->messageChannel = new Channel(100);
         $this->timer = new Timer();
-        Coroutine::create(function () use ($connection) {
-            $this->receive($connection);
-        });
+        $this->loop();
+    }
+
+    /**
+     * @param int|string|array<mixed>|null $command
+     */
+    public function invoke(mixed $command, int $number): array
+    {
+        try {
+            $this->connection->send(CommandBuilder::build($command));
+        } catch (Throwable $e) {
+            $this->interrupt();
+            throw $e;
+        }
+
+        $result = [];
+
+        for ($i = 0; $i < $number; ++$i) {
+            $result[] = $this->resultChannel->pop();
+        }
+
+        return $result;
+    }
+
+    public function channel(): Channel
+    {
+        return $this->messageChannel;
+    }
+
+    public function interrupt(): bool
+    {
+        $this->connection->close();
+        $this->resultChannel->close();
+        $this->messageChannel->close();
+
+        return true;
+    }
+
+    public function ping(int $timeout = 1): string|bool
+    {
+        $this->connection->send(CommandBuilder::build('ping'));
+        return $this->pingChannel->pop($timeout);
     }
 
     /**
      * @throws SocketException
      */
-    public function receive(Connection $connection)
+    protected function receive(Connection $connection): void
     {
         $buffer = null;
 
@@ -135,43 +174,10 @@ class CommandInvoker
         }
     }
 
-    /**
-     * @param int|string|array<mixed>|null $command
-     */
-    public function invoke(mixed $command, int $number): array
+    protected function loop(): void
     {
-        try {
-            $this->connection->send(CommandBuilder::build($command));
-        } catch (Throwable $e) {
-            $this->interrupt();
-            throw $e;
-        }
-        $result = [];
-        for ($i = 0; $i < $number; ++$i) {
-            $result[] = $this->resultChannel->pop();
-        }
-        return $result;
-    }
-
-    public function channel(): Channel
-    {
-        return $this->messageChannel;
-    }
-
-    public function interrupt(): bool
-    {
-        $this->connection->close();
-        $this->resultChannel->close();
-        $this->messageChannel->close();
-        return true;
-    }
-
-    /**
-     * @return string
-     */
-    public function ping(int $timeout = 1)
-    {
-        $this->connection->send(CommandBuilder::build('ping'));
-        return $this->pingChannel->pop($timeout);
+        Coroutine::create(function () {
+            $this->receive($this->connection);
+        });
     }
 }

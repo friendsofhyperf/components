@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Redis\Subscriber;
 
 use FriendsOfHyperf\Redis\Subscriber\Exception\SocketException;
+use Hyperf\Engine\Contract\Socket\SocketFactoryInterface;
 use Hyperf\Engine\Contract\SocketInterface;
 use Hyperf\Engine\Socket\SocketFactory;
 use Hyperf\Engine\Socket\SocketOption;
@@ -22,16 +23,14 @@ class Connection
 
     protected bool $closed = false;
 
-    public function __construct(
-        public string $host = '',
-        public int $port = 6379,
-        public float $timeout = 5.0
-    ) {
-        $options = new SocketOption($this->host, $this->port, $this->timeout, [
+    public function __construct(string $host = '', int $port = 6379, float $timeout = 5.0, ?SocketFactoryInterface $factory = null)
+    {
+        $options = new SocketOption($host, $port, $timeout, [
             'open_eof_check' => true,
             'package_eof' => Constants::EOF,
         ]);
-        $this->socket = (new SocketFactory())->make($options);
+        $factory ??= new SocketFactory();
+        $this->socket = $factory->make($options);
     }
 
     public function send(string $data): bool
@@ -49,11 +48,7 @@ class Connection
         return true;
     }
 
-    /**
-     * Recv.
-     * @return string|bool
-     */
-    public function recv()
+    public function recv(): string|bool
     {
         return $this->socket->recvPacket(timeout: 0);
     }

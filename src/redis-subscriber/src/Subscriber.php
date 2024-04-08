@@ -39,12 +39,14 @@ class Subscriber
      * @throws Throwable
      * @throws SubscribeException
      */
-    public function subscribe(string ...$channels)
+    public function subscribe(string ...$channels): void
     {
         $channels = array_map(function ($channel) {
             return $this->prefix . $channel;
         }, $channels);
+
         $result = $this->commandInvoker->invoke(['subscribe', ...$channels], count($channels));
+
         foreach ($result as $value) {
             if ($value === false) {
                 $this->commandInvoker->interrupt();
@@ -58,12 +60,14 @@ class Subscriber
      * @throws Throwable
      * @throws UnsubscribeException
      */
-    public function unsubscribe(string ...$channels)
+    public function unsubscribe(string ...$channels): void
     {
         $channels = array_map(function ($channel) {
             return $this->prefix . $channel;
         }, $channels);
+
         $result = $this->commandInvoker->invoke(['unsubscribe', ...$channels], count($channels));
+
         foreach ($result as $value) {
             if ($value === false) {
                 $this->commandInvoker->interrupt();
@@ -77,12 +81,14 @@ class Subscriber
      * @throws Throwable
      * @throws SubscribeException
      */
-    public function psubscribe(string ...$channels)
+    public function psubscribe(string ...$channels): void
     {
         $channels = array_map(function ($channel) {
             return $this->prefix . $channel;
         }, $channels);
+
         $result = $this->commandInvoker->invoke(['psubscribe', ...$channels], count($channels));
+
         foreach ($result as $value) {
             if ($value === false) {
                 $this->commandInvoker->interrupt();
@@ -96,12 +102,14 @@ class Subscriber
      * @throws Throwable
      * @throws UnsubscribeException
      */
-    public function punsubscribe(string ...$channels)
+    public function punsubscribe(string ...$channels): void
     {
         $channels = array_map(function ($channel) {
             return $this->prefix . $channel;
         }, $channels);
+
         $result = $this->commandInvoker->invoke(['punsubscribe', ...$channels], count($channels));
+
         foreach ($result as $value) {
             if ($value === false) {
                 $this->commandInvoker->interrupt();
@@ -121,7 +129,7 @@ class Subscriber
     /**
      * @throws SocketException
      */
-    public function close()
+    public function close(): void
     {
         $this->closed = true;
         $this->commandInvoker->interrupt();
@@ -130,7 +138,7 @@ class Subscriber
     /**
      * @throws SocketException
      */
-    public function ping(int $timeout = 1)
+    public function ping(int $timeout = 1): string|bool
     {
         return $this->commandInvoker->ping($timeout);
     }
@@ -138,7 +146,7 @@ class Subscriber
     /**
      * @throws SocketException
      */
-    protected function connect()
+    protected function connect(): void
     {
         $connection = new Connection($this->host, $this->port, $this->timeout);
         $this->commandInvoker = new CommandInvoker($connection, $this->logger);

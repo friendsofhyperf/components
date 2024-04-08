@@ -24,7 +24,6 @@ class CommandBuilder
 {
     /**
      * @param int|string|array<mixed>|null $args
-     * @return string the serialized string
      */
     public static function build(mixed $args): string
     {
@@ -46,7 +45,7 @@ class CommandBuilder
                 }
                 return $result;
             default:
-                throw new Exception('invalid args');
+                throw new Exception('Invalid args');
         }
     }
 }
