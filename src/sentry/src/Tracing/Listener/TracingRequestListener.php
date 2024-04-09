@@ -111,12 +111,15 @@ class TracingRequestListener implements ListenerInterface
             return;
         }
 
-        // Set data
         $data = [];
         $tags = [];
 
+        // Set data
         if ($this->tagManager->has('request.route.params') && $routeParams) {
             $data[$this->tagManager->get('request.route.params')] = $routeParams;
+        }
+        if ($this->container->has(RpcContext::class) && $this->tagManager->has('rpc.context')) {
+            $data[$this->tagManager->get('rpc.context')] = $this->container->get(RpcContext::class)->getData();
         }
 
         // Set tags

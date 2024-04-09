@@ -81,8 +81,7 @@ class RpcAspect extends AbstractAspect
         Context::set(static::DATA, $data);
 
         if ($this->container->has(Rpc\Context::class)) {
-            $rpcContext = $this->container->get(Rpc\Context::class);
-            $rpcContext->set(Constants::TRACE_CARRIER, $this->packer->pack($span));
+            $this->container->get(Rpc\Context::class)->set(Constants::TRACE_CARRIER, $this->packer->pack($span));
         }
 
         return $path;
@@ -94,6 +93,9 @@ class RpcAspect extends AbstractAspect
 
         if ($this->tagManager->has('rpc.arguments')) {
             $data[$this->tagManager->get('rpc.arguments')] = $proceedingJoinPoint->arguments['keys'];
+        }
+        if ($this->container->has(Rpc\Context::class) && $this->tagManager->has('rpc.context')) {
+            $data[$this->tagManager->get('rpc.context')] = $this->container->get(Rpc\Context::class)->getData();
         }
 
         /** @var Span|null $span */
