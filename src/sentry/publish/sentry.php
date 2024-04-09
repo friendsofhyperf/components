@@ -187,7 +187,7 @@ return [
             'rpc' => [
                 'coroutine.id' => 'coroutine.id',
                 'arguments' => 'rpc.arguments',
-                'context' => 'context',
+                'context' => 'rpc.context',
                 // 'result' => 'rpc.result',
                 'exception.stack_trace' => 'exception.stack_trace',
             ],
