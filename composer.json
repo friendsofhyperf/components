@@ -35,9 +35,7 @@
         "symfony/http-foundation": "^5.3|^6.0|^7.0",
         "symfony/process": "^5.3|^6.0|^7.0",
         "symfony/uid": "^5.3|^6.0|^7.0",
-        "symfony/var-dumper": "^5.3|^6.0|^7.0",
-        "workerman/gateway-worker": "^4.0.0",
-        "workerman/gatewayclient": "^3.0.13"
+        "symfony/var-dumper": "^5.3|^6.0|^7.0"
     },
     "require-dev": {
         "elasticsearch/elasticsearch": "^7.0|^8.0",
