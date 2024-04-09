@@ -48,9 +48,16 @@ class Connection
         return true;
     }
 
-    public function recv(): string|bool
+    /**
+     * @param float $timeout the timeout parameter is used to set the timeout rules for the recv method
+     * @see https://wiki.swoole.com/en/#/coroutine_client/init?id=timeout-rules
+     * -1: indicates no timeout
+     * 0: indicates no change in timeout
+     * > 0: represents setting a timeout timer for the corresponding number of seconds, with a maximum precision of 1 millisecond, which is a floating-point number; 0.5 represents 500 milliseconds
+     */
+    public function recv(float $timeout = -1): string|bool
     {
-        return $this->socket->recvPacket(timeout: 0);
+        return $this->socket->recvPacket($timeout);
     }
 
     public function close(): void
