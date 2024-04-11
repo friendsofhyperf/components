@@ -76,14 +76,19 @@ class GuzzleHttpClientAspect extends AbstractAspect
         $uri = $arguments['uri'] ?? '/';
         $method = $arguments['method'] ?? 'GET';
 
+        $fullUri = new \GuzzleHttp\Psr7\Uri($uri);
+
         $data = [
+            // See: https://develop.sentry.dev/sdk/performance/span-data-conventions/#http
+            'http.query' => $fullUri->getQuery(),
+            'http.fragment' => $fullUri->getFragment(),
+            'http.request.method' => $method,
+            'http.request.body.size' => strlen($arguments['options']['body'] ?? ''),
+            // Other
             'coroutine.id' => Coroutine::id(),
             'http.system' => 'guzzle',
-
-            'http.method' => $method,
-            'http.uri' => (string) $uri,
-            'config' => $guzzleConfig,
-            'request.options' => $arguments['options'] ?? [],
+            'http.guzzle.config' => $guzzleConfig,
+            'http.guzzle.options' => $arguments['options'] ?? [],
         ];
 
         $parent = SentrySdk::getCurrentHub()->getSpan();
