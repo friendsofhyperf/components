@@ -22,6 +22,7 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Rpc;
 use Hyperf\RpcClient;
+use Hyperf\Stringable\Str;
 use Psr\Container\ContainerInterface;
 use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanStatus;
@@ -65,7 +66,8 @@ class RpcAspect extends AbstractAspect
         /** @var string $path */
         $path = $proceedingJoinPoint->process();
         $config = $this->container->get(ConfigInterface::class);
-        $package = $config->get('app_name', 'package'); // TODO 需要从 client 获取 如 grpc,jsonrpc 等等
+        /** @var string $package */
+        $package = Str::camel($config->get('app_name', 'package'));
         /** @var string $service */
         $service = $proceedingJoinPoint->getInstance()->getServiceName();
 
@@ -81,7 +83,7 @@ class RpcAspect extends AbstractAspect
 
         $data = [
             'coroutine.id' => Coroutine::id(),
-            'rpc.system' => 'rpc',
+            'rpc.system' => 'rpc', // TODO
             'rpc.method' => $proceedingJoinPoint->arguments['keys']['methodName'] ?? '',
             'rpc.service' => $service,
         ];
