@@ -52,7 +52,7 @@ class Switcher
 
     public function isTracingTagEnable(string $key): bool
     {
-        return (bool) $this->config->get('sentry.tracing.tags.' . $key, false);
+        return (bool) in_array($key, $this->config->get('sentry.tracing.tags', []), true);
     }
 
     public function isExceptionIgnored(string|Throwable $exception): bool

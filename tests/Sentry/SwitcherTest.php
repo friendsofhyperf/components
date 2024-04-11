@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tests\Sentry;
 
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
+use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Config\Config;
 
 beforeEach(function () {
@@ -19,32 +19,21 @@ beforeEach(function () {
         'sentry' => [
             'tracing' => [
                 'tags' => [
-                    'foo' => [
-                        'bar' => 'foo.bar',
-                        'baz' => 'foo.baz',
-                        'bar.baz' => 'foo.bar.baz',
-                    ],
+                    'foo.bar',
+                    'foo.baz',
+                    'foo.bar.baz',
                 ],
             ],
         ],
     ]);
-    $this->tagManager = new TagManager($config);
+    $this->switcher = new Switcher($config);
 });
 
 test('test has', function ($key, $expected) {
-    expect($this->tagManager->has($key))->toBe($expected);
+    expect($this->switcher->isTracingTagEnable($key))->toBe($expected);
 })->with([
     ['foo.bar', true],
     ['foo.baz', true],
     ['foo.bar.baz', true],
     ['foo.bay', false],
-]);
-
-test('test get', function ($key, $expected) {
-    expect($this->tagManager->get($key))->toBe($expected);
-})->with([
-    ['foo.bar', 'foo.bar'],
-    ['foo.baz', 'foo.baz'],
-    ['foo.bar.baz', 'foo.bar.baz'],
-    ['foo.bay', 'foo.bay'],
 ]);
