@@ -80,20 +80,12 @@ class TracingCrontabListener implements ListenerInterface
 
         $crontab = $event->crontab;
         $data = [];
-        $tags = [];
-
-        if ($this->tagManager->has('crontab.rule')) {
-            $data[$this->tagManager->get('crontab.rule')] = $crontab->getRule();
-        }
-        if ($this->tagManager->has('crontab.type')) {
-            $data[$this->tagManager->get('crontab.type')] = $crontab->getType();
-        }
-        if ($this->tagManager->has('crontab.options')) {
-            $data[$this->tagManager->get('crontab.options')] = [
-                'is_single' => $crontab->isSingleton(),
-                'is_on_one_server' => $crontab->isOnOneServer(),
-            ];
-        }
+        $tags = [
+            'crontab.rule' => $crontab->getRule(),
+            'crontab.type' => $crontab->getType(),
+            'crontab.options.is_single' => $crontab->isSingleton(),
+            'crontab.options.is_on_one_server' => $crontab->isOnOneServer(),
+        ];
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError());
@@ -103,8 +95,8 @@ class TracingCrontabListener implements ListenerInterface
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('crontab.exception.stack_trace')) {
-                $data[$this->tagManager->get('crontab.exception.stack_trace')] = (string) $exception;
+            if ($this->tagManager->has('exception.stack_trace')) {
+                $data[$this->tagManager->get('exception.stack_trace')] = (string) $exception;
             }
         }
 

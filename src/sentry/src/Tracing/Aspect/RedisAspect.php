@@ -49,6 +49,7 @@ class RedisAspect extends AbstractAspect
 
         $arguments = $proceedingJoinPoint->arguments['keys'];
         $data = [
+            'coroutine.id' => Coroutine::id(),
             'db.system' => 'redis',
             'db.redis.arguments' => $arguments['arguments'],
             // 'db.statement' => strtoupper($arguments['name']) . implode(' ', $arguments['arguments']),
@@ -56,17 +57,13 @@ class RedisAspect extends AbstractAspect
 
         $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
         $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
-        $data['db.redis.pool.setting'] = [
-            'name' => $poolName,
-            'max' => $pool->getOption()->getMaxConnections(),
-            'max_idle_time' => $pool->getOption()->getMaxIdleTime(),
-            'idle' => $pool->getConnectionsInChannel(),
-            'using' => $pool->getCurrentConnections(),
+        $data += [
+            'db.redis.pool.name' => $poolName,
+            'db.redis.pool.max' => $pool->getOption()->getMaxConnections(),
+            'db.redis.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
+            'db.redis.pool.idle' => $pool->getConnectionsInChannel(),
+            'db.redis.pool.using' => $pool->getCurrentConnections(),
         ];
-
-        if ($this->tagManager->has('coroutine.id')) {
-            $data[$this->tagManager->get('coroutine.id')] = Coroutine::id();
-        }
 
         // TODO 规则: opeate dbName.tableName
         $op = 'db.redis';
@@ -80,8 +77,8 @@ class RedisAspect extends AbstractAspect
                 return $result;
             }
 
-            if ($this->tagManager->has('db.redis.result')) {
-                $data[$this->tagManager->get('db.redis.result')] = $result;
+            if ($this->tagManager->has('redis.result')) {
+                $data[$this->tagManager->get('redis.result')] = $result;
             }
         } catch (Throwable $exception) {
             $span->setStatus(SpanStatus::internalError());
@@ -91,8 +88,8 @@ class RedisAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('redis.exception.stack_trace')) {
-                $data[$this->tagManager->get('redis.exception.stack_trace')] = (string) $exception;
+            if ($this->tagManager->has('exception.stack_trace')) {
+                $data[$this->tagManager->get('exception.stack_trace')] = (string) $exception;
             }
 
             throw $exception;

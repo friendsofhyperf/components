@@ -98,21 +98,17 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     {
         $data = [];
 
-        if ($this->tagManager->has('async_queue.channel')) {
-            /** @var \Hyperf\AsyncQueue\Driver\ChannelConfig $channelConfig */
-            $channelConfig = (fn () => $this->channel)->call($driver);
-            /** @var string $channel */
-            $channel = $channelConfig->getChannel();
-            $data[$this->tagManager->get('async_queue.channel')] = $channel;
-        }
+        /** @var \Hyperf\AsyncQueue\Driver\ChannelConfig $channelConfig */
+        $channelConfig = (fn () => $this->channel)->call($driver);
+        /** @var string $channel */
+        $channel = $channelConfig->getChannel();
+        $data[$this->tagManager->get('async_queue.channel')] = $channel;
 
-        if ($this->tagManager->has('async_queue.redis_pool')) {
-            /** @var \Hyperf\Redis\RedisProxy $redis */
-            $redis = (fn () => $this->redis)->call($driver);
-            /** @var string $poolName */
-            $poolName = (fn () => $this->poolName ?? 'default')->call($redis);
-            $data[$this->tagManager->get('async_queue.redis_pool')] = $poolName;
-        }
+        /** @var \Hyperf\Redis\RedisProxy $redis */
+        $redis = (fn () => $this->redis)->call($driver);
+        /** @var string $poolName */
+        $poolName = (fn () => $this->poolName ?? 'default')->call($redis);
+        $data[$this->tagManager->get('async_queue.redis_pool')] = $poolName;
 
         return $data;
     }

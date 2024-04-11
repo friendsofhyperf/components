@@ -83,10 +83,6 @@ class RpcAspect extends AbstractAspect
             'rpc.system' => $package,
         ];
 
-        if ($this->tagManager->has('rpc.coroutine.id')) {
-            $data[$this->tagManager->get('rpc.coroutine.id')] = Coroutine::id();
-        }
-
         Context::set(static::DATA, $data);
 
         if ($this->container->has(Rpc\Context::class)) {
@@ -131,8 +127,8 @@ class RpcAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('rpc.exception.stack_trace')) {
-                $data[$this->tagManager->get('rpc.exception.stack_trace')] = (string) $exception;
+            if ($this->tagManager->has('exception.stack_trace')) {
+                $data[$this->tagManager->get('exception.stack_trace')] = (string) $exception;
             }
 
             throw $exception;

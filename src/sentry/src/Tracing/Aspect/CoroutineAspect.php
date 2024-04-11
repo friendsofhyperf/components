@@ -59,11 +59,9 @@ class CoroutineAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        if ($this->tagManager->has('coroutine.id')) {
-            $parent->setData([
-                $this->tagManager->get('coroutine.id') => Co::id(),
-            ]);
-        }
+        $parent->setData([
+            'coroutine.id' => Co::id(),
+        ]);
 
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent, $callingOnFunction) {
             $transaction = $this->startCoroutineTransaction(
@@ -78,11 +76,9 @@ class CoroutineAspect extends AbstractAspect
                 $transaction->finish();
             });
 
-            $data = [];
-
-            if ($this->tagManager->has('coroutine.id')) {
-                $data[$this->tagManager->get('coroutine.id')] = Co::id();
-            }
+            $data = [
+                'coroutine.id' => Co::id(),
+            ];
 
             try {
                 $callable();
@@ -94,8 +90,8 @@ class CoroutineAspect extends AbstractAspect
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => $exception->getCode(),
                 ]);
-                if ($this->tagManager->has('coroutine.exception.stack_trace')) {
-                    $data[$this->tagManager->get('coroutine.exception.stack_trace')] = (string) $exception;
+                if ($this->tagManager->has('exception.stack_trace')) {
+                    $data[$this->tagManager->get('exception.stack_trace')] = (string) $exception;
                 }
 
                 throw $exception;

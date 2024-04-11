@@ -83,11 +83,8 @@ class ElasticsearchAspect extends AbstractAspect
             'url.full' => '', // TODO
             'server.host' => '', // TODO
             'server.port' => '', // TODO
+            'elasticserach.arguments' => json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE),
         ];
-
-        if ($this->tagManager->has('elasticserach.arguments')) {
-            $data[$this->tagManager->get('elasticserach.arguments')] = json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE);
-        }
 
         try {
             $result = $proceedingJoinPoint->process();
@@ -102,8 +99,8 @@ class ElasticsearchAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('elasticserach.exception.stack_trace')) {
-                $data[$this->tagManager->get('elasticserach.exception.stack_trace')] = (string) $exception;
+            if ($this->tagManager->has('exception.stack_trace')) {
+                $data[$this->tagManager->get('exception.stack_trace')] = (string) $exception;
             }
 
             throw $exception;

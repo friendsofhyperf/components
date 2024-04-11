@@ -107,8 +107,8 @@ class TracingAsyncQueueListener implements ListenerInterface
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('async_queue.exception.stack_trace')) {
-                $data[$this->tagManager->get('async_queue.exception.stack_trace')] = (string) $exception;
+            if ($this->tagManager->has('exception.stack_trace')) {
+                $data[$this->tagManager->get('exception.stack_trace')] = (string) $exception;
             }
         }
 

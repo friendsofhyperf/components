@@ -96,17 +96,11 @@ class TracingCommandListener implements ListenerInterface
 
         $exitCode = (fn () => $this->exitCode ?? SymfonyCommand::SUCCESS)->call($command);
         $data = [];
-        $tags = [];
-
-        if ($this->tagManager->has('command.arguments')) {
-            $data[$this->tagManager->get('command.arguments')] = (fn () => $this->input->getArguments())->call($command);
-        }
-        if ($this->tagManager->has('command.options')) {
-            $data[$this->tagManager->get('command.options')] = (fn () => $this->input->getOptions())->call($command);
-        }
-        if ($this->tagManager->has('command.exit_code')) {
-            $tags[$this->tagManager->get('command.exit_code')] = $exitCode;
-        }
+        $tags = [
+            'command.arguments' => (fn () => $this->input->getArguments())->call($command),
+            'command.options' => (fn () => $this->input->getOptions())->call($command),
+            'command.exit_code' => $exitCode,
+        ];
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError());
@@ -116,8 +110,8 @@ class TracingCommandListener implements ListenerInterface
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('command.exception.stack_trace')) {
-                $data[$this->tagManager->get('command.exception.stack_trace')] = (string) $exception;
+            if ($this->tagManager->has('exception.stack_trace')) {
+                $data[$this->tagManager->get('exception.stack_trace')] = (string) $exception;
             }
         }
 

@@ -111,31 +111,24 @@ class TracingRequestListener implements ListenerInterface
             return;
         }
 
-        $data = [];
-        $tags = [];
+        $data = [
+            'route.params' => $routeParams,
+        ];
 
         // Set data
-        if ($this->tagManager->has('request.route.params') && $routeParams) {
-            $data[$this->tagManager->get('request.route.params')] = $routeParams;
-        }
-        if ($this->container->has(RpcContext::class) && $this->tagManager->has('rpc.context')) {
-            $data[$this->tagManager->get('rpc.context')] = $this->container->get(RpcContext::class)->getData();
+        if ($this->container->has(RpcContext::class)) {
+            $data['rpc.context'] = $this->container->get(RpcContext::class)->getData();
         }
 
+        $tags = [
+            'request.http.path' => $path,
+            'request.http.method' => strtoupper($request->getMethod()),
+            'request.route.callback' => $routeCallback,
+        ];
+
         // Set tags
-        if ($this->tagManager->has('request.http.path')) {
-            $tags[$this->tagManager->get('request.http.path')] = $path;
-        }
-        if ($this->tagManager->has('request.http.method')) {
-            $tags[$this->tagManager->get('request.http.method')] = strtoupper($request->getMethod());
-        }
-        if ($this->tagManager->has('request.route.callback') && $routeCallback) {
-            $tags[$this->tagManager->get('request.route.callback')] = $routeCallback;
-        }
-        if ($this->tagManager->has('request.header')) {
-            foreach ($request->getHeaders() as $key => $value) {
-                $tags[$this->tagManager->get('request.header') . '.' . $key] = implode(', ', $value);
-            }
+        foreach ($request->getHeaders() as $key => $value) {
+            $tags['request.header.' . $key] = implode(', ', $value);
         }
 
         $transaction->setData($data);
