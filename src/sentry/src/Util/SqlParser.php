@@ -23,6 +23,13 @@ class SqlParser
      */
     public static function parse(string $sql): array
     {
+        if (empty($sql)) {
+            return [
+                'operation' => '',
+                'tables' => '',
+            ];
+        }
+
         $parser = new \PhpMyAdmin\SqlParser\Parser($sql);
 
         $operation = $parser->list[0]->keyword;
