@@ -83,10 +83,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
                 default => []
             };
 
-            if (count($data)) {
-                $span->setData($data);
-            }
-
+            $span->setData($data);
             $carrier = $this->packer->pack($span);
             Context::set(Constants::TRACE_CARRIER, $carrier);
 
