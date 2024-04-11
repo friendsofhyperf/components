@@ -75,23 +75,16 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
         $uri = $arguments['uri'] ?? '/';
         $method = $arguments['method'] ?? 'GET';
-        $data = [];
 
-        if ($this->tagManager->has('guzzle.coroutine.id')) {
-            $data[$this->tagManager->get('guzzle.coroutine.id')] = Coroutine::id();
-        }
-        if ($this->tagManager->has('guzzle.http.method')) {
-            $data[$this->tagManager->get('guzzle.http.method')] = $method;
-        }
-        if ($this->tagManager->has('guzzle.http.uri')) {
-            $data[$this->tagManager->get('guzzle.http.uri')] = (string) $uri;
-        }
-        if ($this->tagManager->has('guzzle.guzzle.config')) {
-            $data[$this->tagManager->get('guzzle.guzzle.config')] = $guzzleConfig;
-        }
-        if ($this->tagManager->has('guzzle.request.options')) {
-            $data[$this->tagManager->get('guzzle.request.options')] = $arguments['options'] ?? [];
-        }
+        $data = [
+            'coroutine.id' => Coroutine::id(),
+            'http.system' => 'guzzle',
+
+            'http.method' => $method,
+            'http.uri' => (string) $uri,
+            'config' => $guzzleConfig,
+            'request.options' => $arguments['options'] ?? [],
+        ];
 
         $parent = SentrySdk::getCurrentHub()->getSpan();
         $options['headers'] = array_replace($options['headers'] ?? [], [
@@ -101,10 +94,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
         ]);
         $proceedingJoinPoint->arguments['keys']['options']['headers'] = $options['headers'];
 
-        $span = $this->startSpan(
-            'http.client',
-            $method . ' ' . (string) $uri
-        );
+        $span = $this->startSpan('http.client', $method . ' ' . (string) $uri);
 
         try {
             $result = $proceedingJoinPoint->process();
@@ -114,15 +104,11 @@ class GuzzleHttpClientAspect extends AbstractAspect
             }
 
             if ($result instanceof ResponseInterface) {
-                if ($this->tagManager->has('guzzle.response.status')) {
-                    $data[$this->tagManager->get('guzzle.response.status')] = $result->getStatusCode();
-                }
-                if ($this->tagManager->has('guzzle.response.reason')) {
-                    $data[$this->tagManager->get('guzzle.response.reason')] = $result->getReasonPhrase();
-                }
-                if ($this->tagManager->has('guzzle.response.headers')) {
-                    $data[$this->tagManager->get('guzzle.response.headers')] = $result->getHeaders();
-                }
+                $data += [
+                    'response.status' => $result->getStatusCode(),
+                    'response.reason' => $result->getReasonPhrase(),
+                    'response.headers' => $result->getHeaders(),
+                ];
             }
         } catch (Throwable $exception) {
             $span->setStatus(SpanStatus::internalError());
