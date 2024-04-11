@@ -63,8 +63,9 @@ class TracingDbQueryListener implements ListenerInterface
 
         $data = [
             'db.system' => $event->connection->getDriverName(),
-            'db.collection.name' => '', // TODO parse sql to get table name
             'db.name' => $event->connection->getDatabaseName(),
+            'db.collection.name' => '', // TODO parse sql to get table name
+            'db.operation.name' => '', // todo get operation name
         ];
 
         if ($this->tagManager->has('sql_queries.coroutine.id')) {

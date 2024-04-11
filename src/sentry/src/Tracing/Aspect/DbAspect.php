@@ -66,27 +66,30 @@ class DbAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $data = [];
+        $data = [
+            'db.system' => 'mysql', // todo get driver name
+            'db.name' => '', // todo get database name
+            'db.collection.name' => '', // todo get table name
+            'db.operation.name' => '', // todo get operation name
+        ];
+
+        foreach ($arguments['arguments']['bindings'] as $key => $value) {
+            $data['db.parameter.' . $key] = $value;
+        }
+
+        $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
+        /** @var \Hyperf\Pool\Pool $pool */
+        $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
+        $data['db.pool'] = [
+            'name' => $poolName,
+            'max' => $pool->getOption()->getMaxConnections(),
+            'max_idle_time' => $pool->getOption()->getMaxIdleTime(),
+            'idle' => $pool->getConnectionsInChannel(),
+            'using' => $pool->getCurrentConnections(),
+        ];
 
         if ($this->tagManager->has('db.coroutine.id')) {
             $data[$this->tagManager->get('db.coroutine.id')] = Coroutine::id();
-        }
-
-        if ($this->tagManager->has('db.query')) {
-            $data[$this->tagManager->get('db.query')] = json_encode($arguments['arguments'], JSON_UNESCAPED_UNICODE);
-        }
-
-        if ($this->tagManager->has('db.pool')) {
-            $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
-            /** @var \Hyperf\Pool\Pool $pool */
-            $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
-            $data[$this->tagManager->get('db.pool')] = [
-                'name' => $poolName,
-                'max' => $pool->getOption()->getMaxConnections(),
-                'max_idle_time' => $pool->getOption()->getMaxIdleTime(),
-                'idle' => $pool->getConnectionsInChannel(),
-                'using' => $pool->getCurrentConnections(),
-            ];
         }
 
         try {
