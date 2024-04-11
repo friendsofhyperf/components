@@ -61,9 +61,11 @@ class RpcAspect extends AbstractAspect
 
     private function handleGenerateRpcPath(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        /** @var string $path */
         $path = $proceedingJoinPoint->process();
 
         $package = 'rpc'; // TODO 需要从 client 获取 如 grpc,jsonrpc 等等
+        /** @var string $service */
         $service = $proceedingJoinPoint->getInstance()->getServiceName();
 
         // $package.$service/$path
