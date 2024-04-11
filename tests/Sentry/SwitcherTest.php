@@ -29,7 +29,7 @@ beforeEach(function () {
     $this->switcher = new Switcher($config);
 });
 
-test('test has', function ($key, $expected) {
+test('test is tracing tag enable', function ($key, $expected) {
     expect($this->switcher->isTracingTagEnable($key))->toBe($expected);
 })->with([
     ['foo.bar', true],
