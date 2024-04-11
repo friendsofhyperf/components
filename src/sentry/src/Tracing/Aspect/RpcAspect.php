@@ -75,7 +75,7 @@ class RpcAspect extends AbstractAspect
         $service = $proceedingJoinPoint->getInstance()->getServiceName();
         $prototype = (fn () => $this->prototype ?? 'jsonrpc')->call($proceedingJoinPoint->getInstance());
         $system = match (true) {
-            str_contains($prototype, 'multiplex') => 'rpc-multiplex',
+            str_contains($prototype, 'multiplex') => 'multiplex-rpc',
             str_contains($prototype, 'jsonrpc') => 'jsonrpc',
             default => 'rpc',
         };
