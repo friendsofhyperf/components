@@ -22,6 +22,7 @@ use Hyperf\Database\Events\TransactionRolledBack;
 use Hyperf\DbConnection\Pool\PoolFactory;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
+use Sentry\SentrySdk;
 
 class TracingDbQueryListener implements ListenerInterface
 {
@@ -59,6 +60,9 @@ class TracingDbQueryListener implements ListenerInterface
         if (! $this->switcher->isTracingSpanEnable('sql_queries')) {
             return;
         }
+        if (! SentrySdk::getCurrentHub()->getSpan()) {
+            return;
+        }
 
         $sqlParse = SqlParser::parse($event->sql);
 
@@ -92,12 +96,10 @@ class TracingDbQueryListener implements ListenerInterface
             $event->connection->getDatabaseName(),
             ! empty($sqlParse['tables']) ? '.' . $sqlParse['tables'] : ''
         );
+
+        // Already check in the previous context
+        /** @var \Sentry\Tracing\Span $span */
         $span = $this->startSpan($op, $event->sql);
-
-        if (! $span) {
-            return;
-        }
-
         $span->setData($data);
         $span->setStartTimestamp($startTimestamp);
         $span->finish($startTimestamp + $event->time / 1000);

@@ -80,8 +80,8 @@ class DbAspect extends AbstractAspect
 
         $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
 
-        // Already check when start transaction
-        /** @var Span $span */
+        // Already check in the previous context
+        /** @var \Sentry\Tracing\Span $span */
         $span = $this->startSpan($op, $description);
 
         $data = [
