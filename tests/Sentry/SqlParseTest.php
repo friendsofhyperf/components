@@ -58,3 +58,11 @@ test('select multi table', function () {
     expect($result['operation'])->toBe('SELECT')
         ->and($result['tables'])->toBe('a,b');
 });
+
+test('bind sql parse', function () {
+    $query1 = 'select * from a where id = ?';
+    $result = SqlParser::parse($query1);
+
+    expect($result['operation'])->toBe('SELECT')
+        ->and($result['tables'])->toBe('a');
+});
