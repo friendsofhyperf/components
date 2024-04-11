@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
+use FriendsOfHyperf\Sentry\Util\SqlParser;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\DB\DB;
 use Hyperf\DB\Pool\PoolFactory;
@@ -46,17 +47,32 @@ class DbAspect extends AbstractAspect
         }
 
         $arguments = $proceedingJoinPoint->arguments['keys'];
-        $op = match ($arguments['name']) {
-            'beginTransaction' => 'db.transaction',
-            'commit' => 'db.transaction',
-            'rollback' => 'db.transaction',
-            'insert' => 'db.sql.execute',
-            'execute' => 'db.sql.execute',
-            'query' => 'db.sql.query',
-            'fetch' => 'db.sql.query',
-            default => 'db.query',
-        };
-        // TODO 规则: opeate dbName.tableName
+
+        $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
+        /** @var \Hyperf\Pool\Pool $pool */
+        $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
+
+        $operation = $arguments['name'];
+        $database = '';
+        $driver = 'unknown';
+        $table = '';
+        if ($pool instanceof \Hyperf\DB\Pool\Pool) {
+            $config = $pool->getConfig();
+
+            $database = $config['database'] ?? '';
+            $driver = $config['driver'] ?? 'unknown';
+        }
+
+        if (! empty($arguments['query'])) {
+            $table = SqlParser::parse($arguments['query'])['tables'];
+            if ($table) {
+                $table = '.' . $table;
+            }
+        }
+
+        // 规则: opeate dbName.tableName
+        $op = sprintf('%s %s%s', $operation, $database, $table);
+
         $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
         $span = $this->startSpan($op, $description);
 
@@ -66,15 +82,12 @@ class DbAspect extends AbstractAspect
 
         $data = [
             'coroutine.id' => Coroutine::id(),
-            'db.system' => 'mysql', // todo get driver name
-            'db.name' => '', // todo get database name
-            'db.collection.name' => '', // todo get table name
-            'db.operation.name' => '', // todo get operation name
+            'db.system' => $driver,
+            'db.name' => $database,
+            'db.collection.name' => $table,
+            'db.operation.name' => $database,
         ];
 
-        $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
-        /** @var \Hyperf\Pool\Pool $pool */
-        $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
         $data += [
             'db.pool.name' => $poolName,
             'db.pool.max' => $pool->getOption()->getMaxConnections(),
