@@ -102,7 +102,7 @@ class TracingRequestListener implements ListenerInterface
         $transaction = $this->startRequestTransaction(
             $request,
             name: $name,
-            op: sprintf('http.server.%s', $serverName),
+            op: sprintf('%s.server', $serverName),
             description: sprintf('request: %s %s', $method, $path),
             source: $source,
         );
@@ -115,7 +115,7 @@ class TracingRequestListener implements ListenerInterface
         $data = [
             'url.scheme' => $request->getUri()->getScheme(),
             'url.path' => $path,
-            'http.request.method' => $request->getMethod(),
+            'http.request.method' => $method,
             'http.route' => $route,
             'http.route.params' => $routeParams,
         ];
