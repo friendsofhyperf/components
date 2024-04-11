@@ -21,7 +21,7 @@ class TagManager
 
     public function isEnable(string $key): bool
     {
-        return in_array($key, $this->config->get('sentry.tracing.tags.enable', []), true);
+        return in_array($key, $this->config->get('sentry.tracing.tags', []), true);
     }
 
     /**
