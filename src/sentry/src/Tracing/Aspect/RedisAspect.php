@@ -68,6 +68,7 @@ class RedisAspect extends AbstractAspect
             $data[$this->tagManager->get('coroutine.id')] = Coroutine::id();
         }
 
+        // TODO 规则: opeate dbName.tableName
         $op = 'db.redis';
         $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
         $span = $this->startSpan($op, $description);

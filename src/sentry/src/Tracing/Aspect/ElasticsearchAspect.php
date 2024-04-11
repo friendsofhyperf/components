@@ -65,6 +65,7 @@ class ElasticsearchAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
+        // TODO 规则: opeate dbName.tableName
         $span = $this->startSpan(
             'db.elasticserach',
             sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
@@ -74,7 +75,12 @@ class ElasticsearchAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $data = [];
+        $data = [
+            'db.system' => 'elasticsearch',
+            'db.operation.name' => $proceedingJoinPoint->methodName,
+            'http.request.method' => '', // TODO
+            'url.full' => '', // TODO
+        ];
 
         if ($this->tagManager->has('elasticserach.coroutine.id')) {
             $data[$this->tagManager->get('elasticserach.coroutine.id')] = Coroutine::id();

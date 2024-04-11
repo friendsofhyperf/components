@@ -61,7 +61,11 @@ class TracingDbQueryListener implements ListenerInterface
             return;
         }
 
-        $data = [];
+        $data = [
+            'db.system' => $event->connection->getDriverName(),
+            'db.collection.name' => '', // TODO parse sql to get table name
+            'db.name' => $event->connection->getDatabaseName(),
+        ];
 
         if ($this->tagManager->has('sql_queries.coroutine.id')) {
             $data[$this->tagManager->get('sql_queries.coroutine.id')] = Coroutine::id();
@@ -84,6 +88,8 @@ class TracingDbQueryListener implements ListenerInterface
         }
 
         $startTimestamp = microtime(true) - $event->time / 1000;
+
+        // TODO 规则: opeate dbName.tableName
         $span = $this->startSpan('db.sql.query', $event->sql);
 
         if (! $span) {

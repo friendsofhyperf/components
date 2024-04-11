@@ -58,6 +58,7 @@ class DbAspect extends AbstractAspect
             'fetch' => 'db.sql.query',
             default => 'db.query',
         };
+        // TODO 规则: opeate dbName.tableName
         $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
         $span = $this->startSpan($op, $description);
 

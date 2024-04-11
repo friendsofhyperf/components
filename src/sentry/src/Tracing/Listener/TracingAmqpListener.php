@@ -102,12 +102,12 @@ class TracingAmqpListener implements ListenerInterface
         $data = [
             'messaging.system' => 'amqp',
             'messaging.operation' => 'process',
-            'messaging.rabbitmq.message.type' => $message->getTypeString(),
-            'messaging.rabbitmq.message.routing_key' => $message->getRoutingKey(),
-            'messaging.rabbitmq.message.exchange' => $message->getExchange(),
-            'messaging.rabbitmq.message.queue' => $message->getQueue(),
-            'messaging.rabbitmq.message.pool_name' => $message->getPoolName(),
-            'messaging.rabbitmq.message.result' => $event->getResult(),
+            'messaging.amqp.message.type' => $message->getTypeString(),
+            'messaging.amqp.message.routing_key' => $message->getRoutingKey(),
+            'messaging.amqp.message.exchange' => $message->getExchange(),
+            'messaging.amqp.message.queue' => $message->getQueue(),
+            'messaging.amqp.message.pool_name' => $message->getPoolName(),
+            'messaging.amqp.message.result' => $event->getResult(),
         ];
         $tags = [];
 
