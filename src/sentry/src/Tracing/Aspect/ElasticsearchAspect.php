@@ -76,15 +76,14 @@ class ElasticsearchAspect extends AbstractAspect
         }
 
         $data = [
+            'coroutine.id' => Coroutine::id(),
             'db.system' => 'elasticsearch',
             'db.operation.name' => $proceedingJoinPoint->methodName,
             'http.request.method' => '', // TODO
             'url.full' => '', // TODO
+            'server.host' => '', // TODO
+            'server.port' => '', // TODO
         ];
-
-        if ($this->tagManager->has('elasticserach.coroutine.id')) {
-            $data[$this->tagManager->get('elasticserach.coroutine.id')] = Coroutine::id();
-        }
 
         if ($this->tagManager->has('elasticserach.arguments')) {
             $data[$this->tagManager->get('elasticserach.arguments')] = json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE);
