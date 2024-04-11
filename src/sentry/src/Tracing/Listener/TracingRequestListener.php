@@ -94,8 +94,8 @@ class TracingRequestListener implements ListenerInterface
          */
         [$name, $source] = match (strtolower($this->source)) {
             'custom' => [$routeCallback, TransactionSource::custom()],
-            'url' => [$path, TransactionSource::url()],
-            default => [$route, TransactionSource::route()],
+            'url' => [strtoupper($request->getMethod()) . ' ' . $path, TransactionSource::url()],
+            default => [strtoupper($request->getMethod()) . ' ' . $route, TransactionSource::route()],
         };
 
         // Get sentry-trace and baggage
@@ -111,25 +111,23 @@ class TracingRequestListener implements ListenerInterface
             return;
         }
 
-        $data = [
-            'route.params' => $routeParams,
-        ];
-
         // Set data
+        $data = [
+            'url.scheme' => $request->getUri()->getScheme(),
+            'url.path' => $path,
+            'http.request.method' => $request->getMethod(),
+            'http.route' => $route,
+            'http.route.params' => $routeParams,
+        ];
+        foreach ($request->getHeaders() as $key => $value) {
+            $data['http.request.header.' . $key] = implode(', ', $value);
+        }
         if ($this->container->has(RpcContext::class)) {
             $data['rpc.context'] = $this->container->get(RpcContext::class)->getData();
         }
 
-        $tags = [
-            'request.http.path' => $path,
-            'request.http.method' => strtoupper($request->getMethod()),
-            'request.route.callback' => $routeCallback,
-        ];
-
         // Set tags
-        foreach ($request->getHeaders() as $key => $value) {
-            $tags['request.header.' . $key] = implode(', ', $value);
-        }
+        $tags = [];
 
         $transaction->setData($data);
         $transaction->setTags($tags);
