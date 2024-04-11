@@ -28,6 +28,9 @@ use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
+/**
+ * @property string $prototype
+ */
 class RpcAspect extends AbstractAspect
 {
     use SpanStarter;
@@ -70,6 +73,12 @@ class RpcAspect extends AbstractAspect
         $package = Str::camel($config->get('app_name', 'package'));
         /** @var string $service */
         $service = $proceedingJoinPoint->getInstance()->getServiceName();
+        $prototype = (fn () => $this->prototype ?? 'jsonrpc')->call($proceedingJoinPoint->getInstance());
+        $system = match (true) {
+            str_contains($prototype, 'multiplex') => 'rpc-multiplex',
+            str_contains($prototype, 'jsonrpc') => 'jsonrpc',
+            default => 'rpc',
+        };
 
         // $package.$service/$path
         $op = $package . '.' . $service . '/' . $path;
@@ -83,7 +92,7 @@ class RpcAspect extends AbstractAspect
 
         $data = [
             'coroutine.id' => Coroutine::id(),
-            'rpc.system' => 'rpc', // TODO
+            'rpc.system' => $system,
             'rpc.method' => $proceedingJoinPoint->arguments['keys']['methodName'] ?? '',
             'rpc.service' => $service,
         ];
