@@ -68,8 +68,8 @@ class DbAspect extends AbstractAspect
             $driver = $config['driver'] ?? 'unknown';
         }
 
-        if (! empty($arguments['query'])) {
-            $table = SqlParser::parse($arguments['query'])['tables'];
+        if (! empty($arguments['arguments']['query'])) {
+            $table = SqlParser::parse($arguments['arguments']['query'])['tables'];
             if ($table) {
                 $table = '.' . $table;
             }
@@ -90,9 +90,7 @@ class DbAspect extends AbstractAspect
             'db.name' => $database,
             'db.collection.name' => $table,
             'db.operation.name' => $database,
-        ];
 
-        $data += [
             'db.pool.name' => $poolName,
             'db.pool.max' => $pool->getOption()->getMaxConnections(),
             'db.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
