@@ -63,7 +63,7 @@ class TracingCrontabListener implements ListenerInterface
 
         $this->continueTrace(
             name: $crontab->getName() ?: '<unnamed crontab>',
-            op: 'crontab.execute',
+            op: 'crontab.run',
             description: $crontab->getMemo(),
             source: TransactionSource::task()
         );

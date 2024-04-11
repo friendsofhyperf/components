@@ -84,11 +84,7 @@ class TracingDbQueryListener implements ListenerInterface
         }
 
         $startTimestamp = microtime(true) - $event->time / 1000;
-
-        $span = $this->startSpan(
-            'db.sql.query',
-            $event->sql,
-        );
+        $span = $this->startSpan('db.sql.query', $event->sql);
 
         if (! $span) {
             return;

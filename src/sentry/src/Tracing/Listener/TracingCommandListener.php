@@ -78,7 +78,7 @@ class TracingCommandListener implements ListenerInterface
 
         $this->continueTrace(
             name: $command->getName() ?: '<unnamed command>',
-            op: 'command.execute',
+            op: 'console.command',
             description: $command->getDescription(),
             source: TransactionSource::custom()
         );

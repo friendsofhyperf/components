@@ -81,8 +81,8 @@ class TracingAmqpListener implements ListenerInterface
             sentryTrace: $sentryTrace,
             baggage: $baggage,
             name: $message::class,
-            op: 'amqp.consume',
-            description: 'message:' . $message::class,
+            op: 'topic.process',
+            description: 'amqp:' . $message::class,
             source: TransactionSource::custom()
         );
     }

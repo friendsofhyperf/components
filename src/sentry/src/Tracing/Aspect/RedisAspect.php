@@ -70,10 +70,9 @@ class RedisAspect extends AbstractAspect
             $data[$this->tagManager->get('redis.arguments')] = $arguments['arguments'];
         }
 
-        $span = $this->startSpan(
-            sprintf('redis.%s', $arguments['name']),
-            sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name'])
-        );
+        $op = 'db.redis';
+        $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
+        $span = $this->startSpan($op, $description);
 
         try {
             $result = $proceedingJoinPoint->process();

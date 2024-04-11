@@ -66,7 +66,7 @@ class ElasticsearchAspect extends AbstractAspect
         }
 
         $span = $this->startSpan(
-            'elasticserach.' . $proceedingJoinPoint->methodName,
+            'db.elasticserach',
             sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
         );
 

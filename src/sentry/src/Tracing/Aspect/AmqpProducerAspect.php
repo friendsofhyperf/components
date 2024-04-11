@@ -54,8 +54,8 @@ class AmqpProducerAspect extends AbstractAspect
         }
 
         $span = $this->startSpan(
-            'amqp.produce',
-            sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
+            'topic.send',
+            sprintf('amqp: %s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
         );
         if (! $span) {
             return $proceedingJoinPoint->process();

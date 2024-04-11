@@ -64,7 +64,7 @@ class RpcAspect extends AbstractAspect
     private function handleGenerateRpcPath(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $path = $proceedingJoinPoint->process();
-        $span = $this->startSpan('rpc.send', $path);
+        $span = $this->startSpan('rpc', $path);
 
         if (! $span) {
             return $path;

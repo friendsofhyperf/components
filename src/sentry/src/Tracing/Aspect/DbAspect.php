@@ -48,10 +48,18 @@ class DbAspect extends AbstractAspect
         }
 
         $arguments = $proceedingJoinPoint->arguments['keys'];
-        $span = $this->startSpan(
-            'Db::' . $arguments['name'],
-            $proceedingJoinPoint->className . '::' . $arguments['name'] . '()'
-        );
+        $op = match ($arguments['name']) {
+            'beginTransaction' => 'db.transaction',
+            'commit' => 'db.transaction',
+            'rollback' => 'db.transaction',
+            'insert' => 'db.sql.execute',
+            'execute' => 'db.sql.execute',
+            'query' => 'db.sql.query',
+            'fetch' => 'db.sql.query',
+            default => 'db.query',
+        };
+        $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
+        $span = $this->startSpan($op, $description);
 
         if (! $span) {
             return $proceedingJoinPoint->process();

@@ -81,8 +81,8 @@ class TracingAsyncQueueListener implements ListenerInterface
             sentryTrace: $sentryTrace,
             baggage: $baggage,
             name: $job::class,
-            op: 'async_queue.job.process',
-            description: 'job:' . $job::class,
+            op: 'topic.process',
+            description: 'async_queue: ' . $job::class,
             source: TransactionSource::custom()
         );
     }
