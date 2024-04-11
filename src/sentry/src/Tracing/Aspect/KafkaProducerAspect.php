@@ -50,12 +50,18 @@ class KafkaProducerAspect extends AbstractAspect
     {
         $span = $this->startSpan(
             'topic.send',
-            sprintf('kafka: %s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
+            sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
         );
 
         if (! $span) {
             return $proceedingJoinPoint->process();
         }
+
+        $span->setData([
+            'messaging.system' => 'kafka',
+            'messaging.operation' => 'publish',
+            'messaging.destination.name' => $proceedingJoinPoint->arguments['keys']['topic'] ?? 'unknown',
+        ]);
 
         $carrier = $this->packer->pack($span);
         $headers = $proceedingJoinPoint->arguments['keys']['headers'] ?? [];

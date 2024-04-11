@@ -79,9 +79,9 @@ class TracingKafkaListener implements ListenerInterface
         $this->continueTrace(
             sentryTrace: $sentryTrace,
             baggage: $baggage,
-            name: $consumer::class,
+            name: $consumer->getTopic() . ' process',
             op: 'topic.process',
-            description: 'kafka: ' . $consumer::class,
+            description: $consumer::class,
             source: TransactionSource::custom()
         );
     }
@@ -96,9 +96,13 @@ class TracingKafkaListener implements ListenerInterface
         }
 
         $consumer = $event->getConsumer();
-
         $tags = [];
-        $data = [];
+        $data = [
+            'messaging.system' => 'kafka',
+            'messaging.operation' => 'process',
+            'messaging.destination.name' => $consumer->getTopic(),
+            'messaging.kafka.consumer.group' => $consumer->getGroupId(),
+        ];
 
         if ($this->tagManager->has('kafka.topic')) {
             $tags[$this->tagManager->get('kafka.topic')] = $consumer->getTopic();

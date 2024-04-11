@@ -19,6 +19,7 @@ use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\Amqp\Event\AfterConsume;
 use Hyperf\Amqp\Event\BeforeConsume;
 use Hyperf\Amqp\Event\FailToConsume;
+use Hyperf\Amqp\Message\ConsumerMessage;
 use Hyperf\Event\Contract\ListenerInterface;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
@@ -82,7 +83,7 @@ class TracingAmqpListener implements ListenerInterface
             baggage: $baggage,
             name: $message::class,
             op: 'topic.process',
-            description: 'amqp:' . $message::class,
+            description: $message::class,
             source: TransactionSource::custom()
         );
     }
@@ -96,28 +97,19 @@ class TracingAmqpListener implements ListenerInterface
             return;
         }
 
+        /** @var ConsumerMessage $message */
         $message = $event->getMessage();
-        $data = [];
+        $data = [
+            'messaging.system' => 'amqp',
+            'messaging.operation' => 'process',
+            'messaging.rabbitmq.message.type' => $message->getTypeString(),
+            'messaging.rabbitmq.message.routing_key' => $message->getRoutingKey(),
+            'messaging.rabbitmq.message.exchange' => $message->getExchange(),
+            'messaging.rabbitmq.message.queue' => $message->getQueue(),
+            'messaging.rabbitmq.message.pool_name' => $message->getPoolName(),
+            'messaging.rabbitmq.message.result' => $event->getResult(),
+        ];
         $tags = [];
-
-        if ($this->tagManager->has('amqp.type')) {
-            $tags[$this->tagManager->get('amqp.type')] = $message->getType();
-        }
-        if ($this->tagManager->has('amqp.exchange')) {
-            $tags[$this->tagManager->get('amqp.exchange')] = $message->getExchange();
-        }
-        if ($this->tagManager->has('amqp.routing_key')) {
-            $tags[$this->tagManager->get('amqp.routing_key')] = $message->getRoutingKey();
-        }
-        if ($this->tagManager->has('amqp.poo_name')) {
-            $tags[$this->tagManager->get('amqp.poo_name')] = $message->getPoolName();
-        }
-        if ($this->tagManager->has('amqp.queue') && method_exists($message, 'getQueue')) {
-            $tags[$this->tagManager->get('amqp.queue')] = $message->getQueue();
-        }
-        if ($this->tagManager->has('amqp.result') && method_exists($event, 'getResult')) {
-            $tags[$this->tagManager->get('amqp.result')] = $event->getResult();
-        }
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError());

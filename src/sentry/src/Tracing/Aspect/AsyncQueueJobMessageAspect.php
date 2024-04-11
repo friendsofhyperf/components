@@ -63,8 +63,8 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     public function handlePush(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $span = $this->startSpan(
-            'topic.send',
-            'async_queue: ' . $proceedingJoinPoint->arguments['keys']['job']::class
+            'queue.publish',
+            $proceedingJoinPoint->arguments['keys']['job']::class
         );
 
         if (! $span) {
@@ -72,7 +72,9 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
         }
 
         try {
-            $data = [];
+            $data = [
+                'messaging.system' => 'async_queue',
+            ];
 
             /** @var \Hyperf\AsyncQueue\Driver\Driver $driver */
             $driver = $proceedingJoinPoint->getInstance();
