@@ -12,7 +12,9 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Util;
 
 use PhpMyAdmin\SqlParser\Components\JoinKeyword;
+use PhpMyAdmin\SqlParser\Statements\InsertStatement;
 use PhpMyAdmin\SqlParser\Statements\SelectStatement;
+use PhpMyAdmin\SqlParser\Statements\UpdateStatement;
 
 class SqlParser
 {
@@ -20,12 +22,14 @@ class SqlParser
     {
         $parser = new \PhpMyAdmin\SqlParser\Parser($sql);
 
-        $operate = $parser->list[0]->keyword;
+        $operation = $parser->list[0]->keyword;
         $table = [];
 
         $statement = $parser->statements[0];
         if ($statement instanceof SelectStatement) {
-            $table[] = $statement->from[0]->table;
+            foreach ($statement->from as $from) {
+                $table[] = $from->table;
+            }
             // join
             if (isset($statement->join)) {
                 foreach ($statement->join as $join) {
@@ -35,11 +39,15 @@ class SqlParser
                     $table[] = $join->expr->table;
                 }
             }
+        } elseif ($statement instanceof UpdateStatement) {
+            $table = array_column($statement->tables, 'table');
+        } elseif ($statement instanceof InsertStatement) {
+            $table[] = $statement->into->dest->table;
         }
 
         return [
-            'operate' => $operate,
-            'table' => $table,
+            'operation' => $operation,
+            'tables' => implode(',', $table),
         ];
     }
 }

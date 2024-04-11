@@ -18,8 +18,8 @@ test('select sql parse simple', function () {
     $parser = new SqlParser();
     $result = $parser->parse($query1);
 
-    expect($result['operate'])->toBe('SELECT')
-        ->and($result['table'])->toBe(['a']);
+    expect($result['operation'])->toBe('SELECT')
+        ->and($result['tables'])->toBe('a');
 });
 
 test('select sql parse left join', function () {
@@ -27,6 +27,24 @@ test('select sql parse left join', function () {
     $parser = new SqlParser();
     $result = $parser->parse($query1);
 
-    expect($result['operate'])->toBe('SELECT')
-        ->and($result['table'])->toBe(['a', 'b']);
+    expect($result['operation'])->toBe('SELECT')
+        ->and($result['tables'])->toBe('a,b');
+});
+
+test('insert sql parse', function () {
+    $query1 = 'insert into a (id) values (1)';
+    $parser = new SqlParser();
+    $result = $parser->parse($query1);
+
+    expect($result['operation'])->toBe('INSERT')
+        ->and($result['tables'])->toBe('a');
+});
+
+test('update sql parse', function () {
+    $query1 = 'update a set id = 1';
+    $parser = new SqlParser();
+    $result = $parser->parse($query1);
+
+    expect($result['operation'])->toBe('UPDATE')
+        ->and($result['tables'])->toBe('a');
 });
