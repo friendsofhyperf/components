@@ -128,11 +128,7 @@ class TracingRequestListener implements ListenerInterface
             $data['rpc.context'] = $this->container->get(RpcContext::class)->getData();
         }
 
-        // Set tags
-        $tags = [];
-
         $transaction->setData($data);
-        $transaction->setTags($tags);
 
         $span = $this->startSpan('request.received', 'request.received', true);
         SentrySdk::getCurrentHub()->setSpan($span);
