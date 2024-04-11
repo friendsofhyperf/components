@@ -114,6 +114,9 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     'response.reason' => $result->getReasonPhrase(),
                     'response.headers' => $result->getHeaders(),
                 ];
+                if ($this->tagManager->isEnable('response.body')) {
+                    $data['response.body'] = $result->getBody()->getContents();
+                }
             }
         } catch (Throwable $exception) {
             $span->setStatus(SpanStatus::internalError());

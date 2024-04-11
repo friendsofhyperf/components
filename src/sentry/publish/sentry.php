@@ -109,21 +109,11 @@ return [
             // amqp
             'amqp.result',
             'annotation.result',
-            // async_queue
-            'async_queue.channel',
-            'async_queue.redis_pool',
-            'async_queue.result',
-            'command.result',
-            'coroutine.result',
-            'crontab.result',
             'db.result',
             'elasticsearch.result',
-            'guzzle.result',
-            'kafka.result',
+            'response.body',
             'redis.result',
-            'request.result',
             'rpc.result',
-            'sql_queries.result',
         ],
     ],
 

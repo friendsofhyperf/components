@@ -83,13 +83,13 @@ class ElasticsearchAspect extends AbstractAspect
             'url.full' => '', // TODO
             'server.host' => '', // TODO
             'server.port' => '', // TODO
-            'elasticserach.arguments' => json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE),
+            'arguments' => json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE),
         ];
 
         try {
             $result = $proceedingJoinPoint->process();
-            if ($this->tagManager->isEnable('elasticserach.result')) {
-                $data['elasticserach.result'] = json_encode($result, JSON_UNESCAPED_UNICODE);
+            if ($this->tagManager->isEnable('elasticsearch.result')) {
+                $data['elasticsearch.result'] = json_encode($result, JSON_UNESCAPED_UNICODE);
             }
         } catch (Throwable $exception) {
             $span->setStatus(SpanStatus::internalError());
