@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
+use FriendsOfHyperf\Sentry\Util\SqlParser;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Database\Events\TransactionBeginning;
@@ -59,12 +60,14 @@ class TracingDbQueryListener implements ListenerInterface
             return;
         }
 
+        $sqlParse = SqlParser::parse($event->sql);
+
         $data = [
             'coroutine.id' => Coroutine::id(),
             'db.system' => $event->connection->getDriverName(),
             'db.name' => $event->connection->getDatabaseName(),
-            'db.collection.name' => '', // TODO parse sql to get table name
-            'db.operation.name' => '', // todo get operation name
+            'db.collection.name' => $sqlParse['tables'],
+            'db.operation.name' => $sqlParse['operation'],
         ];
 
         foreach ($event->bindings as $key => $value) {
