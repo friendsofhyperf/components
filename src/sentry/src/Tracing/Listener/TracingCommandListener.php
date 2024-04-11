@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Command\Event\AfterExecute;
 use Hyperf\Command\Event\BeforeHandle;
 use Hyperf\Contract\ConfigInterface;
@@ -39,8 +38,7 @@ class TracingCommandListener implements ListenerInterface
 
     public function __construct(
         ConfigInterface $config,
-        protected Switcher $switcher,
-        protected TagManager $tagManager
+        protected Switcher $switcher
     ) {
         $this->ignoreCommands = (array) $config->get('sentry.ignore_commands', []);
     }
@@ -110,7 +108,7 @@ class TracingCommandListener implements ListenerInterface
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->isEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
         }

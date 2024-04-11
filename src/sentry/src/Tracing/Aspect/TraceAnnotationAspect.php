@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\Annotation\Trace;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -30,10 +29,8 @@ class TraceAnnotationAspect extends AbstractAspect
         Trace::class,
     ];
 
-    public function __construct(
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -75,7 +72,7 @@ class TraceAnnotationAspect extends AbstractAspect
                 return $result;
             }
 
-            if ($this->tagManager->isEnable('annotation.result')) {
+            if ($this->switcher->isTracingTagEnable('annotation.result')) {
                 $data['annotation.result'] = $result;
             }
         } catch (Throwable $exception) {
@@ -86,7 +83,7 @@ class TraceAnnotationAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->isEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
             throw $exception;

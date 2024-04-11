@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Kafka\Event\AfterConsume;
@@ -31,7 +30,6 @@ class TracingKafkaListener implements ListenerInterface
 
     public function __construct(
         protected Switcher $switcher,
-        protected TagManager $tagManager,
         protected CarrierPacker $packer
     ) {
     }
@@ -113,7 +111,7 @@ class TracingKafkaListener implements ListenerInterface
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->isEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
         }

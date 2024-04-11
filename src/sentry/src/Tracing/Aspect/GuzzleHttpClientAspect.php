@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use GuzzleHttp\Client;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -39,8 +38,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher,
-        protected TagManager $tagManager
+        protected Switcher $switcher
     ) {
     }
 
@@ -114,7 +112,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     'response.reason' => $result->getReasonPhrase(),
                     'response.headers' => $result->getHeaders(),
                 ];
-                if ($this->tagManager->isEnable('response.body')) {
+                if ($this->switcher->isTracingTagEnable('response.body')) {
                     $data['response.body'] = $result->getBody()->getContents();
                 }
             }
@@ -126,7 +124,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->isEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
 

@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -53,10 +52,8 @@ class ElasticsearchAspect extends AbstractAspect
         'Elastic\Elasticsearch\Client::updateByQuery',
     ];
 
-    public function __construct(
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -88,7 +85,7 @@ class ElasticsearchAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
-            if ($this->tagManager->isEnable('elasticsearch.result')) {
+            if ($this->switcher->isTracingTagEnable('elasticsearch.result')) {
                 $data['elasticsearch.result'] = json_encode($result, JSON_UNESCAPED_UNICODE);
             }
         } catch (Throwable $exception) {
@@ -99,7 +96,7 @@ class ElasticsearchAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->isEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
 

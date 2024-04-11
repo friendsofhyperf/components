@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\DB\DB;
 use Hyperf\DB\Pool\PoolFactory;
@@ -36,8 +35,7 @@ class DbAspect extends AbstractAspect
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher,
-        protected TagManager $tagManager
+        protected Switcher $switcher
     ) {
     }
 
@@ -91,7 +89,7 @@ class DbAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
-            if ($this->tagManager->isEnable('db.result')) {
+            if ($this->switcher->isTracingTagEnable('db.result')) {
                 $data['db.result'] = json_encode($result, JSON_UNESCAPED_UNICODE);
             }
         } catch (Throwable $exception) {
@@ -102,7 +100,7 @@ class DbAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->isEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
 

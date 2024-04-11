@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\Context\Context;
 use Hyperf\Coroutine\Coroutine;
@@ -43,7 +42,6 @@ class RpcAspect extends AbstractAspect
     public function __construct(
         protected ContainerInterface $container,
         protected Switcher $switcher,
-        protected TagManager $tagManager,
         protected CarrierPacker $packer
     ) {
     }
@@ -116,7 +114,7 @@ class RpcAspect extends AbstractAspect
                 return $result;
             }
 
-            if ($this->tagManager->isEnable('rpc.result')) {
+            if ($this->switcher->isTracingTagEnable('rpc.result')) {
                 $data['rpc.result'] = $result;
             }
         } catch (Throwable $exception) {
@@ -127,7 +125,7 @@ class RpcAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->isEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
 
