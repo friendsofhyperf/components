@@ -102,17 +102,8 @@ class TracingKafkaListener implements ListenerInterface
             'messaging.operation' => 'process',
             'messaging.destination.name' => $consumer->getTopic(),
             'messaging.kafka.consumer.group' => $consumer->getGroupId(),
+            'messaging.kafka.consumer.pool' => $consumer->getPool(),
         ];
-
-        if ($this->tagManager->has('kafka.topic')) {
-            $tags[$this->tagManager->get('kafka.topic')] = $consumer->getTopic();
-        }
-        if ($this->tagManager->has('kafka.group_id')) {
-            $tags[$this->tagManager->get('kafka.group_id')] = $consumer->getGroupId();
-        }
-        if ($this->tagManager->has('kafka.pool')) {
-            $tags[$this->tagManager->get('kafka.pool')] = (string) $consumer->getPool();
-        }
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError());
