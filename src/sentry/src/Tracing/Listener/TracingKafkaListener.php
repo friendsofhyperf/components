@@ -80,7 +80,7 @@ class TracingKafkaListener implements ListenerInterface
             sentryTrace: $sentryTrace,
             baggage: $baggage,
             name: $consumer->getTopic() . ' process',
-            op: 'topic.process',
+            op: $consumer->getTopic() . ' process',
             description: $consumer::class,
             source: TransactionSource::custom()
         );

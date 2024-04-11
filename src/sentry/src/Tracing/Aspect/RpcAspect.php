@@ -80,7 +80,12 @@ class RpcAspect extends AbstractAspect
 
         $data = [
             'coroutine.id' => Coroutine::id(),
+            'rpc.system' => $package,
         ];
+
+        if ($this->tagManager->has('rpc.coroutine.id')) {
+            $data[$this->tagManager->get('rpc.coroutine.id')] = Coroutine::id();
+        }
 
         Context::set(static::DATA, $data);
 
@@ -99,6 +104,11 @@ class RpcAspect extends AbstractAspect
         if ($this->container->has(Rpc\Context::class)) {
             $data['rpc.context'] = $this->container->get(Rpc\Context::class)->getData();
         }
+
+        // TODO
+        // 'server.address' => '',
+        // 'server.port' => '',
+        // 'rpc.method' => '',
 
         /** @var Span|null $span */
         $span = Context::get(static::SPAN);
