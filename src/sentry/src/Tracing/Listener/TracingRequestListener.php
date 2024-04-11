@@ -131,7 +131,6 @@ class TracingRequestListener implements ListenerInterface
         $transaction->setData($data);
 
         $span = $this->startSpan('request.received', 'request.received', true);
-        SentrySdk::getCurrentHub()->setSpan($span);
 
         defer(function () use ($transaction, $span) {
             $span->finish();
