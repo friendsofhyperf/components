@@ -80,6 +80,8 @@ class RpcAspect extends AbstractAspect
         $data = [
             'coroutine.id' => Coroutine::id(),
             'rpc.system' => $package,
+            'rpc.method' => $proceedingJoinPoint->arguments['keys']['methodName'] ?? '',
+            'rpc.service' => $service,
         ];
 
         Context::set(static::DATA, $data);
