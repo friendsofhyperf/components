@@ -85,8 +85,14 @@ class TracingDbQueryListener implements ListenerInterface
 
         $startTimestamp = microtime(true) - $event->time / 1000;
 
-        // TODO 规则: opeate dbName.tableName
-        $span = $this->startSpan('db.sql.query', $event->sql);
+        // 规则: opeate dbName.tableName
+        $op = sprintf(
+            '%s %s%s',
+            $sqlParse['operation'],
+            $event->connection->getDatabaseName(),
+            ! empty($sqlParse['tables']) ? '.' . $sqlParse['tables'] : ''
+        );
+        $span = $this->startSpan($op, $event->sql);
 
         if (! $span) {
             return;
