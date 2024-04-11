@@ -78,11 +78,9 @@ class RpcAspect extends AbstractAspect
 
         Context::set(static::SPAN, $span);
 
-        $data = [];
-
-        if ($this->tagManager->has('rpc.coroutine.id')) {
-            $data[$this->tagManager->get('rpc.coroutine.id')] = Coroutine::id();
-        }
+        $data = [
+            'coroutine.id' => Coroutine::id(),
+        ];
 
         Context::set(static::DATA, $data);
 
@@ -96,12 +94,10 @@ class RpcAspect extends AbstractAspect
     private function handleSend(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $data = (array) Context::get(static::DATA);
+        $data['rpc.arguments'] = $proceedingJoinPoint->arguments['keys'];
 
-        if ($this->tagManager->has('rpc.arguments')) {
-            $data[$this->tagManager->get('rpc.arguments')] = $proceedingJoinPoint->arguments['keys'];
-        }
-        if ($this->container->has(Rpc\Context::class) && $this->tagManager->has('rpc.context')) {
-            $data[$this->tagManager->get('rpc.context')] = $this->container->get(Rpc\Context::class)->getData();
+        if ($this->container->has(Rpc\Context::class)) {
+            $data['rpc.context'] = $this->container->get(Rpc\Context::class)->getData();
         }
 
         /** @var Span|null $span */
