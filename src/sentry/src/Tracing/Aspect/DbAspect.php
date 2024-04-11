@@ -67,29 +67,26 @@ class DbAspect extends AbstractAspect
         }
 
         $data = [
+            'coroutine.id' => Coroutine::id(),
             'db.system' => 'mysql', // todo get driver name
             'db.name' => '', // todo get database name
             'db.collection.name' => '', // todo get table name
             'db.operation.name' => '', // todo get operation name
         ];
 
-        foreach ($arguments['arguments']['bindings'] as $key => $value) {
-            $data['db.parameter.' . $key] = $value;
-        }
-
         $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
         /** @var \Hyperf\Pool\Pool $pool */
         $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
-        $data['db.pool'] = [
-            'name' => $poolName,
-            'max' => $pool->getOption()->getMaxConnections(),
-            'max_idle_time' => $pool->getOption()->getMaxIdleTime(),
-            'idle' => $pool->getConnectionsInChannel(),
-            'using' => $pool->getCurrentConnections(),
+        $data += [
+            'db.pool.name' => $poolName,
+            'db.pool.max' => $pool->getOption()->getMaxConnections(),
+            'db.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
+            'db.pool.idle' => $pool->getConnectionsInChannel(),
+            'db.pool.using' => $pool->getCurrentConnections(),
         ];
 
-        if ($this->tagManager->has('db.coroutine.id')) {
-            $data[$this->tagManager->get('db.coroutine.id')] = Coroutine::id();
+        foreach ($arguments['arguments']['bindings'] as $key => $value) {
+            $data['db.parameter.' . $key] = $value;
         }
 
         try {

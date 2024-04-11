@@ -62,31 +62,25 @@ class TracingDbQueryListener implements ListenerInterface
         }
 
         $data = [
+            'coroutine.id' => Coroutine::id(),
             'db.system' => $event->connection->getDriverName(),
             'db.name' => $event->connection->getDatabaseName(),
             'db.collection.name' => '', // TODO parse sql to get table name
             'db.operation.name' => '', // todo get operation name
         ];
 
-        if ($this->tagManager->has('sql_queries.coroutine.id')) {
-            $data[$this->tagManager->get('sql_queries.coroutine.id')] = Coroutine::id();
+        foreach ($event->bindings as $key => $value) {
+            $data['db.parameter.' . $key] = $value;
         }
-        if ($this->tagManager->has('sql_queries.db.bindings')) {
-            $data[$this->tagManager->get('sql_queries.db.bindings')] = $event->bindings;
-        }
-        if ($this->tagManager->has('sql_queries.db.connection_name')) {
-            $data[$this->tagManager->get('sql_queries.db.connection_name')] = $event->connectionName;
-        }
-        if ($this->tagManager->has('sql_queries.db.pool')) {
-            $pool = $this->container->get(PoolFactory::class)->getPool($event->connectionName);
-            $data[$this->tagManager->get('sql_queries.db.pool')] = [
-                'name' => $event->connectionName,
-                'max' => $pool->getOption()->getMaxConnections(),
-                'max_idle_time' => $pool->getOption()->getMaxIdleTime(),
-                'idle' => $pool->getConnectionsInChannel(),
-                'using' => $pool->getCurrentConnections(),
-            ];
-        }
+
+        $pool = $this->container->get(PoolFactory::class)->getPool($event->connectionName);
+        $data += [
+            'db.pool.name' => $event->connectionName,
+            'db.pool.max' => $pool->getOption()->getMaxConnections(),
+            'db.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
+            'db.pool.idle' => $pool->getConnectionsInChannel(),
+            'db.pool.using' => $pool->getCurrentConnections(),
+        ];
 
         $startTimestamp = microtime(true) - $event->time / 1000;
 
