@@ -4,11 +4,6 @@
 
 The most popular components for Hyperf.
 
-## Sentry Develop Docs
-
-- https://github.com/open-telemetry/semantic-conventions/tree/main
-- https://develop.sentry.dev/sdk/performance/span-operations/#database
-
 ## Contributors
 
 <a href="https://github.com/friendsofhyperf/components/graphs/contributors">
