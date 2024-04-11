@@ -20,6 +20,7 @@ use Hyperf\DB\Pool\PoolFactory;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Container\ContainerInterface;
+use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
@@ -43,6 +44,10 @@ class DbAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         if (! $this->switcher->isTracingSpanEnable('db')) {
+            return $proceedingJoinPoint->process();
+        }
+
+        if (! SentrySdk::getCurrentHub()->getSpan()) {
             return $proceedingJoinPoint->process();
         }
 
@@ -74,11 +79,10 @@ class DbAspect extends AbstractAspect
         $op = sprintf('%s %s%s', $operation, $database, $table);
 
         $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
-        $span = $this->startSpan($op, $description);
 
-        if (! $span) {
-            return $proceedingJoinPoint->process();
-        }
+        // Already check when start transaction
+        /** @var Span $span */
+        $span = $this->startSpan($op, $description);
 
         $data = [
             'coroutine.id' => Coroutine::id(),
