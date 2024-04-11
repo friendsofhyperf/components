@@ -37,17 +37,10 @@ class TagManager
      */
     public function get(string $key): string
     {
-        if (! str_contains($key, '.')) {
-            return $key;
-        }
-
-        [$type, $key] = explode('.', $key, 2);
-        $tags = $this->fetchTags($type);
-
-        return $tags[$key] ?? $type . '.' . $key;
+        return $key;
     }
 
-    private function fetchTags(string $type, mixed $default = []): array
+    private function fetch(string $type, mixed $default = []): array
     {
         return $this->config->get(
             sprintf('sentry.tracing.tags.%s', $type),
