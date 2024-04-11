@@ -18,7 +18,10 @@ use PhpMyAdmin\SqlParser\Statements\UpdateStatement;
 
 class SqlParser
 {
-    public function parse(string $sql): array
+    /**
+     * @return array{operation:string,tables:string}
+     */
+    public static function parse(string $sql): array
     {
         $parser = new \PhpMyAdmin\SqlParser\Parser($sql);
 
