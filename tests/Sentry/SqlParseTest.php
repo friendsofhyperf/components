@@ -48,3 +48,19 @@ test('update sql parse', function () {
     expect($result['operation'])->toBe('UPDATE')
         ->and($result['tables'])->toBe('a');
 });
+
+test('select multi table', function () {
+    $query1 = 'select * from a,b';
+    $parser = new SqlParser();
+    $result = $parser->parse($query1);
+
+    expect($result['operation'])->toBe('SELECT')
+        ->and($result['tables'])->toBe('a,b');
+
+    $query1 = 'select a.id,b.name from a,b';
+    $parser = new SqlParser();
+    $result = $parser->parse($query1);
+
+    expect($result['operation'])->toBe('SELECT')
+        ->and($result['tables'])->toBe('a,b');
+});
