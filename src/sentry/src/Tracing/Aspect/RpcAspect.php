@@ -16,6 +16,7 @@ use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\Context\Context;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -63,7 +64,8 @@ class RpcAspect extends AbstractAspect
     {
         /** @var string $path */
         $path = $proceedingJoinPoint->process();
-        $package = 'package'; // TODO 需要从 client 获取 如 grpc,jsonrpc 等等
+        $config = $this->container->get(ConfigInterface::class);
+        $package = $config->get('app_name', 'package'); // TODO 需要从 client 获取 如 grpc,jsonrpc 等等
         /** @var string $service */
         $service = $proceedingJoinPoint->getInstance()->getServiceName();
 
