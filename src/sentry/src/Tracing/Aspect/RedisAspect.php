@@ -49,7 +49,7 @@ class RedisAspect extends AbstractAspect
 
         $arguments = $proceedingJoinPoint->arguments['keys'];
 
-        $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
+        $poolName = (fn () => $this->poolName ?? null)->call($proceedingJoinPoint->getInstance());
         $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
         $config = (fn () => $this->config ?? [])->call($pool);
 
