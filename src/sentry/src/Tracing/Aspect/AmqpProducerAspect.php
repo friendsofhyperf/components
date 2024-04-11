@@ -64,7 +64,6 @@ class AmqpProducerAspect extends AbstractAspect
             'messaging.system' => 'amqp',
             'messaging.operation' => 'publish',
             'messaging.rabbitmq.message.type' => $producerMessage->getTypeString(),
-            'messaging.rabbitmq.destination.routing_key' => $producerMessage->getRoutingKey(),
             'messaging.rabbitmq.message.routing_key' => $producerMessage->getRoutingKey(),
             'messaging.rabbitmq.message.exchange' => $producerMessage->getExchange(),
             'messaging.rabbitmq.message.pool_name' => $producerMessage->getPoolName(),
