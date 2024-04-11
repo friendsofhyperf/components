@@ -19,18 +19,22 @@ class TagManager
     {
     }
 
-    public function has(string $key): bool
+    public function isEnable(string $key): bool
     {
-        if (! str_contains($key, '.')) {
-            return false;
-        }
-
-        [$type, $key] = explode('.', $key, 2);
-        $tags = $this->fetchTags($type);
-
-        return isset($tags[$key]);
+        return in_array($key, $this->config->get('sentry.tracing.tags.enable', []), true);
     }
 
+    /**
+     * @deprecated
+     */
+    public function has(string $key): bool
+    {
+        return true;
+    }
+
+    /**
+     * @deprecated
+     */
     public function get(string $key): string
     {
         if (! str_contains($key, '.')) {

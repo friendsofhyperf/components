@@ -75,8 +75,8 @@ class TraceAnnotationAspect extends AbstractAspect
                 return $result;
             }
 
-            if ($this->tagManager->has('annotation.result')) {
-                $data[$this->tagManager->get('annotation.result')] = $result;
+            if ($this->tagManager->isEnable('annotation.result')) {
+                $data['annotation.result'] = $result;
             }
         } catch (Throwable $exception) {
             $span->setStatus(SpanStatus::internalError());
@@ -86,8 +86,8 @@ class TraceAnnotationAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('exception.stack_trace')) {
-                $data[$this->tagManager->get('exception.stack_trace')] = (string) $exception;
+            if ($this->tagManager->isEnable('exception.stack_trace')) {
+                $data['exception.stack_trace'] = (string) $exception;
             }
             throw $exception;
         } finally {

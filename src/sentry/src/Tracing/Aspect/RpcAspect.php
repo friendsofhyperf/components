@@ -116,8 +116,8 @@ class RpcAspect extends AbstractAspect
                 return $result;
             }
 
-            if ($this->tagManager->has('rpc.result')) {
-                $data[$this->tagManager->get('rpc.result')] = $result;
+            if ($this->tagManager->isEnable('rpc.result')) {
+                $data['rpc.result'] = $result;
             }
         } catch (Throwable $exception) {
             $span->setStatus(SpanStatus::internalError());
@@ -127,8 +127,8 @@ class RpcAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('exception.stack_trace')) {
-                $data[$this->tagManager->get('exception.stack_trace')] = (string) $exception;
+            if ($this->tagManager->isEnable('exception.stack_trace')) {
+                $data['exception.stack_trace'] = (string) $exception;
             }
 
             throw $exception;

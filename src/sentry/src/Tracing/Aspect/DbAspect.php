@@ -91,8 +91,8 @@ class DbAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
-            if ($this->tagManager->has('db.result')) {
-                $data[$this->tagManager->get('db.result')] = json_encode($result, JSON_UNESCAPED_UNICODE);
+            if ($this->tagManager->isEnable('db.result')) {
+                $data['db.result'] = json_encode($result, JSON_UNESCAPED_UNICODE);
             }
         } catch (Throwable $exception) {
             $span->setStatus(SpanStatus::internalError());
@@ -102,8 +102,8 @@ class DbAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('exception.stack_trace')) {
-                $data[$this->tagManager->get('exception.stack_trace')] = (string) $exception;
+            if ($this->tagManager->isEnable('exception.stack_trace')) {
+                $data['exception.stack_trace'] = (string) $exception;
             }
 
             throw $exception;

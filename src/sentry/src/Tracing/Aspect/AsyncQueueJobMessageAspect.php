@@ -102,13 +102,13 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
         $channelConfig = (fn () => $this->channel)->call($driver);
         /** @var string $channel */
         $channel = $channelConfig->getChannel();
-        $data[$this->tagManager->get('async_queue.channel')] = $channel;
+        $data['async_queue.channel'] = $channel;
 
         /** @var \Hyperf\Redis\RedisProxy $redis */
         $redis = (fn () => $this->redis)->call($driver);
         /** @var string $poolName */
         $poolName = (fn () => $this->poolName ?? 'default')->call($redis);
-        $data[$this->tagManager->get('async_queue.redis_pool')] = $poolName;
+        $data['async_queue.redis_pool'] = $poolName;
 
         return $data;
     }

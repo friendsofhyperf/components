@@ -103,7 +103,7 @@ return [
             'redis' => env('SENTRY_TRACING_SPANS_REDIS', true),
             'sql_queries' => env('SENTRY_TRACING_SPANS_SQL_QUERIES', true),
         ],
-        'enable_tags' => [
+        'tags' => [
             // exception
             'exception.stack_trace',
             // amqp
@@ -124,83 +124,6 @@ return [
             'request.result',
             'rpc.result',
             'sql_queries.result',
-        ],
-        'tags' => [
-            'amqp' => [
-                'type' => 'amqp.type',
-                'exchange' => 'amqp.exchange',
-                'routing_key' => 'amqp.routing_key',
-                'pool_name' => 'amqp.pool_name',
-            ],
-            'annotation' => [
-                'coroutine.id' => 'coroutine.id',
-                'arguments' => 'arguments',
-            ],
-            'async_queue' => [
-                'channel' => 'async_queue.channel',
-                'redis_pool' => 'async_queue.redis_pool',
-            ],
-            'command' => [
-                'arguments' => 'command.arguments',
-                'options' => 'command.options',
-                'exit_code' => 'command.exit_code',
-            ],
-            'coroutine' => [
-                'id' => 'coroutine.id',
-            ],
-            'crontab' => [
-                'rule' => 'crontab.rule',
-                'type' => 'crontab.type',
-                'options' => 'crontab.options',
-            ],
-            'db' => [
-                'coroutine.id' => 'coroutine.id',
-                'pool' => 'db.pool',
-                'query' => 'db.query',
-                // 'result' => 'db.result',
-            ],
-            'elasticsearch' => [
-                'coroutine.id' => 'coroutine.id',
-                'arguments' => 'arguments',
-            ],
-            'guzzle' => [
-                'coroutine.id' => 'coroutine.id',
-                'http.method' => 'http.method',
-                'http.uri' => 'http.uri',
-                'guzzle.config' => 'guzzle.config',
-                'request.options' => 'request.options',
-                'response.status' => 'response.status',
-                'response.reason' => 'response.reason',
-                'response.headers' => 'response.headers',
-            ],
-            'kafka' => [
-                'topic' => 'kafka.topic',
-                'group_id' => 'kafka.group_id',
-                'pool' => 'kafka.pool',
-            ],
-            'redis' => [
-                'coroutine.id' => 'coroutine.id',
-                'pool' => 'redis.pool',
-                'arguments' => 'redis.arguments',
-            ],
-            'request' => [
-                'http.path' => 'http.path',
-                'http.method' => 'http.method',
-                'header' => 'request.header',
-                'route.params' => 'route.params',
-                'route.callback' => 'route.callback',
-            ],
-            'rpc' => [
-                'coroutine.id' => 'coroutine.id',
-                'arguments' => 'rpc.arguments',
-                'context' => 'rpc.context',
-            ],
-            'sql_queries' => [
-                'coroutine.id' => 'coroutine.id',
-                'db.connection_name' => 'db.connection_name',
-                'db.bindings' => 'db.bindings',
-                'db.pool' => 'db.pool',
-            ],
         ],
     ],
 

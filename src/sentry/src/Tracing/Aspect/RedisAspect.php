@@ -77,8 +77,8 @@ class RedisAspect extends AbstractAspect
                 return $result;
             }
 
-            if ($this->tagManager->has('redis.result')) {
-                $data[$this->tagManager->get('redis.result')] = $result;
+            if ($this->tagManager->isEnable('redis.result')) {
+                $data['redis.result'] = $result;
             }
         } catch (Throwable $exception) {
             $span->setStatus(SpanStatus::internalError());
@@ -88,8 +88,8 @@ class RedisAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('exception.stack_trace')) {
-                $data[$this->tagManager->get('exception.stack_trace')] = (string) $exception;
+            if ($this->tagManager->isEnable('exception.stack_trace')) {
+                $data['exception.stack_trace'] = (string) $exception;
             }
 
             throw $exception;
