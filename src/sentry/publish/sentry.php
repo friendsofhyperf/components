@@ -145,6 +145,8 @@ return [
                 'query' => 'db.query',
                 // 'result' => 'db.result',
                 'exception.stack_trace' => 'exception.stack_trace',
+                // redis
+                'redis.result' => 'db.redis.result',
             ],
             'elasticsearch' => [
                 'coroutine.id' => 'coroutine.id',

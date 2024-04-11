@@ -48,26 +48,24 @@ class RedisAspect extends AbstractAspect
         }
 
         $arguments = $proceedingJoinPoint->arguments['keys'];
-        $data = [];
+        $data = [
+            'db.system' => 'redis',
+            'db.redis.arguments' => $arguments['arguments'],
+            // 'db.statement' => strtoupper($arguments['name']) . implode(' ', $arguments['arguments']),
+        ];
+
+        $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
+        $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
+        $data['db.redis.pool.setting'] = [
+            'name' => $poolName,
+            'max' => $pool->getOption()->getMaxConnections(),
+            'max_idle_time' => $pool->getOption()->getMaxIdleTime(),
+            'idle' => $pool->getConnectionsInChannel(),
+            'using' => $pool->getCurrentConnections(),
+        ];
 
         if ($this->tagManager->has('coroutine.id')) {
             $data[$this->tagManager->get('coroutine.id')] = Coroutine::id();
-        }
-
-        if ($this->tagManager->has('redis.pool')) {
-            $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
-            $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
-            $data[$this->tagManager->get('redis.pool')] = [
-                'name' => $poolName,
-                'max' => $pool->getOption()->getMaxConnections(),
-                'max_idle_time' => $pool->getOption()->getMaxIdleTime(),
-                'idle' => $pool->getConnectionsInChannel(),
-                'using' => $pool->getCurrentConnections(),
-            ];
-        }
-
-        if ($this->tagManager->has('redis.arguments')) {
-            $data[$this->tagManager->get('redis.arguments')] = $arguments['arguments'];
         }
 
         $op = 'db.redis';
@@ -81,8 +79,8 @@ class RedisAspect extends AbstractAspect
                 return $result;
             }
 
-            if ($this->tagManager->has('redis.result')) {
-                $data[$this->tagManager->get('redis.result')] = $result;
+            if ($this->tagManager->has('db.redis.result')) {
+                $data[$this->tagManager->get('db.redis.result')] = $result;
             }
         } catch (Throwable $exception) {
             $span->setStatus(SpanStatus::internalError());
