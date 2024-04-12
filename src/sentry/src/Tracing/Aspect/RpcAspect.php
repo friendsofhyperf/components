@@ -81,7 +81,7 @@ class RpcAspect extends AbstractAspect
         };
 
         // $package.$service/$path
-        $op = $package . '.' . $service . '/' . $path;
+        $op = sprintf('%s.%s/%s', $package, $service, $path);
         $span = $this->startSpan($op, $path);
 
         if (! $span) {
