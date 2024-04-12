@@ -50,6 +50,11 @@ class Switcher
         return (bool) $this->config->get('sentry.tracing.spans.' . $key, false);
     }
 
+    public function isTracingTagEnable(string $key): bool
+    {
+        return (bool) in_array($key, $this->config->get('sentry.tracing.tags', []), true);
+    }
+
     public function isExceptionIgnored(string|Throwable $exception): bool
     {
         $ignoreExceptions = (array) $this->config->get('sentry.ignore_exceptions', []);

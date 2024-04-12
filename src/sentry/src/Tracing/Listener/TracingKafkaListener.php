@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Kafka\Event\AfterConsume;
@@ -31,7 +30,6 @@ class TracingKafkaListener implements ListenerInterface
 
     public function __construct(
         protected Switcher $switcher,
-        protected TagManager $tagManager,
         protected CarrierPacker $packer
     ) {
     }
@@ -79,9 +77,9 @@ class TracingKafkaListener implements ListenerInterface
         $this->continueTrace(
             sentryTrace: $sentryTrace,
             baggage: $baggage,
-            name: $consumer::class,
-            op: 'kafka.consume',
-            description: 'consumer: ' . $consumer::class,
+            name: $consumer->getTopic() . ' process',
+            op: $consumer->getTopic() . ' process',
+            description: $consumer::class,
             source: TransactionSource::custom()
         );
     }
@@ -96,19 +94,14 @@ class TracingKafkaListener implements ListenerInterface
         }
 
         $consumer = $event->getConsumer();
-
         $tags = [];
-        $data = [];
-
-        if ($this->tagManager->has('kafka.topic')) {
-            $tags[$this->tagManager->get('kafka.topic')] = $consumer->getTopic();
-        }
-        if ($this->tagManager->has('kafka.group_id')) {
-            $tags[$this->tagManager->get('kafka.group_id')] = $consumer->getGroupId();
-        }
-        if ($this->tagManager->has('kafka.pool')) {
-            $tags[$this->tagManager->get('kafka.pool')] = (string) $consumer->getPool();
-        }
+        $data = [
+            'messaging.system' => 'kafka',
+            'messaging.operation' => 'process',
+            'messaging.destination.name' => $consumer->getTopic(),
+            'messaging.kafka.consumer.group' => $consumer->getGroupId(),
+            'messaging.kafka.consumer.pool' => $consumer->getPool(),
+        ];
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError());
@@ -118,8 +111,8 @@ class TracingKafkaListener implements ListenerInterface
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('kafka.exception.stack_trace')) {
-                $data[$this->tagManager->get('kafka.exception.stack_trace')] = (string) $exception;
+            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
+                $data['exception.stack_trace'] = (string) $exception;
             }
         }
 

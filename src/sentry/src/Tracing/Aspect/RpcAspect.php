@@ -14,19 +14,23 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\Context\Context;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Rpc;
 use Hyperf\RpcClient;
+use Hyperf\Stringable\Str;
 use Psr\Container\ContainerInterface;
 use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
+/**
+ * @property string $prototype
+ */
 class RpcAspect extends AbstractAspect
 {
     use SpanStarter;
@@ -43,7 +47,6 @@ class RpcAspect extends AbstractAspect
     public function __construct(
         protected ContainerInterface $container,
         protected Switcher $switcher,
-        protected TagManager $tagManager,
         protected CarrierPacker $packer
     ) {
     }
@@ -63,8 +66,23 @@ class RpcAspect extends AbstractAspect
 
     private function handleGenerateRpcPath(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        /** @var string $path */
         $path = $proceedingJoinPoint->process();
-        $span = $this->startSpan('rpc.send', $path);
+        $config = $this->container->get(ConfigInterface::class);
+        /** @var string $package */
+        $package = Str::camel($config->get('app_name', 'package'));
+        /** @var string $service */
+        $service = $proceedingJoinPoint->getInstance()->getServiceName();
+        $prototype = (fn () => $this->prototype ?? 'jsonrpc')->call($proceedingJoinPoint->getInstance());
+        $system = match (true) {
+            str_contains($prototype, 'multiplex') => 'multiplex-rpc',
+            str_contains($prototype, 'jsonrpc') => 'jsonrpc',
+            default => 'rpc',
+        };
+
+        // $package.$service/$path
+        $op = sprintf('%s.%s/%s', $package, $service, $path);
+        $span = $this->startSpan($op, $path);
 
         if (! $span) {
             return $path;
@@ -72,11 +90,12 @@ class RpcAspect extends AbstractAspect
 
         Context::set(static::SPAN, $span);
 
-        $data = [];
-
-        if ($this->tagManager->has('rpc.coroutine.id')) {
-            $data[$this->tagManager->get('rpc.coroutine.id')] = Coroutine::id();
-        }
+        $data = [
+            'coroutine.id' => Coroutine::id(),
+            'rpc.system' => $system,
+            'rpc.method' => $proceedingJoinPoint->arguments['keys']['methodName'] ?? '',
+            'rpc.service' => $service,
+        ];
 
         Context::set(static::DATA, $data);
 
@@ -90,13 +109,15 @@ class RpcAspect extends AbstractAspect
     private function handleSend(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $data = (array) Context::get(static::DATA);
+        $data['rpc.arguments'] = $proceedingJoinPoint->arguments['keys'];
 
-        if ($this->tagManager->has('rpc.arguments')) {
-            $data[$this->tagManager->get('rpc.arguments')] = $proceedingJoinPoint->arguments['keys'];
+        if ($this->container->has(Rpc\Context::class)) {
+            $data['rpc.context'] = $this->container->get(Rpc\Context::class)->getData();
         }
-        if ($this->container->has(Rpc\Context::class) && $this->tagManager->has('rpc.context')) {
-            $data[$this->tagManager->get('rpc.context')] = $this->container->get(Rpc\Context::class)->getData();
-        }
+
+        // TODO
+        // 'server.address' => '',
+        // 'server.port' => '',
 
         /** @var Span|null $span */
         $span = Context::get(static::SPAN);
@@ -108,8 +129,8 @@ class RpcAspect extends AbstractAspect
                 return $result;
             }
 
-            if ($this->tagManager->has('rpc.result')) {
-                $data[$this->tagManager->get('rpc.result')] = $result;
+            if ($this->switcher->isTracingTagEnable('rpc.result')) {
+                $data['rpc.result'] = $result;
             }
         } catch (Throwable $exception) {
             $span->setStatus(SpanStatus::internalError());
@@ -119,8 +140,8 @@ class RpcAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('rpc.exception.stack_trace')) {
-                $data[$this->tagManager->get('rpc.exception.stack_trace')] = (string) $exception;
+            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
+                $data['exception.stack_trace'] = (string) $exception;
             }
 
             throw $exception;

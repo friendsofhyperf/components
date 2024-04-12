@@ -99,6 +99,11 @@ SENTRY_TRACING_SPANS_REDIS=true
 SENTRY_TRACING_SPANS_SQL_QUERIES=true
 ```
 
+## Sentry Develop Docs
+
+- https://github.com/open-telemetry/semantic-conventions/tree/main
+- https://develop.sentry.dev/sdk/performance/span-operations/#database
+
 ## Contact
 
 - [Twitter](https://twitter.com/huangdijia)

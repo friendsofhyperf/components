@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\AsyncQueue\Event\AfterHandle;
 use Hyperf\AsyncQueue\Event\BeforeHandle;
@@ -33,7 +32,6 @@ class TracingAsyncQueueListener implements ListenerInterface
 
     public function __construct(
         protected Switcher $switcher,
-        protected TagManager $tagManager,
         protected CarrierPacker $packer
     ) {
     }
@@ -81,8 +79,8 @@ class TracingAsyncQueueListener implements ListenerInterface
             sentryTrace: $sentryTrace,
             baggage: $baggage,
             name: $job::class,
-            op: 'async_queue.job.process',
-            description: 'job:' . $job::class,
+            op: 'queue.process',
+            description: 'async_queue: ' . $job::class,
             source: TransactionSource::custom()
         );
     }
@@ -107,8 +105,8 @@ class TracingAsyncQueueListener implements ListenerInterface
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('async_queue.exception.stack_trace')) {
-                $data[$this->tagManager->get('async_queue.exception.stack_trace')] = (string) $exception;
+            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
+                $data['exception.stack_trace'] = (string) $exception;
             }
         }
 

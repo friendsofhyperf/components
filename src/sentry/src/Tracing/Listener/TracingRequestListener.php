@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 use Closure;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Event\RequestHandled;
 use Hyperf\HttpServer\Event\RequestReceived;
@@ -41,8 +40,7 @@ class TracingRequestListener implements ListenerInterface
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher,
-        protected TagManager $tagManager
+        protected Switcher $switcher
     ) {
     }
 
@@ -81,6 +79,8 @@ class TracingRequestListener implements ListenerInterface
 
         $serverName = $dispatched->serverName ?? 'http';
         $path = $request->getUri()->getPath();
+        $method = strtoupper($request->getMethod());
+
         /**
          * @var string $route
          * @var array $routeParams
@@ -94,8 +94,8 @@ class TracingRequestListener implements ListenerInterface
          */
         [$name, $source] = match (strtolower($this->source)) {
             'custom' => [$routeCallback, TransactionSource::custom()],
-            'url' => [$path, TransactionSource::url()],
-            default => [$route, TransactionSource::route()],
+            'url' => [$method . ' ' . $path, TransactionSource::url()],
+            default => [$method . ' ' . $route, TransactionSource::route()],
         };
 
         // Get sentry-trace and baggage
@@ -103,7 +103,7 @@ class TracingRequestListener implements ListenerInterface
             $request,
             name: $name,
             op: sprintf('%s.server', $serverName),
-            description: sprintf('request: %s %s', $request->getMethod(), $path),
+            description: sprintf('request: %s %s', $method, $path),
             source: $source,
         );
 
@@ -111,38 +111,24 @@ class TracingRequestListener implements ListenerInterface
             return;
         }
 
-        $data = [];
-        $tags = [];
-
         // Set data
-        if ($this->tagManager->has('request.route.params') && $routeParams) {
-            $data[$this->tagManager->get('request.route.params')] = $routeParams;
+        $data = [
+            'url.scheme' => $request->getUri()->getScheme(),
+            'url.path' => $path,
+            'http.request.method' => $method,
+            'http.route' => $route,
+            'http.route.params' => $routeParams,
+        ];
+        foreach ($request->getHeaders() as $key => $value) {
+            $data['http.request.header.' . $key] = implode(', ', $value);
         }
-        if ($this->container->has(RpcContext::class) && $this->tagManager->has('rpc.context')) {
-            $data[$this->tagManager->get('rpc.context')] = $this->container->get(RpcContext::class)->getData();
-        }
-
-        // Set tags
-        if ($this->tagManager->has('request.http.path')) {
-            $tags[$this->tagManager->get('request.http.path')] = $path;
-        }
-        if ($this->tagManager->has('request.http.method')) {
-            $tags[$this->tagManager->get('request.http.method')] = strtoupper($request->getMethod());
-        }
-        if ($this->tagManager->has('request.route.callback') && $routeCallback) {
-            $tags[$this->tagManager->get('request.route.callback')] = $routeCallback;
-        }
-        if ($this->tagManager->has('request.header')) {
-            foreach ($request->getHeaders() as $key => $value) {
-                $tags[$this->tagManager->get('request.header') . '.' . $key] = implode(', ', $value);
-            }
+        if ($this->container->has(RpcContext::class)) {
+            $data['rpc.context'] = $this->container->get(RpcContext::class)->getData();
         }
 
         $transaction->setData($data);
-        $transaction->setTags($tags);
 
         $span = $this->startSpan('request.received', 'request.received', true);
-        SentrySdk::getCurrentHub()->setSpan($span);
 
         defer(function () use ($transaction, $span) {
             $span->finish();

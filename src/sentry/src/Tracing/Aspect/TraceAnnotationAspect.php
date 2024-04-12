@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\Annotation\Trace;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -30,10 +29,8 @@ class TraceAnnotationAspect extends AbstractAspect
         Trace::class,
     ];
 
-    public function __construct(
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -46,22 +43,16 @@ class TraceAnnotationAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $data = [];
-        if ($this->tagManager->has('annotation.coroutine.id')) {
-            $data[$this->tagManager->get('annotation.coroutine.id')] = Coroutine::id();
-        }
+        $data = [
+            'coroutine.id' => Coroutine::id(),
+        ];
 
         $methodName = $proceedingJoinPoint->methodName;
         if (in_array($methodName, ['__call', '__callStatic'])) {
             $methodName = $proceedingJoinPoint->arguments['keys']['name'] ?? $proceedingJoinPoint->methodName;
-
-            if ($this->tagManager->has('annotation.arguments')) {
-                $data[$this->tagManager->get('annotation.arguments')] = $proceedingJoinPoint->arguments['keys']['arguments'] ?? $proceedingJoinPoint->arguments['keys'];
-            }
+            $data['annotation.arguments'] = $proceedingJoinPoint->arguments['keys']['arguments'] ?? $proceedingJoinPoint->arguments['keys'];
         } else {
-            if ($this->tagManager->has('annotation.arguments')) {
-                $data[$this->tagManager->get('annotation.arguments')] = $proceedingJoinPoint->arguments['keys'];
-            }
+            $data['annotation.arguments'] = $proceedingJoinPoint->arguments['keys'];
         }
 
         $span = $this->startSpan(
@@ -81,8 +72,8 @@ class TraceAnnotationAspect extends AbstractAspect
                 return $result;
             }
 
-            if ($this->tagManager->has('annotation.result')) {
-                $data[$this->tagManager->get('annotation.result')] = $result;
+            if ($this->switcher->isTracingTagEnable('annotation.result')) {
+                $data['annotation.result'] = $result;
             }
         } catch (Throwable $exception) {
             $span->setStatus(SpanStatus::internalError());
@@ -92,8 +83,8 @@ class TraceAnnotationAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('annotation.exception.stack_trace')) {
-                $data[$this->tagManager->get('annotation.exception.stack_trace')] = (string) $exception;
+            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
+                $data['exception.stack_trace'] = (string) $exception;
             }
             throw $exception;
         } finally {

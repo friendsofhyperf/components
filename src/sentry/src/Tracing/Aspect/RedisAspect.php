@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -25,6 +24,8 @@ use Throwable;
 
 /**
  * @property string $poolName
+ * @method array getConfig()
+ * @property array $config
  */
 class RedisAspect extends AbstractAspect
 {
@@ -36,8 +37,7 @@ class RedisAspect extends AbstractAspect
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher,
-        protected TagManager $tagManager
+        protected Switcher $switcher
     ) {
     }
 
@@ -48,32 +48,28 @@ class RedisAspect extends AbstractAspect
         }
 
         $arguments = $proceedingJoinPoint->arguments['keys'];
-        $data = [];
 
-        if ($this->tagManager->has('coroutine.id')) {
-            $data[$this->tagManager->get('coroutine.id')] = Coroutine::id();
-        }
+        $poolName = (fn () => $this->poolName ?? null)->call($proceedingJoinPoint->getInstance());
+        $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
+        $config = (fn () => $this->config ?? [])->call($pool);
 
-        if ($this->tagManager->has('redis.pool')) {
-            $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
-            $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
-            $data[$this->tagManager->get('redis.pool')] = [
-                'name' => $poolName,
-                'max' => $pool->getOption()->getMaxConnections(),
-                'max_idle_time' => $pool->getOption()->getMaxIdleTime(),
-                'idle' => $pool->getConnectionsInChannel(),
-                'using' => $pool->getCurrentConnections(),
-            ];
-        }
+        $data = [
+            'coroutine.id' => Coroutine::id(),
+            'db.system' => 'redis',
+            'db.redis.arguments' => $arguments['arguments'],
+            // 'db.statement' => strtoupper($arguments['name']) . implode(' ', $arguments['arguments']),
+            'db.redis.pool.name' => $poolName,
+            'db.redis.pool.max' => $pool->getOption()->getMaxConnections(),
+            'db.redis.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
+            'db.redis.pool.idle' => $pool->getConnectionsInChannel(),
+            'db.redis.pool.using' => $pool->getCurrentConnections(),
+            'db.redis.database_index' => $config['db'] ?? '',
+        ];
 
-        if ($this->tagManager->has('redis.arguments')) {
-            $data[$this->tagManager->get('redis.arguments')] = $arguments['arguments'];
-        }
-
-        $span = $this->startSpan(
-            sprintf('redis.%s', $arguments['name']),
-            sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name'])
-        );
+        // 规则: opeate dbName.tableName
+        $op = sprintf('%s %s', $arguments['name'], $arguments['arguments']['key'] ?? '');
+        $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
+        $span = $this->startSpan($op, $description);
 
         try {
             $result = $proceedingJoinPoint->process();
@@ -82,8 +78,8 @@ class RedisAspect extends AbstractAspect
                 return $result;
             }
 
-            if ($this->tagManager->has('redis.result')) {
-                $data[$this->tagManager->get('redis.result')] = $result;
+            if ($this->switcher->isTracingTagEnable('redis.result')) {
+                $data['redis.result'] = $result;
             }
         } catch (Throwable $exception) {
             $span->setStatus(SpanStatus::internalError());
@@ -93,8 +89,8 @@ class RedisAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('redis.exception.stack_trace')) {
-                $data[$this->tagManager->get('redis.exception.stack_trace')] = (string) $exception;
+            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
+                $data['exception.stack_trace'] = (string) $exception;
             }
 
             throw $exception;

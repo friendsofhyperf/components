@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
+use FriendsOfHyperf\Sentry\Util\SqlParser;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\Database\Events\TransactionBeginning;
@@ -22,6 +22,7 @@ use Hyperf\Database\Events\TransactionRolledBack;
 use Hyperf\DbConnection\Pool\PoolFactory;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
+use Sentry\SentrySdk;
 
 class TracingDbQueryListener implements ListenerInterface
 {
@@ -29,8 +30,7 @@ class TracingDbQueryListener implements ListenerInterface
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher,
-        protected TagManager $tagManager
+        protected Switcher $switcher
     ) {
     }
 
@@ -60,40 +60,46 @@ class TracingDbQueryListener implements ListenerInterface
         if (! $this->switcher->isTracingSpanEnable('sql_queries')) {
             return;
         }
-
-        $data = [];
-
-        if ($this->tagManager->has('sql_queries.coroutine.id')) {
-            $data[$this->tagManager->get('sql_queries.coroutine.id')] = Coroutine::id();
-        }
-        if ($this->tagManager->has('sql_queries.db.bindings')) {
-            $data[$this->tagManager->get('sql_queries.db.bindings')] = $event->bindings;
-        }
-        if ($this->tagManager->has('sql_queries.db.connection_name')) {
-            $data[$this->tagManager->get('sql_queries.db.connection_name')] = $event->connectionName;
-        }
-        if ($this->tagManager->has('sql_queries.db.pool')) {
-            $pool = $this->container->get(PoolFactory::class)->getPool($event->connectionName);
-            $data[$this->tagManager->get('sql_queries.db.pool')] = [
-                'name' => $event->connectionName,
-                'max' => $pool->getOption()->getMaxConnections(),
-                'max_idle_time' => $pool->getOption()->getMaxIdleTime(),
-                'idle' => $pool->getConnectionsInChannel(),
-                'using' => $pool->getCurrentConnections(),
-            ];
-        }
-
-        $startTimestamp = microtime(true) - $event->time / 1000;
-
-        $span = $this->startSpan(
-            'db.sql.query',
-            $event->sql,
-        );
-
-        if (! $span) {
+        if (! SentrySdk::getCurrentHub()->getSpan()) {
             return;
         }
 
+        $sqlParse = SqlParser::parse($event->sql);
+
+        $data = [
+            'coroutine.id' => Coroutine::id(),
+            'db.system' => $event->connection->getDriverName(),
+            'db.name' => $event->connection->getDatabaseName(),
+            'db.collection.name' => $sqlParse['tables'],
+            'db.operation.name' => $sqlParse['operation'],
+        ];
+
+        foreach ($event->bindings as $key => $value) {
+            $data['db.parameter.' . $key] = $value;
+        }
+
+        $pool = $this->container->get(PoolFactory::class)->getPool($event->connectionName);
+        $data += [
+            'db.pool.name' => $event->connectionName,
+            'db.pool.max' => $pool->getOption()->getMaxConnections(),
+            'db.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
+            'db.pool.idle' => $pool->getConnectionsInChannel(),
+            'db.pool.using' => $pool->getCurrentConnections(),
+        ];
+
+        $startTimestamp = microtime(true) - $event->time / 1000;
+
+        // 规则: opeate dbName.tableName
+        $op = sprintf(
+            '%s %s%s',
+            $sqlParse['operation'],
+            $event->connection->getDatabaseName(),
+            ! empty($sqlParse['tables']) ? '.' . $sqlParse['tables'] : ''
+        );
+
+        // Already check in the previous context
+        /** @var \Sentry\Tracing\Span $span */
+        $span = $this->startSpan($op, $event->sql);
         $span->setData($data);
         $span->setStartTimestamp($startTimestamp);
         $span->finish($startTimestamp + $event->time / 1000);

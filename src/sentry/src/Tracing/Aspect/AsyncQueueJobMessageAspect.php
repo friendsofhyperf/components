@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\AsyncQueue\Driver\RedisDriver;
 use Hyperf\Context\Context;
@@ -41,7 +40,6 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
 
     public function __construct(
         protected Switcher $switcher,
-        protected TagManager $tagManager,
         protected CarrierPacker $packer
     ) {
     }
@@ -63,7 +61,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     public function handlePush(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $span = $this->startSpan(
-            'async_queue.job.publish',
+            'queue.publish',
             $proceedingJoinPoint->arguments['keys']['job']::class
         );
 
@@ -72,7 +70,9 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
         }
 
         try {
-            $data = [];
+            $data = [
+                'messaging.system' => 'async_queue',
+            ];
 
             /** @var \Hyperf\AsyncQueue\Driver\Driver $driver */
             $driver = $proceedingJoinPoint->getInstance();
@@ -81,10 +81,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
                 default => []
             };
 
-            if (count($data)) {
-                $span->setData($data);
-            }
-
+            $span->setData($data);
             $carrier = $this->packer->pack($span);
             Context::set(Constants::TRACE_CARRIER, $carrier);
 
@@ -99,21 +96,17 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     {
         $data = [];
 
-        if ($this->tagManager->has('async_queue.channel')) {
-            /** @var \Hyperf\AsyncQueue\Driver\ChannelConfig $channelConfig */
-            $channelConfig = (fn () => $this->channel)->call($driver);
-            /** @var string $channel */
-            $channel = $channelConfig->getChannel();
-            $data[$this->tagManager->get('async_queue.channel')] = $channel;
-        }
+        /** @var \Hyperf\AsyncQueue\Driver\ChannelConfig $channelConfig */
+        $channelConfig = (fn () => $this->channel)->call($driver);
+        /** @var string $channel */
+        $channel = $channelConfig->getChannel();
+        $data['async_queue.channel'] = $channel;
 
-        if ($this->tagManager->has('async_queue.redis_pool')) {
-            /** @var \Hyperf\Redis\RedisProxy $redis */
-            $redis = (fn () => $this->redis)->call($driver);
-            /** @var string $poolName */
-            $poolName = (fn () => $this->poolName ?? 'default')->call($redis);
-            $data[$this->tagManager->get('async_queue.redis_pool')] = $poolName;
-        }
+        /** @var \Hyperf\Redis\RedisProxy $redis */
+        $redis = (fn () => $this->redis)->call($driver);
+        /** @var string $poolName */
+        $poolName = (fn () => $this->poolName ?? 'default')->call($redis);
+        $data['async_queue.redis_pool'] = $poolName;
 
         return $data;
     }

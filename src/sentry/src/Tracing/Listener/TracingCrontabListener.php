@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
 use Hyperf\Crontab\Event\AfterExecute;
 use Hyperf\Crontab\Event\BeforeExecute;
 use Hyperf\Crontab\Event\FailToExecute;
@@ -26,10 +25,8 @@ class TracingCrontabListener implements ListenerInterface
 {
     use SpanStarter;
 
-    public function __construct(
-        protected Switcher $switcher,
-        protected TagManager $tagManager
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function listen(): array
@@ -63,7 +60,7 @@ class TracingCrontabListener implements ListenerInterface
 
         $this->continueTrace(
             name: $crontab->getName() ?: '<unnamed crontab>',
-            op: 'crontab.execute',
+            op: 'crontab.run',
             description: $crontab->getMemo(),
             source: TransactionSource::task()
         );
@@ -80,20 +77,12 @@ class TracingCrontabListener implements ListenerInterface
 
         $crontab = $event->crontab;
         $data = [];
-        $tags = [];
-
-        if ($this->tagManager->has('crontab.rule')) {
-            $data[$this->tagManager->get('crontab.rule')] = $crontab->getRule();
-        }
-        if ($this->tagManager->has('crontab.type')) {
-            $data[$this->tagManager->get('crontab.type')] = $crontab->getType();
-        }
-        if ($this->tagManager->has('crontab.options')) {
-            $data[$this->tagManager->get('crontab.options')] = [
-                'is_single' => $crontab->isSingleton(),
-                'is_on_one_server' => $crontab->isOnOneServer(),
-            ];
-        }
+        $tags = [
+            'crontab.rule' => $crontab->getRule(),
+            'crontab.type' => $crontab->getType(),
+            'crontab.options.is_single' => $crontab->isSingleton(),
+            'crontab.options.is_on_one_server' => $crontab->isOnOneServer(),
+        ];
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError());
@@ -103,8 +92,8 @@ class TracingCrontabListener implements ListenerInterface
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('crontab.exception.stack_trace')) {
-                $data[$this->tagManager->get('crontab.exception.stack_trace')] = (string) $exception;
+            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
+                $data['exception.stack_trace'] = (string) $exception;
             }
         }
 

@@ -13,13 +13,14 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Tracing\TagManager;
+use FriendsOfHyperf\Sentry\Util\SqlParser;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\DB\DB;
 use Hyperf\DB\Pool\PoolFactory;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Container\ContainerInterface;
+use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
@@ -36,8 +37,7 @@ class DbAspect extends AbstractAspect
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher,
-        protected TagManager $tagManager
+        protected Switcher $switcher
     ) {
     }
 
@@ -47,43 +47,64 @@ class DbAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $arguments = $proceedingJoinPoint->arguments['keys'];
-        $span = $this->startSpan(
-            'Db::' . $arguments['name'],
-            $proceedingJoinPoint->className . '::' . $arguments['name'] . '()'
-        );
-
-        if (! $span) {
+        if (! SentrySdk::getCurrentHub()->getSpan()) {
             return $proceedingJoinPoint->process();
         }
 
-        $data = [];
+        $arguments = $proceedingJoinPoint->arguments['keys'];
 
-        if ($this->tagManager->has('db.coroutine.id')) {
-            $data[$this->tagManager->get('db.coroutine.id')] = Coroutine::id();
+        $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
+        /** @var \Hyperf\Pool\Pool $pool */
+        $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
+
+        $operation = $arguments['name'];
+        $database = '';
+        $driver = 'unknown';
+        $table = '';
+        if ($pool instanceof \Hyperf\DB\Pool\Pool) {
+            $config = $pool->getConfig();
+
+            $database = $config['database'] ?? '';
+            $driver = $config['driver'] ?? 'unknown';
         }
 
-        if ($this->tagManager->has('db.query')) {
-            $data[$this->tagManager->get('db.query')] = json_encode($arguments['arguments'], JSON_UNESCAPED_UNICODE);
+        if (! empty($arguments['arguments']['query'])) {
+            $table = SqlParser::parse($arguments['arguments']['query'])['tables'];
+            if ($table) {
+                $table = '.' . $table;
+            }
         }
 
-        if ($this->tagManager->has('db.pool')) {
-            $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
-            /** @var \Hyperf\Pool\Pool $pool */
-            $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
-            $data[$this->tagManager->get('db.pool')] = [
-                'name' => $poolName,
-                'max' => $pool->getOption()->getMaxConnections(),
-                'max_idle_time' => $pool->getOption()->getMaxIdleTime(),
-                'idle' => $pool->getConnectionsInChannel(),
-                'using' => $pool->getCurrentConnections(),
-            ];
+        // 规则: operation dbName.tableName
+        $op = sprintf('%s %s%s', $operation, $database, $table);
+        $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
+
+        // Already check in the previous context
+        /** @var \Sentry\Tracing\Span $span */
+        $span = $this->startSpan($op, $description);
+
+        $data = [
+            'coroutine.id' => Coroutine::id(),
+            'db.system' => $driver,
+            'db.name' => $database,
+            'db.collection.name' => $table,
+            'db.operation.name' => $database,
+
+            'db.pool.name' => $poolName,
+            'db.pool.max' => $pool->getOption()->getMaxConnections(),
+            'db.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
+            'db.pool.idle' => $pool->getConnectionsInChannel(),
+            'db.pool.using' => $pool->getCurrentConnections(),
+        ];
+
+        foreach ($arguments['arguments']['bindings'] as $key => $value) {
+            $data['db.parameter.' . $key] = $value;
         }
 
         try {
             $result = $proceedingJoinPoint->process();
-            if ($this->tagManager->has('db.result')) {
-                $data[$this->tagManager->get('db.result')] = json_encode($result, JSON_UNESCAPED_UNICODE);
+            if ($this->switcher->isTracingTagEnable('db.result')) {
+                $data['db.result'] = json_encode($result, JSON_UNESCAPED_UNICODE);
             }
         } catch (Throwable $exception) {
             $span->setStatus(SpanStatus::internalError());
@@ -93,8 +114,8 @@ class DbAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->tagManager->has('db.exception.stack_trace')) {
-                $data[$this->tagManager->get('db.exception.stack_trace')] = (string) $exception;
+            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
+                $data['exception.stack_trace'] = (string) $exception;
             }
 
             throw $exception;

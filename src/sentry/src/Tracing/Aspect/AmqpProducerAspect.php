@@ -54,12 +54,20 @@ class AmqpProducerAspect extends AbstractAspect
         }
 
         $span = $this->startSpan(
-            'amqp.produce',
-            sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
+            'topic.send',
+            sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
         );
         if (! $span) {
             return $proceedingJoinPoint->process();
         }
+        $span->setData([
+            'messaging.system' => 'amqp',
+            'messaging.operation' => 'publish',
+            'messaging.amqp.message.type' => $producerMessage->getTypeString(),
+            'messaging.amqp.message.routing_key' => $producerMessage->getRoutingKey(),
+            'messaging.amqp.message.exchange' => $producerMessage->getExchange(),
+            'messaging.amqp.message.pool_name' => $producerMessage->getPoolName(),
+        ]);
 
         $carrier = $this->packer->pack($span);
         (function () use ($carrier) {
