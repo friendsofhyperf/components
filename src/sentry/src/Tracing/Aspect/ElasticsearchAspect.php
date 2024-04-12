@@ -85,7 +85,7 @@ class ElasticsearchAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
-            if ($this->switcher->isTracingTagEnable('elasticsearch.result')) {
+            if ($this->switcher->isTracingExtraTagEnable('elasticsearch.result')) {
                 $data['elasticsearch.result'] = json_encode($result, JSON_UNESCAPED_UNICODE);
             }
         } catch (Throwable $exception) {
@@ -96,7 +96,7 @@ class ElasticsearchAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
 

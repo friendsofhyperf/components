@@ -103,17 +103,15 @@ return [
             'redis' => env('SENTRY_TRACING_SPANS_REDIS', true),
             'sql_queries' => env('SENTRY_TRACING_SPANS_SQL_QUERIES', true),
         ],
-        'tags' => [
-            // exception
-            'exception.stack_trace',
-            // amqp
-            'amqp.result',
-            'annotation.result',
-            'db.result',
-            'elasticsearch.result',
-            'response.body',
-            'redis.result',
-            'rpc.result',
+        'extra_tags' => [
+            'exception.stack_trace' => true,
+            'amqp.result' => true,
+            'annotation.result' => true,
+            'db.result' => true,
+            'elasticsearch.result' => true,
+            'response.body' => true,
+            'redis.result' => true,
+            'rpc.result' => true,
         ],
     ],
 

@@ -78,7 +78,7 @@ class RedisAspect extends AbstractAspect
                 return $result;
             }
 
-            if ($this->switcher->isTracingTagEnable('redis.result')) {
+            if ($this->switcher->isTracingExtraTagEnable('redis.result')) {
                 $data['redis.result'] = $result;
             }
         } catch (Throwable $exception) {
@@ -89,7 +89,7 @@ class RedisAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
 

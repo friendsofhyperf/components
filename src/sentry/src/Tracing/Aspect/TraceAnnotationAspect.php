@@ -72,7 +72,7 @@ class TraceAnnotationAspect extends AbstractAspect
                 return $result;
             }
 
-            if ($this->switcher->isTracingTagEnable('annotation.result')) {
+            if ($this->switcher->isTracingExtraTagEnable('annotation.result')) {
                 $data['annotation.result'] = $result;
             }
         } catch (Throwable $exception) {
@@ -83,7 +83,7 @@ class TraceAnnotationAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
             throw $exception;
