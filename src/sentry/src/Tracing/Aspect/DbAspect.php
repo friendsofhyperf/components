@@ -75,7 +75,7 @@ class DbAspect extends AbstractAspect
             }
         }
 
-        // 规则: opeate dbName.tableName
+        // 规则: operation dbName.tableName
         $op = sprintf('%s %s%s', $operation, $database, $table);
         $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
 
