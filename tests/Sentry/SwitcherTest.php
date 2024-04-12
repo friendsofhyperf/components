@@ -18,10 +18,10 @@ beforeEach(function () {
     $config = new Config([
         'sentry' => [
             'tracing' => [
-                'tags' => [
-                    'foo.bar',
-                    'foo.baz',
-                    'foo.bar.baz',
+                'extra_tags' => [
+                    'foo.bar' => true,
+                    'foo.baz' => true,
+                    'foo.bar.baz' => true,
                 ],
             ],
         ],
@@ -30,7 +30,7 @@ beforeEach(function () {
 });
 
 test('test is tracing tag enable', function ($key, $expected) {
-    expect($this->switcher->isTracingTagEnable($key))->toBe($expected);
+    expect($this->switcher->isTracingExtraTagEnable($key))->toBe($expected);
 })->with([
     ['foo.bar', true],
     ['foo.baz', true],

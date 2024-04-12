@@ -112,7 +112,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     'response.reason' => $result->getReasonPhrase(),
                     'response.headers' => $result->getHeaders(),
                 ];
-                if ($this->switcher->isTracingTagEnable('response.body')) {
+                if ($this->switcher->isTracingExtraTagEnable('response.body')) {
                     $data['response.body'] = $result->getBody()->getContents();
                 }
             }
@@ -124,7 +124,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
 

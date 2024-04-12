@@ -103,7 +103,7 @@ class DbAspect extends AbstractAspect
 
         try {
             $result = $proceedingJoinPoint->process();
-            if ($this->switcher->isTracingTagEnable('db.result')) {
+            if ($this->switcher->isTracingExtraTagEnable('db.result')) {
                 $data['db.result'] = json_encode($result, JSON_UNESCAPED_UNICODE);
             }
         } catch (Throwable $exception) {
@@ -114,7 +114,7 @@ class DbAspect extends AbstractAspect
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
 

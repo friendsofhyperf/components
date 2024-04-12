@@ -117,7 +117,7 @@ class TracingAmqpListener implements ListenerInterface
                 'exception.message' => $exception->getMessage(),
                 'exception.code' => $exception->getCode(),
             ]);
-            if ($this->switcher->isTracingTagEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
         }
