@@ -42,7 +42,7 @@
         "elasticsearch/elasticsearch": "^7.0|^8.0",
         "friendsofhyperf/rector": "dev-main",
         "hashids/hashids": "^4.1|^5.0",
-        "huangdijia/php-coding-standard": "^1.1",
+        "huangdijia/php-coding-standard": "^2.0",
         "hyperf/amqp": "~3.1.0",
         "hyperf/async-queue": "~3.1.0",
         "hyperf/cache": "~3.1.0",
