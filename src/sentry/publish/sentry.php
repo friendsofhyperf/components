@@ -77,6 +77,7 @@ return [
     ],
 
     'ignore_commands' => [
+        'crontab:run',
         'gen:*',
         'migrate*',
         'tinker',
