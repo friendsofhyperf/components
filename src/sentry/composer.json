@@ -25,14 +25,14 @@
         "hyperf/http-server": "~3.1.0",
         "hyperf/support": "~3.1.0",
         "hyperf/tappable": "~3.1.0",
-        "phpmyadmin/sql-parser": "^5.9",
         "sentry/sentry": "^4.4.0"
     },
     "suggest": {
+        "elasticsearch/elasticsearch": "Required to use the elasticsearch client (^7.0|^8.0).",
         "hyperf/amqp": "Required to use the amqp event (~3.1.9).",
         "hyperf/crontab": "Required to use the crontab event (~3.1.7).",
         "hyperf/database": "Required to use the crontab event (~3.1.0).",
-        "elasticsearch/elasticsearch": "Required to use the elasticsearch client (^7.0|^8.0)."
+        "phpmyadmin/sql-parser": "Required to use the sql parser (^5.9)."
     },
     "config": {
         "sort-packages": true

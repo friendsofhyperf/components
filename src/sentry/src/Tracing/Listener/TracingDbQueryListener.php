@@ -64,15 +64,19 @@ class TracingDbQueryListener implements ListenerInterface
             return;
         }
 
-        $sqlParse = SqlParser::parse($event->sql);
-
         $data = [
             'coroutine.id' => Coroutine::id(),
             'db.system' => $event->connection->getDriverName(),
             'db.name' => $event->connection->getDatabaseName(),
-            'db.collection.name' => $sqlParse['tables'],
-            'db.operation.name' => $sqlParse['operation'],
         ];
+
+        $sqlParse = SqlParser::parse($event->sql);
+        if (! empty($sqlParse['tables'])) {
+            $data['db.collection.name'] = $sqlParse['tables'];
+        }
+        if (! empty($sqlParse['operation'])) {
+            $data['db.operation.name'] = $sqlParse['operation'];
+        }
 
         foreach ($event->bindings as $key => $value) {
             $data['db.parameter.' . $key] = $value;
@@ -89,7 +93,7 @@ class TracingDbQueryListener implements ListenerInterface
 
         $startTimestamp = microtime(true) - $event->time / 1000;
 
-        // 规则: opeate dbName.tableName
+        // 规则: operate dbName.tableName
         $op = sprintf(
             '%s %s%s',
             $sqlParse['operation'],

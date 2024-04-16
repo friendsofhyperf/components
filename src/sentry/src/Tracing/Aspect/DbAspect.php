@@ -52,24 +52,21 @@ class DbAspect extends AbstractAspect
         }
 
         $arguments = $proceedingJoinPoint->arguments['keys'];
-
         $poolName = (fn () => $this->poolName)->call($proceedingJoinPoint->getInstance());
         /** @var \Hyperf\Pool\Pool $pool */
         $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
-
         $operation = $arguments['name'];
         $database = '';
         $driver = 'unknown';
         $table = '';
         if ($pool instanceof \Hyperf\DB\Pool\Pool) {
             $config = $pool->getConfig();
-
             $database = $config['database'] ?? '';
             $driver = $config['driver'] ?? 'unknown';
         }
 
-        if (! empty($arguments['arguments']['query'])) {
-            $table = SqlParser::parse($arguments['arguments']['query'])['tables'];
+        if (! empty($sql = $arguments['arguments']['query'])) {
+            $table = SqlParser::parse($sql)['tables'];
             if ($table) {
                 $table = '.' . $table;
             }
@@ -77,7 +74,7 @@ class DbAspect extends AbstractAspect
 
         // 规则: operation dbName.tableName
         $op = sprintf('%s %s%s', $operation, $database, $table);
-        $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
+        $description = $sql;
 
         // Already check in the previous context
         /** @var \Sentry\Tracing\Span $span */
@@ -89,7 +86,6 @@ class DbAspect extends AbstractAspect
             'db.name' => $database,
             'db.collection.name' => $table,
             'db.operation.name' => $database,
-
             'db.pool.name' => $poolName,
             'db.pool.max' => $pool->getOption()->getMaxConnections(),
             'db.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),

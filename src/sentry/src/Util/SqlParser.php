@@ -23,7 +23,7 @@ class SqlParser
      */
     public static function parse(string $sql): array
     {
-        if (empty($sql)) {
+        if (empty($sql) || ! class_exists('PhpMyAdmin\SqlParser\Parser')) {
             return [
                 'operation' => '',
                 'tables' => '',
@@ -31,7 +31,6 @@ class SqlParser
         }
 
         $parser = new \PhpMyAdmin\SqlParser\Parser($sql);
-
         $operation = $parser->list[0]->keyword;
         $table = [];
 
