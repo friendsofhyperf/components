@@ -67,15 +67,14 @@ class DbAspect extends AbstractAspect
 
         $sql = $arguments['arguments']['query'] ?? '';
         $sqlParse = SqlParser::parse($sql);
-        $table = $sqlParse['tables'];
+        $table = $sqlParse['table'];
         $operation = $sqlParse['operation'];
 
         // 规则: operation dbName.tableName
         $op = sprintf(
-            '%s%s%s',
+            '%s%s',
             $operation ? $operation . ' ' : '',
-            $database,
-            $table ? '.' . $table : ''
+            implode('.', array_filter([$database, $table]))
         );
         $description = $sql;
 

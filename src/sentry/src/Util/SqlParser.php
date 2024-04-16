@@ -19,25 +19,26 @@ use PhpMyAdmin\SqlParser\Statements\UpdateStatement;
 class SqlParser
 {
     /**
-     * @return array{operation:string,tables:string}
+     * @return array{operation:string,table:string,tables:string[]}
      */
     public static function parse(string $sql): array
     {
-        if (empty($sql) || ! class_exists('PhpMyAdmin\SqlParser\Parser')) {
+        if (empty($sql)) {
             return [
                 'operation' => '',
-                'tables' => '',
+                'table' => '',
+                'tables' => [],
             ];
         }
 
         $parser = new \PhpMyAdmin\SqlParser\Parser($sql);
         $operation = $parser->list[0]->keyword;
-        $table = [];
+        $tables = [];
 
         $statement = $parser->statements[0];
         if ($statement instanceof SelectStatement) {
             foreach ($statement->from as $from) {
-                $table[] = $from->table;
+                $tables[] = $from->table;
             }
             // join
             if (isset($statement->join)) {
@@ -45,18 +46,19 @@ class SqlParser
                     if (! $join instanceof JoinKeyword) {
                         continue;
                     }
-                    $table[] = $join->expr->table;
+                    $tables[] = $join->expr->table;
                 }
             }
         } elseif ($statement instanceof UpdateStatement) {
-            $table = array_column($statement->tables, 'table');
+            $tables = array_column($statement->tables, 'table');
         } elseif ($statement instanceof InsertStatement) {
-            $table[] = $statement->into->dest->table;
+            $tables[] = $statement->into->dest->table;
         }
 
         return [
             'operation' => $operation,
-            'tables' => implode(',', $table),
+            'table' => $tables[0] ?? '',
+            'tables' => $tables,
         ];
     }
 }

@@ -71,13 +71,12 @@ class TracingDbQueryListener implements ListenerInterface
         ];
 
         $sqlParse = SqlParser::parse($event->sql);
-        if (! empty($sqlParse['tables'])) {
-            $data['db.collection.name'] = $sqlParse['tables'];
-        }
         if (! empty($sqlParse['operation'])) {
             $data['db.operation.name'] = $sqlParse['operation'];
         }
-
+        if (! empty($sqlParse['table'])) {
+            $data['db.collection.name'] = $sqlParse['table'];
+        }
         foreach ($event->bindings as $key => $value) {
             $data['db.parameter.' . $key] = $value;
         }
