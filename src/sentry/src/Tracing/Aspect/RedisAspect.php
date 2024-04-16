@@ -71,7 +71,7 @@ class RedisAspect extends AbstractAspect
         // $op = sprintf('%s %s', $arguments['name'], $arguments['arguments']['key'] ?? '');
         // $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
         $op = 'db.redis';
-        $description = sprintf('%s %s', $arguments['name'], $arguments['arguments'][0] ?? '');
+        $description = sprintf('%s %s', strtoupper($arguments['name'] ?? ''), $arguments['arguments'][0] ?? '');
         $span = $this->startSpan($op, $description);
 
         try {
