@@ -40,7 +40,7 @@ class CoordinatorAspect extends AbstractAspect
         ];
 
         $span = $this->startSpan(
-            'coordinator.yield',
+            sprintf('%s.%s', strtolower($proceedingJoinPoint->className), $proceedingJoinPoint->methodName),
             sprintf('%s::%s(%s)', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName, $timeout),
         );
 
