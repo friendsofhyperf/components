@@ -103,7 +103,7 @@ class TracingRequestListener implements ListenerInterface
             $request,
             name: $name,
             op: sprintf('%s.server', $serverName),
-            description: sprintf('request: %s %s', $method, $path),
+            description: sprintf('%s %s', $method, $path),
             source: $source,
         );
 
