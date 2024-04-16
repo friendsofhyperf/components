@@ -94,8 +94,8 @@ class TracingRequestListener implements ListenerInterface
          */
         [$name, $source] = match (strtolower($this->source)) {
             'custom' => [$routeCallback, TransactionSource::custom()],
-            'url' => [$method . ' ' . $path, TransactionSource::url()],
-            default => [$method . ' ' . $route, TransactionSource::route()],
+            'url' => [$path, TransactionSource::url()],
+            default => [$route, TransactionSource::route()],
         };
 
         // Get sentry-trace and baggage
