@@ -94,6 +94,8 @@ class DbAspect extends AbstractAspect
             'db.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
             'db.pool.idle' => $pool->getConnectionsInChannel(),
             'db.pool.using' => $pool->getCurrentConnections(),
+            // 'server.host' => '',
+            // 'server.port' => '',
             'db.sql.bindings' => $arguments['arguments']['bindings'] ?? [],
         ];
 
