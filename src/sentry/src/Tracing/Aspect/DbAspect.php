@@ -70,12 +70,13 @@ class DbAspect extends AbstractAspect
         $table = $sqlParse['table'];
         $operation = $sqlParse['operation'];
 
-        // 规则: operation dbName.tableName
-        $op = sprintf(
-            '%s%s',
-            $operation ? $operation . ' ' : '',
-            implode('.', array_filter([$database, $table]))
-        );
+        // rule: operation db.table
+        // $op = sprintf(
+        //     '%s%s',
+        //     $operation ? $operation . ' ' : '',
+        //     implode('.', array_filter([$database, $table]))
+        // );
+        $op = 'db.sql.query';
         $description = $sql;
 
         // Already check in the previous context
@@ -93,6 +94,7 @@ class DbAspect extends AbstractAspect
             'db.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
             'db.pool.idle' => $pool->getConnectionsInChannel(),
             'db.pool.using' => $pool->getCurrentConnections(),
+            'db.sql.bindings' => $arguments['arguments']['bindings'] ?? [],
         ];
 
         foreach ($arguments['arguments']['bindings'] as $key => $value) {

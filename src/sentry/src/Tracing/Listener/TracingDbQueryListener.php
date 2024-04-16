@@ -88,20 +88,25 @@ class TracingDbQueryListener implements ListenerInterface
             'db.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
             'db.pool.idle' => $pool->getConnectionsInChannel(),
             'db.pool.using' => $pool->getCurrentConnections(),
+            // 'server.host' => $event->connection->getConfig('host') ?? '',
+            // 'server.port' => $event->connection->getConfig('port') ?? '',
+            'db.sql.bindings' => $event->bindings,
         ];
 
         $startTimestamp = microtime(true) - $event->time / 1000;
 
-        // 规则: operate dbName.tableName
-        $op = sprintf(
-            '%s%s',
-            $sqlParse['operation'] ? $sqlParse['operation'] . ' ' : '',
-            implode('.', array_filter([$event->connection->getDatabaseName(), $sqlParse['table']]))
-        );
+        // rule: operate db.table
+        // $op = sprintf(
+        //     '%s%s',
+        //     $sqlParse['operation'] ? $sqlParse['operation'] . ' ' : '',
+        //     implode('.', array_filter([$event->connection->getDatabaseName(), $sqlParse['table']]))
+        // );
+        $op = 'db.sql.query';
+        $description = $event->sql;
 
         // Already check in the previous context
         /** @var \Sentry\Tracing\Span $span */
-        $span = $this->startSpan($op, $event->sql);
+        $span = $this->startSpan($op, $description);
         $span->setData($data);
         $span->setStartTimestamp($startTimestamp);
         $span->finish($startTimestamp + $event->time / 1000);
