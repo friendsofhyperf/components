@@ -57,6 +57,7 @@ class RedisAspect extends AbstractAspect
             'coroutine.id' => Coroutine::id(),
             'db.system' => 'redis',
             'db.redis.connection' => $poolName,
+            'db.redis.database_index' => $config['db'] ?? 0,
             'db.redis.parameters' => $arguments['arguments'],
             // 'db.statement' => strtoupper($arguments['name']) . implode(' ', $arguments['arguments']),
             'db.redis.pool.name' => $poolName,
@@ -64,7 +65,6 @@ class RedisAspect extends AbstractAspect
             'db.redis.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
             'db.redis.pool.idle' => $pool->getConnectionsInChannel(),
             'db.redis.pool.using' => $pool->getCurrentConnections(),
-            'db.redis.database_index' => $config['db'] ?? 0,
         ];
 
         // rule: operation db.table
