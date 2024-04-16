@@ -66,9 +66,11 @@ class RedisAspect extends AbstractAspect
             'db.redis.database_index' => $config['db'] ?? '',
         ];
 
-        // 规则: opeate dbName.tableName
-        $op = sprintf('%s %s', $arguments['name'], $arguments['arguments']['key'] ?? '');
-        $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
+        // rule: operation db.table
+        // $op = sprintf('%s %s', $arguments['name'], $arguments['arguments']['key'] ?? '');
+        // $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
+        $op = 'db.redis';
+        $description = sprintf('%s %s', $arguments['name'], $arguments['key'] ?? '');
         $span = $this->startSpan($op, $description);
 
         try {
