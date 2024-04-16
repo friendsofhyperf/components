@@ -18,7 +18,7 @@ test('select sql parse simple', function () {
     $result = SqlParser::parse($query1);
 
     expect($result['operation'])->toBe('SELECT')
-        ->and($result['tables'])->toBe('a');
+        ->and($result['table'])->toBe('a');
 });
 
 test('select sql parse left join', function () {
@@ -26,7 +26,7 @@ test('select sql parse left join', function () {
     $result = SqlParser::parse($query1);
 
     expect($result['operation'])->toBe('SELECT')
-        ->and($result['tables'])->toBe('a,b');
+        ->and($result['tables'])->toBe(['a', 'b']);
 });
 
 test('insert sql parse', function () {
@@ -34,7 +34,7 @@ test('insert sql parse', function () {
     $result = SqlParser::parse($query1);
 
     expect($result['operation'])->toBe('INSERT')
-        ->and($result['tables'])->toBe('a');
+        ->and($result['table'])->toBe('a');
 });
 
 test('update sql parse', function () {
@@ -42,7 +42,7 @@ test('update sql parse', function () {
     $result = SqlParser::parse($query1);
 
     expect($result['operation'])->toBe('UPDATE')
-        ->and($result['tables'])->toBe('a');
+        ->and($result['table'])->toBe('a');
 });
 
 test('select multi table', function () {
@@ -50,13 +50,13 @@ test('select multi table', function () {
     $result = SqlParser::parse($query1);
 
     expect($result['operation'])->toBe('SELECT')
-        ->and($result['tables'])->toBe('a,b');
+        ->and($result['tables'])->toBe(['a', 'b']);
 
     $query1 = 'select a.id,b.name from a,b';
     $result = SqlParser::parse($query1);
 
     expect($result['operation'])->toBe('SELECT')
-        ->and($result['tables'])->toBe('a,b');
+        ->and($result['tables'])->toBe(['a', 'b']);
 });
 
 test('bind sql parse', function () {
@@ -64,5 +64,5 @@ test('bind sql parse', function () {
     $result = SqlParser::parse($query1);
 
     expect($result['operation'])->toBe('SELECT')
-        ->and($result['tables'])->toBe('a');
+        ->and($result['table'])->toBe('a');
 });
