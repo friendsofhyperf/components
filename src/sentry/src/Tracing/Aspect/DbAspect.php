@@ -72,8 +72,8 @@ class DbAspect extends AbstractAspect
 
         // 规则: operation dbName.tableName
         $op = sprintf(
-            '%s %s%s',
-            $operation,
+            '%s%s%s',
+            $operation ? $operation . ' ' : '',
             $database,
             $table ? '.' . $table : ''
         );
