@@ -56,7 +56,7 @@ class RedisAspect extends AbstractAspect
         $data = [
             'coroutine.id' => Coroutine::id(),
             'db.system' => 'redis',
-            'db.redis.arguments' => $arguments['arguments'],
+            'db.redis.parameters' => $arguments['arguments'],
             // 'db.statement' => strtoupper($arguments['name']) . implode(' ', $arguments['arguments']),
             'db.redis.pool.name' => $poolName,
             'db.redis.pool.max' => $pool->getOption()->getMaxConnections(),
