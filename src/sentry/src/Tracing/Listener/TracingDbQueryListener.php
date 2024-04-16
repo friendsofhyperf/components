@@ -94,10 +94,9 @@ class TracingDbQueryListener implements ListenerInterface
 
         // 规则: operate dbName.tableName
         $op = sprintf(
-            '%s %s%s',
-            $sqlParse['operation'],
-            $event->connection->getDatabaseName(),
-            ! empty($sqlParse['tables']) ? '.' . $sqlParse['tables'] : ''
+            '%s%s',
+            $sqlParse['operation'] ? $sqlParse['operation'] . ' ' : '',
+            implode('.', array_filter([$event->connection->getDatabaseName(), $sqlParse['table']]))
         );
 
         // Already check in the previous context
