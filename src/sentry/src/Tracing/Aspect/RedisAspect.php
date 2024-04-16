@@ -63,7 +63,7 @@ class RedisAspect extends AbstractAspect
             'db.redis.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
             'db.redis.pool.idle' => $pool->getConnectionsInChannel(),
             'db.redis.pool.using' => $pool->getCurrentConnections(),
-            'db.redis.database_index' => $config['db'] ?? '',
+            'db.redis.database_index' => $config['db'] ?? 0,
         ];
 
         // rule: operation db.table
