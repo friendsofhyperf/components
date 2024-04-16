@@ -20,6 +20,8 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
+use function Hyperf\Support\class_basename;
+
 class CoordinatorAspect extends AbstractAspect
 {
     use SpanStarter;
@@ -40,7 +42,7 @@ class CoordinatorAspect extends AbstractAspect
         ];
 
         $span = $this->startSpan(
-            sprintf('%s.%s', strtolower($proceedingJoinPoint->className), $proceedingJoinPoint->methodName),
+            sprintf('%s.%s', strtolower(class_basename($proceedingJoinPoint->className)), $proceedingJoinPoint->methodName),
             sprintf('%s::%s(%s)', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName, $timeout),
         );
 
