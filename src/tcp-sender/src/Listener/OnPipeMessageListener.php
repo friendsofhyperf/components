@@ -9,10 +9,10 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\TcpServer\Listener;
+namespace FriendsOfHyperf\TcpSender\Listener;
 
-use FriendsOfHyperf\TcpServer\Sender;
-use FriendsOfHyperf\TcpServer\SenderPipeMessage;
+use FriendsOfHyperf\TcpSender\Sender;
+use FriendsOfHyperf\TcpSender\SenderPipeMessage;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
@@ -43,8 +43,8 @@ class OnPipeMessageListener implements ListenerInterface
             $message = $event->data;
 
             try {
-                [$fd, $method] = $this->sender->getFdAndMethodFromProxyMethod($message->method, $message->args);
-                $this->sender->proxy($fd, $method, $message->args);
+                $params = $this->sender->getFdAndMethodFromProxyMethod($message->method, $message->args);
+                $this->sender->proxy(...$params);
             } catch (Throwable $exception) {
                 $formatter = $this->container->get(FormatterInterface::class);
                 $this->logger->warning($formatter->format($exception));

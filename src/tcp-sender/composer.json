@@ -1,5 +1,5 @@
 {
-    "name": "friendsofhyperf/tcp-server",
+    "name": "friendsofhyperf/tcp-sender",
     "description": "Another tcp server component for Hyperf.",
     "keywords": [
         "hyperf",
@@ -24,20 +24,13 @@
     },
     "autoload": {
         "psr-4": {
-            "FriendsOfHyperf\\TcpServer\\": "src"
+            "FriendsOfHyperf\\TcpSender\\": "src"
         }
     },
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\TcpServer\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
         }
-    },
-    "suggest": {
-        "hyperf/async-queue": "Required to use Hyperf\\AsyncQueue\\Job.(~3.1.0)",
-        "vlucas/phpdotenv": "Required to use Dotenv.(^5.0)"
     },
     "minimum-stability": "dev",
     "config": {

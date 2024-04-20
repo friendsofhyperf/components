@@ -9,9 +9,9 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\TcpServer;
+namespace FriendsOfHyperf\TcpSender;
 
-use FriendsOfHyperf\TcpServer\Exception\InvalidMethodException;
+use FriendsOfHyperf\TcpSender\Exception\InvalidMethodException;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ContainerInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -20,6 +20,12 @@ use Swoole\Http\Response;
 use Swoole\Server;
 use Swow\Psr7\Server\ServerConnection;
 
+/**
+ * @method bool close(int $fd, bool $reset = false)
+ * @method bool send(int|string $fd, string $data, int $serverSocket = -1)
+ * @method bool sendfile(int $fd, string $filename, int $offset = 0, int $length = 0)
+ * @method bool sendwait(int $fd, string $data)
+ */
 class Sender
 {
     /**
@@ -34,6 +40,36 @@ class Sender
         private readonly ConfigInterface $config,
         private readonly ContainerInterface $container,
     ) {
+    }
+
+    public function __call($name, $arguments)
+    {
+        $params = $this->getFdAndMethodFromProxyMethod($name, $arguments);
+        $fd = $this->getArgumentsFd($params);
+        $method = $this->getArgumentsMethodName($params);
+        if ($this->isCoroutineServer()) {
+            if ($this->getResponse($fd)) {
+                array_shift($arguments);
+                if ($method === 'disconnect') {
+                    $method = 'close';
+                }
+
+                $result = $this->responses[$fd]->{$method}(...$arguments);
+                $this->logger->debug(
+                    sprintf(
+                        "[Tcp] Worker send to #{$fd}.Send %s",
+                        $result ? 'success' : 'failed'
+                    )
+                );
+                return $result;
+            }
+            return false;
+        }
+
+        if (! $this->proxy($method, $fd, $arguments)) {
+            $this->sendPipeMessage($name, $arguments);
+        }
+        return true;
     }
 
     public function setWorkerId(int $workerId): void
@@ -62,7 +98,17 @@ class Sender
         return false;
     }
 
-    public function proxy(int $fd, string $method, array $arguments): bool
+    public function getArgumentsFd(array $arguments): int
+    {
+        return $arguments[1] ?? 0;
+    }
+
+    public function getArgumentsMethodName(array $arguments): ?string
+    {
+        return $arguments[0] ?? null;
+    }
+
+    public function proxy(string $method, int $fd, array $arguments): bool
     {
         $result = $this->check($fd);
         if ($result) {
@@ -86,7 +132,21 @@ class Sender
             throw new InvalidMethodException(sprintf('Method [%s] is not allowed.', $method));
         }
 
-        return [$arguments, $method];
+        return [$method, ...$arguments];
+    }
+
+    public function setResponse(int $fd, mixed $response): void
+    {
+        if ($response === null) {
+            unset($this->responses[$fd]);
+        } else {
+            $this->responses[$fd] = $response;
+        }
+    }
+
+    public function getResponse(int $fd): mixed
+    {
+        return $this->responses[$fd] ?? null;
     }
 
     protected function getServer(): Server

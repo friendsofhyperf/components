@@ -9,8 +9,10 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\TcpServer\Exception;
+namespace FriendsOfHyperf\TcpSender\Exception;
 
-class InvalidMethodException extends ServerException
+use RuntimeException;
+
+class ServerException extends RuntimeException
 {
 }

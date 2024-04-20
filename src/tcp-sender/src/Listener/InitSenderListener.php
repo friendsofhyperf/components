@@ -9,9 +9,9 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\TcpServer\Listener;
+namespace FriendsOfHyperf\TcpSender\Listener;
 
-use FriendsOfHyperf\TcpServer\Sender;
+use FriendsOfHyperf\TcpSender\Sender;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\AfterWorkerStart;
 use Psr\Container\ContainerInterface;

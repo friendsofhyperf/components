@@ -157,7 +157,7 @@
             "src/validated-dto/src/Functions.php"
         ],
         "psr-4": {
-            "FriendsOfHyperf\\TcpServer\\": "src/tcp-server/src/",
+            "FriendsOfHyperf\\TcpSender\\": "src/tcp-sender/src/",
             "FriendsOfHyperf\\AmqpJob\\": "src/amqp-job/src/",
             "FriendsOfHyperf\\Cache\\": "src/cache/src/",
             "FriendsOfHyperf\\CommandSignals\\": "src/command-signals/src/",
