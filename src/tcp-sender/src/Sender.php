@@ -45,8 +45,8 @@ class Sender
     public function __call($name, $arguments)
     {
         $params = $this->getFdAndMethodFromProxyMethod($name, $arguments);
-        $fd = $this->getArgumentsFd($params);
-        $method = $this->getArgumentsMethodName($params);
+        $fd = $params[1] ?? 0;
+        $method = $params[0] ?? null;
         if ($this->isCoroutineServer()) {
             if ($this->getResponse($fd)) {
                 array_shift($arguments);
@@ -96,16 +96,6 @@ class Sender
         }
 
         return false;
-    }
-
-    public function getArgumentsFd(array $arguments): int
-    {
-        return $arguments[1] ?? 0;
-    }
-
-    public function getArgumentsMethodName(array $arguments): ?string
-    {
-        return $arguments[0] ?? null;
     }
 
     public function proxy(string $method, int $fd, array $arguments): bool

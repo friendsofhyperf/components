@@ -71,16 +71,6 @@ class SenderTest extends TestCase
         $this->assertFalse($this->sender->check(1));
     }
 
-    public function testGetArgumentsFd(): void
-    {
-        $this->assertEquals(1, $this->sender->getArgumentsFd([0, 1]));
-    }
-
-    public function testGetArgumentsMethodName(): void
-    {
-        $this->assertEquals('method', $this->sender->getArgumentsMethodName(['method', 1]));
-    }
-
     public function testProxyWithSuccessfulSend(): void
     {
         $this->server->method('send')->willReturn(true);

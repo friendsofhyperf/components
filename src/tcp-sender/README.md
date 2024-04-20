@@ -16,8 +16,13 @@ composer require friendsofhyperf/tcp-sender
 ## Usage
 
 ```php
+namespace App\Service;
+
+use Hyperf\Di\Annotation\Inject;
+use Friendsofhyperf\TcpSender\Sender;
+
 class YourService {
-    #[\Hyperf\Di\Annotation\Inject]
+    #[Inject]
     private Sender $sender; 
     
     public function send(): void {
