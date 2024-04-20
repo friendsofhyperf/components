@@ -1,8 +1,8 @@
 # Support
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/tcp-sender/version.png)](https://packagist.org/packages/friendsofhyperf/tcp-sender)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/tcp-sender/d/total.png)](https://packagist.org/packages/friendsofhyperf/tcp-sender)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/tcp-sender)](https://github.com/friendsofhyperf/tcp-sender)
+[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/tcp-server/version.png)](https://packagist.org/packages/friendsofhyperf/tcp-server)
+[![Total Downloads](https://poser.pugx.org/friendsofhyperf/tcp-server/d/total.png)](https://packagist.org/packages/friendsofhyperf/tcp-server)
+[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/tcp-server)](https://github.com/friendsofhyperf/tcp-server)
 
 Another support component for Hyperf.
 
@@ -11,7 +11,7 @@ Another support component for Hyperf.
 - Installation
 
 ```shell
-composer require friendsofhyperf/tcp-sender
+composer require friendsofhyperf/tcp-server
 ```
 
 ## Contact
