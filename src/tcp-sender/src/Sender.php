@@ -36,9 +36,9 @@ class Sender
     private int $workerId = 0;
 
     public function __construct(
-        protected StdoutLoggerInterface $logger,
-        protected ConfigInterface $config,
         protected ContainerInterface $container,
+        protected ConfigInterface $config,
+        protected StdoutLoggerInterface $logger,
     ) {
     }
 
