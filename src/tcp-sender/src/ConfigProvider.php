@@ -11,17 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\TcpSender;
 
-use FriendsOfHyperf\TcpSender\Listener\InitSenderListener;
-use FriendsOfHyperf\TcpSender\Listener\OnPipeMessageListener;
-
 class ConfigProvider
 {
     public function __invoke()
     {
         return [
             'listeners' => [
-                InitSenderListener::class,
-                OnPipeMessageListener::class,
+                Listener\InitSenderListener::class,
+                Listener\OnPipeMessageListener::class,
             ],
         ];
     }
