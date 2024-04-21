@@ -44,7 +44,11 @@ class SenderTest extends TestCase
 
         $this->container->method('get')->willReturn($this->server);
 
-        $this->sender = new Sender($this->logger, $this->config, $this->container);
+        $this->sender = new Sender(
+            $this->container,
+            $this->config,
+            $this->logger,
+        );
     }
 
     public function testSetAndGetWorkerId(): void
