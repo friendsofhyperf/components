@@ -15,7 +15,6 @@ use FriendsOfHyperf\TcpSender\Sender;
 use FriendsOfHyperf\TcpSender\SenderPipeMessage;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
-use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
 use Hyperf\Framework\Event\OnPipeMessage;
 use Psr\Container\ContainerInterface;
 use Throwable;
@@ -23,9 +22,9 @@ use Throwable;
 class OnPipeMessageListener implements ListenerInterface
 {
     public function __construct(
-        private readonly ContainerInterface $container,
-        private readonly StdoutLoggerInterface $logger,
-        private Sender $sender
+        protected ContainerInterface $container,
+        protected StdoutLoggerInterface $logger,
+        protected Sender $sender
     ) {
     }
 
@@ -46,8 +45,7 @@ class OnPipeMessageListener implements ListenerInterface
                 $params = $this->sender->getFdAndMethodFromProxyMethod($message->method, $message->args);
                 $this->sender->proxy(...$params);
             } catch (Throwable $exception) {
-                $formatter = $this->container->get(FormatterInterface::class);
-                $this->logger->warning($formatter->format($exception));
+                $this->logger->warning((string) $exception);
             }
         }
     }

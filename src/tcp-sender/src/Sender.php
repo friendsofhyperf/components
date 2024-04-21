@@ -33,12 +33,12 @@ class Sender
      */
     protected array $responses = [];
 
-    private int $workerId;
+    private int $workerId = 0;
 
     public function __construct(
-        private readonly StdoutLoggerInterface $logger,
-        private readonly ConfigInterface $config,
-        private readonly ContainerInterface $container,
+        protected StdoutLoggerInterface $logger,
+        protected ConfigInterface $config,
+        protected ContainerInterface $container,
     ) {
     }
 
@@ -47,25 +47,28 @@ class Sender
         $params = $this->getFdAndMethodFromProxyMethod($name, $arguments);
         $fd = $params[1] ?? 0;
         $method = $params[0] ?? null;
-        if ($this->isCoroutineServer()) {
-            if ($this->getResponse($fd)) {
-                array_shift($arguments);
 
-                $result = $this->getResponse($fd)->{$method}(...$arguments);
+        if ($this->isCoroutineServer()) {
+            if ($response = $this->getResponse($fd)) {
+                array_shift($arguments);
+                $result = $response->{$method}(...$arguments);
                 $this->logger->debug(
                     sprintf(
                         "[Tcp] Worker send to #{$fd}.Send %s",
                         $result ? 'success' : 'failed'
                     )
                 );
+
                 return $result;
             }
+
             return false;
         }
 
         if (! $this->proxy($method, $fd, $arguments)) {
             $this->sendPipeMessage($name, $arguments);
         }
+
         return true;
     }
 
@@ -84,7 +87,7 @@ class Sender
         return $this->config->get('server.type') === CoroutineServer::class;
     }
 
-    public function check($fd): bool
+    public function check(int $fd): bool
     {
         $info = $this->getServer()->connection_info($fd);
 
@@ -98,13 +101,14 @@ class Sender
     public function proxy(string $method, int $fd, array $arguments): bool
     {
         $result = $this->check($fd);
+
         if ($result) {
             /** @var \Swoole\WebSocket\Server $server */
             $server = $this->getServer();
             $result = $server->{$method}(...$arguments);
             $this->logger->debug(
                 sprintf(
-                    "[WebSocket] Worker.{$this->workerId} send to #{$fd}.Send %s",
+                    "[Socket] Worker.{$this->workerId} send to #{$fd}.Send %s",
                     $result ? 'success' : 'failed'
                 )
             );
@@ -131,6 +135,9 @@ class Sender
         }
     }
 
+    /**
+     * @return Response|ServerConnection|null
+     */
     public function getResponse(int $fd): mixed
     {
         return $this->responses[$fd] ?? null;
@@ -148,7 +155,7 @@ class Sender
         for ($workerId = 0; $workerId <= $workerCount; ++$workerId) {
             if ($workerId !== $this->workerId) {
                 $server->sendMessage(new SenderPipeMessage($name, $arguments), $workerId);
-                $this->logger->debug("[WebSocket] Let Worker.{$workerId} try to {$name}.");
+                $this->logger->debug("[Socket] Let Worker.{$workerId} try to {$name}.");
             }
         }
     }
