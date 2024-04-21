@@ -50,11 +50,8 @@ class Sender
         if ($this->isCoroutineServer()) {
             if ($this->getResponse($fd)) {
                 array_shift($arguments);
-                if ($method === 'disconnect') {
-                    $method = 'close';
-                }
 
-                $result = $this->responses[$fd]->{$method}(...$arguments);
+                $result = $this->getResponse($fd)->{$method}(...$arguments);
                 $this->logger->debug(
                     sprintf(
                         "[Tcp] Worker send to #{$fd}.Send %s",
