@@ -13,9 +13,11 @@ Another TcpSender component for Hyperf.
 ```shell
 composer require friendsofhyperf/tcp-sender
 ```
+
 ## Usage
 
 ### config/autoload/servers.php
+
 ```php
 'servers' => [
         [
@@ -53,15 +55,14 @@ use Swoole\Server;
 
 class TcpServer implements OnCloseInterface,OnReceiveInterface
 {
-    public function __construct(
-        private readonly Sender $sender,
-    ){}
+    public function __construct(private Sender $sender)
+    {
+    }
 
     /**
      * @param Server $server
-     * @return void
      */
-    public function onConnect($server,$fd,$reactorId): void
+    public function onConnect($server, $fd, $reactorId): void
     {
         $server->send($fd, sprintf('Client %s connected.'.PHP_EOL, $fd));
     }
@@ -95,9 +96,10 @@ use Swoole\Server;
 
 class TcpServer implements OnReceiveInterface
 {
-    public function __construct(
-        private readonly Sender $sender,
-    ){}
+    public function __construct(private Sender $sender)
+    {
+    }
+
     public function onConnect(Connection $connection, $fd): void
     {
         // 设置 fd 和 connection 的映射关系
@@ -126,14 +128,6 @@ class TcpServer implements OnReceiveInterface
 <?php
 
 declare(strict_types=1);
-/**
- * This file is part of Hyperf.
- *
- * @link     https://www.hyperf.io
- * @document https://hyperf.wiki
- * @contact  group@hyperf.io
- * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
- */
 
 namespace App\Controller;
 
@@ -141,14 +135,14 @@ use FriendsOfHyperf\TcpSender\Sender;
 
 class IndexController extends AbstractController
 {
-    public function __construct(
-        private readonly Sender $sender
-    ){}
+    public function __construct(private Sender $sender)
+    {
+    }
 
     public function index()
     {
         // 向指定的fd发送消息
-        $this->sender->send(1,'Hello Hyperf.');
+        $this->sender->send(1, 'Hello Hyperf.');
         $user = $this->request->input('user', 'Hyperf');
         $method = $this->request->getMethod();
 
@@ -161,9 +155,6 @@ class IndexController extends AbstractController
 
 ```
 
-```php
-
-```
 ## Contact
 
 - [Twitter](https://twitter.com/huangdijia)
