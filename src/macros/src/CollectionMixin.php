@@ -27,11 +27,6 @@ use function Hyperf\Collection\value;
  */
 class CollectionMixin
 {
-    public function doesntContain()
-    {
-        return fn ($key, $operator = null, $value = null) => ! $this->contains(...func_get_args());
-    }
-
     public function ensure()
     {
         return fn ($type) => $this->each(function ($item) use ($type) {
@@ -77,25 +72,6 @@ class CollectionMixin
         };
     }
 
-    public function hasAny()
-    {
-        return function ($key) {
-            if ($this->isEmpty()) {
-                return false;
-            }
-
-            $keys = is_array($key) ? $key : func_get_args();
-
-            foreach ($keys as $value) {
-                if ($this->has($value)) {
-                    return true;
-                }
-            }
-
-            return false;
-        };
-    }
-
     public function isSingle()
     {
         return fn () => $this->count() === 1;
@@ -107,12 +83,6 @@ class CollectionMixin
         return fn ($items, callable $callback) => new static(array_uintersect($this->items, $this->getArrayableItems($items), $callback));
     }
 
-    public function intersectAssoc()
-    {
-        /* @phpstan-ignore-next-line */
-        return fn ($items) => new static(array_intersect_assoc($this->items, $this->getArrayableItems($items)));
-    }
-
     public function intersectAssocUsing()
     {
         /* @phpstan-ignore-next-line */
@@ -122,20 +92,6 @@ class CollectionMixin
     public function pipeThrough()
     {
         return fn ($pipes) => static::make($pipes)->reduce(fn ($carry, $pipe) => $pipe($carry), $this);
-    }
-
-    public function skip()
-    {
-        return fn ($count) => $this->slice($count);
-    }
-
-    public function sliding()
-    {
-        return function ($size = 2, $step = 1) {
-            $chunks = (int) floor(($this->count() - $size) / $step) + 1;
-
-            return static::times($chunks, fn ($number) => $this->slice(($number - 1) * $step, $size));
-        };
     }
 
     public function sole()
@@ -155,18 +111,6 @@ class CollectionMixin
             }
 
             return $items->first();
-        };
-    }
-
-    public function sortKeysUsing()
-    {
-        return function (callable $callback) {
-            /** @phpstan-ignore-next-line */
-            $items = $this->items;
-
-            uksort($items, $callback);
-
-            return new static($items);
         };
     }
 
