@@ -17,19 +17,6 @@ use UnexpectedValueException;
 class Collection
 {
     /**
-     * Determine if an item is missing in the collection.
-     * Determine if an item is not contained in the collection.
-     *
-     * @param string $key
-     * @param mixed $operator
-     * @param mixed $value
-     * @return bool
-     */
-    public function doesntContain($key, $operator = null, $value = null)
-    {
-    }
-
-    /**
      * Ensure that every item in the collection is of the expected type.
      *
      * @template TEnsureOfType
@@ -68,16 +55,6 @@ class Collection
     }
 
     /**
-     * Determine if any of the keys exist in the collection.
-     *
-     * @param mixed $key
-     * @return bool
-     */
-    public function hasAny($key)
-    {
-    }
-
-    /**
      * Determine if the collection contains a single element.
      *
      * @return bool
@@ -94,16 +71,6 @@ class Collection
      * @return static
      */
     public function intersectUsing($items, callable $callback)
-    {
-    }
-
-    /**
-     * Intersect the collection with the given items with additional index check.
-     *
-     * @param Arrayable<TKey, TValue>|iterable<TKey, TValue> $items
-     * @return static
-     */
-    public function intersectAssoc($items)
     {
     }
 
@@ -129,27 +96,6 @@ class Collection
     }
 
     /**
-     * Create chunks representing a "sliding window" view of the items in the collection.
-     *
-     * @param int $size
-     * @param int $step
-     * @return static
-     */
-    public function sliding($size = 2, $step = 1)
-    {
-    }
-
-    /**
-     * Skip the first {$count} items.
-     *
-     * @param int $count
-     * @return static
-     */
-    public function skip($count)
-    {
-    }
-
-    /**
      * Get the first item in the collection, but only if exactly one item exists. Otherwise, throw an exception.
      *
      * @param string $key
@@ -160,15 +106,6 @@ class Collection
      * @throws MultipleItemsFoundException
      */
     public function sole($key = null, $operator = null, $value = null)
-    {
-    }
-
-    /**
-     * Sort the collection keys using a callback.
-     *
-     * @return static
-     */
-    public function sortKeysUsing(callable $callback)
     {
     }
 

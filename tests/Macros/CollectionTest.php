@@ -76,16 +76,6 @@ test('test getOrPut', function ($collection) {
     $this->assertEquals('male', $data->get('gender'));
 })->with('collectionClassProvider');
 
-test('test hasAny', function ($collection) {
-    $data = new $collection(['id' => 1, 'first' => 'Hello', 'second' => 'World']);
-
-    $this->assertTrue($data->hasAny('first'));
-    $this->assertFalse($data->hasAny('third'));
-    $this->assertTrue($data->hasAny(['first', 'second']));
-    $this->assertTrue($data->hasAny(['first', 'fourth']));
-    $this->assertFalse($data->hasAny(['third', 'fourth']));
-})->with('collectionClassProvider');
-
 test('test intersectUsingWithNull', function ($collection) {
     $collect = new $collection(['green', 'brown', 'blue']);
 
@@ -96,32 +86,6 @@ test('test intersectUsingCollection', function ($collection) {
     $collect = new $collection(['green', 'brown', 'blue']);
 
     $this->assertEquals(['green', 'brown'], $collect->intersectUsing(new $collection(['GREEN', 'brown', 'yellow']), 'strcasecmp')->all());
-})->with('collectionClassProvider');
-
-test('test intersectAssocWithNull', function ($collection) {
-    $array1 = new $collection(['a' => 'green', 'b' => 'brown', 'c' => 'blue', 'red']);
-
-    $this->assertEquals([], $array1->intersectAssoc(null)->all());
-})->with('collectionClassProvider');
-
-test('test intersectAssocCollection', function ($collection) {
-    $array1 = new $collection(['a' => 'green', 'b' => 'brown', 'c' => 'blue', 'red']);
-    $array2 = new $collection(['a' => 'green', 'b' => 'yellow', 'blue', 'red']);
-
-    $this->assertEquals(['a' => 'green'], $array1->intersectAssoc($array2)->all());
-})->with('collectionClassProvider');
-
-test('test intersectAssocUsingWithNull', function ($collection) {
-    $array1 = new $collection(['a' => 'green', 'b' => 'brown', 'c' => 'blue', 'red']);
-
-    $this->assertEquals([], $array1->intersectAssocUsing(null, 'strcasecmp')->all());
-})->with('collectionClassProvider');
-
-test('test intersectAssocUsingCollection', function ($collection) {
-    $array1 = new $collection(['a' => 'green', 'b' => 'brown', 'c' => 'blue', 'red']);
-    $array2 = new $collection(['a' => 'GREEN', 'B' => 'brown', 'yellow', 'red']);
-
-    $this->assertEquals(['b' => 'brown'], $array1->intersectAssocUsing($array2, 'strcasecmp')->all());
 })->with('collectionClassProvider');
 
 test('test pipeThrough', function ($collection) {
@@ -137,71 +101,6 @@ test('test pipeThrough', function ($collection) {
     ]);
 
     $this->assertEquals(15, $result);
-})->with('collectionClassProvider');
-
-test('test sliding', function ($collection) {
-    // Default parameters: $size = 2, $step = 1
-    $this->assertSame([], $collection::times(0)->sliding()->toArray());
-    $this->assertSame([], $collection::times(1)->sliding()->toArray());
-    $this->assertSame([[1, 2]], $collection::times(2)->sliding()->toArray());
-    $this->assertSame(
-        [[1, 2], [2, 3]],
-        $collection::times(3)->sliding()->map->values()->toArray()
-    );
-
-    // Custom step: $size = 2, $step = 3
-    $this->assertSame([], $collection::times(1)->sliding(2, 3)->toArray());
-    $this->assertSame([[1, 2]], $collection::times(2)->sliding(2, 3)->toArray());
-    $this->assertSame([[1, 2]], $collection::times(3)->sliding(2, 3)->toArray());
-    $this->assertSame([[1, 2]], $collection::times(4)->sliding(2, 3)->toArray());
-    $this->assertSame(
-        [[1, 2], [4, 5]],
-        $collection::times(5)->sliding(2, 3)->map->values()->toArray()
-    );
-
-    // Custom size: $size = 3, $step = 1
-    $this->assertSame([], $collection::times(2)->sliding(3)->toArray());
-    $this->assertSame([[1, 2, 3]], $collection::times(3)->sliding(3)->toArray());
-    $this->assertSame(
-        [[1, 2, 3], [2, 3, 4]],
-        $collection::times(4)->sliding(3)->map->values()->toArray()
-    );
-    $this->assertSame(
-        [[1, 2, 3], [2, 3, 4]],
-        $collection::times(4)->sliding(3)->map->values()->toArray()
-    );
-
-    // Custom size and custom step: $size = 3, $step = 2
-    $this->assertSame([], $collection::times(2)->sliding(3, 2)->toArray());
-    $this->assertSame([[1, 2, 3]], $collection::times(3)->sliding(3, 2)->toArray());
-    $this->assertSame([[1, 2, 3]], $collection::times(4)->sliding(3, 2)->toArray());
-    $this->assertSame(
-        [[1, 2, 3], [3, 4, 5]],
-        $collection::times(5)->sliding(3, 2)->map->values()->toArray()
-    );
-    $this->assertSame(
-        [[1, 2, 3], [3, 4, 5]],
-        $collection::times(6)->sliding(3, 2)->map->values()->toArray()
-    );
-
-    // Ensure keys are preserved, and inner chunks are also collections
-    $chunks = $collection::times(3)->sliding();
-
-    $this->assertSame([[0 => 1, 1 => 2], [1 => 2, 2 => 3]], $chunks->toArray());
-
-    $this->assertInstanceOf(Collection::class, $chunks);
-    $this->assertInstanceOf(Collection::class, $chunks->first());
-    $this->assertInstanceOf(Collection::class, $chunks->skip(1)->first());
-})->with('collectionClassProvider');
-
-test('test skip', function ($collection) {
-    $data = $collection::make([1, 2, 3, 4, 5, 6]);
-
-    // Total items to skip is smaller than collection length
-    $this->assertSame([5, 6], $data->skip(4)->values()->all());
-
-    // Total items to skip is more than collection length
-    $this->assertSame([], $data->skip(10)->values()->all());
 })->with('collectionClassProvider');
 
 test('test soleReturnsFirstItemInCollectionIfOnlyOneExists', function ($collection) {
@@ -236,12 +135,6 @@ test('test soleThrowsExceptionIfMoreThanOneItemExists', function ($collection) {
     ]);
 
     $collect->where('name', 'foo')->sole();
-})->with('collectionClassProvider');
-
-test('test sortKeysUsing', function ($collection) {
-    $data = new $collection(['B' => 'dayle', 'a' => 'taylor']);
-
-    $this->assertSame(['a' => 'taylor', 'B' => 'dayle'], $data->sortKeysUsing('strnatcasecmp')->all());
 })->with('collectionClassProvider');
 
 test('test undot', function ($collection) {
