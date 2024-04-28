@@ -204,7 +204,10 @@
     "autoload-dev": {
         "psr-4": {
             "FriendsOfHyperf\\Tests\\": "tests/"
-        }
+        },
+        "files": [
+            "tests/phpunit-patch.php"
+        ]
     },
     "extra": {
         "hyperf": {
