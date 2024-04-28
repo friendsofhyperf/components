@@ -78,6 +78,7 @@ foreach ($files as $file) {
 ksort($autoload);
 sort($autoloadFiles);
 ksort($autoloadDev);
+ksort($autoloadDevFiles);
 sort($configProviders);
 ksort($replaces);
 
