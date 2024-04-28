@@ -25,7 +25,7 @@ $files = Finder::create()
 
 $require = [];
 $autoload = [];
-$autoloadFiles = [];
+$autoloadFiles = ['tests/phpunit-patch.php'];
 $autoloadDev = [
     'FriendsOfHyperf\\Tests\\' => 'tests/',
 ];

@@ -155,7 +155,8 @@
             "src/lock/src/Functions.php",
             "src/model-factory/src/Functions.php",
             "src/support/src/Functions.php",
-            "src/validated-dto/src/Functions.php"
+            "src/validated-dto/src/Functions.php",
+            "tests/phpunit-patch.php"
         ],
         "psr-4": {
             "FriendsOfHyperf\\AmqpJob\\": "src/amqp-job/src/",
