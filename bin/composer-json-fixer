@@ -25,9 +25,12 @@ $files = Finder::create()
 
 $require = [];
 $autoload = [];
-$autoloadFiles = ['tests/phpunit-patch.php'];
+$autoloadFiles = [];
 $autoloadDev = [
     'FriendsOfHyperf\\Tests\\' => 'tests/',
+];
+$autoloadDevFiles = [
+    'tests/phpunit-patch.php',
 ];
 $configProviders = [];
 $replaces = [];
@@ -63,6 +66,10 @@ foreach ($files as $file) {
         }
     }
 
+    foreach ($composerJson['autoload-dev']['files'] ?? [] as $file) {
+        $autoloadDevFiles[] = "src/{$component}/" . preg_replace('#^./#', '', $file);
+    }
+
     if (isset($composerJson['extra']['hyperf']['config'])) {
         $configProviders = array_merge($configProviders, (array) $composerJson['extra']['hyperf']['config']);
     }
@@ -78,6 +85,7 @@ $json = json_decode(file_get_contents(__DIR__ . '/../composer.json'));
 $json->autoload->files = $autoloadFiles;
 $json->autoload->{'psr-4'} = $autoload;
 $json->{'autoload-dev'}->{'psr-4'} = $autoloadDev;
+$json->{'autoload-dev'}->files = $autoloadDevFiles;
 $json->extra->hyperf->config = $configProviders;
 $json->replace = $replaces;
 
