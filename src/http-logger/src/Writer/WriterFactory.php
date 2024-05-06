@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Http\Logger\Writer;
 
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
+use RuntimeException;
 
 use function Hyperf\Support\make;
 
@@ -22,6 +23,10 @@ class WriterFactory
     {
         $config = $container->get(ConfigInterface::class);
         $class = $config->get('http_logger.log_writer', DefaultLogWriter::class);
+
+        if (! is_a($class, LogWriter::class, true)) {
+            throw new RuntimeException(sprintf('Invalid log writer class %s', $class));
+        }
 
         return make($class);
     }
