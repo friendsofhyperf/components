@@ -247,13 +247,15 @@ class IncomingEntry
      */
     public function toArray(): array
     {
+        $content = json_decode(json_encode($this->content, JSON_INVALID_UTF8_SUBSTITUTE), true);
+
         return [
             'uuid' => $this->uuid,
             'batch_id' => $this->batchId,
             'sub_batch_id' => $this->subBatchId,
             'family_hash' => $this->familyHash,
             'type' => $this->type,
-            'content' => $this->content,
+            'content' => $content ?: [],
             'created_at' => $this->recordedAt,
         ];
     }
