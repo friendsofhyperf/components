@@ -35,6 +35,7 @@ use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Kafka\ProducerManager;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Stringable\Str;
+use Hyperf\Stringable\Stringable as HyperfStringable;
 use Hyperf\Support\Fluent;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use InvalidArgumentException;
@@ -98,6 +99,10 @@ function blank($value): bool
 
     if ($value instanceof Countable) {
         return count($value) === 0;
+    }
+
+    if ($value instanceof HyperfStringable) {
+        return $value->trim()->toString() === '';
     }
 
     return empty($value);
