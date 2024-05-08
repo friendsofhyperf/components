@@ -9,9 +9,12 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 use Hyperf\Contract\ApplicationInterface;
+use Hyperf\Stringable\Stringable;
 
+use function FriendsOfHyperf\Helpers\blank;
 use function FriendsOfHyperf\Helpers\class_namespace;
 use function FriendsOfHyperf\Helpers\Command\call;
+use function FriendsOfHyperf\Helpers\filled;
 use function FriendsOfHyperf\Helpers\object_get;
 use function FriendsOfHyperf\Helpers\preg_replace_array;
 
@@ -60,4 +63,32 @@ test('test FriendsOfHyperf\Helpers\Command\call', function () {
     });
 
     expect(call('foo:bar', ['argument' => 'value']))->toBe(0);
+});
+
+test('filled', function () {
+    $this->assertFalse(filled(null));
+    $this->assertFalse(filled(''));
+    $this->assertFalse(filled('  '));
+    $this->assertFalse(filled(new Stringable('')));
+    $this->assertFalse(filled(new Stringable('  ')));
+    $this->assertTrue(filled(10));
+    $this->assertTrue(filled(true));
+    $this->assertTrue(filled(false));
+    $this->assertTrue(filled(0));
+    $this->assertTrue(filled(0.0));
+    $this->assertTrue(filled(new Stringable(' FooBar ')));
+});
+
+test('blank', function () {
+    $this->assertTrue(blank(null));
+    $this->assertTrue(blank(''));
+    $this->assertTrue(blank('  '));
+    $this->assertTrue(blank(new Stringable('')));
+    $this->assertTrue(blank(new Stringable('  ')));
+    $this->assertFalse(blank(10));
+    $this->assertFalse(blank(true));
+    $this->assertFalse(blank(false));
+    $this->assertFalse(blank(0));
+    $this->assertFalse(blank(0.0));
+    $this->assertFalse(blank(new Stringable(' FooBar ')));
 });
