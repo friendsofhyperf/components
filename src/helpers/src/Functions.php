@@ -100,6 +100,10 @@ function blank($value): bool
         return count($value) === 0;
     }
 
+    if ($value instanceof Stringable) {
+        return trim((string) $value) === '';
+    }
+
     return empty($value);
 }
 

@@ -9,9 +9,12 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 use Hyperf\Contract\ApplicationInterface;
+use Hyperf\Stringable\Stringable;
 
+use function FriendsOfHyperf\Helpers\blank;
 use function FriendsOfHyperf\Helpers\class_namespace;
 use function FriendsOfHyperf\Helpers\Command\call;
+use function FriendsOfHyperf\Helpers\filled;
 use function FriendsOfHyperf\Helpers\object_get;
 use function FriendsOfHyperf\Helpers\preg_replace_array;
 
@@ -61,3 +64,35 @@ test('test FriendsOfHyperf\Helpers\Command\call', function () {
 
     expect(call('foo:bar', ['argument' => 'value']))->toBe(0);
 });
+
+test('test filled', function ($expect, $value) {
+    expect(filled($value))->toBe($expect);
+})->with([
+    [false, null],
+    [false, ''],
+    [false, '  '],
+    [false, new Stringable('')],
+    [false, new Stringable('  ')],
+    [true, 10],
+    [true, true],
+    [true, false],
+    [true, 0],
+    [true, 0.0],
+    [true, new Stringable(' FooBar ')],
+]);
+
+test('test blank', function ($expect, $value) {
+    expect(blank($value))->toBe($expect);
+})->with([
+    [true, null],
+    [true, ''],
+    [true, '  '],
+    [true, new Stringable('')],
+    [true, new Stringable('  ')],
+    [false, 10],
+    [false, true],
+    [false, false],
+    [false, 0],
+    [false, 0.0],
+    [false, new Stringable(' FooBar ')],
+]);
