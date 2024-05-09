@@ -60,7 +60,7 @@ class PendingRequest
     /**
      * The Guzzle client instance.
      *
-     * @var Client
+     * @var Client|null
      */
     protected $client;
 
@@ -1440,7 +1440,7 @@ class PendingRequest
      */
     protected function getReusableClient()
     {
-        return $this->client = $this->client ?: $this->createClient($this->buildHandlerStack());
+        return $this->client ??= $this->createClient($this->buildHandlerStack());
     }
 
     /**
