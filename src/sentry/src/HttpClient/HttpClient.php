@@ -52,7 +52,7 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
         $chan = $this->chan;
         $chan->push(fn () => parent::sendRequest($request, $options));
 
-        return new Response(202, ['X-Sentry-Request-Status' => ['pending']], '');
+        return new Response(202, ['X-Sentry-Request-Status' => ['queued']], '');
     }
 
     public function close(): void
