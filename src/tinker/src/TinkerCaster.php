@@ -17,7 +17,7 @@ use Throwable;
 
 /**
  * @property string $poolName
- * @property array appends
+ * @property array $appends
  */
 class TinkerCaster
 {
