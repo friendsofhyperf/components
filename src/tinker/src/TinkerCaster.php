@@ -17,7 +17,7 @@ use Throwable;
 
 /**
  * @property string $poolName
- * @property array appends
+ * @property array $appends
  */
 class TinkerCaster
 {
@@ -158,6 +158,31 @@ class TinkerCaster
 
         return [
             Caster::PREFIX_PROTECTED . 'poolName' => $poolName,
+        ];
+    }
+
+    /**
+     * Get an array representing the properties of a fluent.
+     *
+     * @param \Hyperf\Support\Fluent $fluent
+     */
+    public static function castFluent($fluent): array
+    {
+        return [
+            Caster::PREFIX_PROTECTED . 'attributes' => $fluent->getAttributes(),
+        ];
+    }
+
+    /**
+     * Get an array representing the properties of a message bag.
+     *
+     * @param \Hyperf\Support\MessageBag $messageBag
+     */
+    public static function castMessageBag($messageBag): array
+    {
+        return [
+            Caster::PREFIX_PROTECTED . 'messages' => $messageBag->getMessages(),
+            Caster::PREFIX_PROTECTED . 'format' => $messageBag->getFormat(),
         ];
     }
 }
