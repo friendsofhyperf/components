@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Tinker;
 
 use ReflectionException;
 use ReflectionObject;
+use Stringable;
 use Symfony\Component\VarDumper\Caster\Caster;
 use Throwable;
 
@@ -92,7 +93,7 @@ class TinkerCaster
 
     /**
      * Get an array representing the properties of a fluent string.
-     * @param \Hyperf\Stringable\Stringable $stringable
+     * @param Stringable $stringable
      */
     public static function castStringable($stringable): array
     {
