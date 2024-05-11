@@ -126,7 +126,7 @@ class TinkerCommand extends HyperfCommand
         $this->commandWhitelist = array_merge($this->commandWhitelist, (array) $this->config->get('tinker.command_white_list', []));
 
         foreach ($this->getApplication()->all() as $name => $command) {
-            if (in_array($name, $this->commandWhitelist)) {
+            if (in_array($name, $this->commandWhitelist, true)) {
                 $commands[] = $command;
             }
         }
