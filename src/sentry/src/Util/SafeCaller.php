@@ -23,20 +23,18 @@ class SafeCaller
      * Example
      * $data['scores'] = FriendsOfHyperf\Sentry\Util\SafeCaller::call(fn () => di(ScoresInterface::class)->get(), 'default');.
      */
-    public function call(Closure $closure, mixed $default = null, ?Closure $exceptionHandle = null): mixed
+    public function call(Closure $closure, mixed $default = null, ?Closure $exceptionHandler = null): mixed
     {
         try {
             return $closure();
         } catch (Throwable $e) {
             $report = true;
-            if ($exceptionHandle) {
-                // user can skip reporting by returning false
-                $report = $exceptionHandle($e);
+
+            if ($exceptionHandler) { // Do not capture when the $exceptionHandler returns false
+                $report = $exceptionHandler($e);
             }
 
-            if ($report !== false) {
-                SentrySdk::getCurrentHub()->captureException($e);
-            }
+            $report !== false && SentrySdk::getCurrentHub()->captureException($e);
 
             return value($default);
         }
