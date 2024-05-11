@@ -11,12 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tinker;
 
-use ReflectionException;
-use ReflectionObject;
 use Stringable;
 use Symfony\Component\VarDumper\Caster\Caster;
 use Throwable;
 
+/**
+ * @property string $poolName
+ * @property array appends
+ */
 class TinkerCaster
 {
     /**
@@ -149,15 +151,13 @@ class TinkerCaster
      *
      * @param \Hyperf\Redis\Redis $redis
      * @return string[]
-     * @throws ReflectionException
      */
     public static function castRedis($redis): array
     {
-        $refObject = new ReflectionObject($redis);
-        $refProperty = $refObject->getProperty('poolName');
+        $poolName = (fn () => $this->poolName ?? 'default')->call($redis);
 
         return [
-            Caster::PREFIX_PROTECTED . 'poolName' => (string) $refProperty->getValue($redis),
+            Caster::PREFIX_PROTECTED . 'poolName' => $poolName,
         ];
     }
 }
