@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace Sentry;
 
+use Closure;
 use Hyperf\Context\Context;
 use Sentry\State\Hub;
 use Sentry\State\HubInterface;
+use Throwable;
 
 use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
@@ -61,5 +63,23 @@ class SentrySdk
     public static function setCurrentHub(HubInterface $hub): HubInterface
     {
         return tap($hub, fn ($hub) => Context::set(__CLASS__, $hub));
+    }
+
+    /**
+     * Example
+     * $data['scores'] = SentrySdk::capture(fn () => di(ScoresInterface::class)->get(), 'default');.
+     */
+    public static function capture(Closure $closure, mixed $default = null, ?Closure $catchClosure = null): mixed
+    {
+        try {
+            return $closure();
+        } catch (Throwable $e) {
+            self::getCurrentHub()->captureException($e);
+            if ($catchClosure) {
+                $catchClosure($e);
+            }
+
+            return $default;
+        }
     }
 }
