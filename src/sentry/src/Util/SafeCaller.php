@@ -11,6 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Util;
 
+use Closure;
+use Sentry\SentrySdk;
+use Throwable;
+
+use function Hyperf\Support\value;
+
 class SafeCaller
 {
     /**
@@ -22,11 +28,15 @@ class SafeCaller
         try {
             return $closure();
         } catch (Throwable $e) {
+            $report = true;
             if ($exceptionHandle) {
-                $exceptionHandle($e);
+                // user can skip reporting by returning false
+                $report = $exceptionHandle($e);
             }
 
-            SentrySdk::getCurrentHub()->captureException($e);
+            if ($report !== false) {
+                SentrySdk::getCurrentHub()->captureException($e);
+            }
 
             return value($default);
         }
