@@ -119,7 +119,6 @@ class TinkerCaster
         );
 
         $hidden = array_flip($model->getHidden());
-
         $appends = (fn () => array_combine($this->appends, $this->appends))->bindTo($model, $model)();
 
         foreach ($appends as $appended) {
