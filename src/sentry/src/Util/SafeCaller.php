@@ -21,9 +21,9 @@ class SafeCaller
 {
     /**
      * Example
-     * $data['scores'] = FriendsOfHyperf\Sentry\Util\SafeCaller::capture(fn () => di(ScoresInterface::class)->get(), 'default');.
+     * $data['scores'] = FriendsOfHyperf\Sentry\Util\SafeCaller::call(fn () => di(ScoresInterface::class)->get(), 'default');.
      */
-    public function capture(Closure $closure, mixed $default = null, ?Closure $exceptionHandle = null): mixed
+    public function call(Closure $closure, mixed $default = null, ?Closure $exceptionHandle = null): mixed
     {
         try {
             return $closure();
