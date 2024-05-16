@@ -17,11 +17,14 @@ use Mockery as m;
 
 uses(FriendsOfHyperf\Tests\TestCase::class)->in('*/*');
 uses()->group('config-consul')->in('ConfigConsul');
+uses()->group('elasticsearch')->in('Elasticsearch');
+uses()->group('encryption')->in('Encryption');
 uses()->group('facade')->in('Facade');
 uses()->group('fast-paginate')->in('FastPaginate');
 uses()->group('helpers')->in('Helpers');
 uses()->group('macros')->in('Macros');
 uses()->group('redis-sub')->in('RedisSubscriber');
+uses()->group('sentry')->in('Sentry');
 uses()->group('support')->in('Support');
 uses()->group('tinker')->in('Tinker');
 uses()->group('tcp-sender')->in('TcpSender');

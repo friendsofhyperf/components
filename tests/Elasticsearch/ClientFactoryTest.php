@@ -8,49 +8,36 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-
-namespace FriendsOfHyperf\Tests\Elasticsearch;
-
 use Elastic\Elasticsearch\ClientBuilder;
 use Elastic\Transport\Exception\NoNodeAvailableException;
 use FriendsOfHyperf\Elasticsearch\ClientBuilderFactory;
-use FriendsOfHyperf\Tests\TestCase;
 use GuzzleHttp\Client;
 use Hyperf\Guzzle\ClientFactory as GuzzleClientFactory;
 
-/**
- * @internal
- * @coversNothing
- */
-class ClientFactoryTest extends TestCase
-{
-    public function testClientBuilderFactoryCreate()
-    {
-        /** @var GuzzleClientFactory $clientFactory */
-        $clientFactory = $this->mock(GuzzleClientFactory::class, function ($mock) {
-            $mock->shouldReceive('create')->once()->with([])->andReturn(new Client());
-        });
-        $clientFactory = new ClientBuilderFactory($clientFactory);
+test('test ClientBuilderFactoryCreate', function () {
+    /** @var GuzzleClientFactory $clientFactory */
+    $clientFactory = $this->mock(GuzzleClientFactory::class, function ($mock) {
+        $mock->shouldReceive('create')->once()->with([])->andReturn(new Client());
+    });
+    $clientFactory = new ClientBuilderFactory($clientFactory);
 
-        $clientBuilder = $clientFactory->create();
+    $clientBuilder = $clientFactory->create();
 
-        $this->assertInstanceOf(ClientBuilder::class, $clientBuilder);
-    }
+    $this->assertInstanceOf(ClientBuilder::class, $clientBuilder);
+});
 
-    public function testHostNotReached()
-    {
-        $this->markTestSkipped('Skip testHostNotReached');
+test('test HostNotReached', function () {
+    $this->markTestSkipped('Skip testHostNotReached');
 
-        $this->expectException(NoNodeAvailableException::class);
+    $this->expectException(NoNodeAvailableException::class);
 
-        /** @var GuzzleClientFactory $clientFactory */
-        $clientFactory = $this->mock(GuzzleClientFactory::class, function ($mock) {
-            $mock->shouldReceive('create')->once()->with([])->andReturn(new Client());
-        });
-        $clientFactory = new ClientBuilderFactory($clientFactory);
+    /** @var GuzzleClientFactory $clientFactory */
+    $clientFactory = $this->mock(GuzzleClientFactory::class, function ($mock) {
+        $mock->shouldReceive('create')->once()->with([])->andReturn(new Client());
+    });
+    $clientFactory = new ClientBuilderFactory($clientFactory);
 
-        $client = $clientFactory->create()->setHosts(['http://127.0.0.1:9201'])->build();
+    $client = $clientFactory->create()->setHosts(['http://127.0.0.1:9201'])->build();
 
-        $client->info();
-    }
-}
+    $client->info();
+});
