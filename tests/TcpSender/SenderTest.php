@@ -16,99 +16,70 @@ use FriendsOfHyperf\TcpSender\Sender;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ContainerInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
-use PHPUnit\Framework\TestCase;
 use Swoole\Server;
 
-/**
- * @internal
- * @coversNothing
- */
-class SenderTest extends TestCase
-{
-    private Sender $sender;
+beforeEach(function () {
+    $this->logger = $this->createMock(StdoutLoggerInterface::class);
+    $this->config = $this->createMock(ConfigInterface::class);
+    $this->container = $this->createMock(ContainerInterface::class);
+    $this->server = $this->createMock(Server::class);
 
-    private StdoutLoggerInterface $logger;
+    $this->container->method('get')->willReturn($this->server);
 
-    private ConfigInterface $config;
+    $this->sender = new Sender(
+        $this->container,
+        $this->config,
+        $this->logger,
+    );
+});
 
-    private ContainerInterface $container;
+test('test SetAndGetWorkerId', function () {
+    $this->sender->setWorkerId(1);
+    $this->assertEquals(1, $this->sender->getWorkerId());
+});
 
-    private Server $server;
+test('test IsCoroutineServer', function () {
+    $this->config->method('get')->willReturn('Hyperf\Server\CoroutineServer');
+    $this->assertTrue($this->sender->isCoroutineServer());
+});
 
-    protected function setUp(): void
-    {
-        $this->logger = $this->createMock(StdoutLoggerInterface::class);
-        $this->config = $this->createMock(ConfigInterface::class);
-        $this->container = $this->createMock(ContainerInterface::class);
-        $this->server = $this->createMock(Server::class);
+test('test CheckWithTcpSocket', function () {
+    $this->server->method('connection_info')->willReturn(['socket_type' => SWOOLE_SOCK_TCP]);
+    $this->assertTrue($this->sender->check(1));
+});
 
-        $this->container->method('get')->willReturn($this->server);
+test('test CheckWithNonTcpSocket', function () {
+    $this->server->method('connection_info')->willReturn(['socket_type' => SWOOLE_SOCK_UDP]);
+    $this->assertFalse($this->sender->check(1));
+});
 
-        $this->sender = new Sender(
-            $this->container,
-            $this->config,
-            $this->logger,
-        );
-    }
+test('test ProxyWithSuccessfulSend', function () {
+    $this->server->method('send')->willReturn(true);
+    $this->server->method('connection_info')->willReturn(['socket_type' => SWOOLE_SOCK_TCP]);
+    $this->sender->setWorkerId(1);
+    $this->assertTrue($this->sender->proxy('send', 1, [1, 'message']));
+});
 
-    public function testSetAndGetWorkerId(): void
-    {
-        $this->sender->setWorkerId(1);
-        $this->assertEquals(1, $this->sender->getWorkerId());
-    }
+test('test ProxyWithFailedSend', function () {
+    $this->server->method('send')->willReturn(false);
+    $this->assertFalse($this->sender->proxy('send', 1, ['message']));
+});
 
-    public function testIsCoroutineServer(): void
-    {
-        $this->config->method('get')->willReturn('Hyperf\Server\CoroutineServer');
-        $this->assertTrue($this->sender->isCoroutineServer());
-    }
+test('test GetFdAndMethodFromProxyMethod', function () {
+    $this->assertEquals(['send', 1, 'message'], $this->sender->getFdAndMethodFromProxyMethod('send', [1, 'message']));
+});
 
-    public function testCheckWithTcpSocket(): void
-    {
-        $this->server->method('connection_info')->willReturn(['socket_type' => SWOOLE_SOCK_TCP]);
-        $this->assertTrue($this->sender->check(1));
-    }
+test('test GetFdAndMethodFromProxyMethodWithInvalidMethod', function () {
+    $this->expectException(InvalidMethodException::class);
+    $this->sender->getFdAndMethodFromProxyMethod('invalid', [1, 'message']);
+});
 
-    public function testCheckWithNonTcpSocket(): void
-    {
-        $this->server->method('connection_info')->willReturn(['socket_type' => SWOOLE_SOCK_UDP]);
-        $this->assertFalse($this->sender->check(1));
-    }
+test('test SetAndGetResponse', function () {
+    $response = 1;
+    $this->sender->setResponse(1, $response);
+    $this->assertSame($response, $this->sender->getResponse(1));
+});
 
-    public function testProxyWithSuccessfulSend(): void
-    {
-        $this->server->method('send')->willReturn(true);
-        $this->server->method('connection_info')->willReturn(['socket_type' => SWOOLE_SOCK_TCP]);
-        $this->sender->setWorkerId(1);
-        $this->assertTrue($this->sender->proxy('send', 1, [1, 'message']));
-    }
-
-    public function testProxyWithFailedSend(): void
-    {
-        $this->server->method('send')->willReturn(false);
-        $this->assertFalse($this->sender->proxy('send', 1, ['message']));
-    }
-
-    public function testGetFdAndMethodFromProxyMethod(): void
-    {
-        $this->assertEquals(['send', 1, 'message'], $this->sender->getFdAndMethodFromProxyMethod('send', [1, 'message']));
-    }
-
-    public function testGetFdAndMethodFromProxyMethodWithInvalidMethod(): void
-    {
-        $this->expectException(InvalidMethodException::class);
-        $this->sender->getFdAndMethodFromProxyMethod('invalid', [1, 'message']);
-    }
-
-    public function testSetAndGetResponse(): void
-    {
-        $response = 1;
-        $this->sender->setResponse(1, $response);
-        $this->assertSame($response, $this->sender->getResponse(1));
-    }
-
-    public function testGetResponseWithNoResponseSet(): void
-    {
-        $this->assertNull($this->sender->getResponse(1));
-    }
-}
+test('test GetResponseWithNoResponseSet', function () {
+    $this->assertNull($this->sender->getResponse(1));
+});

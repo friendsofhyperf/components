@@ -11,7 +11,6 @@ declare(strict_types=1);
 use FriendsOfHyperf\Redis\Subscriber\Subscriber;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
-use Redis;
 
 use function Hyperf\Coroutine\go;
 

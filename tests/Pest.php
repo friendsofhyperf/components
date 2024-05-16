@@ -24,6 +24,7 @@ uses()->group('macros')->in('Macros');
 uses()->group('redis-sub')->in('RedisSubscriber');
 uses()->group('support')->in('Support');
 uses()->group('tinker')->in('Tinker');
+uses()->group('tcp-sender')->in('TcpSender');
 uses()->group('validated-dto')
     ->beforeEach(function () {
         $this->subject_name = faker()->name();
