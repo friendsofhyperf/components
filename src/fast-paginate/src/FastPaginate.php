@@ -64,7 +64,16 @@ class FastPaginate
         $orders = collect($base->orders)
             ->pluck('column')
             ->filter()
-            ->map(fn ($column) => $base->grammar->wrap($column));
+            ->map(function ($column) use ($base) {
+                // Not everyone quotes their custom selects, which
+                // is totally reasonable. We'll look for both
+                // quoted and unquoted, as a kindness.
+                return [
+                    $column,
+                    $base->grammar->wrap($column),
+                ];
+            })
+            ->flatten(1);
 
         return collect($base->columns)
             ->filter(function ($column) use ($orders, $base) {
@@ -140,6 +149,10 @@ class FastPaginate
 
             // Get the key values from the records on the current page without mutating them.
             $ids = $paginator->getCollection()->map->getRawOriginal($key)->toArray(); /* @phpstan-ignore-line */
+
+            if (count($ids) <= 0) {
+                return $paginator;
+            }
 
             if (in_array($model->getKeyType(), ['int', 'integer'])) {
                 /* @phpstan-ignore-next-line */
