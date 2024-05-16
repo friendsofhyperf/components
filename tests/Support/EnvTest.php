@@ -10,12 +10,12 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Support\Env;
 
-test('testEnv', function () {
+test('test Env', function () {
     $_SERVER['foo'] = 'bar';
     expect(Env::get('foo'))->toBe('bar');
 });
 
-test('testEnvTrue', function () {
+test('test EnvTrue', function () {
     $_SERVER['foo'] = 'true';
     expect(Env::get('foo'))->toBeTrue();
 
@@ -23,7 +23,7 @@ test('testEnvTrue', function () {
     expect(Env::get('foo'))->toBeTrue();
 });
 
-test('testEnvFalse', function () {
+test('test EnvFalse', function () {
     $_SERVER['foo'] = 'false';
     expect(Env::get('foo'))->toBeFalse();
 
@@ -31,7 +31,7 @@ test('testEnvFalse', function () {
     expect(Env::get('foo'))->toBeFalse();
 });
 
-test('testEnvEmpty', function () {
+test('test EnvEmpty', function () {
     $_SERVER['foo'] = '';
     expect(Env::get('foo'))->toBeEmpty();
 
@@ -42,7 +42,7 @@ test('testEnvEmpty', function () {
     expect(Env::get('foo'))->toBeEmpty();
 });
 
-test('testEnvNull', function () {
+test('test EnvNull', function () {
     $_SERVER['foo'] = 'null';
     expect(Env::get('foo'))->toBeNull();
 
@@ -50,7 +50,7 @@ test('testEnvNull', function () {
     expect(Env::get('foo'))->toBeNull();
 });
 
-test('testEnvDefault', function () {
+test('test EnvDefault', function () {
     $_SERVER['foo'] = 'bar';
     expect(Env::get('foo', 'default'))->toBe('bar');
 
@@ -64,7 +64,7 @@ test('testEnvDefault', function () {
     expect(Env::get('foo', 'default'))->toBe('default');
 });
 
-test('testEnvEscapedString', function () {
+test('test EnvEscapedString', function () {
     $_SERVER['foo'] = '"null"';
     expect(Env::get('foo'))->toBe('null');
 
@@ -75,19 +75,19 @@ test('testEnvEscapedString', function () {
     expect(Env::get('foo'))->toBe('x"null"x');
 });
 
-test('testGetFromSERVERFirst', function () {
+test('test GetFromSERVERFirst', function () {
     $_ENV['foo'] = 'From $_ENV';
     $_SERVER['foo'] = 'From $_SERVER';
     expect(Env::get('foo'))->toBe('From $_SERVER');
 });
 
-test('testRequiredEnvVariableThrowsAnExceptionWhenNotFound', function (): void {
+test('test RequiredEnvVariableThrowsAnExceptionWhenNotFound', function (): void {
     $this->expectExceptionObject(new RuntimeException('[required-does-not-exist] has no value'));
 
     Env::getOrFail('required-does-not-exist');
 });
 
-test('testRequiredEnvReturnsValue', function (): void {
+test('test RequiredEnvReturnsValue', function (): void {
     $_SERVER['required-exists'] = 'some-value';
     expect(Env::getOrFail('required-exists'))->toBe('some-value');
 });

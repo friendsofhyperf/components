@@ -8,9 +8,6 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-
-namespace FriendsOfHyperf\Tests\TcpSender;
-
 use FriendsOfHyperf\TcpSender\Exception\InvalidMethodException;
 use FriendsOfHyperf\TcpSender\Sender;
 use Hyperf\Contract\ConfigInterface;

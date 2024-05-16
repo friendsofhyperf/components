@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-test('isLocal', function ($string, $method) {
+test('test isLocal', function ($string, $method) {
     $env = new FriendsOfHyperf\Support\Environment($string);
     expect($env->{$method}())->toBeTrue();
 })->with([
