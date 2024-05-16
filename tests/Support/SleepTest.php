@@ -10,10 +10,8 @@ declare(strict_types=1);
  */
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
-use Exception;
 use FriendsOfHyperf\Support\Sleep;
 use PHPUnit\Framework\AssertionFailedError;
-use RuntimeException;
 
 use function FriendsOfHyperf\Helpers\now;
 
