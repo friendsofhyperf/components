@@ -21,6 +21,7 @@ uses()->group('facade')->in('Facade');
 uses()->group('fast-paginate')->in('FastPaginate');
 uses()->group('helpers')->in('Helpers');
 uses()->group('macros')->in('Macros');
+uses()->group('redis-sub')->in('RedisSubscriber');
 uses()->group('support')->in('Support');
 uses()->group('tinker')->in('Tinker');
 uses()->group('validated-dto')
