@@ -68,7 +68,7 @@ class FastPaginate
                 // Not everyone quotes their custom selects, which
                 // is totally reasonable. We'll look for both
                 // quoted and unquoted, as a kindness.
-                $column = $column instanceof Expression ? $column->getValue($base->grammar) : $column;
+                $column = $column instanceof Expression ? $column->getValue() : $column;
 
                 return [
                     $column,
