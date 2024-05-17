@@ -12,10 +12,11 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ValidatedDTO\Contract;
 
 use Hyperf\Command\Command;
+use Hyperf\Contract\Arrayable;
 use Hyperf\Database\Model\Model;
 use Psr\Http\Message\RequestInterface;
 
-interface BaseDTO
+interface BaseDTO extends Arrayable
 {
     public static function fromJson(string $json): static;
 
@@ -30,8 +31,6 @@ interface BaseDTO
     public static function fromCommandOptions(Command $command): static;
 
     public static function fromCommand(Command $command): static;
-
-    public function toArray(): array;
 
     public function toJson(): string;
 
