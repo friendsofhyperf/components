@@ -6,17 +6,17 @@ use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
 
 class %CLASS% extends ValidatedDTO
 {
+    public function messages(): array
+    {
+        return [];
+    }
+
+    public function attributes(): array
+    {
+        return [];
+    }
+
     protected function rules(): array
-    {
-        return [];
-    }
-
-    protected function messages(): array
-    {
-        return [];
-    }
-
-    protected function attributes(): array
     {
         return [];
     }
