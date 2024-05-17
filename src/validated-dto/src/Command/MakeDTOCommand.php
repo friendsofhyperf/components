@@ -27,8 +27,7 @@ class MakeDTOCommand extends SymfonyCommand
 
     public function __construct(protected ConfigInterface $config)
     {
-        parent::__construct('make:dto');
-        $this->setDescription('Create a new DTO class.');
+        parent::__construct('gen:dto');
     }
 
     public function configure()
@@ -40,6 +39,9 @@ class MakeDTOCommand extends SymfonyCommand
         foreach ($this->getOptions() as $option) {
             $this->addOption(...$option);
         }
+
+        $this->setDescription('Create a new DTO class.');
+        $this->setAliases(['make:dto']);
     }
 
     /**
