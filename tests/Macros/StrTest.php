@@ -10,8 +10,6 @@ declare(strict_types=1);
  */
 use Hyperf\Stringable\Str;
 
-uses()->group('macros', 'str');
-
 test('test isUuidWithValidUuid', function () {
     $this->assertTrue(Str::isUuid(Str::uuid()->__toString()));
 });

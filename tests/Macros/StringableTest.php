@@ -10,8 +10,6 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Support\HtmlString;
 
-uses()->group('macros', 'stringable');
-
 test('test toHtmlString', function () {
     $this->assertEquals(
         new HtmlString('<h1>Test string</h1>'),
