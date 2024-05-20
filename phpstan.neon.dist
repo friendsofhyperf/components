@@ -7,6 +7,10 @@ includes:
   - phpstan-baseline.neon
 parameters:
   level: 5
+  parallel:
+    jobSize: 20
+    maximumNumberOfProcesses: 32
+    minimumNumberOfJobsPerProcess: 2
   excludePaths:
     - 'src/*/output/*'
   reportUnmatchedIgnoredErrors: false
