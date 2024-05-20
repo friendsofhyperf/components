@@ -118,6 +118,17 @@ abstract class AbstractLock implements LockInterface
     }
 
     /**
+     * Determine whether this lock is owned by the given identifier.
+     *
+     * @param string|null $owner
+     * @return bool
+     */
+    public function isOwnedBy($owner)
+    {
+        return $this->getCurrentOwner() === $owner;
+    }
+
+    /**
      * Returns the owner value written into the driver for this lock.
      */
     abstract protected function getCurrentOwner();
@@ -127,6 +138,6 @@ abstract class AbstractLock implements LockInterface
      */
     protected function isOwnedByCurrentProcess(): bool
     {
-        return $this->getCurrentOwner() === $this->owner;
+        return $this->isOwnedBy($this->owner);
     }
 }
