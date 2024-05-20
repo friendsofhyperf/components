@@ -21,51 +21,16 @@ use Hyperf\Stringable\Stringable;
  */
 class StringableMixin
 {
-    public function apa()
-    {
-        /* @phpstan-ignore-next-line */
-        return fn () => new static(Str::apa($this->value));
-    }
-
-    public function headline()
-    {
-        /* @phpstan-ignore-next-line */
-        return fn () => new static(Str::headline($this->value));
-    }
-
     public function inlineMarkdown()
     {
         /* @phpstan-ignore-next-line */
         return fn (array $options = []) => new static(Str::inlineMarkdown($this->value, $options));
     }
 
-    public function isAscii()
-    {
-        /* @phpstan-ignore-next-line */
-        return fn () => Str::isAscii($this->value);
-    }
-
     public function markdown()
     {
         /* @phpstan-ignore-next-line */
         return fn (array $options = []) => new static(Str::markdown($this->value, $options));
-    }
-
-    public function position()
-    {
-        /* @phpstan-ignore-next-line */
-        return fn ($needle, $offset = 0, $encoding = null) => Str::position($this->value, $needle, $offset, $encoding);
-    }
-
-    /**
-     * Take the first or last {$limit} characters.
-     *
-     * @return static
-     */
-    public function take()
-    {
-        /* @phpstan-ignore-next-line */
-        return fn (int $limit) => new static(Str::take($this->value, $limit));
     }
 
     public function toHtmlString()
