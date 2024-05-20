@@ -14,33 +14,6 @@ namespace Hyperf\Stringable;
 class Stringable
 {
     /**
-     * Convert the given string to APA-style title case.
-     *
-     * @return static
-     */
-    public function apa()
-    {
-    }
-
-    /**
-     * Convert the given string to title case for each word.
-     *
-     * @return static
-     */
-    public function headline()
-    {
-    }
-
-    /**
-     * Determine if a given string is 7 bit ASCII.
-     *
-     * @return bool
-     */
-    public function isAscii()
-    {
-    }
-
-    /**
      * Convert GitHub flavored Markdown into HTML.
      *
      * @return static
@@ -55,27 +28,6 @@ class Stringable
      * @return static
      */
     public function inlineMarkdown(array $options = [])
-    {
-    }
-
-    /**
-     * Find the multi-byte safe position of the first occurrence of the given substring.
-     *
-     * @param string $needle
-     * @param int $offset
-     * @param string|null $encoding
-     * @return int|false
-     */
-    public function position($needle, $offset = 0, $encoding = null)
-    {
-    }
-
-    /**
-     * Take the first or last {$limit} characters.
-     *
-     * @return static
-     */
-    public function take(int $limit)
     {
     }
 
