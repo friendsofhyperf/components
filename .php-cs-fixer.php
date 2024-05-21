@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 use Huangdijia\PhpCsFixer\Config;
-use PhpCsFixer\Runner\Parallel\ParallelConfig;
+use PhpCsFixer\Runner\Parallel\ParallelConfigFactory;
 
 require __DIR__ . '/vendor/autoload.php';
 
@@ -22,7 +22,7 @@ return (new Config())
             'huangdijia@gmail.com',
         ],
     )
-    ->setParallelConfig(new ParallelConfig(4, 20))
+    ->setParallelConfig(ParallelConfigFactory::detect(filesPerProcess: 20))
     ->setFinder(
         PhpCsFixer\Finder::create()
             ->exclude('bin')
