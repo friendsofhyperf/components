@@ -44,37 +44,3 @@ test('test getOrPut', function ($collection) {
     $this->assertEquals('foo', $data->get('email'));
     $this->assertEquals('male', $data->get('gender'));
 })->with('collectionClassProvider');
-
-test('test undot', function ($collection) {
-    $data = $collection::make([
-        'name' => 'Taylor',
-        'meta.foo' => 'bar',
-        'meta.baz' => 'boom',
-        'meta.bam.boom' => 'bip',
-    ])->undot();
-
-    $this->assertSame([
-        'name' => 'Taylor',
-        'meta' => [
-            'foo' => 'bar',
-            'baz' => 'boom',
-            'bam' => [
-                'boom' => 'bip',
-            ],
-        ],
-    ], $data->all());
-
-    $data = $collection::make([
-        'foo.0' => 'bar',
-        'foo.1' => 'baz',
-        'foo.baz' => 'boom',
-    ])->undot();
-
-    $this->assertSame([
-        'foo' => [
-            'bar',
-            'baz',
-            'baz' => 'boom',
-        ],
-    ], $data->all());
-})->with('collectionClassProvider');

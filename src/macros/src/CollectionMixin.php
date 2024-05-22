@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Macros;
 
-use Hyperf\Collection\Arr;
 use Hyperf\Collection\Collection;
 
 use function Hyperf\Collection\value;
@@ -41,10 +40,5 @@ class CollectionMixin
     public function isSingle()
     {
         return fn () => $this->count() === 1;
-    }
-
-    public function undot()
-    {
-        return fn () => new Collection(Arr::undot($this->all())); /* @phpstan-ignore-line */
     }
 }

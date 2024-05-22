@@ -32,13 +32,4 @@ class Collection
     public function isSingle()
     {
     }
-
-    /**
-     * Convert a flatten "dot" notation array into an expanded array.
-     *
-     * @return Collection
-     */
-    public function undot()
-    {
-    }
 }
