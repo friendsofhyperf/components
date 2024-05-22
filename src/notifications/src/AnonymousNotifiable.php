@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notifications;
 
-use FriendsOfHyperf\Notifications\Events\AnonymousNotifiableEvent;
+use FriendsOfHyperf\Notifications\Contract\Dispatcher;
 use Hyperf\Context\ApplicationContext;
 use InvalidArgumentException;
 use Psr\EventDispatcher\EventDispatcherInterface;
@@ -40,18 +40,11 @@ class AnonymousNotifiable
     /**
      * Send the given notification.
      */
-    public function notify(mixed $notification): void
+    public function notify(Notification $notification): void
     {
-        $this->getDispatcher()->dispatch(new AnonymousNotifiableEvent($notification, 'send'));
+        $this->getDispatcher()->send($this,$notification);
     }
 
-    /**
-     * Send the given notification immediately.
-     */
-    public function notifyNow(mixed $notification): void
-    {
-        $this->getDispatcher()->dispatch(new AnonymousNotifiableEvent($notification, 'sendNow'));
-    }
 
     /**
      * Get the notification routing information for the given driver.
@@ -61,8 +54,8 @@ class AnonymousNotifiable
         return $this->routes[$driver] ?? null;
     }
 
-    private function getDispatcher(): EventDispatcherInterface
+    private function getDispatcher(): Dispatcher
     {
-        return ApplicationContext::getContainer()->get(EventDispatcherInterface::class);
+        return ApplicationContext::getContainer()->get(Dispatcher::class);
     }
 }

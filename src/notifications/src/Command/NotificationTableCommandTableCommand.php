@@ -27,11 +27,6 @@ class NotificationTableCommandTableCommand extends Base
      */
     protected string $description = 'Create a migration for the notifications table';
 
-    /**
-     * The command aliases.
-     */
-    private array $aliases = ['notification:table'];
-
     public function __invoke(): void
     {
         copy(__DIR__ . '/Stubs/2021_04_18_224626_notifications_table.php', BASE_PATH . '/migrations/2021_04_18_224626_notifications_table.php');

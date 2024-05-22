@@ -11,14 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notifications;
 
-use Hyperf\Collection\Collection;
+use Hyperf\Database\Model\Collection;
 
-/**
- * @template TKey of array-key
- * @template TModel of DatabaseNotification
- *
- * @extends Collection<TKey, TModel>
- */
 class DatabaseNotificationCollection extends Collection
 {
     /**

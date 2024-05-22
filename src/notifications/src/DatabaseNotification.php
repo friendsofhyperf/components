@@ -17,7 +17,7 @@ use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\MorphTo;
 
 /**
- * @property Carbon $read_at
+ * @property Carbon|null $read_at
  */
 class DatabaseNotification extends Model
 {
@@ -96,7 +96,7 @@ class DatabaseNotification extends Model
     /**
      * Scope a query to only include read notifications.
      */
-    public function scopeRead(Builder $query): Builder
+    public function scopeRead(Builder $query)
     {
         return $query->whereNotNull('read_at');
     }
@@ -104,7 +104,7 @@ class DatabaseNotification extends Model
     /**
      * Scope a query to only include unread notifications.
      */
-    public function scopeUnread(Builder $query): Builder
+    public function scopeUnread(Builder $query)
     {
         return $query->whereNull('read_at');
     }
@@ -112,7 +112,7 @@ class DatabaseNotification extends Model
     /**
      * Create a new database notification collection instance.
      */
-    public function newCollection(array $models = []): DatabaseNotificationCollection
+    public function newCollection(array $models = [])
     {
         return new DatabaseNotificationCollection($models);
     }
