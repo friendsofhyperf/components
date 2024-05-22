@@ -9,18 +9,13 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notifications;
+namespace FriendsOfHyperf\Notifications\Events;
 
-class Action
+class AnonymousNotifiableEvent
 {
-    /**
-     * Create a new action instance.
-     * @param string $text the text of the action
-     * @param string $url the URL of the action
-     */
     public function __construct(
-        public string $text,
-        public string $url,
+        public mixed $notifiable,
+        public string $method,
     ) {
     }
 }

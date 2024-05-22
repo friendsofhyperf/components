@@ -11,17 +11,17 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notifications\Channels;
 
+use FriendsOfHyperf\Notifications\Attributes\Channel;
+use FriendsOfHyperf\Notifications\Contract\Channel;
 use FriendsOfHyperf\Notifications\Notification;
-use FriendsOfHyperf\Notifications\RoutesNotifications;
 use Hyperf\Database\Model\Model;
 use RuntimeException;
 
-class DatabaseChannel
+#[Channel('database')]
+class DatabaseChannel implements Channel
 {
     /**
      * Send the given notification.
-     *
-     * @param mixed|RoutesNotifications $notifiable
      */
     public function send(mixed $notifiable, Notification $notification): Model
     {

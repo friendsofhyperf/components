@@ -11,26 +11,18 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notifications;
 
+use FriendsOfHyperf\Notifications\Contract\Dispatcher;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Stringable\Str;
-use Psr\EventDispatcher\EventDispatcherInterface;
 
 trait RoutesNotifications
 {
     /**
      * Send the given notification.
      */
-    public function notify(object $instance): void
+    public function notify(Notification $instance): void
     {
-        $this->dispatch('notify', [$this, $instance]);
-    }
-
-    /**
-     * Send the given notification immediately.
-     */
-    public function notifyNow(object $instance, ?array $channels = null): void
-    {
-        $this->dispatch('notifyNow', [$this, $instance, $channels]);
+        ApplicationContext::getContainer()->get(Dispatcher::class)->send($this, $instance);
     }
 
     /**
@@ -47,20 +39,5 @@ trait RoutesNotifications
             'mail' => $this->email,
             default => null,
         };
-    }
-
-    /**
-     * Send the given notification immediately.
-     */
-    private function dispatch(string $method, array $params): void
-    {
-        ApplicationContext::getContainer()
-            ->get(EventDispatcherInterface::class)
-            ->dispatch(
-                new Events\NotifyEvent(
-                    $method,
-                    $params
-                )
-            );
     }
 }
