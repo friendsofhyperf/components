@@ -16,9 +16,11 @@ class Collection
     /**
      * Get an item from the collection by key or add it to collection if it does not exist.
      *
-     * @param mixed $key
-     * @param mixed $value
-     * @return mixed
+     * @template TGetOrPutValue
+     *
+     * @param int|string $key
+     * @param TGetOrPutValue $value
+     * @return TGetOrPutValue
      */
     public function getOrPut($key, $value)
     {
