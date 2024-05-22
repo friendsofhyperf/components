@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Notifications;
 use FriendsOfHyperf\Notifications\Contract\Dispatcher;
 use Hyperf\Context\ApplicationContext;
 use InvalidArgumentException;
-use Psr\EventDispatcher\EventDispatcherInterface;
 
 class AnonymousNotifiable
 {
@@ -42,9 +41,8 @@ class AnonymousNotifiable
      */
     public function notify(Notification $notification): void
     {
-        $this->getDispatcher()->send($this,$notification);
+        $this->getDispatcher()->send($this, $notification);
     }
-
 
     /**
      * Get the notification routing information for the given driver.
