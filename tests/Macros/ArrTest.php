@@ -10,59 +10,6 @@ declare(strict_types=1);
  */
 use Hyperf\Collection\Arr;
 
-test('test keyBy', function () {
-    $array = [
-        ['id' => '123', 'data' => 'abc'],
-        ['id' => '345', 'data' => 'def'],
-        ['id' => '498', 'data' => 'hgi'],
-    ];
-
-    expect(Arr::keyBy($array, 'id'))->toBe([
-        '123' => ['id' => '123', 'data' => 'abc'],
-        '345' => ['id' => '345', 'data' => 'def'],
-        '498' => ['id' => '498', 'data' => 'hgi'],
-    ]);
-});
-
-test('test join', function ($expected, $args) {
-    expect(Arr::join(...$args))->toBe($expected);
-})->with([
-    ['a, b, c', [['a', 'b', 'c'], ', ']],
-    ['a, b and c', [['a', 'b', 'c'], ', ', ' and ']],
-    ['a and b', [['a', 'b'], ', ', ' and ']],
-    ['a', [['a'], ', ', ' and ']],
-    ['', [[], ', ', ' and ']],
-]);
-
-test('test map', function () {
-    $data = ['first' => 'taylor', 'last' => 'otwell'];
-    $mapped = Arr::map($data, function ($value, $key) {
-        return $key . '-' . strrev($value);
-    });
-    expect($mapped)->toBe(['first' => 'first-rolyat', 'last' => 'last-llewto']);
-    expect($data)->toBe(['first' => 'taylor', 'last' => 'otwell']);
-});
-
-test('test prependKeysWith', function () {
-    $array = [
-        'id' => '123',
-        'data' => '456',
-        'list' => [1, 2, 3],
-        'meta' => [
-            'key' => 1,
-        ],
-    ];
-
-    expect(Arr::prependKeysWith($array, 'test.'))->toBe([
-        'test.id' => '123',
-        'test.data' => '456',
-        'test.list' => [1, 2, 3],
-        'test.meta' => [
-            'key' => 1,
-        ],
-    ]);
-});
-
 test('test sortByMany', function () {
     $unsorted = [
         ['name' => 'John', 'age' => 8, 'meta' => ['key' => 3]],
@@ -110,46 +57,4 @@ test('test sortByMany', function () {
         ['name' => 'John', 'age' => 8, 'meta' => ['key' => 2]],
         ['name' => 'John', 'age' => 8, 'meta' => ['key' => 3]],
     ]);
-});
-
-test('test sortDesc', function () {
-    $unsorted = [
-        ['name' => 'Chair'],
-        ['name' => 'Desk'],
-    ];
-
-    $expected = [
-        ['name' => 'Desk'],
-        ['name' => 'Chair'],
-    ];
-
-    expect(array_values(Arr::sortDesc($unsorted)))->toBe($expected);
-
-    // sort with closure
-    expect(array_values(Arr::sortDesc($unsorted, function ($value) {
-        return $value['name'];
-    })))->toBe($expected);
-
-    // sort with dot notation
-    expect(array_values(Arr::sortDesc($unsorted, 'name')))->toBe($expected);
-});
-
-test('test undot', function () {
-    expect(Arr::undot([
-        'user.name' => 'Taylor',
-        'user.age' => 25,
-        'user.languages.0' => 'PHP',
-        'user.languages.1' => 'C#',
-    ]))->toBeArray()->toBe(['user' => ['name' => 'Taylor', 'age' => 25, 'languages' => ['PHP', 'C#']]]);
-
-    expect(Arr::undot([
-        'pagination.previous' => '<<',
-        'pagination.next' => '>>',
-    ]))->toBeArray()->toBe(['pagination' => ['previous' => '<<', 'next' => '>>']]);
-
-    expect(Arr::undot([
-        'foo',
-        'foo.bar' => 'baz',
-        'foo.baz' => ['a' => 'b'],
-    ]))->toBeArray()->toBe(['foo', 'foo' => ['bar' => 'baz', 'baz' => ['a' => 'b']]]);
 });

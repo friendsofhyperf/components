@@ -12,54 +12,12 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Macros;
 
 use Hyperf\Collection\Arr;
-use Hyperf\Collection\Collection;
 
 /**
  * @mixin Arr
  */
 class ArrMixin
 {
-    public function join()
-    {
-        return function ($array, $glue, $finalGlue = '') {
-            if ($finalGlue === '') {
-                return implode($glue, $array);
-            }
-
-            if (count($array) === 0) {
-                return '';
-            }
-
-            if (count($array) === 1) {
-                return end($array);
-            }
-
-            $finalItem = array_pop($array);
-
-            return implode($glue, $array) . $finalGlue . $finalItem;
-        };
-    }
-
-    public function keyBy()
-    {
-        return fn ($array, $keyBy) => Collection::make($array)->keyBy($keyBy)->all();
-    }
-
-    public function map()
-    {
-        return function (array $array, callable $callback) {
-            $keys = array_keys($array);
-            $items = array_map($callback, $array, $keys);
-
-            return array_combine($keys, $items);
-        };
-    }
-
-    public function prependKeysWith()
-    {
-        return fn ($array, $prependWith) => Collection::make($array)->mapWithKeys(fn ($item, $key) => [$prependWith . $key => $item])->all();
-    }
-
     public function sortByMany()
     {
         return function ($array, $comparisons = []) {
@@ -93,32 +51,6 @@ class ArrMixin
             });
 
             return $array;
-        };
-    }
-
-    public static function sortDesc()
-    {
-        return fn ($array, $callback = null) => Collection::make($array)->sortByDesc($callback)->all();
-    }
-
-    /**
-     * Recursively sort an array by keys and values in descending order.
-     */
-    public function sortRecursiveDesc()
-    {
-        return fn ($array, $options = SORT_REGULAR) => $this->sortRecursive($array); // , $options, true
-    }
-
-    public function undot()
-    {
-        return function ($array) {
-            $results = [];
-
-            foreach ($array as $key => $value) {
-                Arr::set($results, $key, $value);
-            }
-
-            return $results;
         };
     }
 }
