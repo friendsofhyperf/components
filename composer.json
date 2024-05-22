@@ -147,6 +147,7 @@
     },
     "autoload": {
         "files": [
+            "src/notifications/src/Functions.php",
             "src/amqp-job/src/Functions.php",
             "src/encryption/src/Functions.php",
             "src/exception-event/src/Functions.php",
@@ -158,6 +159,7 @@
             "src/validated-dto/src/Functions.php"
         ],
         "psr-4": {
+            "FriendsOfHyperf\\Notifications\\": "src/notifications/src/",
             "FriendsOfHyperf\\AmqpJob\\": "src/amqp-job/src/",
             "FriendsOfHyperf\\Cache\\": "src/cache/src/",
             "FriendsOfHyperf\\CommandSignals\\": "src/command-signals/src/",
