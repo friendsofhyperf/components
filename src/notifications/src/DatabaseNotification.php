@@ -11,10 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notifications;
 
+use Carbon\Carbon;
 use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\MorphTo;
 
+/**
+ * @property Carbon $read_at
+ */
 class DatabaseNotification extends Model
 {
     /**

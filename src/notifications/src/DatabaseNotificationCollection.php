@@ -26,6 +26,7 @@ class DatabaseNotificationCollection extends Collection
      */
     public function markAsRead(): void
     {
+        // @phpstan-ignore-next-line
         $this->each->markAsRead();
     }
 
@@ -34,6 +35,7 @@ class DatabaseNotificationCollection extends Collection
      */
     public function markAsUnread(): void
     {
+        // @phpstan-ignore-next-line
         $this->each->markAsUnread();
     }
 }
