@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notification\Channels;
+namespace FriendsOfHyperf\Notification\Channel;
 
 use FriendsOfHyperf\Notification\Attributes\Channel;
 use FriendsOfHyperf\Notification\Contract\Channel as Contract;
