@@ -23,7 +23,7 @@ class ChannelManager implements Dispatcher
     /**
      * @var array<string, Channel>
      */
-    protected static array $channels = [];
+    protected array $channels = [];
 
     public function __construct(
         protected ContainerInterface $container,
@@ -51,7 +51,7 @@ class ChannelManager implements Dispatcher
      */
     public function register(string $name, string $class): void
     {
-        static::$channels[$name] = $this->container->get($class);
+        $this->channels[$name] = $this->container->get($class);
     }
 
     /**
@@ -59,10 +59,10 @@ class ChannelManager implements Dispatcher
      */
     public function channel(string $channel): Channel
     {
-        if (! isset(static::$channels[$channel])) {
+        if (! isset($this->channels[$channel])) {
             throw new InvalidArgumentException("Channel [{$channel}] is not defined.");
         }
 
-        return static::$channels[$channel];
+        return $this->channels[$channel];
     }
 }

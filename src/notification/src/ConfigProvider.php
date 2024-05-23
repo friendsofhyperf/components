@@ -21,7 +21,7 @@ class ConfigProvider
                 Command\NotificationTableCommand::class,
             ],
             'dependencies' => [
-                Contract\Dispatcher::class => ChannelManager::class,
+                Contract\Dispatcher::class => fn($container) => $container->get(ChannelManager::class),
             ],
             'listeners' => [
                 Listener\RegisterChannelsListener::class,
