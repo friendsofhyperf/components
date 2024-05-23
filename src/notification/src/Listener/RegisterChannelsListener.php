@@ -15,15 +15,16 @@ use FriendsOfHyperf\Notification\Annotation\Channel;
 use FriendsOfHyperf\Notification\Channel\DatabaseChannel;
 use FriendsOfHyperf\Notification\ChannelManager;
 use FriendsOfHyperf\Notification\Contract\Channel as ChannelContract;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 
 class RegisterChannelsListener implements ListenerInterface
 {
-    public function __construct(
-        protected ChannelManager $channelManager
-    ) {
+    public function getChannelManager(): ChannelManager
+    {
+        return ApplicationContext::getContainer()->get(ChannelManager::class);
     }
 
     public function listen(): array
@@ -43,9 +44,9 @@ class RegisterChannelsListener implements ListenerInterface
                 continue;
             }
 
-            $this->channelManager->register($annotation->name, $channelClass);
+            $this->getChannelManager()->register($annotation->name, $channelClass);
         }
 
-        $this->channelManager->register('database', DatabaseChannel::class);
+        $this->getChannelManager()->register('database', DatabaseChannel::class);
     }
 }

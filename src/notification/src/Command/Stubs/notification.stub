@@ -1,0 +1,26 @@
+<?php
+
+namespace {{ namespace }};
+
+use FriendsOfHyperf\Notification\Notification;
+
+class {{ class }} extends Notification
+{
+    public function __construct(
+        private string $message
+    ){}
+
+    public function via()
+    {
+        return [
+            'database'
+        ];
+    }
+
+    public function toDatabase(mixed $notifiable): array
+    {
+        return [
+            'message' => $this->message,
+        ];
+    }
+}
