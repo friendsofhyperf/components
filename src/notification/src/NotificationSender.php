@@ -42,7 +42,6 @@ class NotificationSender
     public function send(mixed $notifiables, Notification $notification, ?array $channels = null): void
     {
         $notifiables = $this->formatNotifiables($notifiables);
-
         $original = clone $notification;
 
         foreach ($notifiables as $notifiable) {
