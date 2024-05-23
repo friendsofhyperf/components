@@ -94,48 +94,6 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     }
 
     /**
-     * Returns the DTO validated data in array format.
-     */
-    public function toArray(): array
-    {
-        return $this->buildDataForExport();
-    }
-
-    /**
-     * Returns the DTO validated data in a JSON string format.
-     */
-    public function toJson(int|bool $flags = 0, int $depth = 512): string
-    {
-        // compat with the flags is bool type
-        $flags = (int) match ($flags) {
-            true => JSON_PRETTY_PRINT,
-            false => 0,
-            default => $flags,
-        };
-
-        return json_encode($this->buildDataForExport(), $flags, $depth);
-    }
-
-    /**
-     * Returns the DTO validated data in a pretty JSON string format.
-     */
-    public function toPrettyJson(int $flags = 0, int $depth = 512): string
-    {
-        return $this->toJson($flags | JSON_PRETTY_PRINT, $depth);
-    }
-
-    /**
-     * Creates a new model with the DTO validated data.
-     * @template T of \Hyperf\Database\Model\Model
-     * @param class-string<T> $model
-     * @return T
-     */
-    public function toModel(string $model): Model
-    {
-        return new $model($this->buildDataForExport());
-    }
-
-    /**
      * Cast the given value to a DTO instance.
      *
      * @param Model $model
@@ -163,17 +121,12 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        if (is_string($value)) {
-            return $value;
-        }
-        if (is_array($value)) {
-            return json_encode($value);
-        }
-        if ($value instanceof ValidatedDTO) {
-            return $value->toJson();
-        }
-
-        return '';
+        return match (true) {
+            is_string($value) => $value,
+            is_array($value) => json_encode($value),
+            $value instanceof ValidatedDTO => $value->toJson(),
+            default => '',
+        };
     }
 
     /**
@@ -210,7 +163,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     protected function passedValidation(): void
     {
         $this->validatedData = $this->validatedData();
-        /** @var array<Castable> $casts */
+        /** @var array<string, Castable> $casts */
         $casts = $this->buildCasts();
 
         foreach ($this->validatedData as $key => $value) {
