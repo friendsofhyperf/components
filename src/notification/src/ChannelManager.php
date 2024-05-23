@@ -11,11 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification;
 
-use FriendsOfHyperf\Notification\Attributes\Channel;
-use FriendsOfHyperf\Notification\Contract\Channel as ChannelContract;
-use Hyperf\Context\ApplicationContext;
+use FriendsOfHyperf\Notification\Contract\Channel;
 use Hyperf\Contract\TranslatorInterface;
-use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
@@ -46,21 +43,17 @@ class ChannelManager
         )->send($notifiables, $notification);
     }
 
-    /**
-     * Get the channel.
-     */
-    public function channel(string $channel): ChannelContract
-    {
-        $channelClass = Channel::get($channel);
-        if (! class_exists($channelClass)) {
-            throw new InvalidArgumentException("Channel [{$channel}] is not defined.");
-        }
-        return ApplicationContext::getContainer()->get($channelClass);
-    }
-
     public function register(string $name, string $class): void
     {
         $this->channels[$name] = $this->container->get($class);
+    }
+
+    /**
+     * Get the channel.
+     */
+    public function channel(string $channel): Channel
+    {
+        return $this->get($channel);
     }
 
     public function get(string $name): Channel
