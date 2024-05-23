@@ -30,10 +30,11 @@ if [[ $# -eq 0 ]]; then
     REPOS=$(ls $BASEPATH)
 fi
 
-split "src/.github" "git@github.com:friendsofhyperf/.github.git"
+# Split the .github repository first.
+(remote ".github" "git@github.com:friendsofhyperf/.github.git" && split "src/.github" ".github") &
 
 for REPO in $REPOS ; do
-    remote $REPO git@github.com:friendsofhyperf/${REPO}.git
-
-    split "src/$REPO" $REPO
+    (remote $REPO git@github.com:friendsofhyperf/${REPO}.git && split "src/$REPO" $REPO) &
 done
+
+wait
