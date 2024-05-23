@@ -55,7 +55,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
             $proceedingJoinPoint->arguments['keys']['options']['no_sentry_aspect'] = true;
         }
 
-        $uri = $arguments['keys']['uri'] ?? '';
+        $uri = (string) ($arguments['keys']['uri'] ?? '');
         $data['config'] = $guzzleConfig;
         $data['request']['method'] = $arguments['keys']['method'] ?? 'GET';
         $data['request']['options'] = $arguments['keys']['options'] ?? [];
