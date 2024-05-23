@@ -15,7 +15,7 @@ use Hyperf\Command\Command;
 
 class NotificationTableCommand extends Command
 {
-    protected ?string $name = 'notification:table';
+    protected ?string $signature = 'notification:table';
 
     protected string $description = 'Create a migration for the notifications table';
 
