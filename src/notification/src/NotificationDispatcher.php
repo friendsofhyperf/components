@@ -28,11 +28,12 @@ class NotificationDispatcher implements Contract\Dispatcher
      */
     public function send(mixed $notifiables, Notification $notification): void
     {
-        (new NotificationSender(
-            $this->channelManager,
-            $this->dispatcher,
-            $this->translator
-        )
+        (
+            new NotificationSender(
+                $this->channelManager,
+                $this->dispatcher,
+                $this->translator
+            )
         )->send($notifiables, $notification);
     }
 }
