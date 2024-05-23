@@ -12,10 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Notification;
 
 use FriendsOfHyperf\Notification\Contract\Channel;
-use Hyperf\Contract\TranslatorInterface;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
 
 class ChannelManager
 {
@@ -24,11 +22,8 @@ class ChannelManager
      */
     protected array $channels = [];
 
-    public function __construct(
-        protected ContainerInterface $container,
-        protected EventDispatcherInterface $dispatcher,
-        protected TranslatorInterface $translator
-    ) {
+    public function __construct(protected ContainerInterface $container)
+    {
     }
 
     public function register(string $name, string $class): void
