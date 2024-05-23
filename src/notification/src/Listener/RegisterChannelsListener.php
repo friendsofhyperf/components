@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Notification\Listener;
 
 use FriendsOfHyperf\Notification\Annotation\Channel;
+use FriendsOfHyperf\Notification\Channel\DatabaseChannel;
 use FriendsOfHyperf\Notification\ChannelManager;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -39,5 +40,7 @@ class RegisterChannelsListener implements ListenerInterface
         foreach ($channels as $channelClass => $annotation) {
             $this->channelManager->register($annotation->name, $channelClass);
         }
+
+        $this->channelManager->register('database', DatabaseChannel::class);
     }
 }

@@ -11,13 +11,11 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification\Channel;
 
-use FriendsOfHyperf\Notification\Attributes\Channel;
 use FriendsOfHyperf\Notification\Contract\Channel as Contract;
 use FriendsOfHyperf\Notification\Notification;
 use Hyperf\Database\Model\Model;
 use RuntimeException;
 
-#[Channel('database')]
 class DatabaseChannel implements Contract
 {
     /**
