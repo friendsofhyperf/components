@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Notification;
 use FriendsOfHyperf\Notification\Contract\Channel;
 use FriendsOfHyperf\Notification\Contract\Dispatcher;
 use Hyperf\Contract\TranslatorInterface;
+use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
@@ -31,19 +32,6 @@ class ChannelManager implements Dispatcher
     ) {
     }
 
-    /**
-     * Send the given notification to the given notifiable entities.
-     */
-    public function send(mixed $notifiables, Notification $notification): void
-    {
-        (new NotificationSender(
-            $this,
-            $this->dispatcher,
-            $this->translator
-        )
-        )->send($notifiables, $notification);
-    }
-
     public function register(string $name, string $class): void
     {
         $this->channels[$name] = $this->container->get($class);
@@ -54,11 +42,10 @@ class ChannelManager implements Dispatcher
      */
     public function channel(string $channel): Channel
     {
-        return $this->get($channel);
-    }
+        if (! isset($this->channels[$channel])) {
+            throw new InvalidArgumentException("Channel [{$channel}] is not defined.");
+        }
 
-    public function get(string $name): Channel
-    {
-        return $this->channels[$name];
+        return $this->channels[$channel];
     }
 }
