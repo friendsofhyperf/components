@@ -23,7 +23,7 @@ class ConfigProvider
                 Command\NotificationTableCommand::class,
             ],
             'dependencies' => [
-                Dispatcher::class => ChannelManager::class,
+                Dispatcher::class => NotificationDispatcher::class,
             ],
             'listeners' => [
                 Listener\RegisterChannelsListener::class,
