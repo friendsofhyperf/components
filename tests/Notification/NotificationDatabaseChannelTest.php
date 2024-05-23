@@ -33,7 +33,7 @@ class NotificationDatabaseChannelTest extends TestCase
     public function testDatabaseChannelCreatesDatabaseRecordWithProperData()
     {
         $notification = new NotificationDatabaseChannelTestNotification();
-        $notification->id = 1;
+        $notification->id = '1';
         $notifiable = m::mock();
 
         $notifiable->shouldReceive('routeNotificationFor->create')->andReturnUsing(function ($data) {
@@ -51,7 +51,7 @@ class NotificationDatabaseChannelTest extends TestCase
     public function testCorrectPayloadIsSentToDatabase()
     {
         $notification = new NotificationDatabaseChannelTestNotification();
-        $notification->id = 1;
+        $notification->id = '1';
         $notifiable = m::mock();
 
         $notifiable->shouldReceive('routeNotificationFor->create')->andReturnUsing(function ($data) {
@@ -70,7 +70,7 @@ class NotificationDatabaseChannelTest extends TestCase
     public function testCustomizeTypeIsSentToDatabase()
     {
         $notification = new NotificationDatabaseChannelCustomizeTypeTestNotification();
-        $notification->id = 1;
+        $notification->id = '1';
         $notifiable = m::mock();
 
         $notifiable->shouldReceive('routeNotificationFor->create')->withArgs(function ($data) {
