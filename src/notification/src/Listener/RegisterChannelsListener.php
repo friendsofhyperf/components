@@ -38,6 +38,10 @@ class RegisterChannelsListener implements ListenerInterface
         $channels = AnnotationCollector::getClassesByAnnotation(Channel::class);
 
         foreach ($channels as $channelClass => $annotation) {
+            if (! is_a($channelClass, Channel::class, true)) {
+                continue;
+            }
+
             $this->channelManager->register($annotation->name, $channelClass);
         }
 
