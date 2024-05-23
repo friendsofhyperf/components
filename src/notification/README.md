@@ -1,9 +1,12 @@
 # Notification
 
-## Install
+[![Latest Test](https://github.com/friendsofhyperf/notification/workflows/tests/badge.svg)](https://github.com/friendsofhyperf/notification/actions)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/friendsofhyperf/notification.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/notification)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/notification.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/notification)
+[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/notification)](https://github.com/friendsofhyperf/notification)
 
-```bash
+## Installation
 
-composer require friendsofhyperf/notification -vvv
-
+```shell
+composer require friendsofhyperf/notification:~3.1.0
 ```
