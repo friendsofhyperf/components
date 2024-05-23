@@ -19,12 +19,12 @@ class Notification
     /**
      * The unique identifier for the notification.
      */
-    public string $id;
+    public ?string $id = null;
 
     /**
      * The locale to be used when sending the notification.
      */
-    public ?string $locale;
+    public ?string $locale = null;
 
     /**
      * Set the locale to send this notification in.
