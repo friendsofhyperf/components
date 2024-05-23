@@ -16,11 +16,18 @@ use FriendsOfHyperf\Notification\Contract\Channel as ChannelContract;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\TranslatorInterface;
 use InvalidArgumentException;
+use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 class ChannelManager
 {
+    /**
+     * @var array<string, Channel>
+     */
+    protected array $channels = [];
+
     public function __construct(
+        protected ContainerInterface $container,
         public EventDispatcherInterface $dispatcher,
         public TranslatorInterface $translator
     ) {
@@ -49,5 +56,15 @@ class ChannelManager
             throw new InvalidArgumentException("Channel [{$channel}] is not defined.");
         }
         return ApplicationContext::getContainer()->get($channelClass);
+    }
+
+    public function register(string $name, string $class): void
+    {
+        $this->channels[$name] = $this->container->get($class);
+    }
+
+    public function get(string $name): Channel
+    {
+        return $this->channels[$name];
     }
 }
