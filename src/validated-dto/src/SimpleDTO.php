@@ -163,7 +163,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     protected function passedValidation(): void
     {
         $this->validatedData = $this->validatedData();
-        /** @var array<Castable> $casts */
+        /** @var array<string, Castable> $casts */
         $casts = $this->buildCasts();
 
         foreach ($this->validatedData as $key => $value) {
