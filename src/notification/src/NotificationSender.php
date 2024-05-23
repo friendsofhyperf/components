@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Notification;
 
 use Closure;
-use FriendsOfHyperf\Notification\Enums\NotificationSendingStatus;
+use FriendsOfHyperf\Notification\Enums\SendingStatus;
 use FriendsOfHyperf\Notification\Event\NotificationSending;
 use FriendsOfHyperf\Notification\Event\NotificationSent;
 use Hyperf\Collection\Collection;
@@ -134,7 +134,7 @@ class NotificationSender
         $event = new NotificationSending($notifiable, $notification, $channel);
         $this->dispatcher->dispatch($event);
 
-        return $event->status === NotificationSendingStatus::ENABLED;
+        return $event->status === SendingStatus::ENABLED;
     }
 
     /**

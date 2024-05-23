@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification\Event;
 
-use FriendsOfHyperf\Notification\Enums\NotificationSendingStatus;
+use FriendsOfHyperf\Notification\Enums\SendingStatus;
 use FriendsOfHyperf\Notification\Notification;
 
 class NotificationSending
@@ -20,7 +20,7 @@ class NotificationSending
         public mixed $notifiable,
         public Notification $notification,
         public string $channel,
-        public NotificationSendingStatus $status = NotificationSendingStatus::ENABLED,
+        public SendingStatus $status = SendingStatus::ENABLED,
     ) {
     }
 }

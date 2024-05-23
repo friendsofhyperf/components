@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\Notification\Enums;
 /**
  * This enumeration is used to mark the message as ready to be sent.
  */
-enum NotificationSendingStatus: int
+enum SendingStatus: int
 {
     /**
      * The message is enabled.
