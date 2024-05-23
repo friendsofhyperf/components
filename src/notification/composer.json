@@ -1,0 +1,52 @@
+{
+    "name": "friendsofhyperf/notification",
+    "description": "The Notification for Hyperf.",
+    "keywords": [
+        "hyperf",
+        "notification",
+        "v3.1"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        },
+        {
+            "name": "zds"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components"
+    },
+    "require": {
+        "hyperf/di": "~3.1.0",
+        "hyperf/event": "~3.1.0",
+        "hyperf/stringable": "~3.1.0",
+        "hyperf/collection": "~3.1.0",
+        "hyperf/translation": "~3.1.0"
+    },
+    "suggest": {
+        "hyperf/database": "Required if you want to use database channel.(~3.1.0)"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Notification\\": "src"
+        }
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Notification\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        }
+    },
+    "minimum-stability": "dev",
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    }
+}
