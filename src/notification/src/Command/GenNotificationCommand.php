@@ -11,10 +11,11 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification\Command;
 
-use Hyperf\Command\Annotation\Command;
-use Hyperf\Command\Command as Base;
+use Hyperf\Command\Command;
 
-#[Command(name: 'gen:notification', description: 'Generate a new notification class', signature: 'gen:notification {name : The name of the notification class} {--force : Overwrite the notification if it exists}')]
-class GenNotificationCommand extends Base
+class GenNotificationCommand extends Command
 {
+    protected ?string $signature = 'gen:notification {name : The name of the notification class} {--force : Overwrite the notification if it exists}';
+
+    protected string $description = 'Generate a new notification class';
 }

@@ -11,23 +11,17 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification\Command;
 
-use Hyperf\Command\Annotation\Command;
-use Hyperf\Command\Command as Base;
+use Hyperf\Command\Command;
 
-#[Command(name: 'notification:table', description: 'Create a migration for the notifications table', aliases: ['notification:table'])]
-class NotificationTableCommandTableCommand extends Base
+class NotificationTableCommandTableCommand extends Command
 {
-    /**
-     * The command name.
-     */
     protected ?string $name = 'notification:table';
 
-    /**
-     * The command description.
-     */
+    protected array $aliases = ['notification:table'];
+
     protected string $description = 'Create a migration for the notifications table';
 
-    public function __invoke(): void
+    public function handle()
     {
         copy(__DIR__ . '/Stubs/2021_04_18_224626_notifications_table.php', BASE_PATH . '/migrations/2021_04_18_224626_notifications_table.php');
         $this->output->success('Migration created successfully!');
