@@ -9,17 +9,15 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notification\Events;
+namespace FriendsOfHyperf\Notification\Event;
 
-use FriendsOfHyperf\Notification\Notification;
-
-class NotificationSent
+class NotificationFailed
 {
     public function __construct(
         public mixed $notifiable,
-        public Notification $notification,
+        public mixed $notification,
         public string $channel,
-        public mixed $response
+        public array $data
     ) {
     }
 }

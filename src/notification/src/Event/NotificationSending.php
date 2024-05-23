@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notification\Events;
+namespace FriendsOfHyperf\Notification\Event;
 
 use FriendsOfHyperf\Notification\Enums\NotificationSendingStatus;
 use FriendsOfHyperf\Notification\Notification;

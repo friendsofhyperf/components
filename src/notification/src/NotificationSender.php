@@ -13,8 +13,8 @@ namespace FriendsOfHyperf\Notification;
 
 use Closure;
 use FriendsOfHyperf\Notification\Enums\NotificationSendingStatus;
-use FriendsOfHyperf\Notification\Events\NotificationSending;
-use FriendsOfHyperf\Notification\Events\NotificationSent;
+use FriendsOfHyperf\Notification\Event\NotificationSending;
+use FriendsOfHyperf\Notification\Event\NotificationSent;
 use Hyperf\Collection\Collection;
 use Hyperf\Contract\TranslatorInterface;
 use Hyperf\Database\Model\Collection as ModelCollection;
