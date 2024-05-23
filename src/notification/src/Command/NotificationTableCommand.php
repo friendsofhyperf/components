@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Notification\Command;
 
 use Hyperf\Command\Command;
 
-class NotificationTableCommandTableCommand extends Command
+class NotificationTableCommand extends Command
 {
     protected ?string $name = 'notification:table';
 
