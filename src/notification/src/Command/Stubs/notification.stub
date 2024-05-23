@@ -8,12 +8,13 @@ class {{ class }} extends Notification
 {
     public function __construct(
         private string $message
-    ){}
+    ) {
+    }
 
     public function via()
     {
         return [
-            'database'
+            'database',
         ];
     }
 
