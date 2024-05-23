@@ -17,8 +17,6 @@ class NotificationTableCommand extends Command
 {
     protected ?string $name = 'notification:table';
 
-    protected array $aliases = ['notification:table'];
-
     protected string $description = 'Create a migration for the notifications table';
 
     public function handle()
