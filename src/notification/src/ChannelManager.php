@@ -37,11 +37,12 @@ class ChannelManager implements Dispatcher
      */
     public function send(mixed $notifiables, Notification $notification): void
     {
-        (new NotificationSender(
-            $this,
-            $this->dispatcher,
-            $this->translator
-        )
+        (
+            new NotificationSender(
+                $this,
+                $this->dispatcher,
+                $this->translator
+            )
         )->send($notifiables, $notification);
     }
 
