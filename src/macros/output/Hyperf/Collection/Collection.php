@@ -14,19 +14,6 @@ namespace Hyperf\Collection;
 class Collection
 {
     /**
-     * Get an item from the collection by key or add it to collection if it does not exist.
-     *
-     * @template TGetOrPutValue
-     *
-     * @param int|string $key
-     * @param TGetOrPutValue $value
-     * @return TGetOrPutValue
-     */
-    public function getOrPut($key, $value)
-    {
-    }
-
-    /**
      * Determine if the collection contains a single element.
      *
      * @return bool
