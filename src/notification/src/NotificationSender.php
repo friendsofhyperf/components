@@ -24,6 +24,9 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 
 use function Hyperf\Support\value;
 
+/**
+ * @property string|null $locale
+ */
 class NotificationSender
 {
     public function __construct(
