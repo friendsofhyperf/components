@@ -12,13 +12,12 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Notification;
 
 use FriendsOfHyperf\Notification\Contract\Channel;
-use FriendsOfHyperf\Notification\Contract\Dispatcher;
 use Hyperf\Contract\TranslatorInterface;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
-class ChannelManager implements Dispatcher
+class ChannelManager
 {
     /**
      * @var array<string, Channel>
