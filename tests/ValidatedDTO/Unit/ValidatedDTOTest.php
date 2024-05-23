@@ -217,13 +217,6 @@ it('validates that the ValidatedDTO can be converted into a JSON string', functi
         ->toBe(json_encode($dataStructure));
 });
 
-it('validates that the ValidatedDTO can be converted into a pretty JSON string with flag', function () {
-    $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
-
-    expect($validatedDTO)->toJson(true)
-        ->toBe(json_encode(['name' => $this->subject_name], JSON_PRETTY_PRINT));
-});
-
 it('validates that the ValidatedDTO can be converted into a pretty JSON string', function () {
     $dataStructure = ['name' => $this->subject_name];
     $validatedDTO = new ValidatedDTOInstance($dataStructure);

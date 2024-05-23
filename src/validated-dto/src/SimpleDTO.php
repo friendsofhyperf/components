@@ -94,48 +94,6 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     }
 
     /**
-     * Returns the DTO validated data in array format.
-     */
-    public function toArray(): array
-    {
-        return $this->buildDataForExport();
-    }
-
-    /**
-     * Returns the DTO validated data in a JSON string format.
-     */
-    public function toJson(int|bool $flags = 0, int $depth = 512): string
-    {
-        // compat with the flags is bool type
-        $flags = (int) match ($flags) {
-            true => JSON_PRETTY_PRINT,
-            false => 0,
-            default => $flags,
-        };
-
-        return json_encode($this->buildDataForExport(), $flags, $depth);
-    }
-
-    /**
-     * Returns the DTO validated data in a pretty JSON string format.
-     */
-    public function toPrettyJson(int $flags = 0, int $depth = 512): string
-    {
-        return $this->toJson($flags | JSON_PRETTY_PRINT, $depth);
-    }
-
-    /**
-     * Creates a new model with the DTO validated data.
-     * @template T of \Hyperf\Database\Model\Model
-     * @param class-string<T> $model
-     * @return T
-     */
-    public function toModel(string $model): Model
-    {
-        return new $model($this->buildDataForExport());
-    }
-
-    /**
      * Cast the given value to a DTO instance.
      *
      * @param Model $model
