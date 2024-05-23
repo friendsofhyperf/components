@@ -90,10 +90,9 @@ abstract class ValidatedDTO extends SimpleDTO
      *
      * @throws MissingCastTypeException|CastTargetException
      */
-    protected function validatedData(): array
+    protected function passedValidation(): void
     {
         $acceptedKeys = array_keys($this->rulesList());
-        $result = [];
 
         /** @var array<Castable> $casts */
         $casts = $this->buildCasts();
@@ -104,27 +103,52 @@ abstract class ValidatedDTO extends SimpleDTO
                     if ($this->requireCasting) {
                         throw new MissingCastTypeException($key);
                     }
-                    $result[$key] = $value;
+                    $this->validatedData[$key] = $value;
 
                     continue;
                 }
 
-                $result[$key] = $this->shouldReturnNull($key, $value)
-                    ? null
+                $this->validatedData[$key] = $this->shouldReturnNull($key, $value)
+                    ? $value
                     : $this->castValue($casts[$key], $key, $value);
+            }
+        }
+
+        $defaults = [
+            ...$this->defaults(),
+            ...$this->dtoDefaults,
+        ];
+
+        foreach ($defaults as $key => $value) {
+            $key = (string) $key;
+            if (
+                empty($this->validatedData[$key])
+            ) {
+                if (! array_key_exists($key, $casts)) {
+                    if ($this->requireCasting) {
+                        throw new MissingCastTypeException($key);
+                    }
+                    $this->validatedData[$key] = $value;
+
+                    continue;
+                }
+
+                $this->validatedData[$key] = $this->castValue($casts[$key], $key, $value);
             }
         }
 
         foreach ($acceptedKeys as $property) {
             if (
-                ! array_key_exists($property, $result)
+                ! array_key_exists($property, $this->validatedData)
                 && $this->isOptionalProperty($property)
             ) {
-                $result[$property] = null;
+                $this->validatedData[$property] = null;
             }
         }
 
-        return $result;
+        foreach ($this->validatedData as $key => $value) {
+            $this->{$key} = $value;
+        }
     }
 
     protected function isValidData(): bool
