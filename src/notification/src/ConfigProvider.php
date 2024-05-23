@@ -22,15 +22,11 @@ class ConfigProvider
                 Command\GenNotificationCommand::class,
                 Command\NotificationTableCommand::class,
             ],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
-            ],
             'dependencies' => [
                 Dispatcher::class => ChannelManager::class,
+            ],
+            'listeners' => [
+                Listener\RegisterChannelsListener::class,
             ],
         ];
     }
