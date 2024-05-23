@@ -24,6 +24,7 @@ use Hyperf\Contract\TranslatorInterface;
 use Hyperf\Di\Container;
 use Hyperf\Di\Definition\DefinitionSource;
 use Mockery as m;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use ReflectionClass;
@@ -32,6 +33,7 @@ use ReflectionClass;
  * @internal
  * @coversNothing
  */
+#[Group('notification')]
 class NotificationChannelManagerTest extends TestCase
 {
     protected function tearDown(): void

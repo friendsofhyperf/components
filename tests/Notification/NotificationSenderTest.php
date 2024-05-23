@@ -19,12 +19,14 @@ use FriendsOfHyperf\Tests\Notification\Stubs\DummyNotificationWithEmptyStringVia
 use Hyperf\Contract\TranslatorInterface;
 use Hyperf\Event\EventDispatcher;
 use Mockery as m;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  * @coversNothing
  */
+#[Group('notification')]
 class NotificationSenderTest extends TestCase
 {
     protected function tearDown(): void

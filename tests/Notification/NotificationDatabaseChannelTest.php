@@ -17,12 +17,14 @@ use FriendsOfHyperf\Tests\Notification\Stubs\NotificationDatabaseChannelCustomiz
 use FriendsOfHyperf\Tests\Notification\Stubs\NotificationDatabaseChannelTestNotification;
 use Hyperf\Database\Model\Model;
 use Mockery as m;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  * @coversNothing
  */
+#[Group('notification')]
 class NotificationDatabaseChannelTest extends TestCase
 {
     protected function tearDown(): void

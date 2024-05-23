@@ -19,6 +19,7 @@ use Hyperf\Context\ApplicationContext;
 use Hyperf\Di\Container;
 use Hyperf\Di\Definition\DefinitionSource;
 use Mockery as m;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -26,6 +27,7 @@ use ReflectionClass;
  * @internal
  * @coversNothing
  */
+#[Group('notification')]
 class NotificationRoutesNotificationsTest extends TestCase
 {
     protected function tearDown(): void
