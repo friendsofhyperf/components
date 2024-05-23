@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notification\Messages;
+namespace FriendsOfHyperf\Notification\Message;
 
 class DatabaseMessages
 {
