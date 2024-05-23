@@ -6,6 +6,10 @@
 
 The Data Transfer Objects with validation for Hyperf applications. Forked from [laravel-validated-dto](https://github.com/WendellAdriel/laravel-validated-dto)
 
+## Documentation
+
+https://wendell-adriel.gitbook.io/laravel-validated-dto
+
 ## Installation
 
 ```shell
