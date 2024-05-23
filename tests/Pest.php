@@ -24,6 +24,7 @@ uses()->group('fast-paginate')->in('FastPaginate');
 uses()->group('helpers')->in('Helpers');
 uses()->group('http-client')->in('HttpClient');
 uses()->group('macros')->in('Macros');
+uses()->group('notification')->in('Notification');
 uses()->group('redis-subscriber')->in('RedisSubscriber');
 uses()->group('sentry')->in('Sentry');
 uses()->group('support')->in('Support');
