@@ -132,6 +132,7 @@
         "friendsofhyperf/model-scope": "*",
         "friendsofhyperf/monolog-hook": "*",
         "friendsofhyperf/mysql-grammar-addon": "*",
+        "friendsofhyperf/notification": "*",
         "friendsofhyperf/openai-client": "*",
         "friendsofhyperf/pest-plugin-hyperf": "*",
         "friendsofhyperf/pretty-console": "*",
@@ -147,7 +148,6 @@
     },
     "autoload": {
         "files": [
-            "src/notifications/src/Functions.php",
             "src/amqp-job/src/Functions.php",
             "src/encryption/src/Functions.php",
             "src/exception-event/src/Functions.php",
@@ -159,7 +159,6 @@
             "src/validated-dto/src/Functions.php"
         ],
         "psr-4": {
-            "FriendsOfHyperf\\Notifications\\": "src/notifications/src/",
             "FriendsOfHyperf\\AmqpJob\\": "src/amqp-job/src/",
             "FriendsOfHyperf\\Cache\\": "src/cache/src/",
             "FriendsOfHyperf\\CommandSignals\\": "src/command-signals/src/",
@@ -189,6 +188,7 @@
             "FriendsOfHyperf\\ModelScope\\": "src/model-scope/src/",
             "FriendsOfHyperf\\MonologHook\\": "src/monolog-hook/src/",
             "FriendsOfHyperf\\MySqlGrammarAddon\\": "src/mysql-grammar-addon/src/",
+            "FriendsOfHyperf\\Notification\\": "src/notification/src/",
             "FriendsOfHyperf\\OpenAi\\": "src/openai-client/src/",
             "FriendsOfHyperf\\PrettyConsole\\": "src/pretty-console/src/",
             "FriendsOfHyperf\\ReCaptcha\\": "src/recaptcha/src/",
@@ -241,6 +241,7 @@
                 "FriendsOfHyperf\\ModelScope\\ConfigProvider",
                 "FriendsOfHyperf\\MonologHook\\ConfigProvider",
                 "FriendsOfHyperf\\MySqlGrammarAddon\\ConfigProvider",
+                "FriendsOfHyperf\\Notification\\ConfigProvider",
                 "FriendsOfHyperf\\OpenAi\\ConfigProvider",
                 "FriendsOfHyperf\\PrettyConsole\\ConfigProvider",
                 "FriendsOfHyperf\\ReCaptcha\\ConfigProvider",

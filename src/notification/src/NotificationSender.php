@@ -9,12 +9,12 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notifications;
+namespace FriendsOfHyperf\Notification;
 
 use Closure;
-use FriendsOfHyperf\Notifications\Enums\NotificationSendingStatusEnum;
-use FriendsOfHyperf\Notifications\Events\NotificationSending;
-use FriendsOfHyperf\Notifications\Events\NotificationSent;
+use FriendsOfHyperf\Notification\Enums\NotificationSendingStatusEnum;
+use FriendsOfHyperf\Notification\Events\NotificationSending;
+use FriendsOfHyperf\Notification\Events\NotificationSent;
 use Hyperf\Collection\Collection;
 use Hyperf\Contract\TranslatorInterface;
 use Hyperf\Database\Model\Collection as ModelCollection;

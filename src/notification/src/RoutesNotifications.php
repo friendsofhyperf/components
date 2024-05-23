@@ -9,9 +9,9 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notifications;
+namespace FriendsOfHyperf\Notification;
 
-use FriendsOfHyperf\Notifications\Contract\Dispatcher;
+use FriendsOfHyperf\Notification\Contract\Dispatcher;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Stringable\Str;
 

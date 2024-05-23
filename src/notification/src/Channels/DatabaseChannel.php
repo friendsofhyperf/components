@@ -9,11 +9,11 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notifications\Channels;
+namespace FriendsOfHyperf\Notification\Channels;
 
-use FriendsOfHyperf\Notifications\Attributes\Channel;
-use FriendsOfHyperf\Notifications\Contract\Channel as Contract;
-use FriendsOfHyperf\Notifications\Notification;
+use FriendsOfHyperf\Notification\Attributes\Channel;
+use FriendsOfHyperf\Notification\Contract\Channel as Contract;
+use FriendsOfHyperf\Notification\Notification;
 use Hyperf\Database\Model\Model;
 use RuntimeException;
 

@@ -9,11 +9,12 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notifications\Contract;
+namespace FriendsOfHyperf\Notification\Attributes;
 
-use FriendsOfHyperf\Notifications\Notification;
+use Attribute;
 
-interface Channel
+#[Attribute(Attribute::TARGET_CLASS)]
+class Channel extends AbstractAnnotation
 {
-    public function send(mixed $notifiable, Notification $notification): mixed;
+    public const PREFIX = 'channel';
 }

@@ -9,17 +9,18 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notifications\Events;
+namespace FriendsOfHyperf\Notification\Events;
 
-use FriendsOfHyperf\Notifications\Notification;
+use FriendsOfHyperf\Notification\Enums\NotificationSendingStatusEnum;
+use FriendsOfHyperf\Notification\Notification;
 
-class NotificationSent
+class NotificationSending
 {
     public function __construct(
         public mixed $notifiable,
         public Notification $notification,
         public string $channel,
-        public mixed $response
+        public NotificationSendingStatusEnum $status = NotificationSendingStatusEnum::ENABLED,
     ) {
     }
 }

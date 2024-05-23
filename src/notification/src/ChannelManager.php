@@ -9,10 +9,10 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notifications;
+namespace FriendsOfHyperf\Notification;
 
-use FriendsOfHyperf\Notifications\Attributes\Channel;
-use FriendsOfHyperf\Notifications\Contract\Channel as ChannelContract;
+use FriendsOfHyperf\Notification\Attributes\Channel;
+use FriendsOfHyperf\Notification\Contract\Channel as ChannelContract;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\TranslatorInterface;
 use InvalidArgumentException;

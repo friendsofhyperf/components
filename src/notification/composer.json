@@ -31,12 +31,12 @@
     },
     "autoload": {
         "psr-4": {
-            "FriendsOfHyperf\\Notifications\\": "src"
+            "FriendsOfHyperf\\Notification\\": "src"
         }
     },
     "extra": {
         "hyperf": {
-            "config": "FriendsOfHyperf\\Notifications\\ConfigProvider"
+            "config": "FriendsOfHyperf\\Notification\\ConfigProvider"
         },
         "branch-alias": {
             "dev-main": "3.1-dev"

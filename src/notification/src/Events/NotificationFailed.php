@@ -9,15 +9,14 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notifications\Messages;
+namespace FriendsOfHyperf\Notification\Events;
 
-class DatabaseMessages
+class NotificationFailed
 {
-    /**
-     * Create a new message instance.
-     * @param array $data the data that should be stored with the notification
-     */
     public function __construct(
+        public mixed $notifiable,
+        public mixed $notification,
+        public string $channel,
         public array $data
     ) {
     }

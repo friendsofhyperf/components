@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notifications\Command;
+namespace FriendsOfHyperf\Notification\Command;
 
 use Hyperf\Command\Annotation\Command;
 use Hyperf\Command\Command as Base;

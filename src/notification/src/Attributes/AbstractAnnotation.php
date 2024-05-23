@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notifications\Attributes;
+namespace FriendsOfHyperf\Notification\Attributes;
 
 use Hyperf\Di\Annotation\AbstractAnnotation as Base;
 

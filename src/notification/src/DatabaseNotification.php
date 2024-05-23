@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notifications;
+namespace FriendsOfHyperf\Notification;
 
 use Carbon\Carbon;
 use Hyperf\Database\Model\Builder;

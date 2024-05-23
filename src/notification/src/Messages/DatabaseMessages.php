@@ -9,20 +9,16 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notifications\Enums;
+namespace FriendsOfHyperf\Notification\Messages;
 
-/**
- * This enumeration is used to mark the message as ready to be sent.
- */
-enum NotificationSendingStatusEnum: int
+class DatabaseMessages
 {
     /**
-     * The message is enabled.
+     * Create a new message instance.
+     * @param array $data the data that should be stored with the notification
      */
-    case ENABLED = 1;
-
-    /**
-     * The message is blocked.
-     */
-    case BLOCKED = 0;
+    public function __construct(
+        public array $data
+    ) {
+    }
 }
