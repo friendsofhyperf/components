@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification;
 
+use FriendsOfHyperf\Notification\Contract\Dispatcher;
+
 class ConfigProvider
 {
     public function __invoke(): array
@@ -21,6 +23,7 @@ class ConfigProvider
                 Command\NotificationTableCommand::class,
             ],
             'dependencies' => [
+                Dispatcher::class => ChannelManager::class,
             ],
             'listeners' => [
                 Listener\RegisterChannelsListener::class,

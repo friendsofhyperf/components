@@ -12,12 +12,13 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Notification;
 
 use FriendsOfHyperf\Notification\Contract\Channel;
+use FriendsOfHyperf\Notification\Contract\Dispatcher;
 use Hyperf\Contract\TranslatorInterface;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
-class ChannelManager
+class ChannelManager implements Dispatcher
 {
     /**
      * @var array<string, Channel>
@@ -29,6 +30,19 @@ class ChannelManager
         public EventDispatcherInterface $dispatcher,
         public TranslatorInterface $translator
     ) {
+    }
+
+    /**
+     * Send the given notification to the given notifiable entities.
+     */
+    public function send(mixed $notifiables, Notification $notification): void
+    {
+        (new NotificationSender(
+            $this,
+            $this->dispatcher,
+            $this->translator
+        )
+        )->send($notifiables, $notification);
     }
 
     public function register(string $name, string $class): void
