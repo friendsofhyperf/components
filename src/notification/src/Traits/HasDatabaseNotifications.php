@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Notification\Traits;
 use FriendsOfHyperf\Notification\DatabaseNotification;
 use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\MorphMany;
-use Hyperf\Database\Query\Builder;
 
 /**
  * @mixin Model
@@ -32,7 +31,7 @@ trait HasDatabaseNotifications
     /**
      * Get the entity's read notifications.
      */
-    public function readNotifications(): Builder
+    public function readNotifications(): MorphMany
     {
         return $this->notifications()->read();
     }
@@ -40,7 +39,7 @@ trait HasDatabaseNotifications
     /**
      * Get the entity's unread notifications.
      */
-    public function unreadNotifications(): Builder
+    public function unreadNotifications(): MorphMany
     {
         return $this->notifications()->unread();
     }
