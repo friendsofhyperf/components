@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification;
 
+/**
+ * @method bool shouldSend(mixed $notifiable, string $notification)
+ */
 class Notification
 {
     /**
