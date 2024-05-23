@@ -121,17 +121,12 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
      */
     public function set($model, $key, $value, $attributes)
     {
-        if (is_string($value)) {
-            return $value;
-        }
-        if (is_array($value)) {
-            return json_encode($value);
-        }
-        if ($value instanceof ValidatedDTO) {
-            return $value->toJson();
-        }
-
-        return '';
+        return match (true) {
+            is_string($value) => $value,
+            is_array($value) => json_encode($value),
+            $value instanceof ValidatedDTO => $value->toJson(),
+            default => '',
+        };
     }
 
     /**
