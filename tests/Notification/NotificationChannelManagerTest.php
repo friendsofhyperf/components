@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Tests\Notification;
 use FriendsOfHyperf\Notification\ChannelManager;
 use FriendsOfHyperf\Notification\Contract\Channel;
 use FriendsOfHyperf\Notification\Contract\Dispatcher;
+use FriendsOfHyperf\Notification\Enums\SendingStatus;
 use FriendsOfHyperf\Notification\Event\NotificationSending;
 use FriendsOfHyperf\Notification\Event\NotificationSent;
 use FriendsOfHyperf\Notification\Notification;
@@ -58,6 +59,68 @@ class NotificationChannelManagerTest extends TestCase
         $events->shouldReceive('dispatch')->with(m::type(NotificationSent::class));
 
         $manager->send(new NotificationChannelManagerTestNotifiable(), new NotificationChannelManagerTestNotification());
+        $this->assertTrue(true);
+    }
+
+    public function testNotificationNotSentOnHalt()
+    {
+        $container = new Container(new DefinitionSource([]));
+
+        $container->set('config', ['app.name' => 'Name', 'app.logo' => 'Logo']);
+        $container->set(Dispatcher::class, $events = m::mock(EventDispatcherInterface::class));
+        $translator = m::mock(TranslatorInterface::class);
+        $driver = m::mock(Channel::class);
+        $container->set(get_class($driver), $driver);
+        ApplicationContext::setContainer($container);
+        $manager = new ChannelManager(...[$container, $events, $translator]);
+        $reflection = new ReflectionClass($manager);
+        $reflection->getProperty('channels')->setValue($manager, ['test2' => $driver]);
+        $events->shouldReceive('dispatch')->once()->andReturnUsing(function (NotificationSending $event) {
+            $event->status = SendingStatus::BLOCKED;
+        });
+        $driver->shouldReceive('send')->once();
+        $events->shouldReceive('dispatch')->once()->with(m::type(NotificationSent::class));
+        $events->shouldReceive('dispatch')->once()->with(m::type(NotificationSending::class));
+
+        $manager->send([new NotificationChannelManagerTestNotifiable()], new NotificationChannelManagerTestNotificationWithTwoChannels());
+        $this->assertTrue(true);
+    }
+
+    public function testNotificationNotSentWhenCancelled()
+    {
+        $container = new Container(new DefinitionSource([]));
+        $container->set('config', ['app.name' => 'Name', 'app.logo' => 'Logo']);
+        $container->set(Dispatcher::class, $events = m::mock(EventDispatcherInterface::class));
+        $translator = m::mock(TranslatorInterface::class);
+        $driver = m::mock(Channel::class);
+        $container->set(get_class($driver), $driver);
+        ApplicationContext::setContainer($container);
+        $manager = new ChannelManager(...[$container, $events, $translator]);
+        $manager->send([new NotificationChannelManagerTestNotifiable()], new NotificationChannelManagerTestCancelledNotification());
+        $this->assertTrue(true);
+    }
+
+    public function testNotificationSentWhenNotCancelled()
+    {
+        $container = new Container(new DefinitionSource([]));
+        $container->set('config', ['app.name' => 'Name', 'app.logo' => 'Logo']);
+        $container->set(Dispatcher::class, $events = m::mock(EventDispatcherInterface::class));
+        $translator = m::mock(TranslatorInterface::class);
+        $driver = m::mock(Channel::class);
+        $container->set(get_class($driver), $driver);
+        ApplicationContext::setContainer($container);
+        $manager = new ChannelManager(...[$container, $events, $translator]);
+        $reflection = new ReflectionClass($manager);
+        $reflection->getProperty('channels')->setValue($manager, ['test' => $driver]);
+        $events->allows('dispatch')->once()->andReturnUsing(function (NotificationSending $event) {
+            $event->status = SendingStatus::ENABLED;
+        });
+        $events->allows('dispatch')->once()->andReturnUsing(function ($event) {
+            $this->assertInstanceOf(NotificationSent::class, $event);
+        });
+        $driver->allows('send');
+
+        $manager->send([new NotificationChannelManagerTestNotifiable()], new NotificationChannelManagerTestNotCancelledNotification());
     }
 }
 
@@ -125,18 +188,5 @@ class NotificationChannelManagerTestNotCancelledNotification extends Notificatio
     public function shouldSend($notifiable, $channel)
     {
         return true;
-    }
-}
-
-class NotificationChannelManagerTestQueuedNotification extends Notification
-{
-    public function via()
-    {
-        return ['test'];
-    }
-
-    public function message()
-    {
-        return $this->line('test')->action('Text', 'url');
     }
 }
