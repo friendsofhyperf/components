@@ -46,6 +46,9 @@ class ChannelManager implements Dispatcher
         )->send($notifiables, $notification);
     }
 
+    /**
+     * @param class-string<Channel> $class
+     */
     public function register(string $name, string $class): void
     {
         $this->channels[$name] = $this->container->get($class);

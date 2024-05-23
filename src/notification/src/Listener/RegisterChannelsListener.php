@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Notification\Listener;
 use FriendsOfHyperf\Notification\Annotation\Channel;
 use FriendsOfHyperf\Notification\Channel\DatabaseChannel;
 use FriendsOfHyperf\Notification\ChannelManager;
+use FriendsOfHyperf\Notification\Contract\Channel as ChannelContract;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
@@ -34,7 +35,7 @@ class RegisterChannelsListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        /** @var array<class-string,Channel> $channels */
+        /** @var array<class-string<ChannelContract>,Channel> $channels */
         $channels = AnnotationCollector::getClassesByAnnotation(Channel::class);
 
         foreach ($channels as $channelClass => $annotation) {
