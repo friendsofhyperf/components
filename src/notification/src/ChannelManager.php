@@ -27,8 +27,8 @@ class ChannelManager implements Dispatcher
 
     public function __construct(
         protected ContainerInterface $container,
-        public EventDispatcherInterface $dispatcher,
-        public TranslatorInterface $translator
+        protected EventDispatcherInterface $dispatcher,
+        protected TranslatorInterface $translator
     ) {
     }
 
