@@ -9,8 +9,9 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notification;
+namespace FriendsOfHyperf\Notification\Traits;
 
+use FriendsOfHyperf\Notification\DatabaseNotification;
 use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\MorphMany;
 use Hyperf\Database\Query\Builder;
