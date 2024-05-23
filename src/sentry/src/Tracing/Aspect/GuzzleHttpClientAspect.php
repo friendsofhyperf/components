@@ -71,9 +71,8 @@ class GuzzleHttpClientAspect extends AbstractAspect
             $proceedingJoinPoint->arguments['keys']['options']['no_sentry_tracing'] = true;
         }
 
-        $uri = $arguments['uri'] ?? '/';
+        $uri = (string) ($arguments['uri'] ?? '/');
         $method = $arguments['method'] ?? 'GET';
-
         $fullUri = new \GuzzleHttp\Psr7\Uri($uri);
 
         $data = [
