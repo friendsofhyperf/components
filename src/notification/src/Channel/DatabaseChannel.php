@@ -35,9 +35,7 @@ class DatabaseChannel implements Contract
     {
         return [
             'id' => $notification->id,
-            'type' => method_exists($notification, 'databaseType')
-                ? $notification->databaseType($notifiable)
-                : get_class($notification),
+            'type' => method_exists($notification, 'databaseType') ? $notification->databaseType($notifiable) : get_class($notification),
             'data' => $this->getData($notifiable, $notification),
             'read_at' => null,
         ];
@@ -49,8 +47,8 @@ class DatabaseChannel implements Contract
     protected function getData(mixed $notifiable, Notification $notification): array
     {
         if (method_exists($notification, 'toDatabase')) {
-            return is_array($data = $notification->toDatabase($notifiable))
-                ? $data : $data->data;
+            $data = $notification->toDatabase($notifiable);
+            return is_array($data) ? $data : $data->data;
         }
 
         if (method_exists($notification, 'toArray')) {
