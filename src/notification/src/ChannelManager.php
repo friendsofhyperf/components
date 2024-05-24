@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification;
 
+use Closure;
 use FriendsOfHyperf\Notification\Contract\Channel;
 use FriendsOfHyperf\Notification\Contract\Dispatcher;
 use Hyperf\Contract\TranslatorInterface;
@@ -47,11 +48,26 @@ class ChannelManager implements Dispatcher
     }
 
     /**
-     * @param class-string<Channel> $class
+     * @param class-string<Channel>|Channel|Closure():Channel $class
      */
-    public function register(string $name, string $class): void
+    public function register(string $name, string|Channel|Closure $class, bool $replace = false): void
     {
-        $this->channels[$name] = $this->container->get($class);
+        if (! $replace && isset($this->channels[$name])) {
+            throw new InvalidArgumentException("Channel [{$name}] is already defined.");
+        }
+
+        $instance = match (true) {
+            $class instanceof Closure => $class(),
+            $class instanceof Channel => $class,
+            is_string($class) && is_a($class, Channel::class, true) => $this->container->get($class),
+            default => null,
+        };
+
+        if (! $instance instanceof Channel) {
+            throw new InvalidArgumentException('Invalid channel.');
+        }
+
+        $this->channels[$name] = $instance;
     }
 
     /**
