@@ -119,7 +119,6 @@ $noReadCount = $user->unreadNotifications()->count();
 $this->output->success('标记已读,未读消息数:' . $noReadCount);
 ```
 
-
 ### SMS Notifications
 
 ```shell
@@ -131,40 +130,11 @@ php bin/hyperf.php vendor:publish friendsofhyperf/notification
 ```
 
 ---
+
 ```php
-// config/autoload/notification.php
+// config/autoload/dependencies.php
 return [
-    'channels' => [
-        'sms' => [
-            // Timeout for HTTP requests (seconds)
-            'timeout' => 5.0,
-
-            // 默认发送配置
-            'default' => [
-                // Gateway invocation policy, default: sequential invocation
-                'strategy' => Overtrue\EasySms\Strategies\OrderStrategy::class,
-
-                // Default available sending gateways
-                'gateways' => [
-                    'yunpian', 'aliyun',
-                ],
-            ],
-            // Available gateway configurations
-            'gateways' => [
-                'errorlog' => [
-                    'file' => '/tmp/easy-sms.log',
-                ],
-                'yunpian' => [
-                    'api_key' => '824f0ff2f71cab52936axxxxxxxxxx',
-                ],
-                'aliyun' => [
-                    'access_key_id' => '',
-                    'access_key_secret' => '',
-                    'sign_name' => '',
-                ],
-            ],
-        ],
-    ],
+    Overtrue\EasySms\EasySms::class => App\Factory\EasySmsFactory::class,
 ];
 ```
 
@@ -178,9 +148,9 @@ use FriendsOfHyperf\Notification\Notification;use Overtrue\EasySms\Message;
 ## 通知类
 class TestNotification extends Notification
 {
-    public function __construct(
-        private string $code
-    ){}
+    public function __construct(private string $code)
+    {
+    }
     
     public function via()
     {
