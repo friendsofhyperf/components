@@ -13,6 +13,11 @@ namespace FriendsOfHyperf\Notification;
 
 /**
  * @method bool shouldSend(mixed $notifiable, string $notification)
+ * @method array toArray(mixed $notifiable)
+ * @method array|object toDatabase(mixed $notifiable)
+ * @method string databaseType(mixed $notifiable)
+ * @method array|\Overtrue\EasySms\Message toSms(mixed $notifiable)
+ * @method array|\Overtrue\EasySms\Message toSmsMessage(mixed $notifiable)
  */
 class Notification
 {
