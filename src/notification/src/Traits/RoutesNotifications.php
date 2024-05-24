@@ -37,6 +37,7 @@ trait RoutesNotifications
 
         return match ($driver) {
             'database' => $this->notifications(),
+            'mail' => $this->email,
             default => null,
         };
     }
