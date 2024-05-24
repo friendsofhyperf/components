@@ -52,12 +52,18 @@ class ChannelManager implements Dispatcher
      */
     public function register(string $name, string|Channel|Closure $class): void
     {
-        $this->channels[$name] = match (true) {
+        $instance = match (true) {
             $class instanceof Closure => $class(),
             $class instanceof Channel => $class,
-            is_string($class) && is_a($class, Channel::class, true) => $this->container->get($class),
-            default => throw new InvalidArgumentException('Invalid channel.'),
+            is_string($class) => $this->container->get($class),
+            default => null,
         };
+
+        if (! $instance instanceof Channel) {
+            throw new InvalidArgumentException('Invalid channel.');
+        }
+
+        $this->channels[$name] = $instance;
     }
 
     /**
