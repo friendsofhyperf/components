@@ -28,7 +28,7 @@ class EasySmsChannel implements Channel
 
     public function send(mixed $notifiable, Notification $notification): mixed
     {
-        return $this->client->send(
+        return $this->getClient()->send(
             $notifiable->routeNotificationFor('sms', $notification),
             $this->buildPayload($notifiable, $notification)
         );
