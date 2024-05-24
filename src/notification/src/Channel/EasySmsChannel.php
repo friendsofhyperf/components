@@ -20,15 +20,10 @@ use RuntimeException;
 
 class EasySmsChannel implements Channel
 {
-    protected EasySms $client;
+    protected ?EasySms $client = null;
 
-    public function __construct(ContainerInterface $container)
+    public function __construct(protected ContainerInterface $container)
     {
-        if (! $container->has(EasySms::class)) {
-            throw new RuntimeException('Please bind `Overtrue\EasySms\EasySms` to container first.');
-        }
-
-        $this->client = $container->get(EasySms::class);
     }
 
     public function send(mixed $notifiable, Notification $notification): mixed
@@ -41,7 +36,11 @@ class EasySmsChannel implements Channel
 
     public function getClient(): EasySms
     {
-        return $this->client;
+        if (! $this->container->has(EasySms::class)) {
+            throw new RuntimeException('Please bind `Overtrue\EasySms\EasySms` to container first.');
+        }
+
+        return $this->client = $this->container->get(EasySms::class);
     }
 
     protected function buildPayload(mixed $notifiable, Notification $notification): array|Message
