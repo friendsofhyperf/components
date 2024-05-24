@@ -14,13 +14,13 @@ namespace FriendsOfHyperf\Tests\Notification;
 use FriendsOfHyperf\Notification\Channel\EasySmsChannel;
 use FriendsOfHyperf\Notification\Notification;
 use FriendsOfHyperf\Notification\Traits\Notifiable;
-use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Container;
 use Mockery as m;
 use Overtrue\EasySms\EasySms;
 use Overtrue\EasySms\Message;
 use Overtrue\EasySms\PhoneNumber;
 use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
 
 /**
  * @internal
@@ -35,7 +35,7 @@ class NotificationSmsChannelTest extends TestCase
 
     public function testPayloadToArray(): void
     {
-        $config = m::mock(ConfigInterface::class);
+        $config = m::mock(ContainerInterface::class);
         $config->allows('get')->andReturn([]);
         $container = m::mock(Container::class);
         $sms = m::mock(EasySms::class);
@@ -47,14 +47,14 @@ class NotificationSmsChannelTest extends TestCase
             $this->assertSame('template', $params['template']);
             $this->assertSame(['data'], $params['data']);
         });
-        $channel = new EasySmsChannel($config, $container);
+        $channel = new EasySmsChannel($container);
         $notification = new SmsNotificationToArrayStub('content', 'template', ['data']);
         $channel->send(new User(), $notification);
     }
 
     public function testPayloadToSmsMessage(): void
     {
-        $config = m::mock(ConfigInterface::class);
+        $config = m::mock(ContainerInterface::class);
         $config->allows('get')->andReturn([]);
         $container = m::mock(Container::class);
         $sms = m::mock(EasySms::class);
@@ -67,14 +67,14 @@ class NotificationSmsChannelTest extends TestCase
             $this->assertSame('template', $params->getTemplate());
             $this->assertSame(['xxx'], $params->getData());
         });
-        $channel = new EasySmsChannel($config, $container);
+        $channel = new EasySmsChannel($container);
         $notification = new SmsNotificationToSmsMessageStub('content', 'template', ['data']);
         $channel->send(new User(), $notification);
     }
 
     public function testPayloadToSms(): void
     {
-        $config = m::mock(ConfigInterface::class);
+        $config = m::mock(ContainerInterface::class);
         $config->allows('get')->andReturn([]);
         $container = m::mock(Container::class);
         $sms = m::mock(EasySms::class);
@@ -90,7 +90,7 @@ class NotificationSmsChannelTest extends TestCase
             $this->assertSame('template', $params->getTemplate());
             $this->assertSame(['data'], $params->getData());
         });
-        $channel = new EasySmsChannel($config, $container);
+        $channel = new EasySmsChannel($container);
         $notification = new SmsNotificationToSmsStub('content', 'template', ['data']);
         $channel->send(new User(), $notification);
     }
