@@ -16,28 +16,24 @@ use FriendsOfHyperf\Notification\Notification;
 use Hyperf\Contract\ConfigInterface;
 use Overtrue\EasySms\EasySms;
 use Overtrue\EasySms\Message;
-use Psr\Container\ContainerInterface;
 use RuntimeException;
 
 use function Hyperf\Support\value;
 
 class SmsChannel implements Channel
 {
-    private array $config;
+    protected EasySms $client;
 
-    public function __construct(
-        /** @var \Hyperf\Contract\ContainerInterface */
-        private ContainerInterface $container,
-        ConfigInterface $config
-    ) {
-        $this->config = $config->get('notification.channels.sms', []);
+    public function __construct(ConfigInterface $config)
+    {
+        $this->client = new EasySms($config->get('notification.channels.sms', []));
     }
 
     public function send(mixed $notifiable, Notification $notification): mixed
     {
         return value(
             function ($phone, $params) {
-                return $this->getClient()->send($phone, $params);
+                return $this->client->send($phone, $params);
             },
             $notifiable->routeNotificationFor('sms', $notification),
             $this->buildPayload($notifiable, $notification)
@@ -46,12 +42,7 @@ class SmsChannel implements Channel
 
     public function getClient(): EasySms
     {
-        if ($this->container->has(EasySms::class)) {
-            return $this->container->get(EasySms::class);
-        }
-        $sms = new EasySms($this->config);
-        $this->container->set(EasySms::class, $sms);
-        return $this->getClient();
+        return $this->client;
     }
 
     protected function buildPayload(mixed $notifiable, Notification $notification): array|Message
