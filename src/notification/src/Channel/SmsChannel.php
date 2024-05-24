@@ -18,6 +18,7 @@ use Overtrue\EasySms\EasySms;
 use Overtrue\EasySms\Message;
 use Psr\Container\ContainerInterface;
 use RuntimeException;
+
 use function Hyperf\Support\value;
 
 class SmsChannel implements Channel
@@ -34,7 +35,7 @@ class SmsChannel implements Channel
     public function send(mixed $notifiable, Notification $notification): mixed
     {
         return value(
-            function ($phone,$params){
+            function ($phone, $params) {
                 return $this->getClient()->send($phone, $params);
             },
             $notifiable->routeNotificationFor('sms', $notification),
@@ -44,10 +45,10 @@ class SmsChannel implements Channel
 
     public function getClient(): EasySms
     {
-        if ($this->container->has(EasySms::class)){
+        if ($this->container->has(EasySms::class)) {
             return $this->container->get(EasySms::class);
         }
-        $sms =  new EasySms($this->config);
+        $sms = new EasySms($this->config);
         $this->container->set(EasySms::class, $sms);
         return $this->getClient();
     }
