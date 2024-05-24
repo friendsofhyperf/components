@@ -100,7 +100,8 @@
         "phpstan/phpstan-deprecation-rules": "^1.1",
         "swoole/ide-helper": "dev-master",
         "swow/swow": "dev-develop",
-        "voku/portable-ascii": "^1.4|^1.5"
+        "voku/portable-ascii": "^1.4|^1.5",
+        "overtrue/easy-sms": "~3.0"
     },
     "replace": {
         "friendsofhyperf/amqp-job": "*",
