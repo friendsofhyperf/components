@@ -50,8 +50,12 @@ class ChannelManager implements Dispatcher
     /**
      * @param class-string<Channel>|Channel|Closure():Channel $class
      */
-    public function register(string $name, string|Channel|Closure $class): void
+    public function register(string $name, string|Channel|Closure $class, bool $replace = false): void
     {
+        if (! $replace && isset($this->channels[$name])) {
+            throw new InvalidArgumentException("Channel [{$name}] is already defined.");
+        }
+
         $instance = match (true) {
             $class instanceof Closure => $class(),
             $class instanceof Channel => $class,
