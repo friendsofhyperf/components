@@ -14,9 +14,9 @@ namespace FriendsOfHyperf\Notification\Channel;
 use FriendsOfHyperf\Notification\Contract\Channel;
 use FriendsOfHyperf\Notification\Notification;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\ContainerInterface;
 use Overtrue\EasySms\EasySms;
 use Overtrue\EasySms\Message;
-use Hyperf\Contract\ContainerInterface;
 use RuntimeException;
 
 use function Hyperf\Support\value;
