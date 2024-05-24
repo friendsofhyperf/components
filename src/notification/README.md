@@ -140,7 +140,8 @@ return [
 ```php
 namespace App\Notification;
 
-use FriendsOfHyperf\Notification\Notification;use Overtrue\EasySms\Message;
+use FriendsOfHyperf\Notification\Notification;
+use Overtrue\EasySms\Message;
 
 ## 通知类
 class TestNotification extends Notification
