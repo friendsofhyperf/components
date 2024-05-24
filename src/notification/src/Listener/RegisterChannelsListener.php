@@ -53,6 +53,6 @@ class RegisterChannelsListener implements ListenerInterface
          * Register default channels.
          */
         $channelManager->register('database', DatabaseChannel::class);
-        $channelManager->register('sms', EasySmsChannel::class);
+        $channelManager->register('easysms', EasySmsChannel::class);
     }
 }
