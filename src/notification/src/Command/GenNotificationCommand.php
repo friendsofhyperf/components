@@ -37,6 +37,10 @@ class GenNotificationCommand extends Command
         $content = str_replace('{{ namespace }}', $namespace, $content);
         $content = str_replace('{{ class }}', $name, $content);
 
+        if (! is_dir(dirname($path))) {
+            mkdir(dirname($path), 0777, true);
+        }
+
         file_put_contents($path, $content);
 
         $this->output->success('Notification created successfully!');

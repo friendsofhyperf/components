@@ -16,16 +16,15 @@ use FriendsOfHyperf\Notification\Channel\DatabaseChannel;
 use FriendsOfHyperf\Notification\Channel\SmsChannel;
 use FriendsOfHyperf\Notification\ChannelManager;
 use FriendsOfHyperf\Notification\Contract\Channel as ChannelContract;
-use Hyperf\Context\ApplicationContext;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
+use Psr\Container\ContainerInterface;
 
 class RegisterChannelsListener implements ListenerInterface
 {
-    public function getChannelManager(): ChannelManager
+    public function __construct(protected ContainerInterface $container)
     {
-        return ApplicationContext::getContainer()->get(ChannelManager::class);
     }
 
     public function listen(): array
@@ -37,6 +36,8 @@ class RegisterChannelsListener implements ListenerInterface
 
     public function process(object $event): void
     {
+        $channelManager = $this->container->get(ChannelManager::class);
+
         /** @var array<class-string<ChannelContract>,Channel> $channels */
         $channels = AnnotationCollector::getClassesByAnnotation(Channel::class);
 
@@ -45,14 +46,13 @@ class RegisterChannelsListener implements ListenerInterface
                 continue;
             }
 
-            $this->getChannelManager()->register($annotation->name, $channelClass);
+            $channelManager->register($annotation->name, $channelClass);
         }
 
         /*
          * Register default channels.
          */
-
-        $this->getChannelManager()->register('database', DatabaseChannel::class);
-        $this->getChannelManager()->register('sms', SmsChannel::class);
+        $channelManager->register('database', DatabaseChannel::class);
+        $channelManager->register('sms', SmsChannel::class);
     }
 }
