@@ -32,9 +32,7 @@ class SmsChannel implements Channel
     public function send(mixed $notifiable, Notification $notification): mixed
     {
         return value(
-            function ($phone, $params) {
-                return $this->client->send($phone, $params);
-            },
+            fn ($phone, $params) => $this->client->send($phone, $params),
             $notifiable->routeNotificationFor('sms', $notification),
             $this->buildPayload($notifiable, $notification)
         );
