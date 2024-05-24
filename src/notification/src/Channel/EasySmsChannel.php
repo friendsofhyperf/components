@@ -36,11 +36,15 @@ class EasySmsChannel implements Channel
 
     public function getClient(): EasySms
     {
-        if (! $this->container->has(EasySms::class)) {
-            throw new RuntimeException('Please bind `Overtrue\EasySms\EasySms` to container first.');
+        if (! $this->client) {
+            if (! $this->container->has(EasySms::class)) {
+                throw new RuntimeException('Please bind `Overtrue\EasySms\EasySms` to container first.');
+            }
+
+            $this->client = $this->container->get(EasySms::class);
         }
 
-        return $this->client = $this->container->get(EasySms::class);
+        return $this->client;
     }
 
     protected function buildPayload(mixed $notifiable, Notification $notification): array|Message
