@@ -124,9 +124,6 @@ $this->output->success('标记已读,未读消息数:' . $noReadCount);
 ```shell
 # Install the easy-sms package
 composer require overtrue/easy-sms:~3.0
-
-# publish the configuration file
-php bin/hyperf.php vendor:publish friendsofhyperf/notification
 ```
 
 ---
