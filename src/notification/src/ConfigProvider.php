@@ -26,14 +26,6 @@ class ConfigProvider
             'listeners' => [
                 Listener\RegisterChannelsListener::class,
             ],
-            'publish' => [
-                [
-                    'id' => 'config',
-                    'description' => 'The config for notification.',
-                    'source' => __DIR__ . '/../publish/notification.php',
-                    'destination' => BASE_PATH . '/config/autoload/notification.php',
-                ],
-            ],
         ];
     }
 }

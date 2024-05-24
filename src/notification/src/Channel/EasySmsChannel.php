@@ -13,18 +13,22 @@ namespace FriendsOfHyperf\Notification\Channel;
 
 use FriendsOfHyperf\Notification\Contract\Channel;
 use FriendsOfHyperf\Notification\Notification;
-use Hyperf\Contract\ConfigInterface;
 use Overtrue\EasySms\EasySms;
 use Overtrue\EasySms\Message;
+use Psr\Container\ContainerInterface;
 use RuntimeException;
 
-class SmsChannel implements Channel
+class EasySmsChannel implements Channel
 {
     protected EasySms $client;
 
-    public function __construct(ConfigInterface $config)
+    public function __construct(ContainerInterface $container)
     {
-        $this->client = new EasySms($config->get('notification.channels.sms', []));
+        if (! $container->has(EasySms::class)) {
+            throw new RuntimeException('Please bind EasySms::class to container first.');
+        }
+
+        $this->client = $container->get(EasySms::class);
     }
 
     public function send(mixed $notifiable, Notification $notification): mixed

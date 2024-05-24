@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tests\Notification;
 
-use FriendsOfHyperf\Notification\Channel\SmsChannel;
+use FriendsOfHyperf\Notification\Channel\EasySmsChannel;
 use FriendsOfHyperf\Notification\Notification;
 use FriendsOfHyperf\Notification\Traits\Notifiable;
 use Hyperf\Contract\ConfigInterface;
@@ -47,7 +47,7 @@ class NotificationSmsChannelTest extends TestCase
             $this->assertSame('template', $params['template']);
             $this->assertSame(['data'], $params['data']);
         });
-        $channel = new SmsChannel($config, $container);
+        $channel = new EasySmsChannel($config, $container);
         $notification = new SmsNotificationToArrayStub('content', 'template', ['data']);
         $channel->send(new User(), $notification);
     }
@@ -67,7 +67,7 @@ class NotificationSmsChannelTest extends TestCase
             $this->assertSame('template', $params->getTemplate());
             $this->assertSame(['xxx'], $params->getData());
         });
-        $channel = new SmsChannel($config, $container);
+        $channel = new EasySmsChannel($config, $container);
         $notification = new SmsNotificationToSmsMessageStub('content', 'template', ['data']);
         $channel->send(new User(), $notification);
     }
@@ -90,7 +90,7 @@ class NotificationSmsChannelTest extends TestCase
             $this->assertSame('template', $params->getTemplate());
             $this->assertSame(['data'], $params->getData());
         });
-        $channel = new SmsChannel($config, $container);
+        $channel = new EasySmsChannel($config, $container);
         $notification = new SmsNotificationToSmsStub('content', 'template', ['data']);
         $channel->send(new User(), $notification);
     }
