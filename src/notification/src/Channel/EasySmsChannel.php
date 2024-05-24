@@ -25,7 +25,7 @@ class EasySmsChannel implements Channel
     public function __construct(ContainerInterface $container)
     {
         if (! $container->has(EasySms::class)) {
-            throw new RuntimeException('Please bind EasySms::class to container first.');
+            throw new RuntimeException('Please bind `Overtrue\EasySms\EasySms` to container first.');
         }
 
         $this->client = $container->get(EasySms::class);
