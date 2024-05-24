@@ -16,7 +16,7 @@ use FriendsOfHyperf\Notification\Notification;
 use Hyperf\Contract\ConfigInterface;
 use Overtrue\EasySms\EasySms;
 use Overtrue\EasySms\Message;
-use Psr\Container\ContainerInterface;
+use Hyperf\Contract\ContainerInterface;
 use RuntimeException;
 
 use function Hyperf\Support\value;
