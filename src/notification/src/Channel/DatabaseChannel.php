@@ -48,7 +48,7 @@ class DatabaseChannel implements Contract
     {
         if (method_exists($notification, 'toDatabase')) {
             $data = $notification->toDatabase($notifiable);
-            return is_array($data) ? $data : $data->data;
+            return is_array($data) ? $data : $data->data ?? [];
         }
 
         if (method_exists($notification, 'toArray')) {
