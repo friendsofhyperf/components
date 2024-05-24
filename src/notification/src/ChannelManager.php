@@ -59,7 +59,7 @@ class ChannelManager implements Dispatcher
         $instance = match (true) {
             $class instanceof Closure => $class(),
             $class instanceof Channel => $class,
-            is_string($class) => $this->container->get($class),
+            is_string($class) && is_a($class, Channel::class, true) => $this->container->get($class),
             default => null,
         };
 
