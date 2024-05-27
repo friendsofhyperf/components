@@ -60,19 +60,40 @@ function retry($times, callable $callback, $sleepMilliseconds = 0, $when = null)
 }
 
 /**
- * Ensures a callable is only called once, and returns the result on subsequent calls.
+ * @template T
  *
- * @template  TReturnType
- *
- * @param callable(): TReturnType $callback
- * @return TReturnType
+ * @param (callable(): T) $callback
+ * @return T
  */
-function once(callable $callback)
+function once(callable $callback): mixed
 {
-    $onceable = Onceable::tryFromTrace(
-        debug_backtrace(DEBUG_BACKTRACE_PROVIDE_OBJECT, 2),
-        $callback,
+    $trace = debug_backtrace(
+        DEBUG_BACKTRACE_PROVIDE_OBJECT,
+        2
     );
 
-    return $onceable ? Once::instance()->value($onceable) : call_user_func($callback);
+    $backtrace = new Once\Backtrace($trace);
+
+    if ($backtrace->getFunctionName() === 'eval') {
+        return call_user_func($callback);
+    }
+
+    $object = $backtrace->getObject();
+    $hash = $backtrace->getHash();
+    $cache = Once\Cache::getInstance();
+
+    if (is_string($object)) {
+        $object = $cache;
+    }
+
+    if (! $cache->isEnabled()) {
+        return call_user_func($callback, $backtrace->getArguments());
+    }
+
+    if (! $cache->has($object, $hash)) {
+        $result = call_user_func($callback, $backtrace->getArguments());
+        $cache->set($object, $hash, $result);
+    }
+
+    return $cache->get($object, $hash);
 }
