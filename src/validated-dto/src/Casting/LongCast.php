@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\ValidatedDTO\Casting;
 
 use FriendsOfHyperf\ValidatedDTO\Exception\CastException;
+use Throwable;
 
 class LongCast implements Castable
 {
@@ -20,6 +21,10 @@ class LongCast implements Castable
      */
     public function cast(string $property, mixed $value): int
     {
-        return (int) $value;
+        try {
+            return (int) $value;
+        } catch (Throwable $e) { // @phpstan-ignore-line
+            throw new CastException($property);
+        }
     }
 }

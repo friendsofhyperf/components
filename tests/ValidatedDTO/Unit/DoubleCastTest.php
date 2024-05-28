@@ -16,7 +16,17 @@ it('properly casts to float')
     ->cast(test_property(), '10.5')
     ->toBe(10.5);
 
-it('throws exception when it is unable to cast property')
+it('throws exception when it is string')
     ->expect(fn () => new DoubleCast())
     ->cast(test_property(), 'TEST')
+    ->toBe(0.0);
+
+it('throws exception when it is empty string')
+    ->expect(fn () => new DoubleCast())
+    ->cast(test_property(), '')
+    ->toBe(0.0);
+
+it('throws exception when it is unable to cast property')
+    ->expect(fn () => new DoubleCast())
+    ->cast(test_property(), new stdClass())
     ->throws(CastException::class, 'Unable to cast property: test_property - invalid value');
