@@ -23,7 +23,7 @@ class DoubleCast implements Castable
     {
         try {
             return (float) $value;
-        } catch (Throwable $e) {
+        } catch (Throwable $e) { // @phpstan-ignore-line
             throw new CastException($property);
         }
     }

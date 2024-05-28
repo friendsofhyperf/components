@@ -23,7 +23,7 @@ class LongCast implements Castable
     {
         try {
             return (int) $value;
-        } catch (Throwable $e) {
+        } catch (Throwable $e) { // @phpstan-ignore-line
             throw new CastException($property);
         }
     }
