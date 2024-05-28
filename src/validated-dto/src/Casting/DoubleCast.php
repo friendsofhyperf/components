@@ -11,20 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ValidatedDTO\Casting;
 
-use FriendsOfHyperf\ValidatedDTO\Exception\CastException;
-use Throwable;
-
-class DoubleCast implements Castable
+/**
+ * @deprecated since v3.1, use FloatCast instead, will be removed in v3.2
+ */
+class DoubleCast extends FloatCast
 {
-    /**
-     * @throws CastException
-     */
-    public function cast(string $property, mixed $value): float
-    {
-        try {
-            return (float) $value;
-        } catch (Throwable $e) { // @phpstan-ignore-line
-            throw new CastException($property);
-        }
-    }
 }

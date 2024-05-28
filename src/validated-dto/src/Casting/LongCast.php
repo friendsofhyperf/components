@@ -11,20 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ValidatedDTO\Casting;
 
-use FriendsOfHyperf\ValidatedDTO\Exception\CastException;
-use Throwable;
-
-class LongCast implements Castable
+/**
+ * @deprecated since v3.1, use IntegerCast instead, will be removed in v3.2
+ */
+class LongCast extends IntegerCast
 {
-    /**
-     * @throws CastException
-     */
-    public function cast(string $property, mixed $value): int
-    {
-        try {
-            return (int) $value;
-        } catch (Throwable $e) { // @phpstan-ignore-line
-            throw new CastException($property);
-        }
-    }
 }
