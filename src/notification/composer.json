@@ -30,7 +30,7 @@
     },
     "suggest": {
         "hyperf/database": "Required if you want to use database channel.(~3.1.0)",
-        "overtrue/easy-sms": "Required if you want to use sms channel.(~3.0)"
+        "overtrue/easy-sms": "Required if you want to use sms channel.(^3.0)"
     },
     "autoload": {
         "psr-4": {
