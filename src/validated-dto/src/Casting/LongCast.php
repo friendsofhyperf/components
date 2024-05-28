@@ -14,6 +14,6 @@ namespace FriendsOfHyperf\ValidatedDTO\Casting;
 /**
  * @deprecated since v3.1, use IntegerCast instead, will be removed in v3.2
  */
-class LongCast implements IntegerCast
+class LongCast extends IntegerCast
 {
 }
