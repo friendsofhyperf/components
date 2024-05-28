@@ -20,7 +20,7 @@ class IntegerCast implements Castable
      */
     public function cast(string $property, mixed $value): int
     {
-        if (! is_numeric($value) && $value !== '') {
+        if (! is_numeric($value)) {
             throw new CastException($property);
         }
 

@@ -20,7 +20,7 @@ class FloatCast implements Castable
      */
     public function cast(string $property, mixed $value): float
     {
-        if (! is_numeric($value) && $value !== '') {
+        if (! is_numeric($value)) {
             throw new CastException($property);
         }
 
