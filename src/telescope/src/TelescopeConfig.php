@@ -61,7 +61,7 @@ class TelescopeConfig
     }
 
     /**
-     * @deprecated since v3.1, will remove in v3.4
+     * @deprecated since v3.1, will remove in v3.2
      */
     public function getServerPort(): int
     {
