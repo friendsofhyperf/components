@@ -35,6 +35,7 @@
     "license": "MIT",
     "support": {
         "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components"
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     }
 }
