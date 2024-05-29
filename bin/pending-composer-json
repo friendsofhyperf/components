@@ -23,15 +23,6 @@ $files = Finder::create()
     ->name('composer.json')
     ->files();
 
-$require = [];
-$autoload = [];
-$autoloadFiles = [];
-$autoloadDev = [
-    'FriendsOfHyperf\\Tests\\' => 'tests/',
-];
-$configProviders = [];
-$replaces = [];
-
 foreach ($files as $file) {
     $file = (string) $file->getRealPath();
     $component = basename(dirname($file));
@@ -46,6 +37,7 @@ foreach ($files as $file) {
     //     }
     // }
 
+    // Authors
     if (! isset($composerJson->authors)) {
         $composerJson->authors = [
             [
@@ -54,17 +46,27 @@ foreach ($files as $file) {
             ],
         ];
     }
+
+    // License
     $composerJson->license = 'MIT';
-    $composerJson->support = [
-        'issues' => 'https://github.com/friendsofhyperf/components/issues',
-        'source' => 'https://github.com/friendsofhyperf/components',
-    ];
+
+    // Support
+    if (! isset($composerJson->support)) {
+        $composerJson->support = new stdClass();
+    }
+    $composerJson->support->issues = 'https://github.com/friendsofhyperf/components/issues';
+    $composerJson->support->{'pull-request'} = 'https://github.com/friendsofhyperf/components/pulls';
+    $composerJson->support->source = 'https://github.com/friendsofhyperf/components';
+
+    // Extra
     if (! isset($composerJson->extra)) {
         $composerJson->extra = new stdClass();
     }
     $composerJson->extra->{'branch-alias'} = [
         'dev-main' => '3.1-dev',
     ];
+
+    // Removed
     if (isset($composerJson->{'require-dev'})) {
         unset($composerJson->{'require-dev'});
     }
