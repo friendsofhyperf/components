@@ -36,7 +36,7 @@ return [
     ],
     'server' => [
         'enable' => env('TELESCOPE_SERVER_ENABLE', false),
-        'name' => 'telescope',
+        'name' => env('TELESCOPE_SERVER_NAME', 'telescope'),
         'host' => env('TELESCOPE_SERVER_HOST', '0.0.0.0'),
         'port' => (int) env('TELESCOPE_SERVER_PORT', 9509),
         'sock_type' => SWOOLE_SOCK_TCP,
