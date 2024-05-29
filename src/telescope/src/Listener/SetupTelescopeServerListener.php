@@ -11,13 +11,10 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Listener;
 
-use FriendsOfHyperf\Telescope\Server\Server;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
-use Hyperf\Server\Event;
-use Hyperf\Server\ServerInterface;
 
 class SetupTelescopeServerListener implements ListenerInterface
 {
@@ -40,21 +37,8 @@ class SetupTelescopeServerListener implements ListenerInterface
             return;
         }
 
-        $host = $this->telescopeConfig->getServerHost();
-        $port = $this->telescopeConfig->getServerPort();
-
         $servers = $this->config->get('server.servers');
-
-        $servers[] = [
-            'name' => 'telescope',
-            'type' => ServerInterface::SERVER_HTTP,
-            'host' => $host,
-            'port' => $port,
-            'sock_type' => SWOOLE_SOCK_TCP,
-            'callbacks' => [
-                Event::ON_REQUEST => [Server::class, 'onRequest'],
-            ],
-        ];
+        $servers[] = $this->telescopeConfig->getServerOptions();
 
         $this->config->set('server.servers', $servers);
     }

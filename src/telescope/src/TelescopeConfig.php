@@ -11,7 +11,10 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope;
 
+use FriendsOfHyperf\Telescope\Server\Server;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Server\Event;
+use Hyperf\Server\ServerInterface;
 use Hyperf\Stringable\Str;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -33,8 +36,14 @@ class TelescopeConfig
     {
         return array_replace([
             'enable' => false,
+            'name' => 'telescope',
+            'type' => ServerInterface::SERVER_HTTP,
             'host' => '0.0.0.0',
             'port' => 9509,
+            'sock_type' => SWOOLE_SOCK_TCP,
+            'callbacks' => [
+                Event::ON_REQUEST => [Server::class, 'onRequest'],
+            ],
         ], (array) $this->get('server', []));
     }
 
@@ -43,11 +52,17 @@ class TelescopeConfig
         return (bool) $this->getServerOptions()['enable'];
     }
 
+    /**
+     * @deprecated since v3.1, will remove in v3.2
+     */
     public function getServerHost(): string
     {
         return (string) ($this->getServerOptions()['host'] ?: '0.0.0.0');
     }
 
+    /**
+     * @deprecated since v3.1, will remove in v3.2
+     */
     public function getServerPort(): int
     {
         return (int) ($this->getServerOptions()['port'] ?: 9509);
