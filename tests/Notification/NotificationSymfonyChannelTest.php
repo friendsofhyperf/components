@@ -42,13 +42,13 @@ class NotificationSymfonyChannelTest extends TestCase
         });
         $channel = new SymfonyChannel($container);
         $notification = new SymfonyNotificationStub();
-        $channel->send(new User(), $notification);
+        $channel->send(new Users(), $notification);
     }
 }
 
 class SymfonyNotificationStub extends Notification
 {
-    public function toSymfony(User $notifiable): \Symfony\Component\Notifier\Notification\Notification
+    public function toSymfony(Users $notifiable): \Symfony\Component\Notifier\Notification\Notification
     {
         return new \Symfony\Component\Notifier\Notification\Notification(
             'subject',
@@ -56,13 +56,13 @@ class SymfonyNotificationStub extends Notification
         );
     }
 
-    public function recipient(User $notifiable): RecipientInterface
+    public function recipient(Users $notifiable): RecipientInterface
     {
         return $notifiable->routeNotificationFor();
     }
 }
 
-class User
+class Users
 {
     use Notifiable;
 
