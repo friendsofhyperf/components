@@ -33,7 +33,7 @@ class BlockableAspect extends AbstractAspect
         /** @var Blockable $annotation */
         $annotation = $annotationMetadata->method[Blockable::class] ?? null;
 
-        if (! $annotation) {
+        if (! $annotation || $annotation->seconds <= 0) {
             return $proceedingJoinPoint->process();
         }
 
