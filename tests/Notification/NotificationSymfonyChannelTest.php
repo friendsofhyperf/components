@@ -56,7 +56,7 @@ class SymfonyNotificationStub extends Notification
         );
     }
 
-    public function recipient(Users $notifiable): RecipientInterface
+    public function toRecipient(Users $notifiable): RecipientInterface
     {
         return $notifiable->routeNotificationFor();
     }

@@ -28,13 +28,13 @@ class SymfonyChannel implements ChannelContract
 
     public function send(mixed $notifiable, Notification $notification): mixed
     {
-        if (! method_exists($notification, 'toSymfony') || ! method_exists($notification, 'recipient')) {
-            throw new RuntimeException('Notification must implement `toSymfony` method.');
+        if (! method_exists($notification, 'toSymfony') || ! method_exists($notification, 'toRecipient')) {
+            throw new RuntimeException('Notification must implement `toSymfony` and `toRecipient` method.');
         }
 
         $this->getNotifier()->send(
             $notification->toSymfony($notifiable),
-            $notification->recipient($notifiable)
+            $notification->toRecipient($notifiable)
         );
 
         return null;
