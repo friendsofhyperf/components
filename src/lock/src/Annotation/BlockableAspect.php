@@ -31,7 +31,12 @@ class BlockableAspect extends AbstractAspect
         $arguments = $proceedingJoinPoint->arguments['keys'] ?? [];
         $annotationMetadata = $proceedingJoinPoint->getAnnotationMetadata();
         /** @var Blockable $annotation */
-        $annotation = $annotationMetadata->method[Blockable::class];
+        $annotation = $annotationMetadata->method[Blockable::class] ?? null;
+
+        if (! $annotation) {
+            return $proceedingJoinPoint->process();
+        }
+
         $key = StringHelper::format($annotation->prefix, $arguments, $annotation->value);
 
         return $this->lockFactory->make($key, $annotation->ttl, driver: $annotation->driver)
