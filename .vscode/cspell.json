@@ -6,6 +6,7 @@
         "autoloader",
         "backoff",
         "Bledsoe",
+        "Blockable",
         "callables",
         "Castable",
         "compoships",

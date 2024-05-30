@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Lock;
 
+use FriendsOfHyperf\Lock\Annotation\BlockableAspect;
 use FriendsOfHyperf\Lock\Annotation\LockAspect;
 use FriendsOfHyperf\Lock\Listener\RegisterPropertyHandlerListener;
 
@@ -24,6 +25,7 @@ class ConfigProvider
             ],
             'aspects' => [
                 LockAspect::class,
+                BlockableAspect::class,
             ],
             'publish' => [
                 [
