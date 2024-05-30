@@ -15,12 +15,12 @@ use Attribute;
 use Hyperf\Di\Annotation\AbstractAnnotation;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class Lockable extends AbstractAnnotation
+class Blockable extends AbstractAnnotation
 {
     public function __construct(
         public ?string $prefix = null,
         public ?string $value = null,
-        public int $waitSeconds = 0,
+        public int $seconds = 0,
         public int $ttl = 0,
         public string $driver = 'default'
     ) {
