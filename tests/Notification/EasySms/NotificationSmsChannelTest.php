@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Tests\Notification\EasySms;
 
 use FriendsOfHyperf\Notification\EasySms\Channel\EasySmsChannel;
-use FriendsOfHyperf\Notification\EasySms\Contract\Message as MessageContract;
 use FriendsOfHyperf\Notification\EasySms\Contract\Smsable;
 use FriendsOfHyperf\Notification\Notification;
 use FriendsOfHyperf\Notification\Traits\Notifiable;
@@ -87,7 +86,7 @@ class SmsNotificationToSmsStub extends Notification implements Smsable
         ];
     }
 
-    public function toSms(mixed $notifiable): array
+    public function toSms(mixed $notifiable): array|Message
     {
         return [
             'content' => $this->content,
@@ -96,7 +95,7 @@ class SmsNotificationToSmsStub extends Notification implements Smsable
         ];
     }
 }
-class SmsNotificationToSmsMessageStub extends Notification implements MessageContract
+class SmsNotificationToSmsMessageStub extends Notification implements Smsable
 {
     public function __construct(
         private string $content,
@@ -111,7 +110,7 @@ class SmsNotificationToSmsMessageStub extends Notification implements MessageCon
         ];
     }
 
-    public function toSmsMessage(mixed $notifiable): Message
+    public function toSms(mixed $notifiable): array|Message
     {
         $message = new Message();
         $message->setData(['xxx']);

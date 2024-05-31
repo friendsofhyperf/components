@@ -13,5 +13,5 @@ namespace FriendsOfHyperf\Notification\EasySms\Contract;
 
 interface Smsable
 {
-    public function toSms(mixed $notifiable): array;
+    public function toSms(mixed $notifiable): array|\Overtrue\EasySms\Message;
 }
