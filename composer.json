@@ -101,6 +101,7 @@
         "phpstan/phpstan-deprecation-rules": "^1.1",
         "swoole/ide-helper": "dev-master",
         "swow/swow": "dev-develop",
+        "symfony/notifier": "~6.4",
         "voku/portable-ascii": "^1.4|^1.5"
     },
     "replace": {
