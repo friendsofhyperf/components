@@ -92,7 +92,7 @@ class TestNotification extends Notification implements Smsable
     // or return customer Message
     public function toSms(mixed $notifiable): array|Message
     {
-        return new Message()
+        return new Message();
     }*/
 
 }
