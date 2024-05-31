@@ -13,8 +13,8 @@ namespace FriendsOfHyperf\Notification\EasySms\Channel;
 
 use FriendsOfHyperf\Notification\Contract\Channel as ChannelContract;
 use FriendsOfHyperf\Notification\EasySms\Contract\Smsable;
+use FriendsOfHyperf\Notification\EasySms\EasySms;
 use FriendsOfHyperf\Notification\Notification;
-use Overtrue\EasySms\EasySms;
 use Overtrue\EasySms\Message;
 use RuntimeException;
 

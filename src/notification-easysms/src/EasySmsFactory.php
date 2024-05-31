@@ -9,10 +9,9 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notification\EasySms\Factory;
+namespace FriendsOfHyperf\Notification\EasySms;
 
 use Hyperf\Contract\ConfigInterface;
-use Overtrue\EasySms\EasySms;
 
 class EasySmsFactory
 {
