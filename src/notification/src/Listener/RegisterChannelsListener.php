@@ -19,11 +19,10 @@ use FriendsOfHyperf\Notification\Contract\Channel as ChannelContract;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
-use Psr\Container\ContainerInterface;
 
 class RegisterChannelsListener implements ListenerInterface
 {
-    public function __construct(protected ContainerInterface $container)
+    public function __construct(protected ChannelManager $channelManager)
     {
     }
 
@@ -36,7 +35,7 @@ class RegisterChannelsListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        $channelManager = $this->container->get(ChannelManager::class);
+        $channelManager = $this->channelManager;
 
         /** @var array<class-string<ChannelContract>,Channel> $channels */
         $channels = AnnotationCollector::getClassesByAnnotation(Channel::class);
