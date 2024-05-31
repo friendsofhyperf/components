@@ -12,9 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Notification\EasySms\Channel;
 
 use FriendsOfHyperf\Notification\Contract\Channel as ChannelContract;
-use FriendsOfHyperf\Notification\EasySms\Contract\EasySmsChannelToSmsArrayContract;
-use FriendsOfHyperf\Notification\EasySms\Contract\EasySmsChannelToSmsContract;
-use FriendsOfHyperf\Notification\EasySms\Contract\EasySmsChannelToSmsMessageContract;
+use FriendsOfHyperf\Notification\EasySms\Contract\Message as MessageContract;
+use FriendsOfHyperf\Notification\EasySms\Contract\Smsable;
 use FriendsOfHyperf\Notification\Notification;
 use Overtrue\EasySms\EasySms;
 use Overtrue\EasySms\Message;
@@ -37,14 +36,11 @@ class EasySmsChannel implements ChannelContract
 
     protected function buildPayload(mixed $notifiable, Notification $notification): array|Message
     {
-        if ($notification instanceof EasySmsChannelToSmsMessageContract) {
+        if ($notification instanceof MessageContract) {
             return $notification->toSmsMessage($notifiable);
         }
-        if ($notification instanceof EasySmsChannelToSmsContract) {
+        if ($notification instanceof Smsable) {
             return $notification->toSms($notifiable);
-        }
-        if ($notification instanceof EasySmsChannelToSmsArrayContract) {
-            return $notification->toSmsArray($notifiable);
         }
 
         throw new RuntimeException('Notifications do not implement the toSmsArray,toSms,toSmsMessage contract.');

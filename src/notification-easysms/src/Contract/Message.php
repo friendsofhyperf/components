@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification\EasySms\Contract;
 
-interface EasySmsChannelToSmsContract
+use Overtrue\EasySms\Message as EasySmsMessage;
+
+interface Message
 {
-    public function toSms(mixed $notifiable): array;
+    public function toSmsMessage(mixed $notifiable): EasySmsMessage;
 }

@@ -12,9 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Tests\Notification\EasySms;
 
 use FriendsOfHyperf\Notification\EasySms\Channel\EasySmsChannel;
-use FriendsOfHyperf\Notification\EasySms\Contract\EasySmsChannelToSmsArrayContract;
-use FriendsOfHyperf\Notification\EasySms\Contract\EasySmsChannelToSmsContract;
-use FriendsOfHyperf\Notification\EasySms\Contract\EasySmsChannelToSmsMessageContract;
+use FriendsOfHyperf\Notification\EasySms\Contract\Message as MessageContract;
+use FriendsOfHyperf\Notification\EasySms\Contract\Smsable;
 use FriendsOfHyperf\Notification\Notification;
 use FriendsOfHyperf\Notification\Traits\Notifiable;
 use Mockery as m;
@@ -33,22 +32,6 @@ class NotificationSmsChannelTest extends TestCase
     protected function tearDown(): void
     {
         m::close();
-    }
-
-    public function testPayloadToArray(): void
-    {
-        $config = m::mock(ContainerInterface::class);
-        $config->allows('get')->andReturn([]);
-        $sms = m::mock(EasySms::class);
-        $sms->allows('send')->andReturnUsing(function ($phone, $params) {
-            $this->assertSame('13800138000', $phone);
-            $this->assertSame('content', $params['content']);
-            $this->assertSame('template', $params['template']);
-            $this->assertSame(['data'], $params['data']);
-        });
-        $channel = new EasySmsChannel($sms);
-        $notification = new SmsNotificationToArrayStub('content', 'template', ['data']);
-        $channel->send(new User(), $notification);
     }
 
     public function testPayloadToSmsMessage(): void
@@ -88,7 +71,7 @@ class NotificationSmsChannelTest extends TestCase
     }
 }
 
-class SmsNotificationToSmsStub extends Notification implements EasySmsChannelToSmsContract
+class SmsNotificationToSmsStub extends Notification implements Smsable
 {
     public function __construct(
         private string $content,
@@ -113,7 +96,7 @@ class SmsNotificationToSmsStub extends Notification implements EasySmsChannelToS
         ];
     }
 }
-class SmsNotificationToSmsMessageStub extends Notification implements EasySmsChannelToSmsMessageContract
+class SmsNotificationToSmsMessageStub extends Notification implements MessageContract
 {
     public function __construct(
         private string $content,
@@ -139,33 +122,6 @@ class SmsNotificationToSmsMessageStub extends Notification implements EasySmsCha
         return $message;
     }
 }
-
-class SmsNotificationToArrayStub extends Notification implements EasySmsChannelToSmsArrayContract
-{
-    public function __construct(
-        private string $content,
-        private string $template,
-        private array $data
-    ) {
-    }
-
-    public function via()
-    {
-        return [
-            'sms',
-        ];
-    }
-
-    public function toSmsArray(mixed $notifiable): array
-    {
-        return [
-            'content' => $this->content,
-            'template' => $this->template,
-            'data' => $this->data,
-        ];
-    }
-}
-
 class User
 {
     use Notifiable;

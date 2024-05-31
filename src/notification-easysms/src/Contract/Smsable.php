@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification\EasySms\Contract;
 
-interface EasySmsChannelToSmsArrayContract
+interface Smsable
 {
-    public function toSmsArray(mixed $notifiable): array;
+    public function toSms(mixed $notifiable): array;
 }

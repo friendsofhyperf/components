@@ -63,11 +63,11 @@ composer require overtrue/easy-sms:~3.0
 ```php
 namespace App\Notification;
 
-use FriendsOfHyperf\Notification\EasySms\Contract\EasySmsChannelToSmsArrayContract;use FriendsOfHyperf\Notification\EasySms\Contract\EasySmsChannelToSmsContract;use FriendsOfHyperf\Notification\EasySms\Contract\EasySmsChannelToSmsMessageContract;use FriendsOfHyperf\Notification\Notification;
+use FriendsOfHyperf\Notification\EasySms\Contract\EasySmsChannelToSmsArrayContract;use FriendsOfHyperf\Notification\EasySms\Contract\Smsable;use FriendsOfHyperf\Notification\EasySms\Contract\Message;use FriendsOfHyperf\Notification\Notification;
 use Overtrue\EasySms\Message;
 
 ## 通知类
-class TestNotification extends Notification implements EasySmsChannelToSmsContract,EasySmsChannelToSmsArrayContract,EasySmsChannelToSmsMessageContract
+class TestNotification extends Notification implements Smsable,EasySmsChannelToSmsArrayContract,Message
 {
     public function __construct(private string $code)
     {
