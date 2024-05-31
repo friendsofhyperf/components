@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Notification\EasySms\Listener;
 
 use FriendsOfHyperf\Notification\ChannelManager;
 use FriendsOfHyperf\Notification\EasySms\Channel\EasySmsChannel;
-use Hyperf\Context\ApplicationContext;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Psr\Container\ContainerInterface;
@@ -22,7 +21,8 @@ class RegisterChannelListener implements ListenerInterface
 {
     public function __construct(
         protected ContainerInterface $container
-    ){}
+    ) {
+    }
 
     public function listen(): array
     {
