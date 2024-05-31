@@ -1,0 +1,47 @@
+{
+    "name": "friendsofhyperf/notification-easysms",
+    "description": "The EasySms Channel for friendsofhyperf/notification.",
+    "keywords": [
+        "hyperf",
+        "notification",
+        "v3.1",
+        "sms"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        },
+        {
+            "name": "zds"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
+    "require": {
+        "overtrue/easy-sms": "~3.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Notification\\EasySms\\": "src"
+        }
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Notification\\EasySms\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        }
+    },
+    "minimum-stability": "dev",
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    }
+}
