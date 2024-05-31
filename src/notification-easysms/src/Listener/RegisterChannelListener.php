@@ -16,9 +16,14 @@ use FriendsOfHyperf\Notification\EasySms\Channel\EasySmsChannel;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
+use Psr\Container\ContainerInterface;
 
 class RegisterChannelListener implements ListenerInterface
 {
+    public function __construct(
+        protected ContainerInterface $container
+    ){}
+
     public function listen(): array
     {
         return [
@@ -28,6 +33,6 @@ class RegisterChannelListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        ApplicationContext::getContainer()->get(ChannelManager::class)->register('easy-sms', EasySmsChannel::class);
+        $this->container->get(ChannelManager::class)->register('easy-sms', EasySmsChannel::class);
     }
 }
