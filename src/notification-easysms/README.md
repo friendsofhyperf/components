@@ -63,11 +63,13 @@ composer require overtrue/easy-sms:~3.0
 ```php
 namespace App\Notification;
 
-use FriendsOfHyperf\Notification\EasySms\Contract\EasySmsChannelToSmsArrayContract;use FriendsOfHyperf\Notification\EasySms\Contract\Smsable;use FriendsOfHyperf\Notification\EasySms\Contract\Message;use FriendsOfHyperf\Notification\Notification;
+use FriendsOfHyperf\Notification\EasySms\Contract\EasySmsChannelToSmsArrayContract;
+use FriendsOfHyperf\Notification\EasySms\Contract\Smsable;
+use FriendsOfHyperf\Notification\Notification;
 use Overtrue\EasySms\Message;
 
 ## 通知类
-class TestNotification extends Notification implements Smsable,EasySmsChannelToSmsArrayContract,Message
+class TestNotification extends Notification implements Smsable
 {
     public function __construct(private string $code)
     {
@@ -82,20 +84,10 @@ class TestNotification extends Notification implements Smsable,EasySmsChannelToS
     }
     
     /**
-    * 短信模型文档: https://github.com/overtrue/easy-sms?tab=readme-ov-file#%E5%AE%9A%E4%B9%89%E7%9F%AD%E4%BF%A1
-    * 此处返回的是短信模型、如果存在此方法则会调用此方法组装数据 
-    * @return Message
-    */
-    public function toSmsMessage(mixed $notifiable): Message
-    {
-        
-    }
-    
-    /**
     * 返回的内容将组装到短信模型中 new Message($notification->toSms()). 
     * 文档 https://github.com/overtrue/easy-sms?tab=readme-ov-file#%E5%AE%9A%E4%B9%89%E7%9F%AD%E4%BF%A1 
     */
-    public function toSms(mixed $notifiable): array
+    public function toSms(mixed $notifiable): array|Message
     {
         return [
             'code' => $this->code,
@@ -105,15 +97,12 @@ class TestNotification extends Notification implements Smsable,EasySmsChannelToS
             ]
         ];
     }
-    // 如果不想使用toSmsMessage方法可以直接返回数组，返回内容将会作为 easySms->send 的第二个参数直接发送
-    public function toSmsArray(mixed $notifiable){
-        return  [
-            'content'  => '您的验证码为: 6379',
-            'template' => 'SMS_001',
-            'data' => [
-                'code' => 6379
-            ],
-        ];
-    }
+    /*
+    // or return customer Message
+    public function toSms(mixed $notifiable): array|Message
+    {
+        return new Message()
+    }*/
+
 }
 ```
