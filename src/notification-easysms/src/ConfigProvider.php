@@ -20,7 +20,7 @@ class ConfigProvider
     {
         return [
             'dependencies' => [
-                EasySms::class => fn (ContainerInterface $container) => $container->get(EasySmsFactory::class),
+                EasySms::class => EasySmsFactory::class,
             ],
             'listener' => [
                 RegisterChannelListener::class,
