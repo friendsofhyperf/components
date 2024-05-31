@@ -48,7 +48,7 @@ class User extends Model
 
 ```shell
 # Install the easy-sms package
-composer require overtrue/easy-sms:~3.0
+composer require overtrue/easy-sms:^3.0
 ```
 
 ```php
