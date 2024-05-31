@@ -36,16 +36,6 @@ class User extends Model
      */
     protected ?string $table = 'user';
 
-    /**
-     * The attributes that are mass assignable.
-     */
-    protected array $fillable = ['id', 'created_at', 'updated_at'];
-
-    /**
-     * The attributes that should be cast to native types.
-     */
-    protected array $casts = ['id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
-    
     // 通知手机号
     public function routeNotificationForSms(): string|PhoneNumber
     {
