@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Util;
 
 use PhpMyAdmin\SqlParser\Components\JoinKeyword;
+use PhpMyAdmin\SqlParser\Parser as BaseSqlParser;
 use PhpMyAdmin\SqlParser\Statements\InsertStatement;
 use PhpMyAdmin\SqlParser\Statements\SelectStatement;
 use PhpMyAdmin\SqlParser\Statements\UpdateStatement;
@@ -23,7 +24,7 @@ class SqlParser
      */
     public static function parse(string $sql): array
     {
-        if (empty($sql)) {
+        if (! class_exists(BaseSqlParser::class) || empty($sql)) {
             return [
                 'operation' => '',
                 'table' => '',
@@ -31,7 +32,7 @@ class SqlParser
             ];
         }
 
-        $parser = new \PhpMyAdmin\SqlParser\Parser($sql);
+        $parser = new BaseSqlParser($sql);
         $operation = $parser->list[0]->keyword;
         $tables = [];
 
