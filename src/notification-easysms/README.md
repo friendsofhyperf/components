@@ -19,7 +19,8 @@ declare(strict_types=1);
 namespace App\Model;
 
 use Hyperf\DbConnection\Model\Model;
-use FriendsOfHyperf\Notification\Traits\Notifiable;use Overtrue\EasySms\PhoneNumber;
+use FriendsOfHyperf\Notification\Traits\Notifiable;
+use Overtrue\EasySms\PhoneNumber;
 
 /**
  * @property int $id 
