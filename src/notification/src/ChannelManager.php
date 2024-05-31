@@ -28,7 +28,6 @@ class ChannelManager implements Dispatcher
 
     public function __construct(
         protected ContainerInterface $container,
-        protected EventDispatcherInterface $dispatcher,
         protected TranslatorInterface $translator
     ) {
     }
@@ -41,7 +40,7 @@ class ChannelManager implements Dispatcher
         (
             new NotificationSender(
                 $this,
-                $this->dispatcher,
+                $this->container->get(EventDispatcherInterface::class),
                 $this->translator
             )
         )->send($notifiables, $notification);
