@@ -49,11 +49,12 @@ class NotificationChannelManagerTest extends TestCase
 
         $container->set('config', ['app.name' => 'Name', 'app.logo' => 'Logo']);
         $container->set(Dispatcher::class, $events = m::mock(EventDispatcherInterface::class));
+        $container->set(EventDispatcherInterface::class, $events);
         $translator = m::mock(TranslatorInterface::class);
         $driver = m::mock(Channel::class);
         $container->set(get_class($driver), $driver);
         ApplicationContext::setContainer($container);
-        $manager = new ChannelManager(...[$container, $events, $translator]);
+        $manager = new ChannelManager(...[$container, $translator]);
         $reflection = new ReflectionClass($manager);
         $reflection->getProperty('channels')->setValue($manager, ['test' => $driver]);
         $driver->shouldReceive('send')->once();
@@ -70,11 +71,12 @@ class NotificationChannelManagerTest extends TestCase
 
         $container->set('config', ['app.name' => 'Name', 'app.logo' => 'Logo']);
         $container->set(Dispatcher::class, $events = m::mock(EventDispatcherInterface::class));
+        $container->set(EventDispatcherInterface::class, $events);
         $translator = m::mock(TranslatorInterface::class);
         $driver = m::mock(Channel::class);
         $container->set(get_class($driver), $driver);
         ApplicationContext::setContainer($container);
-        $manager = new ChannelManager(...[$container, $events, $translator]);
+        $manager = new ChannelManager(...[$container, $translator]);
         $reflection = new ReflectionClass($manager);
         $reflection->getProperty('channels')->setValue($manager, ['test2' => $driver]);
         $events->shouldReceive('dispatch')->once()->andReturnUsing(function (NotificationSending $event) {
@@ -93,11 +95,12 @@ class NotificationChannelManagerTest extends TestCase
         $container = new Container(new DefinitionSource([]));
         $container->set('config', ['app.name' => 'Name', 'app.logo' => 'Logo']);
         $container->set(Dispatcher::class, $events = m::mock(EventDispatcherInterface::class));
+        $container->set(EventDispatcherInterface::class, $events);
         $translator = m::mock(TranslatorInterface::class);
         $driver = m::mock(Channel::class);
         $container->set(get_class($driver), $driver);
         ApplicationContext::setContainer($container);
-        $manager = new ChannelManager(...[$container, $events, $translator]);
+        $manager = new ChannelManager(...[$container, $translator]);
         $manager->send([new NotificationChannelManagerTestNotifiable()], new NotificationChannelManagerTestCancelledNotification());
         $this->assertTrue(true);
     }
@@ -107,11 +110,12 @@ class NotificationChannelManagerTest extends TestCase
         $container = new Container(new DefinitionSource([]));
         $container->set('config', ['app.name' => 'Name', 'app.logo' => 'Logo']);
         $container->set(Dispatcher::class, $events = m::mock(EventDispatcherInterface::class));
+        $container->set(EventDispatcherInterface::class, $events);
         $translator = m::mock(TranslatorInterface::class);
         $driver = m::mock(Channel::class);
         $container->set(get_class($driver), $driver);
         ApplicationContext::setContainer($container);
-        $manager = new ChannelManager(...[$container, $events, $translator]);
+        $manager = new ChannelManager(...[$container, $translator]);
         $reflection = new ReflectionClass($manager);
         $reflection->getProperty('channels')->setValue($manager, ['test' => $driver]);
         $events->allows('dispatch')->once()->andReturnUsing(function (NotificationSending $event) {
