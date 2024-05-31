@@ -22,6 +22,6 @@ class EasySmsFactory
 
     public function __invoke(): EasySms
     {
-        return new EasySms($this->config->get('easy-sms', []));
+        return new EasySms($this->config->get('easy_sms', []));
     }
 }
