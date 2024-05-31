@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Notification\EasySms;
 
 use FriendsOfHyperf\Notification\EasySms\Listener\RegisterChannelListener;
-use Psr\Container\ContainerInterface;
 
 class ConfigProvider
 {
