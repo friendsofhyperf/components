@@ -69,6 +69,12 @@ git push origin --tags
 # Tag Components
 for REMOTE in $REMOTES
 do
+    # Skip some components
+    # if [[ $REMOTE == "notification" || $REMOTE == "notification-easysms" ]]
+    # then
+    #     continue
+    # fi
+
     echo ""
     echo ""
     echo "Cloning $REMOTE";
