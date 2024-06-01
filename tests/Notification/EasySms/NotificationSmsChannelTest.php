@@ -9,14 +9,14 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Tests\Notification;
+namespace FriendsOfHyperf\Tests\Notification\EasySms;
 
-use FriendsOfHyperf\Notification\Channel\EasySmsChannel;
+use FriendsOfHyperf\Notification\EasySms\Channel\EasySmsChannel;
+use FriendsOfHyperf\Notification\EasySms\Contract\Smsable;
 use FriendsOfHyperf\Notification\Notification;
 use FriendsOfHyperf\Notification\Traits\Notifiable;
-use Hyperf\Di\Container;
 use Mockery as m;
-use Overtrue\EasySms\EasySms;
+use FriendsOfHyperf\Notification\EasySms\EasySms;
 use Overtrue\EasySms\Message;
 use Overtrue\EasySms\PhoneNumber;
 use PHPUnit\Framework\TestCase;
@@ -33,33 +33,11 @@ class NotificationSmsChannelTest extends TestCase
         m::close();
     }
 
-    public function testPayloadToArray(): void
-    {
-        $config = m::mock(ContainerInterface::class);
-        $config->allows('get')->andReturn([]);
-        $container = m::mock(Container::class);
-        $sms = m::mock(EasySms::class);
-        $container->allows('has')->once()->andReturn(true);
-        $container->allows('get')->once()->with(EasySms::class)->andReturn($sms);
-        $sms->allows('send')->andReturnUsing(function ($phone, $params) {
-            $this->assertSame('13800138000', $phone);
-            $this->assertSame('content', $params['content']);
-            $this->assertSame('template', $params['template']);
-            $this->assertSame(['data'], $params['data']);
-        });
-        $channel = new EasySmsChannel($container);
-        $notification = new SmsNotificationToArrayStub('content', 'template', ['data']);
-        $channel->send(new User(), $notification);
-    }
-
     public function testPayloadToSmsMessage(): void
     {
         $config = m::mock(ContainerInterface::class);
         $config->allows('get')->andReturn([]);
-        $container = m::mock(Container::class);
         $sms = m::mock(EasySms::class);
-        $container->allows('has')->once()->andReturn(true);
-        $container->allows('get')->once()->with(EasySms::class)->andReturn($sms);
         $sms->allows('send')->andReturnUsing(function ($phone, $params) {
             $this->assertInstanceOf(Message::class, $params);
             $this->assertSame('13800138000', $phone);
@@ -67,7 +45,7 @@ class NotificationSmsChannelTest extends TestCase
             $this->assertSame('template', $params->getTemplate());
             $this->assertSame(['xxx'], $params->getData());
         });
-        $channel = new EasySmsChannel($container);
+        $channel = new EasySmsChannel($sms);
         $notification = new SmsNotificationToSmsMessageStub('content', 'template', ['data']);
         $channel->send(new User(), $notification);
     }
@@ -76,27 +54,23 @@ class NotificationSmsChannelTest extends TestCase
     {
         $config = m::mock(ContainerInterface::class);
         $config->allows('get')->andReturn([]);
-        $container = m::mock(Container::class);
         $sms = m::mock(EasySms::class);
-        $container->allows('has')->once()->andReturn(true);
-        $container->allows('get')->once()->with(EasySms::class)->andReturn($sms);
         $sms->allows('send')->andReturnUsing(function ($phone, $params) {
-            $this->assertInstanceOf(Message::class, $params);
             /*
              * @var Message $params
              */
             $this->assertSame('13800138000', $phone);
-            $this->assertSame('content', $params->getContent());
-            $this->assertSame('template', $params->getTemplate());
-            $this->assertSame(['data'], $params->getData());
+            $this->assertSame('content', $params['content']);
+            $this->assertSame('template', $params['template']);
+            $this->assertSame(['data'], $params['data']);
         });
-        $channel = new EasySmsChannel($container);
+        $channel = new EasySmsChannel($sms);
         $notification = new SmsNotificationToSmsStub('content', 'template', ['data']);
         $channel->send(new User(), $notification);
     }
 }
 
-class SmsNotificationToSmsStub extends Notification
+class SmsNotificationToSmsStub extends Notification implements Smsable
 {
     public function __construct(
         private string $content,
@@ -112,7 +86,7 @@ class SmsNotificationToSmsStub extends Notification
         ];
     }
 
-    public function toSms(): array
+    public function toSms(mixed $notifiable): array|Message
     {
         return [
             'content' => $this->content,
@@ -121,12 +95,11 @@ class SmsNotificationToSmsStub extends Notification
         ];
     }
 }
-class SmsNotificationToSmsMessageStub extends Notification
+class SmsNotificationToSmsMessageStub extends Notification implements Smsable
 {
     public function __construct(
         private string $content,
         private string $template,
-        private array $data
     ) {
     }
 
@@ -137,7 +110,7 @@ class SmsNotificationToSmsMessageStub extends Notification
         ];
     }
 
-    public function toSmsMessage(): Message
+    public function toSms(mixed $notifiable): array|Message
     {
         $message = new Message();
         $message->setData(['xxx']);
@@ -148,33 +121,6 @@ class SmsNotificationToSmsMessageStub extends Notification
         return $message;
     }
 }
-
-class SmsNotificationToArrayStub extends Notification
-{
-    public function __construct(
-        private string $content,
-        private string $template,
-        private array $data
-    ) {
-    }
-
-    public function via()
-    {
-        return [
-            'sms',
-        ];
-    }
-
-    public function toArray()
-    {
-        return [
-            'content' => $this->content,
-            'template' => $this->template,
-            'data' => $this->data,
-        ];
-    }
-}
-
 class User
 {
     use Notifiable;
