@@ -8,7 +8,7 @@ composer require friendsofhyperf/notification-easysms:~3.1.0
 
 ## Usage
 
-### Model use `Notifiable` trait
+### Use `Notifiable` trait in Model
 
 ```php
 <?php
