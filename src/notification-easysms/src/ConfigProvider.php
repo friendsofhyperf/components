@@ -21,7 +21,7 @@ class ConfigProvider
             'dependencies' => [
                 EasySms::class => EasySmsFactory::class,
             ],
-            'listener' => [
+            'listeners' => [
                 RegisterChannelListener::class,
             ],
             'publish' => [
