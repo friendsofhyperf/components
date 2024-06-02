@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\Notification\Symfony\Contract;
 use Symfony\Component\Notifier\Notification\Notification;
 use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
-interface SymfonyMessage
+interface Message
 {
     public function getNotification(mixed $notifiable): Notification;
 

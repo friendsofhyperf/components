@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Notification\Symfony\Channel;
 
 use FriendsOfHyperf\Notification\Contract\Channel;
 use FriendsOfHyperf\Notification\Notification;
-use FriendsOfHyperf\Notification\Symfony\Contract\SymfonyMessage;
+use FriendsOfHyperf\Notification\Symfony\Contract\Message;
 use InvalidArgumentException;
 use Symfony\Component\Notifier\NotifierInterface;
 
@@ -26,7 +26,7 @@ class SymfonyChannel implements Channel
 
     public function send(mixed $notifiable, Notification $notification): mixed
     {
-        if (! $notification instanceof SymfonyMessage) {
+        if (! $notification instanceof Message) {
             throw new InvalidArgumentException('Notification must be an instance of SymfonyContract');
         }
         $symfonyNotification = $notification->getNotification($notifiable);
