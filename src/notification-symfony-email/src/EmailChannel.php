@@ -25,13 +25,15 @@ class EmailChannel extends Base implements Channel
     public function __construct(
         ContainerInterface $container
     ) {
+        $config = $container->get(ConfigInterface::class);
         parent::__construct(
             transport: Transport::fromDsn(
-                $container->get(ConfigInterface::class)->get('symfony.mail.dsn'),
+                $config->get('symfony.mail.dsn'),
                 dispatcher: $container->get(EventDispatcherInterface::class),
                 logger: $container->get(StdoutLoggerInterface::class)
             ),
-            from: $container->get(ConfigInterface::class)->get('symfony.mail.from')
+            from: $config->get('symfony.mail.from'),
+            envelope: $config->get('symfony.mail.envelope')
         );
     }
 
