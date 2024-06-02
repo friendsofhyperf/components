@@ -11,16 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification\Symfony;
 
-use Symfony\Component\Notifier\NotifierInterface;
-
-class ConfigProvider
+class Notifier extends \Symfony\Component\Notifier\Notifier implements Contract\NotifierInterface
 {
-    public function __invoke(): array
-    {
-        return [
-            'dependencies' => [
-                NotifierInterface::class => NotifierFactory::class,
-            ],
-        ];
-    }
 }

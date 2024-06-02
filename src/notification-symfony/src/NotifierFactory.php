@@ -13,9 +13,8 @@ namespace FriendsOfHyperf\Notification\Symfony;
 
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Notifier\Channel\ChannelPolicyInterface;
-use Symfony\Component\Notifier\Notifier;
 
-class SymfonyNotifierFactory
+class NotifierFactory
 {
     public function __construct(
         private ContainerInterface $container
@@ -25,6 +24,7 @@ class SymfonyNotifierFactory
     public function __invoke(): Notifier
     {
         $channelPolicy = $this->container->has(ChannelPolicyInterface::class) ? $this->container->get(ChannelPolicyInterface::class) : null;
+
         return new Notifier($this->container, $channelPolicy);
     }
 }
