@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification\Symfony;
 
-
 class ConfigProvider
 {
     public function __invoke(): array
@@ -19,6 +18,9 @@ class ConfigProvider
         return [
             'dependencies' => [
                 Contract\NotifierInterface::class => NotifierFactory::class,
+            ],
+            'listeners' => [
+                Listener\RegisterChannelListener::class,
             ],
         ];
     }
