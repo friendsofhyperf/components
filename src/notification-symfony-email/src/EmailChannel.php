@@ -15,6 +15,7 @@ use FriendsOfHyperf\Notification\Contract\Channel;
 use FriendsOfHyperf\Notification\Notification;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
+use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Notifier\Channel\EmailChannel as Base;
@@ -22,17 +23,15 @@ use Symfony\Component\Notifier\Channel\EmailChannel as Base;
 class EmailChannel extends Base implements Channel
 {
     public function __construct(
-        EventDispatcherInterface $eventDispatcher,
-        StdoutLoggerInterface $stdoutLogger,
-        ConfigInterface $config
+        ContainerInterface $container
     ) {
         parent::__construct(
             transport: Transport::fromDsn(
-                $config->get('symfony.mail.dsn'),
-                dispatcher: $eventDispatcher,
-                logger: $stdoutLogger
+                $container->get(ConfigInterface::class)->get('symfony.mail.dsn'),
+                dispatcher: $container->get(EventDispatcherInterface::class),
+                logger: $container->get(StdoutLoggerInterface::class)
             ),
-            from: $config->get('symfony.mail.from')
+            from: $container->get(ConfigInterface::class)->get('symfony.mail.from')
         );
     }
 
