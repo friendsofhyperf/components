@@ -1,6 +1,6 @@
 {
-    "name": "friendsofhyperf/notification-symfony",
-    "description": "The Symfony Channel for friendsofhyperf/notification.",
+    "name": "friendsofhyperf/notification-symfony-mailer",
+    "description": "The Symfony mails Channel for friendsofhyperf/notification.",
     "keywords": [
         "hyperf",
         "notification",
@@ -26,16 +26,17 @@
     "require": {
         "symfony/notifier": "^6.0 | ^7.0",
         "symfony/mailer": "^6.0 | ^7.0",
-        "friendsofhyperf/notification": "~3.1.0"
+        "friendsofhyperf/notification": "~3.1.0",
+        "hyperf/config": "^3.1"
     },
     "autoload": {
         "psr-4": {
-            "FriendsOfHyperf\\Notification\\Symfony\\": "src"
+            "FriendsOfHyperf\\Notification\\Symfony\\Mailer\\": "src"
         }
     },
     "extra": {
         "hyperf": {
-            "config": "FriendsOfHyperf\\Notification\\Symfony\\ConfigProvider"
+            "config": "FriendsOfHyperf\\Notification\\Symfony\\Mailer\\ConfigProvider"
         },
         "branch-alias": {
             "dev-main": "3.1-dev"

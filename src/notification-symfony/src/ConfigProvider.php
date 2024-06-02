@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notification\Symfony\Mail;
+namespace FriendsOfHyperf\Notification\Symfony;
 
 use Symfony\Component\Notifier\NotifierInterface;
 
