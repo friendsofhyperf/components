@@ -27,7 +27,11 @@ class EmailChannel extends Base implements Channel
         ConfigInterface $config
     ) {
         parent::__construct(
-            transport: Transport::fromDsn($config->get('symfony.mail.dsn'), dispatcher: $eventDispatcher, logger: $stdoutLogger),
+            transport: Transport::fromDsn(
+                $config->get('symfony.mail.dsn'),
+                dispatcher: $eventDispatcher,
+                logger: $stdoutLogger
+            ),
             from: $config->get('symfony.mail.from')
         );
     }
