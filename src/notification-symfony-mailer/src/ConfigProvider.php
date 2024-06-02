@@ -17,7 +17,7 @@ class ConfigProvider
     {
         return [
             'dependencies' => [
-                'symfony.email' => EmailChannelFactory::class,
+                'notification.symfony.email' => EmailChannelFactory::class,
             ],
             'publish' => [
                 [
