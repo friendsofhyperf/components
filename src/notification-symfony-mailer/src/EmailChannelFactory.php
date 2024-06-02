@@ -12,10 +12,10 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Notification\Symfony\Mailer;
 
 use Hyperf\Contract\ConfigInterface;
-use Psr\Container\ContainerInterface;
-use Symfony\Component\Mailer\Transport;
 use Hyperf\Contract\StdoutLoggerInterface;
+use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\Mailer\Transport;
 use Symfony\Component\Notifier\Channel\EmailChannel;
 
 class EmailChannelFactory
