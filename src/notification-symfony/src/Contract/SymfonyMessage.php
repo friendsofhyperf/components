@@ -16,7 +16,7 @@ use Symfony\Component\Notifier\Recipient\RecipientInterface;
 
 interface SymfonyMessage
 {
-    public function symfony(mixed $notifiable): Notification;
+    public function getNotification(mixed $notifiable): Notification;
 
     /**
      * @return RecipientInterface|RecipientInterface[]

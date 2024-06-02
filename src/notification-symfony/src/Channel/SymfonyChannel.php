@@ -29,7 +29,7 @@ class SymfonyChannel implements Channel
         if (! $notification instanceof SymfonyMessage) {
             throw new InvalidArgumentException('Notification must be an instance of SymfonyContract');
         }
-        $symfonyNotification = $notification->symfony($notifiable);
+        $symfonyNotification = $notification->getNotification($notifiable);
         $recipients = $notification->recipients($notifiable);
         $this->notifier->send($symfonyNotification, $recipients);
         return true;
