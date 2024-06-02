@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification\Symfony;
 
-use FriendsOfHyperf\Notification\Symfony\Contract\NotifierInterface;
 
 class ConfigProvider
 {
@@ -19,7 +18,7 @@ class ConfigProvider
     {
         return [
             'dependencies' => [
-                NotifierInterface::class => NotifierFactory::class,
+                Contract\NotifierInterface::class => NotifierFactory::class,
             ],
         ];
     }
