@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Notification\Symfony\Contract;
 
 class_alias(\Symfony\Component\Notifier\NotifierInterface::class, NotifierInterface::class);
 
-if (!interface_exists(NotifierInterface::class)) {
+if (! interface_exists(NotifierInterface::class)) {
     interface NotifierInterface extends \Symfony\Component\Notifier\NotifierInterface
     {
     }
