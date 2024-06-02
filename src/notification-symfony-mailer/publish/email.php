@@ -8,11 +8,6 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use Hyperf\Contract\StdoutLoggerInterface;
-use Psr\Container\ContainerInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Symfony\Component\Mailer\Transport;
-
 use function Hyperf\Support\env;
 
 return [
