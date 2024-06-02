@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Notification\Symfony;
 
 use Psr\Container\ContainerInterface;
 use Symfony\Component\Notifier\Channel\ChannelPolicyInterface;
+use Symfony\Component\Notifier\Notifier;
 
 class NotifierFactory
 {
