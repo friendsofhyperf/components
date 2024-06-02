@@ -8,15 +8,20 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+use Hyperf\Contract\StdoutLoggerInterface;
+use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\Mailer\Transport;
 
 use function Hyperf\Support\env;
 
 return [
-    'transport' => static function (EventDispatcherInterface $dispatcher, LoggerInterface $logger) {
-        return Transport::fromDsn(dsn: env('MAIL_DSN'), dispatcher: $dispatcher, logger: $logger);
+    'transport' => static function (ContainerInterface $container) {
+        return Transport::fromDsn(
+            dsn: env('MAIL_DSN'),
+            dispatcher: $container->get(EventDispatcherInterface::class),
+            logger: $container->get(StdoutLoggerInterface::class)
+        );
     },
     'from' => env('MAIL_FROM', 'Hyperf'),
     'envelope' => null,

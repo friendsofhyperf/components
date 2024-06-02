@@ -12,10 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Notification\Symfony\Mailer;
 
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Contract\StdoutLoggerInterface;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Notifier\Channel\EmailChannel;
 
 class EmailChannelFactory
@@ -32,7 +30,7 @@ class EmailChannelFactory
         if (! is_callable($transportClosure)) {
             throw new InvalidArgumentException('symfony.email.transport must be a callable.');
         }
-        $transport = $transportClosure($this->container->get(EventDispatcherInterface::class), $this->container->get(StdoutLoggerInterface::class));
+        $transport = $transportClosure($this->container);
         return new EmailChannel(
             transport: $transport,
             from: $this->config->get('symfony.email.from'),
