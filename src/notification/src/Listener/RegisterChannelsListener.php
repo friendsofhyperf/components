@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Notification\Listener;
 
 use FriendsOfHyperf\Notification\Annotation\Channel;
 use FriendsOfHyperf\Notification\Channel\DatabaseChannel;
-use FriendsOfHyperf\Notification\Channel\SymfonyChannel;
 use FriendsOfHyperf\Notification\ChannelManager;
 use FriendsOfHyperf\Notification\Contract\Channel as ChannelContract;
 use Hyperf\Di\Annotation\AnnotationCollector;
@@ -52,6 +51,5 @@ class RegisterChannelsListener implements ListenerInterface
          * Register default channels.
          */
         $channelManager->register('database', DatabaseChannel::class);
-        $channelManager->register('symfony', SymfonyChannel::class);
     }
 }
