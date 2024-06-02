@@ -15,5 +15,5 @@ use FriendsOfHyperf\Notification\Notification;
 
 interface Channel
 {
-    public function send(mixed $notifiable, Notification $notification): mixed;
+    public function send(mixed $notifiable, Notification $notification, ?string $transportName = null): mixed;
 }

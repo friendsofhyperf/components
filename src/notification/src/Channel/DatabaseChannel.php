@@ -21,7 +21,7 @@ class DatabaseChannel implements Contract
     /**
      * Send the given notification.
      */
-    public function send(mixed $notifiable, Notification $notification): Model
+    public function send(mixed $notifiable, Notification $notification, ?string $transportName = null): Model
     {
         return $notifiable->routeNotificationFor('database', $notification)->create(
             $this->buildPayload($notifiable, $notification)

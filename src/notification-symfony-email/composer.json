@@ -1,11 +1,11 @@
 {
-    "name": "friendsofhyperf/notification-symfony",
-    "description": "The Symfony Channel for friendsofhyperf/notification.",
+    "name": "friendsofhyperf/notification-symfony-email",
+    "description": "The symfony email Channel for friendsofhyperf/notification.",
     "keywords": [
         "hyperf",
         "notification",
         "v3.1",
-        "mail"
+        "email"
     ],
     "type": "library",
     "license": "MIT",
@@ -24,18 +24,18 @@
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
-        "symfony/notifier": "^6.0 | ^7.0",
-        "symfony/mailer": "^6.0 | ^7.0",
-        "friendsofhyperf/notification": "~3.1.0"
+        "friendsofhyperf/notification": "~3.1.0",
+        "symfony/notifier": "^6.4 | ^7.0",
+        "symfony/mailer": "^6.0 | ^7.0"
     },
     "autoload": {
         "psr-4": {
-            "FriendsOfHyperf\\Notification\\Symfony\\": "src"
+            "FriendsOfHyperf\\Notification\\Symfony\\Mailer\\": "src"
         }
     },
     "extra": {
         "hyperf": {
-            "config": "FriendsOfHyperf\\Notification\\Symfony\\ConfigProvider"
+            "config": "FriendsOfHyperf\\Notification\\Symfony\\Mailer\\ConfigProvider"
         },
         "branch-alias": {
             "dev-main": "3.1-dev"

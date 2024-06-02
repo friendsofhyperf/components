@@ -8,10 +8,16 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use function Hyperf\Support\env;
 
-return [
-    'dsn' => env('MAIL_DSN', 'null://localhost'),
-    'from' => env('MAIL_FROM', 'from@example.com'),
-    'envelope' => null,
-];
+namespace FriendsOfHyperf\Notification\Symfony\Mailer;
+
+class ConfigProvider
+{
+    public function __invoke()
+    {
+        return [
+            'listeners' => [
+            ],
+        ];
+    }
+}

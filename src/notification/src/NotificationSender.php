@@ -62,9 +62,14 @@ class NotificationSender
             $this->withLocale($this->preferredLocale($notifiable, $notification), function () use ($viaChannels, $notifiable, $original) {
                 $notificationId = Str::uuid()->toString();
 
-                foreach ((array) $viaChannels as $channel) {
-                    if (! ($notifiable instanceof AnonymousNotifiable && $channel === 'database')) {
-                        $this->sendToNotifiable($notifiable, $notificationId, clone $original, $channel);
+                foreach ((array) $viaChannels as $channelName) {
+                    $transportName = null;
+                    if (false !== $pos = strpos($channelName, '/')) {
+                        $transportName = substr($channelName, $pos + 1);
+                        $channelName = substr($channelName, 0, $pos);
+                    }
+                    if (! ($notifiable instanceof AnonymousNotifiable && $channelName === 'database')) {
+                        $this->sendToNotifiable($notifiable, $notificationId, clone $original, $channelName, $transportName);
                     }
                 }
             });
@@ -94,7 +99,7 @@ class NotificationSender
     /**
      * Send the given notification to the given notifiable via a channel.
      */
-    protected function sendToNotifiable(mixed $notifiable, string $id, Notification $notification, string $channel): void
+    protected function sendToNotifiable(mixed $notifiable, string $id, Notification $notification, string $channel, ?string $transportName = null): void
     {
         if (! $notification->id) {
             $notification->id = $id;
@@ -104,7 +109,7 @@ class NotificationSender
             return;
         }
 
-        $response = $this->channelManager->channel($channel)->send($notifiable, $notification);
+        $response = $this->channelManager->channel($channel)->send($notifiable, $notification, $transportName);
 
         $this->dispatcher->dispatch(
             new NotificationSent($notifiable, $notification, $channel, $response)

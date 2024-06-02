@@ -9,10 +9,10 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Notification\Symfony\Listener;
+namespace FriendsOfHyperf\Notification\Symfony\Mailer\Listener;
 
 use FriendsOfHyperf\Notification\ChannelManager;
-use FriendsOfHyperf\Notification\Symfony\Channel\SymfonyChannel;
+use FriendsOfHyperf\Notification\Symfony\Mailer\EmailChannel;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 
@@ -32,6 +32,6 @@ class RegisterChannelListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        $this->channelManager->register('symfony', SymfonyChannel::class);
+        $this->channelManager->register('symfony.email', EmailChannel::class);
     }
 }

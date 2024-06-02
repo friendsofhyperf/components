@@ -27,7 +27,8 @@
         "hyperf/event": "~3.1.0",
         "hyperf/stringable": "~3.1.0",
         "hyperf/collection": "~3.1.0",
-        "hyperf/translation": "~3.1.0"
+        "hyperf/translation": "~3.1.0",
+        "symfony/notifier": "^6.4|^7.0"
     },
     "suggest": {
         "hyperf/database": "Required if you want to use database channel.(~3.1.0)",

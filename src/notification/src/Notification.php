@@ -16,7 +16,7 @@ namespace FriendsOfHyperf\Notification;
  * @method array|object toDatabase(mixed $notifiable)
  * @method string databaseType(mixed $notifiable)
  */
-class Notification
+class Notification extends \Symfony\Component\Notifier\Notification\Notification
 {
     /**
      * The unique identifier for the notification.
