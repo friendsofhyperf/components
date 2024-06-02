@@ -101,7 +101,8 @@
         "phpstan/phpstan-deprecation-rules": "^1.1",
         "swoole/ide-helper": "dev-master",
         "swow/swow": "dev-develop",
-        "symfony/notifier": "~6.4",
+        "symfony/notifier": "^6.4 | ^7.0",
+        "symfony/mailer": "^6.4 | ^7.0",
         "voku/portable-ascii": "^1.4|^1.5"
     },
     "replace": {
@@ -193,6 +194,7 @@
             "FriendsOfHyperf\\MySqlGrammarAddon\\": "src/mysql-grammar-addon/src/",
             "FriendsOfHyperf\\Notification\\": "src/notification/src/",
             "FriendsOfHyperf\\Notification\\EasySms\\": "src/notification-easysms/src/",
+            "FriendsOfHyperf\\Notification\\Symfony\\": "src/notification-symfony/src/",
             "FriendsOfHyperf\\OpenAi\\": "src/openai-client/src/",
             "FriendsOfHyperf\\PrettyConsole\\": "src/pretty-console/src/",
             "FriendsOfHyperf\\ReCaptcha\\": "src/recaptcha/src/",
@@ -247,6 +249,7 @@
                 "FriendsOfHyperf\\MySqlGrammarAddon\\ConfigProvider",
                 "FriendsOfHyperf\\Notification\\ConfigProvider",
                 "FriendsOfHyperf\\Notification\\EasySms\\ConfigProvider",
+                "FriendsOfHyperf\\Notification\\Symfony\\ConfigProvider",
                 "FriendsOfHyperf\\OpenAi\\ConfigProvider",
                 "FriendsOfHyperf\\PrettyConsole\\ConfigProvider",
                 "FriendsOfHyperf\\ReCaptcha\\ConfigProvider",
