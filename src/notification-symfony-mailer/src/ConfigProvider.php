@@ -17,7 +17,8 @@ class ConfigProvider
     {
         return [
             'dependencies' => [
-                'symfony.email' => EmailChannelFactory::class,
+                'symfony.email' => fn ($container) => $container->get(EmailChannel::class),
+                EmailChannel::class => EmailChannelFactory::class,
             ],
             'publish' => [
                 [

@@ -16,13 +16,7 @@ use Symfony\Component\Mailer\Transport;
 use function Hyperf\Support\env;
 
 return [
-    'transport' => static function (ContainerInterface $container) {
-        return Transport::fromDsn(
-            dsn: env('MAIL_DSN'),
-            dispatcher: $container->get(EventDispatcherInterface::class),
-            logger: $container->get(StdoutLoggerInterface::class)
-        );
-    },
-    'from' => env('MAIL_FROM', 'Hyperf'),
+    'dsn' => env('MAIL_DSN', 'null://localhost'),
+    'from' => env('MAIL_FROM', 'from@example.com'),
     'envelope' => null,
 ];
