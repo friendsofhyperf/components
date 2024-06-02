@@ -23,7 +23,7 @@ class ConfigProvider
                 [
                     'id' => 'config',
                     'description' => 'The config for symfony email.',
-                    'source' => __DIR__ . '/../publish/email.php.php',
+                    'source' => __DIR__ . '/../publish/email.php',
                     'destination' => BASE_PATH . '/config/autoload/symfony/email.php',
                 ],
             ],
