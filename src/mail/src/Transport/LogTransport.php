@@ -57,7 +57,7 @@ class LogTransport implements TransportInterface
                 ->map($this->decodeQuotedPrintableContent(...))
                 ->implode($boundary);
         } elseif ($string->contains('Content-Transfer-Encoding: quoted-printable')) {
-            $string = $this->decodeQuotedPrintableContent((string)$string);
+            $string = $this->decodeQuotedPrintableContent((string) $string);
         }
 
         $this->logger->debug((string) $string);
