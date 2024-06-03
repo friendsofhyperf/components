@@ -39,6 +39,7 @@
         "symfony/var-dumper": "^5.3|^6.0|^7.0"
     },
     "require-dev": {
+        "aws/aws-sdk-php": "^3.235.5",
         "elasticsearch/elasticsearch": "^7.0|^8.0",
         "friendsofhyperf/rector": "dev-main",
         "hashids/hashids": "^4.1|^5.0",
@@ -101,7 +102,10 @@
         "phpstan/phpstan-deprecation-rules": "^1.1",
         "swoole/ide-helper": "dev-master",
         "swow/swow": "dev-develop",
+        "symfony/http-client": "^6.4",
+        "symfony/mailgun-mailer": "^6.4",
         "symfony/notifier": "~6.4",
+        "symfony/postmark-mailer": "^6.4",
         "voku/portable-ascii": "^1.4|^1.5"
     },
     "replace": {
@@ -126,6 +130,7 @@
         "friendsofhyperf/ide-helper": "*",
         "friendsofhyperf/lock": "*",
         "friendsofhyperf/macros": "*",
+        "friendsofhyperf/mailer": "*",
         "friendsofhyperf/middleware-plus": "*",
         "friendsofhyperf/model-factory": "*",
         "friendsofhyperf/model-hashids": "*",
@@ -183,6 +188,7 @@
             "FriendsOfHyperf\\IdeHelper\\": "src/ide-helper/src/",
             "FriendsOfHyperf\\Lock\\": "src/lock/src/",
             "FriendsOfHyperf\\Macros\\": "src/macros/src/",
+            "FriendsOfHyperf\\Mailer\\": "src/mailer/src/",
             "FriendsOfHyperf\\MiddlewarePlus\\": "src/middleware-plus/src/",
             "FriendsOfHyperf\\ModelFactory\\": "src/model-factory/src/",
             "FriendsOfHyperf\\ModelHashids\\": "src/model-hashids/src/",
@@ -237,6 +243,7 @@
                 "FriendsOfHyperf\\IdeHelper\\ConfigProvider",
                 "FriendsOfHyperf\\Lock\\ConfigProvider",
                 "FriendsOfHyperf\\Macros\\ConfigProvider",
+                "FriendsOfHyperf\\Mailer\\ConfigProvider",
                 "FriendsOfHyperf\\MiddlewarePlus\\ConfigProvider",
                 "FriendsOfHyperf\\ModelFactory\\ConfigProvider",
                 "FriendsOfHyperf\\ModelHashids\\ConfigProvider",
