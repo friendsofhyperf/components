@@ -9,9 +9,9 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mailer\Contract;
+namespace FriendsOfHyperf\Mail\Contract;
 
-use FriendsOfHyperf\Mailer\SentMessage;
+use FriendsOfHyperf\Mail\SentMessage;
 
 interface Mailable
 {

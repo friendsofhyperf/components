@@ -9,9 +9,9 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mailer;
+namespace FriendsOfHyperf\Mail;
 
-use FriendsOfHyperf\Mailer\Contract\Attachable;
+use FriendsOfHyperf\Mail\Contract\Attachable;
 use Hyperf\Support\Traits\ForwardsCalls;
 
 /**

@@ -9,10 +9,10 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mailer\Event;
+namespace FriendsOfHyperf\Mail\Event;
 
 use Exception;
-use FriendsOfHyperf\Mailer\SentMessage;
+use FriendsOfHyperf\Mail\SentMessage;
 
 use function Hyperf\Collection\collect;
 

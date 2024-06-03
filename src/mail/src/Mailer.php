@@ -9,15 +9,15 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mailer;
+namespace FriendsOfHyperf\Mail;
 
 use Closure;
-use FriendsOfHyperf\Mailer\Contract\Mailable as MailableContract;
-use FriendsOfHyperf\Mailer\Contract\Mailer as MailerContract;
-use FriendsOfHyperf\Mailer\Enums\MessageSendingStatusEnum;
-use FriendsOfHyperf\Mailer\Event\MessageSending;
-use FriendsOfHyperf\Mailer\Event\MessageSent;
-use FriendsOfHyperf\Mailer\Mailables\Address;
+use FriendsOfHyperf\Mail\Contract\Mailable as MailableContract;
+use FriendsOfHyperf\Mail\Contract\Mailer as MailerContract;
+use FriendsOfHyperf\Mail\Enums\MessageSendingStatusEnum;
+use FriendsOfHyperf\Mail\Event\MessageSending;
+use FriendsOfHyperf\Mail\Event\MessageSent;
+use FriendsOfHyperf\Mail\Mailables\Address;
 use FriendsOfHyperf\Support\HtmlString;
 use Hyperf\ViewEngine\Contract\FactoryInterface;
 use Hyperf\ViewEngine\Contract\Htmlable;

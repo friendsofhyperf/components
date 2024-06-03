@@ -9,16 +9,16 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mailer;
+namespace FriendsOfHyperf\Mail;
 
 use Aws\Ses\SesClient;
 use Aws\SesV2\SesV2Client;
 use Closure;
-use FriendsOfHyperf\Mailer\Contract\Factory;
-use FriendsOfHyperf\Mailer\Transport\ArrayTransport;
-use FriendsOfHyperf\Mailer\Transport\LogTransport;
-use FriendsOfHyperf\Mailer\Transport\SesTransport;
-use FriendsOfHyperf\Mailer\Transport\SesV2Transport;
+use FriendsOfHyperf\Mail\Contract\Factory;
+use FriendsOfHyperf\Mail\Transport\ArrayTransport;
+use FriendsOfHyperf\Mail\Transport\LogTransport;
+use FriendsOfHyperf\Mail\Transport\SesTransport;
+use FriendsOfHyperf\Mail\Transport\SesV2Transport;
 use FriendsOfHyperf\Support\ConfigurationUrlParser;
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;

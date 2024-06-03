@@ -9,9 +9,9 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mailer\Event;
+namespace FriendsOfHyperf\Mail\Event;
 
-use FriendsOfHyperf\Mailer\Enums\MessageSendingStatusEnum as Status;
+use FriendsOfHyperf\Mail\Enums\MessageSendingStatusEnum as Status;
 use Symfony\Component\Mime\Email;
 
 class MessageSending

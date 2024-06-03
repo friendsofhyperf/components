@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mailer\Transport;
+namespace FriendsOfHyperf\Mail\Transport;
 
 use Hyperf\Stringable\Str;
 use Psr\Log\LoggerInterface;

@@ -9,17 +9,17 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mailer\Enums;
+namespace FriendsOfHyperf\Mail\Mailables;
 
-enum MessageSendingStatusEnum: int
+class Address
 {
     /**
-     * The message was sent successfully.
+     * @param string $address the recipient's email address
+     * @param string|null $name the recipient's name
      */
-    case SUCCESS = 1;
-
-    /**
-     * The message failed to send.
-     */
-    case FAILED = 0;
+    public function __construct(
+        public string $address,
+        public ?string $name = null
+    ) {
+    }
 }

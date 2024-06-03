@@ -9,17 +9,14 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mailer\Mailables;
+namespace FriendsOfHyperf\Mail\Contract;
 
-class Address
+use FriendsOfHyperf\Mail\Attachment;
+
+interface Attachable
 {
     /**
-     * @param string $address the recipient's email address
-     * @param string|null $name the recipient's name
+     * Get an attachment instance for this entity.
      */
-    public function __construct(
-        public string $address,
-        public ?string $name = null
-    ) {
-    }
+    public function toMailAttachment(): Attachment;
 }

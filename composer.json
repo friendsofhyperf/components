@@ -106,6 +106,7 @@
         "symfony/mailgun-mailer": "^6.4",
         "symfony/notifier": "~6.4",
         "symfony/postmark-mailer": "^6.4",
+        "tijsverkoyen/css-to-inline-styles": "^2.2.5",
         "voku/portable-ascii": "^1.4|^1.5"
     },
     "replace": {
@@ -188,7 +189,7 @@
             "FriendsOfHyperf\\IdeHelper\\": "src/ide-helper/src/",
             "FriendsOfHyperf\\Lock\\": "src/lock/src/",
             "FriendsOfHyperf\\Macros\\": "src/macros/src/",
-            "FriendsOfHyperf\\Mailer\\": "src/mailer/src/",
+            "FriendsOfHyperf\\Mail\\": "src/mail/src/",
             "FriendsOfHyperf\\MiddlewarePlus\\": "src/middleware-plus/src/",
             "FriendsOfHyperf\\ModelFactory\\": "src/model-factory/src/",
             "FriendsOfHyperf\\ModelHashids\\": "src/model-hashids/src/",

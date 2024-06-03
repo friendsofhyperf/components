@@ -9,20 +9,20 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mailer\Transport;
+namespace FriendsOfHyperf\Mail\Transport;
 
 use Aws\Exception\AwsException;
-use Aws\SesV2\SesV2Client;
+use Aws\Ses\SesClient;
 use Symfony\Component\Mailer\Exception\TransportException;
 use Symfony\Component\Mailer\Header\MetadataHeader;
 use Symfony\Component\Mailer\SentMessage;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
 use Symfony\Component\Mime\Message;
 
-class SesV2Transport extends AbstractTransport
+class SesTransport extends AbstractTransport
 {
     public function __construct(
-        protected SesV2Client $ses,
+        protected SesClient $ses,
         protected array $options = [],
     ) {
         parent::__construct();
@@ -33,13 +33,13 @@ class SesV2Transport extends AbstractTransport
      */
     public function __toString(): string
     {
-        return 'ses-v2';
+        return 'ses';
     }
 
     /**
-     * Get the Amazon SES V2 client for the SesV2Transport instance.
+     * Get the Amazon SES client for the SesTransport instance.
      */
-    public function ses(): SesV2Client
+    public function ses(): SesClient
     {
         return $this->ses;
     }
@@ -67,28 +67,24 @@ class SesV2Transport extends AbstractTransport
         if ($message->getOriginalMessage() instanceof Message) {
             foreach ($message->getOriginalMessage()->getHeaders()->all() as $header) {
                 if ($header instanceof MetadataHeader) {
-                    $options['EmailTags'][] = ['Name' => $header->getKey(), 'Value' => $header->getValue()];
+                    $options['Tags'][] = ['Name' => $header->getKey(), 'Value' => $header->getValue()];
                 }
             }
         }
 
         try {
-            $result = $this->ses->sendEmail(
+            $result = $this->ses->sendRawEmail(
                 array_merge(
                     $options,
                     [
                         'Source' => $message->getEnvelope()->getSender()->toString(),
-                        'Destination' => [
-                            'ToAddresses' => collect($message->getEnvelope()->getRecipients())
-                                ->map
-                                ->toString()
-                                ->values()
-                                ->all(),
-                        ],
-                        'Content' => [
-                            'Raw' => [
-                                'Data' => $message->toString(),
-                            ],
+                        'Destinations' => collect($message->getEnvelope()->getRecipients())
+                            ->map
+                            ->toString()
+                            ->values()
+                            ->all(),
+                        'RawMessage' => [
+                            'Data' => $message->toString(),
                         ],
                     ]
                 )
@@ -97,7 +93,7 @@ class SesV2Transport extends AbstractTransport
             $reason = $e->getAwsErrorMessage() ?? $e->getMessage();
 
             throw new TransportException(
-                sprintf('Request to AWS SES V2 API failed. Reason: %s.', $reason),
+                sprintf('Request to AWS SES API failed. Reason: %s.', $reason),
                 is_int($e->getCode()) ? $e->getCode() : 0,
                 $e
             );

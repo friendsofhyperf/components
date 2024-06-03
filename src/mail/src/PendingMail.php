@@ -9,10 +9,10 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mailer;
+namespace FriendsOfHyperf\Mail;
 
-use FriendsOfHyperf\Mailer\Contract\Mailable as MailableContract;
-use FriendsOfHyperf\Mailer\Contract\Mailer as MailerContract;
+use FriendsOfHyperf\Mail\Contract\Mailable as MailableContract;
+use FriendsOfHyperf\Mail\Contract\Mailer as MailerContract;
 use Hyperf\Conditionable\Conditionable;
 
 use function Hyperf\Tappable\tap;

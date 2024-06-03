@@ -9,12 +9,12 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mailer\Contract;
+namespace FriendsOfHyperf\Mail\Contract;
 
 use Closure;
-use FriendsOfHyperf\Mailer\Mailable;
-use FriendsOfHyperf\Mailer\PendingMail;
-use FriendsOfHyperf\Mailer\SentMessage;
+use FriendsOfHyperf\Mail\Mailable;
+use FriendsOfHyperf\Mail\PendingMail;
+use FriendsOfHyperf\Mail\SentMessage;
 
 interface Mailer
 {

@@ -9,14 +9,17 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mailer\Contract;
+namespace FriendsOfHyperf\Mail\Enums;
 
-interface Factory
+enum MessageSendingStatusEnum: int
 {
     /**
-     * Get a mailer instance by name.
-     *
-     * @return Mailer
+     * The message was sent successfully.
      */
-    public function mailer(?string $name = null): \FriendsOfHyperf\Mailer\Mailer;
+    case SUCCESS = 1;
+
+    /**
+     * The message failed to send.
+     */
+    case FAILED = 0;
 }
