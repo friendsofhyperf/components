@@ -130,7 +130,7 @@
         "friendsofhyperf/ide-helper": "*",
         "friendsofhyperf/lock": "*",
         "friendsofhyperf/macros": "*",
-        "friendsofhyperf/mailer": "*",
+        "friendsofhyperf/mail": "*",
         "friendsofhyperf/middleware-plus": "*",
         "friendsofhyperf/model-factory": "*",
         "friendsofhyperf/model-hashids": "*",
