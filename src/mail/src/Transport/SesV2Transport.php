@@ -18,6 +18,7 @@ use Symfony\Component\Mailer\Header\MetadataHeader;
 use Symfony\Component\Mailer\SentMessage;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
 use Symfony\Component\Mime\Message;
+use function Hyperf\Collection\collect;
 
 class SesV2Transport extends AbstractTransport
 {
