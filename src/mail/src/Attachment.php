@@ -31,7 +31,7 @@ class Attachment
     /**
      * The attached file's filename.
      */
-    public ?string $mine;
+    public ?string $mime;
 
     /**
      * @param Closure $resolver a callback that attaches the attachment to the mail message
