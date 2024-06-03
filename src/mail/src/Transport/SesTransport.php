@@ -19,6 +19,8 @@ use Symfony\Component\Mailer\SentMessage;
 use Symfony\Component\Mailer\Transport\AbstractTransport;
 use Symfony\Component\Mime\Message;
 
+use function Hyperf\Collection\collect;
+
 class SesTransport extends AbstractTransport
 {
     public function __construct(
