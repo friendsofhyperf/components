@@ -108,6 +108,7 @@ class PendingMail
 
     /**
      * Populate the mailable with the addresses.
+     * @param Mailable $mailable
      */
     protected function fill(MailableContract $mailable): Mailable
     {
