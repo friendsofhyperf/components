@@ -11,11 +11,13 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification\Event;
 
+use FriendsOfHyperf\Notification\Notification;
+
 class NotificationFailed
 {
     public function __construct(
         public mixed $notifiable,
-        public mixed $notification,
+        public Notification $notification,
         public string $channel,
         public array $data
     ) {

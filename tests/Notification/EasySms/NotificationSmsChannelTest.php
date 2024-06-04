@@ -13,10 +13,10 @@ namespace FriendsOfHyperf\Tests\Notification\EasySms;
 
 use FriendsOfHyperf\Notification\EasySms\Channel\EasySmsChannel;
 use FriendsOfHyperf\Notification\EasySms\Contract\Smsable;
+use FriendsOfHyperf\Notification\EasySms\EasySms;
 use FriendsOfHyperf\Notification\Notification;
 use FriendsOfHyperf\Notification\Traits\Notifiable;
 use Mockery as m;
-use FriendsOfHyperf\Notification\EasySms\EasySms;
 use Overtrue\EasySms\Message;
 use Overtrue\EasySms\PhoneNumber;
 use PHPUnit\Framework\TestCase;
