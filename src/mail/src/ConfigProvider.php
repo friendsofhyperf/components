@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Mail;
 
-use Hyperf\ViewEngine\Contract\FactoryInterface;
-use Psr\Container\ContainerInterface;
+use FriendsOfHyperf\Mail\Factory\MailerFactory;
+use FriendsOfHyperf\Mail\Factory\MarkdownFactory;
 
 class ConfigProvider
 {
@@ -20,12 +20,8 @@ class ConfigProvider
     {
         return [
             'dependencies' => [
-                'mail.manager' => MailManager::class,
-                'mailer' => fn (ContainerInterface $container) => $container->get('mail.manager')->mailer(),
-                Markdown::class => fn (ContainerInterface $container) => new Markdown($container->get(FactoryInterface::class), [
-                    'theme' => $container->get('config')->get('mail.markdown.theme', 'default'),
-                    'paths' => $container->get('config')->get('mail.markdown.paths', []),
-                ]),
+                Contract\Mailer::class => MailerFactory::class,
+                Markdown::class => MarkdownFactory::class,
             ],
             'publish' => [
                 [
