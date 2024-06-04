@@ -48,6 +48,7 @@ class MailManager implements Factory
 {
     /**
      * The array of resolved mailers.
+     * @var Mailer[]
      */
     protected array $mailers = [];
 
