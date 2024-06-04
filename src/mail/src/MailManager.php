@@ -219,6 +219,7 @@ class MailManager implements Factory
                 : '';
         }
 
+        /** @var EsmtpTransport $transport */
         $transport = $factory->create(new Dsn(
             $scheme,
             $config['host'],
