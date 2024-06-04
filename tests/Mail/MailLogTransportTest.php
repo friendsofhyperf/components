@@ -15,18 +15,14 @@ use FriendsOfHyperf\Mail\Attachment;
 use FriendsOfHyperf\Mail\Contract\Factory;
 use FriendsOfHyperf\Mail\Contract\Mailer;
 use FriendsOfHyperf\Mail\Mailable\Stubs\ContainerStub;
-use FriendsOfHyperf\Mail\MailManager;
 use FriendsOfHyperf\Mail\Message;
 use FriendsOfHyperf\Mail\Transport\LogTransport;
-use Hyperf\Config\Config;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ContainerInterface;
-use Hyperf\Logger\LoggerFactory;
 use Hyperf\ViewEngine\Contract\FactoryInterface;
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Stringable;
@@ -40,19 +36,7 @@ class MailLogTransportTest extends TestCase
 {
     protected function setUp(): void
     {
-        ContainerStub::getContainer(static function (ContainerInterface $container) {
-            $config = new Config([]);
-            $container->set(ConfigInterface::class, $config);
-            $mailerManager = new MailManager($container, $config);
-            $container->set(Factory::class, $mailerManager);
-            $logFactory = Mockery::mock(LoggerFactory::class);
-            $container->set(LoggerFactory::class, $logFactory);
-            $log = Mockery::mock(LoggerInterface::class);
-            $logFactory->allows('make')->once()->with('test', 'mail')->andReturn($log);
-            $logFactory->allows('make')->once()->with('test1', 'mail1')->andReturnUsing(fn () => $container->get('log'));
-            $events = Mockery::mock(EventDispatcherInterface::class);
-            $container->set(EventDispatcherInterface::class, $events);
-        });
+        ContainerStub::getContainer(static function (ContainerInterface $container) {});
     }
 
     protected function tearDown(): void
