@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mail\Mailable\Stubs;
+namespace FriendsOfHyperf\Tests\Mail\Stubs;
 
 use Closure;
 use FriendsOfHyperf\Mail\Contract\Factory;

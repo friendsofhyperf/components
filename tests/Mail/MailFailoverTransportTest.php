@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Tests\Mail;
 
 use FriendsOfHyperf\Mail\Contract\Factory;
-use FriendsOfHyperf\Mail\Mailable\Stubs\ContainerStub;
+use FriendsOfHyperf\Tests\Mail\Stubs\ContainerStub;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\ViewEngine\Contract\FactoryInterface;
 use Mockery;
