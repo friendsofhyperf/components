@@ -395,7 +395,6 @@ class Mailer implements MailerContract
      */
     protected function shouldSendMessage(Email $message, array $data = []): bool
     {
-        /** @var MessageSending $event */
         $event = new MessageSending($message, $data);
         $this->events?->dispatch($event);
 
