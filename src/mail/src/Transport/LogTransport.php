@@ -53,9 +53,9 @@ class LogTransport implements TransportInterface
                 ->append("\r\n");
 
             $string = $string
-                ->explode($boundary)
+                ->explode((string) $boundary)
                 ->map($this->decodeQuotedPrintableContent(...))
-                ->implode($boundary);
+                ->implode((string) $boundary);
         } elseif ($string->contains('Content-Transfer-Encoding: quoted-printable')) {
             $string = $this->decodeQuotedPrintableContent((string) $string);
         }

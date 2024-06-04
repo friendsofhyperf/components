@@ -42,6 +42,8 @@ use Symfony\Component\Mailer\Transport\Smtp\Stream\SocketStream;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 
+use function Hyperf\Tappable\tap;
+
 class MailManager implements Factory
 {
     /**
@@ -342,12 +344,11 @@ class MailManager implements Factory
     protected function createPostmarkTransport(array $config): PostmarkApiTransport
     {
         $factory = new PostmarkTransportFactory(null, $this->getHttpClient($config));
-
         $options = isset($config['message_stream_id'])
             ? ['message_stream' => $config['message_stream_id']]
             : [];
-
-        return $factory->create(new Dsn(
+        /** @var PostmarkApiTransport $transport */
+        $transport = $factory->create(new Dsn(
             'postmark+api',
             'default',
             $config['token'] ?? $this->config->get('services.postmark.token'),
@@ -355,6 +356,10 @@ class MailManager implements Factory
             null,
             $options
         ));
+
+        tap($transport); // fix cs-fix
+
+        return $transport;
     }
 
     /**
