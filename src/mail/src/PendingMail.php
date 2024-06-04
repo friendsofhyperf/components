@@ -109,8 +109,9 @@ class PendingMail
     /**
      * Populate the mailable with the addresses.
      * @param Mailable $mailable
+     * @return Mailable
      */
-    protected function fill(MailableContract $mailable): Mailable
+    protected function fill(MailableContract $mailable)
     {
         return tap($mailable->to($this->to)
             ->cc($this->cc)
