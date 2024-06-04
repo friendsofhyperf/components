@@ -209,7 +209,9 @@ class Mailable implements Contract\Mailable
     {
         return $this->withLocale($this->locale, function () {
             $this->prepareMailableForDelivery();
-            return ApplicationContext::getContainer()->get(Contract\Mailer::class)->render(
+            /** @var Mailer $mailer */
+            $mailer = ApplicationContext::getContainer()->get(Contract\Mailer::class);
+            return $mailer->render(
                 $this->buildView(),
                 $this->buildViewData()
             );
@@ -225,8 +227,7 @@ class Mailable implements Contract\Mailable
             return $callback();
         }
 
-        $app = ApplicationContext::getContainer();
-        $translator = $app->get(TranslatorInterface::class);
+        $translator = ApplicationContext::getContainer()->get(TranslatorInterface::class);
         $original = $translator->getLocale();
 
         try {
@@ -1235,8 +1236,9 @@ class Mailable implements Contract\Mailable
 
         return $this->assertionableRenderStrings = $this->withLocale($this->locale, function () {
             $this->prepareMailableForDelivery();
-
-            $html = ApplicationContext::getContainer()->get(Contract\Mailer::class)->render(
+            /** @var Mailer $mailer */
+            $mailer = ApplicationContext::getContainer()->get(Contract\Mailer::class);
+            $html = $mailer->render(
                 $view = $this->buildView(),
                 $this->buildViewData()
             );
@@ -1248,7 +1250,9 @@ class Mailable implements Contract\Mailable
             $text ??= $view['text'] ?? '';
 
             if (! empty($text) && ! $text instanceof Htmlable) {
-                $text = ApplicationContext::getContainer()->get(Contract\Mailer::class)->render(
+                /** @var Mailer $mailer */
+                $mailer = ApplicationContext::getContainer()->get(Contract\Mailer::class);
+                $text = $mailer->render(
                     $text,
                     $this->buildViewData()
                 );
