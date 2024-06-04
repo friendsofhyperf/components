@@ -22,7 +22,7 @@ class InstallCommand extends Command
 
     public function handle()
     {
-        if (! $this->call('vendor:publish', ['package' => 'laravel/telescope'])) {
+        if (! $this->call('vendor:publish', ['package' => 'friendsofhyperf/telescope'])) {
             $this->info('publish successfully');
         } else {
             $this->error('publish failed');
