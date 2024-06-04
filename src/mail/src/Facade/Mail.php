@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Mail\Facade;
 
+use FriendsOfHyperf\Mail\MailManager;
+use Hyperf\Context\ApplicationContext;
+use RuntimeException;
+
 /**
  * @method static \FriendsOfHyperf\Contract\Mail\Mailer mailer(string|null $name = null)
  * @method static \FriendsOfHyperf\Mail\Mailer driver(string|null $driver = null)
@@ -54,4 +58,20 @@ namespace FriendsOfHyperf\Mail\Facade;
  */
 class Mail
 {
+    /**
+     * Handle dynamic, static calls to the object.
+     *
+     * @param string $method
+     * @param array $args
+     * @return mixed
+     *
+     * @throws RuntimeException
+     */
+    public static function __callStatic($method, $args)
+    {
+        $container = ApplicationContext::getContainer();
+        $instance = $container->get(MailManager::class);
+
+        return $instance->{$method}(...$args);
+    }
 }
