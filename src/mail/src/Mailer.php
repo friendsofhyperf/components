@@ -55,7 +55,7 @@ class Mailer implements MailerContract
         protected string $name,
         protected FactoryInterface $views,
         protected TransportInterface $transport,
-        protected EventDispatcherInterface $events,
+        protected ?EventDispatcherInterface $events = null,
     ) {
     }
 
@@ -281,7 +281,7 @@ class Mailer implements MailerContract
     /**
      * Parse the given view name or array.
      */
-    protected function parseView(Closure|array|string $view): array
+    protected function parseView(Closure|array|string|null $view): array
     {
         if (is_string($view) || $view instanceof Closure) {
             return [$view, null, null];
@@ -311,7 +311,7 @@ class Mailer implements MailerContract
     /**
      * Add the content to a given message.
      */
-    protected function addContent(Message $message, string $view, string $plain, string $raw, array $data): void
+    protected function addContent(Message $message, ?string $view, ?string $plain, ?string $raw, array $data = []): void
     {
         if (isset($view)) {
             $message->html($this->renderView($view, $data) ?: ' ');
