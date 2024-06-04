@@ -458,7 +458,7 @@ class MailManager implements Factory
     /**
      * Get the mail connection configuration.
      */
-    protected function getConfig(string $name): array
+    protected function getConfig(string $name): ?array
     {
         // Here we will check if the "driver" key exists and if it does we will use
         // the entire mail configuration file as the "driver" config in order to

@@ -17,7 +17,7 @@ use Symfony\Component\Mailer\SentMessage as SymfonySentMessage;
 use function Hyperf\Collection\collect;
 
 /**
- * @mixin SymfonySentMessage
+ * @mixin \Symfony\Component\Mailer\SentMessage
  */
 class SentMessage
 {
