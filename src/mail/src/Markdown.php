@@ -52,7 +52,9 @@ class Markdown
      */
     public function render(string $view, array $data = [], ?CssToInlineStyles $inliner = null): HtmlString
     {
-        $this->view->flushFinderCache();
+        if (method_exists($this->view, 'flushFinderCache')) {
+            $this->view->flushFinderCache();
+        }
 
         $contents = $this->view->replaceNamespace(
             'mail',
@@ -78,7 +80,9 @@ class Markdown
      */
     public function renderText(string $view, array $data = []): HtmlString
     {
-        $this->view->flushFinderCache();
+        if (method_exists($this->view, 'flushFinderCache')) {
+            $this->view->flushFinderCache();
+        }
 
         $contents = $this->view->replaceNamespace(
             'mail',
