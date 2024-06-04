@@ -26,12 +26,12 @@ class Attachment
     /**
      * The attached file's filename.
      */
-    public ?string $as;
+    public ?string $as = null;
 
     /**
      * The attached file's filename.
      */
-    public ?string $mime;
+    public ?string $mime = null;
 
     /**
      * @param Closure $resolver a callback that attaches the attachment to the mail message
