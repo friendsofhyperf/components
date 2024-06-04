@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Mail;
 use Closure;
 use FriendsOfHyperf\Mail\Contract\Mailable as MailableContract;
 use FriendsOfHyperf\Mail\Contract\Mailer as MailerContract;
-use FriendsOfHyperf\Mail\Enums\Status;
 use FriendsOfHyperf\Mail\Event\MessageSending;
 use FriendsOfHyperf\Mail\Event\MessageSent;
 use FriendsOfHyperf\Mail\Mailables\Address;
@@ -29,6 +28,7 @@ use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\Email;
 
 use function Hyperf\Support\value;
+use function Hyperf\Support\with;
 
 class Mailer implements MailerContract
 {
@@ -398,9 +398,11 @@ class Mailer implements MailerContract
         if (! $this->events) {
             return true;
         }
-        $messageSendingEvent = new MessageSending($message, $data);
-        $this->events->dispatch($messageSendingEvent);
-        return $messageSendingEvent->status === Status::SUCCESS;
+
+        /** @var MessageSending $event */
+        $event = $this->events->dispatch(new MessageSending($message, $data));
+
+        return $event->shouldSend();
     }
 
     /**
