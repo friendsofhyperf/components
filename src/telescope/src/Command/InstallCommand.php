@@ -12,11 +12,10 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Command;
 
 use Hyperf\Command\Command;
-use Psr\Container\ContainerInterface;
 
 class InstallCommand extends Command
 {
-    public function __construct(private ContainerInterface $container)
+    public function __construct()
     {
         parent::__construct('telescope:install');
     }
