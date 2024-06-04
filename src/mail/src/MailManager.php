@@ -265,7 +265,7 @@ class MailManager implements Factory
     protected function createSesTransport(array $config): SesTransport
     {
         $config = array_merge(
-            $this->app['config']->get('services.ses', []),
+            $this->config->get('services.ses', []),
             ['version' => 'latest', 'service' => 'email'],
             $config
         );
@@ -284,7 +284,7 @@ class MailManager implements Factory
     protected function createSesV2Transport(array $config): SesV2Transport
     {
         $config = array_merge(
-            $this->app['config']->get('services.ses', []),
+            $this->config->get('services.ses', []),
             ['version' => 'latest'],
             $config
         );
@@ -412,7 +412,7 @@ class MailManager implements Factory
      */
     protected function createLogTransport(array $config): LogTransport
     {
-        $loggerFactory = $this->container->make(LoggerFactory::class);
+        $loggerFactory = $this->container->get(LoggerFactory::class);
         $logger = $loggerFactory->make(
             $config['log']['name'] ?: $this->config->get('mail.log.name'),
             $config['log']['group'] ?: $this->config->get('mail.log.group')
