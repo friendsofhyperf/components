@@ -49,7 +49,7 @@ class Mailable implements Contract\Mailable
     /**
      * The locale of the message.
      */
-    public string $locale;
+    public ?string $locale = null;
 
     /**
      * The person the message is from.
@@ -79,12 +79,12 @@ class Mailable implements Contract\Mailable
     /**
      * The subject of the message.
      */
-    public string $subject;
+    public ?string $subject = null;
 
     /**
      * The Markdown template for the message (if applicable).
      */
-    public string $markdown;
+    public ?string $markdown = null;
 
     /**
      * The view to use for the message.
