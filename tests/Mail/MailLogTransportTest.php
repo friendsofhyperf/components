@@ -20,6 +20,7 @@ use FriendsOfHyperf\Tests\Mail\Stubs\ContainerStub;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ContainerInterface;
+use Hyperf\Logger\LoggerFactory;
 use Hyperf\ViewEngine\Contract\FactoryInterface;
 use Mockery;
 use PHPUnit\Framework\TestCase;
@@ -36,12 +37,15 @@ class MailLogTransportTest extends TestCase
 {
     protected function setUp(): void
     {
-        ContainerStub::getContainer(static function (ContainerInterface $container) {});
+        ContainerStub::getContainer(static function (ContainerInterface $container) {
+            $container->set(LoggerFactory::class, Mockery::mock(LoggerFactory::class));
+        });
     }
 
     protected function tearDown(): void
     {
         ContainerStub::clear();
+        Mockery::close();
     }
 
     public function testGetLogTransportWithConfiguredChannel()
@@ -49,6 +53,9 @@ class MailLogTransportTest extends TestCase
         $container = ApplicationContext::getContainer();
         $container->set(FactoryInterface::class, Mockery::mock(FactoryInterface::class));
         $config = ApplicationContext::getContainer()->get(ConfigInterface::class);
+        $loggerFactory = $container->get(LoggerFactory::class);
+        $log = Mockery::mock(LoggerInterface::class);
+        $loggerFactory->allows('make')->once()->with('test', 'mail')->andReturn($log);
         $config->set('mail.driver', 'log');
         $config->set('mail.log.group', 'mail');
         $config->set('mail.log.name', 'test');
@@ -118,6 +125,8 @@ class MailLogTransportTest extends TestCase
 
         $container->set(FactoryInterface::class, Mockery::mock(FactoryInterface::class));
         $config = $container->get(ConfigInterface::class);
+        $loggerFactory = $container->get(LoggerFactory::class);
+        $loggerFactory->allows('make')->once()->with('test1', 'mail1')->andReturnUsing(fn () => $container->get('log'));
         $config->set('mail.driver', 'log');
         $config->set('mail.log.group', 'mail1');
         $config->set('mail.log.name', 'test1');

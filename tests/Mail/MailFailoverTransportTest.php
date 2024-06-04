@@ -33,6 +33,7 @@ class MailFailoverTransportTest extends TestCase
     protected function tearDown(): void
     {
         ContainerStub::clear();
+        Mockery::close();
     }
 
     public function testGetFailoverTransportWithConfiguredTransports(): void
