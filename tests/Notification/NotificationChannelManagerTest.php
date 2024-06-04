@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Tests\Notification;
 use FriendsOfHyperf\Notification\ChannelManager;
 use FriendsOfHyperf\Notification\Contract\Channel;
 use FriendsOfHyperf\Notification\Contract\Dispatcher;
-use FriendsOfHyperf\Notification\Enums\SendingStatus;
 use FriendsOfHyperf\Notification\Event\NotificationSending;
 use FriendsOfHyperf\Notification\Event\NotificationSent;
 use FriendsOfHyperf\Notification\Notification;
@@ -80,7 +79,7 @@ class NotificationChannelManagerTest extends TestCase
         $reflection = new ReflectionClass($manager);
         $reflection->getProperty('channels')->setValue($manager, ['test2' => $driver]);
         $events->shouldReceive('dispatch')->once()->andReturnUsing(function (NotificationSending $event) {
-            $event->status = SendingStatus::BLOCKED;
+            $event->setShouldSend(false);
         });
         $driver->shouldReceive('send')->once();
         $events->shouldReceive('dispatch')->once()->with(m::type(NotificationSent::class));
@@ -119,7 +118,7 @@ class NotificationChannelManagerTest extends TestCase
         $reflection = new ReflectionClass($manager);
         $reflection->getProperty('channels')->setValue($manager, ['test' => $driver]);
         $events->allows('dispatch')->once()->andReturnUsing(function (NotificationSending $event) {
-            $event->status = SendingStatus::ENABLED;
+            $event->setShouldSend(true);
         });
         $events->allows('dispatch')->once()->andReturnUsing(function ($event) {
             $this->assertInstanceOf(NotificationSent::class, $event);

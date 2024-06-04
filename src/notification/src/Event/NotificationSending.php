@@ -11,16 +11,26 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification\Event;
 
-use FriendsOfHyperf\Notification\Enums\SendingStatus;
 use FriendsOfHyperf\Notification\Notification;
 
 class NotificationSending
 {
+    public bool $shouldSend = true;
+
     public function __construct(
         public mixed $notifiable,
         public Notification $notification,
-        public string $channel,
-        public SendingStatus $status = SendingStatus::ENABLED,
+        public string $channel
     ) {
+    }
+
+    public function setShouldSend(bool $shouldSend): void
+    {
+        $this->shouldSend = $shouldSend;
+    }
+
+    public function shouldSend(): bool
+    {
+        return $this->shouldSend;
     }
 }
