@@ -29,6 +29,7 @@ use Symfony\Component\Mime\Email;
 
 use function Hyperf\Support\value;
 use function Hyperf\Support\with;
+use function Hyperf\Tappable\tap;
 
 class Mailer implements MailerContract
 {
@@ -395,10 +396,9 @@ class Mailer implements MailerContract
      */
     protected function shouldSendMessage(Email $message, array $data = []): bool
     {
-        $event = new MessageSending($message, $data);
-        $this->events?->dispatch($event);
-
-        return $event->shouldSend();
+        return tap(new MessageSending($message, $data), function ($event) {
+            $this->events?->dispatch($event);
+        })->shouldSend();
     }
 
     /**
