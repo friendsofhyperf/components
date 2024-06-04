@@ -15,8 +15,6 @@ interface Factory
 {
     /**
      * Get a mailer instance by name.
-     *
-     * @return Mailer
      */
-    public function mailer(?string $name = null): \FriendsOfHyperf\Mail\Mailer;
+    public function mailer(?string $name = null): Mailer;
 }

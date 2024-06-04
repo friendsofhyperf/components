@@ -19,7 +19,7 @@ use function Hyperf\Collection\collect;
 class MessageSent
 {
     public function __construct(
-        public SentMessage $sent,
+        public SentMessage $message,
         public array $data = []
     ) {
     }
@@ -32,7 +32,7 @@ class MessageSent
         $hasAttachments = collect($this->message->getAttachments())->isNotEmpty();
 
         return [
-            'sent' => $this->sent,
+            'sent' => $this->message,
             'data' => $hasAttachments ? base64_encode(serialize($this->data)) : $this->data,
             'hasAttachments' => $hasAttachments,
         ];
@@ -43,7 +43,7 @@ class MessageSent
      */
     public function __unserialize(array $data): void
     {
-        $this->sent = $data['sent'];
+        $this->message = $data['sent'];
 
         $this->data = (($data['hasAttachments'] ?? false) === true)
             ? unserialize(base64_decode($data['data']))
@@ -57,7 +57,7 @@ class MessageSent
     public function __get($key)
     {
         if ($key === 'message') {
-            return $this->sent->getOriginalMessage();
+            return $this->message->getOriginalMessage();
         }
 
         throw new Exception('Unable to access undefined property on ' . __CLASS__ . ': ' . $key);
