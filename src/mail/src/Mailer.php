@@ -136,7 +136,7 @@ class Mailer implements MailerContract
      */
     public function html(string $html, mixed $callback): ?SentMessage
     {
-        return $this->send(['html' => new HtmlString($html)], [], $callback);
+        return $this->send(['html' => fn () => new HtmlString($html)], [], $callback);
     }
 
     /**
@@ -315,7 +315,7 @@ class Mailer implements MailerContract
     /**
      * Add the content to a given message.
      */
-    protected function addContent(Message $message, ?string $view, ?string $plain, ?string $raw, array $data = []): void
+    protected function addContent(Message $message, Closure|string|null $view, Closure|string|null $plain, ?string $raw, array $data = []): void
     {
         if (isset($view)) {
             $message->html($this->renderView($view, $data) ?: ' ');
@@ -339,7 +339,7 @@ class Mailer implements MailerContract
 
         return $view instanceof Htmlable
             ? $view->toHtml()
-            : $this->views->make($view, $data)->render();
+            : $this->views->make((string) $view, $data)->render();
     }
 
     /**

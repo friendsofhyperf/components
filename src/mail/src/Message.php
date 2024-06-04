@@ -96,7 +96,6 @@ class Message
 
             return $this;
         }
-
         return $this->addAddresses($address, $name, 'To');
     }
 
@@ -298,7 +297,7 @@ class Message
     /**
      * Add a recipient to the message.
      */
-    protected function addAddresses(string|array $address, string $name, string $type): static
+    protected function addAddresses(string|array $address, ?string $name, string $type): static
     {
         if (is_array($address)) {
             $type = lcfirst($type);

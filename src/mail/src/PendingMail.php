@@ -29,12 +29,12 @@ class PendingMail
     /**
      * The locale of the message.
      */
-    protected string $locale;
+    protected ?string $locale = null;
 
     /**
      * The "to" recipients of the message.
      */
-    protected array $to = [];
+    protected mixed $to = [];
 
     /**
      * The "cc" recipients of the message.
