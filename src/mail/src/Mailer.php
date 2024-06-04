@@ -19,6 +19,7 @@ use FriendsOfHyperf\Mail\Event\MessageSending;
 use FriendsOfHyperf\Mail\Event\MessageSent;
 use FriendsOfHyperf\Mail\Mailables\Address;
 use FriendsOfHyperf\Support\HtmlString;
+use Hyperf\Macroable\Macroable;
 use Hyperf\ViewEngine\Contract\FactoryInterface;
 use Hyperf\ViewEngine\Contract\Htmlable;
 use InvalidArgumentException;
@@ -31,6 +32,8 @@ use function Hyperf\Support\value;
 
 class Mailer implements MailerContract
 {
+    use Macroable;
+
     /**
      * The global from address and name.
      */

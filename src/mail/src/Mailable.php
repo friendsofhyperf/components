@@ -40,7 +40,7 @@ use function Hyperf\Support\class_basename;
 use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
 
-class Mailable
+class Mailable implements Contract\Mailable
 {
     use Conditionable, ForwardsCalls, Macroable {
         __call as macroCall;
@@ -261,10 +261,9 @@ class Mailable
     /**
      * Set the locale of the message.
      *
-     * @param string $locale
      * @return $this
      */
-    public function locale($locale)
+    public function locale(string $locale): static
     {
         $this->locale = $locale;
 
