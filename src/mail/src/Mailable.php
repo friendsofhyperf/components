@@ -37,6 +37,8 @@ use function FriendsOfHyperf\Helpers\filled;
 use function Hyperf\Collection\collect;
 use function Hyperf\Support\call;
 use function Hyperf\Support\class_basename;
+use function Hyperf\Support\make;
+use function Hyperf\Tappable\tap;
 
 class Mailable
 {
@@ -996,7 +998,7 @@ class Mailable
      */
     protected function markdownRenderer(): Markdown
     {
-        return tap(ApplicationContext::getContainer()->make(Markdown::class), function ($markdown) {
+        return tap(make(Markdown::class), function ($markdown) {
             $markdown->theme(
                 $this->theme ?: ApplicationContext::getContainer()->get(ConfigInterface::class)->get(
                     'mail.markdown.theme',
@@ -1283,6 +1285,7 @@ class Mailable
             'cc' => $this->envelope()->hasCc($address, $name),
             'bcc' => $this->envelope()->hasBcc($address, $name),
             'replyTo' => $this->envelope()->hasReplyTo($address, $name),
+            default => false,
         };
     }
 
@@ -1295,7 +1298,7 @@ class Mailable
             return false;
         }
 
-        $attachments = $this->attachments();
+        $attachments = $this->attachments(); // @phpstan-ignore-line
 
         return Collection::make(is_object($attachments) ? [$attachments] : $attachments)
             ->map(fn ($attached) => $attached instanceof Attachable ? $attached->toMailAttachment() : $attached)
