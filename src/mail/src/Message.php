@@ -16,6 +16,7 @@ use Hyperf\Stringable\Str;
 use Hyperf\Support\Traits\ForwardsCalls;
 use Symfony\Component\Mime\Address;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mime\Header\MailboxListHeader;
 use Symfony\Component\Mime\Part\DataPart;
 use Symfony\Component\Mime\Part\File;
 
@@ -104,7 +105,9 @@ class Message
      */
     public function forgetTo(): static
     {
-        if ($header = $this->message->getHeaders()->get('To')) {
+        /** @var MailboxListHeader|null $header */
+        $header = $this->message->getHeaders()->get('To');
+        if ($header) {
             $this->addAddressDebugHeader('X-To', $this->message->getTo());
 
             $header->setAddresses([]);
@@ -134,7 +137,9 @@ class Message
      */
     public function forgetCc(): static
     {
-        if ($header = $this->message->getHeaders()->get('Cc')) {
+        /** @var MailboxListHeader|null $header */
+        $header = $this->message->getHeaders()->get('Cc');
+        if ($header) {
             $this->addAddressDebugHeader('X-Cc', $this->message->getCC());
 
             $header->setAddresses([]);
@@ -164,7 +169,9 @@ class Message
      */
     public function forgetBcc(): static
     {
-        if ($header = $this->message->getHeaders()->get('Bcc')) {
+        /** @var MailboxListHeader|null $header */
+        $header = $this->message->getHeaders()->get('Bcc');
+        if ($header) {
             $this->addAddressDebugHeader('X-Bcc', $this->message->getBcc());
 
             $header->setAddresses([]);
@@ -322,8 +329,9 @@ class Message
 
     /**
      * Add an address debug header for a list of recipients.
+     * @param Address[] $addresses
      */
-    protected function addAddressDebugHeader(string $header, Address ...$addresses): static
+    protected function addAddressDebugHeader(string $header, array $addresses): static
     {
         $this->message->getHeaders()->addTextHeader(
             $header,
