@@ -1,7 +1,17 @@
 <?php
 
+declare(strict_types=1);
+/**
+ * This file is part of friendsofhyperf/components.
+ *
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ */
+
 namespace FriendsOfHyperf\Mail\Mailable\Stubs;
 
+use Closure;
 use FriendsOfHyperf\Mail\Contract\Factory;
 use FriendsOfHyperf\Mail\MailManager;
 use Hyperf\Config\Config;
@@ -14,10 +24,11 @@ use Hyperf\Logger\LoggerFactory;
 use Mockery;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Log\LoggerInterface;
+use ReflectionClass;
 
 class ContainerStub
 {
-    public static function getContainer(?\Closure $closure = null): ContainerInterface
+    public static function getContainer(?Closure $closure = null): ContainerInterface
     {
         $container = new Container(new DefinitionSource([]));
 
@@ -33,7 +44,7 @@ class ContainerStub
         $events = Mockery::mock(EventDispatcherInterface::class);
         $container->set(EventDispatcherInterface::class, $events);
 
-        $reflectionClass = new \ReflectionClass(ApplicationContext::class);
+        $reflectionClass = new ReflectionClass(ApplicationContext::class);
         $reflectionClass->setStaticPropertyValue('container', $container);
         if ($closure === null) {
             return $container;
@@ -44,7 +55,7 @@ class ContainerStub
 
     public static function clear()
     {
-        $reflectionClass = new \ReflectionClass(ApplicationContext::class);
+        $reflectionClass = new ReflectionClass(ApplicationContext::class);
         $reflectionClass->setStaticPropertyValue('container', null);
     }
 }

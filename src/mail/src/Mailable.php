@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Mail;
 
+use BackedEnum;
 use BadMethodCallException;
 use Closure;
 use FriendsOfHyperf\Mail\Contract\Attachable;
 use FriendsOfHyperf\Mail\Contract\Factory;
+use FriendsOfHyperf\Mail\Testing\SeeInOrder;
 use FriendsOfHyperf\Support\HtmlString;
 use Hyperf\Collection\Collection;
 use Hyperf\Conditionable\Conditionable;
@@ -25,6 +27,7 @@ use Hyperf\Filesystem\FilesystemFactory;
 use Hyperf\Macroable\Macroable;
 use Hyperf\Stringable\Str;
 use Hyperf\Support\Traits\ForwardsCalls;
+use Hyperf\ViewEngine\Contract\DeferringDisplayableValue;
 use Hyperf\ViewEngine\Contract\Htmlable;
 use PHPUnit\Framework\Assert as Phpunit;
 use ReflectionClass;
@@ -892,6 +895,49 @@ class Mailable implements Contract\Mailable
             $this->hasMetadata($key, $value),
             "Did not see expected key [{$key}] and value [{$value}] in email metadata."
         );
+
+        return $this;
+    }
+
+    /**
+     * Assert that the given text strings are present in order in the HTML email body.
+     */
+    public function assertSeeInOrderInHtml(array $strings, bool $escape = true): static
+    {
+        $strings = $escape ? array_map([$this, 'e'], $strings) : $strings;
+
+        [$html, $text] = $this->renderForAssertions();
+
+        Phpunit::assertThat($strings, new SeeInOrder($html));
+
+        return $this;
+    }
+
+    public function e($value, $doubleEncode = true)
+    {
+        if ($value instanceof DeferringDisplayableValue) {
+            $value = $value->resolveDisplayableValue();
+        }
+
+        if ($value instanceof Htmlable) {
+            return $value->toHtml();
+        }
+
+        if ($value instanceof BackedEnum) {
+            $value = $value->value;
+        }
+
+        return htmlspecialchars($value ?? '', ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8', $doubleEncode);
+    }
+
+    /**
+     * Assert that the given text strings are present in order in the plain-text email body.
+     */
+    public function assertSeeInOrderInText(array $strings): static
+    {
+        [$html, $text] = $this->renderForAssertions();
+
+        Phpunit::assertThat($strings, new SeeInOrder($text));
 
         return $this;
     }
