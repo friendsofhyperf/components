@@ -29,7 +29,7 @@ class MessageSent
      */
     public function __serialize(): array
     {
-        $hasAttachments = collect($this->message->getAttachments())->isNotEmpty();
+        $hasAttachments = collect($this->message->getAttachments())->isNotEmpty(); // @phpstan-ignore-line
 
         return [
             'sent' => $this->message,

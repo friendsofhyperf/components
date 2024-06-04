@@ -159,7 +159,7 @@ class Mailable
      *
      * @param string $method
      * @param array $parameters
-     * @return $this
+     * @return static
      *
      * @throws BadMethodCallException
      */

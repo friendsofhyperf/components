@@ -43,7 +43,8 @@ class SentMessage
      */
     public function __serialize(): array
     {
-        $hasAttachments = collect($this->sentMessage->getOriginalMessage()->getAttachments())->isNotEmpty();
+        $hasAttachments = collect($this->sentMessage->getOriginalMessage()->getAttachments())->isNotEmpty(); // @phpstan-ignore-line
+
         return [
             'hasAttachments' => $hasAttachments,
             'sentMessage' => $hasAttachments ? base64_encode(serialize($this->sentMessage)) : $this->sentMessage,
