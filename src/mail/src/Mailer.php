@@ -16,7 +16,7 @@ use FriendsOfHyperf\Mail\Contract\Mailable as MailableContract;
 use FriendsOfHyperf\Mail\Contract\Mailer as MailerContract;
 use FriendsOfHyperf\Mail\Event\MessageSending;
 use FriendsOfHyperf\Mail\Event\MessageSent;
-use FriendsOfHyperf\Mail\Mailables\Address;
+use FriendsOfHyperf\Mail\Mailable\Address;
 use FriendsOfHyperf\Support\HtmlString;
 use Hyperf\Macroable\Macroable;
 use Hyperf\ViewEngine\Contract\FactoryInterface;

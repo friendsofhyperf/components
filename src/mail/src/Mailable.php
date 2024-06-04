@@ -1187,7 +1187,7 @@ class Mailable implements Contract\Mailable
         if ($recipient instanceof Address) {
             return (object) ['email' => $recipient->getAddress(), 'name' => $recipient->getName()];
         }
-        if ($recipient instanceof Mailables\Address) {
+        if ($recipient instanceof Mailable\Address) {
             return (object) ['email' => $recipient->address, 'name' => $recipient->name];
         }
 

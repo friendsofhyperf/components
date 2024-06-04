@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mail\Mailables;
+namespace FriendsOfHyperf\Mail\Mailable;
 
 use Closure;
 use Hyperf\Collection\Arr;
