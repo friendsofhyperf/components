@@ -37,7 +37,10 @@
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\Mail\\": "src/"
-        }
+        },
+        "files": [
+            "src/Functions.php"
+        ]
     },
     "suggest": {
         "aws/aws-sdk-php": "Required to use the SES mail driver (^3.235.5).",

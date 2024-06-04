@@ -163,6 +163,7 @@
             "src/helpers/src/Command/Functions.php",
             "src/helpers/src/Functions.php",
             "src/lock/src/Functions.php",
+            "src/mail/src/Functions.php",
             "src/model-factory/src/Functions.php",
             "src/support/src/Functions.php",
             "src/validated-dto/src/Functions.php"

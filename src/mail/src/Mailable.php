@@ -132,7 +132,7 @@ class Mailable
     /**
      * The callback that should be invoked while building the view data.
      */
-    public static Closure $viewDataCallback;
+    public static ?Closure $viewDataCallback = null;
 
     /**
      * The HTML to use for the message.
@@ -173,7 +173,7 @@ class Mailable
             return $this->with(Str::camel(substr($method, 4)), $parameters[0]);
         }
 
-        static::throwBadMethodCallException($method);
+        static::throwBadMethodCallException($method); // @phpstan-ignore-line
     }
 
     /**
