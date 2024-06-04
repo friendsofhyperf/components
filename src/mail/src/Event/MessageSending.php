@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Mail\Event;
 
-use FriendsOfHyperf\Mail\Enums\MessageSendingStatus as Status;
+use FriendsOfHyperf\Mail\Enums\Status;
 use Symfony\Component\Mime\Email;
 
 class MessageSending

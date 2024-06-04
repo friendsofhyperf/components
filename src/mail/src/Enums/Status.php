@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Mail\Enums;
 
-enum MessageSendingStatus: int
+enum Status: int
 {
     /**
      * The message was sent successfully.

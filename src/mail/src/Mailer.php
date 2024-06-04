@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\Mail;
 use Closure;
 use FriendsOfHyperf\Mail\Contract\Mailable as MailableContract;
 use FriendsOfHyperf\Mail\Contract\Mailer as MailerContract;
-use FriendsOfHyperf\Mail\Enums\MessageSendingStatus;
+use FriendsOfHyperf\Mail\Enums\Status;
 use FriendsOfHyperf\Mail\Event\MessageSending;
 use FriendsOfHyperf\Mail\Event\MessageSent;
 use FriendsOfHyperf\Mail\Mailables\Address;
@@ -400,7 +400,7 @@ class Mailer implements MailerContract
         }
         $messageSendingEvent = new MessageSending($message, $data);
         $this->events->dispatch($messageSendingEvent);
-        return $messageSendingEvent->status === MessageSendingStatus::SUCCESS;
+        return $messageSendingEvent->status === Status::SUCCESS;
     }
 
     /**
