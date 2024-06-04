@@ -80,7 +80,7 @@ class SesTransport extends AbstractTransport
                     $options,
                     [
                         'Source' => $message->getEnvelope()->getSender()->toString(),
-                        'Destinations' => collect($message->getEnvelope()->getRecipients())
+                        'Destinations' => collect($message->getEnvelope()->getRecipients()) // @phpstan-ignore-line
                             ->map
                             ->toString()
                             ->values()
@@ -96,7 +96,7 @@ class SesTransport extends AbstractTransport
 
             throw new TransportException(
                 sprintf('Request to AWS SES API failed. Reason: %s.', $reason),
-                is_int($e->getCode()) ? $e->getCode() : 0,
+                (int) $e->getCode(),
                 $e
             );
         }
