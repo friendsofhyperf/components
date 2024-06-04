@@ -100,6 +100,7 @@ class PendingMail
 
     /**
      * Send a new mailable message instance.
+     * @param Mailable $mailable
      */
     public function send(MailableContract $mailable): ?SentMessage
     {
