@@ -395,12 +395,9 @@ class Mailer implements MailerContract
      */
     protected function shouldSendMessage(Email $message, array $data = []): bool
     {
-        if (! $this->events) {
-            return true;
-        }
-
         /** @var MessageSending $event */
-        $event = $this->events->dispatch(new MessageSending($message, $data));
+        $event = new MessageSending($message, $data);
+        $this->events?->dispatch($event);
 
         return $event->shouldSend();
     }
@@ -410,10 +407,8 @@ class Mailer implements MailerContract
      */
     protected function dispatchSentEvent(SentMessage $message, array $data = []): void
     {
-        if ($this->events) {
-            $this->events->dispatch(
-                new MessageSent($message, $data)
-            );
-        }
+        $this->events?->dispatch(
+            new MessageSent($message, $data)
+        );
     }
 }
