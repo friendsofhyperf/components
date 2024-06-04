@@ -20,8 +20,8 @@ class MailerFactory
     ) {
     }
 
-    public function __invoke(?string $name = null)
+    public function __invoke()
     {
-        return $this->manager->mailer($name);
+        return $this->manager->mailer();
     }
 }
