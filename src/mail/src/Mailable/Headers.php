@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace Illuminate\Mail\Mailables;
+namespace Illuminate\Mail\Mailable;
 
 use Hyperf\Conditionable\Conditionable;
 use Hyperf\Stringable\Str;
