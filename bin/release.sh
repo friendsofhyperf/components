@@ -69,11 +69,11 @@ git push origin --tags
 # Tag Components
 for REMOTE in $REMOTES
 do
-    # Skip some components
-    # if [[ $REMOTE == "notification" || $REMOTE == "notification-easysms" ]]
-    # then
-    #     continue
-    # fi
+    # Skip the beta components
+    if [[ $REMOTE == "notification" || $REMOTE == "notification-easysms" || $REMOTE == "mail" ]]
+    then
+        continue
+    fi
 
     echo ""
     echo ""
