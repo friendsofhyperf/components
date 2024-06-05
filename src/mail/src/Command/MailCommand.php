@@ -16,6 +16,7 @@ use Hyperf\Devtool\Generator\GeneratorCommand;
 use Hyperf\Stringable\Str;
 use Hyperf\Support\Filesystem\Filesystem;
 use Symfony\Component\Console\Input\InputOption;
+
 use function Hyperf\Collection\collect;
 
 class MailCommand extends GeneratorCommand
@@ -27,7 +28,8 @@ class MailCommand extends GeneratorCommand
     public function __construct(
         private readonly Filesystem $files,
         private readonly ConfigInterface $config
-    ){}
+    ) {
+    }
 
     protected function getStub(): string
     {
@@ -41,7 +43,7 @@ class MailCommand extends GeneratorCommand
 
     protected function getOptions(): array
     {
-        $options =  parent::getOptions();
+        $options = parent::getOptions();
         return array_merge($options, [
             ['markdown', 'm', InputOption::VALUE_NONE, 'Create a new Markdown mailer class'],
         ]);
@@ -53,14 +55,14 @@ class MailCommand extends GeneratorCommand
     protected function writeMarkdownTemplate(): void
     {
         $path = $this->viewPath(
-            str_replace('.', '/', $this->getView()).'.blade.php'
+            str_replace('.', '/', $this->getView()) . '.blade.php'
         );
 
         if (! $this->files->isDirectory(dirname($path))) {
             $this->files->makeDirectory(dirname($path), 0755, true);
         }
 
-        $this->files->put($path, file_get_contents(__DIR__.'/stubs/markdown.stub'));
+        $this->files->put($path, file_get_contents(__DIR__ . '/stubs/markdown.stub'));
     }
 
     /**
@@ -68,9 +70,9 @@ class MailCommand extends GeneratorCommand
      */
     protected function viewPath(string $path = ''): string
     {
-        $views = $this->config->get('view.paths.0') ?? BASE_PATH.'/storage/views';
+        $views = $this->config->get('view.paths.0') ?? BASE_PATH . '/storage/views';
 
-        return $views.($path ? DIRECTORY_SEPARATOR.$path : $path);
+        return $views . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 
     /**
@@ -83,12 +85,11 @@ class MailCommand extends GeneratorCommand
         if (! $view) {
             $name = str_replace('\\', '/', $this->input->getArgument('name'));
 
-            $view = 'mail.'.collect(explode('/', $name))
-                    ->map(fn ($part) => Str::kebab($part))
-                    ->implode('.');
+            $view = 'mail.' . collect(explode('/', $name))
+                ->map(fn ($part) => Str::kebab($part))
+                ->implode('.');
         }
 
         return $view;
     }
-
 }
