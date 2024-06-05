@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Mail;
 
+use FriendsOfHyperf\Mail\Command\MailCommand;
 use FriendsOfHyperf\Mail\Factory\MailerFactory;
 use FriendsOfHyperf\Mail\Factory\MarkdownFactory;
 
@@ -36,6 +37,9 @@ class ConfigProvider
                     'source' => __DIR__ . '/../publish/resources/',
                     'destination' => BASE_PATH . '/resources/views/',
                 ],
+            ],
+            'commands' => [
+                MailCommand::class,
             ],
         ];
     }

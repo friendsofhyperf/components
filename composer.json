@@ -60,6 +60,7 @@
         "hyperf/database": "~3.1.0",
         "hyperf/db": "~3.1.0",
         "hyperf/db-connection": "~3.1.0",
+        "hyperf/devtool": "~3.1",
         "hyperf/di": "~3.1.0",
         "hyperf/engine": "^2.0",
         "hyperf/etcd": "~3.1.0",
