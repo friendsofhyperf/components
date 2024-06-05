@@ -30,7 +30,7 @@ class MailMessage extends SimpleMessage implements Renderable
     /**
      * The view to be rendered.
      */
-    public array|string $view;
+    public array|string|null $view;
 
     /**
      * The view data for the message.
