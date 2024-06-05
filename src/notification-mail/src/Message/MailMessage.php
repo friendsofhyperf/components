@@ -30,7 +30,7 @@ class MailMessage extends SimpleMessage implements Renderable
     /**
      * The view to be rendered.
      */
-    public array|string|null $view;
+    public array|string|null $view = null;
 
     /**
      * The view data for the message.
@@ -264,7 +264,7 @@ class MailMessage extends SimpleMessage implements Renderable
     /**
      * Add a metadata header to the message when supported by the underlying transport.
      */
-    public function metadata(string $key, string $value): static
+    public function metadata(string $key, string|int $value): static
     {
         $this->metadata[$key] = $value;
 

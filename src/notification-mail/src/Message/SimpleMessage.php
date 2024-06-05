@@ -49,12 +49,12 @@ class SimpleMessage
     /**
      * The text / label for the action.
      */
-    public string $actionText;
+    public ?string $actionText = null;
 
     /**
      * The action URL.
      */
-    public string $actionUrl;
+    public ?string $actionUrl = null;
 
     /**
      * The name of the mailer that should send the notification.
@@ -223,7 +223,7 @@ class SimpleMessage
     /**
      * Format the given line of text.
      */
-    protected function formatLine(Htmlable|\Hyperf\ViewEngine\Contract\Htmlable|array $line): \Hyperf\ViewEngine\Contract\Htmlable|Htmlable|string
+    protected function formatLine(Htmlable|\Hyperf\ViewEngine\Contract\Htmlable|array|string $line): \Hyperf\ViewEngine\Contract\Htmlable|Htmlable|string
     {
         if ($line instanceof Htmlable || $line instanceof \Hyperf\ViewEngine\Contract\Htmlable) {
             return $line;
