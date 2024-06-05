@@ -127,7 +127,7 @@ class Mailable implements Contract\Mailable
     /**
      * The name of the theme that should be used when formatting the message.
      */
-    public ?string $theme;
+    public ?string $theme = null;
 
     /**
      * The name of the mailer that should send the message.
@@ -1295,7 +1295,7 @@ class Mailable implements Contract\Mailable
 
             $text ??= $view['text'] ?? '';
 
-            if (! empty($text) && ! $text instanceof Htmlable) {
+            if (! empty($text) && ! $text instanceof Htmlable && ! $text instanceof HtmlString) {
                 /** @var Mailer $mailer */
                 $mailer = ApplicationContext::getContainer()->get(Contract\Mailer::class);
                 $text = $mailer->render(

@@ -30,8 +30,8 @@ class ConfigProvider
                 [
                     'id' => 'resources',
                     'description' => 'The resources for mail.',
-                    'source' => __DIR__ . '/../publish/resources/',
-                    'destination' => BASE_PATH . '/resources/views/',
+                    'source' => __DIR__ . '/../publish/resources/views/',
+                    'destination' => BASE_PATH . '/storage/view/',
                 ],
             ],
             'commands' => [

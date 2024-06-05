@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Mail;
 
 use BackedEnum;
+use FriendsOfHyperf\Support\HtmlString;
 use Hyperf\ViewEngine\Contract\Htmlable;
 
 /**
@@ -24,6 +25,9 @@ use Hyperf\ViewEngine\Contract\Htmlable;
 function e($value, $doubleEncode = true)
 {
     if ($value instanceof Htmlable) {
+        return $value->toHtml();
+    }
+    if ($value instanceof HtmlString) {
         return $value->toHtml();
     }
 

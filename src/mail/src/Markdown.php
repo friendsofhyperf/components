@@ -55,12 +55,10 @@ class Markdown
         if (method_exists($this->view, 'flushFinderCache')) {
             $this->view->flushFinderCache();
         }
-
         $contents = $this->view->replaceNamespace(
             'mail',
             $this->htmlComponentPaths()
         )->make($view, $data)->render();
-
         if ($this->view->exists($customTheme = Str::start($this->theme, 'mail.'))) {
             $theme = $customTheme;
         } else {
@@ -116,7 +114,7 @@ class Markdown
      */
     public function htmlComponentPaths(): array
     {
-        return array_map(function ($path) {
+        return array_map(static function ($path) {
             return $path . '/html';
         }, $this->componentPaths());
     }
@@ -126,7 +124,7 @@ class Markdown
      */
     public function textComponentPaths(): array
     {
-        return array_map(function ($path) {
+        return array_map(static function ($path) {
             return $path . '/text';
         }, $this->componentPaths());
     }
@@ -163,7 +161,7 @@ class Markdown
     protected function componentPaths(): array
     {
         return array_unique(array_merge($this->componentPaths, [
-            __DIR__ . '/resources/views',
+            dirname(__DIR__) . '/publish/resources/views',
         ]));
     }
 }

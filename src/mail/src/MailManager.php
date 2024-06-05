@@ -418,9 +418,10 @@ class MailManager implements Factory
     protected function createLogTransport(array $config): LogTransport
     {
         $loggerFactory = $this->container->get(LoggerFactory::class);
+
         $logger = $loggerFactory->make(
-            $config['log']['name'] ?: $this->config->get('mail.log.name'),
-            $config['log']['group'] ?: $this->config->get('mail.log.group')
+            $config['name'] ?: $this->config->get('mail.log.name'),
+            $config['group'] ?: $this->config->get('mail.log.group')
         );
 
         return new LogTransport($logger);

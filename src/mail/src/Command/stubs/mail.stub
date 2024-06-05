@@ -1,12 +1,12 @@
 <?php
 
-namespace {{ namespace }};
+namespace %NAMESPACE%;
 
-use Friendsofhyperf\Mail\Mailable;
-use Friendsofhyperf\Mail\Mailables\Content;
-use Friendsofhyperf\Mail\Mailables\Envelope;
+use FriendsOfHyperf\Mail\Mailable;
+use FriendsOfHyperf\Mail\Mailable\Content;
+use FriendsOfHyperf\Mail\Mailable\Envelope;
 
-class {{ class }} extends Mailable
+class %CLASS% extends Mailable
 {
     /**
      * Create a new message instance.

@@ -80,8 +80,8 @@ return [
 
         'log' => [
             'transport' => 'log',
-            'group' => env('MAIL_LOG_GROUP'),
-            'name' => env('MAIL_LOG_NAME'),
+            'group' => env('MAIL_LOG_GROUP', 'default'),
+            'name' => env('MAIL_LOG_NAME', 'mail'),
         ],
 
         'array' => [

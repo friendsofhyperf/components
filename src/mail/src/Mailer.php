@@ -336,10 +336,13 @@ class Mailer implements MailerContract
     protected function renderView(Closure|string $view, array $data): string
     {
         $view = value($view, $data);
-
-        return $view instanceof Htmlable
-            ? $view->toHtml()
-            : $this->views->make((string) $view, $data)->render();
+        if ($view instanceof Htmlable) {
+            return $view->toHtml();
+        }
+        if ($view instanceof HtmlString) {
+            return $view->toHtml();
+        }
+        return $this->views->make((string) $view, $data)->render();
     }
 
     /**

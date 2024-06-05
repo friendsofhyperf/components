@@ -13,16 +13,18 @@ namespace FriendsOfHyperf\Mail\Factory;
 
 use FriendsOfHyperf\Mail\Markdown;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\ViewEngine\Contract\FactoryInterface;
 
 class MarkdownFactory
 {
     public function __construct(
-        protected ConfigInterface $config
+        protected readonly ConfigInterface $config,
+        protected readonly FactoryInterface $factory
     ) {
     }
 
     public function __invoke()
     {
-        return new Markdown($this->config->get('mail.markdown.theme', 'default'), $this->config->get('mail.markdown.paths', []));
+        return new Markdown($this->factory, $this->config->get('mail.markdown', []));
     }
 }

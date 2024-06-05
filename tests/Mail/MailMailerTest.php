@@ -83,11 +83,6 @@ class MailMailerTest extends TestCase
     public function testMailerSendSendsMessageWithProperViewContentUsingHtmlStrings()
     {
         $view = m::mock(Factory::class);
-        $viewInterface = m::mock(ViewInterface::class);
-        $view->expects('make')->twice()->andReturns($viewInterface);
-        $viewInterface->expects('render')->andReturns('<p>Hello Laravel</p>');
-        $viewInterface->expects('render')->andReturns('Hello World');
-
         $mailer = new Mailer('array', $view, new ArrayTransport());
 
         $sentMessage = $mailer->send(
@@ -105,10 +100,6 @@ class MailMailerTest extends TestCase
     public function testMailerSendSendsMessageWithProperViewContentUsingStringCallbacks()
     {
         $view = m::mock(Factory::class);
-        $viewInterface = m::mock(ViewInterface::class);
-        $view->expects('make')->twice()->andReturns($viewInterface);
-        $viewInterface->expects('render')->andReturns('<p>Hello Laravel</p>');
-        $viewInterface->expects('render')->andReturns('Hello World');
 
         $mailer = new Mailer('array', $view, new ArrayTransport());
 
@@ -138,10 +129,6 @@ class MailMailerTest extends TestCase
     public function testMailerSendSendsMessageWithProperViewContentUsingHtmlMethod()
     {
         $view = m::mock(Factory::class);
-        $viewInterface = m::mock(ViewInterface::class);
-        $view->expects('make')->andReturns($viewInterface);
-        $viewInterface->expects('render')->andReturns('<p>Hello World</p>');
-
         $mailer = new Mailer('array', $view, new ArrayTransport());
 
         $sentMessage = $mailer->html('<p>Hello World</p>', function (Message $message) {

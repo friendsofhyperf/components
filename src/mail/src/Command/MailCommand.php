@@ -21,19 +21,18 @@ use function Hyperf\Collection\collect;
 
 class MailCommand extends GeneratorCommand
 {
-    protected ?string $name = 'gen:mail';
-
     protected string $description = 'Generate a new mail class';
 
     public function __construct(
         private readonly Filesystem $files,
         private readonly ConfigInterface $config
     ) {
+        parent::__construct('gen:mail');
     }
 
     protected function getStub(): string
     {
-        return $this->getConfig()['stub'] ?? ($this->input->getOption('markdown') !== false ? __DIR__ . '/stubs/mail.stub' : __DIR__ . '/stubs/markdown.stub');
+        return $this->getConfig()['stub'] ?? ($this->input->getOption('markdown') !== false ? __DIR__ . '/stubs/mail.stub' : __DIR__ . '/stubs/markdown-mail.stub');
     }
 
     protected function getDefaultNamespace(): string
@@ -91,5 +90,23 @@ class MailCommand extends GeneratorCommand
         }
 
         return $view;
+    }
+
+    /**
+     * Build the class with the given name.
+     */
+    protected function buildClass(string $name): string
+    {
+        $class = str_replace(
+            '{{ subject }}',
+            Str::headline(str_replace($this->getNamespace($name) . '\\', '', $name)),
+            parent::buildClass($name)
+        );
+
+        if ($this->input->getOption('markdown') !== false) {
+            $class = str_replace(['DummyView', '{{ view }}'], $this->getView(), $class);
+        }
+
+        return $class;
     }
 }

@@ -33,7 +33,6 @@
         "league/commonmark": "^2.2",
         "symfony/mailer": "^6.4 | ^7.0",
         "tijsverkoyen/css-to-inline-styles": "^2.2.5",
-        "hyperf/view": "~3.1.0",
         "hyperf/view-engine": "~3.1.0"
     },
     "autoload": {
@@ -53,7 +52,7 @@
     },
     "extra": {
         "hyperf": {
-            "config": "FriendsOfHyperf\\Mailer\\ConfigProvider"
+            "config": "FriendsOfHyperf\\Mail\\ConfigProvider"
         },
         "branch-alias": {
             "dev-main": "3.1-dev"
