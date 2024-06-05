@@ -19,7 +19,7 @@ use Symfony\Component\Console\Input\InputOption;
 
 use function Hyperf\Collection\collect;
 
-class MailCommand extends GeneratorCommand
+class GenMailCommand extends GeneratorCommand
 {
     protected ?string $name = 'gen:mail';
 
