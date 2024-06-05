@@ -27,6 +27,7 @@ use Swoole\Server;
  * @internal
  * @coversNothing
  */
+#[\PHPUnit\Framework\Attributes\Group('tcp-sender')]
 class OnPipeMessageListenerTest extends TestCase
 {
     private OnPipeMessageListener $listener;

@@ -25,6 +25,7 @@ use function FriendsOfHyperf\Helpers\now;
  * @internal
  * @coversNothing
  */
+#[\PHPUnit\Framework\Attributes\Group('support')]
 class SleepTest extends TestCase
 {
     protected function tearDown(): void

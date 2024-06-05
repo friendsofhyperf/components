@@ -20,6 +20,7 @@ use function FriendsOfHyperf\Support\retry;
  * @internal
  * @coversNothing
  */
+#[\PHPUnit\Framework\Attributes\Group('support')]
 class FunctionsTest extends TestCase
 {
     public function testRetry()

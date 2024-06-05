@@ -26,6 +26,7 @@ use Symfony\Component\Notifier\Recipient\RecipientInterface;
  * @internal
  * @coversNothing
  */
+#[\PHPUnit\Framework\Attributes\Group('notification')]
 class NotificationSymfonyChannelTest extends TestCase
 {
     public function testPayloadToArray(): void
