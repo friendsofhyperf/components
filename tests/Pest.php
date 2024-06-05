@@ -24,6 +24,7 @@ uses()->group('fast-paginate')->in('FastPaginate');
 uses()->group('helpers')->in('Helpers');
 uses()->group('http-client')->in('HttpClient');
 uses()->group('macros')->in('Macros');
+uses()->group('mail')->in('Mail');
 uses()->group('notification')->in('Notification');
 uses()->group('redis-subscriber')->in('RedisSubscriber');
 uses()->group('sentry')->in('Sentry');

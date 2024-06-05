@@ -1,0 +1,64 @@
+{
+    "name": "friendsofhyperf/mail",
+    "description": "The Mailer for Hyperf.",
+    "keywords": [
+        "hyperf",
+        "v3.1",
+        "mailer"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        },
+        {
+            "name": "zds"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
+    "require": {
+        "php": "^8.1",
+        "friendsofhyperf/support": "~3.1.0",
+        "hyperf/collection": "~3.1.0",
+        "hyperf/di": "~3.1.0",
+        "hyperf/contract": "~3.1.0",
+        "hyperf/support": "~3.1.0",
+        "hyperf/macroable": "~3.1.0",
+        "league/commonmark": "^2.2",
+        "symfony/mailer": "^6.4 | ^7.0",
+        "tijsverkoyen/css-to-inline-styles": "^2.2.5",
+        "hyperf/view-engine": "~3.1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Mail\\": "src/"
+        },
+        "files": [
+            "src/Functions.php"
+        ]
+    },
+    "suggest": {
+        "aws/aws-sdk-php": "Required to use the SES mail driver (^3.235.5).",
+        "symfony/http-client": "Required to use the Symfony API mail transports (^6.2).",
+        "symfony/mailgun-mailer": "Required to enable support for the Mailgun mail transport (^6.2).",
+        "symfony/postmark-mailer": "Required to enable support for the Postmark mail transport (^6.2).",
+        "hyperf/devtool": "Required to use the GeneratorCommand (~3.1.0)."
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Mail\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
