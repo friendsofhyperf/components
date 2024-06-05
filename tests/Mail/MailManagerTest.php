@@ -36,13 +36,6 @@ class MailManagerTest extends TestCase
         parent::setUp();
 
         $this->message = new Message(new Email());
-        file_put_contents(__DIR__ . '/foo.jpg', 'bar');
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-        unlink(__DIR__ . '/foo.jpg');
     }
 
     public function testFromMethod()
@@ -179,7 +172,7 @@ class MailManagerTest extends TestCase
 
     public function testEmbedPath()
     {
-        $path = __DIR__ . '/foo.jpg';
+        file_put_contents($path = __DIR__ . '/foo.jpg', 'bar');
 
         $cid = $this->message->embed($path);
 
@@ -210,6 +203,8 @@ class MailManagerTest extends TestCase
 
     public function testItEmbedsFilesViaAttachableContractFromPath()
     {
+        file_put_contents($path = __DIR__ . '/foo.jpg', 'bar');
+
         $cid = $this->message->embed(new class() implements Attachable {
             public function toMailAttachment(): Attachment
             {
@@ -224,10 +219,14 @@ class MailManagerTest extends TestCase
         $this->assertSame('Content-Type: image/png; name=baz', $headers[0]);
         $this->assertSame('Content-Transfer-Encoding: base64', $headers[1]);
         $this->assertSame('Content-Disposition: inline; name=baz; filename=baz', $headers[2]);
+
+        unlink($path);
     }
 
     public function testItGeneratesARandomNameWhenAttachableHasNone()
     {
+        file_put_contents($path = __DIR__ . '/foo.jpg', 'bar');
+
         $cid = $this->message->embed(new class() implements Attachable {
             public function toMailAttachment(): Attachment
             {
@@ -244,5 +243,7 @@ class MailManagerTest extends TestCase
         $this->assertSame("Content-Type: image/jpeg; name={$name}", $headers[0]);
         $this->assertSame('Content-Transfer-Encoding: base64', $headers[1]);
         $this->assertSame("Content-Disposition: inline; name={$name};\r\n filename={$name}", $headers[2]);
+
+        unlink($path);
     }
 }
