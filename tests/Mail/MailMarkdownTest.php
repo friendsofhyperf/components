@@ -21,6 +21,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  * @coversNothing
  */
+#[\PHPUnit\Framework\Attributes\Group('mail')]
 class MailMarkdownTest extends TestCase
 {
     protected function tearDown(): void

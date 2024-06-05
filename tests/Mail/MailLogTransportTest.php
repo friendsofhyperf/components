@@ -33,6 +33,7 @@ use Symfony\Component\Mime\Email;
  * @internal
  * @coversNothing
  */
+#[\PHPUnit\Framework\Attributes\Group('mail')]
 class MailLogTransportTest extends TestCase
 {
     protected function setUp(): void

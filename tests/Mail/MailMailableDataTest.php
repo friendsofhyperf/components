@@ -18,6 +18,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  * @coversNothing
  */
+#[\PHPUnit\Framework\Attributes\Group('mail')]
 class MailMailableDataTest extends TestCase
 {
     public function testMailableDataIsNotLost()

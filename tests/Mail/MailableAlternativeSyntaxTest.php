@@ -15,6 +15,7 @@ use FriendsOfHyperf\Mail\Mailable;
 use FriendsOfHyperf\Mail\Mailable\Address;
 use FriendsOfHyperf\Mail\Mailable\Content;
 use FriendsOfHyperf\Mail\Mailable\Envelope;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use ReflectionClass;
 
@@ -22,6 +23,7 @@ use ReflectionClass;
  * @internal
  * @coversNothing
  */
+#[Group('mail')]
 class MailableAlternativeSyntaxTest extends TestCase
 {
     public function testBasicMailableInspection()

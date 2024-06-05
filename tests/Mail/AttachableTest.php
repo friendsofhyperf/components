@@ -14,12 +14,14 @@ namespace FriendsOfHyperf\Tests\Mail;
 use FriendsOfHyperf\Mail\Attachment;
 use FriendsOfHyperf\Mail\Contract\Attachable;
 use FriendsOfHyperf\Mail\Mailable;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  * @coversNothing
  */
+#[Group('mail')]
 class AttachableTest extends TestCase
 {
     public function testItCanHaveMacroConstructors(): void
