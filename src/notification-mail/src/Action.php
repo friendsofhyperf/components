@@ -9,19 +9,13 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mail\Factory;
+namespace FriendsOfHyperf\Notification\Mail;
 
-use FriendsOfHyperf\Mail\Contract\Factory;
-
-class MailerFactory
+class Action
 {
     public function __construct(
-        protected readonly Factory $manager
+        public string $text,
+        public string $url
     ) {
-    }
-
-    public function __invoke()
-    {
-        return $this->manager->mailer();
     }
 }

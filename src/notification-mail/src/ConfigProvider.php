@@ -9,19 +9,16 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mail\Factory;
+namespace FriendsOfHyperf\Notification\Mail;
 
-use FriendsOfHyperf\Mail\Contract\Factory;
-
-class MailerFactory
+class ConfigProvider
 {
-    public function __construct(
-        protected readonly Factory $manager
-    ) {
-    }
-
-    public function __invoke()
+    public function __invoke(): array
     {
-        return $this->manager->mailer();
+        return [
+            'listeners' => [
+                Listener\RegisterChannelListener::class,
+            ],
+        ];
     }
 }
