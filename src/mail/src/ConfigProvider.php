@@ -35,7 +35,7 @@ class ConfigProvider
                 ],
             ],
             'commands' => [
-                Command\GenMailCommand::class,
+                Command\MailCommand::class,
             ],
         ];
     }
