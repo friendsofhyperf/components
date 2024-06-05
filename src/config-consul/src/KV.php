@@ -21,7 +21,7 @@ class KV
 
     public ?string $value = null;
 
-    public  ?int  $flags = null;
+    public  int|string|null  $flags = null;
 
     public  ?int $createIndex = null;
 
