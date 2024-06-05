@@ -21,11 +21,11 @@ class KV
 
     public ?string $value = null;
 
-    public  int|string|null  $flags = null;
+    public int|string|null $flags = null;
 
-    public  ?int $createIndex = null;
+    public ?int $createIndex = null;
 
-    public  ?int $modifyIndex = null;
+    public ?int $modifyIndex = null;
 
     public function __construct($data)
     {
