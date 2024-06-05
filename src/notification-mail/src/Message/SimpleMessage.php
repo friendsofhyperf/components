@@ -24,17 +24,17 @@ class SimpleMessage
     /**
      * The subject of the notification.
      */
-    public string $subject;
+    public ?string $subject = null;
 
     /**
      * The notification's greeting.
      */
-    public string $greeting;
+    public ?string $greeting = null;
 
     /**
      * The notification's salutation.
      */
-    public string $salutation;
+    public ?string $salutation = null;
 
     /**
      * The "intro" lines of the notification.
@@ -59,7 +59,7 @@ class SimpleMessage
     /**
      * The name of the mailer that should send the notification.
      */
-    public string $mailer;
+    public ?string $mailer = null;
 
     /**
      * Indicate that the notification gives information about a successful operation.

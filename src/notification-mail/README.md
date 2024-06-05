@@ -7,7 +7,7 @@
 ## Installation
 
 ```shell
-composer require friendsofhyperf/notification-easysms:~3.1.0
+composer require friendsofhyperf/notification-mail:~3.1.0
 ```
 
 ## Usage
@@ -38,65 +38,77 @@ class User extends Model
      * The table associated with the model.
      */
     protected ?string $table = 'user';
+    
+    
 
     // 通知手机号
-    public function routeNotificationForSms(): string|PhoneNumber
+    public function routeNotificationForMail(): string|PhoneNumber
     {
-        return $this->phone;
+        return $this->mail;
     }
 }
 ```
 
-### SMS Notifications
-
-- Install the easy-sms package
+### Mail Notifications
 
 ```shell
-composer require overtrue/easy-sms:^3.0
+php bin/hyperf.php gen:markdown-mail Test
 ```
 
+output
+
 ```php
-namespace App\Notification;
 
-use FriendsOfHyperf\Notification\EasySms\Contract\EasySmsChannelToSmsArrayContract;
-use FriendsOfHyperf\Notification\EasySms\Contract\Smsable;
+namespace App\Mail;
+
+use FriendsOfHyperf\Notification\Mail\Message\MailMessage;
 use FriendsOfHyperf\Notification\Notification;
-use Overtrue\EasySms\Message;
 
-// 通知类
-class TestNotification extends Notification implements Smsable
+class Test extends Notification
 {
-    public function __construct(private string $code)
-    {
-    }
-    
-    public function via()
-    {
-        return [
-            'easy-sms'
-        ];
-    }
-    
     /**
-     * 返回的内容将组装到短信模型中 new Message($notification->toSms()). 
-     * 文档 https://github.com/overtrue/easy-sms?tab=readme-ov-file#%E5%AE%9A%E4%B9%89%E7%9F%AD%E4%BF%A1 
+     * Create a new notification instance.
      */
-    public function toSms(mixed $notifiable): array|Message
+    public function __construct()
     {
-        return [
-            'code' => $this->code,
-            'template' => 'SMS_123456789',
-            'data' => [
-                'code' => $this->code,
-            ]
-        ];
+        //
     }
 
-    // or return customer Message
-    // public function toSms(mixed $notifiable): array|Message
-    // {
-    //     return new Message();
-    // }
+    /**
+     * Get the notification's delivery channels.
+     *
+     * @return array<int, string>
+     */
+    public function via(object $notifiable): array
+    {
+        return ['mail'];
+    }
+
+    /**
+     * Get the mail representation of the notification.
+     */
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)->from('xxx@xxx.cn','Hyperf')->replyTo('xxx@qq.com','zds')->markdown('email');
+    }
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(object $notifiable): array
+    {
+        return [
+            //
+        ];
+    }
 
 }
+```
+
+
+```php
+// storage/view/email.blade.php
+xxx
 ```

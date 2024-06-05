@@ -36,8 +36,10 @@ class MarkdownMailCommand extends Command
         }
         $content = file_get_contents($stub);
         $content = str_replace(['{{ namespace }}', '{{ class }}', '{{ view }}'], [$namespace, $name, $view], $content);
-        if (! mkdir($concurrentDirectory = dirname($path), 0777, true) && ! is_dir($concurrentDirectory)) {
-            throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+        if (! is_dir(dirname($path))) {
+            if (! mkdir($concurrentDirectory = dirname($path), 0777, true) && ! is_dir($concurrentDirectory)) {
+                throw new RuntimeException(sprintf('Directory "%s" was not created', $concurrentDirectory));
+            }
         }
         file_put_contents($path, $content);
         $this->output->success('Mail created successfully!');
@@ -50,6 +52,6 @@ class MarkdownMailCommand extends Command
         $this->addOption('force', 'f', null, 'Overwrite the mail if it exists');
         $this->addOption('namespace', 'ns', InputArgument::OPTIONAL, 'The namespace of the mail class', 'App\\Mail');
         $this->addOption('realpath', 'rp', InputArgument::OPTIONAL, 'The realpath of the mail class', '/app/Mail');
-        $this->addOption('view', 'v', InputArgument::OPTIONAL, 'The view of the mail class', 'emails');
+        $this->addOption('view', 'view', InputArgument::OPTIONAL, 'The view of the mail class', 'emails');
     }
 }

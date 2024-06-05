@@ -18,6 +18,10 @@ class ConfigProvider
         return [
             'listeners' => [
                 Listener\RegisterChannelListener::class,
+                Listener\RegisterViewNamespaceListener::class,
+            ],
+            'commands' => [
+                Command\MarkdownMailCommand::class,
             ],
         ];
     }

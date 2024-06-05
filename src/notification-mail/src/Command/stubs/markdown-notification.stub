@@ -7,8 +7,6 @@ use FriendsOfHyperf\Notification\Notification;
 
 class {{ class }} extends Notification
 {
-    use Queueable;
-
     /**
      * Create a new notification instance.
      */

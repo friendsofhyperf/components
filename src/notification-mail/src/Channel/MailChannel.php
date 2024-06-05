@@ -54,7 +54,6 @@ class MailChannel implements Channel
         if ($message instanceof Mailable) {
             return $message->send($this->mailer);
         }
-
         return $this->mailer->mailer($message->mailer ?? null)->send(
             $this->buildView($message),
             array_merge(method_exists($message, 'data') ? $message->data() : [], $this->additionalMessageData($notification)),
