@@ -11,18 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Mail;
 
-use FriendsOfHyperf\Mail\Command\MailCommand;
-use FriendsOfHyperf\Mail\Factory\MailerFactory;
-use FriendsOfHyperf\Mail\Factory\MarkdownFactory;
-
 class ConfigProvider
 {
     public function __invoke(): array
     {
         return [
             'dependencies' => [
-                Contract\Mailer::class => MailerFactory::class,
-                Markdown::class => MarkdownFactory::class,
+                Contract\Mailer::class => Factory\MailerFactory::class,
+                Markdown::class => Factory\MarkdownFactory::class,
             ],
             'publish' => [
                 [
@@ -39,7 +35,7 @@ class ConfigProvider
                 ],
             ],
             'commands' => [
-                MailCommand::class,
+                Command\MailCommand::class,
             ],
         ];
     }
