@@ -42,7 +42,7 @@ class MailMarkdownTest extends TestCase
 
         $result = $markdown->render('view', []);
 
-        $this->assertStringContainsString('<html></html>', $result);
+        $this->assertStringContainsString('<html></html>', $result->toHtml());
     }
 
     public function testRenderFunctionReturnsHtmlWithCustomTheme()
@@ -59,7 +59,7 @@ class MailMarkdownTest extends TestCase
         $viewFactory->shouldReceive('exists')->with('mail.yaz')->andReturn(true);
         $result = $markdown->render('view', []);
 
-        $this->assertStringContainsString('<html></html>', $result);
+        $this->assertStringContainsString('<html></html>', $result->toHtml());
     }
 
     public function testRenderFunctionReturnsHtmlWithCustomThemeWithMailPrefix()
@@ -76,7 +76,7 @@ class MailMarkdownTest extends TestCase
 
         $result = $markdown->render('view', []);
 
-        $this->assertStringContainsString('<html></html>', $result);
+        $this->assertStringContainsString('<html></html>', $result->toHtml());
     }
 
     public function testRenderTextReturnsText()
