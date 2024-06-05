@@ -19,7 +19,7 @@ class ConfigProvider
             'dependencies' => [
                 Contract\Mailer::class => Factory\MailerFactory::class,
                 Markdown::class => Factory\MarkdownFactory::class,
-                Contract\Factory::class => MailManager::class
+                Contract\Factory::class => MailManager::class,
             ],
             'publish' => [
                 [
