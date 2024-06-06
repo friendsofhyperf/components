@@ -112,7 +112,7 @@ class MailManagerTest extends TestCase
         $this->assertSame('expected attachment body', $attachment->getBody());
         $this->assertSame('Content-Type: image/png; name=foo_basic.jpg', $headers[0]);
         $this->assertSame('Content-Transfer-Encoding: base64', $headers[1]);
-        $this->assertSame('Content-Disposition: attachment; name=bar.jpg; filename=bar.jpg', $headers[2]);
+        $this->assertSame('Content-Disposition: attachment; name=foo_basic.jpg; filename=foo_basic.jpg', $headers[2]);
 
         unlink($path);
     }
