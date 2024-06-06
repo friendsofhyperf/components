@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Mail;
 
 use Closure;
+use FriendsOfHyperf\Notification\Mail\Message\MailMessage;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Filesystem\FilesystemFactory;
 use Hyperf\Macroable\Macroable;
@@ -114,7 +115,7 @@ class Attachment
     /**
      * Attach the attachment to a built-in mail type.
      */
-    public function attachTo(Mailable|Message $mail, array $options = []): mixed
+    public function attachTo(Mailable|Message|MailMessage $mail, array $options = []): mixed
     {
         return $this->attachWith(
             fn ($path) => $mail->attach($path, [

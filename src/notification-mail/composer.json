@@ -1,0 +1,48 @@
+{
+    "name": "friendsofhyperf/notification-mail",
+    "description": "The Mail Channel for friendsofhyperf/notification.",
+    "keywords": [
+        "hyperf",
+        "notification",
+        "v3.1",
+        "mail"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        },
+        {
+            "name": "zds"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
+    "require": {
+        "friendsofhyperf/notification": "~3.1.0",
+        "friendsofhyperf/mail": "~3.1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Notification\\Mail\\": "src"
+        }
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Notification\\Mail\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        }
+    },
+    "minimum-stability": "dev",
+    "config": {
+        "sort-packages": true,
+        "optimize-autoloader": true
+    }
+}

@@ -86,6 +86,7 @@ class Markdown
             'mail',
             $this->textComponentPaths()
         )->make($view, $data)->render();
+
         $contents = is_array($contents) ? $contents[0] ?? '' : $contents;
         return new HtmlString(
             html_entity_decode(preg_replace("/[\r\n]{2,}/", "\n\n", $contents), ENT_QUOTES, 'UTF-8')

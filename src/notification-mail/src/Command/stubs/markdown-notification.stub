@@ -1,0 +1,47 @@
+<?php
+
+namespace {{ namespace }};
+
+use FriendsOfHyperf\Notification\Mail\Message\MailMessage;
+use FriendsOfHyperf\Notification\Notification;
+
+class {{ class }} extends Notification
+{
+    /**
+     * Create a new notification instance.
+     */
+    public function __construct()
+    {
+        //
+    }
+
+    /**
+     * Get the notification's delivery channels.
+     *
+     * @return array<int, string>
+     */
+    public function via(object $notifiable): array
+    {
+        return ['mail'];
+    }
+
+    /**
+     * Get the mail representation of the notification.
+     */
+    public function toMail(object $notifiable): MailMessage
+    {
+        return (new MailMessage)->markdown('{{ view }}');
+    }
+
+    /**
+     * Get the array representation of the notification.
+     *
+     * @return array<string, mixed>
+     */
+    public function toArray(object $notifiable): array
+    {
+        return [
+            //
+        ];
+    }
+}
