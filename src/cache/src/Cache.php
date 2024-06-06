@@ -41,9 +41,9 @@ class Cache implements CacheInterface
     use Macroable;
 
     public function __construct(
-        protected string $name,
         protected DriverInterface $driver,
-        protected ?EventDispatcherInterface $eventDispatcher = null
+        protected ?EventDispatcherInterface $eventDispatcher = null,
+        protected string $name = 'default'
     ) {
     }
 
