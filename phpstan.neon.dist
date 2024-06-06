@@ -1,7 +1,3 @@
-# Magic behaviour with __get, __set, __call and __callStatic is not exactly static analyser-friendly :)
-# Fortunately, You can ingore it by the following config.
-#
-# vendor/bin/phpstan analyse app --memory-limit 200M -l 0
 includes:
   # - vendor/phpstan/phpstan-deprecation-rules/rules.neon
   - phpstan-baseline.neon
@@ -15,30 +11,11 @@ parameters:
     - 'src/*/output/*'
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
-    # - '#Unsafe usage of new static\(\)#'
     -
       message: '#Undefined variable: \$this#'
       paths:
-        - src/macros/src/collection.php
-        - src/macros/src/stringable.php
-        - src/macros/src/request.php
         - src/tinker/src/TinkerCaster.php
         - tests/*.php
-    -
-      message: '#Calling static::\w+\(\) outside of class scope#'
-      path: src/macros/src/collection.php
-    -
-      message: '#Using static outside of class scope#'
-      paths:
-        - src/macros/src/collection.php
-        - src/macros/src/stringable.php
-    - 
-      message: '#Accessing static::\$\w+Cache outside of class scope.#'
-      path: src/macros/src/str.php
-    - '#Static call to instance method Hyperf\\HttpServer\\Router\\Router::[a-zA-Z0-9\\_]+\(\)#'
-    - '#Static call to instance method Hyperf\\DbConnection\\Db::[a-zA-Z0-9\\_]+\(\)#'
-    - '#Access to an undefined property App\\Util\\Http\\Client\\Response::\$transferStats\.#'
-    - '#Access to an undefined property App\\Util\\Http\\Client\\Response::\$cookies\.#'
     - '#Access to an undefined property FriendsOfHyperf\\Http\\Client\\Response::\$\w+\.#'
     - '#Function GuzzleHttp\\Psr7\\get_message_body_summary not found.#'
     - '#.*should either be compatible with ArrayAccess::offset\w+.*#'
