@@ -16,8 +16,8 @@ class KeyWritten extends CacheEvent
     /**
      * @param mixed $value
      */
-    public function __construct(string $key, public $value, public ?int $seconds = null)
+    public function __construct(string $storeName, string $key, public $value, public ?int $seconds = null)
     {
-        parent::__construct($key);
+        parent::__construct($storeName, $key);
     }
 }

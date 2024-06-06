@@ -29,6 +29,7 @@ class CacheManager
     public function store(string $name = 'default'): CacheInterface
     {
         return $this->drivers[$name] ?? $this->drivers[$name] = make(Cache::class, [
+            'name' => $name,
             'driver' => $this->cacheManager->getDriver($name),
         ]);
     }
