@@ -172,7 +172,7 @@ class MailManagerTest extends TestCase
 
     public function testEmbedPath()
     {
-        file_put_contents($path = __DIR__ . '/foo.jpg', 'bar');
+        file_put_contents($path = __DIR__ . '/embed_foo.jpg', 'bar');
 
         $cid = $this->message->embed($path);
 
