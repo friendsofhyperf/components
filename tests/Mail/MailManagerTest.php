@@ -103,14 +103,14 @@ class MailManagerTest extends TestCase
 
     public function testBasicAttachment()
     {
-        file_put_contents($path = __DIR__ . '/foo.jpg', 'expected attachment body');
+        file_put_contents($path = __DIR__ . '/foo_basic.jpg', 'expected attachment body');
 
-        $this->message->attach($path, ['as' => 'bar.jpg', 'mime' => 'image/png']);
+        $this->message->attach($path, ['as' => 'foo_basic.jpg', 'mime' => 'image/png']);
 
         $attachment = $this->message->getSymfonyMessage()->getAttachments()[0];
         $headers = $attachment->getPreparedHeaders()->toArray();
         $this->assertSame('expected attachment body', $attachment->getBody());
-        $this->assertSame('Content-Type: image/png; name=bar.jpg', $headers[0]);
+        $this->assertSame('Content-Type: image/png; name=foo_basic.jpg', $headers[0]);
         $this->assertSame('Content-Transfer-Encoding: base64', $headers[1]);
         $this->assertSame('Content-Disposition: attachment; name=bar.jpg; filename=bar.jpg', $headers[2]);
 
@@ -131,12 +131,12 @@ class MailManagerTest extends TestCase
 
     public function testItAttachesFilesViaAttachableContractFromPath()
     {
-        file_put_contents($path = __DIR__ . '/foo.jpg', 'expected attachment body');
+        file_put_contents($path = __DIR__ . '/foo_3.jpg', 'expected attachment body');
 
         $this->message->attach(new class() implements Attachable {
             public function toMailAttachment(): Attachment
             {
-                return Attachment::fromPath(__DIR__ . '/foo.jpg')
+                return Attachment::fromPath(__DIR__ . '/foo_3.jpg')
                     ->as('bar.jpg')
                     ->withMime('image/png');
             }
@@ -203,12 +203,12 @@ class MailManagerTest extends TestCase
 
     public function testItEmbedsFilesViaAttachableContractFromPath()
     {
-        file_put_contents($path = __DIR__ . '/foo.jpg', 'bar');
+        file_put_contents($path = __DIR__ . '/foo_1.jpg', 'bar');
 
         $cid = $this->message->embed(new class() implements Attachable {
             public function toMailAttachment(): Attachment
             {
-                return Attachment::fromPath(__DIR__ . '/foo.jpg')->as('baz')->withMime('image/png');
+                return Attachment::fromPath(__DIR__ . '/foo_1.jpg')->as('baz')->withMime('image/png');
             }
         });
 
@@ -225,12 +225,12 @@ class MailManagerTest extends TestCase
 
     public function testItGeneratesARandomNameWhenAttachableHasNone()
     {
-        file_put_contents($path = __DIR__ . '/foo.jpg', 'bar');
+        file_put_contents($path = __DIR__ . '/foo_2.jpg', 'bar');
 
         $cid = $this->message->embed(new class() implements Attachable {
             public function toMailAttachment(): Attachment
             {
-                return Attachment::fromPath(__DIR__ . '/foo.jpg');
+                return Attachment::fromPath(__DIR__ . '/foo_2.jpg');
             }
         });
 
