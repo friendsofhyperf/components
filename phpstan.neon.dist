@@ -21,4 +21,11 @@ parameters:
     - '#.*should either be compatible with ArrayAccess::offset\w+.*#'
     - '#Unsafe usage of new static\(\)\.#'
     - '#Constant BASE_PATH not found.#'
-    
+    - 
+      message: '#Variable \$\w+ might not be defined#'
+      paths:
+        - src/pretty-console/src/resources/views/components/*.php
+    - 
+      message: '#Parameter \#2 \$mutators of method FriendsOfHyperf\\PrettyConsole\\View\\Components\\Component::mutate\(\) expects#'
+      paths:
+        - src/pretty-console/src/View/Components/*.php

@@ -18,12 +18,16 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ChoiceQuestion;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
 use function Hyperf\Stringable\str;
 use function Hyperf\Support\with;
 
 class QuestionHelper extends SymfonyQuestionHelper
 {
+    /**
+     * @param SymfonyStyle $output
+     */
     protected function writePrompt(OutputInterface $output, Question $question)
     {
         $text = OutputFormatter::escapeTrailingBackslash($question->getQuestion());
