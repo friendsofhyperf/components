@@ -17,8 +17,14 @@ use DateInterval;
 use DateTimeInterface;
 use FriendsOfHyperf\Cache\Event\CacheHit;
 use FriendsOfHyperf\Cache\Event\CacheMissed;
+use FriendsOfHyperf\Cache\Event\ForgettingKey;
 use FriendsOfHyperf\Cache\Event\KeyForgotten;
+use FriendsOfHyperf\Cache\Event\KeyWriteFailed;
 use FriendsOfHyperf\Cache\Event\KeyWritten;
+use FriendsOfHyperf\Cache\Event\RetrievingKey;
+use FriendsOfHyperf\Cache\Event\RetrievingManyKeys;
+use FriendsOfHyperf\Cache\Event\WritingKey;
+use FriendsOfHyperf\Cache\Event\WritingManyKeys;
 use Hyperf\Cache\Driver\DriverInterface;
 use Hyperf\Macroable\Macroable;
 use Hyperf\Support\Traits\InteractsWithTime;
@@ -34,8 +40,11 @@ class Cache implements CacheInterface
     use InteractsWithTime;
     use Macroable;
 
-    public function __construct(protected DriverInterface $driver, protected ?EventDispatcherInterface $eventDispatcher = null)
-    {
+    public function __construct(
+        protected DriverInterface $driver,
+        protected ?EventDispatcherInterface $eventDispatcher = null,
+        protected string $name = 'default'
+    ) {
     }
 
     public function add($key, $value, $ttl = null): bool
@@ -54,10 +63,14 @@ class Cache implements CacheInterface
 
     public function forever($key, $value): bool
     {
+        $this->event(new WritingKey($this->getName(), $key, $value));
+
         $result = $this->driver->set($key, $value);
 
         if ($result) {
-            $this->event(new KeyWritten($key, $value));
+            $this->event(new KeyWritten($this->getName(), $key, $value));
+        } else {
+            $this->event(new KeyWriteFailed($this->getName(), $key, $value));
         }
 
         return $result;
@@ -65,7 +78,15 @@ class Cache implements CacheInterface
 
     public function forget($key): bool
     {
-        return tap($this->driver->delete($key), fn () => $this->event(new KeyForgotten($key)));
+        $this->event(new ForgettingKey($this->getName(), $key));
+
+        return tap($this->driver->delete($key), function ($result) use ($key) {
+            if ($result) {
+                $this->event(new KeyForgotten($this->getName(), $key));
+            } else {
+                $this->event(new ForgettingKey($this->getName(), $key));
+            }
+        });
     }
 
     public function has($key): bool
@@ -94,10 +115,14 @@ class Cache implements CacheInterface
             return $this->forget($key);
         }
 
+        $this->event(new WritingKey($this->getName(), $key, $value, $seconds));
+
         $result = $this->driver->set($key, $value, $seconds);
 
         if ($result) {
             $this->event(new KeyWritten($key, $value, $seconds));
+        } else {
+            $this->event(new KeyWriteFailed($this->getName(), $key, $value, $seconds));
         }
 
         return $result;
@@ -115,11 +140,15 @@ class Cache implements CacheInterface
             return $this->deleteMultiple(array_keys($values));
         }
 
+        $this->event(new WritingManyKeys($this->getName(), array_keys($values), array_values($values), $seconds));
+
         $result = $this->driver->setMultiple($values, $seconds);
 
-        if ($result) {
-            foreach ($values as $key => $value) {
+        foreach ($values as $key => $value) {
+            if ($result) {
                 $this->event(new KeyWritten($key, $value, $seconds));
+            } else {
+                $this->event(new KeyWriteFailed($this->getName(), $key, $value, $seconds));
             }
         }
 
@@ -145,18 +174,22 @@ class Cache implements CacheInterface
         $value = $this->driver->get($key);
 
         if (is_null($value)) {
-            $this->event(new CacheMissed($key));
+            $this->event(new CacheMissed($this->getName(), $key));
 
             $value = value($default);
         } else {
-            $this->event(new CacheHit($key, $value));
+            $this->event(new CacheHit($this->getName(), $key, $value));
         }
+
+        $this->event(new RetrievingKey($this->getName(), $key));
 
         return $value;
     }
 
     public function many(array $keys)
     {
+        $this->event(new RetrievingManyKeys($this->getName(), $keys));
+
         $values = $this->driver
             ->getMultiple(
                 collect($keys)
@@ -235,6 +268,11 @@ class Cache implements CacheInterface
         return $result;
     }
 
+    protected function getName(): string
+    {
+        return $this->name;
+    }
+
     /**
      * Handle a result for the "many" method.
      *
@@ -249,7 +287,7 @@ class Cache implements CacheInterface
         // the default value for this cache value. This default could be a callback
         // so we will execute the value function which will resolve it if needed.
         if (is_null($value)) {
-            $this->event(new CacheMissed($key));
+            $this->event(new CacheMissed($this->getName(), $key));
 
             return (isset($keys[$key]) && ! array_is_list($keys)) ? value($keys[$key]) : null;
         }
@@ -257,7 +295,7 @@ class Cache implements CacheInterface
         // If we found a valid value we will fire the "hit" event and return the value
         // back from this function. The "hit" event gives developers an opportunity
         // to listen for every possible cache "hit" throughout this applications.
-        $this->event(new CacheHit($key, $value));
+        $this->event(new CacheHit($this->getName(), $key, $value));
 
         return $value;
     }
@@ -268,7 +306,7 @@ class Cache implements CacheInterface
 
         if ($result) {
             foreach ($values as $key => $value) {
-                $this->event(new KeyWritten($key, $value));
+                $this->event(new KeyWritten($this->getName(), $key, $value));
             }
         }
 

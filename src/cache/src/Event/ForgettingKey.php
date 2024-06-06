@@ -11,10 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Cache\Event;
 
-class CacheHit extends CacheEvent
+class ForgettingKey extends CacheEvent
 {
-    public function __construct(string $storeName, string $key, public $value)
-    {
-        parent::__construct($storeName, $key);
-    }
 }

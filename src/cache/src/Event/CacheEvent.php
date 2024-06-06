@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Cache\Event;
 
 abstract class CacheEvent
 {
-    public function __construct(public string $key)
+    public function __construct(public string $storeName, public string $key)
     {
     }
 }
