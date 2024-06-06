@@ -344,8 +344,3 @@ parameters:
 			message: "#^Parameter \\#1 \\$reflectionMethod of method FriendsOfHyperf\\\\IdeHelper\\\\Method\\:\\:getInheritDoc\\(\\) expects ReflectionMethod, ReflectionFunctionAbstract given\\.$#"
 			count: 1
 			path: src/ide-helper/src/Method.php
-
-		-
-			message: "#^Call to an undefined method Hyperf\\\\Support\\\\Fluent\\:\\:references\\(\\)\\.$#"
-			count: 1
-			path: src/model-uid-addon/class_map/Hyperf/Database/Schema/ForeignIdColumnDefinition.php
