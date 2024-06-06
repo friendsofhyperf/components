@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Mail;
 
+use Psr\Container\ContainerInterface;
+
 class ConfigProvider
 {
     public function __invoke(): array
@@ -19,7 +21,7 @@ class ConfigProvider
             'dependencies' => [
                 Contract\Mailer::class => Factory\MailerFactory::class,
                 Markdown::class => Factory\MarkdownFactory::class,
-                Contract\Factory::class => MailManager::class,
+                Contract\Factory::class => fn (ContainerInterface $container) => $container->get(MailManager::class),
             ],
             'publish' => [
                 [
