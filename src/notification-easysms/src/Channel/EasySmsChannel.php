@@ -28,8 +28,8 @@ class EasySmsChannel implements ChannelContract
     public function send(mixed $notifiable, Notification $notification): mixed
     {
         return $this->easySms->send(
-            $notifiable->routeNotificationFor('sms', $notification),
-            $this->buildPayload($notifiable, $notification)
+            $notifiable->routeNotificationFor('sms',$notification),
+            $this->buildPayload($notifiable,$notification)
         );
     }
 
