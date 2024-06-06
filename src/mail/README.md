@@ -1,8 +1,8 @@
 # Macros
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/notification-mail)](https://packagist.org/packages/friendsofhyperf/notification-mail)
-[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/notification-mail)](https://packagist.org/packages/friendsofhyperf/notification-mail)
-[![License](https://img.shields.io/packagist/l/friendsofhyperf/notification-mail)](https://github.com/friendsofhyperf/notification-mail)
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/mail)](https://packagist.org/packages/friendsofhyperf/mail)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/mail)](https://packagist.org/packages/friendsofhyperf/mail)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/mail)](https://github.com/friendsofhyperf/mail)
 
 Email component of Hyperf
 
