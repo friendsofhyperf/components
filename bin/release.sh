@@ -70,7 +70,7 @@ git push origin --tags
 for REMOTE in $REMOTES
 do
     # Skip the beta components
-    if [[ $REMOTE == "notification" || $REMOTE == "notification-easysms" || $REMOTE == "mail" ]]
+    if [[ $REMOTE == "notification" || $REMOTE == "notification-easysms" || $REMOTE == "mail" || $REMOTE == "notification-mail"]]
     then
         continue
     fi
