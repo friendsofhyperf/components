@@ -1,8 +1,8 @@
 # Notification Mail Channel
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/friendsofhyperf/notification-easysms.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/notification-easysms)
-[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/notification-easysms.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/notification-easysms)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/notification-easysms)](https://github.com/friendsofhyperf/notification-easysms)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/friendsofhyperf/notification-mail.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/notification-mail)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/notification-mail.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/notification-mail)
+[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/notification-mail)](https://github.com/friendsofhyperf/notification-mail)
 
 ## Installation
 
