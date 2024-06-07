@@ -57,15 +57,15 @@ jobs:
           extensions: redis, pdo, pdo_mysql, bcmath, swoole-${{ matrix.swoole }}
           tools: phpize
           coverage: none
-      - name: Show Imformations
+      - name: Show PHP Information
         run: |
           php -v
           php --ri swoole
-      - name: Setup Packages
+      - name: Setup Dependencies
         run: composer update -o
       - name: Run Analyse
         run: composer analyse src
-      - name: Setup Redis
+      - name: Setup Redis Server
         run: |
           docker run --name redis -p 6379:6379 -d redis
           netstat -tunlp | grep 6379
