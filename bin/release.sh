@@ -72,31 +72,31 @@ do
     # Skip the beta components
     if [[ $REMOTE == "notification" || $REMOTE == "notification-easysms" || $REMOTE == "mail" || $REMOTE == "notification-mail"]]
     then
-        continue
+        echo "Skipping $REMOTE";
+    else
+        echo ""
+        echo ""
+        echo "Cloning $REMOTE";
+
+        TMP_DIR="/tmp/friendsofhyperf-split"
+        REMOTE_URL="git@github.com:friendsofhyperf/$REMOTE.git"
+
+        rm -rf $TMP_DIR;
+        mkdir $TMP_DIR;
+
+        (
+            cd $TMP_DIR;
+
+            git clone $REMOTE_URL .
+            git checkout "$RELEASE_BRANCH";
+
+            if [[ $(git log --pretty="%d" -n 1 | grep tag --count) -eq 0 ]]; then
+                echo "Releasing $REMOTE";
+                git tag $VERSION
+                git push origin --tags
+            fi
+        )
     fi
-
-    echo ""
-    echo ""
-    echo "Cloning $REMOTE";
-
-    TMP_DIR="/tmp/friendsofhyperf-split"
-    REMOTE_URL="git@github.com:friendsofhyperf/$REMOTE.git"
-
-    rm -rf $TMP_DIR;
-    mkdir $TMP_DIR;
-
-    (
-        cd $TMP_DIR;
-
-        git clone $REMOTE_URL .
-        git checkout "$RELEASE_BRANCH";
-
-        if [[ $(git log --pretty="%d" -n 1 | grep tag --count) -eq 0 ]]; then
-            echo "Releasing $REMOTE";
-            git tag $VERSION
-            git push origin --tags
-        fi
-    )
 done
 
 TIME=$(echo "$(date +%s) - $NOW" | bc)
