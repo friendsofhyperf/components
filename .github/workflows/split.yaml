@@ -33,7 +33,7 @@ jobs:
           git config --global user.name "Deeka Wong"
 
           if [ -z "${{ github.event.inputs.repo }}" ]; then
-            ./bin/split-linux.sh
+            ./bin/split.sh
           else
-            ./bin/split-linux.sh ${{ github.event.inputs.repo }}
+            ./bin/split.sh ${{ github.event.inputs.repo }}
           fi
