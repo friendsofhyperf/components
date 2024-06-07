@@ -1,5 +1,11 @@
 #!/usr/bin/env bash
 
+# Usage:
+# ./bin/split.sh [name]
+#
+# Example:
+# ./bin/split.sh support
+
 set -e
 set -x
 
@@ -9,7 +15,7 @@ REPOS=$@
 
 function split()
 {
-    SHA1=`./bin/splitsh-lite --prefix=$1`
+    SHA1=`git subtree split --prefix=$1`
     git push $2 "$SHA1:refs/heads/$CURRENT_BRANCH" -f
 }
 
@@ -24,8 +30,10 @@ if [[ $# -eq 0 ]]; then
     REPOS=$(ls $BASEPATH)
 fi
 
+split "src/.github" "git@github.com:friendsofhyperf/.github.git"
+
 for REPO in $REPOS ; do
-    remote $REPO git@github.com:hyperf/$REPO.git
+    remote $REPO git@github.com:friendsofhyperf/${REPO}.git
 
     split "src/$REPO" $REPO
 done
