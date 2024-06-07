@@ -120,7 +120,7 @@ class Cache implements CacheInterface
         $result = $this->driver->set($key, $value, $seconds);
 
         if ($result) {
-            $this->event(new KeyWritten($key, $value, $seconds));
+            $this->event(new KeyWritten($this->getName(), $key, $value, $seconds));
         } else {
             $this->event(new KeyWriteFailed($this->getName(), $key, $value, $seconds));
         }
@@ -146,7 +146,7 @@ class Cache implements CacheInterface
 
         foreach ($values as $key => $value) {
             if ($result) {
-                $this->event(new KeyWritten($key, $value, $seconds));
+                $this->event(new KeyWritten($this->getName(), $key, $value, $seconds));
             } else {
                 $this->event(new KeyWriteFailed($this->getName(), $key, $value, $seconds));
             }
