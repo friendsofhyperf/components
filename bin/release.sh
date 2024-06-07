@@ -86,10 +86,10 @@ do
 
     echo ""
     echo ""
-    echo "Cloning $REMOTE";
+    echo "Cloning [ ${REMOTE} ]";
 
     TMP_DIR="/tmp/friendsofhyperf-split"
-    REMOTE_URL="git@github.com:friendsofhyperf/$REMOTE.git"
+    REMOTE_URL="git@github.com:friendsofhyperf/${REMOTE}.git"
 
     rm -rf $TMP_DIR;
     mkdir $TMP_DIR;
@@ -98,10 +98,10 @@ do
         cd $TMP_DIR;
 
         git clone $REMOTE_URL .
-        git checkout "$RELEASE_BRANCH";
+        git checkout "${RELEASE_BRANCH}";
 
         if [[ $(git log --pretty="%d" -n 1 | grep tag --count) -eq 0 ]]; then
-            echo "Releasing $REMOTE";
+            echo "Releasing ${REMOTE}";
             git tag $VERSION
             git push origin --tags
         fi
