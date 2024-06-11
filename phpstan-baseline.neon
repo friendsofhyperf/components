@@ -196,21 +196,6 @@ parameters:
 			path: src/http-client/src/PendingRequest.php
 
 		-
-			message: "#^Call to function is_null\\(\\) with GuzzleHttp\\\\Client will always evaluate to false\\.$#"
-			count: 1
-			path: src/http-client/src/PendingRequest.php
-
-		-
-			message: "#^Else branch is unreachable because ternary operator condition is always true\\.$#"
-			count: 1
-			path: src/http-client/src/PendingRequest.php
-
-		-
-			message: "#^Left side of && is always true\\.$#"
-			count: 1
-			path: src/http-client/src/PendingRequest.php
-
-		-
 			message: "#^Method FriendsOfHyperf\\\\Http\\\\Client\\\\PendingRequest\\:\\:runBeforeSendingCallbacks\\(\\) has invalid return type GuzzleHttp\\\\Psr7\\\\RequestInterface\\.$#"
 			count: 1
 			path: src/http-client/src/PendingRequest.php
@@ -246,16 +231,6 @@ parameters:
 			path: src/http-client/src/PendingRequest.php
 
 		-
-			message: "#^Property FriendsOfHyperf\\\\Http\\\\Client\\\\PendingRequest\\:\\:\\$retryDelay \\(Closure\\|int\\) on left side of \\?\\? is not nullable\\.$#"
-			count: 1
-			path: src/http-client/src/PendingRequest.php
-
-		-
-			message: "#^Property FriendsOfHyperf\\\\Http\\\\Client\\\\PendingRequest\\:\\:\\$tries \\(int\\) on left side of \\?\\? is not nullable\\.$#"
-			count: 1
-			path: src/http-client/src/PendingRequest.php
-
-		-
 			message: "#^Result of && is always false\\.$#"
 			count: 3
 			path: src/http-client/src/PendingRequest.php
@@ -279,11 +254,6 @@ parameters:
 			message: "#^Unreachable statement \\- code above always terminates\\.$#"
 			count: 1
 			path: src/http-client/src/PendingRequest.php
-
-		-
-			message: "#^Call to an undefined method FriendsOfHyperf\\\\Http\\\\Client\\\\Factory\\:\\:setHandler\\(\\)\\.$#"
-			count: 1
-			path: src/http-client/src/Pool.php
 
 		-
 			message: "#^Method FriendsOfHyperf\\\\Http\\\\Client\\\\Response\\:\\:toException\\(\\) should return FriendsOfHyperf\\\\Http\\\\Client\\\\RequestException\\|null but return statement is missing\\.$#"

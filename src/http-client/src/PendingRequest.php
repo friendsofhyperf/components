@@ -130,7 +130,7 @@ class PendingRequest
     /**
      * A callback to run when throwing if a server or client error occurs.
      *
-     * @var Closure
+     * @var Closure|null
      */
     protected $throwCallback;
 
@@ -156,7 +156,7 @@ class PendingRequest
     /**
      * The number of milliseconds to wait between retries.
      *
-     * @var Closure|int
+     * @var Closure|int|null
      */
     protected $retryDelay = 100;
 
@@ -1381,7 +1381,7 @@ class PendingRequest
         if (is_string($laravelData)) {
             parse_str($laravelData, $parsedData);
 
-            $laravelData = is_array($parsedData) ? $parsedData : [];
+            $laravelData = is_array($parsedData) && ! empty($parsedData) ? $parsedData : [];
         }
 
         if ($laravelData instanceof JsonSerializable) {

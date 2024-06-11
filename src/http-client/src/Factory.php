@@ -69,7 +69,7 @@ use function Hyperf\Tappable\tap;
  * @method Response put(string $url, array $data = [])
  * @method Response send(string $method, string $url, array $options = [])
  *
- * @see PendingRequest
+ * @mixin PendingRequest
  */
 class Factory
 {
