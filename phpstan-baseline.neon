@@ -226,11 +226,6 @@ parameters:
 			path: src/http-client/src/PendingRequest.php
 
 		-
-			message: "#^PHPDoc tag @param for parameter \\$response with type Illuminate\\\\Http\\\\Client\\\\Response is not subtype of native type FriendsOfHyperf\\\\Http\\\\Client\\\\ConnectionException\\|FriendsOfHyperf\\\\Http\\\\Client\\\\Response\\|GuzzleHttp\\\\Exception\\\\TransferException\\.$#"
-			count: 1
-			path: src/http-client/src/PendingRequest.php
-
-		-
 			message: "#^Parameter \\$request of method FriendsOfHyperf\\\\Http\\\\Client\\\\PendingRequest\\:\\:runBeforeSendingCallbacks\\(\\) has invalid type GuzzleHttp\\\\Psr7\\\\RequestInterface\\.$#"
 			count: 1
 			path: src/http-client/src/PendingRequest.php
