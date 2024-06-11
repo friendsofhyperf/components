@@ -45,6 +45,7 @@ use Psr\Http\Message\ResponseInterface as PsrResponseInterface;
 use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface;
 use RuntimeException;
+use stdClass;
 use Stringable;
 use Throwable;
 
@@ -288,6 +289,20 @@ function info($message, array $context = [], bool $backtrace = false)
     }
 
     logs()->info($message, $context);
+}
+
+/**
+ * Return a new literal or anonymous object using named arguments.
+ *
+ * @return stdClass
+ */
+function literal(...$arguments)
+{
+    if (count($arguments) === 1 && array_is_list($arguments)) {
+        return $arguments[0];
+    }
+
+    return (object) $arguments;
 }
 
 /**
