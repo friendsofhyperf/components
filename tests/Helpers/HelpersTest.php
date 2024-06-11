@@ -15,6 +15,7 @@ use function FriendsOfHyperf\Helpers\blank;
 use function FriendsOfHyperf\Helpers\class_namespace;
 use function FriendsOfHyperf\Helpers\Command\call;
 use function FriendsOfHyperf\Helpers\filled;
+use function FriendsOfHyperf\Helpers\literal;
 use function FriendsOfHyperf\Helpers\object_get;
 use function FriendsOfHyperf\Helpers\preg_replace_array;
 
@@ -96,3 +97,9 @@ test('test blank', function ($expect, $value) {
     [false, 0.0],
     [false, new Stringable(' FooBar ')],
 ]);
+
+test('test literal', function () {
+    $this->assertEquals(1, literal(1));
+    $this->assertEquals('taylor', literal('taylor'));
+    $this->assertEquals((object) ['name' => 'Taylor', 'role' => 'Developer'], literal(name: 'Taylor', role: 'Developer'));
+});
