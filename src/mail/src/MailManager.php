@@ -116,7 +116,7 @@ class MailManager implements Factory
      */
     public function getDefaultDriver(): string
     {
-        return $this->config->get('mail.default');
+        return (string) $this->config->get('mail.default');
     }
 
     /**

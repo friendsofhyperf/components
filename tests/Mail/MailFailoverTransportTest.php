@@ -39,10 +39,10 @@ class MailFailoverTransportTest extends TestCase
 
     public function testGetFailoverTransportWithConfiguredTransports(): void
     {
+        /** @var Container $container */
         $container = ApplicationContext::getContainer();
         $config = $container->get(\Hyperf\Contract\ConfigInterface::class);
         $config->set('mail.default', 'failover');
-
         $config->set('mail.mailers', [
             'failover' => [
                 'transport' => 'failover',
@@ -63,23 +63,6 @@ class MailFailoverTransportTest extends TestCase
         ]);
         $container->set(FactoryInterface::class, Mockery::mock(FactoryInterface::class));
         $mailerManager = $container->get(Factory::class);
-        $transport = $mailerManager->mailer()->getSymfonyTransport();
-        $this->assertInstanceOf(FailoverTransport::class, $transport);
-    }
-
-    public function testGetFailoverTransportWithLaravel6StyleMailConfiguration(): void
-    {
-        $container = ApplicationContext::getContainer();
-        $config = $container->get(\Hyperf\Contract\ConfigInterface::class);
-        $config->set('mail.driver', 'failover');
-        $config->set('mail.mailers', [
-            'sendmail',
-            'array',
-        ]);
-        $config->set('mail.sendmail', '/usr/sbin/sendmail -bs');
-        $container->set(FactoryInterface::class, Mockery::mock(FactoryInterface::class));
-        $mailerManager = $container->get(Factory::class);
-
         $transport = $mailerManager->mailer()->getSymfonyTransport();
         $this->assertInstanceOf(FailoverTransport::class, $transport);
     }

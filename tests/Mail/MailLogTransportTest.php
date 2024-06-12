@@ -20,6 +20,7 @@ use FriendsOfHyperf\Tests\Mail\Stubs\ContainerStub;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ContainerInterface;
+use Hyperf\Di\Container;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\ViewEngine\Contract\FactoryInterface;
 use Mockery;
@@ -51,15 +52,17 @@ class MailLogTransportTest extends TestCase
 
     public function testGetLogTransportWithConfiguredChannel()
     {
+        /** @var Container $container */
         $container = ApplicationContext::getContainer();
         $container->set(FactoryInterface::class, Mockery::mock(FactoryInterface::class));
         $config = ApplicationContext::getContainer()->get(ConfigInterface::class);
         $loggerFactory = $container->get(LoggerFactory::class);
         $log = Mockery::mock(LoggerInterface::class);
         $loggerFactory->allows('make')->once()->with('test', 'mail')->andReturn($log);
-        $config->set('mail.driver', 'log');
-        $config->set('mail.log.group', 'mail');
-        $config->set('mail.log.name', 'test');
+        $config->set('mail.default', 'log');
+        $config->set('mail.mailers.log.group', 'mail');
+        $config->set('mail.mailers.log.name', 'test');
+        $config->set('mail.mailers.log.transport', 'log');
         $mailerManager = $container->get(Factory::class);
         $container->set(Mailer::class, $mailerManager->mailer());
 
@@ -122,15 +125,17 @@ class MailLogTransportTest extends TestCase
 
     public function testGetLogTransportWithPsrLogger()
     {
+        /** @var Container $container */
         $container = ApplicationContext::getContainer();
 
         $container->set(FactoryInterface::class, Mockery::mock(FactoryInterface::class));
         $config = $container->get(ConfigInterface::class);
         $loggerFactory = $container->get(LoggerFactory::class);
         $loggerFactory->allows('make')->once()->with('test1', 'mail1')->andReturnUsing(fn () => $container->get('log'));
-        $config->set('mail.driver', 'log');
-        $config->set('mail.log.group', 'mail1');
-        $config->set('mail.log.name', 'test1');
+        $config->set('mail.default', 'log');
+        $config->set('mail.mailers.log.group', 'mail1');
+        $config->set('mail.mailers.log.name', 'test1');
+        $config->set('mail.mailers.log.transport', 'log');
         $container->set('log', $logger = new NullLogger());
         $mailerManager = $container->get(Factory::class);
         $transportLogger = $mailerManager->mailer()->getSymfonyTransport()->logger();
