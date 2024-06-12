@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Notification\Mail\Channel;
 use Closure;
 use FriendsOfHyperf\Mail\Contract\Factory;
 use FriendsOfHyperf\Mail\Contract\Mailable;
+use FriendsOfHyperf\Mail\MailManager;
 use FriendsOfHyperf\Mail\Markdown;
 use FriendsOfHyperf\Mail\Message;
 use FriendsOfHyperf\Notification\Contract\Channel;
@@ -33,7 +34,7 @@ use function Hyperf\Support\class_basename;
 class MailChannel implements Channel
 {
     public function __construct(
-        private readonly Factory $mailer,
+        private readonly MailManager $mailer,
         private readonly Markdown $markdown
     ) {
     }
