@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Notification\Mail\Channel;
 
 use Closure;
-use FriendsOfHyperf\Mail\Contract\Factory;
 use FriendsOfHyperf\Mail\Contract\Mailable;
 use FriendsOfHyperf\Mail\MailManager;
 use FriendsOfHyperf\Mail\Markdown;
