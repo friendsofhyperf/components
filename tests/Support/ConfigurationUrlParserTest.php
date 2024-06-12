@@ -20,7 +20,7 @@ use PHPUnit\Framework\TestCase;
  * @internal
  * @coversNothing
  */
-#[Group('mail')]
+#[Group('support')]
 class ConfigurationUrlParserTest extends TestCase
 {
     #[DataProvider('databaseUrls')]
