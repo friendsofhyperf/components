@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Mail;
+namespace FriendsOfHyperf\Support;
 
 use Hyperf\Collection\Arr;
 use InvalidArgumentException;

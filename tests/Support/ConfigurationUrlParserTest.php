@@ -9,9 +9,9 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Tests\Mail;
+namespace FriendsOfHyperf\Tests\Support;
 
-use FriendsOfHyperf\Mail\ConfigurationUrlParser;
+use FriendsOfHyperf\Support\ConfigurationUrlParser;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
