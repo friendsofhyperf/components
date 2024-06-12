@@ -11,35 +11,42 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Mail\Facade;
 
+use FriendsOfHyperf\Mail\Contract\Mailable;
+use FriendsOfHyperf\Mail\Contract\Mailer as MailerContract;
+use FriendsOfHyperf\Mail\Mailer;
 use FriendsOfHyperf\Mail\MailManager;
+use FriendsOfHyperf\Mail\PendingMail;
+use FriendsOfHyperf\Mail\SentMessage;
 use Hyperf\Context\ApplicationContext;
+use Hyperf\ViewEngine\Contract\FactoryInterface;
 use RuntimeException;
+use Symfony\Component\Mailer\Transport\TransportInterface;
 
 /**
- * @method static \FriendsOfHyperf\Contract\Mail\Mailer mailer(string|null $name = null)
- * @method static \FriendsOfHyperf\Mail\Mailer driver(string|null $driver = null)
- * @method static \Symfony\Component\Mailer\Transport\TransportInterface createSymfonyTransport(array $config)
+ * @method static MailerContract mailer(string|null $name = null)
+ * @method static Mailer driver(string|null $driver = null)
+ * @method static TransportInterface createSymfonyTransport(array $config)
  * @method static string getDefaultDriver()
  * @method static void setDefaultDriver(string $name)
  * @method static void purge(string|null $name = null)
- * @method static \FriendsOfHyperf\Mail\MailManager extend(string $driver, \Closure $callback)
- * @method static \FriendsOfHyperf\Mail\MailManager forgetMailers()
+ * @method static MailManager extend(string $driver, \Closure $callback)
+ * @method static MailManager forgetMailers()
  * @method static void alwaysFrom(string $address, string|null $name = null)
  * @method static void alwaysReplyTo(string $address, string|null $name = null)
  * @method static void alwaysReturnPath(string $address)
  * @method static void alwaysTo(string $address, string|null $name = null)
- * @method static \FriendsOfHyperf\Mail\PendingMail to(mixed $users, string|null $name = null)
- * @method static \FriendsOfHyperf\Mail\PendingMail cc(mixed $users, string|null $name = null)
- * @method static \FriendsOfHyperf\Mail\PendingMail bcc(mixed $users, string|null $name = null)
- * @method static \FriendsOfHyperf\Mail\SentMessage|null html(string $html, mixed $callback)
- * @method static \FriendsOfHyperf\Mail\SentMessage|null raw(string $text, mixed $callback)
- * @method static \FriendsOfHyperf\Mail\SentMessage|null plain(string $view, array $data, mixed $callback)
+ * @method static PendingMail to(mixed $users, string|null $name = null)
+ * @method static PendingMail cc(mixed $users, string|null $name = null)
+ * @method static PendingMail bcc(mixed $users, string|null $name = null)
+ * @method static SentMessage|null html(string $html, mixed $callback)
+ * @method static SentMessage|null raw(string $text, mixed $callback)
+ * @method static SentMessage|null plain(string $view, array $data, mixed $callback)
  * @method static string render(string|array $view, array $data = [])
- * @method static \FriendsOfHyperf\Mail\SentMessage|null send(\FriendsOfHyperf\Contract\Mail\Mailable|string|array $view, array $data = [], \Closure|string|null $callback = null)
- * @method static \FriendsOfHyperf\Mail\SentMessage|null sendNow(\FriendsOfHyperf\Contract\Mail\Mailable|string|array $mailable, array $data = [], \Closure|string|null $callback = null)
- * @method static \Symfony\Component\Mailer\Transport\TransportInterface getSymfonyTransport()
- * @method static \FriendsOfHyperf\Contract\View\Factory getViewFactory()
- * @method static void setSymfonyTransport(\Symfony\Component\Mailer\Transport\TransportInterface $transport)
+ * @method static SentMessage|null send(Mailable|string|array $view, array $data = [], \Closure|string|null $callback = null)
+ * @method static SentMessage|null sendNow(Mailable|string|array $mailable, array $data = [], \Closure|string|null $callback = null)
+ * @method static TransportInterface getSymfonyTransport()
+ * @method static FactoryInterface getViewFactory()
+ * @method static void setSymfonyTransport(TransportInterface $transport)
  * @method static void macro(string $name, object|callable $macro, object|callable $macro = null)
  * @method static void mixin(object $mixin, bool $replace = true)
  * @method static bool hasMacro(string $name)
@@ -51,10 +58,8 @@ use RuntimeException;
  * @method static void assertNothingSent()
  * @method static void assertSentCount(int $count)
  * @method static void assertOutgoingCount(int $count)
- * @method static \FriendsOfHyperf\Support\Collection sent(string|\Closure $mailable, callable|null $callback = null)
- * @method static bool hasSent(string $mailable)
  *
- * @see \FriendsOfHyperf\Mail\MailManager
+ * @see MailManager
  */
 class Mail
 {
