@@ -19,6 +19,7 @@ use FriendsOfHyperf\Mail\Transport\ArrayTransport;
 use FriendsOfHyperf\Mail\Transport\LogTransport;
 use FriendsOfHyperf\Mail\Transport\SesTransport;
 use FriendsOfHyperf\Mail\Transport\SesV2Transport;
+use FriendsOfHyperf\Support\ConfigurationUrlParser;
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Logger\LoggerFactory;
