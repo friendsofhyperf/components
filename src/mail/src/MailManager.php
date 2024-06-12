@@ -19,6 +19,7 @@ use FriendsOfHyperf\Mail\Transport\ArrayTransport;
 use FriendsOfHyperf\Mail\Transport\LogTransport;
 use FriendsOfHyperf\Mail\Transport\SesTransport;
 use FriendsOfHyperf\Mail\Transport\SesV2Transport;
+use FriendsOfHyperf\Support\ConfigurationUrlParser;
 use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Logger\LoggerFactory;
@@ -95,17 +96,16 @@ class MailManager implements Factory
      */
     public function createSymfonyTransport(array $config): TransportInterface
     {
-        // Here we will check if the "transport" key exists and if it doesn't we will
-        // assume an application is still using the legacy mail configuration file
-        // format and use the "mail.driver" configuration option instead for BC.
-        $transport = $config['transport'] ?? $this->config->get('mail.driver');
+        $transport = $config['transport'] ?? '';
 
         if (isset($this->customCreators[$transport])) {
             return call_user_func($this->customCreators[$transport], $config);
         }
 
-        if (trim($transport ?? '') === ''
-            || ! method_exists($this, $method = 'create' . ucfirst(Str::camel($transport)) . 'Transport')) {
+        if (
+            trim($transport) === ''
+            || ! method_exists($this, $method = 'create' . ucfirst(Str::camel($transport)) . 'Transport')
+        ) {
             throw new InvalidArgumentException("Unsupported mail transport [{$transport}].");
         }
 
@@ -117,11 +117,7 @@ class MailManager implements Factory
      */
     public function getDefaultDriver(): string
     {
-        // Here we will check if the "driver" key exists and if it does we will use
-        // that as the default driver in order to provide support for old styles
-        // of the Laravel mail configuration file for backwards compatibility.
-        return $this->config->get('mail.driver') ??
-            $this->config->get('mail.default');
+        return (string) $this->config->get('mail.default');
     }
 
     /**
@@ -129,9 +125,6 @@ class MailManager implements Factory
      */
     public function setDefaultDriver(string $name): void
     {
-        if ($this->config->has('mail.driver')) {
-            $this->config->set('mail.driver', $name);
-        }
         $this->config->set('mail.default', $name);
     }
 
@@ -375,12 +368,7 @@ class MailManager implements Factory
                 throw new InvalidArgumentException("Mailer [{$name}] is not defined.");
             }
 
-            // Now, we will check if the "driver" key exists and if it does we will set
-            // the transport configuration parameter in order to offer compatibility
-            // with any Laravel <= 6.x application style mail configuration files.
-            $transports[] = $this->config->has('mail.driver')
-                ? $this->createSymfonyTransport(array_merge($config, ['transport' => $name]))
-                : $this->createSymfonyTransport($config);
+            $transports[] = $this->createSymfonyTransport($config);
         }
 
         return new FailoverTransport($transports);
@@ -400,12 +388,7 @@ class MailManager implements Factory
                 throw new InvalidArgumentException("Mailer [{$name}] is not defined.");
             }
 
-            // Now, we will check if the "driver" key exists and if it does we will set
-            // the transport configuration parameter in order to offer compatibility
-            // with any Laravel <= 6.x application style mail configuration files.
-            $transports[] = $this->config->has('mail.driver')
-                ? $this->createSymfonyTransport(array_merge($config, ['transport' => $name]))
-                : $this->createSymfonyTransport($config);
+            $transports[] = $this->createSymfonyTransport($config);
         }
 
         return new RoundRobinTransport($transports);
@@ -445,6 +428,7 @@ class MailManager implements Factory
 
             return HttpClient::create($options, $maxHostConnections, $maxPendingPushes);
         }
+
         return null;
     }
 
@@ -465,13 +449,10 @@ class MailManager implements Factory
      */
     protected function getConfig(string $name): ?array
     {
-        // Here we will check if the "driver" key exists and if it does we will use
-        // the entire mail configuration file as the "driver" config in order to
-        // provide "BC" for any Laravel <= 6.x style mail configuration files.
-        $config = $this->config->has('mail.driver') ? $this->config->get('mail') : $this->config->get("mail.mailers.{$name}");
+        $config = $this->config->get("mail.mailers.{$name}");
+
         if (isset($config['url'])) {
             $config = array_merge($config, (new ConfigurationUrlParser())->parseConfiguration($config));
-
             $config['transport'] = Arr::pull($config, 'driver');
         }
 
