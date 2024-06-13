@@ -37,21 +37,6 @@ class TinkerCommand extends HyperfCommand
         'migrate',
     ];
 
-    /**
-     * Default casters.
-     * @var string[]
-     */
-    protected array $defaultCasters = [
-        'Hyperf\Collection\Collection' => 'FriendsOfHyperf\Tinker\TinkerCaster::castCollection',
-        'Hyperf\DbConnection\Model\Model' => 'FriendsOfHyperf\Tinker\TinkerCaster::castModel',
-        'Hyperf\Redis\Redis' => 'FriendsOfHyperf\Tinker\TinkerCaster::castRedis',
-        'Hyperf\Support\Fluent' => 'FriendsOfHyperf\Tinker\TinkerCaster::castFluent',
-        'Hyperf\Support\MessageBag' => 'FriendsOfHyperf\Tinker\TinkerCaster::castMessageBag',
-        'Hyperf\ViewEngine\HtmlString' => 'FriendsOfHyperf\Tinker\TinkerCaster::castHtmlString',
-        'Stringable' => 'FriendsOfHyperf\Tinker\TinkerCaster::castStringable',
-        'Symfony\Component\Console\Application' => 'FriendsOfHyperf\Tinker\TinkerCaster::castApplication',
-    ];
-
     public function __construct(protected ContainerInterface $container, protected ConfigInterface $config)
     {
         parent::__construct('tinker');
@@ -145,6 +130,17 @@ class TinkerCommand extends HyperfCommand
      */
     protected function getCasters(): array
     {
-        return array_merge($this->defaultCasters, (array) $this->config->get('tinker.casters', []));
+        $casters = [
+            'Hyperf\Collection\Collection' => 'FriendsOfHyperf\Tinker\TinkerCaster::castCollection',
+            'Hyperf\DbConnection\Model\Model' => 'FriendsOfHyperf\Tinker\TinkerCaster::castModel',
+            'Hyperf\Redis\Redis' => 'FriendsOfHyperf\Tinker\TinkerCaster::castRedis',
+            'Hyperf\Support\Fluent' => 'FriendsOfHyperf\Tinker\TinkerCaster::castFluent',
+            'Hyperf\Support\MessageBag' => 'FriendsOfHyperf\Tinker\TinkerCaster::castMessageBag',
+            'Hyperf\ViewEngine\HtmlString' => 'FriendsOfHyperf\Tinker\TinkerCaster::castHtmlString',
+            'Stringable' => 'FriendsOfHyperf\Tinker\TinkerCaster::castStringable',
+            'Symfony\Component\Console\Application' => 'FriendsOfHyperf\Tinker\TinkerCaster::castApplication',
+        ];
+
+        return array_merge($casters, (array) $this->config->get('tinker.casters', []));
     }
 }
