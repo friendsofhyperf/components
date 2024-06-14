@@ -14,6 +14,9 @@ namespace FriendsOfHyperf\Compoships;
 use FriendsOfHyperf\Compoships\Database\Eloquent\Concerns\HasRelationships;
 use FriendsOfHyperf\Compoships\Database\Query\Builder as QueryBuilder;
 
+/**
+ * @method \Hyperf\Database\Connection getConnection()
+ */
 trait Compoships
 {
     use HasRelationships;
@@ -53,6 +56,10 @@ trait Compoships
     {
         $connection = $this->getConnection();
 
-        return new QueryBuilder($connection, $connection->getQueryGrammar(), $connection->getPostProcessor());
+        return new QueryBuilder(
+            $connection,
+            $connection->getQueryGrammar(),
+            $connection->getPostProcessor()
+        );
     }
 }

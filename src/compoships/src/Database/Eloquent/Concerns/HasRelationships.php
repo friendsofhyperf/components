@@ -23,6 +23,9 @@ use Hyperf\Stringable\Str;
 
 use function Hyperf\Support\class_uses_recursive;
 
+/**
+ * @method \Hyperf\Database\Connection getConnection()
+ */
 trait HasRelationships
 {
     /**
