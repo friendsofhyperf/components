@@ -25,16 +25,18 @@ use function Hyperf\Support\class_uses_recursive;
 
 /**
  * @method \Hyperf\Database\Connection getConnection()
+ * @mixin Model
  */
 trait HasRelationships
 {
     /**
      * Get the table qualified key name.
      *
-     * @return mixed
+     * @return string|string[]
      */
     public function getQualifiedKeyName()
     {
+        /** @var string|string[] $keyName */
         $keyName = $this->getKeyName();
 
         if (is_array($keyName)) { // Check for multi-columns relationship
@@ -100,9 +102,7 @@ trait HasRelationships
         }
 
         $instance = $this->newRelatedInstance($related);
-
         $foreignKey = $foreignKey ?: $this->getForeignKey();
-
         $foreignKeys = null;
 
         if (is_array($foreignKey)) { // Check for multi-columns relationship
@@ -115,7 +115,12 @@ trait HasRelationships
 
         $localKey = $localKey ?: $this->getKeyName();
 
-        return $this->newHasMany($instance->newQuery(), $this, $foreignKeys ?: $foreignKey, $localKey);
+        return $this->newHasMany(
+            $instance->newQuery(),
+            $this,
+            $foreignKeys ?: $foreignKey,
+            $localKey
+        );
     }
 
     /**
@@ -201,7 +206,7 @@ trait HasRelationships
     /**
      * Honor DB::raw instances.
      *
-     * @param string $instance
+     * @param string|Model $instance
      * @param string $foreignKey
      *
      * @return Expression|string

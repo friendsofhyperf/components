@@ -32,6 +32,10 @@ trait Compoships
         return parent::getAttribute($key);
     }
 
+    /**
+     * @param string|array $column
+     * @return string|string[]
+     */
     public function qualifyColumn($column)
     {
         if (is_array($column)) { // Check for multi-column relationship
