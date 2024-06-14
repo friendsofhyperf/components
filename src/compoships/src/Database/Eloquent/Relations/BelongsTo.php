@@ -20,6 +20,9 @@ use Hyperf\Database\Model\Relations\Constraint;
 /**
  * @template TRelatedModel of Model
  * @extends BaseBelongsTo<TRelatedModel>
+ * @property string|string[] $foreignKey
+ * @property string|string[] $ownerKey
+ * @property string $relation
  */
 class BelongsTo extends BaseBelongsTo
 {
@@ -52,14 +55,16 @@ class BelongsTo extends BaseBelongsTo
             return parent::associate($model);
         }
 
-        $ownerKey = $model instanceof Model ? $model->getAttribute($this->ownerKey) : $model;
+        $ownerKey = $model instanceof Model ? $model->getAttribute($this->ownerKey) : $model; // @phpstan-ignore-line
+
         for ($i = 0; $i < count($this->foreignKey); ++$i) {
             $foreignKey = $this->foreignKey[$i];
             $value = $ownerKey[$i];
             $this->child->setAttribute($foreignKey, $value);
         }
         // BC break in 5.8 : https://github.com/illuminate/database/commit/87b9833019f48b88d98a6afc46f38ce37f08237d
-        $relationName = property_exists($this, 'relationName') ? $this->relationName : $this->relation;
+        $relationName = property_exists($this, 'relationName') ? $this->relationName : $this->relation; // @phpstan-ignore-line
+
         if ($model instanceof Model) {
             $this->child->setRelation($relationName, $model);
         // proper unset // https://github.com/illuminate/database/commit/44411c7288fc7b7d4e5680cfcdaa46d348b5c981
