@@ -100,7 +100,7 @@ class MacroCommand extends HyperfCommand
 
                         $params = join(', ', array_map([$this, 'prepareParameter'], $macro->getParameters()));
                         $doc = $macro->getDocComment();
-                        $returnType = $doc && preg_match('/@return ([a-zA-Z\\[\\]\\|\\\\]+)/', $doc, $matches) ? $matches[1] : '';
+                        $returnType = $doc && preg_match('/@return ([a-zA-Z\[\]\|\\\]+)/', $doc, $matches) ? $matches[1] : '';
                         $phpDoc->appendTag(DocBlock\Tag::createInstance("@method {$returnType} {$name}({$params})"));
 
                         $see = $macro->getClosureScopeClass()->getName();

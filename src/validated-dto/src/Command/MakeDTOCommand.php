@@ -82,7 +82,7 @@ class MakeDTOCommand extends SymfonyCommand
      */
     protected function qualifyClass($name)
     {
-        $name = ltrim($name, '\\/');
+        $name = ltrim($name, '\/');
         $name = str_replace('/', '\\', $name);
         $namespace = $this->input->getOption('namespace');
 
@@ -238,6 +238,6 @@ class MakeDTOCommand extends SymfonyCommand
 
     protected function getDefaultNamespace(): string
     {
-        return $this->getDevtoolConfig()['namespace'] ?? $this->config->get('dto.namespace') ?? 'App\\DTO';
+        return $this->getDevtoolConfig()['namespace'] ?? $this->config->get('dto.namespace') ?? 'App\DTO';
     }
 }

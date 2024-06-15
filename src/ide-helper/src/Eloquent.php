@@ -15,9 +15,9 @@ class Eloquent
 {
     public static function make(): string
     {
-        $alias = new Alias('\\Hyperf\\DbConnection\\Model\\Model', '\\Hyperf\\DbConnection\\Model\\Model');
-        $alias->addClass('\\Hyperf\\Database\\Model\\Builder');
-        $alias->addClass('\\Hyperf\\Database\\Query\\Builder');
+        $alias = new Alias('\Hyperf\DbConnection\Model\Model', '\Hyperf\DbConnection\Model\Model');
+        $alias->addClass('\Hyperf\Database\Model\Builder');
+        $alias->addClass('\Hyperf\Database\Query\Builder');
 
         $block = "namespace { \r\n";
         $block .= "  class Eloquent extends \\Hyperf\\DbConnection\\Model\\Model { \r\n";

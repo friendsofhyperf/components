@@ -50,7 +50,7 @@ class MarkdownMailCommand extends Command
         $this->setDescription($this->description);
         $this->addArgument('name', InputArgument::REQUIRED, 'The name of the mail class');
         $this->addOption('force', 'f', null, 'Overwrite the mail if it exists');
-        $this->addOption('namespace', 'ns', InputArgument::OPTIONAL, 'The namespace of the mail class', 'App\\Mail');
+        $this->addOption('namespace', 'ns', InputArgument::OPTIONAL, 'The namespace of the mail class', 'App\Mail');
         $this->addOption('realpath', 'rp', InputArgument::OPTIONAL, 'The realpath of the mail class', '/app/Mail');
         $this->addOption('view', 'view', InputArgument::OPTIONAL, 'The view of the mail class', 'emails');
     }
