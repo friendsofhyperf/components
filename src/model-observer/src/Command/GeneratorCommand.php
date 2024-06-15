@@ -82,7 +82,7 @@ class GeneratorCommand extends SymfonyCommand
      */
     protected function qualifyClass($name)
     {
-        $name = ltrim($name, '\\/');
+        $name = ltrim($name, '\/');
         $name = str_replace('/', '\\', $name);
         $namespace = $this->input->getOption('namespace');
 
@@ -263,6 +263,6 @@ class GeneratorCommand extends SymfonyCommand
 
     protected function getDefaultNamespace(): string
     {
-        return $this->getConfig()['namespace'] ?? 'App\\Observer';
+        return $this->getConfig()['namespace'] ?? 'App\Observer';
     }
 }

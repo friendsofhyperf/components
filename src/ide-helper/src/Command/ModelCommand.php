@@ -615,7 +615,7 @@ class ModelCommand extends HyperfCommand
         }
 
         if ($this->write && ! $phpdoc->getTagsByName('mixin')) {
-            $phpdoc->appendTag(Tag::createInstance('@mixin \\Eloquent', $phpdoc));
+            $phpdoc->appendTag(Tag::createInstance('@mixin \Eloquent', $phpdoc));
         }
 
         $serializer = new DocBlockSerializer();
@@ -733,7 +733,7 @@ class ModelCommand extends HyperfCommand
     protected function getSoftDeleteMethods($model)
     {
         $traits = class_uses(get_class($model), true);
-        if (in_array('Hyperf\\Database\\Model\\SoftDeletes', $traits)) {
+        if (in_array('Hyperf\Database\Model\SoftDeletes', $traits)) {
             $this->setMethod('forceDelete', 'bool|null', []);
             $this->setMethod('restore', 'bool|null', []);
 
