@@ -40,7 +40,7 @@ class %CLASS% extends Mailable
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, \Friendsofhyperf\Mail\Mailables\Attachment>
+     * @return array<int, \Friendsofhyperf\Mail\Mailable\Attachment>
      */
     public function attachments(): array
     {
