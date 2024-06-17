@@ -1,11 +1,23 @@
 {
     "name": "friendsofhyperf/trigger",
     "description": "The MySQL Trigger component for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "v3.1"
     ],
-    "type": "library",
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
     "require": {
         "php": ">=8.1.0",
         "friendsofhyperf/command-signals": "~3.1.0",
@@ -24,41 +36,29 @@
         "hyperf/tappable": "~3.1.0",
         "moln/php-mysql-replication": "^1.2"
     },
+    "suggest": {
+        "hyperf/redis": "Required to use Redis client.",
+        "hyperf/signal": "Required to use Signal manager."
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\Trigger\\": "src"
         }
     },
-    "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\Trigger\\ConfigProvider"
-        },
-        "branch-alias": {
-            "dev-main": "3.1-dev"
-        }
-    },
-    "suggest": {
-        "hyperf/redis": "Required to use Redis client.",
-        "hyperf/signal": "Required to use Signal manager."
-    },
     "config": {
-        "sort-packages": true,
         "allow-plugins": {
             "composer/package-versions-deprecated": true
-        }
+        },
+        "sort-packages": true
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "license": "MIT",
-    "authors": [
-        {
-            "name": "huangdijia",
-            "email": "huangdijia@gmail.com"
+    "extra": {
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Trigger\\ConfigProvider"
         }
-    ],
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components",
-        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     }
 }

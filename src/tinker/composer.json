@@ -1,8 +1,8 @@
 {
     "name": "friendsofhyperf/tinker",
     "description": "The Powerful REPL for Hyperf.",
-    "type": "library",
     "license": "MIT",
+    "type": "library",
     "keywords": [
         "php",
         "hyperf",
@@ -23,15 +23,15 @@
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
-        "hyperf/command": "~3.1.0",
         "hyperf/collection": "~3.1.0",
+        "hyperf/command": "~3.1.0",
         "hyperf/contract": "~3.1.0",
         "hyperf/di": "~3.1.0",
         "hyperf/framework": "~3.1.0",
         "hyperf/stringable": "~3.1.0",
         "hyperf/support": "~3.1.0",
         "hyperf/tappable": "~3.1.0",
-        "psy/psysh": "^0.10.0|^0.11.0|^0.12.0"
+        "psy/psysh": "^0.10.0 || ^0.11.0 || ^0.12.0"
     },
     "suggest": {
         "hyperf/view-engine": "Suggest for using `Hyperf\\ViewEngine\\HtmlString`."
@@ -45,11 +45,11 @@
         "sort-packages": true
     },
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\Tinker\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Tinker\\ConfigProvider"
         }
     }
 }

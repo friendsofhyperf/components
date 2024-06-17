@@ -1,18 +1,24 @@
 {
     "name": "friendsofhyperf/sentry",
     "description": "The sentry component for Hyperf.",
-    "type": "library",
     "license": "MIT",
+    "type": "library",
     "keywords": [
         "php",
         "hyperf",
         "sentry",
         "v3.1"
     ],
-    "autoload": {
-        "psr-4": {
-            "FriendsOfHyperf\\Sentry\\": "src/"
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
         }
+    ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
         "hyperf/command": "~3.1.0",
@@ -34,27 +40,21 @@
         "hyperf/database": "Required to use the crontab event (~3.1.0).",
         "phpmyadmin/sql-parser": "Required to use the sql parser (^5.9)."
     },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Sentry\\": "src/"
+        }
+    },
     "config": {
         "sort-packages": true
     },
-    "minimum-stability": "dev",
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\Sentry\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Sentry\\ConfigProvider"
         }
-    },
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components",
-        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
-    },
-    "authors": [
-        {
-            "name": "huangdijia",
-            "email": "huangdijia@gmail.com"
-        }
-    ]
+    }
 }

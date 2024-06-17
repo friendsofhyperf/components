@@ -1,6 +1,7 @@
 {
     "name": "friendsofhyperf/pest-plugin-hyperf",
     "description": "The Pest Hyperf Plugin.",
+    "license": "MIT",
     "keywords": [
         "dev",
         "php",
@@ -13,7 +14,17 @@
         "hyperf",
         "v3.1"
     ],
-    "license": "MIT",
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
     "require": {
         "php": "^8.1",
         "ext-swoole": "*",
@@ -28,6 +39,9 @@
             "Pest\\Hyperf\\": "src/"
         }
     },
+    "config": {
+        "sort-packages": true
+    },
     "extra": {
         "branch-alias": {
             "dev-main": "3.1-dev"
@@ -37,19 +51,5 @@
                 "Pest\\Hyperf\\Plugin"
             ]
         }
-    },
-    "config": {
-        "sort-packages": true
-    },
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components",
-        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
-    },
-    "authors": [
-        {
-            "name": "huangdijia",
-            "email": "huangdijia@gmail.com"
-        }
-    ]
+    }
 }

@@ -1,12 +1,12 @@
 {
     "name": "friendsofhyperf/model-morph-addon",
     "description": "The model morph addon for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "huangdijia",
@@ -22,22 +22,22 @@
         "hyperf/database": "~3.1.0",
         "hyperf/di": "~3.1.0"
     },
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\ModelMorphAddon\\": "src"
         }
     },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\ModelMorphAddon\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\ModelMorphAddon\\ConfigProvider"
         }
-    },
-    "minimum-stability": "dev",
-    "config": {
-        "sort-packages": true,
-        "optimize-autoloader": true
     }
 }

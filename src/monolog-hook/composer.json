@@ -1,42 +1,42 @@
 {
     "name": "friendsofhyperf/monolog-hook",
     "description": "The monolog hook for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "Huangdijia",
             "email": "huangdijia@gmail.com"
         }
     ],
-    "autoload": {
-        "psr-4": {
-            "FriendsOfHyperf\\MonologHook\\": "src/"
-        }
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
         "hyperf/coroutine": "~3.1.0",
         "hyperf/logger": "~3.1.0"
     },
-    "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\MonologHook\\ConfigProvider"
-        },
-        "branch-alias": {
-            "dev-main": "3.1-dev"
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\MonologHook\\": "src/"
         }
     },
     "config": {
         "sort-packages": true
     },
-    "minimum-stability": "dev",
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components",
-        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    "extra": {
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\MonologHook\\ConfigProvider"
+        }
     }
 }

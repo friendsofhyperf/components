@@ -1,24 +1,31 @@
 {
     "name": "friendsofhyperf/grpc-validation",
     "description": "The GRPC validation component for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "huangdijia",
             "email": "huangdijia@gmail.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
     "require": {
         "hyperf/context": "~3.1.0",
         "hyperf/di": "~3.1.0",
         "hyperf/grpc-server": "~3.1.0",
         "hyperf/validation": "~3.1.0"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\GrpcValidation\\": "src/"
@@ -27,19 +34,12 @@
     "config": {
         "sort-packages": true
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\GrpcValidation\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\GrpcValidation\\ConfigProvider"
         }
-    },
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components",
-        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     }
 }

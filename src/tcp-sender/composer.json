@@ -1,12 +1,12 @@
 {
     "name": "friendsofhyperf/tcp-sender",
     "description": "Another tcp server component for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "huangdijia",
@@ -24,10 +24,15 @@
     "require": {
         "hyperf/event": "~3.1.0"
     },
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\TcpSender\\": "src"
         }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
     },
     "extra": {
         "branch-alias": {
@@ -36,10 +41,5 @@
         "hyperf": {
             "config": "FriendsOfHyperf\\TcpSender\\ConfigProvider"
         }
-    },
-    "minimum-stability": "dev",
-    "config": {
-        "sort-packages": true,
-        "optimize-autoloader": true
     }
 }

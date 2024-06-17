@@ -1,18 +1,23 @@
 {
     "name": "friendsofhyperf/config-consul",
     "description": "The consul config component for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "huangdijia",
             "email": "huangdijia@gmail.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
     "require": {
         "hyperf/codec": "~3.1.0",
         "hyperf/config-center": "~3.1.0",
@@ -28,16 +33,11 @@
         "sort-packages": true
     },
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\ConfigConsul\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\ConfigConsul\\ConfigProvider"
         }
-    },
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components",
-        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     }
 }

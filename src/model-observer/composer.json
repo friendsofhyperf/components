@@ -1,12 +1,12 @@
 {
     "name": "friendsofhyperf/model-observer",
     "description": "The model observer component for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "huangdijia",
@@ -35,11 +35,11 @@
         }
     },
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\ModelObserver\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\ModelObserver\\ConfigProvider"
         }
     }
 }

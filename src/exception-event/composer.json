@@ -1,19 +1,19 @@
 {
     "name": "friendsofhyperf/exception-event",
     "description": "The exception component for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "v3.1"
     ],
-    "homepage": "https://github.com/friendsofhyperf/exception-event",
     "authors": [
         {
             "name": "huangdijia",
             "email": "huangdijia@gmail.com"
         }
     ],
-    "type": "library",
-    "license": "MIT",
+    "homepage": "https://github.com/friendsofhyperf/exception-event",
     "support": {
         "issues": "https://github.com/friendsofhyperf/components/issues",
         "source": "https://github.com/friendsofhyperf/components",
@@ -25,22 +25,22 @@
         "hyperf/tappable": "~3.1.0"
     },
     "autoload": {
-        "files": [
-            "src/Functions.php"
-        ],
         "psr-4": {
             "FriendsOfHyperf\\ExceptionEvent\\": "src"
-        }
-    },
-    "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\ExceptionEvent\\ConfigProvider"
         },
-        "branch-alias": {
-            "dev-main": "3.1-dev"
-        }
+        "files": [
+            "src/Functions.php"
+        ]
     },
     "config": {
         "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\ExceptionEvent\\ConfigProvider"
+        }
     }
 }

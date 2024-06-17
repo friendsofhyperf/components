@@ -1,12 +1,12 @@
 {
     "name": "friendsofhyperf/model-scope",
     "description": "The model scope annotation for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "huangdijia",
@@ -32,11 +32,11 @@
         }
     },
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\ModelScope\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\ModelScope\\ConfigProvider"
         }
     }
 }

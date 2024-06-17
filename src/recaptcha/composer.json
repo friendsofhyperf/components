@@ -1,14 +1,14 @@
 {
     "name": "friendsofhyperf/recaptcha",
     "description": "The Google recaptcha component for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "google",
         "recaptcha",
         "hyperf",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "huangdijia",
@@ -34,11 +34,11 @@
         }
     },
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\ReCaptcha\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\ReCaptcha\\ConfigProvider"
         }
     }
 }
