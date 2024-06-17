@@ -25,18 +25,18 @@ use FriendsOfHyperf\ReCaptcha\Middleware\ReCaptchaMiddleware;
 
 class V3CaptchaMiddleware extends ReCaptchaMiddleware
 {
-    protected $version = 'v3';
-    protected $action = 'register'; 
-    protected $score = 0.35; 
-    protected $hostname; 
+    protected string $version = 'v3';
+    protected string $action = 'register'; 
+    protected float $score = 0.35; 
+    protected string $hostname; 
 }
 
 class V2CaptchaMiddleware extends ReCaptchaMiddleware
 {
-    protected $version = 'v2';
-    protected $action = 'register'; 
-    protected $score = 0.35; 
-    protected $hostname; 
+    protected string $version = 'v2';
+    protected string $action = 'register'; 
+    protected float $score = 0.35; 
+    protected string $hostname; 
 }
 ```
 
@@ -53,11 +53,8 @@ use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 
 class IndexController
 {
-    /**
-     * @Inject()
-     * @var ValidatorFactoryInterface
-     */
-    protected $validationFactory;
+    #[Inject]
+    protected ValidatorFactoryInterface $validationFactory;
 
     public function foo(RequestInterface $request)
     {

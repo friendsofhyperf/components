@@ -27,11 +27,11 @@ abstract class ReCaptchaMiddleware implements MiddlewareInterface
 {
     protected string $version = 'v3';
 
-    protected string $action;
+    protected string $action = '';
 
     protected float $score = 0.34;
 
-    protected string $hostname;
+    protected string $hostname = '';
 
     protected string $inputName = 'g-recaptcha-response';
 
