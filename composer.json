@@ -289,7 +289,11 @@
         "analyse": "@php vendor/bin/phpstan analyse --memory-limit=-1",
         "cs-fix": "@php vendor/bin/php-cs-fixer fix $1",
         "gen:readme": "./bin/regenerate-readme.sh > src/.github/profile/README.md",
-        "json-fix": "@php ./bin/composer-json-fixer",
+        "json-fix": [
+            "@php ./bin/composer-json-fixer",
+            "@composer normalize --no-update-lock",
+            "find ./src -name composer.json -exec composer normalize --no-update-lock {} \\;"
+        ],
         "repo:pending": [
             "./bin/pending-repositories.sh",
             "@php ./bin/pending-composer-json",
