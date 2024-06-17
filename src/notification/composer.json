@@ -1,13 +1,13 @@
 {
     "name": "friendsofhyperf/notification",
     "description": "The Notification for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "notification",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "huangdijia",
@@ -23,10 +23,10 @@
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
+        "hyperf/collection": "~3.1.0",
         "hyperf/di": "~3.1.0",
         "hyperf/event": "~3.1.0",
         "hyperf/stringable": "~3.1.0",
-        "hyperf/collection": "~3.1.0",
         "hyperf/translation": "~3.1.0"
     },
     "suggest": {
@@ -34,22 +34,22 @@
         "overtrue/easy-sms": "Required if you want to use sms channel.(^3.0)",
         "symfony/notifier": "Required if you want to use symfony notifier channel.(^6.4 | ^7.0)"
     },
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\Notification\\": "src"
         }
     },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\Notification\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Notification\\ConfigProvider"
         }
-    },
-    "minimum-stability": "dev",
-    "config": {
-        "sort-packages": true,
-        "optimize-autoloader": true
     }
 }

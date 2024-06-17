@@ -1,12 +1,12 @@
 {
     "name": "friendsofhyperf/helpers",
     "description": "The commonly used functions for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "huangdijia",
@@ -27,7 +27,7 @@
         "hyperf/support": "~3.1.13",
         "hyperf/tappable": "~3.1.0",
         "laravel/serializable-closure": "^1.0",
-        "nesbot/carbon": "^2.0|^3.0"
+        "nesbot/carbon": "^2.0 || ^3.0"
     },
     "suggest": {
         "hyperf/amqp": "Required to use (~3.1.0)",
@@ -40,25 +40,25 @@
         "hyperf/session": "Required to use (~3.1.0)",
         "hyperf/validation": "Required to use (~3.1.0)"
     },
+    "minimum-stability": "dev",
     "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Helpers\\": "src/"
+        },
         "files": [
             "src/Command/Functions.php",
             "src/Functions.php"
-        ],
-        "psr-4": {
-            "FriendsOfHyperf\\Helpers\\": "src/"
-        }
+        ]
     },
-    "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\Helpers\\ConfigProvider"
-        },
-        "branch-alias": {
-            "dev-main": "3.1-dev"
-        }
-    },
-    "minimum-stability": "dev",
     "config": {
         "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Helpers\\ConfigProvider"
+        }
     }
 }

@@ -1,12 +1,12 @@
 {
     "name": "friendsofhyperf/lock",
     "description": "The lock component for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "huangdijia",
@@ -23,7 +23,12 @@
         "hyperf/context": "~3.1.0",
         "hyperf/stringable": "~3.1.0",
         "hyperf/support": "~3.1.0",
-        "nesbot/carbon": "^2.0|^3.0"
+        "nesbot/carbon": "^2.0 || ^3.0"
+    },
+    "suggest": {
+        "hyperf/cache": "Require this component for driver 'file'.",
+        "hyperf/db-connection": "Require this component for driver 'database'.",
+        "hyperf/redis": "Require this component for driver 'redis'."
     },
     "autoload": {
         "psr-4": {
@@ -33,21 +38,16 @@
             "src/Functions.php"
         ]
     },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\Lock\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Lock\\ConfigProvider"
         }
-    },
-    "suggest": {
-        "hyperf/cache": "Require this component for driver 'file'.",
-        "hyperf/db-connection": "Require this component for driver 'database'.",
-        "hyperf/redis": "Require this component for driver 'redis'."
-    },
-    "config": {
-        "sort-packages": true,
-        "optimize-autoloader": true
     }
 }

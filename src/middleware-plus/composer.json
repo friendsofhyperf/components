@@ -1,41 +1,41 @@
 {
     "name": "friendsofhyperf/middleware-plus",
     "description": "The middleware plus component for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components",
-        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
-    },
     "authors": [
         {
             "name": "Huangdijia",
             "email": "huangdijia@gmail.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
+    "require": {
+        "hyperf/dispatcher": "~3.1.0"
+    },
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\MiddlewarePlus\\": "src/"
         }
     },
-    "require": {
-        "hyperf/dispatcher": "~3.1.0"
-    },
-    "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\MiddlewarePlus\\ConfigProvider"
-        },
-        "branch-alias": {
-            "dev-main": "3.1-dev"
-        }
-    },
     "config": {
         "sort-packages": true
     },
-    "minimum-stability": "dev"
+    "extra": {
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\MiddlewarePlus\\ConfigProvider"
+        }
+    }
 }

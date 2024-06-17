@@ -18,36 +18,36 @@
             "email": "huangdijia@gmail.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
     "require": {
         "hyperf/database": "~3.1.0",
         "hyperf/stringable": "~3.1.0",
         "hyperf/support": "~3.1.0",
         "hyperf/tappable": "~3.1.0"
     },
+    "suggest": {
+        "awobaz/blade-active": "Blade directives for the Laravel 'Active' package",
+        "awobaz/eloquent-auto-append": "Automatically append accessors to model serialization",
+        "awobaz/eloquent-mutators": "Reusable mutators (getters/setters) for Laravel 5's Eloquent",
+        "awobaz/syntactic": "Syntactic sugar for named and indexed parameters call."
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\Compoships\\": "src"
         }
     },
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\Compoships\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Compoships\\ConfigProvider"
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "suggest": {
-        "awobaz/eloquent-mutators": "Reusable mutators (getters/setters) for Laravel 5's Eloquent",
-        "awobaz/eloquent-auto-append": "Automatically append accessors to model serialization",
-        "awobaz/blade-active": "Blade directives for the Laravel 'Active' package",
-        "awobaz/syntactic": "Syntactic sugar for named and indexed parameters call."
-    },
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components",
-        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     }
 }

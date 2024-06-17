@@ -1,6 +1,7 @@
 {
     "name": "friendsofhyperf/redis-subscriber",
     "description": "Redis native protocol Subscriber based on Swoole coroutine",
+    "license": "MIT",
     "type": "library",
     "keywords": [
         "swoole",
@@ -17,6 +18,11 @@
             "email": "huangdijia@gmail.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
     "require": {
         "hyperf/coordinator": "~3.1.0",
         "hyperf/coroutine": "~3.1.0",
@@ -31,11 +37,5 @@
         "branch-alias": {
             "dev-main": "3.1-dev"
         }
-    },
-    "license": "MIT",
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components",
-        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     }
 }

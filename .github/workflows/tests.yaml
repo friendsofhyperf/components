@@ -31,6 +31,10 @@ jobs:
           coverage: none
       - name: Setup Packages
         run: composer update -o
+      - name: Check Composer Json
+        run: |
+          composer normalize --dry-run --no-update-lock
+          find ./src -name composer.json -exec composer normalize --dry-run --no-update-lock {} \;
       - name: Run Cs Fixer
         run: vendor/bin/php-cs-fixer fix src --dry-run --diff --verbose
   tests:

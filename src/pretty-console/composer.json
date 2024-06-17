@@ -1,12 +1,12 @@
 {
     "name": "friendsofhyperf/pretty-console",
     "description": "The pretty console component for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "huangdijia",
@@ -24,8 +24,10 @@
         "hyperf/stringable": "~3.1.0",
         "hyperf/support": "~3.1.0",
         "hyperf/tappable": "~3.1.0",
-        "nunomaduro/termwind": "^1.13|^2.0"
+        "nunomaduro/termwind": "^1.13 || ^2.0"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\PrettyConsole\\": "src/"
@@ -34,14 +36,12 @@
     "config": {
         "sort-packages": true
     },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\PrettyConsole\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\PrettyConsole\\ConfigProvider"
         }
     }
 }

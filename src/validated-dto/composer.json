@@ -1,6 +1,7 @@
 {
     "name": "friendsofhyperf/validated-dto",
     "description": "The Data Transfer Objects with validation for Hyperf.",
+    "license": "MIT",
     "type": "library",
     "keywords": [
         "hyperf",
@@ -9,21 +10,17 @@
         "validation",
         "v3.1"
     ],
-    "license": "MIT",
-    "autoload": {
-        "files": [
-            "src/Functions.php"
-        ],
-        "psr-4": {
-            "FriendsOfHyperf\\ValidatedDTO\\": "src/"
-        }
-    },
     "authors": [
         {
             "name": "Deeka Wong",
             "email": "huangdijia@gmail.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
     "require": {
         "php": "^8.1",
         "hyperf/code-parser": "~3.1.0",
@@ -34,17 +31,20 @@
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
-    "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider"
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\ValidatedDTO\\": "src/"
         },
+        "files": [
+            "src/Functions.php"
+        ]
+    },
+    "extra": {
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider"
         }
-    },
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components",
-        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     }
 }

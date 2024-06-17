@@ -1,13 +1,24 @@
 {
     "name": "friendsofhyperf/telescope",
     "description": "An elegant debug assistant for the hyperf framework.",
+    "license": "MIT",
     "keywords": [
         "swoole",
         "hyperf",
         "debugging",
         "v3.1"
     ],
-    "license": "MIT",
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
     "require": {
         "php": ">=8.1",
         "hyperf/command": "~3.1.0",
@@ -15,42 +26,31 @@
         "hyperf/framework": "~3.1.0",
         "hyperf/support": "~3.1.0",
         "hyperf/view-engine": "~3.1.0",
-        "nesbot/carbon": "^2.71|^3.0",
+        "nesbot/carbon": "^2.71 || ^3.0",
         "ramsey/uuid": "^4.7"
     },
+    "suggest": {
+        "guzzlehttp/guzzle": "Required to use Guzzle annotation.(^6.0|^7.0)",
+        "hyperf/command": "Required to use Command annotation.(~3.1.0)",
+        "hyperf/database": "Required to use Database annotation.(~3.1.0)",
+        "hyperf/db-connection": "Required to use db-connection annotation.(~3.1.0)",
+        "hyperf/dispatcher": "Required to use BootApplication event.(~3.1.0)",
+        "hyperf/event": "Required to use Event annotation.(~3.1.0)",
+        "hyperf/http-message": "Required to use http-message annotation.(~3.1.0)"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\Telescope\\": "src/"
         }
     },
-    "suggest": {
-        "hyperf/dispatcher": "Required to use BootApplication event.(~3.1.0)",
-        "hyperf/command": "Required to use Command annotation.(~3.1.0)",
-        "hyperf/database": "Required to use Database annotation.(~3.1.0)",
-        "hyperf/db-connection": "Required to use db-connection annotation.(~3.1.0)",
-        "hyperf/event": "Required to use Event annotation.(~3.1.0)",
-        "hyperf/http-message": "Required to use http-message annotation.(~3.1.0)",
-        "guzzlehttp/guzzle": "Required to use Guzzle annotation.(^6.0|^7.0)"
-    },
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\Telescope\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Telescope\\ConfigProvider"
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true,
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components",
-        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
-    },
-    "authors": [
-        {
-            "name": "huangdijia",
-            "email": "huangdijia@gmail.com"
-        }
-    ]
+    }
 }

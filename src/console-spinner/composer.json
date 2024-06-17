@@ -1,12 +1,12 @@
 {
     "name": "friendsofhyperf/console-spinner",
     "description": "The progress bar component For Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "huangdijia",
@@ -23,8 +23,8 @@
         "hyperf/context": "~3.1.0",
         "hyperf/di": "~3.1.0",
         "hyperf/support": "~3.1.0",
-        "symfony/console": "^5.3|^6.0|^7.0",
-        "symfony/process": "^5.3|^6.0|^7.0"
+        "symfony/console": "^5.3 || ^6.0 || ^7.0",
+        "symfony/process": "^5.3 || ^6.0 || ^7.0"
     },
     "autoload": {
         "psr-4": {
@@ -35,11 +35,11 @@
         "sort-packages": true
     },
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\ConsoleSpinner\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\ConsoleSpinner\\ConfigProvider"
         }
     }
 }

@@ -1,8 +1,8 @@
 {
     "name": "friendsofhyperf/encryption",
-    "type": "library",
     "description": "The encryption component for Hyperf.",
     "license": "MIT",
+    "type": "library",
     "keywords": [
         "php",
         "hyperf",
@@ -22,14 +22,6 @@
         "source": "https://github.com/friendsofhyperf/components",
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
-    "autoload": {
-        "psr-4": {
-            "FriendsOfHyperf\\Encryption\\": "src/"
-        },
-        "files": [
-            "src/Functions.php"
-        ]
-    },
     "require": {
         "hyperf/context": "~3.1.0",
         "hyperf/contract": "~3.1.0",
@@ -41,15 +33,23 @@
     "suggest": {
         "opis/closure": "For encrypting closures."
     },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Encryption\\": "src/"
+        },
+        "files": [
+            "src/Functions.php"
+        ]
+    },
     "config": {
         "sort-packages": true
     },
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\Encryption\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Encryption\\ConfigProvider"
         }
     }
 }

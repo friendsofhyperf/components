@@ -1,6 +1,8 @@
 {
     "name": "friendsofhyperf/mysql-grammar-addon",
     "description": "The MySqlGrammar addon for Hyperf.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "dev",
         "hyperf",
@@ -9,8 +11,6 @@
         "addon",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "huangdijia",
@@ -26,22 +26,22 @@
         "hyperf/database": "~3.1.0",
         "hyperf/di": "~3.1.0"
     },
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\MySqlGrammarAddon\\": "src"
         }
     },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\MySqlGrammarAddon\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\MySqlGrammarAddon\\ConfigProvider"
         }
-    },
-    "minimum-stability": "dev",
-    "config": {
-        "sort-packages": true,
-        "optimize-autoloader": true
     }
 }

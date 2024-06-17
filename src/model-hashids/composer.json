@@ -1,25 +1,31 @@
 {
     "name": "friendsofhyperf/model-hashids",
     "description": "The hashids for Hyperf models.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "hyperf",
         "v3.1"
     ],
-    "type": "library",
-    "license": "MIT",
     "authors": [
         {
             "name": "huangdijia",
             "email": "huangdijia@gmail.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
     "require": {
         "php": ">=8.1",
-        "hashids/hashids": "^4.1|^5.0",
+        "hashids/hashids": "^4.1 || ^5.0",
         "hyperf/config": "~3.1.0",
         "hyperf/database": "~3.1.0",
         "hyperf/stringable": "~3.1.0"
     },
+    "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\ModelHashids\\": "src/"
@@ -28,18 +34,12 @@
     "config": {
         "sort-packages": true
     },
-    "minimum-stability": "dev",
     "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\ModelHashids\\ConfigProvider"
-        },
         "branch-alias": {
             "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\ModelHashids\\ConfigProvider"
         }
-    },
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components",
-        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     }
 }
