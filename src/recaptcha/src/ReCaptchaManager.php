@@ -21,7 +21,7 @@ use function Hyperf\Support\make;
 class ReCaptchaManager
 {
     /**
-     * @var ReCaptcha[]
+     * @var array<string, ReCaptcha>
      */
     protected array $instances = [];
 
@@ -43,7 +43,7 @@ class ReCaptchaManager
             throw new RuntimeException('Not publish yet, please run \'php bin/hyperf.php vendor:publish friendsofhyperf/recaptcha\'');
         }
 
-        $version ??= $this->config->get('recaptcha.default', 'v3');
+        $version ??= (string) $this->config->get('recaptcha.default', 'v3');
         $secret = $this->config->get(sprintf('recaptcha.%s.secret_key', $version), '');
 
         return $this->instances[$version] = make(ReCaptcha::class, [
