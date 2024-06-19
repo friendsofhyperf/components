@@ -227,6 +227,16 @@ class IncomingEntry
     }
 
     /**
+     * Determine if the incoming entry is a log entry.
+     *
+     * @return bool
+     */
+    public function isLog()
+    {
+        return $this->type === EntryType::LOG;
+    }
+
+    /**
      * Determine if the incoming entry is a scheduled task.
      */
     public function isScheduledTask(): bool
