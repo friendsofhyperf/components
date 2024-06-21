@@ -78,11 +78,11 @@ BETA_COMPONENTS=(
 for REMOTE in $REMOTES
 do
     # Skip the beta components
-    if [[ " ${BETA_COMPONENTS[@]} " =~ " $REMOTE " ]]
-    then
-        echo "Skipping $REMOTE";
-        continue;
-    fi
+    # if [[ " ${BETA_COMPONENTS[@]} " =~ " $REMOTE " ]]
+    # then
+    #     echo "Skipping $REMOTE";
+    #     continue;
+    # fi
 
     echo ""
     echo ""
