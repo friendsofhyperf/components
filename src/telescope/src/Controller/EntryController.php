@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Telescope\Controller;
 use FriendsOfHyperf\Telescope\EntryType;
 use FriendsOfHyperf\Telescope\Model\TelescopeEntryModel;
 use FriendsOfHyperf\Telescope\Model\TelescopeEntryTagModel;
+use FriendsOfHyperf\Telescope\Telescope;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
@@ -119,6 +120,9 @@ abstract class EntryController
      */
     protected function status()
     {
+        if (! Telescope::getCache()->get('telescope:pause-recording')) {
+            return 'paused';
+        }
         return 'enabled';
     }
 }

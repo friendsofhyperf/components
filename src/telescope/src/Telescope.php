@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Telescope;
 use Closure;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\ApplicationContext;
+use Psr\SimpleCache\CacheInterface;
 
 use function Hyperf\Config\config;
 
@@ -170,6 +171,23 @@ class Telescope
     public static function getConfig(): TelescopeConfig
     {
         return ApplicationContext::getContainer()->get(TelescopeConfig::class);
+    }
+
+    public static function getCache(): CacheInterface
+    {
+        return ApplicationContext::getContainer()->get(CacheInterface::class);
+    }
+
+    /**
+     * Get the default JavaScript variables for Telescope.
+     */
+    public static function scriptVariables(): array
+    {
+        return [
+            'path' => static::getConfig()->getPath(),
+            'timezone' => static::getConfig()->getTimezone(),
+            'recording' => static::getCache()->get('telescope:pause-recording'),
+        ];
     }
 
     /**
