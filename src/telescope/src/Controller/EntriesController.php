@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Controller;
 
 use Hyperf\Context\ApplicationContext;
+use Hyperf\Contract\ApplicationInterface;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\DeleteMapping;
 use Symfony\Component\Console\Input\ArrayInput;
@@ -25,15 +26,11 @@ class EntriesController
     #[DeleteMapping(path: '/telescope/telescope-api/entries')]
     public function destroy(): void
     {
-        $input = new ArrayInput(['command' => 'telescope:clear']);
-
-        /** @var \Psr\Container\ContainerInterface $container */
-        $container = ApplicationContext::getContainer();
-
-        /** @var \Symfony\Component\Console\Application $application */
-        $application = $container->get(\Hyperf\Contract\ApplicationInterface::class);
+        $application = ApplicationContext::getContainer()->get(ApplicationInterface::class);
         $application->setAutoExit(false);
 
-        $exitCode = $application->run($input);
+        $exitCode = $application->run(
+            new ArrayInput(['command' => 'telescope:clear'])
+        );
     }
 }
