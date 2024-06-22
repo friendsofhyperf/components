@@ -24,10 +24,14 @@ class RecordingController
     #[PostMapping(path: '/telescope/telescope-api/toggle-recording')]
     public function toggle(): void
     {
-        if (Telescope::getCache()->get('telescope:pause-recording')) {
-            Telescope::getCache()->delete('telescope:pause-recording');
+        if (! $cache = Telescope::getCache()) {
+            return;
+        }
+
+        if ($cache->get('telescope:pause-recording')) {
+            $cache->delete('telescope:pause-recording');
         } else {
-            Telescope::getCache()->set('telescope:pause-recording', true, 30 * 86400);
+            $cache->set('telescope:pause-recording', true, 30 * 86400);
         }
     }
 }

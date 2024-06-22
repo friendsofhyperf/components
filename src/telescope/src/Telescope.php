@@ -12,9 +12,10 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope;
 
 use Closure;
+use FriendsOfHyperf\Telescope\Contract\CacheInterface;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\ApplicationContext;
-use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
 
 use function Hyperf\Config\config;
 
@@ -146,10 +147,8 @@ class Telescope
 
     /**
      * Add a callback that adds tags to the record.
-     *
-     * @return static
      */
-    public static function tag(Closure $callback)
+    public static function tag(Closure $callback): static
     {
         static::$tagUsing[] = $callback;
 
@@ -158,10 +157,8 @@ class Telescope
 
     /**
      * Set the callback that filters the entries that should be recorded.
-     *
-     * @return static
      */
-    public static function filter(Closure $callback)
+    public static function filter(Closure $callback): static
     {
         static::$filterUsing[] = $callback;
 
@@ -173,9 +170,15 @@ class Telescope
         return ApplicationContext::getContainer()->get(TelescopeConfig::class);
     }
 
-    public static function getCache(): CacheInterface
+    public static function getCache(): ?CacheInterface
     {
-        return ApplicationContext::getContainer()->get(CacheInterface::class);
+        $container = ApplicationContext::getContainer();
+
+        return match (true) {
+            $container->has(CacheInterface::class) => $container->get(CacheInterface::class),
+            $container->has(PsrCacheInterface::class) => $container->get(PsrCacheInterface::class),
+            default => null,
+        };
     }
 
     /**
