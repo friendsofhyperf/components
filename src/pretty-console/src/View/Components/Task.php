@@ -33,7 +33,7 @@ class Task extends Component
             Mutators\EnsureRelativePaths::class,
         ]);
 
-        $descriptionWidth = mb_strlen(preg_replace('/\\<[\\w=#\\/\\;,:.&,%?]+\\>|\\e\\[\\d+m/', '$1', $description) ?? '');
+        $descriptionWidth = mb_strlen(preg_replace('/\<[\w=#\/\;,:.&,%?]+\>|\e\[\d+m/', '$1', $description) ?? '');
 
         $this->output->write("  {$description} ", false, $verbosity);
 

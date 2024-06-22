@@ -51,7 +51,7 @@ class GenNotificationCommand extends Command
         $this->setDescription($this->description);
         $this->addArgument('name', InputArgument::REQUIRED, 'The name of the notification class');
         $this->addOption('force', 'f', null, 'Overwrite the notification if it exists');
-        $this->addOption('namespace', 'ns', InputArgument::OPTIONAL, 'The namespace of the notification class', 'App\\Notifications');
+        $this->addOption('namespace', 'ns', InputArgument::OPTIONAL, 'The namespace of the notification class', 'App\Notifications');
         $this->addOption('realpath', 'rp', InputArgument::OPTIONAL, 'The realpath of the notification class', '/app/Notifications');
     }
 }
