@@ -28,8 +28,7 @@ class EntriesController
     {
         $application = ApplicationContext::getContainer()->get(ApplicationInterface::class);
         $application->setAutoExit(false);
-
-        $exitCode = $application->run(
+        $application->run(
             new ArrayInput(['command' => 'telescope:clear'])
         );
     }
