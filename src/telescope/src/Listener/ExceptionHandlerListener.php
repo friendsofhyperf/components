@@ -39,7 +39,7 @@ class ExceptionHandlerListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if (! $this->telescopeConfig->isEnable('exception') || ! Telescope::isRecording()) {
+        if (! $this->telescopeConfig->isEnable('exception')) {
             return;
         }
 

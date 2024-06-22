@@ -42,7 +42,7 @@ class TelescopeMiddleware implements MiddlewareInterface
     {
         Telescope::startRecording();
 
-        if (! $this->telescopeConfig->isEnable('request') || ! Telescope::isRecording()) {
+        if (! $this->telescopeConfig->isEnable('request')) {
             return $handler->handle($request);
         }
 

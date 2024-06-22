@@ -91,7 +91,7 @@ class TelescopeConfig
 
     public function isEnable(string $key): bool
     {
-        return (bool) $this->get('enable.' . $key, false);
+        return ((bool) $this->get('enable.' . $key, false)) && Telescope::isRecording();
     }
 
     public function getAppName(): string
