@@ -37,7 +37,7 @@ class EventAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (! $this->telescopeConfig->isEnable('event')) {
+            if (! $this->telescopeConfig->isEnable('event') || ! Telescope::isRecording()) {
                 return;
             }
 

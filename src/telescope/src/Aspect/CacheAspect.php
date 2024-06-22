@@ -59,7 +59,7 @@ class CacheAspect extends AbstractAspect
     protected function processGetDriver($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($driver) use ($proceedingJoinPoint) {
-            if (! $this->telescopeConfig->isEnable('redis')) {
+            if (! $this->telescopeConfig->isEnable('redis') || ! Telescope::isRecording()) {
                 return;
             }
 
@@ -71,7 +71,7 @@ class CacheAspect extends AbstractAspect
     protected function processDriverFetch($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (! $this->telescopeConfig->isEnable('cache')) {
+            if (! $this->telescopeConfig->isEnable('cache') || ! Telescope::isRecording()) {
                 return;
             }
 
