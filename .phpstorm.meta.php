@@ -13,7 +13,10 @@ namespace PHPSTORM_META;
 
 // Reflect
 override(\FriendsOfHyperf\Helpers\app(0), map(['' => '@']));
-override(\FriendsOfHyperf\Helpers\di(0), map(['' => '@']));
+override(\FriendsOfHyperf\Helpers\di(0), map([
+    '' => '@',
+    \Hyperf\Contract\ApplicationInterface::class => \Symfony\Component\Console\Application::class,
+]));
 override(\Hyperf\Context\Context::get(0), map(['' => '@']));
 override(\Hyperf\Support\make(0), map(['' => '@']));
 override(\Hyperf\Support\optional(0), type(0));
