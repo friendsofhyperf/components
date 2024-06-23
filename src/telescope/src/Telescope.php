@@ -18,8 +18,6 @@ use Hyperf\Context\ApplicationContext;
 use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
 use Throwable;
 
-use function Hyperf\Config\config;
-
 class Telescope
 {
     public const SYNC = 0;
@@ -251,7 +249,7 @@ class Telescope
             return $tagCallback($entry);
         }, static::$tagUsing)));
 
-        match (config('telescope.save_mode', 0)) {
+        match (static::getConfig()->getSaveMode()) {
             self::ASYNC => TelescopeContext::addEntry($entry),
             self::SYNC => $entry->create(),
             default => $entry->create(),
