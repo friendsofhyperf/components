@@ -54,11 +54,10 @@ class RequestHandledListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        Telescope::startRecording();
-
         if (! $this->telescopeConfig->isEnable('request')) {
             return;
         }
+        
         match ($event::class) {
             RequestReceived::class, RpcRequestReceived::class => $this->requestReceived($event),
             RequestTerminated::class, RpcRequestTerminated::class => $this->requestHandled($event),

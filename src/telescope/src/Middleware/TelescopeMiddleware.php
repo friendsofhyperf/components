@@ -40,8 +40,6 @@ class TelescopeMiddleware implements MiddlewareInterface
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        Telescope::startRecording();
-
         if (! $this->telescopeConfig->isEnable('request')) {
             return $handler->handle($request);
         }
