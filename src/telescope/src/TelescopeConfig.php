@@ -197,7 +197,7 @@ class TelescopeConfig
 
     public function continueRecording(): void
     {
-        $this->cache?->set($this->getPauseRecordingCacheKey(), 0);
+        $this->cache?->delete($this->getPauseRecordingCacheKey());
     }
 
     public function isRecording(): bool
