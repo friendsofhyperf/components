@@ -115,14 +115,9 @@ abstract class EntryController
 
     /**
      * Determine the watcher recording status.
-     *
-     * @return string
      */
-    protected function status()
+    protected function status(): string
     {
-        if (Telescope::getCache()?->get('telescope:pause-recording')) {
-            return 'paused';
-        }
-        return 'enabled';
+        return Telescope::isRecording() ? 'enabled' : 'paused';
     }
 }

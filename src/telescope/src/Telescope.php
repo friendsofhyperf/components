@@ -16,7 +16,6 @@ use FriendsOfHyperf\Telescope\Contract\CacheInterface;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\ApplicationContext;
 use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
-use Throwable;
 
 use function Hyperf\Config\config;
 
@@ -56,11 +55,6 @@ class Telescope
      * Indicates if Telescope should use the dark theme.
      */
     public static bool $useDarkTheme = false;
-
-    /**
-     * Indicates if Telescope should record entries.
-     */
-    public static bool $shouldRecord = false;
 
     /**
      * Indicates if Telescope migrations will be run.
@@ -199,7 +193,7 @@ class Telescope
      */
     public static function stopRecording()
     {
-        static::$shouldRecord = false;
+        static::getCache()->set('telescope:pause-recording', 1);
     }
 
     /**
@@ -207,13 +201,7 @@ class Telescope
      */
     public static function startRecording(): void
     {
-        $recordingPaused = false;
-
-        try {
-            $recordingPaused = static::getCache()->get('telescope:pause-recording');
-        } catch (Throwable $e) {
-        }
-        static::$shouldRecord = ! $recordingPaused;
+        static::getCache()->set('telescope:pause-recording', 0);
     }
 
     /**
@@ -221,7 +209,7 @@ class Telescope
      */
     public static function isRecording(): bool
     {
-        return static::$shouldRecord;
+        return ! static::getCache()->get('telescope:pause-recording', 0);
     }
 
     /**
