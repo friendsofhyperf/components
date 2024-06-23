@@ -80,7 +80,7 @@ class CacheAspect extends AbstractAspect
 
             Telescope::recordCache(IncomingEntry::make([
                 'type' => $has ? 'hit' : 'missed',
-                'key' => $this->getCacheKey($arguments['key'] ?? ''),
+                'key' => $this->getCacheKey($arguments['key']),
                 'value' => $data,
             ]));
         });
@@ -97,7 +97,7 @@ class CacheAspect extends AbstractAspect
 
             Telescope::recordCache(IncomingEntry::make([
                 'type' => is_null($result) ? 'missed' : 'hit',
-                'key' => $this->getCacheKey($arguments['key'] ?? ''),
+                'key' => $this->getCacheKey($arguments['key']),
                 'value' => $result,
             ]));
         });
@@ -114,7 +114,7 @@ class CacheAspect extends AbstractAspect
 
             Telescope::recordCache(IncomingEntry::make([
                 'type' => 'set',
-                'key' => $this->getCacheKey($arguments['key'] ?? ''),
+                'key' => $this->getCacheKey($arguments['key']),
                 'value' => $arguments['value'],
             ]));
         });
