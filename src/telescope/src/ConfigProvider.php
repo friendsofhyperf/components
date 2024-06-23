@@ -18,20 +18,12 @@ class ConfigProvider
         defined('BASE_PATH') or define('BASE_PATH', '');
 
         return [
-            'commands' => [
-                Command\ClearCommand::class,
-                Command\InstallCommand::class,
-                Command\PruneCommand::class,
-            ],
-            'dependencies' => [
-                TelescopeConfig::class => TelescopeFactory::class,
-            ],
-            'listeners' => [
-                Listener\SetRequestLifecycleListener::class,
-                Listener\CommandListener::class,
-                Listener\DbQueryListener::class,
-                Listener\ExceptionHandlerListener::class,
-                Listener\SetupTelescopeServerListener::class,
+            'annotations' => [
+                'scan' => [
+                    'paths' => [
+                        __DIR__,
+                    ],
+                ],
             ],
             'aspects' => [
                 Aspect\CoroutineAspect::class,
@@ -45,12 +37,21 @@ class ConfigProvider
                 Aspect\RequestDispatcherAspect::class,
                 Aspect\GrpcCoreMiddlewareAspect::class,
             ],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
+            'commands' => [
+                Command\ClearCommand::class,
+                Command\InstallCommand::class,
+                Command\PruneCommand::class,
+            ],
+            'dependencies' => [
+                TelescopeConfig::class => TelescopeFactory::class,
+            ],
+            'listeners' => [
+                Listener\SetRequestLifecycleListener::class,
+                Listener\CommandListener::class,
+                Listener\DbQueryListener::class,
+                Listener\ExceptionHandlerListener::class,
+                Listener\SetupTelescopeFilterListener::class,
+                Listener\SetupTelescopeServerListener::class,
             ],
             'publish' => [
                 [
