@@ -77,7 +77,6 @@ class CacheAspect extends AbstractAspect
 
             $arguments = $proceedingJoinPoint->arguments['keys'];
             [$has, $data] = $result;
-
             Telescope::recordCache(IncomingEntry::make([
                 'type' => $has ? 'hit' : 'missed',
                 'key' => $this->getCacheKey($arguments['key']),
@@ -94,7 +93,6 @@ class CacheAspect extends AbstractAspect
             }
 
             $arguments = $proceedingJoinPoint->arguments['keys'];
-
             Telescope::recordCache(IncomingEntry::make([
                 'type' => is_null($result) ? 'missed' : 'hit',
                 'key' => $this->getCacheKey($arguments['key']),
@@ -111,7 +109,6 @@ class CacheAspect extends AbstractAspect
             }
 
             $arguments = $proceedingJoinPoint->arguments['keys'];
-
             Telescope::recordCache(IncomingEntry::make([
                 'type' => 'set',
                 'key' => $this->getCacheKey($arguments['key']),
