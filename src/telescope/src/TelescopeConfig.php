@@ -21,7 +21,6 @@ use Hyperf\Server\ServerInterface;
 use Hyperf\Stringable\Str;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
-use Throwable;
 
 class TelescopeConfig
 {
@@ -211,11 +210,9 @@ class TelescopeConfig
         try {
             Context::set($key, true);
             return ((bool) $this->getCache()?->get($key)) === false;
-        } catch (Throwable $e) {
         } finally {
             Context::destroy($key);
         }
-        return false;
     }
 
     private function getPauseRecordingCacheKey(): string
