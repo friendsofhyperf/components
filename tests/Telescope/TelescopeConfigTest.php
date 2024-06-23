@@ -13,6 +13,9 @@ use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Config\Config;
 
 beforeEach(function () {
+    $this->mock(Psr\SimpleCache\CacheInterface::class, function ($mock) {
+        $mock->shouldReceive('get')->andReturn(0);
+    });
     $config = new Config([
         'telescope' => [
             'enable' => [
