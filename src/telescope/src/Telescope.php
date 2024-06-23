@@ -167,7 +167,7 @@ class Telescope
         return ApplicationContext::getContainer()->get(TelescopeConfig::class);
     }
 
-    public static function getCache(): ?PsrCacheInterface
+    protected static function getCache(): ?PsrCacheInterface
     {
         $container = ApplicationContext::getContainer();
 
