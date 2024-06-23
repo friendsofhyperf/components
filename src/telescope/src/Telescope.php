@@ -195,7 +195,7 @@ class Telescope
      */
     public static function stopRecording()
     {
-        static::getCache()->set(self::PAUSE_RECORDING, 1);
+        static::getCache()?->set(self::PAUSE_RECORDING, 1);
     }
 
     /**
@@ -203,7 +203,7 @@ class Telescope
      */
     public static function startRecording(): void
     {
-        static::getCache()->set(self::PAUSE_RECORDING, 0);
+        static::getCache()?->set(self::PAUSE_RECORDING, 0);
     }
 
     /**
