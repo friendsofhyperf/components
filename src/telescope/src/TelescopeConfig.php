@@ -17,11 +17,14 @@ use Hyperf\Server\Event;
 use Hyperf\Server\ServerInterface;
 use Hyperf\Stringable\Str;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\SimpleCache\CacheInterface;
 
 class TelescopeConfig
 {
-    public function __construct(private ConfigInterface $config)
-    {
+    public function __construct(
+        private ConfigInterface $config,
+        private ?CacheInterface $cache = null,
+    ) {
     }
 
     public function get(string $key, $default = null): mixed
@@ -91,7 +94,7 @@ class TelescopeConfig
 
     public function isEnable(string $key): bool
     {
-        return ((bool) $this->get('enable.' . $key, false)) && Telescope::isRecording();
+        return ((bool) $this->get('enable.' . $key, false)) && $this->isRecording();
     }
 
     public function getAppName(): string
@@ -185,5 +188,25 @@ class TelescopeConfig
     public function getIgnoreCommands(): array
     {
         return $this->get('ignore_commands', []);
+    }
+
+    public function pauseRecording(): void
+    {
+        $this->cache?->set($this->getPauseRecordingCacheKey(), 1);
+    }
+
+    public function continueRecording(): void
+    {
+        $this->cache?->set($this->getPauseRecordingCacheKey(), 0);
+    }
+
+    public function isRecording(): bool
+    {
+        return ((bool) $this->cache?->get($this->getPauseRecordingCacheKey())) === false;
+    }
+
+    private function getPauseRecordingCacheKey(): string
+    {
+        return sprintf('telescope:%s:recording:pause', $this->getAppName());
     }
 }

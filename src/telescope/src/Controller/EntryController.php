@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\Telescope\Controller;
 use FriendsOfHyperf\Telescope\EntryType;
 use FriendsOfHyperf\Telescope\Model\TelescopeEntryModel;
 use FriendsOfHyperf\Telescope\Model\TelescopeEntryTagModel;
-use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
@@ -31,6 +31,9 @@ abstract class EntryController
 
     #[Inject]
     protected ResponseInterface $response;
+
+    #[Inject]
+    protected TelescopeConfig $telescopeConfig;
 
     public function index()
     {
@@ -118,6 +121,6 @@ abstract class EntryController
      */
     protected function status(): string
     {
-        return Telescope::isRecording() ? 'enabled' : 'paused';
+        return $this->telescopeConfig->isRecording() ? 'enabled' : 'paused';
     }
 }

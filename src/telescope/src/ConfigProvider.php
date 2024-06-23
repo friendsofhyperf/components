@@ -23,6 +23,9 @@ class ConfigProvider
                 Command\InstallCommand::class,
                 Command\PruneCommand::class,
             ],
+            'dependencies' => [
+                TelescopeConfig::class => TelescopeFactory::class,
+            ],
             'listeners' => [
                 Listener\SetRequestLifecycleListener::class,
                 Listener\CommandListener::class,

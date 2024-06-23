@@ -11,19 +11,23 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Controller;
 
-use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
+use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\PostMapping;
 
 #[Controller(server: 'telescope')]
 class RecordingController
 {
+    #[Inject()]
+    protected TelescopeConfig $telescopeConfig;
+
     /**
      * Toggle recording.
      */
     #[PostMapping(path: '/telescope/telescope-api/toggle-recording')]
     public function toggle(): void
     {
-        Telescope::isRecording() ? Telescope::stopRecording() : Telescope::startRecording();
+        $this->telescopeConfig->isRecording() ? $this->telescopeConfig->pauseRecording() : $this->telescopeConfig->continueRecording();
     }
 }

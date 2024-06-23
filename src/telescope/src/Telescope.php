@@ -16,15 +16,12 @@ use FriendsOfHyperf\Telescope\Contract\CacheInterface;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\ApplicationContext;
 use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
-use Throwable;
 
 class Telescope
 {
     public const SYNC = 0;
 
     public const ASYNC = 1;
-
-    public const PAUSE_RECORDING = 'telescope:pause-recording';
 
     /**
      * The list of hidden request headers.
@@ -174,41 +171,8 @@ class Telescope
         return [
             'path' => static::getConfig()->getPath(),
             'timezone' => static::getConfig()->getTimezone(),
-            'recording' => static::isRecording(),
+            'recording' => static::getConfig()->isRecording(),
         ];
-    }
-
-    /**
-     * Stop recording entries.
-     */
-    public static function stopRecording()
-    {
-        static::getCache()?->set(self::PAUSE_RECORDING, 1);
-    }
-
-    /**
-     * Start recording entries.
-     */
-    public static function startRecording(): void
-    {
-        static::getCache()?->set(self::PAUSE_RECORDING, 0);
-    }
-
-    /**
-     * Determine if Telescope is recording.
-     */
-    public static function isRecording(): bool
-    {
-        return ! static::isStopRecording();
-    }
-
-    public static function isStopRecording(): bool
-    {
-        try {
-            return (bool) static::getCache()?->get(self::PAUSE_RECORDING);
-        } catch (Throwable) {
-            return false;
-        }
     }
 
     protected static function getCache(): ?PsrCacheInterface
