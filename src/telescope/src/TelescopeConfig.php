@@ -11,20 +11,22 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope;
 
+use FriendsOfHyperf\Telescope\Contract\CacheInterface;
 use FriendsOfHyperf\Telescope\Server\Server;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Server\Event;
 use Hyperf\Server\ServerInterface;
 use Hyperf\Stringable\Str;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\SimpleCache\CacheInterface;
+use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
 
 class TelescopeConfig
 {
     public function __construct(
-        private ConfigInterface $config,
-        private ?CacheInterface $cache = null,
+        private ContainerInterface $container,
+        private ConfigInterface $config
     ) {
     }
 
@@ -193,12 +195,12 @@ class TelescopeConfig
 
     public function pauseRecording(): void
     {
-        $this->cache?->set($this->getPauseRecordingCacheKey(), 1);
+        $this->getCache()?->set($this->getPauseRecordingCacheKey(), 1);
     }
 
     public function continueRecording(): void
     {
-        $this->cache?->delete($this->getPauseRecordingCacheKey());
+        $this->getCache()?->delete($this->getPauseRecordingCacheKey());
     }
 
     public function isRecording(): bool
@@ -209,7 +211,7 @@ class TelescopeConfig
 
         try {
             Context::set($key, true);
-            return ((bool) $this->cache?->get($key)) === false;
+            return ((bool) $this->getCache()?->get($key)) === false;
         } finally {
             Context::destroy($key);
         }
@@ -218,5 +220,14 @@ class TelescopeConfig
     private function getPauseRecordingCacheKey(): string
     {
         return sprintf('telescope:%s:recording:pause', $this->getAppName());
+    }
+
+    private function getCache(): ?PsrCacheInterface
+    {
+        return match (true) {
+            $this->container->has(CacheInterface::class) => $this->container->get(CacheInterface::class),
+            $this->container->has(PsrCacheInterface::class) => $this->container->get(PsrCacheInterface::class),
+            default => null,
+        };
     }
 }

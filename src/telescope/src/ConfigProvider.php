@@ -43,7 +43,6 @@ class ConfigProvider
                 Command\PruneCommand::class,
             ],
             'dependencies' => [
-                TelescopeConfig::class => TelescopeFactory::class,
             ],
             'listeners' => [
                 Listener\SetRequestLifecycleListener::class,

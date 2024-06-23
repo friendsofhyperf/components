@@ -56,7 +56,7 @@ beforeEach(function () {
             ],
         ],
     ]);
-    $this->telescopeConfig = new TelescopeConfig($config, $cache);
+    $this->telescopeConfig = new TelescopeConfig($this->container, $config);
 });
 
 test('test isEnable', function ($key, $expected) {
