@@ -209,7 +209,7 @@ class Telescope
      */
     public static function isRecording(): bool
     {
-        return ! static::getCache()->get('telescope:pause-recording', 0);
+        return ((bool) static::getCache()->get('telescope:pause-recording', 0)) === false;
     }
 
     /**
