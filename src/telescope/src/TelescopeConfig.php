@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Telescope;
 
 use FriendsOfHyperf\Telescope\Contract\CacheInterface;
 use FriendsOfHyperf\Telescope\Server\Server;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Server\Event;
@@ -24,10 +25,7 @@ use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
 
 class TelescopeConfig
 {
-    public function __construct(
-        private ContainerInterface $container,
-        private ConfigInterface $config
-    ) {
+    public function __construct( private ConfigInterface $config ) {
     }
 
     public function get(string $key, $default = null): mixed
@@ -224,9 +222,11 @@ class TelescopeConfig
 
     private function getCache(): ?PsrCacheInterface
     {
+        $container = ApplicationContext::getContainer();
+
         return match (true) {
-            $this->container->has(CacheInterface::class) => $this->container->get(CacheInterface::class),
-            $this->container->has(PsrCacheInterface::class) => $this->container->get(PsrCacheInterface::class),
+            $container->has(CacheInterface::class) => $container->get(CacheInterface::class),
+            $container->has(PsrCacheInterface::class) => $container->get(PsrCacheInterface::class),
             default => null,
         };
     }
