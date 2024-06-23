@@ -211,7 +211,7 @@ class Telescope
      */
     public static function isRecording(): bool
     {
-        return ((bool) static::getCache()->get(self::PAUSE_RECORDING)) === false;
+        return ((bool) static::getCache()?->get(self::PAUSE_RECORDING)) === false;
     }
 
     /**
