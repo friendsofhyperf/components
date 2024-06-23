@@ -12,10 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope;
 
 use Closure;
-use FriendsOfHyperf\Telescope\Contract\CacheInterface;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\ApplicationContext;
-use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
 
 class Telescope
 {
@@ -173,17 +171,6 @@ class Telescope
             'timezone' => static::getConfig()->getTimezone(),
             'recording' => static::getConfig()->isRecording(),
         ];
-    }
-
-    protected static function getCache(): ?PsrCacheInterface
-    {
-        $container = ApplicationContext::getContainer();
-
-        return match (true) {
-            $container->has(CacheInterface::class) => $container->get(CacheInterface::class),
-            $container->has(PsrCacheInterface::class) => $container->get(PsrCacheInterface::class),
-            default => null,
-        };
     }
 
     /**
