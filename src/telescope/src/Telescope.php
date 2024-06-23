@@ -167,17 +167,6 @@ class Telescope
         return ApplicationContext::getContainer()->get(TelescopeConfig::class);
     }
 
-    protected static function getCache(): ?PsrCacheInterface
-    {
-        $container = ApplicationContext::getContainer();
-
-        return match (true) {
-            $container->has(CacheInterface::class) => $container->get(CacheInterface::class),
-            $container->has(PsrCacheInterface::class) => $container->get(PsrCacheInterface::class),
-            default => null,
-        };
-    }
-
     /**
      * Get the default JavaScript variables for Telescope.
      */
@@ -217,6 +206,17 @@ class Telescope
     public static function isStopRecording(): bool
     {
         return (bool) static::getCache()?->get(self::PAUSE_RECORDING);
+    }
+
+    protected static function getCache(): ?PsrCacheInterface
+    {
+        $container = ApplicationContext::getContainer();
+
+        return match (true) {
+            $container->has(CacheInterface::class) => $container->get(CacheInterface::class),
+            $container->has(PsrCacheInterface::class) => $container->get(PsrCacheInterface::class),
+            default => null,
+        };
     }
 
     /**
