@@ -40,7 +40,7 @@ class CommandListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if ($this->telescopeConfig->isEnable('command') === false) {
+        if (! $this->telescopeConfig->isEnable('command')) {
             return;
         }
 

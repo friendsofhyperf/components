@@ -15,7 +15,6 @@ use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;
-use Hyperf\Cache\CacheManager;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\PackerInterface;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -30,7 +29,7 @@ use function Hyperf\Tappable\tap;
 class CacheAspect extends AbstractAspect
 {
     public array $classes = [
-        CacheManager::class . '::getDriver',
+        'Hyperf\Cache\CacheManager::getDriver',
         'Hyperf\Cache\Driver\*Driver::fetch',
         'Hyperf\Cache\Driver\*Driver::get',
         'Hyperf\Cache\Driver\*Driver::set',

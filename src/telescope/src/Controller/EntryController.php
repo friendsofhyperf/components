@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Telescope\Controller;
 use FriendsOfHyperf\Telescope\EntryType;
 use FriendsOfHyperf\Telescope\Model\TelescopeEntryModel;
 use FriendsOfHyperf\Telescope\Model\TelescopeEntryTagModel;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
@@ -30,6 +31,9 @@ abstract class EntryController
 
     #[Inject]
     protected ResponseInterface $response;
+
+    #[Inject]
+    protected TelescopeConfig $telescopeConfig;
 
     public function index()
     {
@@ -114,11 +118,9 @@ abstract class EntryController
 
     /**
      * Determine the watcher recording status.
-     *
-     * @return string
      */
-    protected function status()
+    protected function status(): string
     {
-        return 'enabled';
+        return $this->telescopeConfig->isRecording() ? 'enabled' : 'paused';
     }
 }

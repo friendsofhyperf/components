@@ -15,8 +15,6 @@ use Closure;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\ApplicationContext;
 
-use function Hyperf\Config\config;
-
 class Telescope
 {
     public const SYNC = 0;
@@ -53,11 +51,6 @@ class Telescope
      * Indicates if Telescope should use the dark theme.
      */
     public static bool $useDarkTheme = false;
-
-    /**
-     * Indicates if Telescope should record entries.
-     */
-    public static bool $shouldRecord = false;
 
     /**
      * Indicates if Telescope migrations will be run.
@@ -145,10 +138,8 @@ class Telescope
 
     /**
      * Add a callback that adds tags to the record.
-     *
-     * @return static
      */
-    public static function tag(Closure $callback)
+    public static function tag(Closure $callback): static
     {
         static::$tagUsing[] = $callback;
 
@@ -157,10 +148,8 @@ class Telescope
 
     /**
      * Set the callback that filters the entries that should be recorded.
-     *
-     * @return static
      */
-    public static function filter(Closure $callback)
+    public static function filter(Closure $callback): static
     {
         static::$filterUsing[] = $callback;
 
@@ -170,6 +159,18 @@ class Telescope
     public static function getConfig(): TelescopeConfig
     {
         return ApplicationContext::getContainer()->get(TelescopeConfig::class);
+    }
+
+    /**
+     * Get the default JavaScript variables for Telescope.
+     */
+    public static function scriptVariables(): array
+    {
+        return [
+            'path' => static::getConfig()->getPath(),
+            'timezone' => static::getConfig()->getTimezone(),
+            'recording' => static::getConfig()->isRecording(),
+        ];
     }
 
     /**
@@ -199,7 +200,7 @@ class Telescope
             return $tagCallback($entry);
         }, static::$tagUsing)));
 
-        match (config('telescope.save_mode', 0)) {
+        match (static::getConfig()->getSaveMode()) {
             self::ASYNC => TelescopeContext::addEntry($entry),
             self::SYNC => $entry->create(),
             default => $entry->create(),

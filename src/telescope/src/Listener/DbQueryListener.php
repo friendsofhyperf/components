@@ -37,7 +37,7 @@ class DbQueryListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if ($this->telescopeConfig->isEnable('db') === false) {
+        if (! $this->telescopeConfig->isEnable('db')) {
             return;
         }
         if ($event instanceof QueryExecuted) {

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Controller;
 
+use FriendsOfHyperf\Telescope\Telescope;
 use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Annotation\Controller;
 use Hyperf\HttpServer\Annotation\GetMapping;
@@ -40,8 +41,15 @@ class ViewController
         if (! isset($this->caches[$blade])) {
             $this->caches[$blade] = file_get_contents($blade);
         }
+        $templateContent = $this->caches[$blade];
+        $params = [
+            '$telescopeScriptVariables' => json_encode(Telescope::scriptVariables()),
+        ];
+        foreach ($params as $key => $value) {
+            $templateContent = str_replace($key, $value, $templateContent);
+        }
 
-        return $this->response->html($this->caches[$blade]);
+        return $this->response->html($templateContent);
     }
 
     #[GetMapping(path: '/telescope/{view}/{id}')]

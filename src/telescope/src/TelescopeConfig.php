@@ -11,12 +11,16 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope;
 
+use FriendsOfHyperf\Telescope\Contract\CacheInterface;
 use FriendsOfHyperf\Telescope\Server\Server;
+use Hyperf\Context\ApplicationContext;
+use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Server\Event;
 use Hyperf\Server\ServerInterface;
 use Hyperf\Stringable\Str;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
 
 class TelescopeConfig
 {
@@ -91,7 +95,7 @@ class TelescopeConfig
 
     public function isEnable(string $key): bool
     {
-        return (bool) $this->get('enable.' . $key, false);
+        return ((bool) $this->get('enable.' . $key, false)) && $this->isRecording();
     }
 
     public function getAppName(): string
@@ -185,5 +189,45 @@ class TelescopeConfig
     public function getIgnoreCommands(): array
     {
         return $this->get('ignore_commands', []);
+    }
+
+    public function pauseRecording(): void
+    {
+        $this->getCache()?->set($this->getPauseRecordingCacheKey(), 1);
+    }
+
+    public function continueRecording(): void
+    {
+        $this->getCache()?->delete($this->getPauseRecordingCacheKey());
+    }
+
+    public function isRecording(): bool
+    {
+        if (Context::has($key = $this->getPauseRecordingCacheKey())) {
+            return false;
+        }
+
+        try {
+            Context::set($key, true);
+            return ((bool) $this->getCache()?->get($key)) === false;
+        } finally {
+            Context::destroy($key);
+        }
+    }
+
+    private function getPauseRecordingCacheKey(): string
+    {
+        return sprintf('telescope:%s:recording:pause', $this->getAppName());
+    }
+
+    private function getCache(): ?PsrCacheInterface
+    {
+        $container = ApplicationContext::getContainer();
+
+        return match (true) {
+            $container->has(CacheInterface::class) => $container->get(CacheInterface::class),
+            $container->has(PsrCacheInterface::class) => $container->get(PsrCacheInterface::class),
+            default => null,
+        };
     }
 }
