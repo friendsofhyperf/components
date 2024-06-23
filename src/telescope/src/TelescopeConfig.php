@@ -19,13 +19,13 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Server\Event;
 use Hyperf\Server\ServerInterface;
 use Hyperf\Stringable\Str;
-use Psr\Container\ContainerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
 
 class TelescopeConfig
 {
-    public function __construct( private ConfigInterface $config ) {
+    public function __construct(private ConfigInterface $config)
+    {
     }
 
     public function get(string $key, $default = null): mixed
