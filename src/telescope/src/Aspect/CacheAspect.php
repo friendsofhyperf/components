@@ -71,22 +71,16 @@ class CacheAspect extends AbstractAspect
     protected function processDriverFetch($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            $arguments = $proceedingJoinPoint->arguments['keys'];
-            $key = $arguments['key'] ?? '';
-
-            if (str_starts_with($key, 'telescope:')) {
-                return;
-            }
-
             if (! $this->telescopeConfig->isEnable('cache')) {
                 return;
             }
 
+            $arguments = $proceedingJoinPoint->arguments['keys'];
             [$has, $data] = $result;
 
             Telescope::recordCache(IncomingEntry::make([
                 'type' => $has ? 'hit' : 'missed',
-                'key' => $this->getCacheKey($key),
+                'key' => $this->getCacheKey($arguments['key'] ?? ''),
                 'value' => $data,
             ]));
         });
@@ -95,20 +89,15 @@ class CacheAspect extends AbstractAspect
     protected function processDriverGet($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            $arguments = $proceedingJoinPoint->arguments['keys'];
-            $key = $arguments['key'] ?? '';
-
-            if (str_starts_with($key, 'telescope:')) {
-                return;
-            }
-
             if (! $this->telescopeConfig->isEnable('cache')) {
                 return;
             }
 
+            $arguments = $proceedingJoinPoint->arguments['keys'];
+
             Telescope::recordCache(IncomingEntry::make([
                 'type' => is_null($result) ? 'missed' : 'hit',
-                'key' => $this->getCacheKey($key),
+                'key' => $this->getCacheKey($arguments['key'] ?? ''),
                 'value' => $result,
             ]));
         });
@@ -117,20 +106,15 @@ class CacheAspect extends AbstractAspect
     protected function processDriverSet($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function () use ($proceedingJoinPoint) {
-            $arguments = $proceedingJoinPoint->arguments['keys'];
-            $key = $arguments['key'] ?? '';
-
-            if (str_starts_with($key, 'telescope:')) {
-                return;
-            }
-
             if (! $this->telescopeConfig->isEnable('cache')) {
                 return;
             }
 
+            $arguments = $proceedingJoinPoint->arguments['keys'];
+
             Telescope::recordCache(IncomingEntry::make([
                 'type' => 'set',
-                'key' => $this->getCacheKey($key),
+                'key' => $this->getCacheKey($arguments['key'] ?? ''),
                 'value' => $arguments['value'],
             ]));
         });

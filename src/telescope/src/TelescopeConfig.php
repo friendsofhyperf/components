@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope;
 
 use FriendsOfHyperf\Telescope\Server\Server;
+use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Server\Event;
 use Hyperf\Server\ServerInterface;
@@ -202,7 +203,16 @@ class TelescopeConfig
 
     public function isRecording(): bool
     {
-        return ((bool) $this->cache?->get($this->getPauseRecordingCacheKey())) === false;
+        if (Context::has($this->getPauseRecordingCacheKey())) {
+            return false;
+        }
+
+        try {
+            Context::set($this->getPauseRecordingCacheKey(), true);
+            return ((bool) $this->cache?->get($this->getPauseRecordingCacheKey())) === false;
+        } finally {
+            Context::destroy($this->getPauseRecordingCacheKey());
+        }
     }
 
     private function getPauseRecordingCacheKey(): string
