@@ -186,7 +186,7 @@ class Telescope
         return [
             'path' => static::getConfig()->getPath(),
             'timezone' => static::getConfig()->getTimezone(),
-            'recording' => ! static::getCache()->get('telescope:pause-recording'),
+            'recording' => static::isRecording(),
         ];
     }
 
