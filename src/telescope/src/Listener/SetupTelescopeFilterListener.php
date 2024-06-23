@@ -28,8 +28,8 @@ class SetupTelescopeFilterListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        Telescope::filter(function (IncomingEntry $entry) {
-            return $entry->type == EntryType::CACHE && str_starts_with($entry->content['key'] ?? '', 'telescope:') ? false : true;
-        });
+        // Telescope::filter(function (IncomingEntry $entry) {
+        //     return $entry->type == EntryType::CACHE && str_starts_with($entry->content['key'] ?? '', 'telescope:') ? false : true;
+        // });
     }
 }
