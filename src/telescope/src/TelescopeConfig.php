@@ -213,6 +213,7 @@ class TelescopeConfig
         } finally {
             Context::destroy($key);
         }
+        return false;
     }
 
     private function getPauseRecordingCacheKey(): string
