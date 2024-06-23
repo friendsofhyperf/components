@@ -203,15 +203,15 @@ class TelescopeConfig
 
     public function isRecording(): bool
     {
-        if (Context::has($this->getPauseRecordingCacheKey())) {
+        if (Context::has($key = $this->getPauseRecordingCacheKey())) {
             return false;
         }
 
         try {
-            Context::set($this->getPauseRecordingCacheKey(), true);
-            return ((bool) $this->cache?->get($this->getPauseRecordingCacheKey())) === false;
+            Context::set($key, true);
+            return ((bool) $this->cache?->get($key)) === false;
         } finally {
-            Context::destroy($this->getPauseRecordingCacheKey());
+            Context::destroy($key);
         }
     }
 
