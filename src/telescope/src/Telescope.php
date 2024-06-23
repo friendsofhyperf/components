@@ -25,6 +25,8 @@ class Telescope
 
     public const ASYNC = 1;
 
+    public const PAUSE_RECORDING = 'telescope:pause-recording';
+
     /**
      * The list of hidden request headers.
      */
@@ -193,7 +195,7 @@ class Telescope
      */
     public static function stopRecording()
     {
-        static::getCache()->set('telescope:pause-recording', 1);
+        static::getCache()->set(self::PAUSE_RECORDING, 1);
     }
 
     /**
@@ -201,7 +203,7 @@ class Telescope
      */
     public static function startRecording(): void
     {
-        static::getCache()->set('telescope:pause-recording', 0);
+        static::getCache()->set(self::PAUSE_RECORDING, 0);
     }
 
     /**
@@ -209,7 +211,7 @@ class Telescope
      */
     public static function isRecording(): bool
     {
-        return ((bool) static::getCache()->get('telescope:pause-recording')) === false;
+        return ((bool) static::getCache()->get(self::PAUSE_RECORDING)) === false;
     }
 
     /**

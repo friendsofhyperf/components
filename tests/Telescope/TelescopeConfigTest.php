@@ -14,7 +14,7 @@ use Hyperf\Config\Config;
 
 beforeEach(function () {
     $this->mock(Psr\SimpleCache\CacheInterface::class, function ($mock) {
-        $mock->shouldReceive('get')->with('telescope:pause-recording')->andReturn(0);
+        $mock->shouldReceive('get')->with(Telescope::PAUSE_RECORDING)->andReturn(0);
     });
     $config = new Config([
         'telescope' => [
