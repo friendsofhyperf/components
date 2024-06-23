@@ -16,6 +16,7 @@ use FriendsOfHyperf\Telescope\Contract\CacheInterface;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\ApplicationContext;
 use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
+use Throwable;
 
 use function Hyperf\Config\config;
 
@@ -205,7 +206,11 @@ class Telescope
 
     public static function isStopRecording(): bool
     {
-        return (bool) static::getCache()?->get(self::PAUSE_RECORDING);
+        try {
+            return (bool) static::getCache()?->get(self::PAUSE_RECORDING);
+        } catch (Throwable) {
+            return false;
+        }
     }
 
     protected static function getCache(): ?PsrCacheInterface
