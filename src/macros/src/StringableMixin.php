@@ -30,7 +30,7 @@ class StringableMixin
     public function markdown()
     {
         /* @phpstan-ignore-next-line */
-        return fn (array $options = []) => new static(Str::markdown($this->value, $options));
+        return fn (array $options = [], array $extensions = []) => new static(Str::markdown($this->value, $options, $extensions));
     }
 
     public function toHtmlString()
