@@ -51,7 +51,16 @@ class StrMixin
 
     public function markdown()
     {
-        return fn ($string, array $options = []) => (string) (new GithubFlavoredMarkdownConverter($options))->convert($string);
+        return function ($string, array $options = [], array $extensions = []) {
+            $converter = new GithubFlavoredMarkdownConverter($options);
+            $environment = $converter->getEnvironment();
+
+            foreach ($extensions as $extension) {
+                $environment->addExtension($extension);
+            }
+
+            return (string) $converter->convert($string);
+        };
     }
 
     public function transliterate()

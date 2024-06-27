@@ -18,7 +18,7 @@ class Stringable
      *
      * @return static
      */
-    public function markdown(array $options = [])
+    public function markdown(array $options = [], array $extensions = [])
     {
     }
 

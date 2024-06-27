@@ -167,6 +167,38 @@ class Number
     }
 
     /**
+     * Clamp the given number between the given minimum and maximum.
+     *
+     * @return int|float
+     */
+    public static function clamp(int|float $number, int|float $min, int|float $max)
+    {
+        return min(max($number, $min), $max);
+    }
+
+    /**
+     * Split the given number into pairs of min/max values.
+     *
+     * @return array
+     */
+    public static function pairs(int|float $to, int|float $by, int|float $offset = 1)
+    {
+        $output = [];
+
+        for ($lower = 0; $lower < $to; $lower += $by) {
+            $upper = $lower + $by;
+
+            if ($upper > $to) {
+                $upper = $to;
+            }
+
+            $output[] = [$lower + $offset, $upper];
+        }
+
+        return $output;
+    }
+
+    /**
      * Execute the given callback using the given locale.
      *
      * @return mixed
@@ -189,10 +221,9 @@ class Number
     }
 
     /**
-     * Convert the number to its human readable equivalent.
+     * Convert the number to its human-readable equivalent.
      *
-     * @param int $number
-     * @return string
+     * @return string|false
      */
     protected static function summarize(int|float $number, int $precision = 0, ?int $maxPrecision = null, array $units = [])
     {
@@ -223,7 +254,7 @@ class Number
     }
 
     /**
-     * Ensure the "intl" PHP exntension is installed.
+     * Ensure the "intl" PHP extension is installed.
      */
     protected static function ensureIntlExtensionIsInstalled()
     {

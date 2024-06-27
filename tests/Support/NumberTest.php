@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Tests\Support;
 
 use FriendsOfHyperf\Support\Number;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -21,10 +22,9 @@ use PHPUnit\Framework\TestCase;
 #[\PHPUnit\Framework\Attributes\Group('support')]
 class NumberTest extends TestCase
 {
+    #[RequiresPhpExtension('intl')]
     public function testFormat()
     {
-        $this->needsIntlExtension();
-
         $this->assertSame('0', Number::format(0));
         $this->assertSame('0', Number::format(0.0));
         $this->assertSame('0', Number::format(0.00));
@@ -54,10 +54,9 @@ class NumberTest extends TestCase
         $this->assertSame('NaN', Number::format(NAN));
     }
 
+    #[RequiresPhpExtension('intl')]
     public function testFormatWithDifferentLocale()
     {
-        $this->needsIntlExtension();
-
         $this->assertSame('123,456,789', Number::format(123456789, locale: 'en'));
         $this->assertSame('123.456.789', Number::format(123456789, locale: 'de'));
         $this->assertSame('123 456 789', Number::format(123456789, locale: 'fr'));
@@ -65,10 +64,9 @@ class NumberTest extends TestCase
         $this->assertSame('123 456 789', Number::format(123456789, locale: 'sv'));
     }
 
+    #[RequiresPhpExtension('intl')]
     public function testFormatWithAppLocale()
     {
-        $this->needsIntlExtension();
-
         $this->assertSame('123,456,789', Number::format(123456789));
 
         Number::useLocale('de');
@@ -84,11 +82,25 @@ class NumberTest extends TestCase
         $this->assertSame('one point two', Number::spell(1.2));
     }
 
+    #[RequiresPhpExtension('intl')]
     public function testSpelloutWithLocale()
     {
-        $this->needsIntlExtension();
-
         $this->assertSame('trois', Number::spell(3, 'fr'));
+    }
+
+    #[RequiresPhpExtension('intl')]
+    public function testSpelloutWithThreshold()
+    {
+        $this->assertSame('9', Number::spell(9, after: 10));
+        $this->assertSame('10', Number::spell(10, after: 10));
+        $this->assertSame('eleven', Number::spell(11, after: 10));
+
+        $this->assertSame('nine', Number::spell(9, until: 10));
+        $this->assertSame('10', Number::spell(10, until: 10));
+        $this->assertSame('11', Number::spell(11, until: 10));
+
+        $this->assertSame('ten thousand', Number::spell(10000, until: 50000));
+        $this->assertSame('100,000', Number::spell(100000, until: 50000));
     }
 
     public function testOrdinal()
@@ -98,10 +110,9 @@ class NumberTest extends TestCase
         $this->assertSame('3rd', Number::ordinal(3));
     }
 
+    #[RequiresPhpExtension('intl')]
     public function testToPercent()
     {
-        $this->needsIntlExtension();
-
         $this->assertSame('0%', Number::percentage(0, precision: 0));
         $this->assertSame('0%', Number::percentage(0));
         $this->assertSame('1%', Number::percentage(1));
@@ -122,10 +133,9 @@ class NumberTest extends TestCase
         $this->assertSame('0.1235%', Number::percentage(0.12345, precision: 4));
     }
 
+    #[RequiresPhpExtension('intl')]
     public function testToCurrency()
     {
-        $this->needsIntlExtension();
-
         $this->assertSame('$0.00', Number::currency(0));
         $this->assertSame('$1.00', Number::currency(1));
         $this->assertSame('$10.00', Number::currency(10));
@@ -139,10 +149,9 @@ class NumberTest extends TestCase
         $this->assertSame('$5.32', Number::currency(5.325));
     }
 
+    #[RequiresPhpExtension('intl')]
     public function testToCurrencyWithDifferentLocale()
     {
-        $this->needsIntlExtension();
-
         $this->assertSame('1,00 €', Number::currency(1, 'EUR', 'de'));
         $this->assertSame('1,00 $', Number::currency(1, 'USD', 'de'));
         $this->assertSame('1,00 £', Number::currency(1, 'GBP', 'de'));
@@ -169,6 +178,15 @@ class NumberTest extends TestCase
         $this->assertSame('1 ZB', Number::fileSize(1024 ** 7));
         $this->assertSame('1 YB', Number::fileSize(1024 ** 8));
         $this->assertSame('1,024 YB', Number::fileSize(1024 ** 9));
+    }
+
+    public function testClamp()
+    {
+        $this->assertSame(2, Number::clamp(1, 2, 3));
+        $this->assertSame(3, Number::clamp(5, 2, 3));
+        $this->assertSame(5, Number::clamp(5, 1, 10));
+        $this->assertSame(4.5, Number::clamp(4.5, 1, 10));
+        $this->assertSame(1, Number::clamp(-10, 1, 5));
     }
 
     public function testToHuman()
@@ -283,10 +301,10 @@ class NumberTest extends TestCase
         $this->assertSame('-1KQ', Number::abbreviate(-1000000000000000000));
     }
 
-    protected function needsIntlExtension()
+    public function testPairs()
     {
-        if (! extension_loaded('intl')) {
-            $this->markTestSkipped('The intl extension is not installed. Please install the extension to enable ' . __CLASS__);
-        }
+        $this->assertSame([[1, 10], [11, 20], [21, 25]], Number::pairs(25, 10));
+        $this->assertSame([[0, 10], [10, 20], [20, 25]], Number::pairs(25, 10, 0));
+        $this->assertSame([[0, 2.5], [2.5, 5.0], [5.0, 7.5], [7.5, 10.0]], Number::pairs(10, 2.5, 0));
     }
 }
