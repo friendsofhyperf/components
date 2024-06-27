@@ -33,7 +33,7 @@ class Str
      * @param string $string
      * @return string
      */
-    public static function markdown($string, array $options = [])
+    public static function markdown($string, array $options = [], array $extensions = [])
     {
     }
 
