@@ -167,6 +167,16 @@ class Number
     }
 
     /**
+     * Clamp the given number between the given minimum and maximum.
+     *
+     * @return int|float
+     */
+    public static function clamp(int|float $number, int|float $min, int|float $max)
+    {
+        return min(max($number, $min), $max);
+    }
+
+    /**
      * Execute the given callback using the given locale.
      *
      * @return mixed
@@ -189,10 +199,9 @@ class Number
     }
 
     /**
-     * Convert the number to its human readable equivalent.
+     * Convert the number to its human-readable equivalent.
      *
-     * @param int $number
-     * @return string
+     * @return string|false
      */
     protected static function summarize(int|float $number, int $precision = 0, ?int $maxPrecision = null, array $units = [])
     {
@@ -223,7 +232,7 @@ class Number
     }
 
     /**
-     * Ensure the "intl" PHP exntension is installed.
+     * Ensure the "intl" PHP extension is installed.
      */
     protected static function ensureIntlExtensionIsInstalled()
     {
