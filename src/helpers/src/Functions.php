@@ -113,12 +113,11 @@ function blank($value): bool
  *
  * If an array is passed, we'll assume you want to put to the cache.
  *
- * @return CacheInterface|mixed
+ * @return ($arguments is empty ? CacheInterface : mixed)
  * @throws Exception
  */
-function cache()
+function cache(...$arguments)
 {
-    $arguments = func_get_args();
     $cache = di(CacheInterface::class);
 
     if (empty($arguments)) {
