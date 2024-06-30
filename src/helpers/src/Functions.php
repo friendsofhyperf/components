@@ -141,7 +141,7 @@ function cache()
 /**
  * Create a new cookie instance.
  *
- * @return Cookie|CookieJarInterface
+ * @return ($name is null ? CookieJarInterface : Cookie)
  */
 function cookie(?string $name = null, ?string $value = null, int $minutes = 0, ?string $path = null, ?string $domain = null, bool $secure = false, bool $httpOnly = true, bool $raw = false, ?string $sameSite = null)
 {
