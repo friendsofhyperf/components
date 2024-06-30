@@ -307,6 +307,7 @@ function literal(...$arguments)
 
 /**
  * @param string|Stringable|null $message
+ * @return ($message is null ? LoggerInterface : void)
  */
 function logger($message = null, array $context = [], bool $backtrace = false)
 {
@@ -385,7 +386,7 @@ function preg_replace_array(string $pattern, array $replacements, string $subjec
  *
  * @param callable|class-string<T> $abstract
  *
- * @return Closure|ContainerInterface|T
+ * @return ($abstract is callable ? Closure : T)
  */
 function resolve(string|callable $abstract, array $parameters = [])
 {
@@ -400,7 +401,7 @@ function resolve(string|callable $abstract, array $parameters = [])
  * Get an instance of the current request or an input item from the request.
  * @param array|string|null $key
  * @param mixed $default
- * @return array|mixed|RequestInterface
+ * @return ($key is null ? RequestInterface : ($key is array ? array : mixed))
  */
 function request($key = null, $default = null)
 {
@@ -456,7 +457,7 @@ function response($content = '', $status = 200, array $headers = [])
  *
  * @param array|string|null $key
  * @param mixed $default
- * @return mixed|SessionInterface
+ * @return ($key is null ? SessionInterface : ($key is array ? void : mixed)
  */
 function session($key = null, $default = null)
 {
