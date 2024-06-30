@@ -59,7 +59,7 @@ use function Hyperf\Tappable\tap;
  *
  * @param callable|class-string<T> $abstract
  *
- * @return Closure|ContainerInterface|T
+ * @return ($abstract is callable ? Closure : T)
  */
 function app(string|callable|null $abstract = null, array $parameters = [])
 {
