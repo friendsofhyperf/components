@@ -307,7 +307,7 @@ function literal(...$arguments)
 
 /**
  * @param string|Stringable|null $message
- * @return ($message is null ? LoggerInterface : void)
+ * @return ($message is null ? LoggerInterface : mixed)
  */
 function logger($message = null, array $context = [], bool $backtrace = false)
 {
