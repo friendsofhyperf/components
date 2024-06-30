@@ -457,7 +457,7 @@ function response($content = '', $status = 200, array $headers = [])
  *
  * @param array|string|null $key
  * @param mixed $default
- * @return ($key is null ? SessionInterface : ($key is array ? void : mixed)
+ * @return ($key is null ? SessionInterface : ($key is array ? void : mixed))
  */
 function session($key = null, $default = null)
 {
