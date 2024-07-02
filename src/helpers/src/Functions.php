@@ -47,7 +47,6 @@ use Psr\SimpleCache\CacheInterface;
 use RuntimeException;
 use stdClass;
 use Stringable;
-use Throwable;
 
 use function Hyperf\Collection\value;
 use function Hyperf\Tappable\tap;
@@ -489,13 +488,15 @@ function today($tz = null): Carbon
 /**
  * Throw the given exception if the given condition is true.
  *
- * @template T
+ * @template TValue
+ * @template TException of \Throwable
  *
- * @param T $condition
- * @param string|Throwable $exception
- * @param array ...$parameters
- * @return T
- * @throws Throwable
+ * @param TValue $condition
+ * @param TException|class-string<TException>|string $exception
+ * @param mixed ...$parameters
+ * @return TValue
+ *
+ * @throws TException
  */
 function throw_if($condition, $exception, ...$parameters)
 {
@@ -513,13 +514,15 @@ function throw_if($condition, $exception, ...$parameters)
 /**
  * Throw the given exception unless the given condition is true.
  *
- * @template T
+ * @template TValue
+ * @template TException of \Throwable
  *
- * @param T $condition
- * @param string|Throwable $exception
- * @param array ...$parameters
- * @return T
- * @throws Throwable
+ * @param TValue $condition
+ * @param TException|class-string<TException>|string $exception
+ * @param mixed ...$parameters
+ * @return TValue
+ *
+ * @throws TException
  */
 function throw_unless($condition, $exception, ...$parameters)
 {
