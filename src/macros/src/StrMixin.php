@@ -11,30 +11,18 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Macros;
 
-use FriendsOfHyperf\Support\UuidContainer;
 use Hyperf\Stringable\Str;
 use League\CommonMark\Environment\Environment;
 use League\CommonMark\Extension\GithubFlavoredMarkdownExtension;
 use League\CommonMark\Extension\InlinesOnly\InlinesOnlyExtension;
 use League\CommonMark\GithubFlavoredMarkdownConverter;
 use League\CommonMark\MarkdownConverter;
-use voku\helper\ASCII;
 
 /**
  * @mixin Str
  */
 class StrMixin
 {
-    public function createUuidsNormally()
-    {
-        return fn () => UuidContainer::$uuidFactory = null;
-    }
-
-    public function createUuidsUsing()
-    {
-        return fn (?callable $factory = null) => UuidContainer::$uuidFactory = $factory;
-    }
-
     public function inlineMarkdown()
     {
         return function ($string, array $options = []) {
@@ -61,10 +49,5 @@ class StrMixin
 
             return (string) $converter->convert($string);
         };
-    }
-
-    public function transliterate()
-    {
-        return fn ($string, $unknown = '?', $strict = false) => ASCII::to_transliterate($string, $unknown, $strict);
     }
 }
