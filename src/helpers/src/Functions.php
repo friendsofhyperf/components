@@ -245,11 +245,11 @@ function environment(...$environments)
 /**
  * Dispatch an event and call the listeners.
  *
- * @template T of object
+ * @template TValue of object
  *
- * @param T $event
+ * @param TValue $event
  *
- * @return T
+ * @return TValue
  */
 function event(object $event)
 {
@@ -341,12 +341,12 @@ function now($tz = null): Carbon
 /**
  * Get an item from an object using "dot" notation.
  *
- * @template T of object
+ * @template TValue of object
  *
- * @param T $object
+ * @param TValue $object
  * @param string|null $key
  * @param mixed $default
- * @return mixed|T
+ * @return ($key is empty ? TValue : mixed)
  */
 function object_get($object, $key = '', $default = null)
 {
