@@ -54,11 +54,11 @@ use function Hyperf\Tappable\tap;
 /**
  * Get the available container instance.
  *
- * @template T
+ * @template TClass
  *
- * @param callable|class-string<T> $abstract
+ * @param callable|class-string<TClass>|string $abstract
  *
- * @return ($abstract is callable ? Closure : T)
+ * @return ($abstract is callable ? Closure : ($abstract is class-string<TClass> ? TClass : mixed))
  */
 function app(string|callable|null $abstract = null, array $parameters = [])
 {
@@ -167,11 +167,11 @@ function class_namespace($class): string
 /**
  * Get the available container instance.
  *
- * @template T
+ * @template TClass
  *
- * @param class-string<T> $abstract
+ * @param class-string<TClass>|string|null $abstract
  *
- * @return ContainerInterface|T
+ * @return ($abstract is null ? ContainerInterface : ($abstract is class-string<TClass> ? TClass : mixed))
  */
 function di(?string $abstract = null, array $parameters = [])
 {
@@ -380,11 +380,11 @@ function preg_replace_array(string $pattern, array $replacements, string $subjec
 /**
  * Resolve a service from the container.
  *
- * @template T
+ * @template TClass
  *
- * @param callable|class-string<T> $abstract
+ * @param callable|class-string<TClass>|string $abstract
  *
- * @return ($abstract is callable ? Closure : T)
+ * @return ($abstract is callable ? Closure : ($abstract is class-string<TClass> ? TClass : mixed))
  */
 function resolve(string|callable $abstract, array $parameters = [])
 {

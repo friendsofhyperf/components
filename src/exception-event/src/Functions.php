@@ -44,10 +44,10 @@ function report(string|Throwable $exception = 'RuntimeException', ...$parameters
 }
 
 /**
- * @template T
+ * @template TValue
  *
- * @param T $condition
- * @return T
+ * @param TValue $condition
+ * @return TValue
  */
 function report_if($condition, string|Throwable $exception = 'RuntimeException', ...$parameters)
 {
@@ -59,10 +59,10 @@ function report_if($condition, string|Throwable $exception = 'RuntimeException',
 }
 
 /**
- * @template T
+ * @template TValue
  *
- * @param T $condition
- * @return T
+ * @param TValue $condition
+ * @return TValue
  */
 function report_unless($condition, string|Throwable $exception = 'RuntimeException', ...$parameters)
 {
