@@ -18,12 +18,13 @@ use function Hyperf\Support\value;
 
 /**
  * Retry an operation a given number of times.
+ * @template TReturn
  *
  * @param array|int $times
+ * @param callable(int):TReturn $callback
  * @param Closure|int $sleepMilliseconds
  * @param callable|null $when
- * @return mixed
- *
+ * @return TReturn|void
  * @throws Exception
  */
 function retry($times, callable $callback, $sleepMilliseconds = 0, $when = null)
@@ -60,10 +61,10 @@ function retry($times, callable $callback, $sleepMilliseconds = 0, $when = null)
 }
 
 /**
- * @template T
+ * @template TReturn
  *
- * @param (callable(): T) $callback
- * @return T
+ * @param (callable(): TReturn) $callback
+ * @return TReturn
  */
 function once(callable $callback): mixed
 {
