@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tests\Support\Stub;
 
+use function FriendsOfHyperf\Support\once;
+
 class TestClass
 {
     protected int $randomNumber;
