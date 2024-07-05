@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Once;
+namespace FriendsOfHyperf\Support;
 
 class ConfigProvider
 {

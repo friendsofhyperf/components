@@ -113,6 +113,6 @@ class DatabaseLock extends AbstractLock
      */
     protected function getCurrentOwner()
     {
-        return optional($this->connection->table($this->table)->where('key', $this->name)->first())->owner;
+        return optional($this->connection->table($this->table)->where('key', $this->name)->first())->owner; // @phpstan-ignore-line
     }
 }

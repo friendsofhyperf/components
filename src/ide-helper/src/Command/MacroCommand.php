@@ -163,7 +163,7 @@ class MacroCommand extends HyperfCommand
      */
     private function prepareParameter(ReflectionParameter $parameter): string
     {
-        $parameterString = trim(optional($parameter->getType())->getName() . ' $' . $parameter->getName());
+        $parameterString = trim(optional($parameter->getType())->getName() . ' $' . $parameter->getName()); // @phpstan-ignore-line
 
         if ($parameter->isOptional()) {
             if ($parameter->isVariadic()) {

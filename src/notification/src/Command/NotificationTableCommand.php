@@ -21,7 +21,7 @@ class NotificationTableCommand extends Command
 
     public function handle()
     {
-        copy(__DIR__ . '/Stubs/2021_04_18_224626_notifications_table.php', BASE_PATH . '/migrations/2021_04_18_224626_notifications_table.php');
+        copy(__DIR__ . '/Stubs/2021_04_18_224626_notifications_table.stub', BASE_PATH . '/migrations/2021_04_18_224626_notifications_table.php');
         $this->output->success('Migration created successfully!');
     }
 }

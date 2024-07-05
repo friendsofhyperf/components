@@ -351,7 +351,9 @@ class MailManager implements Factory
             $options
         ));
 
-        return tap($transport);
+        tap($transport); // Nothing to do
+
+        return $transport;
     }
 
     /**

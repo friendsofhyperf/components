@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 use FriendsOfHyperf\Support\Once\Cache;
+use FriendsOfHyperf\Tests\Support\Stub\TestClass;
 
 use function FriendsOfHyperf\Support\once;
 
@@ -291,20 +292,3 @@ it('can count the items in the cache', function () {
     $anotherTestClass->getRandomNumber();
     expect($this->cache->count())->toBe(2);
 });
-
-class TestClass
-{
-    protected int $randomNumber;
-
-    public function __construct()
-    {
-        $this->randomNumber = rand(1, 1000000);
-    }
-
-    public function getRandomNumber()
-    {
-        return once(function () {
-            return $this->randomNumber;
-        });
-    }
-}
