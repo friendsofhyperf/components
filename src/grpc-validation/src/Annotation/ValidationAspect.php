@@ -48,7 +48,10 @@ class ValidationAspect extends AbstractAspect
             Context::set(ValidatorInterface::class, $validator);
 
             if ($resolve && $validator->fails()) {
-                throw new ValidationException($validator->errors()->first());
+                throw new ValidationException(
+                    $validator->errors()->first(),
+                    previous: new \Hyperf\Validation\ValidationException($validator)
+                );
             }
         }
 
