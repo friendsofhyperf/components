@@ -897,7 +897,7 @@ class PendingRequest
                             $response->throw($this->throwCallback);
                         }
 
-                        $potentialTries = is_array($this->tries)
+                        $potentialTries = is_array($this->tries) // @phpstan-ignore-line
                             ? count($this->tries) + 1
                             : $this->tries;
 
