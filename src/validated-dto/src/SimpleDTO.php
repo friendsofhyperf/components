@@ -198,6 +198,8 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
                 $this->validatedData[$key] = $formatted;
             }
         }
+
+        $this->data = [];
     }
 
     /**

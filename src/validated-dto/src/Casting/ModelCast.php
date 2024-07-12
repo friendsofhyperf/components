@@ -18,6 +18,9 @@ use Throwable;
 
 class ModelCast implements Castable
 {
+    /**
+     * @param class-string<Model> $modelClass
+     */
     public function __construct(private string $modelClass)
     {
     }
