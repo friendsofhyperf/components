@@ -36,5 +36,8 @@ interface BaseDTO extends Arrayable
 
     public function toPrettyJson(): string;
 
+    /**
+     * @param class-string<Model> $model
+     */
     public function toModel(string $model): Model;
 }

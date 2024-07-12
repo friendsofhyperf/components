@@ -30,6 +30,9 @@ trait DataTransformer
         return json_encode($this->buildDataForExport(), JSON_PRETTY_PRINT);
     }
 
+    /**
+     * @param class-string<Model> $model
+     */
     public function toModel(string $model): Model
     {
         return new $model($this->buildDataForExport());
