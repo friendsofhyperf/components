@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\AttributesDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\CallableCastingDTOInstance;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\SimpleDTOInstance;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\SimpleMapBeforeExportDTO;
@@ -283,4 +284,16 @@ it('casts properties with castable classes and callables', function () {
         ->toBe('Doe')
         ->and($dto->age)
         ->toBe(30);
+});
+
+it('checks that update for property reflects while converting DTO', function () {
+    $dto = AttributesDTO::fromArray([
+        'age' => 18,
+        'doc' => 'test',
+    ]);
+
+    $dto->age = 20;
+
+    expect($dto->age)->toBe(20)
+        ->and($dto->toArray())->toBe(['age' => 20, 'doc' => 'test']);
 });
