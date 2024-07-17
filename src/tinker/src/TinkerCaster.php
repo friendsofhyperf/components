@@ -202,6 +202,7 @@ class TinkerCaster
         }
 
         $results[Caster::PREFIX_PROTECTED . 'validatedData'] = (fn () => $this->validatedData ?? [])->call($dto);
+        $results[Caster::PREFIX_VIRTUAL . $dto::class . '::toArray()'] = $dto->toArray();
 
         return $results;
     }
