@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tinker;
 
-use FriendsOfHyperf\ValidatedDTO\SimpleDTO;
 use ReflectionClass;
 use ReflectionProperty;
 use Stringable;
@@ -190,7 +189,7 @@ class TinkerCaster
     }
 
     /**
-     * @param SimpleDTO $dto
+     * @param \FriendsOfHyperf\ValidatedDTO\SimpleDTO $dto
      */
     public function castSimpleDTO($dto): array
     {
