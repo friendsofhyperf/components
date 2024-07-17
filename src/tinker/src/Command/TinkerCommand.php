@@ -139,6 +139,7 @@ class TinkerCommand extends HyperfCommand
             'Hyperf\ViewEngine\HtmlString' => 'FriendsOfHyperf\Tinker\TinkerCaster::castHtmlString',
             'Stringable' => 'FriendsOfHyperf\Tinker\TinkerCaster::castStringable',
             'Symfony\Component\Console\Application' => 'FriendsOfHyperf\Tinker\TinkerCaster::castApplication',
+            'FriendsOfHyperf\ValidatedDTO\SimpleDTO' => 'FriendsOfHyperf\Tinker\TinkerCaster::castSimpleDTO',
         ];
 
         return array_merge($casters, (array) $this->config->get('tinker.casters', []));

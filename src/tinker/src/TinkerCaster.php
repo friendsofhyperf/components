@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tinker;
 
+use ReflectionClass;
+use ReflectionProperty;
 use Stringable;
 use Symfony\Component\VarDumper\Caster\Caster;
 use Throwable;
@@ -184,5 +186,24 @@ class TinkerCaster
             Caster::PREFIX_PROTECTED . 'messages' => $messageBag->getMessages(),
             Caster::PREFIX_PROTECTED . 'format' => $messageBag->getFormat(),
         ];
+    }
+
+    /**
+     * @param \FriendsOfHyperf\ValidatedDTO\SimpleDTO $dto
+     */
+    public static function castSimpleDTO($dto): array
+    {
+        $reflectionClass = new ReflectionClass($dto);
+        $results = [];
+
+        foreach ($reflectionClass->getProperties(ReflectionProperty::IS_PUBLIC) as $property) {
+            $property->setAccessible(true);
+            $results[Caster::PREFIX_VIRTUAL . $property->getName()] = $property->getValue($dto);
+        }
+
+        $results[Caster::PREFIX_PROTECTED . 'validatedData'] = (fn () => $this->validatedData ?? [])->call($dto);
+        $results[Caster::PREFIX_VIRTUAL . $dto::class . '::toArray()'] = $dto->toArray();
+
+        return $results;
     }
 }
