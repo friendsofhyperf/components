@@ -191,7 +191,7 @@ class TinkerCaster
     /**
      * @param \FriendsOfHyperf\ValidatedDTO\SimpleDTO $dto
      */
-    public function castSimpleDTO($dto): array
+    public static function castSimpleDTO($dto): array
     {
         $reflectionClass = new ReflectionClass($this);
         $results = [];
