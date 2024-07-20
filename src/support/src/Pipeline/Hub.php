@@ -19,11 +19,6 @@ use Psr\Container\ContainerInterface;
 class Hub implements HubInterface
 {
     /**
-     * The container implementation.
-     */
-    protected ?ContainerInterface $container = null;
-
-    /**
      * All of the available pipelines.
      */
     protected array $pipelines = [];
@@ -31,7 +26,7 @@ class Hub implements HubInterface
     /**
      * Create a new Hub instance.
      */
-    public function __construct(?ContainerInterface $container = null)
+    public function __construct(protected ?ContainerInterface $container = null)
     {
         $this->container = $container;
     }

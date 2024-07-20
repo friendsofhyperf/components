@@ -20,14 +20,17 @@ class Util
      */
     public static function getInternalIp(): string
     {
-        $ips = swoole_get_local_ip();
+        if (function_exists('swoole_get_local_ip')) {
+            $ips = swoole_get_local_ip();
 
-        if (is_array($ips) && ! empty($ips)) {
-            return current($ips);
+            if (is_array($ips) && ! empty($ips)) {
+                return current($ips);
+            }
         }
 
         /** @var mixed|string $ip */
         $ip = gethostbyname(gethostname());
+
         if (is_string($ip)) {
             return $ip;
         }
