@@ -41,10 +41,7 @@ class Subscriber
      */
     public function subscribe(string ...$channels): void
     {
-        $channels = array_map(function ($channel) {
-            return $this->prefix . $channel;
-        }, $channels);
-
+        $channels = array_map(fn ($channel) => $this->prefix . $channel, $channels);
         $result = $this->commandInvoker->invoke(['subscribe', ...$channels], count($channels));
 
         foreach ($result as $value) {
@@ -62,10 +59,7 @@ class Subscriber
      */
     public function unsubscribe(string ...$channels): void
     {
-        $channels = array_map(function ($channel) {
-            return $this->prefix . $channel;
-        }, $channels);
-
+        $channels = array_map(fn ($channel) => $this->prefix . $channel, $channels);
         $result = $this->commandInvoker->invoke(['unsubscribe', ...$channels], count($channels));
 
         foreach ($result as $value) {
@@ -83,10 +77,7 @@ class Subscriber
      */
     public function psubscribe(string ...$channels): void
     {
-        $channels = array_map(function ($channel) {
-            return $this->prefix . $channel;
-        }, $channels);
-
+        $channels = array_map(fn ($channel) => $this->prefix . $channel, $channels);
         $result = $this->commandInvoker->invoke(['psubscribe', ...$channels], count($channels));
 
         foreach ($result as $value) {
@@ -104,10 +95,7 @@ class Subscriber
      */
     public function punsubscribe(string ...$channels): void
     {
-        $channels = array_map(function ($channel) {
-            return $this->prefix . $channel;
-        }, $channels);
-
+        $channels = array_map(fn ($channel) => $this->prefix . $channel, $channels);
         $result = $this->commandInvoker->invoke(['punsubscribe', ...$channels], count($channels));
 
         foreach ($result as $value) {
@@ -138,7 +126,7 @@ class Subscriber
     /**
      * @throws SocketException
      */
-    public function ping(int $timeout = 1): string|bool
+    public function ping(float $timeout = 1): string|bool
     {
         return $this->commandInvoker->ping($timeout);
     }

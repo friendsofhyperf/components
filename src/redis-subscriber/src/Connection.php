@@ -41,6 +41,7 @@ class Connection
         if ($size === false) {
             throw new SocketException('Failed to send data to the socket.');
         }
+
         if ($len !== $size) {
             throw new SocketException('The sending data is incomplete, it may be that the socket has been closed by the peer.');
         }
