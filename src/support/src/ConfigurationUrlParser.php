@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Support;
 
 use Hyperf\Collection\Arr;
 use InvalidArgumentException;
+use JsonException;
 
 class ConfigurationUrlParser
 {
@@ -159,10 +160,9 @@ class ConfigurationUrlParser
             return $value;
         }
 
-        $parsedValue = json_decode($value, true);
-
-        if (json_last_error() === JSON_ERROR_NONE) {
-            return $parsedValue;
+        try {
+            return json_decode($value, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
         }
 
         return $value;
