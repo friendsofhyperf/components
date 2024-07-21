@@ -73,7 +73,7 @@ class CommandInvoker
         return true;
     }
 
-    public function ping(int $timeout = 1): string|bool
+    public function ping(float $timeout = 1): string|bool
     {
         $this->connection->send(CommandBuilder::build('ping'));
         return $this->pingChannel->pop($timeout);
@@ -84,6 +84,7 @@ class CommandInvoker
      */
     protected function receive(Connection $connection): void
     {
+        /** @var array|null $buffer */
         $buffer = null;
 
         while (true) {
@@ -129,7 +130,7 @@ class CommandInvoker
                 $message = new Message();
                 $message->channel = $buffer[4];
                 $message->payload = $buffer[6];
-                $timerID = $this->timer->after(30, function () use ($message) {
+                $timerID = $this->timer->after(30.0, function () use ($message) {
                     $this->logger?->error(sprintf('Message channel (%s) is 30 seconds full, disconnected', $message->channel));
                     $this->interrupt();
                 });
@@ -156,7 +157,7 @@ class CommandInvoker
                 $message->pattern = $buffer[4];
                 $message->channel = $buffer[6];
                 $message->payload = $buffer[8];
-                $timerID = $this->timer->after(30, function () use ($message) {
+                $timerID = $this->timer->after(30.0, function () use ($message) {
                     $this->logger?->error(sprintf('Message channel (%s) is 30 seconds full, disconnected', $message->channel));
                     $this->interrupt();
                 });
