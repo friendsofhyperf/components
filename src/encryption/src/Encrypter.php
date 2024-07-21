@@ -15,6 +15,7 @@ use FriendsOfHyperf\Encryption\Contract\DecryptException;
 use FriendsOfHyperf\Encryption\Contract\Encrypter as EncrypterContract;
 use FriendsOfHyperf\Encryption\Contract\EncryptException;
 use FriendsOfHyperf\Encryption\Contract\StringEncrypter;
+use JsonException;
 use RuntimeException;
 
 class Encrypter implements EncrypterContract, StringEncrypter
@@ -111,10 +112,10 @@ class Encrypter implements EncrypterContract, StringEncrypter
             ? '' // For AEAD-algorithms, the tag / MAC is returned by openssl_encrypt...
             : $this->hash($iv, $value, $this->key);
 
-        $json = json_encode(compact('iv', 'value', 'mac', 'tag'), JSON_UNESCAPED_SLASHES);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            throw new EncryptException('Could not encrypt the data.');
+        try {
+            $json = json_encode(compact('iv', 'value', 'mac', 'tag'), JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR);
+        } catch (JsonException $e) {
+            throw new EncryptException('Could not encrypt the data.', previous: $e);
         }
 
         return base64_encode($json);
