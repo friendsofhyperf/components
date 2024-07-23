@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Macros;
 
+use BackedEnum;
 use Carbon\Carbon;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\Context;
@@ -83,6 +84,7 @@ class RequestMixin
     public function enum()
     {
         return function ($key, $enumClass) {
+            /** @var class-string<BackedEnum> $enumClass */
             if (
                 $this->isNotFilled($key)
                 || ! function_exists('enum_exists')
@@ -238,7 +240,6 @@ class RequestMixin
     public function merge()
     {
         return function (array $input) {
-            /* @phpstan-ignore-next-line */
             Context::override($this->contextkeys['parsedData'], fn ($inputs) => array_replace((array) $inputs, $input));
 
             return $this;
