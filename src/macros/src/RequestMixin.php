@@ -240,7 +240,7 @@ class RequestMixin
     public function merge()
     {
         return function (array $input) {
-            Context::override($this->contextkeys['parsedData'], fn ($inputs) => array_replace((array) $inputs, $input));
+            Context::override($this->contextkeys['parsedData'], fn ($inputs) => array_replace((array) $inputs, $input)); // @phpstan-ignore-line
 
             return $this;
         };
