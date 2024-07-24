@@ -448,10 +448,10 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     private function isArrayable(mixed $value): bool
     {
         return is_array($value)
-            || $value instanceof Arrayable
             || $value instanceof Collection
             || $value instanceof ValidatedDTO
             || $value instanceof Model
+            || $value instanceof Arrayable
             || (is_object($value) && ! ($value instanceof UploadedFile));
     }
 
