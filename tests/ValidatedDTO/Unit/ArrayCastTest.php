@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\ArrayableObjectDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\ValidatedDTOInstance;
 use FriendsOfHyperf\ValidatedDTO\Casting\ArrayCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\BooleanCast;
@@ -61,4 +62,16 @@ it('properly casts an DTOCast', function () {
 
     expect($result[0]->toArray())->toEqual($johnDto->toArray())
         ->and($result[1]->toArray())->toEqual($maryDto->toArray());
+});
+
+it('properly casts an Arrayable object to array', function () {
+    $dto = ArrayableObjectDTO::fromArray([
+        'object' => 'arrayable-object-key',
+    ]);
+
+    expect($dto->toArray())->toBe([
+        'object' => [
+            'key' => 'arrayable-object-key',
+        ],
+    ]);
 });

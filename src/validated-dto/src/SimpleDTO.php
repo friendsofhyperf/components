@@ -28,6 +28,7 @@ use FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException;
 use FriendsOfHyperf\ValidatedDTO\Exception\MissingCastTypeException;
 use Hyperf\Collection\Collection;
 use Hyperf\Context\ApplicationContext;
+use Hyperf\Contract\Arrayable;
 use Hyperf\Contract\CastsAttributes;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ValidatorInterface;
@@ -450,6 +451,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             || $value instanceof Collection
             || $value instanceof ValidatedDTO
             || $value instanceof Model
+            || $value instanceof Arrayable
             || (is_object($value) && ! ($value instanceof UploadedFile));
     }
 
@@ -463,6 +465,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             $value instanceof Collection => $this->transformCollectionToArray($value),
             $value instanceof Model => $this->transformModelToArray($value),
             $value instanceof SimpleDTO => $this->transformDTOToArray($value),
+            $value instanceof Arrayable => $value->toArray(),
             is_object($value) => (array) $value,
             default => [],
         };
