@@ -216,9 +216,9 @@ class MailManager implements Factory
         $transport = $factory->create(new Dsn(
             $scheme,
             $config['host'],
-            (string)Arr::get($config,'username'),
-            (string)Arr::get($config,'password'),
-            (int)Arr::get($config,'port'),
+            $config['username'] ?? null,
+            $config['password'] ?? null,
+            $config['port'] ?? null,
             $config
         ));
 
