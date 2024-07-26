@@ -203,7 +203,6 @@ class MailManager implements Factory
     protected function createSmtpTransport(array $config): EsmtpTransport
     {
         $factory = new EsmtpTransportFactory();
-
         $scheme = $config['scheme'] ?? null;
 
         if (! $scheme) {
@@ -215,10 +214,10 @@ class MailManager implements Factory
         /** @var EsmtpTransport $transport */
         $transport = $factory->create(new Dsn(
             $scheme,
-            $config['host'],
-            $config['username'] ?? null,
-            $config['password'] ?? null,
-            $config['port'] ?? null,
+            (string) $config['host'],
+            isset($config['username']) ? ((string) $config['username']) : null,
+            isset($config['password']) ? ((string) $config['password']) : null,
+            isset($config['port']) ? ((int) $config['port']) : null,
             $config
         ));
 
