@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\ConfigConsul\Consul;
 
 class_alias(\Hyperf\Consul\KVInterface::class, KVInterface::class);
 
-if (false) {
+if (false) { // @phpstan-ignore-line
     // @codeCoverageIgnoreStart
     interface KVInterface extends \Hyperf\Consul\KVInterface
     {
