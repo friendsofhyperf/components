@@ -17,8 +17,6 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Guzzle\ClientFactory;
 use Psr\Container\ContainerInterface;
 
-interface_exists(KVInterface::class); // !! Trigger autoload
-
 class KVFactory
 {
     public function __invoke(ContainerInterface $container)
