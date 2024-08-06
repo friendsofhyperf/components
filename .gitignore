@@ -9,3 +9,4 @@ composer.lock
 rumtime
 phpunit.xml
 phpstan.neon
+.phpactor.json
