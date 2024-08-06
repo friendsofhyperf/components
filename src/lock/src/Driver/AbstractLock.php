@@ -16,6 +16,8 @@ use Hyperf\Stringable\Str;
 use Hyperf\Support\Traits\InteractsWithTime;
 use Override;
 
+use function Hyperf\Support\now;
+
 abstract class AbstractLock implements LockInterface
 {
     use InteractsWithTime;
@@ -76,14 +78,17 @@ abstract class AbstractLock implements LockInterface
     #[Override]
     public function block(int $seconds, ?callable $callback = null)
     {
-        $starting = $this->currentTime();
+        $starting = ((int) now()->format('Uu')) / 1000;
+        $milliseconds = $seconds * 1000;
 
         while (! $this->acquire()) {
-            usleep($this->sleepMilliseconds * 1000);
+            $now = ((int) now()->format('Uu')) / 1000;
 
-            if ($this->currentTime() - $seconds >= $starting) {
+            if (($now + $this->sleepMilliseconds - $milliseconds) >= $starting) {
                 throw new LockTimeoutException();
             }
+
+            usleep($this->sleepMilliseconds * 1000);
         }
 
         if (is_callable($callback)) {
