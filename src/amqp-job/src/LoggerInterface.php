@@ -11,9 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\AmqpJob;
 
-/**
- * @deprecated since v3.1, use FriendsOfHyperf\AmqpJob\Contract\LoggerInterface instead, will removed at v3.2.
- */
-interface LoggerInterface extends Contract\LoggerInterface
-{
+class_alias(Contract\LoggerInterface::class, LoggerInterface::class);
+
+// @phpstan-ignore-next-line
+if (false) {
+    /**
+     * @deprecated since v3.1, use FriendsOfHyperf\AmqpJob\Contract\LoggerInterface instead, will removed at v3.2.
+     */
+    interface LoggerInterface extends Contract\LoggerInterface
+    {
+    }
 }
