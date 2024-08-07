@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Tests\HttpClient;
 
 use Carbon\Carbon;
 use Exception;
+use FriendsOfHyperf\Http\Client\ConnectionException;
 use FriendsOfHyperf\Http\Client\Events\RequestSending;
 use FriendsOfHyperf\Http\Client\Events\ResponseReceived;
 use FriendsOfHyperf\Http\Client\Factory;
@@ -25,6 +26,7 @@ use FriendsOfHyperf\Http\Client\ResponseSequence;
 use FriendsOfHyperf\Support\Sleep;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\Promise\PromiseInterface;
+use GuzzleHttp\Promise\RejectedPromise;
 use GuzzleHttp\Psr7\Response as Psr7Response;
 use GuzzleHttp\TransferStats;
 use Hyperf\Collection\Arr;
@@ -2058,6 +2060,23 @@ class HttpClientTest extends TestCase
         $this->factory->assertSent(function (Request $request) {
             return $request->hasHeader('Foo') && $request->header('Foo') === ['Bar'];
         });
+    }
+
+    public function testHandleRequestExeptionWithNoResponseInPoolConsideredConnectionException()
+    {
+        $requestException = new \GuzzleHttp\Exception\RequestException('Error', new \GuzzleHttp\Psr7\Request('GET', '/'));
+        $this->factory->fake([
+            'noresponse.com' => new RejectedPromise($requestException),
+        ]);
+
+        $responses = $this->factory->pool(function (Pool $pool) {
+            return [
+                $pool->get('noresponse.com'),
+            ];
+        });
+
+        self::assertInstanceOf(ConnectionException::class, $responses[0]);
+        self::assertSame($requestException, $responses[0]->getPrevious());
     }
 
     public function testExceptionThrownInRetryCallbackIsReturnedWithoutRetryingInPool()
