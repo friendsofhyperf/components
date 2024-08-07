@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Lock\Driver;
 
+use FriendsOfHyperf\Lock\Exception\LockTimeoutException;
+
 interface LockInterface
 {
     /**
@@ -27,6 +29,7 @@ interface LockInterface
      * @template T
      * @param (callable(): T)|null $callback
      * @return ($callback is null ? bool : T)
+     * @throws LockTimeoutException
      */
     public function block(int $seconds, ?callable $callback = null);
 

@@ -73,7 +73,6 @@ abstract class AbstractLock implements LockInterface
     /**
      * Attempt to acquire the lock for the given number of seconds.
      * {@inheritdoc}
-     * @throws LockTimeoutException
      */
     #[Override]
     public function block(int $seconds, ?callable $callback = null)
