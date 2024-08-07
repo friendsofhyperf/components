@@ -52,7 +52,7 @@ abstract class AbstractLock implements LockInterface
 
     /**
      * Attempt to acquire the lock.
-     * @return mixed
+     * {@inheritdoc}
      */
     #[Override]
     public function get(?callable $callback = null)
@@ -72,7 +72,7 @@ abstract class AbstractLock implements LockInterface
 
     /**
      * Attempt to acquire the lock for the given number of seconds.
-     * @return mixed
+     * {@inheritdoc}
      * @throws LockTimeoutException
      */
     #[Override]

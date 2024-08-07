@@ -15,12 +15,18 @@ interface LockInterface
 {
     /**
      * Attempt to acquire the lock.
-     * @return mixed
+     * @template T
+     * @param (callable(): T)|null $callback
+     * @return ($callback is null ? bool : T)
      */
     public function get(?callable $callback = null);
 
     /**
      * Attempt to acquire the lock for the given number of seconds.
+     *
+     * @template T
+     * @param (callable(): T)|null $callback
+     * @return ($callback is null ? bool : T)
      */
     public function block(int $seconds, ?callable $callback = null);
 
