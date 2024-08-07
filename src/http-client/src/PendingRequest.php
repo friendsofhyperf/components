@@ -1267,7 +1267,7 @@ class PendingRequest
                 });
             })
             ->otherwise(function (OutOfBoundsException|TransferException $e) {
-                if ($e instanceof ConnectException) {
+                if ($e instanceof ConnectException || ($e instanceof RequestException && ! $e->hasResponse())) {
                     $this->dispatchConnectionFailedEvent(new Request($e->getRequest()));
 
                     return new ConnectionException($e->getMessage(), 0, $e);
