@@ -129,7 +129,7 @@ it('validates that a ValidatedDTO can be instantiated from a Request', function 
 });
 
 it('validates that a ValidatedDTO can be instantiated from an Eloquent Model', function () {
-    $model = new class() extends Model {
+    $model = new class extends Model {
         protected array $fillable = ['name'];
     };
 
@@ -351,7 +351,7 @@ it('validates that the ValidatedDTO with Enums and Carbon properties can be corr
 it('validates that the ValidatedDTO can be converted into an Eloquent Model', function () {
     $validatedDTO = new ValidatedDTOInstance(['name' => $this->subject_name]);
 
-    $model = new class() extends Model {
+    $model = new class extends Model {
         protected array $fillable = ['name'];
     };
 

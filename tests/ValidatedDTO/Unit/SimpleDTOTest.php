@@ -95,7 +95,7 @@ it('validates that a SimpleDTO can be instantiated from a Request', function () 
 });
 
 it('validates that a SimpleDTO can be instantiated from an Database Model', function () {
-    $model = new class() extends Model {
+    $model = new class extends Model {
         protected array $fillable = ['name'];
     };
 
@@ -181,7 +181,7 @@ it('validates that the SimpleDTO can be converted into a pretty JSON string', fu
 it('validates that the SimpleDTO can be converted into an Database Model', function () {
     $simpleDTO = new SimpleDTOInstance(['name' => $this->subject_name]);
 
-    $model = new class() extends Model {
+    $model = new class extends Model {
         protected array $fillable = ['name'];
     };
 

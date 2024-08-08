@@ -454,7 +454,7 @@ class HttpClientTest extends TestCase
     {
         $this->factory->fake();
 
-        $this->factory->asJson()->post('http://foo.com/form', new class() implements JsonSerializable {
+        $this->factory->asJson()->post('http://foo.com/form', new class implements JsonSerializable {
             public function jsonSerialize(): mixed
             {
                 return [
@@ -475,7 +475,7 @@ class HttpClientTest extends TestCase
     {
         $this->factory->fake();
 
-        $this->factory->asJson()->post('http://foo.com/form', new class() implements JsonSerializable, Arrayable {
+        $this->factory->asJson()->post('http://foo.com/form', new class implements JsonSerializable, Arrayable {
             public function jsonSerialize(): mixed
             {
                 return [
@@ -3053,7 +3053,7 @@ class CustomFactory extends Factory
 {
     protected function newPendingRequest()
     {
-        return new class() extends PendingRequest {
+        return new class extends PendingRequest {
             protected function newResponse($response)
             {
                 return new TestResponse($response);

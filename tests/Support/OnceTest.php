@@ -20,7 +20,7 @@ beforeEach(function () {
 });
 
 it('will run the a callback without arguments only once', function () {
-    $testClass = new class() {
+    $testClass = new class {
         public function getNumber()
         {
             return once(function () {
@@ -40,7 +40,7 @@ it('will run the a callback without arguments only once', function () {
 });
 
 it('will run the given callback only once per variation arguments in use', function () {
-    $testClass = new class() {
+    $testClass = new class {
         public function getNumberForLetter($letter)
         {
             return once(function () use ($letter) {
@@ -60,7 +60,7 @@ it('will run the given callback only once per variation arguments in use', funct
 });
 
 it('will run the given callback only once for falsy result', function () {
-    $testClass = new class() {
+    $testClass = new class {
         public $counter = 0;
 
         public function getNull()
@@ -109,7 +109,7 @@ it('will remember the memoized value when serialized when called in the same req
 });
 
 it('will run callback once on static method', function () {
-    $object = new class() {
+    $object = new class {
         public static function getNumber()
         {
             return once(function () {
@@ -130,7 +130,7 @@ it('will run callback once on static method', function () {
 });
 
 it('will run callback once on static method per variation arguments in use', function () {
-    $object = new class() {
+    $object = new class {
         public static function getNumberForLetter($letter)
         {
             return once(function () use ($letter) {
@@ -151,7 +151,7 @@ it('will run callback once on static method per variation arguments in use', fun
 });
 
 it('can flush the entire cache', function () {
-    $testClass = new class() {
+    $testClass = new class {
         public function getNumber()
         {
             return once(function () {
@@ -168,7 +168,7 @@ it('can flush the entire cache', function () {
 });
 
 it('can enable and disable the cache', function () {
-    $testClass = new class() {
+    $testClass = new class {
         public function getNumber()
         {
             return once(function () {
@@ -196,7 +196,7 @@ it('will not throw error with eval', function () {
 });
 
 it('will differentiate between closures', function () {
-    $testClass = new class() {
+    $testClass = new class {
         public function getNumber()
         {
             $closure = function () {
@@ -224,7 +224,7 @@ it('will differentiate between closures', function () {
 });
 
 it('will run callback once for closure called on differemt lines', function () {
-    $testClass = new class() {
+    $testClass = new class {
         public function getNumbers()
         {
             $closure = function () {
@@ -256,7 +256,7 @@ it('will work in global functions', function () {
 });
 
 it('will work with two static functions with the same name', function () {
-    $a = new class() {
+    $a = new class {
         public static function getName()
         {
             return once(function () {
@@ -265,7 +265,7 @@ it('will work with two static functions with the same name', function () {
         }
     };
 
-    $b = new class() {
+    $b = new class {
         public static function getName()
         {
             return once(function () {

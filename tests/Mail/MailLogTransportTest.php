@@ -145,7 +145,7 @@ class MailLogTransportTest extends TestCase
 
     private function getLoggedEmailMessage(Message $message): string
     {
-        $logger = new class() extends NullLogger {
+        $logger = new class extends NullLogger {
             public string $loggedValue = '';
 
             public function log($level, string|Stringable $message, array $context = []): void

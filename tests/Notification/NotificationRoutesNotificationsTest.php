@@ -43,7 +43,7 @@ class NotificationRoutesNotificationsTest extends TestCase
         $factory = m::mock(ChannelManager::class);
         $container->set(Dispatcher::class, $factory);
         $notifiable = new RoutesNotificationsTestInstance();
-        $instance = new class() extends Notification {};
+        $instance = new class extends Notification {};
         $factory->shouldReceive('send')->andReturnUsing(function ($originNotifiable, $instance) use ($notifiable) {
             $this->assertEquals($notifiable, $originNotifiable);
             $this->assertInstanceOf(Notification::class, $instance);

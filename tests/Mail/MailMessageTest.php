@@ -133,7 +133,7 @@ class MailMessageTest extends TestCase
     {
         file_put_contents($path = __DIR__ . '/foo.jpg', 'expected attachment body');
 
-        $this->message->attach(new class() implements Attachable {
+        $this->message->attach(new class implements Attachable {
             public function toMailAttachment(): Attachment
             {
                 return Attachment::fromPath(__DIR__ . '/foo.jpg')
@@ -154,7 +154,7 @@ class MailMessageTest extends TestCase
 
     public function testItAttachesFilesViaAttachableContractFromData()
     {
-        $this->message->attach(new class() implements Attachable {
+        $this->message->attach(new class implements Attachable {
             public function toMailAttachment(): Attachment
             {
                 return Attachment::fromData(fn () => 'expected attachment body', 'foo.jpg')
@@ -205,7 +205,7 @@ class MailMessageTest extends TestCase
     {
         file_put_contents($path = __DIR__ . '/foo.jpg', 'bar');
 
-        $cid = $this->message->embed(new class() implements Attachable {
+        $cid = $this->message->embed(new class implements Attachable {
             public function toMailAttachment(): Attachment
             {
                 return Attachment::fromPath(__DIR__ . '/foo.jpg')->as('baz')->withMime('image/png');
@@ -227,7 +227,7 @@ class MailMessageTest extends TestCase
     {
         file_put_contents($path = __DIR__ . '/foo.jpg', 'bar');
 
-        $cid = $this->message->embed(new class() implements Attachable {
+        $cid = $this->message->embed(new class implements Attachable {
             public function toMailAttachment(): Attachment
             {
                 return Attachment::fromPath(__DIR__ . '/foo.jpg');
