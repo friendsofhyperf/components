@@ -14,20 +14,6 @@ namespace Hyperf\Stringable;
 class Str
 {
     /**
-     * Set the callable that will be used to generate UUIDs.
-     */
-    public static function createUuidsUsing(?callable $factory = null)
-    {
-    }
-
-    /**
-     * Indicate that UUIDs should be created normally and not using a custom factory.
-     */
-    public static function createUuidsNormally()
-    {
-    }
-
-    /**
      * Converts GitHub flavored Markdown into HTML.
      *
      * @param string $string
@@ -44,18 +30,6 @@ class Str
      * @return string
      */
     public static function inlineMarkdown($string, array $options = [])
-    {
-    }
-
-    /**
-     * Transliterate a string to its closest ASCII representation.
-     *
-     * @param string $string
-     * @param string|null $unknown
-     * @param bool|null $strict
-     * @return string
-     */
-    public static function transliterate($string, $unknown = '?', $strict = false)
     {
     }
 }
