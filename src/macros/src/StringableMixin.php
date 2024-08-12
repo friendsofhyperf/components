@@ -21,6 +21,12 @@ use Hyperf\Stringable\Stringable;
  */
 class StringableMixin
 {
+    public function deduplicate()
+    {
+        /* @phpstan-ignore-next-line */
+        return fn (string $character = ' ') => new static(Str::deduplicate($this->value, $character));
+    }
+
     public function inlineMarkdown()
     {
         /* @phpstan-ignore-next-line */

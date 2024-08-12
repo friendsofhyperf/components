@@ -35,6 +35,11 @@ class StrMixin
         return fn (?callable $factory = null) => UuidContainer::$uuidFactory = $factory;
     }
 
+    public static function deduplicate()
+    {
+        return fn (string $string, string $character = ' ') => preg_replace('/' . preg_quote($character, '/') . '+/u', $character, $string);
+    }
+
     public function inlineMarkdown()
     {
         return function ($string, array $options = []) {
