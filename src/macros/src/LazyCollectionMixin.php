@@ -11,13 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Macros;
 
-use Hyperf\Collection\Collection;
+use Hyperf\Collection\Enumerable;
+use Hyperf\Collection\LazyCollection;
 
 /**
  * @property array $items
- * @mixin Collection
+ * @mixin LazyCollection
  */
-class CollectionMixin
+class LazyCollectionMixin
 {
     public function isSingle()
     {
@@ -27,19 +28,15 @@ class CollectionMixin
     public function collapseWithKeys()
     {
         return function () {
-            $results = [];
-
-            foreach ($this->items as $key => $values) { // @phpstan-ignore-line
-                if ($values instanceof Collection) {
-                    $values = $values->all();
-                } elseif (! is_array($values)) {
-                    continue;
+            return new static(function () {
+                foreach ($this as $values) { // @phpstan-ignore-line
+                    if (is_array($values) || $values instanceof Enumerable) {
+                        foreach ($values as $key => $value) {
+                            yield $key => $value;
+                        }
+                    }
                 }
-
-                $results[$key] = $values;
-            }
-
-            return new static(array_replace(...$results));
+            });
         };
     }
 }
