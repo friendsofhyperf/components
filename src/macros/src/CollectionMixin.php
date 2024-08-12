@@ -29,7 +29,7 @@ class CollectionMixin
         return function () {
             $results = [];
 
-            foreach ($this->items as $key => $values) {
+            foreach ($this->items as $key => $values) { // @phpstan-ignore-line
                 if ($values instanceof Collection) {
                     $values = $values->all();
                 } elseif (! is_array($values)) {

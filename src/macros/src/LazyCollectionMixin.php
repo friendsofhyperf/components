@@ -29,7 +29,7 @@ class LazyCollectionMixin
     {
         return function () {
             return new static(function () {
-                foreach ($this as $values) {
+                foreach ($this as $values) { // @phpstan-ignore-line
                     if (is_array($values) || $values instanceof Enumerable) {
                         foreach ($values as $key => $value) {
                             yield $key => $value;
