@@ -10,6 +10,13 @@ declare(strict_types=1);
  */
 use Hyperf\Stringable\Str;
 
+test('test deduplicate', function () {
+    $this->assertSame(' laravel php framework ', Str::deduplicate(' laravel   php  framework '));
+    $this->assertSame('what', Str::deduplicate('whaaat', 'a'));
+    $this->assertSame('/some/odd/path/', Str::deduplicate('/some//odd//path/', '/'));
+    $this->assertSame('ムだム', Str::deduplicate('ムだだム', 'だ'));
+});
+
 test('test isUuidWithValidUuid', function () {
     $this->assertTrue(Str::isUuid(Str::uuid()->__toString()));
 });

@@ -28,6 +28,15 @@ class Str
     }
 
     /**
+     * Replace consecutive instances of a given character with a single character in the given string.
+     *
+     * @return string
+     */
+    public static function deduplicate(string $string, string $character = ' ')
+    {
+    }
+
+    /**
      * Converts GitHub flavored Markdown into HTML.
      *
      * @param string $string

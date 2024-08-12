@@ -10,6 +10,13 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Support\HtmlString;
 
+test('test deduplicate', function () {
+    $this->assertSame(' laravel php framework ', (string) $this->stringable(' laravel   php  framework ')->deduplicate());
+    $this->assertSame('what', (string) $this->stringable('whaaat')->deduplicate('a'));
+    $this->assertSame('/some/odd/path/', (string) $this->stringable('/some//odd//path/')->deduplicate('/'));
+    $this->assertSame('ムだム', (string) $this->stringable('ムだだム')->deduplicate('だ'));
+});
+
 test('test toHtmlString', function () {
     $this->assertEquals(
         new HtmlString('<h1>Test string</h1>'),

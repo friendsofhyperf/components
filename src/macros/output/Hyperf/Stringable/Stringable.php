@@ -14,6 +14,15 @@ namespace Hyperf\Stringable;
 class Stringable
 {
     /**
+     * Replace consecutive instances of a given character with a single character.
+     *
+     * @return static
+     */
+    public function deduplicate(string $character = ' ')
+    {
+    }
+
+    /**
      * Convert GitHub flavored Markdown into HTML.
      *
      * @return static
