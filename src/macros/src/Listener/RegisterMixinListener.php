@@ -13,11 +13,13 @@ namespace FriendsOfHyperf\Macros\Listener;
 
 use FriendsOfHyperf\Macros\ArrMixin;
 use FriendsOfHyperf\Macros\CollectionMixin;
+use FriendsOfHyperf\Macros\LazyCollectionMixin;
 use FriendsOfHyperf\Macros\RequestMixin;
 use FriendsOfHyperf\Macros\StringableMixin;
 use FriendsOfHyperf\Macros\StrMixin;
 use Hyperf\Collection\Arr;
 use Hyperf\Collection\Collection;
+use Hyperf\Collection\LazyCollection;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Hyperf\HttpServer\Request;
@@ -40,6 +42,7 @@ class RegisterMixinListener implements ListenerInterface
     {
         Arr::mixin(new ArrMixin());
         Collection::mixin(new CollectionMixin());
+        LazyCollection::mixin(new LazyCollectionMixin());
         Request::mixin(new RequestMixin());
         Str::mixin(new StrMixin());
         Stringable::mixin(new StringableMixin());

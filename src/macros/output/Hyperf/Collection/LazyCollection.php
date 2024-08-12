@@ -11,17 +11,8 @@ declare(strict_types=1);
 
 namespace Hyperf\Collection;
 
-class Collection
+class LazyCollection
 {
-    /**
-     * Determine if the collection contains a single element.
-     *
-     * @return bool
-     */
-    public function isSingle()
-    {
-    }
-
     /**
      * Collapse the collection of items into a single array while preserving its keys.
      *
