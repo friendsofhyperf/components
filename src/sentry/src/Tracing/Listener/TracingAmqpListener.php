@@ -105,7 +105,7 @@ class TracingAmqpListener implements ListenerInterface
             'messaging.amqp.message.exchange' => $message->getExchange(),
             'messaging.amqp.message.queue' => $message->getQueue(),
             'messaging.amqp.message.pool_name' => $message->getPoolName(),
-            'messaging.amqp.message.result' => $event->getResult(),
+            'messaging.amqp.message.result' => method_exists($event, 'getResult') ? $event->getResult() : null,
         ];
         $tags = [];
 
