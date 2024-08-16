@@ -105,10 +105,8 @@ class TracingAmqpListener implements ListenerInterface
             'messaging.amqp.message.exchange' => $message->getExchange(),
             'messaging.amqp.message.queue' => $message->getQueue(),
             'messaging.amqp.message.pool_name' => $message->getPoolName(),
+            'messaging.amqp.message.result' => $event instanceof AfterConsume ? $event->getResult()->value : 'fail',
         ];
-        if ($event instanceof AfterConsume) {
-            $data['messaging.amqp.message.result'] = $event->getResult()->value;
-        }
         $tags = [];
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
