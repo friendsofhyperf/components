@@ -37,9 +37,6 @@ class ConfigProvider
                     'destination' => BASE_PATH . '/storage/view/mail/',
                 ],
             ],
-            'commands' => [
-                Command\MailCommand::class,
-            ],
         ];
     }
 }
