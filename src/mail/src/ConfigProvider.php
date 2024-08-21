@@ -38,9 +38,11 @@ class ConfigProvider
                     'destination' => BASE_PATH . '/storage/view/mail/',
                 ],
             ],
-            'commands' => InstalledVersions::isInstalled('hyperf/devtool') ? [
-                Command\MailCommand::class,
-            ] : [],
+            'commands' => [
+                ...InstalledVersions::isInstalled('hyperf/devtool') ? [
+                    Command\MailCommand::class,
+                ] : [],
+            ],
         ];
     }
 }
