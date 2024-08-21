@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Mail;
 
+use Composer\InstalledVersions;
 use Psr\Container\ContainerInterface;
 
 class ConfigProvider
@@ -36,6 +37,11 @@ class ConfigProvider
                     'source' => __DIR__ . '/../publish/resources/views/',
                     'destination' => BASE_PATH . '/storage/view/mail/',
                 ],
+            ],
+            'commands' => [
+                ...InstalledVersions::isInstalled('hyperf/devtool') ? [
+                    Command\MailCommand::class,
+                ] : [],
             ],
         ];
     }
