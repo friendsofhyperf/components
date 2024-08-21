@@ -36,7 +36,7 @@ class ConfigProvider
                     'source' => __DIR__ . '/../publish/resources/views/',
                     'destination' => BASE_PATH . '/storage/view/mail/',
                 ],
-            ]
+            ],
         ];
     }
 }
