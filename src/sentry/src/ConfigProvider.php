@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry;
 
+use Sentry\SentrySdk;
+
 class ConfigProvider
 {
     public function __invoke(): array
@@ -68,7 +70,7 @@ class ConfigProvider
             'annotations' => [
                 'scan' => [
                     'class_map' => [
-                        \Sentry\SentrySdk::class => __DIR__ . '/../class_map/SentrySdk.php',
+                        SentrySdk::class => __DIR__ . '/../class_map/SentrySdk.php',
                     ],
                 ],
             ],
