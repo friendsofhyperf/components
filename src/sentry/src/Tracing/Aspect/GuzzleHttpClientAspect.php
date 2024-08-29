@@ -48,6 +48,13 @@ class GuzzleHttpClientAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
+        $parent = SentrySdk::getCurrentHub()->getSpan();
+
+        // If the parent span is not exists or the parent span is not belongs to rpc system, then skip.
+        if (! $parent || str_contains($parent->getData('rpc.system'), 'rpc')) {
+            return $proceedingJoinPoint->process();
+        }
+
         $instance = $proceedingJoinPoint->getInstance();
         $arguments = $proceedingJoinPoint->arguments['keys'];
         $options = $arguments['options'] ?? [];
@@ -88,7 +95,6 @@ class GuzzleHttpClientAspect extends AbstractAspect
             'http.guzzle.options' => $arguments['options'] ?? [],
         ];
 
-        $parent = SentrySdk::getCurrentHub()->getSpan();
         $options['headers'] = array_replace($options['headers'] ?? [], [
             'sentry-trace' => $parent->toTraceparent(),
             'baggage' => $parent->toBaggage(),
