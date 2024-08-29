@@ -50,7 +50,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
         $parent = SentrySdk::getCurrentHub()->getSpan();
 
-        // If the parent span is not exists or the parent span is not belongs to rpc system, then skip.
+        // If the parent span is not exists or the parent span is belongs to rpc system, then skip.
         if (! $parent || str_contains($parent->getData('rpc.system'), 'rpc')) {
             return $proceedingJoinPoint->process();
         }
