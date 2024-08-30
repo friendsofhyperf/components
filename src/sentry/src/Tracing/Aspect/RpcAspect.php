@@ -35,7 +35,7 @@ class RpcAspect extends AbstractAspect
 {
     use SpanStarter;
 
-    protected const SPAN = 'sentry.tracing.rpc.span';
+    public const SPAN = 'sentry.tracing.rpc.span';
 
     protected const DATA = 'sentry.tracing.rpc.data';
 
@@ -88,8 +88,6 @@ class RpcAspect extends AbstractAspect
             return $path;
         }
 
-        Context::set(static::SPAN, $span);
-
         $data = [
             'coroutine.id' => Coroutine::id(),
             'rpc.system' => $system,
@@ -97,7 +95,8 @@ class RpcAspect extends AbstractAspect
             'rpc.service' => $service,
         ];
 
-        Context::set(static::DATA, $data);
+        Context::set(static::DATA, $data); // will be removed in v3.2
+        Context::set(static::SPAN, $span->setData($data));
 
         if ($this->container->has(Rpc\Context::class)) {
             $this->container->get(Rpc\Context::class)->set(Constants::TRACE_CARRIER, $this->packer->pack($span));
@@ -108,7 +107,7 @@ class RpcAspect extends AbstractAspect
 
     private function handleSend(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $data = (array) Context::get(static::DATA);
+        $data = (array) Context::get(static::DATA, []);
         $data['rpc.arguments'] = $proceedingJoinPoint->arguments['keys'];
 
         if ($this->container->has(Rpc\Context::class)) {
@@ -148,6 +147,9 @@ class RpcAspect extends AbstractAspect
         } finally {
             $span->setData($data);
             $span->finish();
+
+            Context::destroy(static::SPAN);
+            Context::destroy(static::DATA);
         }
 
         return $result;
