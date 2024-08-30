@@ -88,8 +88,6 @@ class RpcAspect extends AbstractAspect
             return $path;
         }
 
-        Context::set(static::SPAN, $span);
-
         $data = [
             'coroutine.id' => Coroutine::id(),
             'rpc.system' => $system,
@@ -98,6 +96,7 @@ class RpcAspect extends AbstractAspect
         ];
 
         Context::set(static::DATA, $data);
+        Context::set(static::SPAN, $span->setData($data));
 
         if ($this->container->has(Rpc\Context::class)) {
             $this->container->get(Rpc\Context::class)->set(Constants::TRACE_CARRIER, $this->packer->pack($span));
@@ -108,7 +107,7 @@ class RpcAspect extends AbstractAspect
 
     private function handleSend(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $data = (array) Context::get(static::DATA);
+        $data = (array) Context::get(static::DATA, []);
         $data['rpc.arguments'] = $proceedingJoinPoint->arguments['keys'];
 
         if ($this->container->has(Rpc\Context::class)) {
