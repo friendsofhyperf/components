@@ -35,7 +35,7 @@ class RpcAspect extends AbstractAspect
 {
     use SpanStarter;
 
-    protected const SPAN = 'sentry.tracing.rpc.span';
+    public const SPAN = 'sentry.tracing.rpc.span';
 
     protected const DATA = 'sentry.tracing.rpc.data';
 
