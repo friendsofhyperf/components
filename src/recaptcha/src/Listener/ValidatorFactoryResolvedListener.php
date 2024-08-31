@@ -42,7 +42,7 @@ class ValidatorFactoryResolvedListener implements ListenerInterface
                 $action,
                 $score,
                 $hostname,
-                $version
+                $version,
             ] = [
                 $parameters[0] ?? '',
                 (float) ($parameters[1] ?? 0.34),
