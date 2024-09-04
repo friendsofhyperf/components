@@ -65,11 +65,11 @@ class FooTrigger extends AbstractTrigger
 namespace App\Subscriber;
 
 use FriendsOfHyperf\Trigger\Annotation\Subscriber;
-use FriendsOfHyperf\Trigger\Subscriber\AbstractEventSubscriber;
+use FriendsOfHyperf\Trigger\Subscriber\AbstractSubscriber;
 use MySQLReplication\Event\DTO\EventDTO;
 
 #[Subscriber(connection:"default")]
-class BarSubscriber extends AbstractEventSubscriber
+class BarSubscriber extends AbstractSubscriber
 {
     protected function allEvents(EventDTO $event): void
     {
