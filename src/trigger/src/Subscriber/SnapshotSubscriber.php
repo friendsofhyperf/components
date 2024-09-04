@@ -26,6 +26,17 @@ class SnapshotSubscriber extends AbstractSubscriber
             return;
         }
 
-        $this->consumer->getHealthMonitor()->setBinLogCurrent($event->getEventInfo()->getBinLogCurrent());
+        $eventInfo = $event->getEventInfo();
+        $binLogCurrent = match (true) {
+            method_exists($eventInfo, 'getBinLogCurrent') => $eventInfo->getBinLogCurrent(),
+            property_exists($eventInfo, 'binLogCurrent') => $eventInfo->binLogCurrent, // @phpstan-ignore-line
+            default => null,
+        };
+
+        if (! $binLogCurrent) {
+            return;
+        }
+
+        $this->consumer->getHealthMonitor()->setBinLogCurrent($binLogCurrent);
     }
 }

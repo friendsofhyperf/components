@@ -27,7 +27,6 @@ use MySQLReplication\Socket\SocketException;
 use Psr\Log\LoggerInterface;
 
 use function Hyperf\Support\make;
-use function Hyperf\Support\retry;
 use function Hyperf\Tappable\tap;
 
 class Consumer
@@ -105,11 +104,7 @@ class Consumer
                 try {
                     $replication->consume();
                 } catch (SocketException $e) {
-                    retry(
-                        (int) $this->getOption('connect_retries', 10),
-                        fn () => $replication->connect(),
-                        200
-                    );
+                    // todo: reconnect
                     $this->debug('Connection lost, reconnected.');
                 }
             }
@@ -198,7 +193,7 @@ class Consumer
 
         if ($binLogCurrent = $this->getBinLogCurrentSnapshot()->get()) {
             $configBuilder->withBinLogFileName($binLogCurrent->getBinFileName());
-            $configBuilder->withBinLogPosition((int) $binLogCurrent->getBinLogPosition());
+            $configBuilder->withBinLogPosition($binLogCurrent->getBinLogPosition());
 
             $this->debug('Continue with position', $binLogCurrent->jsonSerialize());
         }

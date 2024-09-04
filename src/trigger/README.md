@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/trigger)](https://packagist.org/packages/friendsofhyperf/trigger)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/trigger)](https://github.com/friendsofhyperf/trigger)
 
-MySQL trigger component for Hyperf, Based on a great work of creators：[moln/php-mysql-replication](https://github.com/moln/php-mysql-replication)
+MySQL trigger component for Hyperf, Based on a great work of creators：[krowinski/php-mysql-replication](https://github.com/krowinski/php-mysql-replication)
 
 ## Installation
 
