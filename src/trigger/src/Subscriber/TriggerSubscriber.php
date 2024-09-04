@@ -121,10 +121,22 @@ class TriggerSubscriber extends AbstractSubscriber
 
         $this->loop();
 
+        $database = match (true) {
+            method_exists($event, 'getTableMap') => $event->getTableMap()->getDatabase(),
+            property_exists($event, 'tableMap') => $event->tableMap->database, // @phpstan-ignore-line
+            default => null,
+        };
+
+        $table = match (true) {
+            method_exists($event, 'getTableMap') => $event->getTableMap()->getTable(),
+            property_exists($event, 'tableMap') => $event->tableMap->table, // @phpstan-ignore-line
+            default => null,
+        };
+
         $key = join('.', [
             $this->consumer->getConnection(),
-            $event->tableMap->database,
-            $event->tableMap->table,
+            $database,
+            $table,
             $event->getType(),
         ]);
 
