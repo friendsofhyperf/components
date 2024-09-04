@@ -105,9 +105,15 @@ class Consumer
                 try {
                     $replication->consume();
                 } catch (SocketException $e) {
+                    $logger = $this->logger;
                     retry(
                         (int) $this->getOption('connect_retries', 10),
-                        fn () => $replication->connect(),
+                        function () use ($replication, $logger) {
+                            (function () use ($logger) {
+                                $this->event->connect();
+                                $logger->info('[MysqlReplication] Connected.');
+                            })->call($replication);
+                        },
                         200
                     );
                     $this->debug('Connection lost, reconnected.');
