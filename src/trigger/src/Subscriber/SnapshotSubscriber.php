@@ -28,7 +28,7 @@ class SnapshotSubscriber extends AbstractSubscriber
 
         $eventInfo = $event->getEventInfo();
         $binLogCurrent = match (true) {
-            method_exists($eventInfo, 'getBinLogCurrent') => $eventInfo->getBinLogCurrent(),
+            method_exists($eventInfo, 'getBinLogCurrent') => $eventInfo->getBinLogCurrent(), // v7.x, @deprecated, will removed in v3.2
             property_exists($eventInfo, 'binLogCurrent') => $eventInfo->binLogCurrent, // @phpstan-ignore-line
             default => null,
         };

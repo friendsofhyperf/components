@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Trigger;
 
+use BackedEnum;
 use RuntimeException;
 
 class Util
@@ -36,5 +37,10 @@ class Util
         }
 
         throw new RuntimeException('Can not get the internal IP.');
+    }
+
+    public static function getConstEventName(string|BackedEnum $eventsName): string
+    {
+        return $eventsName instanceof BackedEnum ? (string) $eventsName->value : $eventsName;
     }
 }
