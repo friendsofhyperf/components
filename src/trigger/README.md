@@ -1,8 +1,8 @@
 # Trigger
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/trigger/version.png)](https://packagist.org/packages/friendsofhyperf/trigger)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/trigger/d/total.png)](https://packagist.org/packages/friendsofhyperf/trigger)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/trigger)](https://github.com/friendsofhyperf/trigger)
+[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/trigger)](https://packagist.org/packages/friendsofhyperf/trigger)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/trigger)](https://packagist.org/packages/friendsofhyperf/trigger)
+[![License](https://img.shields.io/packagist/l/friendsofhyperf/trigger)](https://github.com/friendsofhyperf/trigger)
 
 MySQL trigger component for Hyperf, Based on a great work of creators：[moln/php-mysql-replication](https://github.com/moln/php-mysql-replication)
 
