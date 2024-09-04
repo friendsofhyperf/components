@@ -90,7 +90,7 @@ class HealthMonitor
         });
     }
 
-    public function setBinLogCurrent(?BinLogCurrent $binLogCurrent): void
+    public function setBinLogCurrent(BinLogCurrent $binLogCurrent): void
     {
         $this->binLogCurrent = $binLogCurrent;
     }
