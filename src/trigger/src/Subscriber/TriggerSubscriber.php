@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Trigger\Subscriber;
 
 use Closure;
+use FriendsOfHyperf\Trigger\ConstEventsNames;
 use FriendsOfHyperf\Trigger\Consumer;
 use FriendsOfHyperf\Trigger\Traits\Logger;
 use FriendsOfHyperf\Trigger\TriggerManager;
@@ -20,7 +21,6 @@ use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Concurrent;
 use Hyperf\Engine\Channel;
 use Hyperf\Engine\Coroutine;
-use MySQLReplication\Definitions\ConstEventsNames;
 use MySQLReplication\Event\DTO\EventDTO;
 use MySQLReplication\Event\DTO\RowsDTO;
 use Psr\Container\ContainerInterface;
@@ -58,9 +58,9 @@ class TriggerSubscriber extends AbstractSubscriber
     public static function getSubscribedEvents(): array
     {
         return [
-            'update' => 'onUpdate', // ConstEventsNames::UPDATE->value
-            'delete' => 'onDelete', // ConstEventsNames::DELETE->value
-            'write' => 'onWrite', // ConstEventsNames::WRITE->value
+            ConstEventsNames::UPDATE->value => 'onUpdate',
+            ConstEventsNames::DELETE->value => 'onDelete',
+            ConstEventsNames::WRITE->value => 'onWrite',
         ];
     }
 
@@ -122,13 +122,13 @@ class TriggerSubscriber extends AbstractSubscriber
         $this->loop();
 
         $database = match (true) {
-            method_exists($event, 'getTableMap') => $event->getTableMap()->getDatabase(),
+            method_exists($event, 'getTableMap') => $event->getTableMap()->getDatabase(), // v7.x, @deprecated, will removed in v3.2
             property_exists($event, 'tableMap') => $event->tableMap->database, // @phpstan-ignore-line
             default => null,
         };
 
         $table = match (true) {
-            method_exists($event, 'getTableMap') => $event->getTableMap()->getTable(),
+            method_exists($event, 'getTableMap') => $event->getTableMap()->getTable(), // v7.x, @deprecated, will removed in v3.2
             property_exists($event, 'tableMap') => $event->tableMap->table, // @phpstan-ignore-line
             default => null,
         };
@@ -144,7 +144,7 @@ class TriggerSubscriber extends AbstractSubscriber
 
         foreach ($this->triggerManager->get($key) as $callable) {
             $values = match (true) {
-                method_exists($event, 'getValues') => $event->getValues(),
+                method_exists($event, 'getValues') => $event->getValues(), // v7.x, @deprecated, will removed in v3.2
                 property_exists($event, 'values') => $event->values, // @phpstan-ignore-line
                 default => [],
             };
@@ -158,9 +158,9 @@ class TriggerSubscriber extends AbstractSubscriber
                     }
 
                     $args = match ($eventType) {
-                        'write' => [$value],
-                        'update' => [$value['before'], $value['after']],
-                        'delete' => [$value],
+                        ConstEventsNames::WRITE->value => [$value],
+                        ConstEventsNames::UPDATE->value => [$value['before'], $value['after']],
+                        ConstEventsNames::DELETE->value => [$value],
                         default => null,
                     };
 
