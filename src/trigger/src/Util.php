@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Trigger;
 
-use BackedEnum;
 use RuntimeException;
 
 class Util
