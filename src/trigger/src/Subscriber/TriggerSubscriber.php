@@ -12,16 +12,15 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Trigger\Subscriber;
 
 use Closure;
+use FriendsOfHyperf\Trigger\ConstEventsNames;
 use FriendsOfHyperf\Trigger\Consumer;
 use FriendsOfHyperf\Trigger\Traits\Logger;
 use FriendsOfHyperf\Trigger\TriggerManager;
-use FriendsOfHyperf\Trigger\Util;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Concurrent;
 use Hyperf\Engine\Channel;
 use Hyperf\Engine\Coroutine;
-use MySQLReplication\Definitions\ConstEventsNames;
 use MySQLReplication\Event\DTO\EventDTO;
 use MySQLReplication\Event\DTO\RowsDTO;
 use Psr\Container\ContainerInterface;
@@ -59,9 +58,9 @@ class TriggerSubscriber extends AbstractSubscriber
     public static function getSubscribedEvents(): array
     {
         return [
-            Util::getConstEventName(ConstEventsNames::UPDATE) => 'onUpdate',
-            Util::getConstEventName(ConstEventsNames::DELETE) => 'onDelete',
-            Util::getConstEventName(ConstEventsNames::WRITE) => 'onWrite',
+            ConstEventsNames::UPDATE->value => 'onUpdate',
+            ConstEventsNames::DELETE->value => 'onDelete',
+            ConstEventsNames::WRITE->value => 'onWrite',
         ];
     }
 
@@ -159,9 +158,9 @@ class TriggerSubscriber extends AbstractSubscriber
                     }
 
                     $args = match ($eventType) {
-                        Util::getConstEventName(ConstEventsNames::WRITE) => [$value],
-                        Util::getConstEventName(ConstEventsNames::UPDATE) => [$value['before'], $value['after']],
-                        Util::getConstEventName(ConstEventsNames::DELETE) => [$value],
+                        ConstEventsNames::WRITE->value => [$value],
+                        ConstEventsNames::UPDATE->value => [$value['before'], $value['after']],
+                        ConstEventsNames::DELETE->value => [$value],
                         default => null,
                     };
 
