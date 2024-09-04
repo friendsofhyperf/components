@@ -26,6 +26,6 @@ class SnapshotSubscriber extends AbstractSubscriber
             return;
         }
 
-        $this->consumer->getHealthMonitor()->setBinLogCurrent($event->getEventInfo()->getBinLogCurrent());
+        $this->consumer->getHealthMonitor()->setBinLogCurrent($event->getEventInfo()->binLogCurrent);
     }
 }

@@ -58,9 +58,9 @@ class TriggerSubscriber extends AbstractSubscriber
     public static function getSubscribedEvents(): array
     {
         return [
-            ConstEventsNames::UPDATE => 'onUpdate',
-            ConstEventsNames::DELETE => 'onDelete',
-            ConstEventsNames::WRITE => 'onWrite',
+            ConstEventsNames::UPDATE->value => 'onUpdate',
+            ConstEventsNames::DELETE->value => 'onDelete',
+            ConstEventsNames::WRITE->value => 'onWrite',
         ];
     }
 
@@ -123,15 +123,15 @@ class TriggerSubscriber extends AbstractSubscriber
 
         $key = join('.', [
             $this->consumer->getConnection(),
-            $event->getTableMap()->getDatabase(),
-            $event->getTableMap()->getTable(),
+            $event->tableMap->database,
+            $event->tableMap->table,
             $event->getType(),
         ]);
 
         $eventType = $event->getType();
 
         foreach ($this->triggerManager->get($key) as $callable) {
-            foreach ($event->getValues() as $value) {
+            foreach ($event->values as $value) {
                 $this->chan->push(function () use ($callable, $value, $eventType) {
                     [$class, $method] = $callable;
 
@@ -141,9 +141,9 @@ class TriggerSubscriber extends AbstractSubscriber
                     }
 
                     $args = match ($eventType) {
-                        ConstEventsNames::WRITE => [$value],
-                        ConstEventsNames::UPDATE => [$value['before'], $value['after']],
-                        ConstEventsNames::DELETE => [$value],
+                        ConstEventsNames::WRITE->value => [$value],
+                        ConstEventsNames::UPDATE->value => [$value['before'], $value['after']],
+                        ConstEventsNames::DELETE->value => [$value],
                         default => null,
                     };
 
