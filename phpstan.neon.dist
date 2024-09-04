@@ -9,6 +9,7 @@ parameters:
     minimumNumberOfJobsPerProcess: 2
   excludePaths:
     - 'src/*/output/*'
+    # - src/trigger
   reportUnmatchedIgnoredErrors: false
   ignoreErrors:
     -

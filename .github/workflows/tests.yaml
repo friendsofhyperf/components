@@ -66,9 +66,17 @@ jobs:
           php -v
           php --ri swoole
       - name: Setup Dependencies
-        run: composer update -o
+        run: |
+          if [ "${{ matrix.php }}" = "8.1" ]; then
+            composer remove krowinski/php-mysql-replication --no-update
+          fi
+          composer update -o
       - name: Run Analyse
-        run: composer analyse src
+        run: |
+          if [ "${{ matrix.php }}" = "8.1" ]; then
+            sed -i 's/# - src\/trigger/- src\/trigger/g' phpstan.neon.dist
+          fi
+          composer analyse src
       - name: Setup Redis Server
         run: |
           docker run --name redis -p 6379:6379 -d redis
