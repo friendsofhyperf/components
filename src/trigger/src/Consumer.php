@@ -193,7 +193,7 @@ class Consumer
 
         if ($binLogCurrent = $this->getBinLogCurrentSnapshot()->get()) {
             $configBuilder->withBinLogFileName($binLogCurrent->getBinFileName());
-            $configBuilder->withBinLogPosition((string) $binLogCurrent->getBinLogPosition());
+            $configBuilder->withBinLogPosition($binLogCurrent->getBinLogPosition());
 
             $this->debug('Continue with position', $binLogCurrent->jsonSerialize());
         }
