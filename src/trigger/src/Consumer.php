@@ -27,7 +27,6 @@ use MySQLReplication\Socket\SocketException;
 use Psr\Log\LoggerInterface;
 
 use function Hyperf\Support\make;
-use function Hyperf\Support\retry;
 use function Hyperf\Tappable\tap;
 
 class Consumer
@@ -105,17 +104,7 @@ class Consumer
                 try {
                     $replication->consume();
                 } catch (SocketException $e) {
-                    $logger = $this->logger;
-                    retry(
-                        (int) $this->getOption('connect_retries', 10),
-                        function () use ($replication, $logger) {
-                            (function () use ($logger) {
-                                $this->event->connect();
-                                $logger->info('[MysqlReplication] Connected.');
-                            })->call($replication);
-                        },
-                        200
-                    );
+                    // todo: reconnect
                     $this->debug('Connection lost, reconnected.');
                 }
             }
