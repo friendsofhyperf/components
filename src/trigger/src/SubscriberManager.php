@@ -12,11 +12,11 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Trigger;
 
 use FriendsOfHyperf\Trigger\Annotation\Subscriber;
-use FriendsOfHyperf\Trigger\Contract\LoggerInterface;
 use Hyperf\Collection\Arr;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Stdlib\SplPriorityQueue;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 
 class SubscriberManager
 {

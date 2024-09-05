@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Trigger\Subscriber;
 use Closure;
 use FriendsOfHyperf\Trigger\ConstEventsNames;
 use FriendsOfHyperf\Trigger\Consumer;
-use FriendsOfHyperf\Trigger\Contract\LoggerInterface;
 use FriendsOfHyperf\Trigger\TriggerManager;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
@@ -24,6 +23,7 @@ use Hyperf\Engine\Coroutine;
 use MySQLReplication\Event\DTO\EventDTO;
 use MySQLReplication\Event\DTO\RowsDTO;
 use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
 use Throwable;
 
 use function Hyperf\Support\call;

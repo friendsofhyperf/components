@@ -23,8 +23,7 @@ class ConsumerManager
 {
     public function __construct(
         protected ContainerInterface $container,
-        protected ConfigInterface $config,
-        protected ?LoggerInterface $logger = null
+        protected ConfigInterface $config
     ) {
     }
 
@@ -40,7 +39,7 @@ class ConsumerManager
             $consumer = make(Consumer::class, [
                 'connection' => $connection,
                 'options' => (array) $options,
-                'logger' => $this->logger,
+                'logger' => $this->container->has(LoggerInterface::class) ? $this->container->get(LoggerInterface::class) : null,
             ]);
 
             $process = $this->createProcess($consumer);

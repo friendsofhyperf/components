@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Trigger;
 
-use FriendsOfHyperf\Trigger\Contract\LoggerInterface;
 use FriendsOfHyperf\Trigger\Monitor\HealthMonitor;
 use FriendsOfHyperf\Trigger\Mutex\ServerMutexInterface;
 use FriendsOfHyperf\Trigger\Snapshot\BinLogCurrentSnapshotInterface;
@@ -24,6 +23,7 @@ use Hyperf\Coroutine\Coroutine;
 use MySQLReplication\Config\ConfigBuilder;
 use MySQLReplication\MySQLReplicationFactory;
 use MySQLReplication\Socket\SocketException;
+use Psr\Log\LoggerInterface;
 
 use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;

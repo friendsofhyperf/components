@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Trigger\Monitor;
 
 use FriendsOfHyperf\Trigger\Consumer;
-use FriendsOfHyperf\Trigger\Contract\LoggerInterface;
 use FriendsOfHyperf\Trigger\Event\OnReplicationStop;
 use FriendsOfHyperf\Trigger\Snapshot\BinLogCurrentSnapshotInterface;
 use Hyperf\Coordinator\CoordinatorManager;
@@ -21,6 +20,7 @@ use Hyperf\Coroutine\Coroutine;
 use MySQLReplication\BinLog\BinLogCurrent;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Log\LoggerInterface;
 
 class HealthMonitor
 {
