@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\Trigger\Subscriber;
 use Closure;
 use FriendsOfHyperf\Trigger\ConstEventsNames;
 use FriendsOfHyperf\Trigger\Consumer;
-use FriendsOfHyperf\Trigger\Traits\Logger;
+use FriendsOfHyperf\Trigger\Contract\LoggerInterface;
 use FriendsOfHyperf\Trigger\TriggerManager;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
@@ -24,18 +24,13 @@ use Hyperf\Engine\Coroutine;
 use MySQLReplication\Event\DTO\EventDTO;
 use MySQLReplication\Event\DTO\RowsDTO;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 use Throwable;
 
 use function Hyperf\Support\call;
 
 class TriggerSubscriber extends AbstractSubscriber
 {
-    use Logger;
-
     protected Concurrent $concurrent;
-
-    protected ?LoggerInterface $logger = null;
 
     protected ?Channel $chan = null;
 
@@ -44,7 +39,8 @@ class TriggerSubscriber extends AbstractSubscriber
     public function __construct(
         protected ContainerInterface $container,
         protected TriggerManager $triggerManager,
-        protected Consumer $consumer
+        protected Consumer $consumer,
+        protected ?LoggerInterface $logger = null
     ) {
         $this->concurrent = new Concurrent(
             (int) ($consumer->getOption('concurrent.limit') ?? 1)
@@ -52,7 +48,6 @@ class TriggerSubscriber extends AbstractSubscriber
         if ($consumer->getOption('channel.size')) {
             $this->channelSize = (int) $consumer->getOption('channel.size');
         }
-        $this->logger = $this->getLogger();
     }
 
     public static function getSubscribedEvents(): array
@@ -76,9 +71,10 @@ class TriggerSubscriber extends AbstractSubscriber
             return;
         }
 
+        $context = ['connection' => $this->consumer->getConnection()];
         $this->chan = new Channel($this->channelSize);
 
-        Coroutine::create(function () {
+        Coroutine::create(function () use ($context) {
             try {
                 while (true) {
                     while (true) {
@@ -92,7 +88,7 @@ class TriggerSubscriber extends AbstractSubscriber
                         try {
                             $this->concurrent->create($closure);
                         } catch (Throwable $e) {
-                            $this->error((string) $e);
+                            $this->logger?->error((string) $e, $context);
                             break;
                         } finally {
                             $closure = null;
@@ -100,7 +96,7 @@ class TriggerSubscriber extends AbstractSubscriber
                     }
                 }
             } catch (Throwable $e) {
-                $this->error((string) $e);
+                $this->logger?->error((string) $e, $context);
             } finally {
                 $this->close();
             }
@@ -119,6 +115,7 @@ class TriggerSubscriber extends AbstractSubscriber
             return;
         }
 
+        $context = ['connection' => $this->consumer->getConnection()];
         $this->loop();
 
         $database = match (true) {
@@ -149,11 +146,11 @@ class TriggerSubscriber extends AbstractSubscriber
                 default => [],
             };
             foreach ($values as $value) {
-                $this->chan->push(function () use ($callable, $value, $eventType) {
+                $this->chan->push(function () use ($callable, $value, $eventType, $context) {
                     [$class, $method] = $callable;
 
                     if (! $this->container->has($class)) {
-                        $this->warning(sprintf('Entry "%s" cannot be resolved.', $class));
+                        $this->logger?->warning(sprintf('Entry "%s" cannot be resolved.', $class), $context);
                         return;
                     }
 
@@ -171,7 +168,7 @@ class TriggerSubscriber extends AbstractSubscriber
                     try {
                         call([$this->container->get($class), $method], $args);
                     } catch (Throwable $e) {
-                        $this->warning((string) $e);
+                        $this->logger?->warning((string) $e, $context);
                     }
                 });
             }

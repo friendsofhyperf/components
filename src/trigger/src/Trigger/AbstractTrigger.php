@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Trigger\Trigger;
 
-use FriendsOfHyperf\Trigger\Contact\TriggerInterface;
+use FriendsOfHyperf\Trigger\Contract\TriggerInterface;
 
 abstract class AbstractTrigger implements TriggerInterface
 {

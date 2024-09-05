@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Trigger\Contact;
+namespace FriendsOfHyperf\Trigger\Contract;
 
 interface TriggerInterface
 {

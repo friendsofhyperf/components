@@ -24,6 +24,7 @@ class ConfigProvider
             'dependencies' => [
                 Mutex\ServerMutexInterface::class => Mutex\RedisServerMutex::class,
                 Snapshot\BinLogCurrentSnapshotInterface::class => Snapshot\RedisBinLogCurrentSnapshot::class,
+                Contract\LoggerInterface::class => fn ($container) => $container->get(\Hyperf\Contract\StdoutLoggerInterface::class),
             ],
             'commands' => [
                 Command\ConsumeCommand::class,

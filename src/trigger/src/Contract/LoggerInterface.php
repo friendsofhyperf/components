@@ -9,8 +9,12 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Trigger\Contact;
+namespace FriendsOfHyperf\Trigger\Contract;
 
-interface LoggerInterface extends \Psr\Log\LoggerInterface
-{
+class_alias(\Psr\Log\LoggerInterface::class, LoggerInterface::class);
+
+if (false) { // @phpstan-ignore-line
+    interface LoggerInterface extends \Psr\Log\LoggerInterface
+    {
+    }
 }

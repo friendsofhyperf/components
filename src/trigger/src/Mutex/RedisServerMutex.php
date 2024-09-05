@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Trigger\Mutex;
 
-use FriendsOfHyperf\Trigger\Traits\Logger;
 use FriendsOfHyperf\Trigger\Util;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coordinator\Timer;
@@ -22,8 +21,6 @@ use Throwable;
 
 class RedisServerMutex implements ServerMutexInterface
 {
-    use Logger;
-
     protected int $expires = 60;
 
     protected int $keepaliveInterval = 10;
@@ -36,13 +33,12 @@ class RedisServerMutex implements ServerMutexInterface
 
     protected string $connection = 'default';
 
-    protected ?LoggerInterface $logger = null;
-
     public function __construct(
         protected Redis $redis,
         protected ?string $name = null,
         protected ?string $owner = null,
-        array $options = []
+        array $options = [],
+        protected ?LoggerInterface $logger = null
     ) {
         $this->expires = (int) ($options['expires'] ?? 60);
         $this->keepaliveInterval = (int) ($options['keepalive_interval'] ?? 10);
@@ -51,36 +47,37 @@ class RedisServerMutex implements ServerMutexInterface
         if (isset($options['connection'])) {
             $this->connection = $options['connection'];
         }
-        $this->logger = $this->getLogger();
         $this->timer = new Timer($this->logger);
         $this->retryInterval = (int) ($options['retry_interval'] ?? 10);
     }
 
     public function attempt(?callable $callback = null): void
     {
+        $context = ['connection' => $this->connection];
+
         // Waiting for the server mutex.
-        $this->timer->tick($this->retryInterval, function () {
+        $this->timer->tick($this->retryInterval, function () use ($context) {
             if (
                 $this->redis->set($this->name, $this->owner, ['NX', 'EX' => $this->expires])
                 || $this->redis->get($this->name) == $this->owner
             ) {
-                $this->debug('Got server mutex.');
+                $this->logger?->debug('Got server mutex.');
                 CoordinatorManager::until($this->getIdentifier())->resume();
 
                 return Timer::STOP;
             }
 
-            $this->debug('Waiting server mutex.');
+            $this->logger?->debug('Waiting server mutex.', $context);
         });
 
         // Waiting for the server mutex.
         CoordinatorManager::until($this->getIdentifier())->yield();
 
-        $this->debug('Server mutex keepalive booted.');
+        $this->logger?->debug('Server mutex keepalive booted.', $context);
 
-        $this->timer->tick($this->keepaliveInterval, function () {
+        $this->timer->tick($this->keepaliveInterval, function () use ($context) {
             if ($this->released) {
-                $this->debug('Server mutex keepalive stopped.');
+                $this->logger?->debug('Server mutex keepalive stopped.', $context);
 
                 return Timer::STOP;
             }
@@ -89,7 +86,7 @@ class RedisServerMutex implements ServerMutexInterface
             $this->redis->expire($this->name, $this->expires);
             $ttl = $this->redis->ttl($this->name);
 
-            $this->debug('Server mutex keepalive executed', ['ttl' => $ttl]);
+            $this->logger?->debug('Server mutex keepalive executed', $context + ['ttl' => $ttl]);
         });
 
         // Execute the callback.
@@ -97,7 +94,7 @@ class RedisServerMutex implements ServerMutexInterface
             try {
                 $callback();
             } catch (Throwable $e) {
-                $this->error((string) $e);
+                $this->logger?->error((string) $e, $context);
             }
         }
     }
