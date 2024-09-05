@@ -88,7 +88,7 @@ class Consumer
             $this->logger?->debug('Consumer started.', $context);
 
             // Worker exit
-            Coroutine::create(function () {
+            Coroutine::create(function () use ($context) {
                 CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
                 $this->stop();
                 $this->logger?->warning('Consumer stopped.', $context);
@@ -190,7 +190,7 @@ class Consumer
             $configBuilder->withBinLogFileName($binLogCurrent->getBinFileName())
                 ->withBinLogPosition($binLogCurrent->getBinLogPosition());
 
-            $this->logger?->debug('Continue with position', compact('connectioin') + $binLogCurrent->jsonSerialize());
+            $this->logger?->debug('Continue with position', compact('connection') + $binLogCurrent->jsonSerialize());
         }
 
         $eventDispatcher = make(EventDispatcher::class);
