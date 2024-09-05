@@ -178,22 +178,19 @@ class Consumer
             $this->triggerManager->getTables($connection)
         );
 
-        /** @var ConfigBuilder */
-        $configBuilder = tap(
-            new ConfigBuilder(),
-            fn (ConfigBuilder $builder) => $builder->withUser($config['user'] ?? 'root')
-                ->withHost($config['host'] ?? '127.0.0.1')
-                ->withPassword($config['password'] ?? 'root')
-                ->withPort((int) ($config['port'] ?? 3306))
-                ->withSlaveId(random_int(100, 999))
-                ->withHeartbeatPeriod((float) ($config['heartbeat_period'] ?? 3))
-                ->withDatabasesOnly($databasesOnly)
-                ->withTablesOnly($tablesOnly)
-        );
+        $configBuilder = (new ConfigBuilder())
+            ->withUser($config['user'] ?? 'root')
+            ->withHost($config['host'] ?? '127.0.0.1')
+            ->withPassword($config['password'] ?? 'root')
+            ->withPort((int) ($config['port'] ?? 3306))
+            ->withSlaveId(random_int(100, 999))
+            ->withHeartbeatPeriod((float) ($config['heartbeat_period'] ?? 3))
+            ->withDatabasesOnly($databasesOnly)
+            ->withTablesOnly($tablesOnly);
 
         if ($binLogCurrent = $this->getBinLogCurrentSnapshot()->get()) {
-            $configBuilder->withBinLogFileName($binLogCurrent->getBinFileName());
-            $configBuilder->withBinLogPosition($binLogCurrent->getBinLogPosition());
+            $configBuilder->withBinLogFileName($binLogCurrent->getBinFileName())
+                ->withBinLogPosition($binLogCurrent->getBinLogPosition());
 
             $this->debug('Continue with position', $binLogCurrent->jsonSerialize());
         }
