@@ -190,7 +190,7 @@ class Consumer
             $configBuilder->withBinLogFileName($binLogCurrent->getBinFileName())
                 ->withBinLogPosition($binLogCurrent->getBinLogPosition());
 
-            $this->logger?->debug('Continue with position', compact('connection') + $binLogCurrent->jsonSerialize());
+            $this->logger?->debug('Continue with position', compact('connection') + ['binlog_current' => $binLogCurrent->jsonSerialize()]);
         }
 
         $eventDispatcher = make(EventDispatcher::class);
