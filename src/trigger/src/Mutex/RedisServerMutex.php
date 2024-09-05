@@ -61,23 +61,23 @@ class RedisServerMutex implements ServerMutexInterface
                 $this->redis->set($this->name, $this->owner, ['NX', 'EX' => $this->expires])
                 || $this->redis->get($this->name) == $this->owner
             ) {
-                $this->logger?->debug('Got server mutex.');
+                $this->logger?->debug('[{connection}] Got server mutex.', $context);
                 CoordinatorManager::until($this->getIdentifier())->resume();
 
                 return Timer::STOP;
             }
 
-            $this->logger?->debug('Waiting server mutex.', $context);
+            $this->logger?->debug('[{connection}] Waiting server mutex.', $context);
         });
 
         // Waiting for the server mutex.
         CoordinatorManager::until($this->getIdentifier())->yield();
 
-        $this->logger?->debug('Server mutex keepalive booted.', $context);
+        $this->logger?->debug('[{connection}] Server mutex keepalive booted.', $context);
 
         $this->timer->tick($this->keepaliveInterval, function () use ($context) {
             if ($this->released) {
-                $this->logger?->debug('Server mutex keepalive stopped.', $context);
+                $this->logger?->debug('[{connection}] Server mutex keepalive stopped.', $context);
 
                 return Timer::STOP;
             }
@@ -86,7 +86,7 @@ class RedisServerMutex implements ServerMutexInterface
             $this->redis->expire($this->name, $this->expires);
             $ttl = $this->redis->ttl($this->name);
 
-            $this->logger?->debug('Server mutex keepalive executed', $context + ['ttl' => $ttl]);
+            $this->logger?->debug('[{connection}] Server mutex keepalive executed', $context + ['ttl' => $ttl]);
         });
 
         // Execute the callback.
@@ -94,7 +94,7 @@ class RedisServerMutex implements ServerMutexInterface
             try {
                 $callback();
             } catch (Throwable $e) {
-                $this->logger?->error((string) $e, $context);
+                $this->logger?->error('[{connection}] ' . (string) $e, $context);
             }
         }
     }

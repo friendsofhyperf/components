@@ -85,13 +85,13 @@ class Consumer
             // Replication start
             CoordinatorManager::until($this->getIdentifier())->resume();
 
-            $this->logger?->debug('Consumer started.', $context);
+            $this->logger?->debug('[{connection}] Consumer started.', $context);
 
             // Worker exit
             Coroutine::create(function () use ($context) {
                 CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
                 $this->stop();
-                $this->logger?->warning('Consumer stopped.', $context);
+                $this->logger?->warning('[{connection}] Consumer stopped.', $context);
             });
 
             while (1) {
@@ -103,7 +103,7 @@ class Consumer
                     $replication->consume();
                 } catch (SocketException $e) {
                     // todo: reconnect
-                    $this->logger?->debug('Connection lost, reconnected.', $context);
+                    $this->logger?->debug('[{connection}] Connection lost, reconnected.', $context);
                 }
             }
         };
@@ -190,7 +190,10 @@ class Consumer
             $configBuilder->withBinLogFileName($binLogCurrent->getBinFileName())
                 ->withBinLogPosition($binLogCurrent->getBinLogPosition());
 
-            $this->logger?->debug('Continue with position', compact('connection') + ['binlog_current' => $binLogCurrent->jsonSerialize()]);
+            $this->logger?->debug(
+                '[{connection}] Continue with position, binlog_current: {binlog_current}',
+                compact('connection') + ['binlog_current' => json_encode($binLogCurrent->jsonSerialize())]
+            );
         }
 
         $eventDispatcher = make(EventDispatcher::class);

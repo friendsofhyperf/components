@@ -58,7 +58,7 @@ class HealthMonitor
                 if ($this->binLogCurrent instanceof BinLogCurrent) {
                     $this->logger?->debug(
                         sprintf(
-                            'Health monitoring, binLogCurrent: %s',
+                            '[{connection}] Health monitoring, binLogCurrent: %s',
                             json_encode($this->binLogCurrent->jsonSerialize(), JSON_THROW_ON_ERROR)
                         ),
                         ['connection' => $this->connection]

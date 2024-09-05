@@ -88,7 +88,7 @@ class TriggerSubscriber extends AbstractSubscriber
                         try {
                             $this->concurrent->create($closure);
                         } catch (Throwable $e) {
-                            $this->logger?->error((string) $e, $context);
+                            $this->logger?->error('[{connection}] ' . (string) $e, $context);
                             break;
                         } finally {
                             $closure = null;
@@ -96,7 +96,7 @@ class TriggerSubscriber extends AbstractSubscriber
                     }
                 }
             } catch (Throwable $e) {
-                $this->logger?->error((string) $e, $context);
+                $this->logger?->error('[{connection}] ' . (string) $e, $context);
             } finally {
                 $this->close();
             }
@@ -150,7 +150,7 @@ class TriggerSubscriber extends AbstractSubscriber
                     [$class, $method] = $callable;
 
                     if (! $this->container->has($class)) {
-                        $this->logger?->warning(sprintf('Entry "%s" cannot be resolved.', $class), $context);
+                        $this->logger?->warning(sprintf('[{connection}] Entry "%s" cannot be resolved.', $class), $context);
                         return;
                     }
 
@@ -168,7 +168,7 @@ class TriggerSubscriber extends AbstractSubscriber
                     try {
                         call([$this->container->get($class), $method], $args);
                     } catch (Throwable $e) {
-                        $this->logger?->warning((string) $e, $context);
+                        $this->logger?->warning('[{connection}] ' . (string) $e, $context);
                     }
                 });
             }
