@@ -73,7 +73,8 @@ class Consumer
 
     public function start(): void
     {
-        $callback = function () {
+        $context = ['connection' => $this->connection];
+        $callback = function () use ($context) {
             // Health monitor start
             if ($this->healthMonitor) {
                 $this->healthMonitor->process();
@@ -84,13 +85,13 @@ class Consumer
             // Replication start
             CoordinatorManager::until($this->getIdentifier())->resume();
 
-            $this->logger?->debug('Consumer started.');
+            $this->logger?->debug('Consumer started.', $context);
 
             // Worker exit
             Coroutine::create(function () {
                 CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
                 $this->stop();
-                $this->logger?->warning('Consumer stopped.');
+                $this->logger?->warning('Consumer stopped.', $context);
             });
 
             while (1) {
@@ -102,7 +103,7 @@ class Consumer
                     $replication->consume();
                 } catch (SocketException $e) {
                     // todo: reconnect
-                    $this->logger?->debug('Connection lost, reconnected.');
+                    $this->logger?->debug('Connection lost, reconnected.', $context);
                 }
             }
         };
