@@ -91,19 +91,20 @@ class Consumer
             Coroutine::create(function () use ($context) {
                 CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
                 $this->stop();
-                $this->logger?->warning('[{connection}] Consumer stopped.', $context);
+                $this->logger?->warning('[{connection}] Consumer exit.', $context);
             });
 
             while (1) {
                 if ($this->isStopped()) {
+                    $this->logger?->warning('[{connection}] Consumer stopped.', $context);
                     break;
                 }
 
                 try {
                     $replication->consume();
                 } catch (SocketException $e) {
-                    // todo: reconnect
-                    $this->logger?->debug('[{connection}] Connection lost, reconnected.', $context);
+                    $this->stop();
+                    $this->logger?->warning('[{connection}] Connection lost, will retry later.', $context);
                 }
             }
         };
