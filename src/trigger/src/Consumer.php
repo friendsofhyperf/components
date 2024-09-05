@@ -103,8 +103,8 @@ class Consumer
                 try {
                     $replication->consume();
                 } catch (SocketException $e) {
-                    $this->logger?->debug('[{connection}] Connection lost, will retry later.', $context);
                     $this->stop();
+                    $this->logger?->warning('[{connection}] Connection lost, will retry later.', $context);
                 }
             }
         };
