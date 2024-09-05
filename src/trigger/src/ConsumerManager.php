@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Trigger;
 
+use FriendsOfHyperf\Trigger\Contract\LoggerInterface;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Process\AbstractProcess;
 use Hyperf\Process\ProcessManager;
@@ -22,7 +23,8 @@ class ConsumerManager
 {
     public function __construct(
         protected ContainerInterface $container,
-        protected ConfigInterface $config
+        protected ConfigInterface $config,
+        protected ?LoggerInterface $logger = null
     ) {
     }
 
@@ -38,6 +40,7 @@ class ConsumerManager
             $consumer = make(Consumer::class, [
                 'connection' => $connection,
                 'options' => (array) $options,
+                'logger' => $this->logger,
             ]);
 
             $process = $this->createProcess($consumer);
