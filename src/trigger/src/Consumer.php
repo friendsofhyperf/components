@@ -191,7 +191,7 @@ class Consumer
                 ->withBinLogPosition($binLogCurrent->getBinLogPosition());
 
             $this->logger?->debug(
-                '[{connection}] Continue with position, binlog_current: {binlog_current}',
+                '[{connection}] Continue with position, binLogCurrent: {binlog_current}',
                 compact('connection') + ['binlog_current' => json_encode($binLogCurrent->jsonSerialize())]
             );
         }

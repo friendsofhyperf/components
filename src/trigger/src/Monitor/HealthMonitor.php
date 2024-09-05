@@ -57,11 +57,11 @@ class HealthMonitor
             $this->timer->tick($this->monitorInterval, function () {
                 if ($this->binLogCurrent instanceof BinLogCurrent) {
                     $this->logger?->debug(
-                        sprintf(
-                            '[{connection}] Health monitoring, binLogCurrent: %s',
-                            json_encode($this->binLogCurrent->jsonSerialize(), JSON_THROW_ON_ERROR)
-                        ),
-                        ['connection' => $this->connection]
+                        '[{connection}] Health monitoring, binLogCurrent: [{binlog_current}]',
+                        [
+                            'connection' => $this->connection,
+                            'binlog_current' => json_encode($this->binLogCurrent->jsonSerialize(), JSON_THROW_ON_ERROR),
+                        ]
                     );
                 }
             });
