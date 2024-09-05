@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Trigger;
 
+use FriendsOfHyperf\Trigger\Contract\LoggerInterface;
 use FriendsOfHyperf\Trigger\Monitor\HealthMonitor;
 use FriendsOfHyperf\Trigger\Mutex\ServerMutexInterface;
 use FriendsOfHyperf\Trigger\Snapshot\BinLogCurrentSnapshotInterface;
 use FriendsOfHyperf\Trigger\Subscriber\SnapshotSubscriber;
 use FriendsOfHyperf\Trigger\Subscriber\TriggerSubscriber;
-use FriendsOfHyperf\Trigger\Traits\Logger;
 use Hyperf\Collection\Arr;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
@@ -24,18 +24,13 @@ use Hyperf\Coroutine\Coroutine;
 use MySQLReplication\Config\ConfigBuilder;
 use MySQLReplication\MySQLReplicationFactory;
 use MySQLReplication\Socket\SocketException;
-use Psr\Log\LoggerInterface;
 
 use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
 
 class Consumer
 {
-    use Logger;
-
     protected ?string $name = null;
-
-    protected ?LoggerInterface $logger = null;
 
     private ?HealthMonitor $healthMonitor = null;
 
@@ -49,7 +44,8 @@ class Consumer
         protected SubscriberManager $subscriberManager,
         protected TriggerManager $triggerManager,
         protected string $connection = 'default',
-        protected array $options = []
+        protected array $options = [],
+        protected ?LoggerInterface $logger = null
     ) {
         if (isset($options['name'])) {
             $this->name = $options['name'];
@@ -68,10 +64,11 @@ class Consumer
         }
 
         if ($this->getOption('health_monitor.enable', true)) {
-            $this->healthMonitor = make(HealthMonitor::class, ['consumer' => $this]);
+            $this->healthMonitor = make(HealthMonitor::class, [
+                'consumer' => $this,
+                'logger' => $this->logger,
+            ]);
         }
-
-        $this->logger = $this->getLogger();
     }
 
     public function start(): void
@@ -87,13 +84,13 @@ class Consumer
             // Replication start
             CoordinatorManager::until($this->getIdentifier())->resume();
 
-            $this->debug('Consumer started.');
+            $this->logger?->debug('Consumer started.');
 
             // Worker exit
             Coroutine::create(function () {
                 CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
                 $this->stop();
-                $this->warning('Consumer stopped.');
+                $this->logger?->warning('Consumer stopped.');
             });
 
             while (1) {
@@ -105,7 +102,7 @@ class Consumer
                     $replication->consume();
                 } catch (SocketException $e) {
                     // todo: reconnect
-                    $this->debug('Connection lost, reconnected.');
+                    $this->logger?->debug('Connection lost, reconnected.');
                 }
             }
         };
@@ -192,7 +189,7 @@ class Consumer
             $configBuilder->withBinLogFileName($binLogCurrent->getBinFileName())
                 ->withBinLogPosition($binLogCurrent->getBinLogPosition());
 
-            $this->debug('Continue with position', $binLogCurrent->jsonSerialize());
+            $this->logger?->debug('Continue with position', compact('connectioin') + $binLogCurrent->jsonSerialize());
         }
 
         $eventDispatcher = make(EventDispatcher::class);
@@ -209,7 +206,10 @@ class Consumer
                 $subscribers[] = SnapshotSubscriber::class;
 
                 foreach ($subscribers as $subscriber) {
-                    $factory->registerSubscriber(make($subscriber, ['consumer' => $this]));
+                    $factory->registerSubscriber(make($subscriber, [
+                        'consumer' => $this,
+                        'logger' => $this->logger,
+                    ]));
                 }
             }
         );
