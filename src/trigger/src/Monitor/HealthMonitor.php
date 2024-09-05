@@ -60,7 +60,8 @@ class HealthMonitor
                         sprintf(
                             'Health monitoring, binLogCurrent: %s',
                             json_encode($this->binLogCurrent->jsonSerialize(), JSON_THROW_ON_ERROR)
-                        )
+                        ),
+                        ['connection' => $this->connection]
                     );
                 }
             });
