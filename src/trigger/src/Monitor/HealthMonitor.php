@@ -24,7 +24,7 @@ use Psr\Log\LoggerInterface;
 
 class HealthMonitor
 {
-    protected BinLogCurrent $binLogCurrent;
+    protected ?BinLogCurrent $binLogCurrent = null;
 
     protected int $monitorInterval = 10;
 
