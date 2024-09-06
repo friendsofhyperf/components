@@ -106,7 +106,6 @@ class Consumer
                 } catch (Throwable $e) {
                     $this->logger?->warning('[{connection}] Error occurred, will retry later.', $context + ['message' => $e->getMessage()]);
                     $this->logger?->error((string) $e);
-                } finally {
                     $this->stop();
                 }
             }
