@@ -22,8 +22,8 @@ use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Coroutine;
 use MySQLReplication\Config\ConfigBuilder;
 use MySQLReplication\MySQLReplicationFactory;
-use MySQLReplication\Socket\SocketException;
 use Psr\Log\LoggerInterface;
+use Throwable;
 
 use function Hyperf\Support\make;
 use function Hyperf\Tappable\tap;
@@ -102,9 +102,11 @@ class Consumer
 
                 try {
                     $replication->consume();
-                } catch (SocketException $e) {
+                } catch (Throwable $e) {
+                    $this->logger?->warning('[{connection}] Error occurred, will retry later.', $context + ['message' => $e->getMessage()]);
+                    $this->logger?->error((string) $e);
+                } finally {
                     $this->stop();
-                    $this->logger?->warning('[{connection}] Connection lost, will retry later.', $context);
                 }
             }
         };
