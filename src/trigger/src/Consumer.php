@@ -20,6 +20,7 @@ use Hyperf\Collection\Arr;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Coroutine;
+use Hyperf\Stringable\Str;
 use MySQLReplication\Config\ConfigBuilder;
 use MySQLReplication\MySQLReplicationFactory;
 use Psr\Log\LoggerInterface;
@@ -188,6 +189,10 @@ class Consumer
             ->withHeartbeatPeriod((float) ($config['heartbeat_period'] ?? 3))
             ->withDatabasesOnly($databasesOnly)
             ->withTablesOnly($tablesOnly);
+
+        if (method_exists($configBuilder, 'withSlaveUuid')) { // php-mysql-replication >= 8.0
+            $configBuilder->withSlaveUuid(Str::uuid()->toString());
+        }
 
         if ($binLogCurrent = $this->getBinLogCurrentSnapshot()->get()) {
             $configBuilder->withBinLogFileName($binLogCurrent->getBinFileName())
