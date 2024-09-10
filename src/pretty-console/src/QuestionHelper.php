@@ -28,7 +28,7 @@ class QuestionHelper extends SymfonyQuestionHelper
     /**
      * @param SymfonyStyle $output
      */
-    protected function writePrompt(OutputInterface $output, Question $question)
+    protected function writePrompt(OutputInterface $output, Question $question): void
     {
         $text = OutputFormatter::escapeTrailingBackslash($question->getQuestion());
         $text = $this->ensureEndsWithPunctuation($text);
