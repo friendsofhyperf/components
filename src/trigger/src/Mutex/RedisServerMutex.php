@@ -42,7 +42,7 @@ class RedisServerMutex implements ServerMutexInterface
     ) {
         $this->expires = (int) ($options['expires'] ?? 60);
         $this->keepaliveInterval = (int) ($options['keepalive_interval'] ?? 10);
-        $this->name = $name ?? sprintf('trigger:server:%s', $this->connection);
+        $this->name = ($options['prefix'] ?? '') . ($name ?? sprintf('trigger:server:%s', $this->connection));
         $this->owner = $owner ?? Util::getInternalIp();
         if (isset($options['connection'])) {
             $this->connection = $options['connection'];

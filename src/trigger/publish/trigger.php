@@ -26,6 +26,7 @@ return [
 
             'server_mutex' => [
                 'enable' => true,
+                'prefix' => env('APP_ENV', 'dev') . '_',
                 'expires' => 30,
                 'keepalive_interval' => 10,
                 'retry_interval' => 10,
