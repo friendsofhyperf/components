@@ -61,6 +61,7 @@ class Consumer
                 'name' => 'trigger:mutex:' . $this->connection,
                 'owner' => Util::getInternalIp(),
                 'options' => $this->getOption('server_mutex', []) + ['connection' => $this->connection],
+                'logger' => $this->logger,
             ]);
         }
 
