@@ -56,6 +56,7 @@ class HealthMonitor
             // Monitor binLogCurrent
             $this->timer->tick($this->monitorInterval, function () {
                 if ($this->consumer->isStopped()) {
+                    $this->logger?->warning('[{connection}] Health monitor stopped.', ['connection' => $this->connection]);
                     return Timer::STOP;
                 }
 
@@ -73,6 +74,7 @@ class HealthMonitor
             // Health check and set snapshot
             $this->timer->tick($this->snapShortInterval, function () {
                 if ($this->consumer->isStopped()) {
+                    $this->logger?->warning('[{connection}] Snapshot stopped.', ['connection' => $this->connection]);
                     return Timer::STOP;
                 }
 
