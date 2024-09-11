@@ -59,7 +59,7 @@ class RedisServerMutex implements ServerMutexInterface
         $this->timer->tick($this->retryInterval, function () use ($context) {
             if (
                 $this->redis->set($this->name, $this->owner, ['NX', 'EX' => $this->expires])
-                || $this->redis->get($this->name) == $this->owner
+                || ($owner = $this->redis->get($this->name)) == $this->owner
             ) {
                 $this->logger?->debug('[{connection}] Got server mutex.', $context);
                 CoordinatorManager::until($this->getIdentifier())->resume();
@@ -67,7 +67,8 @@ class RedisServerMutex implements ServerMutexInterface
                 return Timer::STOP;
             }
 
-            $this->logger?->debug('[{connection}] Waiting server mutex.', $context);
+            $context['owner'] = $owner ?? 'null';
+            $this->logger?->debug('[{connection}] Waiting server mutex. [owner:{owner}]', $context);
         });
 
         // Waiting for the server mutex.
