@@ -55,6 +55,10 @@ class HealthMonitor
 
             // Monitor binLogCurrent
             $this->timer->tick($this->monitorInterval, function () {
+                if ($this->consumer->isStopped()) {
+                    return Timer::STOP;
+                }
+
                 if ($this->binLogCurrent instanceof BinLogCurrent) {
                     $this->logger?->debug(
                         '[{connection}] Health monitoring, binLogCurrent: [{binlog_current}]',
@@ -68,6 +72,10 @@ class HealthMonitor
 
             // Health check and set snapshot
             $this->timer->tick($this->snapShortInterval, function () {
+                if ($this->consumer->isStopped()) {
+                    return Timer::STOP;
+                }
+
                 if (! $this->binLogCurrent instanceof BinLogCurrent) {
                     return;
                 }
