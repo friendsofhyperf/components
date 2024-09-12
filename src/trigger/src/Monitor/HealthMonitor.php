@@ -53,18 +53,20 @@ class HealthMonitor
         Coroutine::create(function () {
             CoordinatorManager::until($this->consumer->getIdentifier())->yield();
 
+            $context = ['connection' => $this->connection];
+
             // Monitor binLogCurrent
-            $this->timer->tick($this->monitorInterval, function () {
+            $this->timer->tick($this->monitorInterval, function () use ($context) {
                 if ($this->consumer->isStopped()) {
-                    $this->logger?->warning('[{connection}] Health monitor stopped.', ['connection' => $this->connection]);
+                    $this->logger?->warning('[{connection}] Health monitor stopped.', $context);
                     return Timer::STOP;
                 }
 
                 if ($this->binLogCurrent instanceof BinLogCurrent) {
                     $this->logger?->debug(
                         '[{connection}] Health monitoring, binLogCurrent: [{binlog_current}]',
+                        $context +
                         [
-                            'connection' => $this->connection,
                             'binlog_current' => json_encode($this->binLogCurrent->jsonSerialize(), JSON_THROW_ON_ERROR),
                         ]
                     );
@@ -72,9 +74,9 @@ class HealthMonitor
             });
 
             // Health check and set snapshot
-            $this->timer->tick($this->snapShortInterval, function () {
+            $this->timer->tick($this->snapShortInterval, function () use ($context) {
                 if ($this->consumer->isStopped()) {
-                    $this->logger?->warning('[{connection}] Snapshot stopped.', ['connection' => $this->connection]);
+                    $this->logger?->warning('[{connection}] Snapshot stopped.', $context);
                     return Timer::STOP;
                 }
 
