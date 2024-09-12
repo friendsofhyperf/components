@@ -55,18 +55,15 @@ class Consumer
         $this->name = $options['name'] ?? sprintf('trigger.%s', $this->connection);
         $this->identifier = $options['identifier'] ?? sprintf('trigger.%s', $this->connection);
         $this->config = new Config($options);
-        $this->binLogCurrentSnapshot = make(BinLogCurrentSnapshotInterface::class, [
-            'consumer' => $this,
-        ]);
 
+        $this->binLogCurrentSnapshot = make(BinLogCurrentSnapshotInterface::class, ['consumer' => $this]);
+        $this->healthMonitor = $this->config->get('health_monitor.enable', true) ? make(HealthMonitor::class, ['consumer' => $this]) : null;
         $this->serverMutex = $this->config->get('server_mutex.enable', true) ? make(ServerMutexInterface::class, [
             'name' => 'trigger:mutex:' . $this->connection,
             'owner' => Util::getInternalIp(),
             'options' => $this->config->get('server_mutex', []) + ['connection' => $this->connection],
             'logger' => $this->logger,
         ]) : null;
-
-        $this->healthMonitor = $this->config->get('health_monitor.enable', true) ? make(HealthMonitor::class, ['consumer' => $this]) : null;
     }
 
     public function start(): void
