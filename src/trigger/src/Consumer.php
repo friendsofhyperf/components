@@ -77,6 +77,9 @@ class Consumer
     {
         $context = ['connection' => $this->connection];
         $callback = function () use ($context) {
+            // Reset stopped status
+            $this->stopped = false;
+
             // Health monitor start
             if ($this->healthMonitor) {
                 $this->healthMonitor->process();
