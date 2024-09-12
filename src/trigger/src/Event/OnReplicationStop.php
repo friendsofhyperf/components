@@ -15,7 +15,9 @@ use MySQLReplication\BinLog\BinLogCurrent;
 
 class OnReplicationStop
 {
-    public function __construct(public string $connection, public ?BinLogCurrent $binLogCurrent = null)
-    {
+    public function __construct(
+        public readonly string $connection,
+        public readonly ?BinLogCurrent $binLogCurrent = null
+    ) {
     }
 }
