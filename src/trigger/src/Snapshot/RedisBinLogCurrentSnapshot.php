@@ -28,7 +28,7 @@ class RedisBinLogCurrentSnapshot implements BinLogCurrentSnapshotInterface
     public function set(BinLogCurrent $binLogCurrent): void
     {
         $this->redis->set($this->key(), serialize($binLogCurrent));
-        $this->redis->expire($this->key(), (int) $this->consumer->getOption('snapshot.expires', 24 * 3600));
+        $this->redis->expire($this->key(), (int) $this->consumer->config->get('snapshot.expires', 24 * 3600));
     }
 
     public function get(): ?BinLogCurrent
@@ -50,8 +50,8 @@ class RedisBinLogCurrentSnapshot implements BinLogCurrentSnapshotInterface
             'trigger',
             'snapshot',
             'binLogCurrent',
-            $this->consumer->getOption('snapshot.version', '1.0'),
-            $this->consumer->getConnection(),
+            $this->consumer->config->get('snapshot.version', '1.0'),
+            $this->consumer->connection,
         ]);
     }
 }

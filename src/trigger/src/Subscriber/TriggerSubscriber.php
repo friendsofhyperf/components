@@ -23,7 +23,6 @@ use Hyperf\Engine\Coroutine;
 use MySQLReplication\Event\DTO\EventDTO;
 use MySQLReplication\Event\DTO\RowsDTO;
 use Psr\Container\ContainerInterface;
-use Psr\Log\LoggerInterface;
 use Throwable;
 
 use function Hyperf\Support\call;
@@ -39,14 +38,13 @@ class TriggerSubscriber extends AbstractSubscriber
     public function __construct(
         protected ContainerInterface $container,
         protected TriggerManager $triggerManager,
-        protected Consumer $consumer,
-        protected ?LoggerInterface $logger = null
+        protected Consumer $consumer
     ) {
         $this->concurrent = new Concurrent(
-            (int) ($consumer->getOption('concurrent.limit') ?? 1)
+            (int) ($consumer->config->get('concurrent.limit') ?? 1)
         );
-        if ($consumer->getOption('channel.size')) {
-            $this->channelSize = (int) $consumer->getOption('channel.size');
+        if ($consumer->config->has('channel.size')) {
+            $this->channelSize = (int) $consumer->config->get('channel.size');
         }
     }
 
@@ -71,7 +69,7 @@ class TriggerSubscriber extends AbstractSubscriber
             return;
         }
 
-        $context = ['connection' => $this->consumer->getConnection()];
+        $context = ['connection' => $this->consumer->connection];
         $this->chan = new Channel($this->channelSize);
 
         Coroutine::create(function () use ($context) {
@@ -88,7 +86,7 @@ class TriggerSubscriber extends AbstractSubscriber
                         try {
                             $this->concurrent->create($closure);
                         } catch (Throwable $e) {
-                            $this->logger?->error('[{connection}] ' . (string) $e, $context);
+                            $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
                             break;
                         } finally {
                             $closure = null;
@@ -96,7 +94,7 @@ class TriggerSubscriber extends AbstractSubscriber
                     }
                 }
             } catch (Throwable $e) {
-                $this->logger?->error('[{connection}] ' . (string) $e, $context);
+                $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
             } finally {
                 $this->close();
             }
@@ -115,7 +113,7 @@ class TriggerSubscriber extends AbstractSubscriber
             return;
         }
 
-        $context = ['connection' => $this->consumer->getConnection()];
+        $context = ['connection' => $this->consumer->connection];
         $this->loop();
 
         $database = match (true) {
@@ -131,7 +129,7 @@ class TriggerSubscriber extends AbstractSubscriber
         };
 
         $key = join('.', [
-            $this->consumer->getConnection(),
+            $this->consumer->connection,
             $database,
             $table,
             $event->getType(),
@@ -150,7 +148,7 @@ class TriggerSubscriber extends AbstractSubscriber
                     [$class, $method] = $callable;
 
                     if (! $this->container->has($class)) {
-                        $this->logger?->warning(sprintf('[{connection}] Entry "%s" cannot be resolved.', $class), $context);
+                        $this->consumer->logger?->warning(sprintf('[{connection}] Entry "%s" cannot be resolved.', $class), $context);
                         return;
                     }
 
@@ -168,7 +166,7 @@ class TriggerSubscriber extends AbstractSubscriber
                     try {
                         call([$this->container->get($class), $method], $args);
                     } catch (Throwable $e) {
-                        $this->logger?->warning('[{connection}] ' . (string) $e, $context);
+                        $this->consumer->logger?->warning('[{connection}] ' . (string) $e, $context);
                     }
                 });
             }
