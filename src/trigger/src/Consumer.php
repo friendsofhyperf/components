@@ -77,9 +77,7 @@ class Consumer
             $this->stopped = false;
 
             // Health monitor start
-            if ($this->healthMonitor) {
-                $this->healthMonitor->process();
-            }
+            $this->healthMonitor?->process();
 
             $replication = $this->makeReplication();
 
