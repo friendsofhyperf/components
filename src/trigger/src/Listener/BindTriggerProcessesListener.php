@@ -42,6 +42,6 @@ class BindTriggerProcessesListener implements ListenerInterface
     {
         $this->subscriberManager->register();
         $this->triggerManager->register();
-        $this->consumerManager->run();
+        $this->consumerManager->register();
     }
 }

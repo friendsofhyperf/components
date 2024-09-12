@@ -27,7 +27,7 @@ class ConsumerManager
     ) {
     }
 
-    public function run()
+    public function register(): void
     {
         /** @var array<string,array> */
         $connections = $this->config->get('trigger.connections', []);
@@ -41,6 +41,14 @@ class ConsumerManager
 
             ProcessManager::register($process);
         }
+    }
+
+    /**
+     * @deprecated since v3.1, will removed in v3.2
+     */
+    public function run(): void
+    {
+        $this->register();
     }
 
     protected function createProcess(string $connection, array $options = []): AbstractProcess
