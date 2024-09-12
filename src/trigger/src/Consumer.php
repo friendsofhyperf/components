@@ -16,7 +16,7 @@ use FriendsOfHyperf\Trigger\Mutex\ServerMutexInterface;
 use FriendsOfHyperf\Trigger\Snapshot\BinLogCurrentSnapshotInterface;
 use FriendsOfHyperf\Trigger\Subscriber\SnapshotSubscriber;
 use FriendsOfHyperf\Trigger\Subscriber\TriggerSubscriber;
-use Hyperf\Collection\Arr;
+use Hyperf\Config\Config;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Coroutine;
@@ -31,44 +31,39 @@ use function Hyperf\Tappable\tap;
 
 class Consumer
 {
-    protected ?string $name = null;
+    public readonly Config $config;
 
-    private ?HealthMonitor $healthMonitor = null;
+    public readonly string $name;
 
-    private ?ServerMutexInterface $serverMutex = null;
+    public readonly string $identifier;
 
-    private BinLogCurrentSnapshotInterface $binLogCurrentSnapshot;
+    public readonly ?HealthMonitor $healthMonitor;
+
+    public readonly ?ServerMutexInterface $serverMutex;
+
+    public readonly BinLogCurrentSnapshotInterface $binLogCurrentSnapshot;
 
     private bool $stopped = false;
 
     public function __construct(
-        protected SubscriberManager $subscriberManager,
-        protected TriggerManager $triggerManager,
-        protected string $connection = 'default',
-        protected array $options = [],
-        protected ?LoggerInterface $logger = null
+        protected readonly SubscriberManager $subscriberManager,
+        protected readonly TriggerManager $triggerManager,
+        public readonly string $connection = 'default',
+        array $options = [],
+        public readonly ?LoggerInterface $logger = null
     ) {
-        $this->name = $options['name'] ?? 'trigger.' . $connection;
+        $this->name = $options['name'] ?? sprintf('trigger.%s', $this->connection);
+        $this->identifier = $options['identifier'] ?? sprintf('trigger.%s', $this->connection);
+        $this->config = new Config($options);
 
-        $this->binLogCurrentSnapshot = make(BinLogCurrentSnapshotInterface::class, [
-            'consumer' => $this,
-        ]);
-
-        if ($this->getOption('server_mutex.enable', true)) {
-            $this->serverMutex = make(ServerMutexInterface::class, [
-                'name' => 'trigger:mutex:' . $this->connection,
-                'owner' => Util::getInternalIp(),
-                'options' => $this->getOption('server_mutex', []) + ['connection' => $this->connection],
-                'logger' => $this->logger,
-            ]);
-        }
-
-        if ($this->getOption('health_monitor.enable', true)) {
-            $this->healthMonitor = make(HealthMonitor::class, [
-                'consumer' => $this,
-                'logger' => $this->logger,
-            ]);
-        }
+        $this->binLogCurrentSnapshot = make(BinLogCurrentSnapshotInterface::class, ['consumer' => $this]);
+        $this->healthMonitor = $this->config->get('health_monitor.enable', true) ? make(HealthMonitor::class, ['consumer' => $this]) : null;
+        $this->serverMutex = $this->config->get('server_mutex.enable', true) ? make(ServerMutexInterface::class, [
+            'name' => 'trigger:mutex:' . $this->connection,
+            'owner' => Util::getInternalIp(),
+            'options' => $this->config->get('server_mutex', []) + ['connection' => $this->connection],
+            'logger' => $this->logger,
+        ]) : null;
     }
 
     public function start(): void
@@ -79,14 +74,12 @@ class Consumer
             $this->stopped = false;
 
             // Health monitor start
-            if ($this->healthMonitor) {
-                $this->healthMonitor->process();
-            }
+            $this->healthMonitor?->process();
 
             $replication = $this->makeReplication();
 
             // Replication start
-            CoordinatorManager::until($this->getIdentifier())->resume();
+            CoordinatorManager::until($this->identifier)->resume();
 
             $this->logger?->debug('[{connection}] Consumer started.', $context);
 
@@ -120,38 +113,56 @@ class Consumer
         }
     }
 
+    /**
+     * @deprecated use `$this->binLogCurrentSnapshot` instead, will remove in v3.2.
+     */
     public function getBinLogCurrentSnapshot(): BinLogCurrentSnapshotInterface
     {
         return $this->binLogCurrentSnapshot;
     }
 
+    /**
+     * @deprecated use `$this->healthMonitor` instead, will remove in v3.2.
+     */
     public function getHealthMonitor(): ?HealthMonitor
     {
         return $this->healthMonitor;
     }
 
+    /**
+     * @deprecated use `$this->name` instead, will remove in v3.2.
+     */
     public function getName(): string
     {
         return $this->name;
     }
 
-    public function getOption(?string $key = null, $default = null)
+    /**
+     * @deprecated use `$this->config->get($key, $default)` instead, will remove in v3.2.
+     */
+    public function getOption(?string $key = null, mixed $default = null): mixed
     {
         if (is_null($key)) {
-            return $this->options;
+            return (fn () => $this->configs ?? [])->call($this->config);
         }
 
-        return Arr::get($this->options, $key, $default);
+        return $this->config->get($key, $default);
     }
 
+    /**
+     * @deprecated use `$this->connection` instead, will remove in v3.2.
+     */
     public function getConnection(): string
     {
         return $this->connection;
     }
 
+    /**
+     * @deprecated use `$this->identifier` instead, will remove in v3.2.
+     */
     public function getIdentifier(): string
     {
-        return sprintf('%s_start', $this->connection);
+        return $this->identifier;
     }
 
     public function stop(): void
@@ -168,26 +179,24 @@ class Consumer
     protected function makeReplication(): MySQLReplicationFactory
     {
         $connection = $this->connection;
-        // Get options
-        $config = (array) $this->options;
         // Get databases of replication
         $databasesOnly = array_replace(
-            $config['databases_only'] ?? [],
+            $this->config->get('databases_only', []),
             $this->triggerManager->getDatabases($connection)
         );
         // Get tables of replication
         $tablesOnly = array_replace(
-            $config['tables_only'] ?? [],
+            $this->config->get('tables_only', []),
             $this->triggerManager->getTables($connection)
         );
 
         $configBuilder = (new ConfigBuilder())
-            ->withUser($config['user'] ?? 'root')
-            ->withHost($config['host'] ?? '127.0.0.1')
-            ->withPassword($config['password'] ?? 'root')
-            ->withPort((int) ($config['port'] ?? 3306))
+            ->withUser($this->config->get('user', 'root'))
+            ->withHost($this->config->get('host', '127.0.0.1'))
+            ->withPassword($this->config->get('password', 'root'))
+            ->withPort((int) $this->config->get('port', 3306))
             ->withSlaveId(random_int(10000, 9999999))
-            ->withHeartbeatPeriod((float) ($config['heartbeat_period'] ?? 3))
+            ->withHeartbeatPeriod((float) $this->config->get('heartbeat_period', 3))
             ->withDatabasesOnly($databasesOnly)
             ->withTablesOnly($tablesOnly);
 
@@ -195,7 +204,7 @@ class Consumer
             $configBuilder->withSlaveUuid(Str::uuid()->toString());
         }
 
-        if ($binLogCurrent = $this->getBinLogCurrentSnapshot()->get()) {
+        if ($binLogCurrent = $this->binLogCurrentSnapshot->get()) {
             $configBuilder->withBinLogFileName($binLogCurrent->getBinFileName())
                 ->withBinLogPosition($binLogCurrent->getBinLogPosition());
 

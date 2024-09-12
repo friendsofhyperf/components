@@ -22,7 +22,7 @@ class SnapshotSubscriber extends AbstractSubscriber
 
     protected function allEvents(EventDTO $event): void
     {
-        if (! $this->consumer->getHealthMonitor()) {
+        if (! $this->consumer->healthMonitor) {
             return;
         }
 
@@ -37,6 +37,6 @@ class SnapshotSubscriber extends AbstractSubscriber
             return;
         }
 
-        $this->consumer->getHealthMonitor()->setBinLogCurrent($binLogCurrent);
+        $this->consumer->healthMonitor->setBinLogCurrent($binLogCurrent);
     }
 }

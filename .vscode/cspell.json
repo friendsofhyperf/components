@@ -8,6 +8,7 @@
         "autoloader",
         "backoff",
         "bcmath",
+        "binlog",
         "Bledsoe",
         "Blockable",
         "callables",
