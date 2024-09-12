@@ -24,7 +24,7 @@ class HealthMonitor
 {
     protected ?BinLogCurrent $binLogCurrent = null;
 
-    protected Timer $timer;
+    protected readonly Timer $timer;
 
     public function __construct(protected ContainerInterface $container, protected Consumer $consumer)
     {
