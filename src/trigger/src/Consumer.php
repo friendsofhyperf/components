@@ -48,9 +48,7 @@ class Consumer
         protected array $options = [],
         protected ?LoggerInterface $logger = null
     ) {
-        if (isset($options['name'])) {
-            $this->name = $options['name'];
-        }
+        $this->name = $options['name'] ?? 'trigger.' . $connection;
 
         $this->binLogCurrentSnapshot = make(BinLogCurrentSnapshotInterface::class, [
             'consumer' => $this,
@@ -134,7 +132,7 @@ class Consumer
 
     public function getName(): string
     {
-        return $this->name ?? 'trigger-' . $this->connection;
+        return $this->name;
     }
 
     public function getOption(?string $key = null, $default = null)
