@@ -11,20 +11,23 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Aspect;
 
+use BackedEnum;
 use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Monolog\DateTimeImmutable;
 use Monolog\Logger;
+use Monolog\LogRecord;
 use Sentry\Breadcrumb;
-use Sentry\Severity;
-use UnitEnum;
+use Sentry\Monolog\CompatibilityProcessingHandlerTrait;
 
 use function Hyperf\Tappable\tap;
 
 class LoggerAspect extends AbstractAspect
 {
+    use CompatibilityProcessingHandlerTrait;
+
     public array $classes = [
         Logger::class . '::addRecord',
     ];
@@ -41,7 +44,7 @@ class LoggerAspect extends AbstractAspect
             }
 
             $level = $proceedingJoinPoint->arguments['keys']['level'];
-            $level = $level instanceof UnitEnum ? (int) $level->value : (int) $level; /* @phpstan-ignore-line */
+            $level = $level instanceof BackedEnum ? (int) $level->value : (int) $level;
             $message = $proceedingJoinPoint->arguments['keys']['message'];
             $context = $proceedingJoinPoint->arguments['keys']['context'];
             /** @var DateTimeImmutable|null $datetime */
@@ -52,9 +55,9 @@ class LoggerAspect extends AbstractAspect
             }
 
             Integration::addBreadcrumb(new Breadcrumb(
-                (string) $this->getLogLevel($level),
+                (string) $this->getSeverityFromLevel($level),
                 Breadcrumb::TYPE_DEFAULT,
-                'log.' . Logger::getLevelName($level), /* @phpstan-ignore-line */
+                'log.' . Logger::getLevelName($level), // @phpstan-ignore argument.type
                 $message,
                 $context,
                 $datetime?->getTimestamp()
@@ -63,17 +66,10 @@ class LoggerAspect extends AbstractAspect
     }
 
     /**
-     * Translates Monolog log levels to Sentry Severity.
+     * Nothing to do.
+     * @param array<string, mixed>|LogRecord $record
      */
-    protected function getLogLevel(int $logLevel): Severity
+    protected function doWrite($record): void
     {
-        return match ($logLevel) {
-            Logger::DEBUG => Severity::debug(),
-            Logger::NOTICE, Logger::INFO => Severity::info(),
-            Logger::WARNING => Severity::warning(),
-            Logger::ALERT, Logger::EMERGENCY, Logger::CRITICAL => Severity::fatal(),
-            Logger::ERROR => Severity::error(),
-            default => Severity::error(),
-        };
     }
 }
