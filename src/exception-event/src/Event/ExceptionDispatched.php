@@ -17,10 +17,16 @@ use Throwable;
 
 class ExceptionDispatched
 {
-    public function __construct(public Throwable $throwable, public ?ServerRequestInterface $request = null, public ?ResponseInterface $response = null)
-    {
+    public function __construct(
+        public readonly Throwable $throwable,
+        public readonly ?ServerRequestInterface $request = null,
+        public readonly ?ResponseInterface $response = null
+    ) {
     }
 
+    /**
+     * @deprecated since v3.1, use property instead, will be removed in v3.2
+     */
     public function getThrowable(): Throwable
     {
         return $this->throwable;
