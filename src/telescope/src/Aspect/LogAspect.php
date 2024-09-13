@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Aspect;
 
 use FriendsOfHyperf\Telescope\IncomingEntry;
+use FriendsOfHyperf\Telescope\Severity;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -54,7 +55,7 @@ class LogAspect extends AbstractAspect
             }
             Telescope::recordLog(
                 IncomingEntry::make([
-                    'level' => (string) $this->getSeverityFromLevel($level),
+                    'level' => (string) $this->getLogLevel($level),
                     'message' => $message,
                     'context' => $context,
                 ])
@@ -63,10 +64,17 @@ class LogAspect extends AbstractAspect
     }
 
     /**
-     * Nothing to do.
-     * @param array<string, mixed>|LogRecord $record
+     * Translates Monolog log levels.
      */
-    protected function doWrite($record): void
+    protected function getLogLevel(int $logLevel): Severity
     {
+        return match ($logLevel) {
+            Logger::DEBUG => Severity::debug(),
+            Logger::NOTICE, Logger::INFO => Severity::info(),
+            Logger::WARNING => Severity::warning(),
+            Logger::ALERT, Logger::EMERGENCY, Logger::CRITICAL => Severity::fatal(),
+            Logger::ERROR => Severity::error(),
+            default => Severity::error(),
+        };
     }
 }
