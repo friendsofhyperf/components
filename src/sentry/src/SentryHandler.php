@@ -21,13 +21,15 @@ use Monolog\Logger;
 use Monolog\LogRecord;
 use Sentry\Breadcrumb;
 use Sentry\Event;
+use Sentry\Monolog\CompatibilityProcessingHandlerTrait;
 use Sentry\SentrySdk;
-use Sentry\Severity;
 use Sentry\State\Scope;
 use Throwable;
 
 class SentryHandler extends AbstractProcessingHandler
 {
+    use CompatibilityProcessingHandlerTrait;
+
     /**
      * The current application environment (staging|preprod|prod).
      */
@@ -48,8 +50,12 @@ class SentryHandler extends AbstractProcessingHandler
      * @param int $level The minimum logging level at which this handler will be triggered
      * @param bool $bubble Whether the messages that are handled can bubble up the stack or not
      */
-    public function __construct($level = Logger::DEBUG, bool $bubble = true, protected bool $reportExceptions = true, protected bool $useFormattedMessage = false)
-    {
+    public function __construct(
+        $level = Logger::DEBUG,
+        bool $bubble = true,
+        protected bool $reportExceptions = true,
+        protected bool $useFormattedMessage = false
+    ) {
         parent::__construct($level, $bubble); /* @phpstan-ignore-line */
 
         $container = ApplicationContext::getContainer();
@@ -158,24 +164,9 @@ class SentryHandler extends AbstractProcessingHandler
     }
 
     /**
-     * Translates Monolog log levels to Sentry Severity.
+     * @param array<string, mixed>|LogRecord $record
      */
-    protected function getLogLevel(int $logLevel): Severity
-    {
-        return match ($logLevel) {
-            Logger::DEBUG => Severity::debug(),
-            Logger::NOTICE, Logger::INFO => Severity::info(),
-            Logger::WARNING => Severity::warning(),
-            Logger::ALERT, Logger::EMERGENCY, Logger::CRITICAL => Severity::fatal(),
-            Logger::ERROR => Severity::error(),
-            default => Severity::error(),
-        };
-    }
-
-    /**
-     * @suppress PhanTypeMismatchArgument
-     */
-    protected function write(array|LogRecord $record): void
+    protected function doWrite($record): void
     {
         $exception = $record['context']['exception'] ?? null;
         $isException = $exception instanceof Throwable;
@@ -226,7 +217,7 @@ class SentryHandler extends AbstractProcessingHandler
 
                 $scope->addEventProcessor(
                     function (Event $event) use ($record, $logger) {
-                        $event->setLevel($this->getLogLevel($record['level']));
+                        $event->setLevel($this->getSeverityFromLevel($record['level']));
                         $event->setLogger($logger);
 
                         if (! empty($this->environment) && ! $event->getEnvironment()) {

@@ -12,19 +12,21 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Aspect;
 
 use FriendsOfHyperf\Telescope\IncomingEntry;
-use FriendsOfHyperf\Telescope\Severity;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Stringable\Str;
 use Monolog\Logger;
+use Sentry\Monolog\CompatibilityProcessingHandlerTrait;
 use UnitEnum;
 
 use function Hyperf\Tappable\tap;
 
 class LogAspect extends AbstractAspect
 {
+    use CompatibilityProcessingHandlerTrait;
+
     public array $classes = [
         Logger::class . '::addRecord',
     ];
@@ -52,7 +54,7 @@ class LogAspect extends AbstractAspect
             }
             Telescope::recordLog(
                 IncomingEntry::make([
-                    'level' => (string) $this->getLogLevel($level),
+                    'level' => (string) $this->getSeverityFromLevel($level),
                     'message' => $message,
                     'context' => $context,
                 ])
@@ -61,17 +63,10 @@ class LogAspect extends AbstractAspect
     }
 
     /**
-     * Translates Monolog log levels.
+     * Nothing to do.
+     * @param array<string, mixed>|LogRecord $record
      */
-    protected function getLogLevel(int $logLevel): Severity
+    protected function doWrite($record): void
     {
-        return match ($logLevel) {
-            Logger::DEBUG => Severity::debug(),
-            Logger::NOTICE, Logger::INFO => Severity::info(),
-            Logger::WARNING => Severity::warning(),
-            Logger::ALERT, Logger::EMERGENCY, Logger::CRITICAL => Severity::fatal(),
-            Logger::ERROR => Severity::error(),
-            default => Severity::error(),
-        };
     }
 }
