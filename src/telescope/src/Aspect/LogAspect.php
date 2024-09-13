@@ -19,15 +19,12 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Stringable\Str;
 use Monolog\Logger;
-use Sentry\Monolog\CompatibilityProcessingHandlerTrait;
 use UnitEnum;
 
 use function Hyperf\Tappable\tap;
 
 class LogAspect extends AbstractAspect
 {
-    use CompatibilityProcessingHandlerTrait;
-
     public array $classes = [
         Logger::class . '::addRecord',
     ];
