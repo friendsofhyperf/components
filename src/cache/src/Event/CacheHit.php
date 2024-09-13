@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Cache\Event;
 
 class CacheHit extends CacheEvent
 {
-    public function __construct(string $storeName, string $key, public $value)
+    public function __construct(string $storeName, string $key, public readonly mixed $value)
     {
         parent::__construct($storeName, $key);
     }
