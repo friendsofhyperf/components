@@ -23,8 +23,12 @@ class Connection
 
     protected bool $closed = false;
 
-    public function __construct(string $host = '', int $port = 6379, float $timeout = 5.0, ?SocketFactoryInterface $factory = null)
-    {
+    public function __construct(
+        string $host = '',
+        int $port = 6379,
+        float $timeout = 5.0,
+        ?SocketFactoryInterface $factory = null
+    ) {
         $options = new SocketOption($host, $port, $timeout, [
             'open_eof_check' => true,
             'package_eof' => Constants::EOF,

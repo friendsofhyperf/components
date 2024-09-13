@@ -23,7 +23,7 @@ use function strlen;
 class CommandBuilder
 {
     /**
-     * @param int|string|array<mixed>|null $args
+     * @param int|string|array<mixed>|mixed|null $args
      */
     public static function build(mixed $args): string
     {
@@ -31,21 +31,18 @@ class CommandBuilder
             return 'PING' . Constants::CRLF;
         }
 
-        switch (true) {
-            case is_null($args):
-                return '$-1' . Constants::CRLF;
-            case is_int($args):
-                return ':' . $args . Constants::CRLF;
-            case is_string($args):
-                return '$' . strlen($args) . Constants::CRLF . $args . Constants::CRLF;
-            case is_array($args):
+        return match (true) {
+            is_null($args) => '$-1' . Constants::CRLF,
+            is_int($args) => ':' . $args . Constants::CRLF,
+            is_string($args) => '$' . strlen($args) . Constants::CRLF . $args . Constants::CRLF,
+            is_array($args) => (function (array $args) {
                 $result = '*' . count($args) . Constants::CRLF;
                 foreach ($args as $arg) {
                     $result .= static::build($arg);
                 }
                 return $result;
-            default:
-                throw new Exception('Invalid args');
-        }
+            })($args),
+            default => throw new Exception('Invalid args'),
+        };
     }
 }

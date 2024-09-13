@@ -127,9 +127,7 @@ class CommandInvoker
             }
 
             if ($type == 'message' && count($buffer) == 7) {
-                $message = new Message();
-                $message->channel = $buffer[4];
-                $message->payload = $buffer[6];
+                $message = new Message(channel: $buffer[4], payload: $buffer[6]);
                 $timerID = $this->timer->after(30.0, function () use ($message) {
                     $this->logger?->error(sprintf('Message channel (%s) is 30 seconds full, disconnected', $message->channel));
                     $this->interrupt();
@@ -153,10 +151,7 @@ class CommandInvoker
             }
 
             if ($type == 'pmessage' && count($buffer) == 9) {
-                $message = new Message();
-                $message->pattern = $buffer[4];
-                $message->channel = $buffer[6];
-                $message->payload = $buffer[8];
+                $message = new Message(pattern: $buffer[4], channel: $buffer[6], payload: $buffer[8]);
                 $timerID = $this->timer->after(30.0, function () use ($message) {
                     $this->logger?->error(sprintf('Message channel (%s) is 30 seconds full, disconnected', $message->channel));
                     $this->interrupt();

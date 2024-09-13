@@ -13,9 +13,10 @@ namespace FriendsOfHyperf\Redis\Subscriber;
 
 class Message
 {
-    public ?string $pattern = null;
-
-    public string $channel;
-
-    public string $payload;
+    public function __construct(
+        public readonly string $channel,
+        public readonly string $payload,
+        public readonly ?string $pattern = null,
+    ) {
+    }
 }

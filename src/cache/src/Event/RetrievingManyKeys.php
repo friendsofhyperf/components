@@ -13,23 +13,10 @@ namespace FriendsOfHyperf\Cache\Event;
 
 class RetrievingManyKeys extends CacheEvent
 {
-    /**
-     * The keys that are being retrieved.
-     *
-     * @var array
-     */
-    public $keys;
-
-    /**
-     * Create a new event instance.
-     *
-     * @param string|null $storeName
-     * @param array $keys
-     */
-    public function __construct($storeName, $keys)
-    {
-        parent::__construct($storeName, $keys[0] ?? '');
-
-        $this->keys = $keys;
+    public function __construct(
+        string $storeName,
+        public readonly array $keys
+    ) {
+        parent::__construct($storeName, (string) ($keys[0] ?? ''));
     }
 }
