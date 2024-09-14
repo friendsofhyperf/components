@@ -13,7 +13,10 @@ namespace FriendsOfHyperf\Confd\Event;
 
 class ConfigChanged
 {
-    public function __construct(public array $current, public array $previous, public array $changes)
-    {
+    public function __construct(
+        public readonly array $current,
+        public readonly array $previous,
+        public readonly array $changes
+    ) {
     }
 }
