@@ -15,9 +15,9 @@ class WritingManyKeys extends CacheEvent
 {
     public function __construct(
         string $storeName,
-        public readonly array $keys,
-        public readonly array $values,
-        public readonly ?int $seconds = null
+        public array $keys,
+        public array $values,
+        public ?int $seconds = null
     ) {
         parent::__construct($storeName, (string) ($keys[0] ?? ''));
     }

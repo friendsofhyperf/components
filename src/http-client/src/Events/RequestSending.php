@@ -19,7 +19,7 @@ class RequestSending
      * Create a new event instance.
      */
     public function __construct(
-        public readonly Request $request
+        public Request $request
     ) {
     }
 }
