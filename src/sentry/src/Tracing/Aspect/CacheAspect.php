@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
+use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -36,11 +37,15 @@ class CacheAspect extends AbstractAspect
         'Hyperf\Cache\Driver\*Driver::clear',
     ];
 
+    public function __construct(protected Switcher $switcher)
+    {
+    }
+
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $parent = SentrySdk::getCurrentHub()->getSpan();
 
-        if (! $parent) {
+        if (! $this->switcher->isTracingSpanEnable('cache') || Switcher::isDisableCoroutineTracing()) {
             return $proceedingJoinPoint->process();
         }
 
