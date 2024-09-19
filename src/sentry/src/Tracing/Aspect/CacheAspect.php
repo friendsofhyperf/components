@@ -30,6 +30,7 @@ class CacheAspect extends AbstractAspect
         'Hyperf\Cache\Driver\*Driver::setMultiple',
         'Hyperf\Cache\Driver\*Driver::getMultiple',
         'Hyperf\Cache\Driver\*Driver::deleteMultiple',
+        'Hyperf\Cache\Driver\*Driver::clear',
     ];
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -43,12 +44,13 @@ class CacheAspect extends AbstractAspect
         try {
             $method = $proceedingJoinPoint->methodName;
             $op = match ($method) {
-                'set' => 'cache.set',
+                'set' => 'cache.put',
                 'get' => 'cache.get',
-                'delete' => 'cache.delete',
-                'setMultiple' => 'cache.setMultiple',
-                'getMultiple' => 'cache.getMultiple',
-                'deleteMultiple' => 'cache.deleteMultiple',
+                'delete' => 'cache.remove',
+                'setMultiple' => 'cache.put',
+                'getMultiple' => 'cache.get',
+                'deleteMultiple' => 'cache.remove',
+                'clear' => 'cache.flush',
                 default => 'cache',
             };
 
@@ -68,6 +70,7 @@ class CacheAspect extends AbstractAspect
                     'setMultiple' => $this->handleSetMultiple($span, $key, $value),
                     'getMultiple' => $this->handleGetMultiple($span, $key, $value),
                     'deleteMultiple' => $this->handleDeleteMultiple($span, $key, $value),
+                    'clear' => $this->handleClear($span),
                     default => null,
                 };
             });
@@ -148,6 +151,16 @@ class CacheAspect extends AbstractAspect
                 // 'network.peer.port' => 9000,
                 // 'cache.item_size' => strlen($value),
                 // 'cache.hit' => ! is_null($values),
+            ])
+            ->finish();
+    }
+
+    private function handleClear(Span $span)
+    {
+        $span
+            ->setData([
+                // 'network.peer.address' => '127.0.0.1',
+                // 'network.peer.port' => 9000,
             ])
             ->finish();
     }
