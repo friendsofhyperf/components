@@ -145,11 +145,6 @@ class CacheAspect extends AbstractAspect
 
     private function handleClear(Span $span)
     {
-        $span
-            ->setData([
-                // 'network.peer.address' => '127.0.0.1',
-                // 'network.peer.port' => 9000,
-            ])
-            ->finish();
+        $span->finish();
     }
 }
