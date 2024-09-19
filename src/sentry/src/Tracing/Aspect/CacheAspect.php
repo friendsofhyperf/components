@@ -59,7 +59,7 @@ class CacheAspect extends AbstractAspect
 
             /** @var string|string[] $key */
             $key = match ($method) {
-                'set', 'get', 'delete', 'setMultiple', 'getMultiple', 'deleteMultiple' => $proceedingJoinPoint->arguments[0],
+                'set', 'get', 'delete', 'setMultiple', 'getMultiple', 'deleteMultiple' => $proceedingJoinPoint->arguments['order'][0] ?? 'unknown',
                 default => '',
             };
 
