@@ -89,6 +89,7 @@ return [
         'enable' => [
             'amqp' => env('SENTRY_TRACING_ENABLE_AMQP', true),
             'async_queue' => env('SENTRY_TRACING_ENABLE_ASYNC_QUEUE', true),
+            'cache' => env('SENTRY_TRACING_ENABLE_CACHE', true),
             'command' => env('SENTRY_TRACING_ENABLE_COMMAND', true),
             'crontab' => env('SENTRY_TRACING_ENABLE_CRONTAB', true),
             'kafka' => env('SENTRY_TRACING_ENABLE_KAFKA', true),

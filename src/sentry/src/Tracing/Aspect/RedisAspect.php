@@ -70,11 +70,12 @@ class RedisAspect extends AbstractAspect
         // rule: operation db.table
         // $op = sprintf('%s %s', $arguments['name'], $arguments['arguments']['key'] ?? '');
         // $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
+        $key = $arguments['arguments'][0] ?? '';
         $op = 'db.redis';
         $description = sprintf(
             '%s %s',
             strtoupper($arguments['name'] ?? ''),
-            $arguments['arguments'][0] ?? ''
+            is_array($key) ? implode(',', $key) : $key
         );
         $span = $this->startSpan($op, $description);
 

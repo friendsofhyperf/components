@@ -53,6 +53,7 @@ class SetRequestLifecycleListener implements ListenerInterface
             'sentry.enable_tracing',
             'sentry.tracing.enable.amqp',
             'sentry.tracing.enable.async_queue',
+            'sentry.tracing.enable.cache',
             'sentry.tracing.enable.command',
             'sentry.tracing.enable.crontab',
             'sentry.tracing.enable.kafka',
