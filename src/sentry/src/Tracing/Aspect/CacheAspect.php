@@ -25,10 +25,10 @@ class CacheAspect extends AbstractAspect
 
     public array $classes = [
         'Hyperf\Cache\Driver\*Driver::set',
-        'Hyperf\Cache\Driver\*Driver::get',
-        'Hyperf\Cache\Driver\*Driver::delete',
         'Hyperf\Cache\Driver\*Driver::setMultiple',
+        'Hyperf\Cache\Driver\*Driver::get',
         'Hyperf\Cache\Driver\*Driver::getMultiple',
+        'Hyperf\Cache\Driver\*Driver::delete',
         'Hyperf\Cache\Driver\*Driver::deleteMultiple',
         'Hyperf\Cache\Driver\*Driver::clear',
     ];
