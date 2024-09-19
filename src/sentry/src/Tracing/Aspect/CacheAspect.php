@@ -43,11 +43,11 @@ class CacheAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $parent = SentrySdk::getCurrentHub()->getSpan();
-
         if (! $this->switcher->isTracingSpanEnable('cache') || Switcher::isDisableCoroutineTracing()) {
             return $proceedingJoinPoint->process();
         }
+
+        $parent = SentrySdk::getCurrentHub()->getSpan();
 
         try {
             $method = $proceedingJoinPoint->methodName;
