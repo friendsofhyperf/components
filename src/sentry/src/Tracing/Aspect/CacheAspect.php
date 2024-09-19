@@ -19,6 +19,9 @@ use Sentry\Tracing\Span;
 
 use function Hyperf\Tappable\tap;
 
+/**
+ * @see https://develop.sentry.dev/sdk/telemetry/traces/modules/caches/
+ */
 class CacheAspect extends AbstractAspect
 {
     use SpanStarter;
