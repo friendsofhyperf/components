@@ -30,6 +30,7 @@ class CacheAspect extends AbstractAspect
     public array $classes = [
         'Hyperf\Cache\Driver\*Driver::set',
         'Hyperf\Cache\Driver\*Driver::setMultiple',
+        'Hyperf\Cache\Driver\*Driver::fetch',
         'Hyperf\Cache\Driver\*Driver::get',
         'Hyperf\Cache\Driver\*Driver::getMultiple',
         'Hyperf\Cache\Driver\*Driver::delete',
@@ -53,7 +54,7 @@ class CacheAspect extends AbstractAspect
             $method = $proceedingJoinPoint->methodName;
             $op = match ($method) {
                 'set' => 'cache.put',
-                'get' => 'cache.get',
+                'get', 'fetch' => 'cache.get',
                 'delete' => 'cache.remove',
                 'setMultiple' => 'cache.put',
                 'getMultiple' => 'cache.get',
@@ -73,7 +74,7 @@ class CacheAspect extends AbstractAspect
             return tap($proceedingJoinPoint->process(), function ($value) use ($span, $method, $key) {
                 match ($method) {
                     'set', => $this->handleSet($span, $key, $value),
-                    'get' => $this->handleGet($span, $key, $value),
+                    'get', 'fetch' => $this->handleGet($span, $key, $value),
                     'delete' => $this->handleDelete($span, $key, $value),
                     'setMultiple' => $this->handleSetMultiple($span, $key, $value),
                     'getMultiple' => $this->handleGetMultiple($span, $key, $value),
