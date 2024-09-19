@@ -54,9 +54,9 @@ class CacheAspect extends AbstractAspect
                 default => 'cache',
             };
 
+            /** @var string|string[] $key */
             $key = match ($method) {
-                'set', 'get', 'delete' => $proceedingJoinPoint->arguments[0],
-                'setMultiple', 'getMultiple', 'deleteMultiple' => implode(',', $proceedingJoinPoint->arguments[0]),
+                'set', 'get', 'delete', 'setMultiple', 'getMultiple', 'deleteMultiple' => $proceedingJoinPoint->arguments[0],
                 default => '',
             };
 
@@ -84,9 +84,6 @@ class CacheAspect extends AbstractAspect
         $span
             ->setData([
                 'cache.key' => $key,
-                // 'network.peer.address' => '127.0.0.1',
-                // 'network.peer.port' => 9000,
-                // 'cache.item_size' => strlen($value),
             ])
             ->finish();
     }
@@ -96,9 +93,6 @@ class CacheAspect extends AbstractAspect
         $span
             ->setData([
                 'cache.key' => $key,
-                // 'network.peer.address' => '127.0.0.1',
-                // 'network.peer.port' => 9000,
-                // 'cache.item_size' => strlen($value),
                 'cache.hit' => ! is_null($value),
             ])
             ->finish();
@@ -109,10 +103,6 @@ class CacheAspect extends AbstractAspect
         $span
             ->setData([
                 'cache.key' => $key,
-                // 'network.peer.address' => '127.0.0.1',
-                // 'network.peer.port' => 9000,
-                // 'cache.item_size' => strlen($value),
-                // 'cache.hit' => ! is_null($value),
             ])
             ->finish();
     }
@@ -121,10 +111,7 @@ class CacheAspect extends AbstractAspect
     {
         $span
             ->setData([
-                'cache.keys' => $keys,
-                // 'network.peer.address' => '127.0.0.1',
-                // 'network.peer.port' => 9000,
-                // 'cache.item_size' => strlen($value),
+                'cache.key' => $keys,
             ])
             ->finish();
     }
@@ -133,11 +120,8 @@ class CacheAspect extends AbstractAspect
     {
         $span
             ->setData([
-                'cache.keys' => $keys,
-                // 'network.peer.address' => '127.0.0.1',
-                // 'network.peer.port' => 9000,
-                // 'cache.item_size' => strlen($value),
-                // 'cache.hit' => ! is_null($values),
+                'cache.key' => $keys,
+                'cache.hit' => ! empty($values),
             ])
             ->finish();
     }
@@ -146,11 +130,7 @@ class CacheAspect extends AbstractAspect
     {
         $span
             ->setData([
-                'cache.keys' => $keys,
-                // 'network.peer.address' => '127.0.0.1',
-                // 'network.peer.port' => 9000,
-                // 'cache.item_size' => strlen($value),
-                // 'cache.hit' => ! is_null($values),
+                'cache.key' => $keys,
             ])
             ->finish();
     }
