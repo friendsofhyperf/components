@@ -93,10 +93,11 @@ class TracingCommandListener implements ListenerInterface
         $command = $event->getCommand();
 
         $exitCode = (fn () => $this->exitCode ?? SymfonyCommand::SUCCESS)->call($command);
-        $data = [];
-        $tags = [
+        $data = [
             'command.arguments' => (fn () => $this->input->getArguments())->call($command),
             'command.options' => (fn () => $this->input->getOptions())->call($command),
+        ];
+        $tags = [
             'command.exit_code' => $exitCode,
         ];
 
