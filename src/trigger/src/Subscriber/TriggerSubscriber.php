@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Trigger\Subscriber;
 use Closure;
 use FriendsOfHyperf\Trigger\ConstEventsNames;
 use FriendsOfHyperf\Trigger\Consumer;
+use FriendsOfHyperf\Trigger\Trigger\Context;
 use FriendsOfHyperf\Trigger\TriggerManager;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
@@ -144,7 +145,7 @@ class TriggerSubscriber extends AbstractSubscriber
                 default => [],
             };
             foreach ($values as $value) {
-                $this->chan->push(function () use ($callable, $value, $eventType, $context) {
+                $this->chan->push(function () use ($event, $callable, $value, $database, $table, $eventType, $context) {
                     [$class, $method] = $callable;
 
                     if (! $this->container->has($class)) {
@@ -164,6 +165,10 @@ class TriggerSubscriber extends AbstractSubscriber
                     }
 
                     try {
+                        Context::setDatabase($database);
+                        Context::setTable($table);
+                        Context::setEventType($eventType);
+                        Context::setEvent($event);
                         call([$this->container->get($class), $method], $args);
                     } catch (Throwable $e) {
                         $this->consumer->logger?->warning('[{connection}] ' . (string) $e, $context);
