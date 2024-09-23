@@ -117,6 +117,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 ];
                 if ($this->switcher->isTracingExtraTagEnable('response.body')) {
                     $data['response.body'] = $result->getBody()->getContents();
+                    $result->getBody()->rewind();
                 }
             }
         } catch (Throwable $exception) {
