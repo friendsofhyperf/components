@@ -168,7 +168,7 @@ class TriggerSubscriber extends AbstractSubscriber
                         Context::setDatabase($database);
                         Context::setTable($table);
                         Context::setEventType($eventType);
-                        Context::setEvent($event);
+                        Context::setEventDTO($event);
                         call([$this->container->get($class), $method], $args);
                     } catch (Throwable $e) {
                         $this->consumer->logger?->warning('[{connection}] ' . (string) $e, $context);

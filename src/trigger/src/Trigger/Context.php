@@ -54,12 +54,12 @@ class Context
         return HyperfContext::get(static::EVENT_TYPE);
     }
 
-    public static function setEvent(RowsDTO $event): void
+    public static function setEventDTO(RowsDTO $event): void
     {
         HyperfContext::set(static::EVENT, $event);
     }
 
-    public static function getEvent(): ?RowsDTO
+    public static function getEventDTO(): ?RowsDTO
     {
         return HyperfContext::get(static::EVENT);
     }
