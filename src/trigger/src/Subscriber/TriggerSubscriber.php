@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Trigger\Subscriber;
 use Closure;
 use FriendsOfHyperf\Trigger\ConstEventsNames;
 use FriendsOfHyperf\Trigger\Consumer;
+use FriendsOfHyperf\Trigger\Contract\TriggerInterface;
 use FriendsOfHyperf\Trigger\Trigger\Context;
 use FriendsOfHyperf\Trigger\TriggerManager;
 use Hyperf\Coordinator\Constants;
@@ -139,6 +140,7 @@ class TriggerSubscriber extends AbstractSubscriber
         $eventType = $event->getType();
 
         foreach ($this->triggerManager->get($key) as $callable) {
+            /** @var array{0:class-string<TriggerInterface>,1:string} $callable */
             $values = match (true) {
                 method_exists($event, 'getValues') => $event->getValues(), // v7.x, @deprecated, will removed in v3.2
                 property_exists($event, 'values') => $event->values, // @phpstan-ignore property.private
