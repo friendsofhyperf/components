@@ -38,6 +38,7 @@ class HttpClientAspect extends AbstractAspect
         if (! $this->telescopeConfig->isEnable('guzzle')) {
             return $proceedingJoinPoint->process();
         }
+
         $startTime = microtime(true);
         $instance = $proceedingJoinPoint->getInstance();
         $arguments = $proceedingJoinPoint->arguments;
@@ -57,15 +58,17 @@ class HttpClientAspect extends AbstractAspect
         $method = $arguments['keys']['method'] ?? 'GET';
         $uri = $arguments['keys']['uri'] ?? '';
         $headers = $options['headers'] ?? [];
-
         $result = $proceedingJoinPoint->process();
-
         $response = [];
+
         if ($result instanceof ResponseInterface) {
             $response['status'] = $result->getStatusCode();
             $response['reason'] = $result->getReasonPhrase();
             $response['headers'] = $result->getHeaders();
+            $response['body'] = $result->getBody()->getContents();
+            $result->getBody()->rewind();
         }
+
         Telescope::recordClientRequest(IncomingEntry::make([
             'method' => $method,
             'uri' => $uri,
@@ -75,6 +78,7 @@ class HttpClientAspect extends AbstractAspect
             'response' => $response,
             'duration' => floor((microtime(true) - $startTime) * 1000),
         ]));
+
         return $result;
     }
 }
