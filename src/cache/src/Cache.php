@@ -30,8 +30,10 @@ use Hyperf\Macroable\Macroable;
 use Hyperf\Support\Traits\InteractsWithTime;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
+use function FriendsOfHyperf\Lock\lock;
 use function Hyperf\Collection\collect;
 use function Hyperf\Collection\value;
+use function Hyperf\Coroutine\defer;
 use function Hyperf\Support\with;
 use function Hyperf\Tappable\tap;
 
@@ -54,6 +56,46 @@ class Cache implements CacheInterface
         }
 
         return false;
+    }
+
+    public function flexible($key, $ttl, $callback, $lock = null)
+    {
+        [
+            $key => $value,
+            "hyperf:cache:flexible:created:{$key}" => $created,
+        ] = $this->many([$key, "hyperf:cache:flexible:created:{$key}"]);
+
+        if (in_array(null, [$value, $created], true)) {
+            return tap(value($callback), fn ($value) => $this->putMany([
+                $key => $value,
+                "hyperf:cache:flexible:created:{$key}" => Carbon::now()->getTimestamp(),
+            ], $ttl[1]));
+        }
+
+        if (($created + $this->getSeconds($ttl[0])) > Carbon::now()->getTimestamp()) {
+            return $value;
+        }
+
+        $refresh = function () use ($key, $ttl, $callback, $lock, $created) {
+            lock(
+                "hyperf:cache:flexible:lock:{$key}",
+                $lock['seconds'] ?? 0,
+                $lock['owner'] ?? null,
+            )->get(function () use ($key, $callback, $created, $ttl) {
+                if ($created !== $this->get("hyperf:cache:flexible:created:{$key}")) {
+                    return;
+                }
+
+                $this->putMany([
+                    $key => value($callback),
+                    "hyperf:cache:flexible:created:{$key}" => Carbon::now()->getTimestamp(),
+                ], $ttl[1]);
+            });
+        };
+
+        defer($refresh);
+
+        return $value;
     }
 
     public function flush(): bool

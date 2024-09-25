@@ -24,6 +24,19 @@ interface CacheInterface
      */
     public function add($key, $value, $ttl = null): bool;
 
+    /**
+     * Retrieve an item from the cache by key, refreshing it in the background if it is stale.
+     *
+     * @template TCacheValue
+     *
+     * @param string $key
+     * @param array{ 0: DateTimeInterface|DateInterval|int, 1: DateTimeInterface|DateInterval|int } $ttl
+     * @param (callable(): TCacheValue) $callback
+     * @param array{ seconds?: int, owner?: string }|null $lock
+     * @return TCacheValue
+     */
+    public function flexible($key, $ttl, $callback, $lock = null);
+
     public function flush(): bool;
 
     /**
