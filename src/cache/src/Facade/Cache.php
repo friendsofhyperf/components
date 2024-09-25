@@ -50,6 +50,22 @@ class Cache
         return self::__callStatic(__FUNCTION__, func_get_args());
     }
 
+    /**
+     * Retrieve an item from the cache by key, refreshing it in the background if it is stale.
+     *
+     * @template TCacheValue
+     *
+     * @param string $key
+     * @param array{ 0: DateTimeInterface|DateInterval|int, 1: DateTimeInterface|DateInterval|int } $ttl
+     * @param (callable(): TCacheValue) $callback
+     * @param array{ seconds?: int, owner?: string }|null $lock
+     * @return TCacheValue
+     */
+    public static function flexible($key, $ttl, $callback, $lock = null)
+    {
+        return self::__callStatic(__FUNCTION__, func_get_args());
+    }
+
     public static function flush(): bool
     {
         return self::__callStatic(__FUNCTION__, func_get_args());

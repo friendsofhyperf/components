@@ -38,8 +38,8 @@
         "ramsey/uuid": "^4.7"
     },
     "suggest": {
-        "hyperf/redis": "Required to use Redis client.",
-        "hyperf/signal": "Required to use Signal manager."
+        "hyperf/redis": "Required to use Redis client.(~3.1.0)",
+        "hyperf/signal": "Required to use Signal manager.(~3.1.0)"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
