@@ -60,6 +60,7 @@ class Cache implements CacheInterface
 
     public function flexible($key, $ttl, $callback, $lock = null)
     {
+        /* @phpstan-ignore-next-line */
         [
             $key => $value,
             "hyperf:cache:flexible:created:{$key}" => $created,
