@@ -73,6 +73,8 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
             return;
         }
 
+        CoordinatorManager::until(Constants::WORKER_START)->yield();
+
         $this->chan = new Channel($this->channelSize);
 
         Coroutine::create(function () {
