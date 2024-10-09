@@ -4,7 +4,7 @@ on: [ push, delete, create ]
 
 jobs:
   git-mirror:
-    if: github.repository == 'friendsofhyperf/components
+    if: github.repository == 'friendsofhyperf/components'
     runs-on: ubuntu-latest
     steps:
       - name: Push Mirror
