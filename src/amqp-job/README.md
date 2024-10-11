@@ -14,6 +14,8 @@ composer require friendsofhyperf/amqp-job
 
 ## Usage
 
+### Dispatch
+
 ```php
 use FriendsOfHyperf\AmqpJob\Job;
 use function FriendsOfHyperf\AmqpJob\dispatch;
@@ -26,7 +28,35 @@ class FooJob extends Job
     }
 }
 
-dispatch(new FooJob());
+dispatch(
+    payload: new FooJob(),
+    exchange: 'hyperf.exchange',
+    routingKey: 'hyperf.routing.key',
+);
+
+```
+
+### Consume
+
+```php
+
+namespace App\Amqp\Consumer;
+
+use FriendsOfHyperf\AmqpJob\JobConsumer;
+use Hyperf\Amqp\Annotation\Consumer;
+
+#[Consumer(
+    exchange: 'hyperf.exchange',
+    routingKey: 'hyperf.routing.key',
+    queue: 'hyperf.queue',
+    name: 'MyConsumer',
+    nums: 4
+
+)]
+class MyConsumer extends \FriendsOfHyperf\AmqpJob\JobConsumer
+{
+    //
+}
 
 ```
 
