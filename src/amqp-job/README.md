@@ -18,21 +18,22 @@ composer require friendsofhyperf/amqp-job
 
 ```php
 use FriendsOfHyperf\AmqpJob\Job;
+use FriendsOfHyperf\AmqpJob\Annotation\AmqpJob
 use function FriendsOfHyperf\AmqpJob\dispatch;
 
+#[AmqpJob(exchange: "hyperf",routingKey: "hyperf")]
 class FooJob extends Job
 {
+    
+    public function __construct(public $data) {}
+
     public function handle()
     {
-        var_dump('foo');
+        var_dump($this->data);
     }
 }
 
-dispatch(
-    payload: new FooJob(),
-    exchange: 'hyperf.exchange',
-    routingKey: 'hyperf.routing.key',
-);
+dispatch(new FooJob());
 
 ```
 

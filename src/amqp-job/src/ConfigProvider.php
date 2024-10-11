@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\AmqpJob;
 use FriendsOfHyperf\AmqpJob\Attempt\RedisAttempt;
 use FriendsOfHyperf\AmqpJob\Contract\Attempt;
 use FriendsOfHyperf\AmqpJob\Contract\Packer;
+use FriendsOfHyperf\AmqpJob\Listener\BeforeMainServerStartListener;
 use Hyperf\Codec\Packer\PhpSerializerPacker;
 
 final class ConfigProvider
@@ -24,6 +25,9 @@ final class ConfigProvider
             'dependencies' => [
                 Attempt::class => RedisAttempt::class,
                 Packer::class => PhpSerializerPacker::class,
+            ],
+            'listeners' => [
+                BeforeMainServerStartListener::class => 98,
             ],
         ];
     }

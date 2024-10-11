@@ -20,13 +20,7 @@ abstract class Job implements JobInterface
 {
     protected bool $confirm = false;
 
-    protected string $exchange = 'hyperf';
-
     protected string $jobId = '';
-
-    protected string $poolName = 'default';
-
-    protected string $routingKey = 'hyperf.job';
 
     protected int $timeout = 5;
 
@@ -35,11 +29,6 @@ abstract class Job implements JobInterface
     public function getConfirm(): bool
     {
         return $this->confirm;
-    }
-
-    public function getExchange(): string
-    {
-        return $this->exchange;
     }
 
     public function setJobId(string $jobId): self
@@ -51,16 +40,6 @@ abstract class Job implements JobInterface
     public function getJobId(): string
     {
         return $this->jobId;
-    }
-
-    public function getRoutingKey(): string
-    {
-        return $this->routingKey;
-    }
-
-    public function getPoolName(): string
-    {
-        return $this->poolName;
     }
 
     public function getTimeout(): int

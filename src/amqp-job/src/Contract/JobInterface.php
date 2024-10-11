@@ -19,15 +19,9 @@ interface JobInterface
 
     public function getConfirm(): bool;
 
-    public function getExchange(): string;
-
     public function setJobId(string $jobId): self;
 
     public function getJobId(): string;
-
-    public function getPoolName(): string;
-
-    public function getRoutingKey(): string;
 
     public function getTimeout(): int;
 

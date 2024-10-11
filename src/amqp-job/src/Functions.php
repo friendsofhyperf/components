@@ -11,31 +11,26 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\AmqpJob;
 
+use FriendsOfHyperf\AmqpJob\Annotation\AmqpJob;
 use FriendsOfHyperf\AmqpJob\Contract\JobInterface;
 use Hyperf\Amqp\Producer;
 use Hyperf\Context\ApplicationContext;
+use Hyperf\Di\Annotation\AnnotationCollector;
 
 function dispatch(
     JobInterface $payload,
-    ?string $exchange = null,
-    string|array|null $routingKey = null,
-    ?string $pool = null,
     ?bool $confirm = null,
     ?int $timeout = null
 ): bool {
-    $message = (new JobMessage($payload))
-        ->when(
-            $exchange ?? $payload->getExchange(),
-            fn (JobMessage $message, $exchange) => $message->setExchange($exchange)
-        )
-        ->when(
-            $routingKey ?? $payload->getRoutingKey(),
-            fn (JobMessage $message, $routingKey) => $message->setRoutingKey($routingKey)
-        )
-        ->when(
-            $pool ?? $payload->getPoolName(),
-            fn (JobMessage $message, $poolName) => $message->setPoolName($poolName)
-        );
+    $annotations = AnnotationCollector::getClassAnnotations(get_class($payload));
+    $message = (new JobMessage($payload));
+    foreach ($annotations as $annotation) {
+        if ($annotation instanceof AmqpJob) {
+            $message->setExchange($annotation->exchange);
+            $message->setRoutingKey($annotation->exchange);
+            $message->setPoolName($annotation->pool);
+        }
+    }
 
     return ApplicationContext::getContainer()
         ->get(Producer::class)
