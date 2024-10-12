@@ -20,7 +20,7 @@ class AmqpJob extends AbstractAnnotation
     public function __construct(
         public string $exchange,
         public string $routingKey,
-        public string $pool = 'default',
+        public ?string $pool = null,
         public ?string $queue = null,
         public int $maxAttempts = 0,
         public int $maxConsumption = 1,
