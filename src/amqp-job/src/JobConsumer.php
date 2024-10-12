@@ -19,11 +19,11 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use PhpAmqpLib\Message\AMQPMessage;
 use Throwable;
 
-class JobConsumer extends ConsumerMessage
+abstract class JobConsumer extends ConsumerMessage
 {
     public function consumeMessage($data, AMQPMessage $message): Result
     {
-        //        $logger = $this->resolveLoggerInstance();
+        $logger = $this->resolveLoggerInstance();
 
         if (! $data instanceof JobInterface) {
             $logger?->error(sprintf('The message is not an instance of %s.', JobInterface::class));
@@ -72,7 +72,6 @@ class JobConsumer extends ConsumerMessage
         }
 
         return $logger = match (true) {
-            $this->container->has(LoggerInterface::class) => $this->container->get(LoggerInterface::class), // Will removed at v3.2
             $this->container->has(Contract\LoggerInterface::class) => $this->container->get(Contract\LoggerInterface::class),
             $this->container->has(StdoutLoggerInterface::class) => $this->container->get(StdoutLoggerInterface::class),
             default => null,

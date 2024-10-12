@@ -19,8 +19,6 @@ use Hyperf\Process\AbstractProcess;
 use Hyperf\Process\ProcessManager;
 use Psr\Container\ContainerInterface;
 
-use function Hyperf\Support\make;
-
 class ConsumerManager
 {
     public function __construct(private ContainerInterface $container)
@@ -35,22 +33,28 @@ class ConsumerManager
          * @var AmqpJobAnnotation $annotation
          */
         foreach ($classes as $class => $annotation) {
-            /**
-             * @var JobConsumer $instance
-             */
-            $instance = make(JobConsumer::class);
-            $annotation->exchange && $instance->setExchange($annotation->exchange);
-            $annotation->routingKey && $instance->setRoutingKey($annotation->routingKey);
-            $instance->setQueue($annotation->routingKey);
-            $instance->setContainer($this->container);
-            $annotation->pool && $instance->setPoolName($annotation->pool);
-            $annotation->maxConsumption && $instance->setMaxConsumption($annotation->maxConsumption);
-            ! is_null($annotation->nums) && $instance->setNums($annotation->nums);
+            $instance = $this->createConsumerMessage($annotation);
             $process = $this->createProcess($instance);
-            $process->nums = $annotation->nums ?? 1;
+            $process->nums = $annotation->nums;
             $process->name = $class . '-' . $annotation->routingKey;
             ProcessManager::register($process);
         }
+    }
+
+    private function createConsumerMessage(AmqpJobAnnotation $amqpJob): JobConsumer
+    {
+        return new class($this->container, $amqpJob) extends JobConsumer {
+            public function __construct(ContainerInterface $container, AmqpJobAnnotation $amqpJob)
+            {
+                $this->routingKey = $amqpJob->routingKey;
+                $this->container = $container;
+                $this->nums = $amqpJob->nums;
+                $this->enable = $amqpJob->enable;
+                $this->exchange = $amqpJob->exchange;
+                $this->poolName = $amqpJob->pool;
+                $this->queue = $amqpJob->routingKey;
+            }
+        };
     }
 
     private function createProcess(ConsumerMessageInterface $consumerMessage): AbstractProcess

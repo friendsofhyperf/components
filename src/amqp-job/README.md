@@ -21,7 +21,7 @@ use FriendsOfHyperf\AmqpJob\Job;
 use FriendsOfHyperf\AmqpJob\Annotation\AmqpJob
 use function FriendsOfHyperf\AmqpJob\dispatch;
 
-#[AmqpJob(exchange: "hyperf",routingKey: "hyperf")]
+#[AmqpJob(exchange: "hyperf", routingKey: "hyperf", enable: true, nums: 1, pool: "default", maxConsumption: 1)]
 class FooJob extends Job
 {
     
@@ -34,30 +34,6 @@ class FooJob extends Job
 }
 
 dispatch(new FooJob());
-
-```
-
-### Consume
-
-```php
-
-namespace App\Amqp\Consumer;
-
-use FriendsOfHyperf\AmqpJob\JobConsumer;
-use Hyperf\Amqp\Annotation\Consumer;
-
-#[Consumer(
-    exchange: 'hyperf.exchange',
-    routingKey: 'hyperf.routing.key',
-    queue: 'hyperf.queue',
-    name: 'MyConsumer',
-    nums: 4
-
-)]
-class MyConsumer extends \FriendsOfHyperf\AmqpJob\JobConsumer
-{
-    //
-}
 
 ```
 
