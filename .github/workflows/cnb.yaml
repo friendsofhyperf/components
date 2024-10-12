@@ -19,4 +19,4 @@ jobs:
           # git for-each-ref --format 'delete %(refname)' refs/pull | git update-ref --stdin
           # git push --mirror
           git clone --mirror "$SOURCE_REPO" && cd `basename "$SOURCE_REPO"`
-          git push -f "$DESTINATION_REPO" "refs/heads/*:refs/heads/*" "refs/tags/*:refs/tags/*"
+          git push -prune "$DESTINATION_REPO" "refs/heads/*:refs/heads/*" "refs/tags/*:refs/tags/*"
