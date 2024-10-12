@@ -25,6 +25,9 @@ final class ConfigProvider
                 Attempt::class => RedisAttempt::class,
                 Packer::class => PhpSerializerPacker::class,
             ],
+            'listeners' => [
+                Listener\RegisterJobConsumer::class,
+            ],
         ];
     }
 }
