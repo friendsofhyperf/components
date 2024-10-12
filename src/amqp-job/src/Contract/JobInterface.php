@@ -25,7 +25,7 @@ interface JobInterface
 
     public function getJobId(): string;
 
-    public function getPoolName(): string;
+    public function getPoolName(): ?string;
 
     public function getRoutingKey(): string;
 

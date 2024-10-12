@@ -19,8 +19,6 @@ use Hyperf\Process\AbstractProcess;
 use Hyperf\Process\ProcessManager;
 use Psr\Container\ContainerInterface;
 
-use function Hyperf\Support\make;
-
 class JobConsumerManager
 {
     public function __construct(private ContainerInterface $container)
@@ -33,7 +31,7 @@ class JobConsumerManager
         $classes = AnnotationCollector::getClassesByAnnotation(AmqpJobAnnotation::class);
 
         foreach ($classes as $class => $annotation) {
-            $instance = make(JobConsumer::class);
+            $instance = new class extends JobConsumer {};
             $instance->setContainer($this->container);
 
             $annotation->exchange && $instance->setExchange($annotation->exchange);
@@ -49,7 +47,7 @@ class JobConsumerManager
 
             $process = $this->createProcess($instance);
             $process->nums = $instance->getNums();
-            $process->name = $class . 'Consumer-' . $instance->getQueue();
+            $process->name = $class . '-consumer-' . ($instance->getQueue() ?: '[auto]');
 
             ProcessManager::register($process);
         }
