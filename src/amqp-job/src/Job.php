@@ -20,19 +20,37 @@ use Throwable;
 
 abstract class Job implements JobInterface
 {
+    /**
+     * @deprecated since v3.1, will remove in v4.0, use `#[AmqpJob] annotation instead.
+     */
     protected ?bool $confirm = null;
 
+    /**
+     * @deprecated since v3.1, will remove in v4.0, use `#[AmqpJob] annotation instead.
+     */
     protected ?string $exchange = null;
 
-    protected ?string $jobId = null;
-
+    /**
+     * @deprecated since v3.1, will remove in v4.0, use `#[AmqpJob] annotation instead.
+     */
     protected ?string $poolName = null;
 
+    /**
+     * @deprecated since v3.1, will remove in v4.0, use `#[AmqpJob] annotation instead.
+     */
     protected ?string $routingKey = null;
 
+    /**
+     * @deprecated since v3.1, will remove in v4.0, use `#[AmqpJob] annotation instead.
+     */
     protected ?int $timeout = null;
 
+    /**
+     * @deprecated since v3.1, will remove in v4.0, use `#[AmqpJob] annotation instead.
+     */
     protected ?int $maxAttempts = null;
+
+    protected string $jobId = '';
 
     protected ?AmqpJob $annotation = null;
 
