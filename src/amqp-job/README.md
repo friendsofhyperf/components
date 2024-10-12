@@ -25,6 +25,7 @@ use function FriendsOfHyperf\AmqpJob\dispatch;
 #[AmqpJob(
     exchange: 'hyperf.exchange',
     routingKey: 'hyperf.routing.key',
+    pool: 'default',
     queue: 'hyperf.queue',
 )]
 class FooJob extends Job
