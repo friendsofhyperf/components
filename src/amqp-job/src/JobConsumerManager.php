@@ -49,7 +49,7 @@ class JobConsumerManager
 
             $process = $this->createProcess($instance);
             $process->nums = $instance->getNums();
-            $process->name = $class . '-' . $instance->getQueue();
+            $process->name = $class . 'Consumer-' . $instance->getQueue();
 
             ProcessManager::register($process);
         }
