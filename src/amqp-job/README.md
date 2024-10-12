@@ -18,8 +18,16 @@ composer require friendsofhyperf/amqp-job
 
 ```php
 use FriendsOfHyperf\AmqpJob\Job;
+use FriendsOfHyperf\AmqpJob\Annotations\AmqpJob;
+
 use function FriendsOfHyperf\AmqpJob\dispatch;
 
+#[AmqpJob(
+    exchange: 'hyperf.exchange',
+    routingKey: 'hyperf.routing.key',
+    pool: 'default',
+    queue: 'hyperf.queue',
+)]
 class FooJob extends Job
 {
     public function handle()
@@ -28,15 +36,11 @@ class FooJob extends Job
     }
 }
 
-dispatch(
-    payload: new FooJob(),
-    exchange: 'hyperf.exchange',
-    routingKey: 'hyperf.routing.key',
-);
+dispatch(new FooJob());
 
 ```
 
-### Consume
+### Register Consumer[Optional]
 
 ```php
 
