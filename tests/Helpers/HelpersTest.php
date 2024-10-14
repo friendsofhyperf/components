@@ -19,6 +19,7 @@ use function FriendsOfHyperf\Helpers\filled;
 use function FriendsOfHyperf\Helpers\literal;
 use function FriendsOfHyperf\Helpers\object_get;
 use function FriendsOfHyperf\Helpers\preg_replace_array;
+use function FriendsOfHyperf\Helpers\transform;
 
 test('test ClassNamespace', function () {
     $this->assertSame('Foo\Bar', class_namespace('Foo\Bar\Baz'));
@@ -103,6 +104,28 @@ test('test literal', function () {
     $this->assertEquals(1, literal(1));
     $this->assertEquals('taylor', literal('taylor'));
     $this->assertEquals((object) ['name' => 'Taylor', 'role' => 'Developer'], literal(name: 'Taylor', role: 'Developer'));
+});
+
+test('test transform', function () {
+    $this->assertEquals(10, transform(5, function ($value) {
+        return $value * 2;
+    }));
+
+    $this->assertNull(transform(null, function () {
+        return 10;
+    }));
+});
+
+test('test transformDefaultWhenBlank', function () {
+    $this->assertSame('baz', transform(null, function () {
+        return 'bar';
+    }, 'baz'));
+
+    $this->assertSame('baz', transform('', function () {
+        return 'bar';
+    }, function () {
+        return 'baz';
+    }));
 });
 
 test('test it_can_handle_enums_value', function () {
