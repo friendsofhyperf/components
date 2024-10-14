@@ -26,7 +26,7 @@ class ConfigProvider
             ],
             'publish' => [
                 [
-                    'id' => 'easy-sms',
+                    'id' => 'config',
                     'description' => 'easy sms channel configuration',
                     'source' => dirname(__DIR__) . '/publish/easy_sms.php',
                     'target' => BASE_PATH . '/config/autoload/easy_sms.php',

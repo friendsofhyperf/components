@@ -23,13 +23,13 @@ class ConfigProvider
             ],
             'publish' => [
                 [
-                    'id' => 'model_factory',
+                    'id' => 'config',
                     'description' => 'The config for model factory.',
                     'source' => __DIR__ . '/../publish/model_factory.php',
                     'destination' => BASE_PATH . '/config/autoload/model_factory.php',
                 ],
                 [
-                    'id' => 'model_factory_example',
+                    'id' => 'example',
                     'description' => 'The example for model factory.',
                     'source' => __DIR__ . '/../publish/example.php.stub',
                     'destination' => BASE_PATH . '/factories/model_factory.php',

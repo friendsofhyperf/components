@@ -27,7 +27,7 @@ class ConfigProvider
             ],
             'publish' => [
                 [
-                    'id' => 'confd',
+                    'id' => 'config',
                     'description' => 'The configuration file for confd.',
                     'source' => __DIR__ . '/../publish/confd.php',
                     'destination' => BASE_PATH . '/config/autoload/confd.php',
