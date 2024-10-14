@@ -14,10 +14,12 @@ use Hyperf\Stringable\Stringable;
 use function FriendsOfHyperf\Helpers\blank;
 use function FriendsOfHyperf\Helpers\class_namespace;
 use function FriendsOfHyperf\Helpers\Command\call;
+use function FriendsOfHyperf\Helpers\enum_value;
 use function FriendsOfHyperf\Helpers\filled;
 use function FriendsOfHyperf\Helpers\literal;
 use function FriendsOfHyperf\Helpers\object_get;
 use function FriendsOfHyperf\Helpers\preg_replace_array;
+use function FriendsOfHyperf\Helpers\transform;
 
 test('test ClassNamespace', function () {
     $this->assertSame('Foo\Bar', class_namespace('Foo\Bar\Baz'));
@@ -103,3 +105,62 @@ test('test literal', function () {
     $this->assertEquals('taylor', literal('taylor'));
     $this->assertEquals((object) ['name' => 'Taylor', 'role' => 'Developer'], literal(name: 'Taylor', role: 'Developer'));
 });
+
+test('test transform', function () {
+    $this->assertEquals(10, transform(5, function ($value) {
+        return $value * 2;
+    }));
+
+    $this->assertNull(transform(null, function () {
+        return 10;
+    }));
+});
+
+test('test transformDefaultWhenBlank', function () {
+    $this->assertSame('baz', transform(null, function () {
+        return 'bar';
+    }, 'baz'));
+
+    $this->assertSame('baz', transform('', function () {
+        return 'bar';
+    }, function () {
+        return 'baz';
+    }));
+});
+
+test('test it_can_handle_enums_value', function () {
+    $this->assertSame('A', enum_value(TestEnum::A));
+
+    $this->assertSame(1, enum_value(TestBackedEnum::A));
+    $this->assertSame(2, enum_value(TestBackedEnum::B));
+
+    $this->assertSame('A', enum_value(TestStringBackedEnum::A));
+    $this->assertSame('B', enum_value(TestStringBackedEnum::B));
+});
+
+test('test it_can_handle_enum_value', function ($given, $expected) {
+    $this->assertSame($expected, enum_value($given));
+})->with([
+    ['', ''],
+    ['laravel', 'laravel'],
+    [true, true],
+    [1337, 1337],
+    [1.0, 1.0],
+]);
+
+enum TestEnum
+{
+    case A;
+}
+
+enum TestBackedEnum: int
+{
+    case A = 1;
+    case B = 2;
+}
+
+enum TestStringBackedEnum: string
+{
+    case A = 'A';
+    case B = 'B';
+}

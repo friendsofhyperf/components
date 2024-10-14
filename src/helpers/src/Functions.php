@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Helpers;
 
+use BackedEnum;
 use Carbon\Carbon;
 use Closure;
 use Countable;
@@ -47,6 +48,7 @@ use Psr\SimpleCache\CacheInterface;
 use RuntimeException;
 use stdClass;
 use Stringable;
+use UnitEnum;
 
 use function Hyperf\Collection\value;
 use function Hyperf\Tappable\tap;
@@ -240,6 +242,32 @@ function environment(...$environments)
     }
 
     return $environment;
+}
+
+/**
+ * Return a scalar value for the given value that might be an enum.
+ *
+ * @internal
+ *
+ * @template TValue
+ * @template TDefault
+ *
+ * @param TValue $value
+ * @param TDefault|callable(TValue): TDefault $default
+ * @return ($value is empty ? TDefault : mixed)
+ */
+function enum_value($value, $default = null)
+{
+    if (is_string($value) && empty($value)) {
+        return $value;
+    }
+
+    return transform($value, fn ($value) => match (true) {
+        $value instanceof BackedEnum => $value->value,
+        $value instanceof UnitEnum => $value->name,
+
+        default => $value,
+    }, $default);
 }
 
 /**
@@ -535,6 +563,31 @@ function throw_unless($condition, $exception, ...$parameters)
     }
 
     return $condition;
+}
+
+/**
+ * Transform the given value if it is present.
+ *
+ * @template TValue
+ * @template TReturn
+ * @template TDefault
+ *
+ * @param TValue $value
+ * @param callable(TValue): TReturn $callback
+ * @param TDefault|callable(TValue): TDefault $default
+ * @return ($value is empty ? TDefault : TReturn)
+ */
+function transform($value, callable $callback, $default = null)
+{
+    if (filled($value)) {
+        return $callback($value);
+    }
+
+    if (is_callable($default)) {
+        return $default($value);
+    }
+
+    return $default;
 }
 
 /**
