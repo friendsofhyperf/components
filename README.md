@@ -12,8 +12,9 @@ The most popular components for Hyperf.
 
 <!-- Made with [contrib.rocks](https://contrib.rocks). -->
 
-## Mirror
+## Mirrors
 
+- https://github.com/friendsofhyperf/components
 - https://cnb.cool/friendsofhyperf/components
 
 ## Contact
