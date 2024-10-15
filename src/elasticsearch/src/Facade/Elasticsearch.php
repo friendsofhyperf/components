@@ -37,17 +37,11 @@ use InvalidArgumentException;
  */
 class Elasticsearch
 {
-    /**
-     * 靜態調用.
-     */
     public static function __callStatic(mixed $method, mixed $params): mixed
     {
         return self::connection('default')->{$method}(...$params);
     }
 
-    /**
-     * 獲取 ES Client.
-     */
     public static function connection(string $connection = 'default'): Client
     {
         /** @var \Hyperf\Di\Container $container */
