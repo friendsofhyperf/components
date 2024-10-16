@@ -15,12 +15,14 @@ use BackedEnum;
 use Carbon\Carbon;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\Context;
+use Hyperf\HttpMessage\Server\Request as ServerRequest;
 use Hyperf\HttpServer\Request;
 use Hyperf\Stringable\Str;
 use stdClass;
 
 use function Hyperf\Collection\collect;
 use function Hyperf\Collection\data_get;
+use function Hyperf\Support\with;
 
 /**
  * @property array $contextkeys
@@ -113,6 +115,11 @@ class RequestMixin
     public function exists()
     {
         return fn ($key) => $this->has($key);
+    }
+
+    public function fake()
+    {
+        return fn ($closure = null) => with(new ServerRequest('GET', '/'), $closure);
     }
 
     public function filled()
