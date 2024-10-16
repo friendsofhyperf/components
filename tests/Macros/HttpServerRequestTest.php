@@ -9,6 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 use Hyperf\Context\Context;
+use Hyperf\HttpMessage\Uri\Uri;
 use Hyperf\HttpServer\Request;
 use Mockery as m;
 use Psr\Http\Message\ServerRequestInterface;
@@ -148,4 +149,22 @@ test('test wantsJson', function () {
     Context::set(ServerRequestInterface::class, $psrRequest);
 
     expect($request->wantsJson())->toBeFalse();
+});
+
+test('test fake', function () {
+    $psrRequest = Request::fake();
+    expect($psrRequest)->toBeInstanceOf(ServerRequestInterface::class);
+
+    $psrRequest = Request::fake(function ($request) {
+        return $request->withMethod('POST')->withUri(new Uri('/foo'));
+    });
+
+    expect($psrRequest->getMethod())->toBe('POST');
+    expect($psrRequest->getUri()->getPath())->toBe('/foo');
+
+    Context::set(ServerRequestInterface::class, $psrRequest);
+
+    $request = new Request();
+    expect($request->getMethod())->toBe('POST');
+    expect($request->getUri()->getPath())->toBe('/foo');
 });

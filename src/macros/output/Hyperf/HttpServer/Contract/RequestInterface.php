@@ -11,6 +11,9 @@ declare(strict_types=1);
 
 namespace Hyperf\HttpServer\Contract;
 
+use Closure;
+use Psr\Http\Message\ServerRequestInterface;
+
 interface RequestInterface
 {
     /**
@@ -51,6 +54,11 @@ interface RequestInterface
      * @param array|mixed $keys
      */
     public function except($keys): array;
+
+    /**
+     * @param Closure(ServerRequestInterface):ServerRequestInterface|null $closure
+     */
+    public static function fake(?Closure $closure = null): ServerRequestInterface;
 
     /**
      * Determine if the request contains a non-empty value for an input item.
