@@ -15,6 +15,7 @@ use BackedEnum;
 use Carbon\Carbon;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\Context;
+use Hyperf\Context\RequestContext;
 use Hyperf\HttpMessage\Server\Request as ServerRequest;
 use Hyperf\HttpServer\Request;
 use Hyperf\Stringable\Str;
@@ -168,6 +169,11 @@ class RequestMixin
     public function getHttpHost()
     {
         return fn () => $this->getHost() . ':' . $this->getPort();
+    }
+
+    public function getPsrRequest()
+    {
+        return fn () => RequestContext::getOrNull();
     }
 
     public function getPort()

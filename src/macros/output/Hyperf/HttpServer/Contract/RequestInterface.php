@@ -101,6 +101,8 @@ interface RequestInterface
 
     public function getPort(): int;
 
+    public function getPsrRequest(): ?ServerRequestInterface;
+
     public function getScheme(): string;
 
     public function isSecure(): bool;
