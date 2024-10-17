@@ -170,9 +170,10 @@ test('test fake', function () {
 });
 
 test('test getPsrRequest', function () {
+    $request = new Request();
+    expect($request->getPsrRequest())->toBeNull();
+
     $psrRequest = Request::fake();
     Context::set(ServerRequestInterface::class, $psrRequest);
-
-    $request = new Request();
     expect($request->getPsrRequest())->toBe($psrRequest);
 });
