@@ -14,6 +14,8 @@ namespace FriendsOfHyperf\Trigger\Subscriber;
 use Closure;
 use FriendsOfHyperf\Trigger\ConstEventsNames;
 use FriendsOfHyperf\Trigger\Consumer;
+use FriendsOfHyperf\Trigger\Contract\TriggerInterface;
+use FriendsOfHyperf\Trigger\Trigger\Context;
 use FriendsOfHyperf\Trigger\TriggerManager;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
@@ -138,13 +140,14 @@ class TriggerSubscriber extends AbstractSubscriber
         $eventType = $event->getType();
 
         foreach ($this->triggerManager->get($key) as $callable) {
+            /** @var array{0:class-string<TriggerInterface>,1:string} $callable */
             $values = match (true) {
                 method_exists($event, 'getValues') => $event->getValues(), // v7.x, @deprecated, will removed in v3.2
                 property_exists($event, 'values') => $event->values, // @phpstan-ignore property.private
                 default => [],
             };
             foreach ($values as $value) {
-                $this->chan->push(function () use ($callable, $value, $eventType, $context) {
+                $this->chan->push(function () use ($event, $callable, $value, $database, $table, $eventType, $context) {
                     [$class, $method] = $callable;
 
                     if (! $this->container->has($class)) {
@@ -164,6 +167,10 @@ class TriggerSubscriber extends AbstractSubscriber
                     }
 
                     try {
+                        Context::setDatabase($database);
+                        Context::setTable($table);
+                        Context::setEventType($eventType);
+                        Context::setEventDTO($event);
                         call([$this->container->get($class), $method], $args);
                     } catch (Throwable $e) {
                         $this->consumer->logger?->warning('[{connection}] ' . (string) $e, $context);
