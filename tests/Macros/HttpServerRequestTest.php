@@ -46,7 +46,7 @@ test('test isEmptyString', function () {
     expect($request->isEmptyString('id'))->toBeFalse();
 });
 
-test('test get host', function () {
+test('test getHost', function () {
     $request = new Request();
 
     $host = 'foo.com';
@@ -75,7 +75,7 @@ test('test get host', function () {
     expect($request->getHost())->toBe($host);
 });
 
-test('test get port', function () {
+test('test getPort', function () {
     $request = new Request();
 
     $port = 80;
@@ -113,7 +113,7 @@ test('test get port', function () {
     expect($request->getPort())->toBe($port);
 });
 
-test('test get scheme', function () {
+test('test getScheme', function () {
     $request = new Request();
 
     $psrRequest = m::mock(ServerRequestPlusInterface::class, function ($mock) {
@@ -167,4 +167,13 @@ test('test fake', function () {
     $request = new Request();
     expect($request->getMethod())->toBe('POST');
     expect($request->getUri()->getPath())->toBe('/foo');
+});
+
+test('test getPsrRequest', function () {
+    $request = new Request();
+    expect($request->getPsrRequest())->toBeNull();
+
+    $psrRequest = Request::fake();
+    Context::set(ServerRequestInterface::class, $psrRequest);
+    expect($request->getPsrRequest())->toBe($psrRequest);
 });
