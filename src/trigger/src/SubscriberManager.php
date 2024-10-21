@@ -12,7 +12,10 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Trigger;
 
 use FriendsOfHyperf\Trigger\Annotation\Subscriber;
+use FriendsOfHyperf\Trigger\Subscriber\SnapshotSubscriber;
+use FriendsOfHyperf\Trigger\Subscriber\TriggerSubscriber;
 use Hyperf\Collection\Arr;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Stdlib\SplPriorityQueue;
 use Psr\Container\ContainerInterface;
@@ -22,6 +25,8 @@ class SubscriberManager
 {
     protected array $subscribers = [];
 
+    protected array $defaultSubscribers = [TriggerSubscriber::class, SnapshotSubscriber::class];
+
     public function __construct(
         protected ContainerInterface $container,
         protected ?LoggerInterface $logger = null
@@ -30,9 +35,29 @@ class SubscriberManager
 
     public function register()
     {
+        $queue = new SplPriorityQueue();
+        // Register subscribers from config.
+        $config = $this->container->get(ConfigInterface::class);
+
+        foreach ($config->get('trigger.connections', []) as $connection => $item) {
+            $subscribers = $item['subscribers'] ?? $this->defaultSubscribers;
+            foreach ($subscribers as $priority => $class) {
+                [$class, $priority] = is_numeric($class) ? [$priority, $class] : [$class, 0];
+
+                if (! class_exists($class)) {
+                    $this->logger?->warning(sprintf('[trigger.%s] %s not exists.', $connection, $class));
+                    continue;
+                }
+
+                $property = new Subscriber($connection, $priority);
+                $queue->insert([$class, $property], $priority);
+            }
+        }
+
+        // Register subscribers from annotations.
+
         /** @var Subscriber[] $classes */
         $classes = AnnotationCollector::getClassesByAnnotation(Subscriber::class);
-        $queue = new SplPriorityQueue();
 
         foreach ($classes as $class => $property) {
             $queue->insert([$class, $property], $property->priority);

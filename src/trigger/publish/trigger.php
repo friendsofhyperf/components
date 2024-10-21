@@ -24,6 +24,11 @@ return [
             'heartbeat_period' => (int) env('TRIGGER_HEARTBEAT', 3),
             'connect_retries' => 10,
 
+            'subscribers' => [
+                FriendsOfHyperf\Trigger\Subscriber\TriggerSubscriber::class,
+                FriendsOfHyperf\Trigger\Subscriber\SnapshotSubscriber::class,
+            ],
+
             'server_mutex' => [
                 'enable' => true,
                 'prefix' => env('APP_ENV', 'dev') . '_',
