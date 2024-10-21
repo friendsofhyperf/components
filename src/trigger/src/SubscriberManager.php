@@ -20,6 +20,7 @@ use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Stdlib\SplPriorityQueue;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class SubscriberManager
 {
@@ -44,7 +45,7 @@ class SubscriberManager
             foreach ($subscribers as $priority => $class) {
                 [$class, $priority] = is_numeric($class) ? [$priority, $class] : [$class, 0];
 
-                if (! class_exists($class)) {
+                if (! class_exists($class) || ! is_subclass_of($class, EventSubscriberInterface::class)) {
                     $this->logger?->warning(sprintf('[trigger.%s] %s not exists.', $connection, $class));
                     continue;
                 }
