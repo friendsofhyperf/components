@@ -45,8 +45,13 @@ class SubscriberManager
             foreach ($subscribers as $priority => $class) {
                 [$class, $priority] = is_numeric($class) ? [$priority, $class] : [$class, 0];
 
-                if (! class_exists($class) || ! is_subclass_of($class, EventSubscriberInterface::class)) {
+                if (! class_exists($class)) {
                     $this->logger?->warning(sprintf('[trigger.%s] %s not exists.', $connection, $class));
+                    continue;
+                }
+
+                if (! is_subclass_of($class, EventSubscriberInterface::class)) {
+                    $this->logger?->warning(sprintf('[trigger.%s] %s not implement %s.', $connection, $class, EventSubscriberInterface::class));
                     continue;
                 }
 
