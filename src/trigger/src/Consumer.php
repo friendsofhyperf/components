@@ -14,8 +14,6 @@ namespace FriendsOfHyperf\Trigger;
 use FriendsOfHyperf\Trigger\Monitor\HealthMonitor;
 use FriendsOfHyperf\Trigger\Mutex\ServerMutexInterface;
 use FriendsOfHyperf\Trigger\Snapshot\BinLogCurrentSnapshotInterface;
-use FriendsOfHyperf\Trigger\Subscriber\SnapshotSubscriber;
-use FriendsOfHyperf\Trigger\Subscriber\TriggerSubscriber;
 use Hyperf\Config\Config;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
@@ -224,8 +222,6 @@ class Consumer
             ]),
             function (MySQLReplicationFactory $factory) use ($connection) {
                 $subscribers = $this->subscriberManager->get($connection);
-                $subscribers[] = TriggerSubscriber::class;
-                $subscribers[] = SnapshotSubscriber::class;
 
                 foreach ($subscribers as $subscriber) {
                     $factory->registerSubscriber(make($subscriber, [
