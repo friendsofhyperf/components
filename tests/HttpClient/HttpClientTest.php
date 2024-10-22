@@ -2809,6 +2809,15 @@ class HttpClientTest extends TestCase
         $this->factory->get('https://laravel.com');
     }
 
+    public function testPreventingStrayRequests()
+    {
+        $this->assertFalse($this->factory->preventingStrayRequests());
+
+        $this->factory->preventStrayRequests();
+
+        $this->assertTrue($this->factory->preventingStrayRequests());
+    }
+
     public function testItCanAddAuthorizationHeaderIntoRequestUsingBeforeSendingCallback()
     {
         $this->factory->fake();
