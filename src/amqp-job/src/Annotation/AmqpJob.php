@@ -27,6 +27,7 @@ class AmqpJob extends AbstractAnnotation
         public bool $confirm = false,
         public bool $autoRegisterConsumer = true,
         public int $consumerProcessNums = 1,
+        public ?string $consumerProcessName = null,
     ) {
     }
 }

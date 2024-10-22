@@ -47,7 +47,7 @@ class JobConsumerManager
 
             $process = $this->createProcess($instance);
             $process->nums = $instance->getNums();
-            $process->name = $class . '-consumer-' . ($instance->getQueue() ?: '[auto]');
+            $process->name = $annotation->consumerProcessName ?? ($class . '-consumer-' . ($instance->getQueue() ?: '[auto]'));
 
             ProcessManager::register($process);
         }
