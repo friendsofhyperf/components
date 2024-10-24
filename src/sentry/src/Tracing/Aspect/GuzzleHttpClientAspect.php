@@ -55,12 +55,10 @@ class GuzzleHttpClientAspect extends AbstractAspect
         $instance = $proceedingJoinPoint->getInstance();
         $arguments = $proceedingJoinPoint->arguments['keys'];
         $options = $arguments['options'] ?? [];
-        $guzzleConfig = (function () {
-            if (method_exists($this, 'getConfig')) { // @deprecated ClientInterface::getConfig will be removed in guzzlehttp/guzzle:8.0.
-                return $this->getConfig();
-            }
-
-            return $this->config ?? [];
+        $guzzleConfig = (fn () => match (true) {
+            method_exists($this, 'getConfig') => $this->getConfig(), // @deprecated ClientInterface::getConfig will be removed in guzzlehttp/guzzle:8.0.
+            property_exists($this, 'config') => $this->config,
+            default => [],
         })->call($instance);
 
         if (

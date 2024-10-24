@@ -117,13 +117,13 @@ class TriggerSubscriber extends AbstractSubscriber
         $this->loop();
 
         $database = match (true) {
-            method_exists($event, 'getTableMap') => $event->getTableMap()->getDatabase(), // v7.x, @deprecated, will removed in v3.2
+            method_exists($event, 'getTableMap') => $event->getTableMap()->getDatabase(), // v7.x, @deprecated, will be removed in v3.2
             property_exists($event, 'tableMap') => $event->tableMap->database, // @phpstan-ignore property.private
             default => null,
         };
 
         $table = match (true) {
-            method_exists($event, 'getTableMap') => $event->getTableMap()->getTable(), // v7.x, @deprecated, will removed in v3.2
+            method_exists($event, 'getTableMap') => $event->getTableMap()->getTable(), // v7.x, @deprecated, will be removed in v3.2
             property_exists($event, 'tableMap') => $event->tableMap->table, // @phpstan-ignore property.private
             default => null,
         };
@@ -139,7 +139,7 @@ class TriggerSubscriber extends AbstractSubscriber
 
         foreach ($this->triggerManager->get($key) as $callable) {
             $values = match (true) {
-                method_exists($event, 'getValues') => $event->getValues(), // v7.x, @deprecated, will removed in v3.2
+                method_exists($event, 'getValues') => $event->getValues(), // v7.x, @deprecated since v3.1, will be removed in v3.2
                 property_exists($event, 'values') => $event->values, // @phpstan-ignore property.private
                 default => [],
             };

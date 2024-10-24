@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope;
 
 /**
- * @deprecated use FriendsOfHyperf\Telescope\TelescopeConfig instead
+ * @deprecated since v3.1, use FriendsOfHyperf\Telescope\TelescopeConfig instead, will be removed in v3.2
  */
 class SwitchManager extends TelescopeConfig
 {

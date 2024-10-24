@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Trigger;
 
 /**
- * @deprecated since v3.1, will removed in 3.2, use \MySQLReplication\Definitions\ConstEventsNames instead
+ * @deprecated since v3.1, use \MySQLReplication\Definitions\ConstEventsNames instead, will be removed in v3.2
  */
 enum ConstEventsNames: string
 {

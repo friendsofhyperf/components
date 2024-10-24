@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\Sentry\Tracing;
 use Hyperf\Contract\ConfigInterface;
 
 /**
- * @deprecated since v3.1, will remove in v3.2
+ * @deprecated since v3.1, will be removed in v3.2
  */
 class TagManager
 {

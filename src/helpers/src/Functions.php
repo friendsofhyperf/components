@@ -224,7 +224,7 @@ function dispatch($job, ...$arguments)
         $job instanceof ProduceMessage => di(ProducerManager::class)
             ->getProducer((string) ($arguments[0] ?? 'default'))
             ->sendBatch([$job]),
-        class_exists(AsyncTask::class) && interface_exists(AsyncTaskInterface::class) && $job instanceof AsyncTaskInterface => AsyncTask::deliver($job, ...$arguments), // Will removed at v3.2
+        class_exists(AsyncTask::class) && interface_exists(AsyncTaskInterface::class) && $job instanceof AsyncTaskInterface => AsyncTask::deliver($job, ...$arguments), // @deprecated since v3.1, will be removed in v3.2
         default => throw new InvalidArgumentException('Not Support job type.')
     };
 }
@@ -359,7 +359,7 @@ function logs(string $name = 'hyperf', string $group = 'default'): LoggerInterfa
  *
  * @param DateTimeZone|string|null $tz
  *
- * @deprecated since 3.1, use Hyperf\Support\now() instead, will removed at 3.2
+ * @deprecated since v3.1, use Hyperf\Support\now() instead, will be removed in v3.2
  */
 function now($tz = null): Carbon
 {
@@ -506,7 +506,7 @@ function session($key = null, $default = null)
  *
  * @param DateTimeZone|string|null $tz
  *
- * @deprecated since 3.1, use Hyperf\Support\today() instead, will removed at 3.2
+ * @deprecated since v3.1, use Hyperf\Support\today() instead, will be removed in v3.2
  */
 function today($tz = null): Carbon
 {

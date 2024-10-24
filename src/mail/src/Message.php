@@ -32,7 +32,7 @@ class Message
     /**
      * CIDs of files embedded in the message.
      *
-     * @deprecated will be removed in a future Laravel version
+     * @deprecated since v3.1, will be removed in v3.2
      */
     protected array $embeddedFiles = [];
 
