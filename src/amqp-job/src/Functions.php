@@ -15,6 +15,13 @@ use FriendsOfHyperf\AmqpJob\Contract\JobInterface;
 use Hyperf\Amqp\Producer;
 use Hyperf\Context\ApplicationContext;
 
+/**
+ * Dispatch a job to a queue.
+ *
+ * @param JobInterface $payload deprecated since v3.1, will be removed in v3.2
+ * @param string|null $exchange deprecated since v3.1, will be removed in v3.2
+ * @param string|array|null $routingKey deprecated since v3.1, will be removed in v3.2
+ */
 function dispatch(
     JobInterface $payload,
     ?string $exchange = null,
