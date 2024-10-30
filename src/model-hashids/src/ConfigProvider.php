@@ -15,6 +15,15 @@ class ConfigProvider
 {
     public function __invoke()
     {
-        return [];
+        return [
+            'publish' => [
+                [
+                    'id' => 'config',
+                    'description' => 'The configuration file of hashids.',
+                    'source' => __DIR__ . '/../publish/hashids.php',
+                    'destination' => BASE_PATH . '/config/autoload/hashids.php',
+                ],
+            ],
+        ];
     }
 }
