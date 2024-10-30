@@ -17,8 +17,8 @@ use Hyperf\Database\Model\Model;
 use function Hyperf\Config\config;
 
 /**
- * @method Model|null findByHashid($hashid)
- * @method Model findByHashidOrFail($hashid)
+ * @method static Model|null findByHashid($hashid)
+ * @method static Model findByHashidOrFail($hashid)
  */
 trait HasHashid
 {
