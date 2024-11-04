@@ -24,6 +24,20 @@ test('test shuffleAssoc', function () {
         ->toHaveCount(5);
 });
 
+test('test shuffleAssoc with seed', function () {
+    $array = ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5];
+    $shuffled = Arr::shuffleAssoc($array, 123);
+
+    expect($shuffled)->not->toBe($array)
+        ->toBeArray()
+        ->toHaveKey('a')
+        ->toHaveKey('b')
+        ->toHaveKey('c')
+        ->toHaveKey('d')
+        ->toHaveKey('e')
+        ->toHaveCount(5);
+});
+
 test('test sortByMany', function () {
     $unsorted = [
         ['name' => 'John', 'age' => 8, 'meta' => ['key' => 3]],
