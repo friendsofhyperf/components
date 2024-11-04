@@ -17,9 +17,10 @@ class Arr
      * Shuffle an associative array.
      *
      * @param array $array
+     * @param int|null $seed
      * @return array
      */
-    public static function shuffleAssoc($array)
+    public static function shuffleAssoc($array, $seed = null)
     {
     }
 
