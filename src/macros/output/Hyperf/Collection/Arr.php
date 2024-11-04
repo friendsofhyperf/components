@@ -14,6 +14,16 @@ namespace Hyperf\Collection;
 class Arr
 {
     /**
+     * Shuffle an associative array.
+     *
+     * @param array $array
+     * @return array
+     */
+    public static function shuffleAssoc($array)
+    {
+    }
+
+    /**
      * Sort given array by many properties.
      *
      * @param array $array

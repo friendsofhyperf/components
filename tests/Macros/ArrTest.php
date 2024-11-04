@@ -10,6 +10,20 @@ declare(strict_types=1);
  */
 use Hyperf\Collection\Arr;
 
+test('test shuffleAssoc', function () {
+    $array = ['a' => 1, 'b' => 2, 'c' => 3, 'd' => 4, 'e' => 5];
+    $shuffled = Arr::shuffleAssoc($array);
+
+    expect($shuffled)->not->toBe($array)
+        ->toBeArray()
+        ->toHaveKey('a')
+        ->toHaveKey('b')
+        ->toHaveKey('c')
+        ->toHaveKey('d')
+        ->toHaveKey('e')
+        ->toHaveCount(5);
+});
+
 test('test sortByMany', function () {
     $unsorted = [
         ['name' => 'John', 'age' => 8, 'meta' => ['key' => 3]],
