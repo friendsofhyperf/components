@@ -44,7 +44,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     use DataResolver;
     use DataTransformer;
 
-    protected array $data = [];
+    protected array $dtoData = [];
 
     protected array $validatedData = [];
 
@@ -75,7 +75,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
 
         $this->buildAttributesData();
 
-        $this->data = $this->buildDataForValidation($data);
+        $this->dtoData = $this->buildDataForValidation($data);
 
         $this->initConfig();
 
@@ -200,7 +200,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             }
         }
 
-        $this->data = [];
+        $this->dtoData = [];
     }
 
     /**
@@ -232,7 +232,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
         /** @var array<Castable> $casts */
         $casts = $this->buildCasts();
 
-        foreach ($this->data as $key => $value) {
+        foreach ($this->dtoData as $key => $value) {
             if (in_array($key, $acceptedKeys)) {
                 if (! array_key_exists($key, $casts)) {
                     if ($this->requireCasting) {
@@ -532,7 +532,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     private function isForbiddenProperty(string $property): bool
     {
         return in_array($property, [
-            'data',
+            'dtoData',
             'validatedData',
             'requireCasting',
             'validator',

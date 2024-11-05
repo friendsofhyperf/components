@@ -98,7 +98,7 @@ abstract class ValidatedDTO extends SimpleDTO
         /** @var array<Castable> $casts */
         $casts = $this->buildCasts();
 
-        foreach ($this->data as $key => $value) {
+        foreach ($this->dtoData as $key => $value) {
             if (in_array($key, $acceptedKeys)) {
                 if (! array_key_exists($key, $casts)) {
                     if ($this->requireCasting) {
@@ -132,7 +132,7 @@ abstract class ValidatedDTO extends SimpleDTO
         $container = ApplicationContext::getContainer();
         $this->validator = $container->get(ValidatorFactoryInterface::class)
             ->make(
-                $this->data,
+                $this->dtoData,
                 $this->rulesList(),
                 $this->messagesList(),
                 $this->attributes()
