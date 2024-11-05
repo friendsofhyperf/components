@@ -532,7 +532,7 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
     private function isForbiddenProperty(string $property): bool
     {
         return in_array($property, [
-            'data',
+            'dtoData',
             'validatedData',
             'requireCasting',
             'validator',
