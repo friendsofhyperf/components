@@ -41,15 +41,15 @@ class JobConsumerManager
             $annotation->queue && $instance->setQueue($annotation->queue);
             $annotation->pool && $instance->setPoolName($annotation->pool);
             $annotation->maxConsumption && $instance->setMaxConsumption($annotation->maxConsumption);
-            $annotation->consumerProcessNums && $instance->setNums($annotation->consumerProcessNums);
+            $annotation->nums && $instance->setNums($annotation->nums);
 
-            if (! $annotation->autoRegisterConsumer) {
+            if (! $annotation->enable) {
                 continue;
             }
 
             $process = $this->createProcess($instance);
             $process->nums = $instance->getNums();
-            $process->name = $annotation->consumerProcessName ?? ($class . '-consumer-' . ($instance->getQueue() ?: '[auto]'));
+            $process->name = $annotation->name ?? ($class . '-consumer-' . ($instance->getQueue() ?: '[auto]'));
 
             ProcessManager::register($process);
         }
