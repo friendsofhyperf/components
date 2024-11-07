@@ -23,6 +23,7 @@ class AmqpJob extends AbstractAnnotation
         public ?string $pool = null,
         public ?string $queue = null,
         public int $maxAttempts = 0,
+        public int $maxConsumption = 0,
         public bool $confirm = false,
         public bool $autoRegisterConsumer = true,
         public int $consumerProcessNums = 1,

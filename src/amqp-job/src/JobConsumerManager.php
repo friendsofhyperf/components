@@ -40,6 +40,7 @@ class JobConsumerManager
             $annotation->routingKey && $instance->setRoutingKey($annotation->routingKey);
             $annotation->queue && $instance->setQueue($annotation->queue);
             $annotation->pool && $instance->setPoolName($annotation->pool);
+            $annotation->maxConsumption && $instance->setMaxConsumption($annotation->maxConsumption);
             $annotation->consumerProcessNums && $instance->setNums($annotation->consumerProcessNums);
 
             if (! $annotation->autoRegisterConsumer) {
