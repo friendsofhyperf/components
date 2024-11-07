@@ -19,7 +19,7 @@ use Hyperf\Contract\StdoutLoggerInterface;
 use PhpAmqpLib\Message\AMQPMessage;
 use Throwable;
 
-abstract class JobConsumer extends ConsumerMessage
+class JobConsumer extends ConsumerMessage
 {
     public function consumeMessage($data, AMQPMessage $message): Result
     {
