@@ -10,6 +10,8 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\LazyDTO;
 use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
+use Hyperf\Contract\ValidatorInterface;
+use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Hyperf\Validation\ValidationException;
 
 beforeEach(function () {
@@ -39,6 +41,14 @@ it('does not fails a lazy validation with valid data', function () {
 });
 
 it('fails a lazy validation with invalid data', function () {
+    $this->mock(ValidatorFactoryInterface::class, function ($mock) {
+        $mock->shouldReceive('make')->andReturn(Mockery::mock(ValidatorInterface::class, function ($mock) {
+            $mock->shouldReceive('fails')->andReturn(true)
+                ->shouldReceive('passes')->andReturn(false)
+                ->shouldReceive('after')->andReturn(null);
+        }));
+    });
+
     $validatedDTO = new LazyDTO(['name' => null]);
 
     expect($validatedDTO)->toBeInstanceOf(ValidatedDTO::class)
