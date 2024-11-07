@@ -44,6 +44,18 @@ abstract class ValidatedDTO extends SimpleDTO
         return [];
     }
 
+    /**
+     * @throws ValidationException|MissingCastTypeException|CastTargetException
+     */
+    public function validate(): void
+    {
+        $this->dtoData = $this->buildDataForValidation($this->toArray());
+
+        $this->validationPasses()
+            ? $this->passedValidation(true)
+            : $this->failedValidation();
+    }
+
     protected function after(ValidatorInterface $validator): void
     {
         // Do nothing
@@ -90,7 +102,7 @@ abstract class ValidatedDTO extends SimpleDTO
      *
      * @throws MissingCastTypeException|CastTargetException
      */
-    protected function validatedData(): array
+    protected function validatedData(bool $forceCast = false): array
     {
         $acceptedKeys = array_keys($this->rulesList());
         $result = [];
@@ -111,7 +123,7 @@ abstract class ValidatedDTO extends SimpleDTO
 
                 $result[$key] = $this->shouldReturnNull($key, $value)
                     ? null
-                    : $this->castValue($casts[$key], $key, $value);
+                    : $this->castValue($casts[$key], $key, $value, $forceCast);
             }
         }
 
@@ -172,6 +184,22 @@ abstract class ValidatedDTO extends SimpleDTO
             ...$this->messages(),
             ...$this->dtoMessages,
         ];
+    }
+
+    private function validationPasses(): bool
+    {
+        $container = ApplicationContext::getContainer();
+        $this->validator = $container->get(ValidatorFactoryInterface::class)
+            ->make(
+                $this->dtoData,
+                $this->rulesList(),
+                $this->messagesList(),
+                $this->attributes()
+            );
+
+        $this->validator->after(fn (ValidatorInterface $validator) => $this->after($validator));
+
+        return ! $this->validator->fails();
     }
 
     private function isOptionalProperty(string $property): bool
