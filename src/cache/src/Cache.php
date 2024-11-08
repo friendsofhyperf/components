@@ -367,7 +367,9 @@ class Cache implements CacheInterface
         $duration = $this->parseDateInterval($ttl);
 
         if ($duration instanceof DateTimeInterface) {
-            $duration = Carbon::now()->diffInRealSeconds($duration, false);
+            $duration = (int) ceil(
+                Carbon::now()->diffInMilliseconds($duration, false) / 1000
+            );
         }
 
         return (int) $duration > 0 ? $duration : 0;
