@@ -18,25 +18,6 @@ use Hyperf\Collection\Arr;
  */
 class ArrMixin
 {
-    public function shuffleAssoc()
-    {
-        return function ($array, $seed = null) {
-            if (empty($array)) {
-                return $array;
-            }
-
-            $keys = array_keys($array);
-            $keys = Arr::shuffle($keys, $seed);
-            $shuffled = [];
-
-            foreach ($keys as $key) {
-                $shuffled[$key] = $array[$key];
-            }
-
-            return $shuffled;
-        };
-    }
-
     public function sortByMany()
     {
         return function ($array, $comparisons = []) {
