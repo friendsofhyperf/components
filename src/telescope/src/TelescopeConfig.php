@@ -60,7 +60,7 @@ class TelescopeConfig
     }
 
     /**
-     * @deprecated since v3.1, will remove in v3.2
+     * @deprecated since v3.1, will be removed in v3.2
      */
     public function getServerHost(): string
     {
@@ -68,7 +68,7 @@ class TelescopeConfig
     }
 
     /**
-     * @deprecated since v3.1, will remove in v3.2
+     * @deprecated since v3.1, will be removed in v3.2
      */
     public function getServerPort(): int
     {
