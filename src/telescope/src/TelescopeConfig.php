@@ -16,15 +16,18 @@ use FriendsOfHyperf\Telescope\Server\Server;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Redis\Redis;
 use Hyperf\Server\Event;
 use Hyperf\Server\ServerInterface;
 use Hyperf\Stringable\Str;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
+use Throwable;
 
 class TelescopeConfig
 {
-    public function __construct(private ConfigInterface $config)
+    public function __construct(private ConfigInterface $config, private ?LoggerInterface $logger)
     {
     }
 
@@ -57,7 +60,7 @@ class TelescopeConfig
     }
 
     /**
-     * @deprecated since v3.1, will be removed in v3.2
+     * @deprecated since v3.1, will remove in v3.2
      */
     public function getServerHost(): string
     {
@@ -65,7 +68,7 @@ class TelescopeConfig
     }
 
     /**
-     * @deprecated since v3.1, will be removed in v3.2
+     * @deprecated since v3.1, will remove in v3.2
      */
     public function getServerPort(): int
     {
@@ -210,6 +213,9 @@ class TelescopeConfig
         try {
             Context::set($key, true);
             return ((bool) $this->getCache()?->get($key)) === false;
+        } catch (Throwable $exception) {
+            $this->logger?->error((string) $exception);
+            return false;
         } finally {
             Context::destroy($key);
         }
@@ -220,11 +226,12 @@ class TelescopeConfig
         return sprintf('telescope:%s:recording:pause', $this->getAppName());
     }
 
-    private function getCache(): ?PsrCacheInterface
+    private function getCache(): PsrCacheInterface|Redis|null
     {
         $container = ApplicationContext::getContainer();
 
         return match (true) {
+            $container->has(Redis::class) => $container->get(Redis::class),
             $container->has(CacheInterface::class) => $container->get(CacheInterface::class),
             $container->has(PsrCacheInterface::class) => $container->get(PsrCacheInterface::class),
             default => null,
