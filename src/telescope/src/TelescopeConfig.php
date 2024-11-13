@@ -25,6 +25,8 @@ use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
 use Throwable;
 
+use function Hyperf\Coroutine\wait;
+
 class TelescopeConfig
 {
     public function __construct(private ConfigInterface $config, private ?LoggerInterface $logger)
@@ -196,12 +198,12 @@ class TelescopeConfig
 
     public function pauseRecording(): void
     {
-        $this->getCache()?->set($this->getPauseRecordingCacheKey(), 1);
+        wait(fn () => $this->getCache()?->set($this->getPauseRecordingCacheKey(), 1));
     }
 
     public function continueRecording(): void
     {
-        $this->getCache()?->delete($this->getPauseRecordingCacheKey());
+        wait(fn () => $this->getCache()?->delete($this->getPauseRecordingCacheKey()));
     }
 
     public function isRecording(): bool
@@ -212,7 +214,7 @@ class TelescopeConfig
 
         try {
             Context::set($key, true);
-            return ((bool) $this->getCache()?->get($key)) === false;
+            return (bool) wait(fn () => $this->getCache()?->get($key) === false);
         } catch (Throwable $exception) {
             $this->logger?->error((string) $exception);
             return false;
@@ -231,7 +233,6 @@ class TelescopeConfig
         $container = ApplicationContext::getContainer();
 
         return match (true) {
-            $container->has(Redis::class) => $container->get(Redis::class),
             $container->has(CacheInterface::class) => $container->get(CacheInterface::class),
             $container->has(PsrCacheInterface::class) => $container->get(PsrCacheInterface::class),
             default => null,
