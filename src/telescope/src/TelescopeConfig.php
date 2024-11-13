@@ -29,7 +29,7 @@ use function Hyperf\Coroutine\wait;
 
 class TelescopeConfig
 {
-    public function __construct(private ConfigInterface $config, private ?LoggerInterface $logger)
+    public function __construct(private ConfigInterface $config, private ?LoggerInterface $logger = null)
     {
     }
 
