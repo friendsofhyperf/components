@@ -16,7 +16,6 @@ use FriendsOfHyperf\Telescope\Server\Server;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Redis\Redis;
 use Hyperf\Server\Event;
 use Hyperf\Server\ServerInterface;
 use Hyperf\Stringable\Str;
@@ -228,7 +227,7 @@ class TelescopeConfig
         return sprintf('telescope:%s:recording:pause', $this->getAppName());
     }
 
-    private function getCache(): PsrCacheInterface|Redis|null
+    private function getCache(): ?PsrCacheInterface
     {
         $container = ApplicationContext::getContainer();
 
