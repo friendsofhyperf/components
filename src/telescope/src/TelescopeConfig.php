@@ -207,19 +207,14 @@ class TelescopeConfig
 
     public function isRecording(): bool
     {
-        if (Context::has($key = $this->getPauseRecordingCacheKey())) {
-            return false;
-        }
-
-        try {
-            Context::set($key, true);
-            return (bool) wait(fn () => ! $this->getCache()?->get($key));
-        } catch (Throwable $exception) {
-            $this->logger?->error((string) $exception);
-            return false;
-        } finally {
-            Context::destroy($key);
-        }
+        return Context::getOrSet($key = $this->getPauseRecordingCacheKey(), function () use ($key) {
+            try {
+                return (bool) wait(fn () => ! $this->getCache()?->get($key));
+            } catch (Throwable $exception) {
+                $this->logger?->error((string) $exception);
+                return false;
+            }
+        });
     }
 
     private function getPauseRecordingCacheKey(): string
