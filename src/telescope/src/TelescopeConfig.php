@@ -213,7 +213,7 @@ class TelescopeConfig
 
         try {
             Context::set($key, true);
-            return (bool) wait(fn () => $this->getCache()?->get($key) === false);
+            return (bool) wait(fn () => ! $this->getCache()?->get($key));
         } catch (Throwable $exception) {
             $this->logger?->error((string) $exception);
             return false;
