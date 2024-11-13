@@ -11,11 +11,13 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope;
 
+use Closure;
 use FriendsOfHyperf\Telescope\Contract\CacheInterface;
 use FriendsOfHyperf\Telescope\Server\Server;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Server\Event;
 use Hyperf\Server\ServerInterface;
 use Hyperf\Stringable\Str;
@@ -197,24 +199,38 @@ class TelescopeConfig
 
     public function pauseRecording(): void
     {
-        wait(fn () => $this->getCache()?->set($this->getPauseRecordingCacheKey(), 1));
+        $this->wait(fn () => $this->getCache()?->set($this->getPauseRecordingCacheKey(), 1));
     }
 
     public function continueRecording(): void
     {
-        wait(fn () => $this->getCache()?->delete($this->getPauseRecordingCacheKey()));
+        $this->wait(fn () => $this->getCache()?->delete($this->getPauseRecordingCacheKey()));
     }
 
     public function isRecording(): bool
     {
         return Context::getOrSet($key = $this->getPauseRecordingCacheKey(), function () use ($key) {
             try {
-                return (bool) wait(fn () => ! $this->getCache()?->get($key));
+                return (bool) $this->wait(fn () => ! $this->getCache()?->get($key));
             } catch (Throwable $exception) {
                 $this->logger?->error((string) $exception);
                 return false;
             }
         });
+    }
+
+    /**
+     * @template TReturn
+     * @param Closure():TReturn $callable
+     * @return TReturn
+     */
+    private function wait(Closure $callable, ?float $timeout = null): mixed
+    {
+        if (! Coroutine::inCoroutine()) {
+            return $callable();
+        }
+
+        return wait($callable, $timeout);
     }
 
     private function getPauseRecordingCacheKey(): string
