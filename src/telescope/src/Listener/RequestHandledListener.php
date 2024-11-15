@@ -229,6 +229,6 @@ class RequestHandledListener implements ListenerInterface
             return TelescopeContext::getGrpcRequestPayload() ?: '';
         }
         $data = is_array($psr7Request->getParsedBody()) ? $psr7Request->getParsedBody() : [];
-        return $data + $psr7Request->getQueryParams();
+        return $psr7Request->getQueryParams() + $data;
     }
 }
