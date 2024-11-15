@@ -199,14 +199,12 @@ class TelescopeMiddleware implements MiddlewareInterface
 
     protected function getRequestPayload(ServerRequestInterface $psr7Request): array|string
     {
-        var_dump(1111111);
         $handler = $this->parseHandler($psr7Request);
 
         if ($handler && is_a($handler, \Hyperf\GrpcServer\Server::class, true)) {
             return TelescopeContext::getGrpcRequestPayload() ?: '';
         }
         $data = is_array($psr7Request->getParsedBody()) ? $psr7Request->getParsedBody() : [];
-        var_dump($data, $psr7Request->getQueryParams());
         return $psr7Request->getQueryParams() + $data;
     }
 }
