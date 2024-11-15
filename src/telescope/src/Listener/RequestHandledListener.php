@@ -228,6 +228,7 @@ class RequestHandledListener implements ListenerInterface
         if ($handler && is_a($handler, \Hyperf\GrpcServer\Server::class, true)) {
             return TelescopeContext::getGrpcRequestPayload() ?: '';
         }
-        return $psr7Request->getParsedBody();
+        $data = is_array($psr7Request->getParsedBody()) ? $psr7Request->getParsedBody() : [];
+        return $data + $psr7Request->getQueryParams();
     }
 }
