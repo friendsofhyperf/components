@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Model;
 
-use Hyperf\DbConnection\Model\Model;
-
 class TelescopeEntryTagModel extends Model
 {
     public const CREATED_AT = null;
