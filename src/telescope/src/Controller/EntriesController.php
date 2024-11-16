@@ -29,7 +29,7 @@ class EntriesController
         $application = ApplicationContext::getContainer()->get(ApplicationInterface::class);
         $application->setAutoExit(false);
         $application->run(
-            new ArrayInput(['command' => 'telescope:clear'])
+            new ArrayInput(['command' => 'telescope:clear', '--disable-event-dispatcher' => true])
         );
     }
 }
