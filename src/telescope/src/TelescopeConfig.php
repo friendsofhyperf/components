@@ -211,8 +211,10 @@ class TelescopeConfig
     {
         return Context::getOrSet($key = $this->getPauseRecordingCacheKey(), function () use ($key) {
             try {
-                Context::set($key, false); // Disable recording in current coroutine
-                return (bool) $this->wait(fn () => ! $this->getCache()?->get($key));
+                return (bool) $this->wait(function () use ($key) {
+                    Context::set($key, false); // Disable recording in current coroutine
+                    return ! $this->getCache()?->get($key);
+                });
             } catch (Throwable $exception) {
                 $this->logger?->error((string) $exception);
                 return false;
