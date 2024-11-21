@@ -11,20 +11,26 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope;
 
+use Closure;
 use FriendsOfHyperf\Telescope\Contract\CacheInterface;
 use FriendsOfHyperf\Telescope\Server\Server;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Server\Event;
 use Hyperf\Server\ServerInterface;
 use Hyperf\Stringable\Str;
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Log\LoggerInterface;
 use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
+use Throwable;
+
+use function Hyperf\Coroutine\wait;
 
 class TelescopeConfig
 {
-    public function __construct(private ConfigInterface $config)
+    public function __construct(private ConfigInterface $config, private ?LoggerInterface $logger = null)
     {
     }
 
@@ -193,26 +199,41 @@ class TelescopeConfig
 
     public function pauseRecording(): void
     {
-        $this->getCache()?->set($this->getPauseRecordingCacheKey(), 1);
+        $this->wait(fn () => $this->getCache()?->set($this->getPauseRecordingCacheKey(), 1));
     }
 
     public function continueRecording(): void
     {
-        $this->getCache()?->delete($this->getPauseRecordingCacheKey());
+        $this->wait(fn () => $this->getCache()?->delete($this->getPauseRecordingCacheKey()));
     }
 
     public function isRecording(): bool
     {
-        if (Context::has($key = $this->getPauseRecordingCacheKey())) {
-            return false;
+        return Context::getOrSet($key = $this->getPauseRecordingCacheKey(), function () use ($key) {
+            try {
+                return (bool) $this->wait(function () use ($key) {
+                    Context::set($key, false); // Disable recording in current coroutine
+                    return ! $this->getCache()?->get($key);
+                });
+            } catch (Throwable $exception) {
+                $this->logger?->error((string) $exception);
+                return false;
+            }
+        });
+    }
+
+    /**
+     * @template TReturn
+     * @param Closure():TReturn $callable
+     * @return TReturn
+     */
+    private function wait(Closure $callable, ?float $timeout = null): mixed
+    {
+        if (! Coroutine::inCoroutine()) {
+            return $callable();
         }
 
-        try {
-            Context::set($key, true);
-            return ((bool) $this->getCache()?->get($key)) === false;
-        } finally {
-            Context::destroy($key);
-        }
+        return wait($callable, $timeout);
     }
 
     private function getPauseRecordingCacheKey(): string
