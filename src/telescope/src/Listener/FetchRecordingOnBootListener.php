@@ -45,6 +45,9 @@ class FetchRecordingOnBootListener implements ListenerInterface
         ];
     }
 
+    /**
+     * @param MainWorkerStart|MainCoroutineServerStart $event
+     */
     public function process(object $event): void
     {
         $callback = match (true) {
