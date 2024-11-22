@@ -17,7 +17,6 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ContainerInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\Timer;
-use Hyperf\Coroutine\Coroutine;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Hyperf\Framework\Event\MainWorkerStart;
@@ -54,9 +53,7 @@ class FetchRecordingOnBootListener implements ListenerInterface
     public function process(object $event): void
     {
         if ($event instanceof BootApplication) {
-            Coroutine::create(function () {
-                $this->config->set('telescope.recording', (bool) $this->telescopeConfig->fetchRecording());
-            });
+            $this->config->set('telescope.recording', (bool) $this->telescopeConfig->fetchRecording());
             return;
         }
 
