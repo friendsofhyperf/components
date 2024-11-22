@@ -53,8 +53,7 @@ class FetchRecordingOnBootListener implements ListenerInterface
 
         $timer->tick(1000, function () use ($callback) {
             $recording = (bool) $this->telescopeConfig->fetchRecording();
-            $pipeMessage = new PipeMessage($recording);
-            $callback($pipeMessage);
+            $callback(new PipeMessage($recording));
         });
     }
 
