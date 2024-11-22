@@ -17,7 +17,6 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ContainerInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\Timer;
-use Hyperf\Coroutine\Coroutine;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Hyperf\Framework\Event\MainWorkerStart;
@@ -54,9 +53,7 @@ class FetchRecordingOnBootListener implements ListenerInterface
     public function process(object $event): void
     {
         if ($event instanceof BootApplication) {
-            Coroutine::create(function () {
-                $this->config->set('telescope.recording', (bool) $this->telescopeConfig->fetchRecording());
-            });
+            $this->config->set('telescope.recording', (bool) $this->telescopeConfig->fetchRecording());
             return;
         }
 
@@ -78,6 +75,9 @@ class FetchRecordingOnBootListener implements ListenerInterface
         $workerCount = $swooleServer->setting['worker_num'] - 1;
 
         for ($workerId = 0; $workerId <= $workerCount; ++$workerId) {
+            if ($workerId === $swooleServer->worker_id) {
+                continue;
+            }
             $swooleServer->sendMessage($message, $workerId);
             $this->logger->debug(sprintf('[Telescope] Let Worker.%s try to update telescope.recording as %s.', $workerId, $message->recording ? 'true' : 'false'));
         }
