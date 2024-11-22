@@ -17,7 +17,9 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ContainerInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\Timer;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Event\Contract\ListenerInterface;
+use Hyperf\Framework\Event\BootApplication;
 use Hyperf\Framework\Event\MainWorkerStart;
 use Hyperf\Process\ProcessCollector;
 use Hyperf\Server\Event\MainCoroutineServerStart;
@@ -40,16 +42,24 @@ class FetchRecordingOnBootListener implements ListenerInterface
     public function listen(): array
     {
         return [
+            BootApplication::class,
             MainWorkerStart::class,
             MainCoroutineServerStart::class,
         ];
     }
 
     /**
-     * @param MainWorkerStart|MainCoroutineServerStart $event
+     * @param BootApplication|MainWorkerStart|MainCoroutineServerStart|object $event
      */
     public function process(object $event): void
     {
+        if ($event instanceof BootApplication) {
+            Coroutine::create(function () {
+                $this->config->set('telescope.recording', (bool) $this->telescopeConfig->fetchRecording());
+            });
+            return;
+        }
+
         $callback = match (true) {
             $event instanceof MainWorkerStart => fn ($pipeMessage) => $this->shareMessageToWorkers($pipeMessage),
             $event instanceof MainCoroutineServerStart => fn ($pipeMessage) => $this->config->set('telescope.recording', (bool) $pipeMessage->recording),
