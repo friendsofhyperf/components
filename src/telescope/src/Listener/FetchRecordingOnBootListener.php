@@ -11,16 +11,13 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Listener;
 
-use Faker\Container\ContainerInterface;
 use FriendsOfHyperf\Telescope\PipeMessage;
-use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\Timer;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\MainWorkerStart;
 use Hyperf\Process\ProcessCollector;
-use Hyperf\Redis\Redis;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 use Swoole\Process;
 use Swoole\Server as SwooleServer;
@@ -28,10 +25,7 @@ use Swoole\Server as SwooleServer;
 class FetchRecordingOnBootListener implements ListenerInterface
 {
     public function __construct(
-        protected ContainerInterface $container,
         protected ConfigInterface $config,
-        protected Redis $redis,
-        protected TelescopeConfig $telescopeConfig,
         protected StdoutLoggerInterface $logger
     ) {
     }
@@ -62,10 +56,6 @@ class FetchRecordingOnBootListener implements ListenerInterface
 
     private function shareMessageToWorkers(PipeMessage $message): void
     {
-        if (! $this->container->has(SwooleServer::class)) {
-            return;
-        }
-
         $swooleServer = $this->container->get(SwooleServer::class);
         $workerCount = $swooleServer->setting['worker_num'] - 1;
 
