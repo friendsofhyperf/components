@@ -8,13 +8,13 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use FriendsOfHyperf\Telescope\Contract\CacheInterface;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Config\Config;
+use Hyperf\Redis\Redis;
 
 beforeEach(function () {
-    $cache = $this->mock(CacheInterface::class, function ($mock) {
+    $redis = $this->mock(Redis::class, function ($mock) {
         $mock->shouldReceive('get')->andReturn(0);
     });
 
@@ -56,7 +56,7 @@ beforeEach(function () {
             ],
         ],
     ]);
-    $this->telescopeConfig = new TelescopeConfig($config);
+    $this->telescopeConfig = new TelescopeConfig($config, $redis);
 });
 
 test('test isEnable', function ($key, $expected) {
