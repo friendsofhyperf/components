@@ -12,7 +12,9 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Listener;
 
 use FriendsOfHyperf\Telescope\PipeMessage;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\ContainerInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\Timer;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -25,7 +27,9 @@ use Swoole\Server as SwooleServer;
 class FetchRecordingOnBootListener implements ListenerInterface
 {
     public function __construct(
+        protected ContainerInterface $container,
         protected ConfigInterface $config,
+        protected TelescopeConfig $telescopeConfig,
         protected StdoutLoggerInterface $logger
     ) {
     }
