@@ -190,16 +190,10 @@ class TelescopeConfig
         return $this->get('ignore_commands', []);
     }
 
-    public function pauseRecording(): void
+    public function setRecording(bool $recording = true): void
     {
-        $this->redis->set($this->getRecordingKey(), 1);
-        $this->config->set('telescope.recording', false);
-    }
-
-    public function continueRecording(): void
-    {
-        $this->redis->del($this->getRecordingKey());
-        $this->config->set('telescope.recording', true);
+        $this->redis->set($this->getRecordingKey(), (int) $recording);
+        $this->config->set('telescope.recording', $recording);
     }
 
     public function fetchRecording(): bool
