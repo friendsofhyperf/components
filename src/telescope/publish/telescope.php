@@ -29,6 +29,7 @@ return [
         'cache' => env('TELESCOPE_ENABLE_CACHE', false),
         'rpc' => env('TELESCOPE_ENABLE_RPC', false),
     ],
+    'recording' => true,
     'timezone' => env('TELESCOPE_TIMEZONE', 'Asia/Shanghai'),
     'database' => [
         'connection' => env('TELESCOPE_DB_CONNECTION', 'default'),

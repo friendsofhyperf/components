@@ -49,6 +49,7 @@ class ConfigProvider
                 Listener\CommandListener::class,
                 Listener\DbQueryListener::class,
                 Listener\ExceptionHandlerListener::class,
+                Listener\FetchRecordingOnBootListener::class,
                 Listener\SetupTelescopeServerListener::class,
             ],
             'publish' => [

@@ -28,6 +28,6 @@ class RecordingController
     #[PostMapping(path: '/telescope/telescope-api/toggle-recording')]
     public function toggle(): void
     {
-        $this->telescopeConfig->isRecording() ? $this->telescopeConfig->pauseRecording() : $this->telescopeConfig->continueRecording();
+        $this->telescopeConfig->setRecording(! $this->telescopeConfig->isRecording());
     }
 }
