@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Telescope\Listener;
 
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 
@@ -41,5 +42,9 @@ class SetupTelescopeServerListener implements ListenerInterface
         $servers[] = $this->telescopeConfig->getServerOptions();
 
         $this->config->set('server.servers', $servers);
+
+        Coroutine::create(function () {
+            $this->config->set('telescope.recording', (bool) $this->telescopeConfig->fetchRecording());
+        });
     }
 }
