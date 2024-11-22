@@ -11,27 +11,20 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope;
 
-use Closure;
-use FriendsOfHyperf\Telescope\Contract\CacheInterface;
 use FriendsOfHyperf\Telescope\Server\Server;
-use Hyperf\Context\ApplicationContext;
-use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Coroutine\Coroutine;
+use Hyperf\Redis\Redis;
 use Hyperf\Server\Event;
 use Hyperf\Server\ServerInterface;
 use Hyperf\Stringable\Str;
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Log\LoggerInterface;
-use Psr\SimpleCache\CacheInterface as PsrCacheInterface;
-use Throwable;
-
-use function Hyperf\Coroutine\wait;
 
 class TelescopeConfig
 {
-    public function __construct(private ConfigInterface $config, private ?LoggerInterface $logger = null)
-    {
+    public function __construct(
+        private ConfigInterface $config,
+        private Redis $redis
+    ) {
     }
 
     public function get(string $key, $default = null): mixed
@@ -199,56 +192,23 @@ class TelescopeConfig
 
     public function pauseRecording(): void
     {
-        $this->wait(fn () => $this->getCache()?->set($this->getPauseRecordingCacheKey(), 1));
+        $this->redis->set($this->getRecordingCacheKey(), 1);
+        $this->config->set('telescope.recording', false);
     }
 
     public function continueRecording(): void
     {
-        $this->wait(fn () => $this->getCache()?->delete($this->getPauseRecordingCacheKey()));
+        $this->redis->del($this->getRecordingCacheKey());
+        $this->config->set('telescope.recording', true);
     }
 
     public function isRecording(): bool
     {
-        return Context::getOrSet($key = $this->getPauseRecordingCacheKey(), function () use ($key) {
-            try {
-                return (bool) $this->wait(function () use ($key) {
-                    Context::set($key, false); // Disable recording in current coroutine
-                    return ! $this->getCache()?->get($key);
-                });
-            } catch (Throwable $exception) {
-                $this->logger?->error((string) $exception);
-                return false;
-            }
-        });
+        return (bool) $this->config->get('telescope.recording', true);
     }
 
-    /**
-     * @template TReturn
-     * @param Closure():TReturn $callable
-     * @return TReturn
-     */
-    private function wait(Closure $callable, ?float $timeout = null): mixed
+    public function getRecordingCacheKey(): string
     {
-        if (! Coroutine::inCoroutine()) {
-            return $callable();
-        }
-
-        return wait($callable, $timeout);
-    }
-
-    private function getPauseRecordingCacheKey(): string
-    {
-        return sprintf('telescope:%s:recording:pause', $this->getAppName());
-    }
-
-    private function getCache(): ?PsrCacheInterface
-    {
-        $container = ApplicationContext::getContainer();
-
-        return match (true) {
-            $container->has(CacheInterface::class) => $container->get(CacheInterface::class),
-            $container->has(PsrCacheInterface::class) => $container->get(PsrCacheInterface::class),
-            default => null,
-        };
+        return sprintf('telescope:%s:recording', $this->getAppName());
     }
 }
