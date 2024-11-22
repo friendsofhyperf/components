@@ -15,7 +15,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use Hyperf\Coroutine\Coroutine;
-use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\GrpcClient\BaseClient;
@@ -38,7 +37,7 @@ class GrpcAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (!$this->switcher->isTracingSpanEnable('grpc')) {
+        if (! $this->switcher->isTracingSpanEnable('grpc')) {
             return $proceedingJoinPoint->process();
         }
 
@@ -63,7 +62,7 @@ class GrpcAspect extends AbstractAspect
         try {
             $result = $proceedingJoinPoint->process();
 
-            if (!$span) {
+            if (! $span) {
                 return $result;
             }
             [$message, $code, $response] = $result;
@@ -86,7 +85,7 @@ class GrpcAspect extends AbstractAspect
                 'exception.code' => $exception->getCode(),
             ]);
             if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
-                $data['exception.stack_trace'] = (string)$exception;
+                $data['exception.stack_trace'] = (string) $exception;
             }
 
             throw $exception;
