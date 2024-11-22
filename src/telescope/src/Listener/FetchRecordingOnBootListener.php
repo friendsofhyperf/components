@@ -75,6 +75,9 @@ class FetchRecordingOnBootListener implements ListenerInterface
         $workerCount = $swooleServer->setting['worker_num'] - 1;
 
         for ($workerId = 0; $workerId <= $workerCount; ++$workerId) {
+            if ($workerId === $swooleServer->worker_id) {
+                continue;
+            }
             $swooleServer->sendMessage($message, $workerId);
             $this->logger->debug(sprintf('[Telescope] Let Worker.%s try to update telescope.recording as %s.', $workerId, $message->recording ? 'true' : 'false'));
         }
