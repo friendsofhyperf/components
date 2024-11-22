@@ -68,11 +68,6 @@ class FetchRecordingOnBootListener implements ListenerInterface
         }
 
         $swooleServer = $this->container->get(SwooleServer::class);
-
-        if (! $swooleServer instanceof SwooleServer) {
-            return;
-        }
-
         $workerCount = $swooleServer->setting['worker_num'] - 1;
 
         for ($workerId = 0; $workerId <= $workerCount; ++$workerId) {
