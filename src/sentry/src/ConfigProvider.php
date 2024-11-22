@@ -33,6 +33,7 @@ class ConfigProvider
                 Tracing\Aspect\CoroutineAspect::class,
                 Tracing\Aspect\DbAspect::class,
                 Tracing\Aspect\ElasticsearchAspect::class,
+                Tracing\Aspect\GrpcAspect::class,
                 Tracing\Aspect\GuzzleHttpClientAspect::class,
                 Tracing\Aspect\KafkaProducerAspect::class,
                 Tracing\Aspect\RpcAspect::class,
