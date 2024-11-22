@@ -68,11 +68,11 @@ class FetchRecordingOnBootListener implements ListenerInterface
             $this->logger->debug(sprintf('[Telescope] Let Worker.%s try to update telescope.recording as %s.', $workerId, $message->recording ? 'true' : 'false'));
         }
 
+        /** @var Process[] $processes */
         $processes = ProcessCollector::all();
 
         if ($processes) {
             $string = serialize($message);
-            /** @var Process $process */
             foreach ($processes as $process) {
                 $result = $process->exportSocket()->send($string, 10);
                 if ($result === false) {
