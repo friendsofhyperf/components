@@ -192,14 +192,19 @@ class TelescopeConfig
 
     public function pauseRecording(): void
     {
-        $this->redis->set($this->getRecordingCacheKey(), 1);
+        $this->redis->set($this->getRecordingKey(), 1);
         $this->config->set('telescope.recording', false);
     }
 
     public function continueRecording(): void
     {
-        $this->redis->del($this->getRecordingCacheKey());
+        $this->redis->del($this->getRecordingKey());
         $this->config->set('telescope.recording', true);
+    }
+
+    public function fetchRecording(): bool
+    {
+        return (bool) $this->redis->get($this->getRecordingKey());
     }
 
     public function isRecording(): bool
@@ -207,7 +212,7 @@ class TelescopeConfig
         return (bool) $this->config->get('telescope.recording', true);
     }
 
-    public function getRecordingCacheKey(): string
+    private function getRecordingKey(): string
     {
         return sprintf('telescope:%s:recording', $this->getAppName());
     }
