@@ -26,12 +26,15 @@ use Swoole\Server as SwooleServer;
 
 class FetchRecordingOnBootListener implements ListenerInterface
 {
+    private Timer $timer;
+
     public function __construct(
         protected ContainerInterface $container,
         protected ConfigInterface $config,
         protected TelescopeConfig $telescopeConfig,
         protected StdoutLoggerInterface $logger
     ) {
+        $this->timer = new Timer($logger);
     }
 
     public function listen(): array
@@ -49,9 +52,8 @@ class FetchRecordingOnBootListener implements ListenerInterface
             $event instanceof MainCoroutineServerStart => fn ($pipeMessage) => $this->config->set('telescope.recording', (bool) $pipeMessage->recording),
             default => fn () => null,
         };
-        $timer = new Timer($this->logger);
 
-        $timer->tick(1000, function () use ($callback) {
+        $this->timer->tick(1000, function () use ($callback) {
             $recording = (bool) $this->telescopeConfig->fetchRecording();
             $callback(new PipeMessage($recording));
         });
