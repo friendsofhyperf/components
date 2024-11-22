@@ -102,6 +102,7 @@ return [
             'elasticsearch' => env('SENTRY_TRACING_SPANS_ELASTICSEARCH', true),
             'guzzle' => env('SENTRY_TRACING_SPANS_GUZZLE', true),
             'rpc' => env('SENTRY_TRACING_SPANS_RPC', true),
+            'grpc' => env('SENTRY_TRACING_SPANS_GRPC', true),
             'redis' => env('SENTRY_TRACING_SPANS_REDIS', true),
             'sql_queries' => env('SENTRY_TRACING_SPANS_SQL_QUERIES', true),
         ],
