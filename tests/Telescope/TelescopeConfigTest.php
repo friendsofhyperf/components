@@ -15,7 +15,7 @@ use Hyperf\Redis\Redis;
 
 beforeEach(function () {
     $redis = $this->mock(Redis::class, function ($mock) {
-        $mock->shouldReceive('get')->andReturn(0);
+        $mock->shouldReceive('get')->andReturn(1);
     });
 
     $config = new Config([
@@ -34,6 +34,7 @@ beforeEach(function () {
                 'cache' => true,
                 'rpc' => true,
             ],
+            'recording' => true,
             'timezone' => 'Asia/Shanghai',
             'database' => [
                 'connection' => 'default',
