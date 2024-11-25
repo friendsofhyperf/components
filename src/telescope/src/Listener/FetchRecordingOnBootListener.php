@@ -21,6 +21,8 @@ use Hyperf\Coordinator\Timer;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Hyperf\Framework\Event\MainWorkerStart;
+use Hyperf\Process\Event\BeforeCoroutineHandle;
+use Hyperf\Process\Event\BeforeProcessHandle;
 use Hyperf\Process\ProcessCollector;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 use Swoole\Process;
@@ -43,7 +45,11 @@ class FetchRecordingOnBootListener implements ListenerInterface
     {
         return [
             BeforeHandle::class,
+            // Process Style
+            BeforeProcessHandle::class,
             MainWorkerStart::class,
+            // Coroutine Style
+            BeforeCoroutineHandle::class,
             MainCoroutineServerStart::class,
         ];
     }
@@ -53,14 +59,13 @@ class FetchRecordingOnBootListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if ($event instanceof BeforeHandle) {
-            $this->config->set('telescope.recording', (bool) $this->telescopeConfig->fetchRecording());
-            return;
-        }
+        $this->config->set('telescope.recording', (bool) $this->telescopeConfig->fetchRecording());
 
         $callback = match (true) {
-            $event instanceof MainWorkerStart => fn ($pipeMessage) => $this->shareMessageToWorkers($pipeMessage),
-            $event instanceof MainCoroutineServerStart => fn ($pipeMessage) => $this->config->set('telescope.recording', (bool) $pipeMessage->recording),
+            $event instanceof MainWorkerStart,
+            $event instanceof BeforeProcessHandle => fn ($pipeMessage) => $this->shareMessageToWorkers($pipeMessage),
+            $event instanceof MainCoroutineServerStart,
+            $event instanceof BeforeCoroutineHandle => fn ($pipeMessage) => $this->config->set('telescope.recording', (bool) $pipeMessage->recording),
             default => fn () => null,
         };
 
