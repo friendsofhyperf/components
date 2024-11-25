@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Telescope\Listener;
 
 use FriendsOfHyperf\Telescope\PipeMessage;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
+use Hyperf\Command\Event\BeforeHandle;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ContainerInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -41,7 +42,7 @@ class FetchRecordingOnBootListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            BootApplication::class,
+            BeforeHandle::class,
             MainWorkerStart::class,
             MainCoroutineServerStart::class,
         ];
@@ -52,7 +53,7 @@ class FetchRecordingOnBootListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if ($event instanceof BootApplication) {
+        if ($event instanceof BeforeHandle) {
             $this->config->set('telescope.recording', (bool) $this->telescopeConfig->fetchRecording());
             return;
         }
