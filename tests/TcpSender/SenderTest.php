@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tests\TcpSender;
 
+use FriendsOfHyperf\IpcBroadcaster\Contract\BroadcasterInterface;
 use FriendsOfHyperf\TcpSender\Exception\InvalidMethodException;
 use FriendsOfHyperf\TcpSender\Sender;
 use Hyperf\Contract\ConfigInterface;
@@ -23,12 +24,14 @@ beforeEach(function () {
     $this->config = $this->createMock(ConfigInterface::class);
     $this->container = $this->createMock(ContainerInterface::class);
     $this->server = $this->createMock(Server::class);
+    $this->broadcaster = $this->createMock(BroadcasterInterface::class);
 
     $this->container->method('get')->willReturn($this->server);
 
     $this->sender = new Sender(
         $this->container,
         $this->config,
+        $this->broadcaster,
         $this->logger,
     );
 });
@@ -36,11 +39,6 @@ beforeEach(function () {
 test('test SetAndGetWorkerId', function () {
     $this->sender->setWorkerId(1);
     $this->assertEquals(1, $this->sender->getWorkerId());
-});
-
-test('test IsCoroutineServer', function () {
-    $this->config->method('get')->willReturn('Hyperf\Server\CoroutineServer');
-    $this->assertTrue($this->sender->isCoroutineServer());
 });
 
 test('test CheckWithTcpSocket', function () {
