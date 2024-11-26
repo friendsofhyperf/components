@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\IpcBroadcaster\Listener;
 
 use FriendsOfHyperf\IpcBroadcaster\ServerType;
 use Hyperf\Event\Contract\ListenerInterface;
-use Hyperf\Process\Event\BeforeCoroutineHandle;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 
 class SetServerTypeOnBootListener implements ListenerInterface
@@ -21,7 +20,6 @@ class SetServerTypeOnBootListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            BeforeCoroutineHandle::class,
             MainCoroutineServerStart::class,
         ];
     }
