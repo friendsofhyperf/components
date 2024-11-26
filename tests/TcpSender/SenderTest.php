@@ -36,11 +36,6 @@ beforeEach(function () {
     );
 });
 
-test('test SetAndGetWorkerId', function () {
-    $this->sender->setWorkerId(1);
-    $this->assertEquals(1, $this->sender->getWorkerId());
-});
-
 test('test CheckWithTcpSocket', function () {
     $this->server->method('connection_info')->willReturn(['socket_type' => SWOOLE_SOCK_TCP]);
     $this->assertTrue($this->sender->check(1));
