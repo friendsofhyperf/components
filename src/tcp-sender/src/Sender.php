@@ -11,11 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\TcpSender;
 
+use FriendsOfHyperf\IpcBroadcaster\Contract\BroadcasterInterface;
 use FriendsOfHyperf\TcpSender\Exception\InvalidMethodException;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\ContainerInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
-use Hyperf\Server\CoroutineServer;
+use Hyperf\Engine\Constant;
 use Swoole\Http\Response;
 use Swoole\Server;
 use Swow\Psr7\Server\ServerConnection;
@@ -38,6 +39,7 @@ class Sender
     public function __construct(
         protected ContainerInterface $container,
         protected ConfigInterface $config,
+        protected BroadcasterInterface $broadcaster,
         protected StdoutLoggerInterface $logger,
     ) {
     }
@@ -66,7 +68,7 @@ class Sender
         }
 
         if (! $this->proxy($method, $fd, $arguments)) {
-            $this->sendPipeMessage($name, $arguments);
+            $this->broadcaster->broadcast(new PipeMessage($name, $arguments));
         }
 
         return true;
@@ -80,11 +82,6 @@ class Sender
     public function getWorkerId(): int
     {
         return $this->workerId;
-    }
-
-    public function isCoroutineServer(): bool
-    {
-        return $this->config->get('server.type') === CoroutineServer::class;
     }
 
     public function check(int $fd): bool
@@ -143,20 +140,13 @@ class Sender
         return $this->responses[$fd] ?? null;
     }
 
+    protected function isCoroutineServer(): bool
+    {
+        return Constant::isCoroutineServer($this->getServer());
+    }
+
     protected function getServer(): Server
     {
         return $this->container->get(Server::class);
-    }
-
-    protected function sendPipeMessage(string $name, array $arguments): void
-    {
-        $server = $this->getServer();
-        $workerCount = $server->setting['worker_num'] - 1;
-        for ($workerId = 0; $workerId <= $workerCount; ++$workerId) {
-            if ($workerId !== $this->workerId) {
-                $server->sendMessage(new SenderPipeMessage($name, $arguments), $workerId);
-                $this->logger->debug("[Socket] Let Worker.{$workerId} try to {$name}.");
-            }
-        }
     }
 }

@@ -17,8 +17,7 @@ class ConfigProvider
     {
         return [
             'listeners' => [
-                Listener\InitSenderListener::class,
-                Listener\OnPipeMessageListener::class,
+                Listener\SetWorkerIdAfterWorderStartListener::class,
             ],
         ];
     }

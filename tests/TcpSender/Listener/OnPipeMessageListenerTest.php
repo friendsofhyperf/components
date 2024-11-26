@@ -13,8 +13,8 @@ namespace FriendsOfHyperf\Tests\TcpSender\Listener;
 
 use Exception;
 use FriendsOfHyperf\TcpSender\Listener\OnPipeMessageListener;
+use FriendsOfHyperf\TcpSender\PipeMessage;
 use FriendsOfHyperf\TcpSender\Sender;
-use FriendsOfHyperf\TcpSender\SenderPipeMessage;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\ExceptionHandler\Formatter\FormatterInterface;
 use Hyperf\Framework\Event\OnPipeMessage;
@@ -56,7 +56,7 @@ class OnPipeMessageListenerTest extends TestCase
 
     public function testProcessHandlesSenderPipeMessage(): void
     {
-        $message = new SenderPipeMessage('method', [1, 'message']);
+        $message = new PipeMessage('method', [1, 'message']);
         $event = new OnPipeMessage($this->server, 1, $message);
 
         $this->sender->expects($this->once())->method('getFdAndMethodFromProxyMethod')->with('method', [1, 'message']);
@@ -66,7 +66,7 @@ class OnPipeMessageListenerTest extends TestCase
 
     public function testProcessHandlesException(): void
     {
-        $message = new SenderPipeMessage('method', [1, 'message']);
+        $message = new PipeMessage('method', [1, 'message']);
         $event = new OnPipeMessage($this->server, 1, $message);
 
         $this->sender->method('getFdAndMethodFromProxyMethod')
