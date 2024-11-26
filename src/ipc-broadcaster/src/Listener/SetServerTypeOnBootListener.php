@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\IpcBroadcaster\Listener;
 
-use FriendsOfHyperf\IpcBroadcaster\ServerType;
+use FriendsOfHyperf\IpcBroadcaster\Constant;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 
@@ -26,6 +26,6 @@ class SetServerTypeOnBootListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        ServerType::setCoroutineServer(true);
+        Constant::setCoroutineServer(true);
     }
 }

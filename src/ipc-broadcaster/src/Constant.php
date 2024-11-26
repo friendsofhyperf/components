@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\IpcBroadcaster;
 
-final class ServerType
+final class Constant
 {
     public static bool $isCoroutineServer = false;
 
