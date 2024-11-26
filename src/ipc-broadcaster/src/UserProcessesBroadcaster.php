@@ -23,6 +23,11 @@ class UserProcessesBroadcaster implements BroadcasterInterface
 
     public function broadcast(IpcMessageInterface $message): void
     {
+        if (ServerType::isCoroutineServer()) {
+            $message->handle();
+            return;
+        }
+
         if ($this->id !== null) {
             $processes = ProcessCollector::get($this->name);
             $processes[$this->id]->write(serialize($message));

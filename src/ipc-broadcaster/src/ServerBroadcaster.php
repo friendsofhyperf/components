@@ -34,6 +34,11 @@ class ServerBroadcaster implements BroadcasterInterface
 
     public function broadcast(IpcMessageInterface $message): void
     {
+        if (ServerType::isCoroutineServer()) {
+            $message->handle();
+            return;
+        }
+
         // Lazy load to avoid causing issue before sever starts.
         if ($this->server === null) {
             $this->server = $this->container->get(Server::class);

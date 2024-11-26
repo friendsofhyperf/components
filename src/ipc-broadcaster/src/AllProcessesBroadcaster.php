@@ -24,6 +24,11 @@ class AllProcessesBroadcaster implements BroadcasterInterface
 
     public function broadcast(IpcMessageInterface $message): void
     {
+        if (ServerType::isCoroutineServer()) {
+            $message->handle();
+            return;
+        }
+
         $this->serverBroadcaster->broadcast($message);
         $this->userProcessesBroadcaster->broadcast($message);
     }

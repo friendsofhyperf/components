@@ -21,6 +21,7 @@ class ConfigProvider
             ],
             'listeners' => [
                 Listener\OnPipeMessageListener::class,
+                Listener\SetServerTypeOnBootListener::class,
             ],
         ];
     }
