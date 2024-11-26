@@ -19,7 +19,7 @@ use Hyperf\Context\ApplicationContext;
 function broadcast(IpcMessageInterface|Closure $message)
 {
     if ($message instanceof Closure) {
-        $message = new ClosureMessage($message);
+        $message = new ClosureIpcMessage($message);
     }
 
     $container = ApplicationContext::getContainer();
