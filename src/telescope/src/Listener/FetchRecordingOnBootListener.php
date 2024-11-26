@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Listener;
 
+use FriendsOfHyperf\IpcBroadcaster\Contract\BroadcasterInterface;
 use FriendsOfHyperf\Telescope\PipeMessage;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Command\Event\BeforeHandle;
@@ -23,10 +24,9 @@ use Hyperf\Framework\Event\BootApplication;
 use Hyperf\Framework\Event\MainWorkerStart;
 use Hyperf\Process\Event\BeforeCoroutineHandle;
 use Hyperf\Process\Event\BeforeProcessHandle;
-use Hyperf\Process\ProcessCollector;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 use Swoole\Process;
-use Swoole\Server as SwooleServer;
+use Throwable;
 
 class FetchRecordingOnBootListener implements ListenerInterface
 {
@@ -36,6 +36,7 @@ class FetchRecordingOnBootListener implements ListenerInterface
         protected ContainerInterface $container,
         protected ConfigInterface $config,
         protected TelescopeConfig $telescopeConfig,
+        protected BroadcasterInterface $broadcaster,
         protected StdoutLoggerInterface $logger
     ) {
         $this->timer = new Timer($logger);
@@ -59,46 +60,15 @@ class FetchRecordingOnBootListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        $this->config->set('telescope.recording', (bool) $this->telescopeConfig->fetchRecording());
+        $this->config->set('telescope.recording', $this->telescopeConfig->fetchRecording());
 
-        $callback = match (true) {
-            $event instanceof MainWorkerStart,
-            $event instanceof BeforeProcessHandle => fn ($pipeMessage) => $this->shareMessageToWorkers($pipeMessage),
-            $event instanceof MainCoroutineServerStart,
-            $event instanceof BeforeCoroutineHandle => fn ($pipeMessage) => $this->config->set('telescope.recording', (bool) $pipeMessage->recording),
-            default => fn () => null,
-        };
-
-        $this->timer->tick(1, function () use ($callback) {
-            $recording = (bool) $this->telescopeConfig->fetchRecording();
-            $callback(new PipeMessage($recording));
+        $this->timer->tick(1, function () {
+            try {
+                $recording = $this->telescopeConfig->fetchRecording();
+                $this->broadcaster->broadcast(new PipeMessage($recording));
+            } catch (Throwable $e) {
+                $this->logger->error($e->getMessage());
+            }
         });
-    }
-
-    private function shareMessageToWorkers(PipeMessage $message): void
-    {
-        $swooleServer = $this->container->get(SwooleServer::class);
-        $workerCount = $swooleServer->setting['worker_num'] - 1;
-
-        for ($workerId = 0; $workerId <= $workerCount; ++$workerId) {
-            if ($workerId === $swooleServer->worker_id) {
-                continue;
-            }
-            $swooleServer->sendMessage($message, $workerId);
-            $this->logger->debug(sprintf('[Telescope] Let Worker.%s try to update telescope.recording as %s.', $workerId, $message->recording ? 'true' : 'false'));
-        }
-
-        /** @var Process[] $processes */
-        $processes = ProcessCollector::all();
-
-        if ($processes) {
-            $string = serialize($message);
-            foreach ($processes as $process) {
-                $result = $process->exportSocket()->send($string, 10);
-                if ($result === false) {
-                    $this->logger->error('Configuration synchronization failed. Please restart the server.');
-                }
-            }
-        }
     }
 }
