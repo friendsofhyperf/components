@@ -25,7 +25,10 @@
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\IpcBroadcaster\\": "src"
-        }
+        },
+        "files": [
+            "src/Functions.php"
+        ]
     },
     "config": {
         "optimize-autoloader": true,
