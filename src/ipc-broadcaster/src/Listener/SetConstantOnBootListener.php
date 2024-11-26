@@ -15,7 +15,7 @@ use FriendsOfHyperf\IpcBroadcaster\Constant;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 
-class SetServerTypeOnBootListener implements ListenerInterface
+class SetConstantOnBootListener implements ListenerInterface
 {
     public function listen(): array
     {
