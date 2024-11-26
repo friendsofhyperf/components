@@ -45,7 +45,7 @@ return [
             Event::ON_REQUEST => [Server::class, 'onRequest'],
         ],
     ],
-    'save_mode' => Telescope::SYNC,
+    'save_mode' => Telescope::ASYNC,
     'ignore_logs' => [
     ],
     'path' => env('TELESCOPE_PATH', 'telescope'),
