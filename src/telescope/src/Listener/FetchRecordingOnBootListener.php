@@ -60,11 +60,11 @@ class FetchRecordingOnBootListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        $this->config->set('telescope.recording', (bool) $this->telescopeConfig->fetchRecording());
+        $this->config->set('telescope.recording', $this->telescopeConfig->fetchRecording());
 
         $this->timer->tick(1, function () {
             try {
-                $recording = (bool) $this->telescopeConfig->fetchRecording();
+                $recording = $this->telescopeConfig->fetchRecording();
                 broadcast(new PipeMessage($recording));
             } catch (Throwable $e) {
                 $this->logger->error($e->getMessage());
