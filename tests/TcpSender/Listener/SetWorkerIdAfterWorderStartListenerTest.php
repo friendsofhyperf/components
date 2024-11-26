@@ -23,7 +23,7 @@ use Swoole\Server;
  * @coversNothing
  */
 #[\PHPUnit\Framework\Attributes\Group('tcp-sender')]
-class InitSenderListenerTest extends TestCase
+class SetWorkerIdAfterWorderStartListenerTest extends TestCase
 {
     private SetWorkerIdAfterWorderStartListener $listener;
 
