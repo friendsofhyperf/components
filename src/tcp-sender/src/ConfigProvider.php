@@ -17,7 +17,6 @@ class ConfigProvider
     {
         return [
             'listeners' => [
-                Listener\SetWorkerIdAfterWorderStartListener::class,
             ],
         ];
     }

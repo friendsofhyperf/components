@@ -34,8 +34,6 @@ class Sender
      */
     protected array $responses = [];
 
-    private int $workerId = 0;
-
     public function __construct(
         protected ContainerInterface $container,
         protected ConfigInterface $config,
@@ -74,14 +72,19 @@ class Sender
         return true;
     }
 
+    /**
+     * @deprecated since v3.1, will remove in v3.2.
+     */
     public function setWorkerId(int $workerId): void
     {
-        $this->workerId = $workerId;
     }
 
+    /**
+     * @deprecated since v3.1, use `Sender::getServer()->getWorkerId()` instead, will remove in v3.2.
+     */
     public function getWorkerId(): int
     {
-        return $this->workerId;
+        return $this->getServer()->getWorkerId() ?: 0;
     }
 
     public function check(int $fd): bool
@@ -102,10 +105,13 @@ class Sender
         if ($result) {
             /** @var \Swoole\WebSocket\Server $server */
             $server = $this->getServer();
+            $workerId = $server->getWorkerId();
             $result = $server->{$method}(...$arguments);
             $this->logger->debug(
                 sprintf(
-                    "[Socket] Worker.{$this->workerId} send to #{$fd}.Send %s",
+                    '[Socket] Worker.%s send to #%s.Send %s',
+                    $workerId,
+                    $fd,
                     $result ? 'success' : 'failed'
                 )
             );
