@@ -37,7 +37,7 @@ class OnPipeMessageListener implements ListenerInterface
             $message = $event->data;
 
             try {
-                $message->setWorkerId($event->fromWorkerId);
+                $message->setFromWorkerId($event->fromWorkerId);
                 $message->handle();
             } catch (Throwable $exception) {
                 $this->logger->warning((string) $exception);

@@ -15,5 +15,5 @@ interface IpcMessageInterface
 {
     public function handle(): void;
 
-    public function setWorkerId(int $workerId): void;
+    public function setFromWorkerId(int $workerId): void;
 }
