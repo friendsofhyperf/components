@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Listener;
 
+use FriendsOfHyperf\IpcBroadcaster\Contract\BroadcasterInterface;
 use FriendsOfHyperf\Telescope\PipeMessage;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Command\Event\BeforeHandle;
@@ -27,8 +28,6 @@ use Hyperf\Server\Event\MainCoroutineServerStart;
 use Swoole\Process;
 use Throwable;
 
-use function FriendsOfHyperf\IpcBroadcaster\broadcast;
-
 class FetchRecordingOnBootListener implements ListenerInterface
 {
     private Timer $timer;
@@ -37,6 +36,7 @@ class FetchRecordingOnBootListener implements ListenerInterface
         protected ContainerInterface $container,
         protected ConfigInterface $config,
         protected TelescopeConfig $telescopeConfig,
+        protected BroadcasterInterface $broadcaster,
         protected StdoutLoggerInterface $logger
     ) {
         $this->timer = new Timer($logger);
@@ -65,7 +65,7 @@ class FetchRecordingOnBootListener implements ListenerInterface
         $this->timer->tick(1, function () {
             try {
                 $recording = $this->telescopeConfig->fetchRecording();
-                broadcast(new PipeMessage($recording));
+                $this->broadcaster->broadcast(new PipeMessage($recording));
             } catch (Throwable $e) {
                 $this->logger->error($e->getMessage());
             }
