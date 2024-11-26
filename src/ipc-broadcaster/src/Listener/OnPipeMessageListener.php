@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\IpcBroadcaster\Listener;
 
+use FriendsOfHyperf\IpcBroadcaster\Contract\CanBeSetOrGetFromWorkerId;
 use FriendsOfHyperf\IpcBroadcaster\Contract\IpcMessageInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -37,7 +38,9 @@ class OnPipeMessageListener implements ListenerInterface
             $message = $event->data;
 
             try {
-                $message->setFromWorkerId($event->fromWorkerId);
+                if ($message instanceof CanBeSetOrGetFromWorkerId) {
+                    $message->setFromWorkerId($event->fromWorkerId);
+                }
                 $message->handle();
             } catch (Throwable $exception) {
                 $this->logger->warning((string) $exception);

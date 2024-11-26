@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\IpcBroadcaster\Contract;
 
-interface IpcMessageInterface
+interface CanBeSetOrGetFromWorkerId
 {
-    public function handle(): void;
+    public function setFromWorkerId(int $workerId): void;
+
+    public function getFromWorkerId(): ?int;
 }

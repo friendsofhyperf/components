@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\IpcBroadcaster;
 
 use Closure;
-use FriendsOfHyperf\IpcBroadcaster\Contract\IpcMessageInterface;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\NormalizerInterface;
 use Hyperf\Di\ClosureDefinitionCollectorInterface;
@@ -20,20 +19,13 @@ use InvalidArgumentException as GlobalInvalidArgumentException;
 use Laravel\SerializableClosure\SerializableClosure;
 use Psr\Container\ContainerInterface;
 
-class ClosureIpcMessage implements IpcMessageInterface
+class ClosureIpcMessage extends IpcMessage
 {
     protected SerializableClosure $closure;
-
-    protected ?int $fromWorkerId = null;
 
     public function __construct(Closure $closure)
     {
         $this->closure = new SerializableClosure($closure);
-    }
-
-    public function setFromWorkerId(int $fromWorkerId): void
-    {
-        $this->fromWorkerId = $fromWorkerId;
     }
 
     public function handle(): void
