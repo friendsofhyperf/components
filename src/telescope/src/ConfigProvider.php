@@ -45,11 +45,11 @@ class ConfigProvider
             'dependencies' => [
             ],
             'listeners' => [
-                Listener\SetRequestLifecycleListener::class,
                 Listener\CommandListener::class,
                 Listener\DbQueryListener::class,
                 Listener\ExceptionHandlerListener::class,
                 Listener\FetchRecordingOnBootListener::class,
+                Listener\SetRequestLifecycleListener::class,
                 Listener\SetupTelescopeServerListener::class,
             ],
             'publish' => [
