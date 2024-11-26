@@ -14,6 +14,8 @@ namespace FriendsOfHyperf\IpcBroadcaster;
 use FriendsOfHyperf\IpcBroadcaster\Contract\BroadcasterInterface;
 use FriendsOfHyperf\IpcBroadcaster\Contract\IpcMessageInterface;
 
+use function Hyperf\Support\class_uses_recursive;
+
 class AllProcessesBroadcaster implements BroadcasterInterface
 {
     public function __construct(
@@ -24,8 +26,15 @@ class AllProcessesBroadcaster implements BroadcasterInterface
 
     public function broadcast(IpcMessageInterface $message): void
     {
-        if (Constant::isCoroutineServer()) {
+        if (
+            in_array(Traits\RunsInCurrentWorker::class, class_uses_recursive($message))
+            && ! $message->isRunned() // @phpstan-ignore method.notFound
+        ) {
             $message->handle();
+            $message->setRunned(true); // @phpstan-ignore method.notFound
+        }
+
+        if (Constant::isCoroutineServer()) {
             return;
         }
 

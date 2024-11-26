@@ -11,19 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\IpcBroadcaster;
 
-abstract class IpcMessage implements Contract\IpcMessageInterface, Contract\CanBeSetOrGetFromWorkerId
+abstract class IpcMessage implements Contract\IpcMessageInterface
 {
-    protected int $fromWorkerId = 0;
-
-    public function setFromWorkerId(int $fromWorkerId): void
-    {
-        $this->fromWorkerId = $fromWorkerId;
-    }
-
-    public function getFromWorkerId(): int
-    {
-        return $this->fromWorkerId;
-    }
+    use Traits\InteractsWithFromWorkerId;
 
     abstract public function handle(): void;
 }

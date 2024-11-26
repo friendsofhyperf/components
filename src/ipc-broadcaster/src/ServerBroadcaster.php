@@ -16,6 +16,8 @@ use FriendsOfHyperf\IpcBroadcaster\Contract\IpcMessageInterface;
 use Psr\Container\ContainerInterface;
 use Swoole\Server;
 
+use function Hyperf\Support\class_uses_recursive;
+
 class ServerBroadcaster implements BroadcasterInterface
 {
     /**
@@ -34,8 +36,15 @@ class ServerBroadcaster implements BroadcasterInterface
 
     public function broadcast(IpcMessageInterface $message): void
     {
-        if (Constant::isCoroutineServer()) {
+        if (
+            in_array(Traits\RunsInCurrentWorker::class, class_uses_recursive($message))
+            && ! $message->isRunned() // @phpstan-ignore method.notFound
+        ) {
             $message->handle();
+            $message->setRunned(true); // @phpstan-ignore method.notFound
+        }
+
+        if (Constant::isCoroutineServer()) {
             return;
         }
 
