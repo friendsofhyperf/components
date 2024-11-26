@@ -13,14 +13,14 @@ namespace FriendsOfHyperf\IpcBroadcaster;
 
 abstract class IpcMessage implements Contract\IpcMessageInterface, Contract\CanBeSetOrGetFromWorkerId
 {
-    protected ?int $fromWorkerId = null;
+    protected int $fromWorkerId = 0;
 
     public function setFromWorkerId(int $fromWorkerId): void
     {
         $this->fromWorkerId = $fromWorkerId;
     }
 
-    public function getFromWorkerId(): ?int
+    public function getFromWorkerId(): int
     {
         return $this->fromWorkerId;
     }
