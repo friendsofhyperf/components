@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tests\TcpSender\Listener;
 
-use FriendsOfHyperf\TcpSender\Listener\InitSenderListener;
+use FriendsOfHyperf\TcpSender\Listener\SetWorkerIdAfterWorderStartListener;
 use FriendsOfHyperf\TcpSender\Sender;
 use Hyperf\Contract\ContainerInterface;
 use Hyperf\Framework\Event\AfterWorkerStart;
@@ -23,9 +23,9 @@ use Swoole\Server;
  * @coversNothing
  */
 #[\PHPUnit\Framework\Attributes\Group('tcp-sender')]
-class InitSenderListenerTest extends TestCase
+class SetWorkerIdAfterWorderStartListenerTest extends TestCase
 {
-    private InitSenderListener $listener;
+    private SetWorkerIdAfterWorderStartListener $listener;
 
     private ContainerInterface $container;
 
@@ -38,7 +38,7 @@ class InitSenderListenerTest extends TestCase
         $this->container = $this->createMock(ContainerInterface::class);
         $this->sender = $this->createMock(Sender::class);
         $this->server = $this->createMock(Server::class);
-        $this->listener = new InitSenderListener($this->container);
+        $this->listener = new SetWorkerIdAfterWorderStartListener($this->container);
     }
 
     public function testSenderIsSetWithWorkerIdWhenContainerHasSender(): void
