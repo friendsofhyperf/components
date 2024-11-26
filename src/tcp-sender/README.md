@@ -1,7 +1,7 @@
 # TcpSender
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/tcp-sender/version.png)](https://packagist.org/packages/friendsofhyperf/tcp-sender)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/tcp-sender/d/total.png)](https://packagist.org/packages/friendsofhyperf/tcp-sender)
+[![Latest Version](https://img.shields.io/packagist/v/friendsofhyperf/tcp-sender.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/tcp-sender)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/tcp-sender.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/tcp-sender)
 [![GitHub license](https://img.shields.io/github/license/friendsofhyperf/tcp-sender)](https://github.com/friendsofhyperf/tcp-sender)
 
 Another TcpSender component for Hyperf.
