@@ -15,12 +15,12 @@ trait RunsInCurrentWorker
 {
     protected bool $runned = false;
 
-    public function setRunned(bool $runned): void
+    public function hasRun(bool $value): void
     {
-        $this->runned = $runned;
+        $this->runned = $value;
     }
 
-    public function isRunned(): bool
+    public function setHasRun(): bool
     {
         return $this->runned;
     }

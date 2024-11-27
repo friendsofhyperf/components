@@ -39,10 +39,10 @@ class ServerBroadcaster implements BroadcasterInterface
         /** @var IpcMessageInterface|mixed $message */
         if (
             in_array(Traits\RunsInCurrentWorker::class, class_uses_recursive($message))
-            && ! $message->isRunned()
+            && ! $message->hasRun()
         ) {
             $message->handle();
-            $message->setRunned(true);
+            $message->setHasRun(true);
         }
 
         if (Constant::isCoroutineServer()) {
