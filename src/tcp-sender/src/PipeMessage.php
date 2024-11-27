@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\TcpSender;
 use FriendsOfHyperf\IpcBroadcaster\IpcMessage;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\StdoutLoggerInterface;
-use Psr\Container\ContainerInterface;
 use Throwable;
 
 class PipeMessage extends IpcMessage
@@ -28,7 +27,7 @@ class PipeMessage extends IpcMessage
     public function handle(): void
     {
         try {
-            if (! $sender = $this->getSender()) {
+            if (! $sender = $this->get(Sender::class)) {
                 return;
             }
 
@@ -36,42 +35,27 @@ class PipeMessage extends IpcMessage
 
             $sender->proxy(...$params);
         } catch (Throwable $exception) {
-            $this->getLogger()?->warning((string) $exception);
+            $this->get(StdoutLoggerInterface::class)?->warning((string) $exception);
         }
     }
 
-    private function getLogger(): ?StdoutLoggerInterface
-    {
-        if (! $container = $this->getContainer()) {
-            return null;
-        }
-
-        if (! $container->has(StdoutLoggerInterface::class)) {
-            return null;
-        }
-
-        return $container->get(StdoutLoggerInterface::class);
-    }
-
-    private function getSender(): ?Sender
-    {
-        if (! $container = $this->getContainer()) {
-            return null;
-        }
-
-        if (! $container->has(Sender::class)) {
-            return null;
-        }
-
-        return $container->get(Sender::class);
-    }
-
-    private function getContainer(): ?ContainerInterface
+    /**
+     * @template T
+     * @param class-string<T> $class
+     * @return T|null
+     */
+    private function get(string $class)
     {
         if (! ApplicationContext::hasContainer()) {
             return null;
         }
 
-        return ApplicationContext::getContainer();
+        $container = ApplicationContext::getContainer();
+
+        if (! $container->has($class)) {
+            return null;
+        }
+
+        return $container->get($class);
     }
 }
