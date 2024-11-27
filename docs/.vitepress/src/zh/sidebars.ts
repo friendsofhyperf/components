@@ -162,7 +162,7 @@ const sidebar:DefaultTheme.Sidebar = {
                     link: '/zh_CN/docs/notification-mail'
                 },
                 {
-                    text: 'Openai Client',
+                    text: 'OpenAI Client',
                     link: '/zh_CN/docs/openai-client'
                 },
                 {
@@ -206,7 +206,7 @@ const sidebar:DefaultTheme.Sidebar = {
                     link: '/zh_CN/docs/trigger'
                 },
                 {
-                    text: 'Validated Dto',
+                    text: 'Validated DTO',
                     link: '/zh_CN/docs/validated-dto'
                 }
             ]
