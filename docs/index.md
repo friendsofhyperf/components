@@ -8,7 +8,7 @@ hero:
   tagline: "🚀 The most popular components for Hyperf."
   actions:
     - theme: brand
-      text: 指南
+      text: 入门
       link: /zh_CN/guide/
     - theme: alt
       text: 文档
