@@ -25,6 +25,7 @@ if [[ $# -eq 0 ]]; then
 fi
 
 split "src/.github" "git@github.com:friendsofhyperf/.github.git"
+split "docs" "git@github.com:friendsofhyperf/friendsofhyperf.github.io.git"
 
 for REPO in $REPOS ; do
     remote $REPO git@github.com:friendsofhyperf/$REPO.git
