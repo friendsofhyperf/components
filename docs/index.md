@@ -13,6 +13,9 @@ hero:
     - theme: alt
       text: 文档
       link: /zh_CN/docs/
+    - theme: alt
+      text: GitHub
+      link: "https://github.com/friendsofhyperf/components"
 
 features:
   - title: Sentry
