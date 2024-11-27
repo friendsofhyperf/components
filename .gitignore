@@ -10,3 +10,6 @@ rumtime
 phpunit.xml
 phpstan.neon
 .phpactor.json
+docs/.vitepress/dist
+docs/.vitepress/cache
+docs/node_modules
