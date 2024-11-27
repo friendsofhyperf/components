@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "FriendsOfHyperf"
-  # text: "🚀 The most popular components for Hyperf."
+  text: "Components & Plugins"
   tagline: "🚀 The most popular components for Hyperf."
   actions:
     - theme: brand
