@@ -9,7 +9,7 @@ import enGetSidebar from "./src/en/sidebars";
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "FriendsOfHyperf",
-  description: "A Hyperf component",
+  description: "🚀 The most popular components for Hyperf.",
   ignoreDeadLinks: true,
   locales:{
     root:{
