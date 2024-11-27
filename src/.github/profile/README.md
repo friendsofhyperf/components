@@ -1,4 +1,4 @@
-## Repositories
+## Components
 
 |Repository|Stable Version|Total Downloads|Monthly Downloads|
 |--|--|--|--|

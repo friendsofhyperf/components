@@ -41,7 +41,7 @@ function license() {
     echo "[![License](https://poser.pugx.org/friendsofhyperf/$1/license)](https://packagist.org/packages/friendsofhyperf/$1)"
 }
 
-echo "## Repositories"
+echo "## Components"
 echo
 echo "|Repository|Stable Version|Total Downloads|Monthly Downloads|"
 echo "|--|--|--|--|"
