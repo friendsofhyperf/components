@@ -10,11 +10,11 @@ REPOS=$@
 function init()
 {
     local REPO=$1
-    local DOC_PATH=$BASEPATH/docs/zh_CN/docs/$REPO
+    local DOC_PATH=$BASEPATH/docs/zh_CN/components
 
     mkdir -p $DOC_PATH
 
-    local DOC_FILE=$DOC_PATH/index.md
+    local DOC_FILE=$DOC_PATH/$REPO.md
 
     if [ ! -f $DOC_PATH/index.md ]; then
         echo "# $REPO" > $DOC_FILE

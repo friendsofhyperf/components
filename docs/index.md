@@ -11,8 +11,8 @@ hero:
       text: 入门
       link: /zh_CN/guide/
     - theme: alt
-      text: 文档
-      link: /zh_CN/docs/
+      text: 组件
+      link: /zh_CN/components/
     - theme: alt
       text: GitHub
       link: "https://github.com/friendsofhyperf/components"
@@ -20,15 +20,15 @@ hero:
 features:
   - title: Sentry
     details: The sentry component for Hyperf.
-    link: /zh_CN/docs/sentry/
+    link: /zh_CN/components/sentry/
   - title: Telecope
     details: An elegant debug assistant for Hyperf.
-    link: /zh_CN/docs/telescope/
+    link: /zh_CN/components/telescope/
   - title: Tinker
     details: The Powerful REPL for Hyperf.
-    link: /zh_CN/docs/tinker/
+    link: /zh_CN/components/tinker/
   - title: More
     details: More components.
-    link: /zh_CN/docs/
+    link: /zh_CN/components/
 ---
 

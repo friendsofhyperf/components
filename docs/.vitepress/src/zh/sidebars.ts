@@ -21,193 +21,193 @@ const sidebar:DefaultTheme.Sidebar = {
             ]
         }
     ],
-    '/zh_CN/docs/':[
+    '/zh_CN/components/':[
         {
             text: '组件',
             items: [
                 {
                     text: 'Amqp Job',
-                    link: '/zh_CN/docs/amqp-job'
+                    link: '/zh_CN/components/amqp-job.md'
                 },
                 {
                     text: 'Cache',
-                    link: '/zh_CN/docs/cache'
+                    link: '/zh_CN/components/cache.md'
                 },
                 {
                     text: 'Command Signals',
-                    link: '/zh_CN/docs/command-signals'
+                    link: '/zh_CN/components/command-signals.md'
                 },
                 {
                     text: 'Command Validation',
-                    link: '/zh_CN/docs/command-validation'
+                    link: '/zh_CN/components/command-validation.md'
                 },
                 {
                     text: 'Compoships',
-                    link: '/zh_CN/docs/compoships'
+                    link: '/zh_CN/components/compoships.md'
                 },
                 {
                     text: 'Confd',
-                    link: '/zh_CN/docs/confd'
+                    link: '/zh_CN/components/confd.md'
                 },
                 {
                     text: 'Config Consul',
-                    link: '/zh_CN/docs/config-consul'
+                    link: '/zh_CN/components/config-consul.md'
                 },
                 {
                     text: 'Console Spinner',
-                    link: '/zh_CN/docs/console-spinner'
+                    link: '/zh_CN/components/console-spinner.md'
                 },
                 {
                     text: 'Di Plus',
-                    link: '/zh_CN/docs/di-plus'
+                    link: '/zh_CN/components/di-plus.md'
                 },
                 {
                     text: 'Elasticsearch',
-                    link: '/zh_CN/docs/elasticsearch'
+                    link: '/zh_CN/components/elasticsearch.md'
                 },
                 {
                     text: 'Encryption',
-                    link: '/zh_CN/docs/encryption'
+                    link: '/zh_CN/components/encryption.md'
                 },
                 {
                     text: 'Exception Event',
-                    link: '/zh_CN/docs/exception-event'
+                    link: '/zh_CN/components/exception-event.md'
                 },
                 {
                     text: 'Facade',
-                    link: '/zh_CN/docs/facade'
+                    link: '/zh_CN/components/facade.md'
                 },
                 {
                     text: 'Fast Paginate',
-                    link: '/zh_CN/docs/fast-paginate'
+                    link: '/zh_CN/components/fast-paginate.md'
                 },
                 {
                     text: 'Grpc Validation',
-                    link: '/zh_CN/docs/grpc-validation'
+                    link: '/zh_CN/components/grpc-validation.md'
                 },
                 {
                     text: 'Helpers',
-                    link: '/zh_CN/docs/helpers'
+                    link: '/zh_CN/components/helpers.md'
                 },
                 {
                     text: 'Http Client',
-                    link: '/zh_CN/docs/http-client'
+                    link: '/zh_CN/components/http-client.md'
                 },
                 {
                     text: 'Http Logger',
-                    link: '/zh_CN/docs/http-logger'
+                    link: '/zh_CN/components/http-logger.md'
                 },
                 {
                     text: 'Ide Helper',
-                    link: '/zh_CN/docs/ide-helper'
+                    link: '/zh_CN/components/ide-helper.md'
                 },
                 {
                     text: 'Ipc Broadcaster',
-                    link: '/zh_CN/docs/ipc-broadcaster'
+                    link: '/zh_CN/components/ipc-broadcaster.md'
                 },
                 {
                     text: 'Lock',
-                    link: '/zh_CN/docs/lock'
+                    link: '/zh_CN/components/lock.md'
                 },
                 {
                     text: 'Macros',
-                    link: '/zh_CN/docs/macros'
+                    link: '/zh_CN/components/macros.md'
                 },
                 {
                     text: 'Mail',
-                    link: '/zh_CN/docs/mail'
+                    link: '/zh_CN/components/mail.md'
                 },
                 {
                     text: 'Middleware Plus',
-                    link: '/zh_CN/docs/middleware-plus'
+                    link: '/zh_CN/components/middleware-plus.md'
                 },
                 {
                     text: 'Model Factory',
-                    link: '/zh_CN/docs/model-factory'
+                    link: '/zh_CN/components/model-factory.md'
                 },
                 {
                     text: 'Model Hashids',
-                    link: '/zh_CN/docs/model-hashids'
+                    link: '/zh_CN/components/model-hashids.md'
                 },
                 {
                     text: 'Model Morph Addon',
-                    link: '/zh_CN/docs/model-morph-addon'
+                    link: '/zh_CN/components/model-morph-addon.md'
                 },
                 {
                     text: 'Model Observer',
-                    link: '/zh_CN/docs/model-observer'
+                    link: '/zh_CN/components/model-observer.md'
                 },
                 {
                     text: 'Model Scope',
-                    link: '/zh_CN/docs/model-scope'
+                    link: '/zh_CN/components/model-scope.md'
                 },
                 {
                     text: 'Monolog Hook',
-                    link: '/zh_CN/docs/monolog-hook'
+                    link: '/zh_CN/components/monolog-hook.md'
                 },
                 {
                     text: 'Mysql Grammar Addon',
-                    link: '/zh_CN/docs/mysql-grammar-addon'
+                    link: '/zh_CN/components/mysql-grammar-addon.md'
                 },
                 {
                     text: 'Notification',
-                    link: '/zh_CN/docs/notification'
+                    link: '/zh_CN/components/notification.md'
                 },
                 {
                     text: 'Notification Easysms',
-                    link: '/zh_CN/docs/notification-easysms'
+                    link: '/zh_CN/components/notification-easysms.md'
                 },
                 {
                     text: 'Notification Mail',
-                    link: '/zh_CN/docs/notification-mail'
+                    link: '/zh_CN/components/notification-mail.md'
                 },
                 {
                     text: 'OpenAI Client',
-                    link: '/zh_CN/docs/openai-client'
+                    link: '/zh_CN/components/openai-client.md'
                 },
                 {
                     text: 'Pest Plugin Hyperf',
-                    link: '/zh_CN/docs/pest-plugin-hyperf'
+                    link: '/zh_CN/components/pest-plugin-hyperf.md'
                 },
                 {
                     text: 'Pretty Console',
-                    link: '/zh_CN/docs/pretty-console'
+                    link: '/zh_CN/components/pretty-console.md'
                 },
                 {
                     text: 'Recaptcha',
-                    link: '/zh_CN/docs/recaptcha'
+                    link: '/zh_CN/components/recaptcha.md'
                 },
                 {
                     text: 'Redis Subscriber',
-                    link: '/zh_CN/docs/redis-subscriber'
+                    link: '/zh_CN/components/redis-subscriber.md'
                 },
                 {
                     text: 'Sentry',
-                    link: '/zh_CN/docs/sentry'
+                    link: '/zh_CN/components/sentry.md'
                 },
                 {
                     text: 'Support',
-                    link: '/zh_CN/docs/support'
+                    link: '/zh_CN/components/support.md'
                 },
                 {
                     text: 'Tcp Sender',
-                    link: '/zh_CN/docs/tcp-sender'
+                    link: '/zh_CN/components/tcp-sender.md'
                 },
                 {
                     text: 'Telescope',
-                    link: '/zh_CN/docs/telescope'
+                    link: '/zh_CN/components/telescope.md'
                 },
                 {
                     text: 'Tinker',
-                    link: '/zh_CN/docs/tinker'
+                    link: '/zh_CN/components/tinker.md'
                 },
                 {
                     text: 'Trigger',
-                    link: '/zh_CN/docs/trigger'
+                    link: '/zh_CN/components/trigger.md'
                 },
                 {
                     text: 'Validated DTO',
-                    link: '/zh_CN/docs/validated-dto'
+                    link: '/zh_CN/components/validated-dto.md'
                 }
             ]
         }
