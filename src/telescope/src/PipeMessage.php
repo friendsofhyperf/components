@@ -12,11 +12,14 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope;
 
 use FriendsOfHyperf\IpcBroadcaster\Contract\IpcMessageInterface;
+use FriendsOfHyperf\IpcBroadcaster\Traits\RunsInCurrentWorker;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 
 class PipeMessage implements IpcMessageInterface
 {
+    use RunsInCurrentWorker;
+
     public function __construct(public bool $recording)
     {
     }
@@ -32,10 +35,12 @@ class PipeMessage implements IpcMessageInterface
             return null;
         }
 
-        if (! ApplicationContext::getContainer()->has(ConfigInterface::class)) {
+        $container = ApplicationContext::getContainer();
+
+        if (! $container->has(ConfigInterface::class)) {
             return null;
         }
 
-        return ApplicationContext::getContainer()->get(ConfigInterface::class);
+        return $container->get(ConfigInterface::class);
     }
 }
