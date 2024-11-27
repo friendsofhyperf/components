@@ -51,7 +51,7 @@ use Hyperf\Amqp\Annotation\Consumer;
     nums: 4
 
 )]
-class MyConsumer extends \FriendsOfHyperf\AmqpJob\JobConsumer
+class MyConsumer extends JobConsumer
 {
     //
 }

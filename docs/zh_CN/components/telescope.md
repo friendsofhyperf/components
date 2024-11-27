@@ -1,20 +1,17 @@
 # Telescope
 
-An elegant debug assistant for the hyperf framework.
+## 可用监听器
 
-## 功能支持
-
-- [x] request
-- [x] exception
-- [x] sql
-- [x] grpc server/client
-- [x] redis
-- [x] log
-- [x] command
-- [x] event
-- [x] guzzle
-- [x] cache
-- [x] rpc server/client
+- [x] 请求监视器
+- [x] 异常监视器
+- [x] 数据查询监视器
+- [x] gRPC请求监视器
+- [x] Redis监视器
+- [x] 日志监视器
+- [x] 命令行监视器
+- [x] 事件监视器
+- [x] HTTP Client 监视器
+- [x] 缓存监视器
 
 ## 安装
 
@@ -22,87 +19,77 @@ An elegant debug assistant for the hyperf framework.
 composer require friendsofhyperf/telescope:~3.1.0
 ```
 
-## 发布配置
+使用 `vendor:publish`  命令来发布其公共资源
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/telescope
 ```
 
-## 数据库迁移
-
+运行 `migrate` 命令执行数据库变更来创建和保存 Telescope 需要的数据
 ```shell
 php bin/hyperf.php migrate
 ```
-
-## 添加监听器
-
-```php
+# 使用
+> 监听器和中间件，二选一即可
+## 请求监听器
+在 `config/autoload/listeners.php`配置文件添加监听器
+```
 <?php
 
-// config/autoload/listeners.php
+use FriendsOfHyperf\Telescope\Listener\RequestHandledListener;
 
 return [
-    FriendsOfHyperf\Telescope\Listener\RequestHandledListener::class,
+    FailToHandleListener::class,
 ];
 
 ```
 
-## 添加中间件
+## 中间件
+在 `config/autoload/middlewares.php`配置文件加上全局中间件
 
-```php
+如需记录http请求，请使用`http`中间件
+```
 <?php
 
-// config/autoload/middlewares.php
+use FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware;
+
+return [
+    'http' => [
+        TelescopeMiddleware::class,
+    ],
+];
+```
+
+如需记录gRPC请求，请使用`grpc`中间件
+```
+<?php
+
+use FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware;
 
 return [
     'grpc' => [
-        FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware::class,
+        TelescopeMiddleware::class,
     ],
 ];
-
 ```
 
-> TelescopeMiddleware or RequestHandledListener, you can choose one of them.
-
-## 设置环境变量
-
-```env
-# telescope
-TELESCOPE_DB_CONNECTION=default
-
-TELESCOPE_ENABLE_REQUEST=true
-TELESCOPE_ENABLE_COMMAND=true
-TELESCOPE_ENABLE_GRPC=true
-TELESCOPE_ENABLE_LOG=true
-TELESCOPE_ENABLE_REDIS=true
-TELESCOPE_ENABLE_EVENT=true
-TELESCOPE_ENABLE_EXCEPTION=true
-TELESCOPE_ENABLE_JOB=true
-TELESCOPE_ENABLE_DB=true
-TELESCOPE_ENABLE_GUZZLE=true
-TELESCOPE_ENABLE_CACHE=true
-TELESCOPE_ENABLE_RPC=true
-
-TELESCOPE_SERVER_ENABLE=true
-```
-
-## 访问
+## 查看仪表板
 
 `http://127.0.0.1:9509/telescope/requests`
 
-<img src="https://raw.githubusercontent.com/friendsofhyperf/telescope/main/requests.jpg" />
-
-<img src="https://github.com/friendsofhyperf/telescope/raw/main/grpc.jpg" />
-
-<img src="https://github.com/friendsofhyperf/telescope/raw/main/exception.jpg" />
+## 数据库配置
+在 `config/autoload/telescope.php`管理数据库连接配置，默认使用`default`连接
+```
+'connection' => env('TELESCOPE_DB_CONNECTION', 'default'),
+```
 
 ## 标签
 
-您可能希望为条目附加自定义标签。为此，您可以使用 **`Telescope::tag`** 方法。
+您可能希望将自己的自定义标签附加到条目。为此，您可以使用 **`Telescope::tag`**  方法。
 
-## 过滤器
+## 批量过滤
 
-您可能只想在某些特殊条件下记录条目。为此，您可以使用 **`Telescope::filter`** 方法。
+您可能只想记录某些特殊条件下的条目。为此，您可以使用 **`Telescope::filter`** 方法。
 
 例子
 
@@ -146,5 +133,3 @@ class TelescopeInitListener implements ListenerInterface
     }
 }
 ```
-
-> You can also do this in middleware.
