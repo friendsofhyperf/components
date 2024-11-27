@@ -1,15 +1,14 @@
 # Amqp Job
 
-
-## Installation
+## 安装
 
 ```shell
 composer require friendsofhyperf/amqp-job
 ```
 
-## Usage
+## 用法
 
-### Dispatch
+### 分发任务
 
 ```php
 use FriendsOfHyperf\AmqpJob\Job;
@@ -35,7 +34,7 @@ dispatch(new FooJob());
 
 ```
 
-### Register Consumer[Optional]
+### 注册消费者[可选]
 
 ```php
 

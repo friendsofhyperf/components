@@ -1,15 +1,14 @@
+# Cache
 
-## Installation
-
-- Installation
+## 安装
 
 ```shell
 composer require friendsofhyperf/cache
 ```
 
-## Usage
+## 用法
 
-- Inject
+- 注解
 
 ```php
 namespace App\Controller;
@@ -32,7 +31,7 @@ class IndexController
 }
 ```
 
-- Facade
+- 门面
 
 ```php
 use FriendsOfHyperf\Cache\Facade\Cache;
@@ -42,7 +41,7 @@ Cache::remember($key, $ttl=60, function() {
 });
 ```
 
-- Switch driver
+- 切换驱动
 
 ```php
 use FriendsOfHyperf\Cache\Facade\Cache;
@@ -57,6 +56,6 @@ CacheManager::get('co')->remember($key, $ttl=60, function() {
 });
 ```
 
-## Methods
+## 参考
 
 Likes [Laravel-Cache](https://laravel.com/docs/8.x/cache)
