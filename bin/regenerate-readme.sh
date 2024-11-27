@@ -41,7 +41,7 @@ function license() {
     echo "[![License](https://poser.pugx.org/friendsofhyperf/$1/license)](https://packagist.org/packages/friendsofhyperf/$1)"
 }
 
-echo "## Components"
+echo "# Components"
 echo
 echo "## 支持的组件列表"
 echo
