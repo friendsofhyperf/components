@@ -4,7 +4,7 @@ layout: home
 
 hero:
   name: "FriendsOfHyperf"
-  text: "A Hyperf component"
+  text: "🚀 The most popular components for Hyperf."
   tagline: My great project tagline
   actions:
     - theme: brand
