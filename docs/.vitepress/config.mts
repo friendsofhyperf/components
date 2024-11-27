@@ -38,7 +38,7 @@ export default defineConfig({
       level: [2, 4],
     },
     editLink: {
-      pattern: 'https://github.com/mineadmin/doc-v3/edit/main/docs/:path',
+      pattern: 'https://github.com/friendsofhyperf/components/edit/main/docs/:path',
       text: '在Github上编辑此页面',
     },
     lastUpdated: {
@@ -98,9 +98,6 @@ export default defineConfig({
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/friendsofhyperf/components' },
-    ],
-    footer: {
-      copyright: 'Copyright © 2021-present MineAdmin'
-    }
+    ]
   }
 })
