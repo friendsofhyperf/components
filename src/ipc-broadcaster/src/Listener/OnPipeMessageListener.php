@@ -11,12 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\IpcBroadcaster\Listener;
 
-use FriendsOfHyperf\IpcBroadcaster\Contract\CanBeSetOrGetFromWorkerId;
 use FriendsOfHyperf\IpcBroadcaster\Contract\IpcMessageInterface;
+use FriendsOfHyperf\IpcBroadcaster\Traits\InteractsWithFromWorkerId;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\OnPipeMessage;
 use Throwable;
+
+use function Hyperf\Support\class_uses_recursive;
 
 class OnPipeMessageListener implements ListenerInterface
 {
@@ -38,8 +40,8 @@ class OnPipeMessageListener implements ListenerInterface
             $message = $event->data;
 
             try {
-                if ($message instanceof CanBeSetOrGetFromWorkerId) {
-                    $message->setFromWorkerId($event->fromWorkerId);
+                if (in_array(InteractsWithFromWorkerId::class, class_uses_recursive($message))) {
+                    $message->setFromWorkerId($event->fromWorkerId); // @phpstan-ignore method.notFound
                 }
                 $message->handle();
             } catch (Throwable $exception) {
