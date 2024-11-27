@@ -23,24 +23,29 @@ const sidebar:DefaultTheme.Sidebar = {
     ],
     '/zh_CN/docs/':[
         {
-            text: 'Amqp Job',
-            link: '/zh_CN/docs/amqp-job'
-        },
-        {
-            text: 'Cache',
-            link: '/zh_CN/docs/cache'
-        },
-        {
-            Text: 'Sentry',
-            link: '/zh_CN/docs/sentry'
-        },
-        {
-            text: 'Telescope',
-            link: '/zh_CN/docs/telescope'
-        },
-        {
-            text: 'Tinker',
-            link: '/zh_CN/docs/tinker'
+            text: '组件',
+            items: [
+                {
+                    text: 'Amqp Job',
+                    link: '/zh_CN/docs/amqp-job'
+                },
+                {
+                    text: 'Cache',
+                    link: '/zh_CN/docs/cache'
+                },
+                {
+                    text: 'Sentry',
+                    link: '/zh_CN/docs/sentry'
+                },
+                {
+                    text: 'Telescope',
+                    link: '/zh_CN/docs/telescope'
+                },
+                {
+                    text: 'Tinker',
+                    link: '/zh_CN/docs/tinker'
+                }
+            ]
         }
     ]
 }
