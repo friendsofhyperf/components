@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Listener;
 
 use FriendsOfHyperf\IpcBroadcaster\Contract\BroadcasterInterface;
-use FriendsOfHyperf\Telescope\PipeMessage;
+use FriendsOfHyperf\Telescope\BroadcastRecordingPipeMessage;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Command\Event\BeforeHandle;
 use Hyperf\Contract\ConfigInterface;
@@ -65,7 +65,7 @@ class FetchRecordingOnBootListener implements ListenerInterface
         $this->timer->tick(1, function () {
             try {
                 $recording = $this->telescopeConfig->fetchRecording();
-                $this->broadcaster->broadcast(new PipeMessage($recording));
+                $this->broadcaster->broadcast(new BroadcastRecordingPipeMessage($recording));
             } catch (Throwable $e) {
                 $this->logger->error($e->getMessage());
             }

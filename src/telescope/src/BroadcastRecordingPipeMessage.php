@@ -16,7 +16,7 @@ use FriendsOfHyperf\IpcBroadcaster\Traits\RunsInCurrentWorker;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ConfigInterface;
 
-class PipeMessage implements IpcMessageInterface
+class BroadcastRecordingPipeMessage implements IpcMessageInterface
 {
     use RunsInCurrentWorker;
 
