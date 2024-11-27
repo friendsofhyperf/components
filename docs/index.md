@@ -4,8 +4,8 @@ layout: home
 
 hero:
   name: "FriendsOfHyperf"
-  text: "🚀 The most popular components for Hyperf."
-  tagline: My great project tagline
+  # text: "🚀 The most popular components for Hyperf."
+  tagline: "🚀 The most popular components for Hyperf."
   actions:
     - theme: brand
       text: 指南
