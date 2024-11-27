@@ -24,5 +24,8 @@ features:
   - title: Tinker
     details: The Powerful REPL for Hyperf.
     link: /zh_CN/docs/tinker/
+  - title: More
+    details: More components.
+    link: /zh_CN/docs/
 ---
 
