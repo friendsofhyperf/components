@@ -29,6 +29,18 @@ const sidebar:DefaultTheme.Sidebar = {
         {
             text: 'Cache',
             link: '/zh_CN/docs/cache'
+        },
+        {
+            Text: 'Sentry',
+            link: '/zh_CN/docs/sentry'
+        },
+        {
+            text: 'Telescope',
+            link: '/zh_CN/docs/telescope'
+        },
+        {
+            text: 'Tinker',
+            link: '/zh_CN/docs/tinker'
         }
     ]
 }
