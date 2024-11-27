@@ -15,11 +15,11 @@ hero:
       link: /api-examples
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: Sentry
+    details: The sentry component for Hyperf.
+  - title: Telecope
+    details: An elegant debug assistant for Hyperf.
+  - title: Tinker
+    details: The Powerful REPL for Hyperf.
 ---
 
