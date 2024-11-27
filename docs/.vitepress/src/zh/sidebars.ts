@@ -12,7 +12,7 @@ const sidebar:DefaultTheme.Sidebar = {
             ]
         },
         {
-            text: '开始',
+            text: '快速开始',
             items: [
                 {
                     text: "支持的组件列表",

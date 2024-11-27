@@ -1,5 +1,5 @@
 export default {
     title: "FriendsOfHyperf",
-    description: "A Hyperf component",
+    description: "🚀 The most popular components for Hyperf.",
     tagline: "Hyperf component",
 }

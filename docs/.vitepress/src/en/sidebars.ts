@@ -3,19 +3,19 @@ import {DefaultTheme} from "vitepress";
 const sidebar:DefaultTheme.Sidebar = {
     '/zh/guide/': [
         {
-            text: '介绍',
+            text: 'Introduce',
             items: [
                 {
-                    text: '关于 FriendsOfHyperf',
+                    text: 'About FriendsOfHyperf',
                     link: '/zh_CN/guide/introduce/about',
                 },
             ]
         },
         {
-            text: '开始',
+            text: 'Quick Start',
             items: [
                 {
-                    text: "组件列表",
+                    text: "Components",
                     link: "/zh_CN/guide/start/components"
                 }
             ]
