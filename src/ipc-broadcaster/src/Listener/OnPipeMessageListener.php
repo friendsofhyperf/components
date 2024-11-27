@@ -36,12 +36,12 @@ class OnPipeMessageListener implements ListenerInterface
     public function process(object $event): void
     {
         if ($event instanceof OnPipeMessage && $event->data instanceof IpcMessageInterface) {
-            /** @var IpcMessageInterface $message */
+            /** @var IpcMessageInterface|mixed $message */
             $message = $event->data;
 
             try {
                 if (in_array(InteractsWithFromWorkerId::class, class_uses_recursive($message))) {
-                    $message->setFromWorkerId($event->fromWorkerId); // @phpstan-ignore method.notFound
+                    $message->setFromWorkerId($event->fromWorkerId);
                 }
                 $message->handle();
             } catch (Throwable $exception) {

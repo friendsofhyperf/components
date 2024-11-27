@@ -25,12 +25,13 @@ class UserProcessesBroadcaster implements BroadcasterInterface
 
     public function broadcast(IpcMessageInterface $message): void
     {
+        /** @var IpcMessageInterface|mixed $message */
         if (
             in_array(Traits\RunsInCurrentWorker::class, class_uses_recursive($message))
-            && ! $message->isRunned() // @phpstan-ignore method.notFound
+            && ! $message->isRunned()
         ) {
             $message->handle();
-            $message->setRunned(true); // @phpstan-ignore method.notFound
+            $message->setRunned(true);
         }
 
         if (Constant::isCoroutineServer()) {
