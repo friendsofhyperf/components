@@ -17,9 +17,12 @@ hero:
 features:
   - title: Sentry
     details: The sentry component for Hyperf.
+    link: /zh_CN/docs/sentry/
   - title: Telecope
     details: An elegant debug assistant for Hyperf.
+    link: /zh_CN/docs/telescope/
   - title: Tinker
     details: The Powerful REPL for Hyperf.
+    link: /zh_CN/docs/tinker/
 ---
 
