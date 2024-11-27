@@ -1,4 +1,6 @@
-# ipc-broadcaster
+# Icp Broadcaster
+
+Icp Broadcaster component for Hyperf.
 
 ## 安装
 
@@ -6,3 +8,38 @@
 composer require friendsofhyperf/ipc-broadcaster
 ```
 
+## 使用
+
+- 闭包
+
+```php
+use function FriendsOfHyperf\IpcBroadcaster\broadcast;
+
+broadcast(function () {
+    echo 'Hello world';
+});
+```
+
+- 类
+
+```php
+namespace App\Broadcasting;
+
+class FooMessage extends IcpMessage
+{
+    public function __construct(private string $foo)
+    {
+        //
+    }
+
+    public function handle(): void
+    {
+        echo $this->foo;
+    }
+}
+
+use function FriendsOfHyperf\IpcBroadcaster\broadcast;
+
+broadcast(new FooMessage('bar'));
+
+```
