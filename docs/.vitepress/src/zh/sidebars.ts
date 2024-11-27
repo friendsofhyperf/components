@@ -21,14 +21,14 @@ const sidebar:DefaultTheme.Sidebar = {
             ]
         }
     ],
-    '/zh_CN/reference/':[
+    '/zh_CN/docs/':[
         {
             text: 'Amqp Job',
-            link: '/zh_CN/reference/amqp-job'
+            link: '/zh_CN/docs/amqp-job'
         },
         {
             text: 'Cache',
-            link: '/zh_CN/reference/cache'
+            link: '/zh_CN/docs/cache'
         }
     ]
 }
