@@ -1,10 +1,10 @@
-# Icp Broadcaster
+# Ipc Broadcaster
 
 [![Latest Version](https://img.shields.io/packagist/v/friendsofhyperf/ipc-broadcaster.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/ipc-broadcaster)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/ipc-broadcaster.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/ipc-broadcaster)
 [![GitHub license](https://img.shields.io/github/license/friendsofhyperf/ipc-broadcaster)](https://github.com/friendsofhyperf/ipc-broadcaster)
 
-Icp Broadcaster component for Hyperf.
+Ipc Broadcaster component for Hyperf.
 
 ## Installation
 
@@ -31,7 +31,7 @@ broadcast(function () {
 ```php
 namespace App\Broadcasting;
 
-class FooMessage extends IcpMessage
+class FooMessage extends IpcMessage
 {
     public function __construct(private string $foo)
     {

@@ -45,7 +45,7 @@ Relation::morphMap([
 ]);
 ```
 
-## 之后用法
+## 现在用法
 
 ```php
 <?php
