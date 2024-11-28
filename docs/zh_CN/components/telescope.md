@@ -26,14 +26,20 @@ php bin/hyperf.php vendor:publish friendsofhyperf/telescope
 ```
 
 运行 `migrate` 命令执行数据库变更来创建和保存 Telescope 需要的数据
+
 ```shell
 php bin/hyperf.php migrate
 ```
-# 使用
+
+## 使用
+
 > 监听器和中间件，二选一即可
-## 请求监听器
+
+### 请求监听器
+
 在 `config/autoload/listeners.php`配置文件添加监听器
-```
+
+```php
 <?php
 
 use FriendsOfHyperf\Telescope\Listener\RequestHandledListener;
@@ -44,11 +50,13 @@ return [
 
 ```
 
-## 中间件
+### 中间件
+
 在 `config/autoload/middlewares.php`配置文件加上全局中间件
 
 如需记录http请求，请使用`http`中间件
-```
+
+```php
 <?php
 
 use FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware;
@@ -61,7 +69,8 @@ return [
 ```
 
 如需记录gRPC请求，请使用`grpc`中间件
-```
+
+```php
 <?php
 
 use FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware;
@@ -78,8 +87,10 @@ return [
 `http://127.0.0.1:9509/telescope/requests`
 
 ## 数据库配置
+
 在 `config/autoload/telescope.php`管理数据库连接配置，默认使用`default`连接
-```
+
+```php
 'connection' => env('TELESCOPE_DB_CONNECTION', 'default'),
 ```
 

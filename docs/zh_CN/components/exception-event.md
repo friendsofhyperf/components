@@ -5,4 +5,3 @@
 ```shell
 composer require friendsofhyperf/exception-event
 ```
-
