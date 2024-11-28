@@ -5,6 +5,7 @@ import enGetConfig from "./src/en/config";
 import zhGetConfig from "./src/zh/config";
 import zhGetSidebar from "./src/zh/sidebars";
 import enGetSidebar from "./src/en/sidebars";
+import taskLists from 'markdown-it-task-lists' 
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -30,6 +31,12 @@ export default defineConfig({
           level:[2 ,4],
         },
       }
+    }
+  },
+  markdown: {
+    config: (md) => {
+      // use more markdown-it plugins!
+      md.use(taskLists)
     }
   },
   sitemap: {
