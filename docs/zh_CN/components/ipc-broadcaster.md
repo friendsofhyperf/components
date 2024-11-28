@@ -1,6 +1,6 @@
-# Icp Broadcaster
+# Ipc Broadcaster
 
-Icp Broadcaster component for Hyperf.
+Ipc Broadcaster component for Hyperf.
 
 ## 安装
 
@@ -25,7 +25,7 @@ broadcast(function () {
 ```php
 namespace App\Broadcasting;
 
-class FooMessage extends IcpMessage
+class FooMessage extends IpcMessage
 {
     public function __construct(private string $foo)
     {

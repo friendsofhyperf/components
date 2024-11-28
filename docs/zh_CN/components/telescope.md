@@ -45,7 +45,7 @@ php bin/hyperf.php migrate
 use FriendsOfHyperf\Telescope\Listener\RequestHandledListener;
 
 return [
-    FailToHandleListener::class,
+    RequestHandledListener::class,
 ];
 
 ```
