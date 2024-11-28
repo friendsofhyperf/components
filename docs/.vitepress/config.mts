@@ -101,10 +101,6 @@ export default defineConfig({
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/friendsofhyperf/components' },
-    ],
-
-    markdown: {
-      plugins: ['task-lists']
-    }
+    ]
   }
 })

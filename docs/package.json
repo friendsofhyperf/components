@@ -1,7 +1,4 @@
 {
-  "dependencies": {
-    "markdown-it-task-lists": "^2.1.0"
-  },
   "devDependencies": {
     "vite": "^6.0.0",
     "vitepress": "^1.5.0"
