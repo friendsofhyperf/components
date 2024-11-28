@@ -5,7 +5,7 @@ layout: home
 hero:
   name: "FriendsOfHyperf"
   text: "Hyperf 组件生态"
-  tagline: "让 Hyperf 更好用，更好玩"
+  tagline: "让 Hyperf 更好用，更好玩 🚀"
   actions:
     - theme: brand
       text: 入门
