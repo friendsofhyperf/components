@@ -32,6 +32,9 @@ export default defineConfig({
       }
     }
   },
+  sitemap: {
+    hostname: 'https://hyperf.fans'
+  },
   themeConfig: {
     outline:{
       label: '页面导航',
@@ -98,10 +101,6 @@ export default defineConfig({
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/friendsofhyperf/components' },
-    ],
-
-    sitemap: {
-      hostname: 'https://hyperf.fans'
-    }
+    ]
   }
 })
