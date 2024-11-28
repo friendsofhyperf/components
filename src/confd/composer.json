@@ -16,6 +16,7 @@
     "support": {
         "issues": "https://github.com/friendsofhyperf/components/issues",
         "source": "https://github.com/friendsofhyperf/components",
+        "docs": "https://hyperf.fans",
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
