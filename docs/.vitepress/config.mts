@@ -98,6 +98,10 @@ export default defineConfig({
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/friendsofhyperf/components' },
-    ]
+    ],
+
+    sitemap: {
+      hostname: 'https://hyperf.fans'
+    }
   }
 })
