@@ -4,8 +4,8 @@ layout: home
 
 hero:
   name: "FriendsOfHyperf"
-  text: "Hyperf 组件生态"
-  tagline: "让 Hyperf 更好用，更好玩 🚀"
+  text: "最受欢迎的 Hyperf 组件"
+  tagline: "让 Hyperf 像 Laravel 一样简单且强大 🚀"
   actions:
     # - theme: brand
     #   text: 入门
@@ -19,16 +19,16 @@ hero:
 
 features:
   - title: Sentry
-    details: This is the Hyperf SDK for Sentry.
+    details: 这是 Sentry 的 Hyperf SDK。
     link: /zh_CN/components/sentry/
   - title: Telecope
-    details: Telescope is an elegant debug assistant for the Hyperf framework.
+    details: Telescope 是 Hyperf 框架的优雅调试助手。
     link: /zh_CN/components/telescope/
   - title: Tinker
-    details: Tinker is a powerful REPL for the Hyperf framework.
+    details: Tinker 是 Hyperf 框架的强大 REPL。
     link: /zh_CN/components/tinker/
   - title: More
-    details: More components.
+    details: 更多组件…
     link: /zh_CN/components/
 ---
 
