@@ -28,10 +28,10 @@ features:
     details: Tinker 是 Hyperf 框架的强大 REPL。
     link: /zh_CN/components/tinker/
   - title: Encryption
-    details: 提供了一个简单、方便的加密和解密功能。
+    details: Encryption 提供了一个简单、方便的加密和解密功能。
     link: /zh_CN/components/encryption/
   - title: Cache
-    details: 提供了一个富有表现力的统一缓存 API。
+    details: Cache 提供了一个富有表现力的统一缓存 API。
     link: /zh_CN/components/cache/
   - title: More
     details: 更多组件…
