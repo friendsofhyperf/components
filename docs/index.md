@@ -33,6 +33,12 @@ features:
   - title: Cache
     details: Cache 提供了一个富有表现力的统一缓存 API。
     link: /zh_CN/components/cache/
+  - title: HttpClient
+    details: HttpClient 提供了一个简单、方便的 HTTP 客户端。
+    link: /zh_CN/components/http-client/
+  - title: Validated DTO
+    details: Validated DTO 提供了一个简单、方便的数据验证功能。
+    link: /zh_CN/components/validated-dto/
   - title: More
     details: 更多组件…
     link: /zh_CN/components/
