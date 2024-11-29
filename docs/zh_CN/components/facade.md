@@ -9,7 +9,7 @@ composer require friendsofhyperf/facade
 ## 支持组件
 
 - [x] AMQP
-- [x] App
+- [x] App (DI alias)
 - [x] AsyncQueue
 - [x] Cache
 - [x] Config

@@ -2,7 +2,7 @@
 
 **Compoships** 提供了在 Hyperf 的 Model ORM 中基于两个（或更多）列指定关系的能力。当处理第三方或预先存在的模式/数据库时，通常会出现需要在 Eloquent 关系的定义中匹配多个列的情况。
 
-## The problem
+## 问题
 
 Eloquent 不支持复合键。因此，无法通过匹配多个列来定义从一个模型到另一个模型的关系。尝试使用 `where` 子句（如下例所示）在预加载关系时不起作用，因为在处理关系时 **$this->team_id** 为 null。
 
@@ -23,7 +23,7 @@ class User extends Model
 
 ## 安装
 
-推荐的安装 **Compoships** 的方法是通过 [Composer](http://getcomposer.org/)
+推荐通过 [Composer](http://getcomposer.org/) 安装 **Compoships** 组件。
 
 ```shell
 composer require friendsofhyperf/compoships

@@ -2,11 +2,6 @@
 
 The signals component for Hyperf Command.
 
-## 依赖
-
-- PHP >= 8.0
-- Hyperf >= 3.1
-
 ## 安装
 
 ```shell

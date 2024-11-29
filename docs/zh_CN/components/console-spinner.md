@@ -21,11 +21,6 @@ class FooCommand extends Command
 {
     use Spinnerable;
 
-    /**
-     * Execute the console command.
-     *
-     * @return void
-     */
     public function handle()
     {
         $spinner = $this->spinner($users->count());
@@ -34,7 +29,6 @@ class FooCommand extends Command
         
         foreach ($users as $user) {
             // Do your stuff...
-            
             $spinner->advance();
         }
 

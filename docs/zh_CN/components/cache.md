@@ -8,7 +8,7 @@ composer require friendsofhyperf/cache
 
 ## 用法
 
-- 注解
+### 注解
 
 ```php
 namespace App\Controller;
@@ -31,7 +31,7 @@ class IndexController
 }
 ```
 
-- 门面
+### 门面
 
 ```php
 use FriendsOfHyperf\Cache\Facade\Cache;
@@ -41,7 +41,7 @@ Cache::remember($key, $ttl=60, function() {
 });
 ```
 
-- 切换驱动
+### 切换驱动
 
 ```php
 use FriendsOfHyperf\Cache\Facade\Cache;

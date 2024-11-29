@@ -2,11 +2,6 @@
 
 The confd component for Hyperf.
 
-## 依赖
-
-- PHP >= 8.0
-- Hyperf >= 3.0
-
 ## 安装
 
 ```shell
