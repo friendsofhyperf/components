@@ -30,8 +30,7 @@ if [[ $# -eq 0 ]]; then
     REPOS=$(ls $BASEPATH)
 fi
 
-# Append .github to REPOS
-REPOS="$REPOS .github"
+split "src/.github" "git@github.com:friendsofhyperf/.github.git"
 
 for REPO in $REPOS ; do
     remote $REPO git@github.com:friendsofhyperf/${REPO}.git
