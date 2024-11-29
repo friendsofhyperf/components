@@ -1,6 +1,6 @@
 # Fast Paginate
 
-> Fork from https://github.com/hammerstonedev/fast-paginate
+> Forked from [hammerstonedev/fast-paginate](https://github.com/hammerstonedev/fast-paginate)
 
 ## 关于
 

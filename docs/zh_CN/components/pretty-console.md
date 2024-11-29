@@ -2,7 +2,7 @@
 
 The pretty console component for Hyperf.
 
-[![image](https://user-images.githubusercontent.com/5457236/178333036-b11abb56-ba70-4c0d-a2f6-79afe3a0a78c.png)](#)
+![Pretty Console](https://user-images.githubusercontent.com/5457236/178333036-b11abb56-ba70-4c0d-a2f6-79afe3a0a78c.png)
 
 ## 安装
 

@@ -2,7 +2,7 @@
 
 ## 官方文档
 
-https://wendell-adriel.gitbook.io/laravel-validated-dto
+[Laravel Validated DTO 官方文档](https://wendell-adriel.gitbook.io/laravel-validated-dto)
 
 ## 安装
 
