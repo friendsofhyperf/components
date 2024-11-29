@@ -19,13 +19,13 @@ hero:
 
 features:
   - title: Sentry
-    details: The sentry component for Hyperf.
+    details: This is the Hyperf SDK for Sentry.
     link: /zh_CN/components/sentry/
   - title: Telecope
-    details: An elegant debug assistant for Hyperf.
+    details: Telescope is an elegant debug assistant for the Hyperf framework.
     link: /zh_CN/components/telescope/
   - title: Tinker
-    details: The Powerful REPL for Hyperf.
+    details: Tinker is a powerful REPL for the Hyperf framework.
     link: /zh_CN/components/tinker/
   - title: More
     details: More components.
