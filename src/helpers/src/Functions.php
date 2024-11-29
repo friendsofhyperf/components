@@ -232,6 +232,7 @@ function dispatch($job, ...$arguments)
 /**
  * @param mixed $environments
  * @return bool|Environment
+ * @deprecated since 3.1, use `Str::is($patterns, env('APP_ENV'))` instead, will removed in 3.2.
  */
 function environment(...$environments)
 {
