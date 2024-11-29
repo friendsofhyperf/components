@@ -1,9 +1,9 @@
 import {DefaultTheme} from "vitepress";
 
 const nav:DefaultTheme.NavItem[] = [
-    // { text: 'Guide', link: '/en/guide/' },
-    { text: 'Components', link: '/en/components/' },
-    { text: 'FAQ', link: '/en/faq/index' },
+    // { text: 'Guide', link: '/zh_CN/guide/' },
+    { text: 'Components', link: '/zh_CN/components/' },
+    { text: 'FAQ', link: '/zh_CN/faq/index' },
     { text: 'Hyperf', link: 'https://hyperf.wiki/' }
 ]
 

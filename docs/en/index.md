@@ -8,7 +8,7 @@ hero:
   tagline: "Make Hyperf as simple and powerful as Laravel 🚀"
   actions:
     # - theme: brand
-    #   text: 入门
+    #   text: Guide
     #   link: /zh_CN/guide/
     - theme: brand
       text: Components
