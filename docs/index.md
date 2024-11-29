@@ -7,10 +7,10 @@ hero:
   text: "Hyperf 组件生态"
   tagline: "让 Hyperf 更好用，更好玩 🚀"
   actions:
+    # - theme: brand
+    #   text: 入门
+    #   link: /zh_CN/guide/
     - theme: brand
-      text: 入门
-      link: /zh_CN/guide/
-    - theme: alt
       text: 组件
       link: /zh_CN/components/
     - theme: alt
