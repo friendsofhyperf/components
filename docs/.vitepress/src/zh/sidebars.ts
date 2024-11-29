@@ -21,6 +21,19 @@ const sidebar:DefaultTheme.Sidebar = {
     //         ]
     //     }
     // ],
+    '/zh_CN/faq/':[{
+        text: '常见问题',
+        items: [
+            {
+                text: '关于 FriendsOfHyperf',
+                link: '/zh_CN/faq/about'
+            },
+            {
+                text: '如何使用',
+                link: '/zh_CN/faq/how-to-use'
+            }
+        ]
+    }],
     '/zh_CN/components/':[
         {
             text: '组件',
