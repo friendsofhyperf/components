@@ -39,6 +39,9 @@ features:
   - title: Validated DTO
     details: Validated DTO 提供了一个简单、方便的数据验证功能。
     link: /zh_CN/components/validated-dto/
+  - title: Lock
+    details: Lock 提供了一个简单、方便的分布式锁功能。
+    link: /zh_CN/components/lock/
   - title: More
     details: 更多组件…
     link: /zh_CN/components/
