@@ -1,4 +1,4 @@
-# pest-plugin-hyperf
+# Pest Plugin Hyperf
 
 > 这是一个 [Pest](https://pestphp.com) 插件，使您的 Hyperf 项目的 Pest 能够在基于 Swoole 的协程环境中运行。
 

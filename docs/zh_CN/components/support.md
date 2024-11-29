@@ -1,4 +1,4 @@
-# support
+# Support
 
 ## 安装
 

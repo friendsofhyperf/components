@@ -1,4 +1,4 @@
-# model-hashids
+# Model Hashids
 
 使用 hashids 代替 URL 和列表项中的整数 ID 可以更具吸引力和巧妙。更多信息请访问 [hashids.org](https://hashids.org/)。
 

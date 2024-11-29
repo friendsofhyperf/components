@@ -1,4 +1,4 @@
-# exception-event
+# Exception Event
 
 ## 安装
 

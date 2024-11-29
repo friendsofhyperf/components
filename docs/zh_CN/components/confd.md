@@ -1,4 +1,4 @@
-# confd
+# Confd
 
 The confd component for Hyperf.
 

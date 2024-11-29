@@ -1,4 +1,4 @@
-# Hyperf grpc-validation
+# Grpc Validation
 
 The GRPC validation component for Hyperf.
 

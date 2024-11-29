@@ -1,4 +1,4 @@
-# model-factory
+# Model Factory
 
 ## Installation
 

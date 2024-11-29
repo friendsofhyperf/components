@@ -1,4 +1,4 @@
-# ide-helper
+# IDE Helper
 
 The ide-helper component for Hyperf.
 

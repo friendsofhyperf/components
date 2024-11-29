@@ -1,4 +1,4 @@
-# model-scope
+# Model Scope
 
 The model scope annotation for Hyperf.
 

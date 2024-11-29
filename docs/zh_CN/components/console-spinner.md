@@ -1,4 +1,4 @@
-# console-spinner
+# Console Spinner
 
 The progress bar component For Hyperf.
 

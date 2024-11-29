@@ -1,4 +1,4 @@
-# Hyperf OpenAI Client
+# OpenAI Client
 
 ------
 

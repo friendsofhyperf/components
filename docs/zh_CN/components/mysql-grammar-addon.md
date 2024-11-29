@@ -1,4 +1,4 @@
-# mysql-grammar-addon
+# Mysql Grammar Addon
 
 The MySqlGrammar addon for Hyperf.
 

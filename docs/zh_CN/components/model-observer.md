@@ -1,4 +1,4 @@
-# model-observer
+# Model Observer
 
 The model observer component for Hyperf.
 

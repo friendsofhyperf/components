@@ -1,4 +1,4 @@
-# 验证的 DTO
+# Validated DTO
 
 ## 官方文档
 
