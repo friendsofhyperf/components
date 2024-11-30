@@ -28,9 +28,9 @@
         }
     ],
     "require": {
+        "hyperf/collection": "~3.1.0",
+        "hyperf/config": "~3.1.0",
         "hyperf/support": "~3.1.0",
-        "hyperf/cookie": "~3.1.0",
-        "hyperf/session": "~3.1.0",
         "friendsofhyperf/tinker": "~3.1.0"
     },
     "autoload": {

@@ -14,24 +14,38 @@ namespace FriendsOfHyperf\WebTinker\Http\Controllers;
 use FriendsOfHyperf\WebTinker\Tinker;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\HttpServer\Contract\RequestInterface;
+use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
-
-use function Hyperf\ViewEngine\view;
 
 class WebTinkerController
 {
+    protected ?string $blade = null;
+
     public function __construct(
         protected ConfigInterface $config,
+        protected RequestInterface $request,
+        protected ResponseInterface $response,
         protected ValidatorFactoryInterface $validatorFactory
     ) {
     }
 
     public function index()
     {
-        return view('web-tinker::web-tinker', [
-            'path' => $this->config->get('web-tinker.path'),
-            'theme' => $this->config->get('web-tinker.theme'),
-        ]);
+        if (! $this->blade) {
+            $this->blade = file_get_contents(__DIR__ . '/../../../resources/views/web-tinker.blade.php');
+        }
+
+        $path = $this->request->input('path') ?: $this->config->get('web-tinker.path', '/web-tinker');
+        $theme = $this->request->input('theme') ?: $this->config->get('web-tinker.theme', 'dark');
+
+        $variables = [
+            '{{ $path }}' => $path,
+            '{{ $theme }}' => $theme,
+        ];
+
+        $contents = strtr($this->blade, $variables);
+
+        return $this->response->html($contents);
     }
 
     public function execute(RequestInterface $request, Tinker $tinker)

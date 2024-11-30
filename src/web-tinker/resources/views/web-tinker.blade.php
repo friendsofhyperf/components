@@ -8,7 +8,7 @@
 
     <!-- Style sheets-->
     <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400,400i,600" rel="stylesheet">
-    <link href='{{ asset(mix('app.css', 'vendor/web-tinker')) }}' rel='stylesheet' type='text/css'>
+    <link href='{{ $path }}/app.css' rel='stylesheet' type='text/css'>
 </head>
 <body>
 
@@ -16,6 +16,6 @@
     <tinker path="{{ $path }}"></tinker>
 </div>
 
-<script src="{{ asset(mix('app.js', 'vendor/web-tinker')) }}"></script>
+<script src="{{ $path }}/app.js"></script>
 </body>
 </html>
