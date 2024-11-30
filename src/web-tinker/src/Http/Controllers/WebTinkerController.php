@@ -16,17 +16,23 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
+use Psr\Container\ContainerInterface;
 
 class WebTinkerController
 {
+    protected ?ValidatorFactoryInterface $validatorFactory = null;
+
     protected ?string $blade = null;
 
     public function __construct(
+        protected ContainerInterface $container,
         protected ConfigInterface $config,
         protected RequestInterface $request,
-        protected ResponseInterface $response,
-        protected ValidatorFactoryInterface $validatorFactory
+        protected ResponseInterface $response
     ) {
+        if ($container->has(ValidatorFactoryInterface::class)) {
+            $this->validatorFactory = $container->get(ValidatorFactoryInterface::class);
+        }
     }
 
     public function index()
@@ -50,14 +56,18 @@ class WebTinkerController
 
     public function execute(RequestInterface $request, Tinker $tinker)
     {
-        $validator = $this->validatorFactory->make(
-            $request->all(),
-            [
-                'code' => 'required',
-            ]
-        );
+        if ($this->validatorFactory) {
+            $validator = $this->validatorFactory->make(
+                $request->all(),
+                [
+                    'code' => 'required',
+                ]
+            );
 
-        $validated = $validator->validate();
+            $validated = $validator->validate();
+        } else {
+            $validated = $request->all();
+        }
 
         return $tinker->execute($validated['code']);
     }

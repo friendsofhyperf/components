@@ -20,7 +20,7 @@ class ConfigProvider
                 Console\InstallCommand::class,
             ],
             'listeners' => [
-                Listener\RegisterRoutesListener::class,
+                Listener\RegisterRoutesListener::class => -1,
             ],
             'publish' => [
                 [

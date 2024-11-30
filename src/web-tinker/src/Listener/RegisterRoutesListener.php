@@ -16,11 +16,13 @@ use FriendsOfHyperf\WebTinker\Http\Middleware\Authorize;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
+use Hyperf\HttpServer\Router\DispatcherFactory;
 use Hyperf\HttpServer\Router\Router;
 
 class RegisterRoutesListener implements ListenerInterface
 {
     public function __construct(
+        protected DispatcherFactory $dispatcherFactory,
         protected ConfigInterface $config
     ) {
     }
@@ -37,14 +39,14 @@ class RegisterRoutesListener implements ListenerInterface
         $prefix = $this->config->get('web-tinker.path', '/web-tinker');
 
         Router::addGroup($prefix, function () {
-            Router::get('app.js', function () {
-                return file_get_contents(__DIR__ . '/../public/app.js');
+            Router::get('/app.js', function () {
+                return file_get_contents(__DIR__ . '/../../public/app.js');
             });
-            Router::get('app.css', function () {
-                return file_get_contents(__DIR__ . '/../public/app.css');
+            Router::get('/app.css', function () {
+                return file_get_contents(__DIR__ . '/../../public/app.css');
             });
-            Router::get('/', WebTinkerController::class . '@index');
-            Router::post('/', WebTinkerController::class . '@execute');
+            Router::get('', WebTinkerController::class . '@index');
+            Router::post('', WebTinkerController::class . '@execute');
         }, ['middleware' => [Authorize::class]]);
     }
 }

@@ -11,17 +11,17 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\WebTinker\Http\Middleware;
 
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface as HttpResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use function Hyperf\Config\config;
-
 class Authorize implements MiddlewareInterface
 {
     public function __construct(
+        protected ConfigInterface $config,
         protected HttpResponse $response
     ) {
     }
@@ -35,7 +35,7 @@ class Authorize implements MiddlewareInterface
 
     protected function allowedToUseTinker(): bool
     {
-        if (! config('web-tinker.enabled')) {
+        if (! $this->config->get('web-tinker.enabled', true)) {
             return false;
         }
 
