@@ -15,9 +15,7 @@ use FriendsOfHyperf\WebTinker\Tinker;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
-use PSpell\Config;
 
-use function Hyperf\Config\config;
 use function Hyperf\ViewEngine\view;
 
 class WebTinkerController
