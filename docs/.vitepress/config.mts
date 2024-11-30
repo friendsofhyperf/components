@@ -1,10 +1,10 @@
 import { defineConfig } from 'vitepress'
-import enGetNavs from "./src/en/nav";
-import zhGetNavs from "./src/zh/nav";
 import enGetConfig from "./src/en/config";
-import zhGetConfig from "./src/zh/config";
-import zhGetSidebar from "./src/zh/sidebars";
+import enGetNavs from "./src/en/nav";
 import enGetSidebar from "./src/en/sidebars";
+import zhGetConfig from "./src/zh/config";
+import zhGetNavs from "./src/zh/nav";
+import zhGetSidebar from "./src/zh/sidebars";
 import taskLists from 'markdown-it-task-lists' 
 
 // https://vitepress.dev/reference/site-config
