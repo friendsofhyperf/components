@@ -29,7 +29,7 @@ return [
 
     /*
     * This class can modify the output returned by Tinker. You can replace this with
-    * any class that implements \Spatie\WebTinker\OutputModifiers\OutputModifier.
+    * any class that implements \FriendsOfHyperf\WebTinker\OutputModifiers\OutputModifier.
     */
     'output_modifier' => FriendsOfHyperf\WebTinker\OutputModifiers\PrefixDateTime::class,
 

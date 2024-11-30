@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\WebTinker;
 
+use Hyperf\Contract\ConfigInterface;
+
 class ConfigProvider
 {
     public function __invoke()
@@ -18,6 +20,13 @@ class ConfigProvider
         return [
             'commands' => [
                 Console\InstallCommand::class,
+            ],
+            'dependencies' => [
+                OutputModifiers\OutputModifier::class => function ($container) {
+                    $config = $container->get(ConfigInterface::class);
+                    $outputModifier = $config->get('web-tinker.output_modifier', OutputModifiers\PrefixDateTime::class);
+                    return $container->get($outputModifier);
+                },
             ],
             'listeners' => [
                 Listener\RegisterRoutesListener::class => -1,
