@@ -12,8 +12,10 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\WebTinker\Http\Controllers;
 
 use FriendsOfHyperf\WebTinker\Tinker;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
+use PSpell\Config;
 
 use function Hyperf\Config\config;
 use function Hyperf\ViewEngine\view;
@@ -21,6 +23,7 @@ use function Hyperf\ViewEngine\view;
 class WebTinkerController
 {
     public function __construct(
+        protected ConfigInterface $config,
         protected ValidatorFactoryInterface $validatorFactory
     ) {
     }
@@ -28,7 +31,8 @@ class WebTinkerController
     public function index()
     {
         return view('web-tinker::web-tinker', [
-            'path' => config('web-tinker.path'),
+            'path' => $this->config->get('web-tinker.path'),
+            'theme' => $this->config->get('web-tinker.theme'),
         ]);
     }
 
