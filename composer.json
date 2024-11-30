@@ -156,7 +156,8 @@
         "friendsofhyperf/telescope": "*",
         "friendsofhyperf/tinker": "*",
         "friendsofhyperf/trigger": "*",
-        "friendsofhyperf/validated-dto": "*"
+        "friendsofhyperf/validated-dto": "*",
+        "friendsofhyperf/web-tinker": "*"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -207,6 +208,7 @@
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
             "FriendsOfHyperf\\Trigger\\": "src/trigger/src/",
             "FriendsOfHyperf\\ValidatedDTO\\": "src/validated-dto/src/",
+            "FriendsOfHyperf\\WebTinker\\": "src/web-tinker/src/",
             "Pest\\Hyperf\\": "src/pest-plugin-hyperf/src/"
         },
         "files": [
@@ -284,7 +286,8 @@
                 "FriendsOfHyperf\\Telescope\\ConfigProvider",
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
                 "FriendsOfHyperf\\Trigger\\ConfigProvider",
-                "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider"
+                "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider",
+                "FriendsOfHyperf\\WebTinker\\ConfigProvider"
             ]
         }
     },
