@@ -8,6 +8,12 @@
         "debug",
         "development"
     ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "docs": "https://hyperf.fans",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
     "license": "MIT",
     "authors": [
         {
@@ -41,11 +47,5 @@
         }
     },
     "minimum-stability": "dev",
-    "prefer-stable": true,
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components",
-        "docs": "https://hyperf.fans",
-        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
-    }
+    "prefer-stable": true
 }
