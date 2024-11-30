@@ -15,9 +15,9 @@ use Hyperf\Command\Command;
 
 class InstallCommand extends Command
 {
-    protected $signature = 'web-tinker:install';
+    protected ?string $signature = 'web-tinker:install';
 
-    protected $description = 'Install all of the Web Tinker resources';
+    protected string $description = 'Install all of the Web Tinker resources';
 
     public function handle()
     {
@@ -25,7 +25,6 @@ class InstallCommand extends Command
 
         $this->call('vendor:publish', [
             'package' => 'friendsofhyperf/web-tinker',
-            '--tag' => 'web-tinker-assets',
         ]);
 
         $this->info('Web tinker installed successfully.');

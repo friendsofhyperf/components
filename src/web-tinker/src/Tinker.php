@@ -32,7 +32,7 @@ class Tinker
     /** @var \Psy\Shell */
     protected $shell;
 
-    /** @var \Spatie\WebTinker\OutputModifiers\OutputModifier */
+    /** @var \FriendsOfHyperf\WebTinker\OutputModifiers\OutputModifier */
     protected $outputModifier;
 
     public function __construct(OutputModifier $outputModifier)
