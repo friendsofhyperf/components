@@ -42,7 +42,7 @@ class WebTinkerController
         }
 
         $path = $this->request->input('path') ?: $this->config->get('web-tinker.path', '/tinker');
-        $theme = $this->request->input('theme') ?: $this->config->get('web-tinker.theme', 'dark');
+        $theme = $this->request->input('theme') ?: $this->config->get('web-tinker.theme', 'auto');
 
         $variables = [
             '{{ $path }}' => $path,
