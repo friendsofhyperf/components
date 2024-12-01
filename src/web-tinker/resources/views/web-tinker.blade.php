@@ -8,7 +8,7 @@
 
     <!-- Style sheets-->
     <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono:400,400i,600" rel="stylesheet">
-    <link href='{{ $path }}/public/app.css' rel='stylesheet' type='text/css'>
+    <link href='{{ $path }}/public/app.css?id={{ $id }}' rel='stylesheet' type='text/css'>
 </head>
 <body>
 
@@ -16,6 +16,6 @@
     <tinker path="{{ $path }}"></tinker>
 </div>
 
-<script src="{{ $path }}/public/app.js"></script>
+<script src="{{ $path }}/public/app.js?id={{ $id }}"></script>
 </body>
 </html>

@@ -41,12 +41,13 @@ class WebTinkerController
             $this->blade = file_get_contents(__DIR__ . '/../../../resources/views/web-tinker.blade.php');
         }
 
-        $path = $this->request->input('path') ?: $this->config->get('web-tinker.path', '/web-tinker');
+        $path = $this->request->input('path') ?: $this->config->get('web-tinker.path', '/tinker');
         $theme = $this->request->input('theme') ?: $this->config->get('web-tinker.theme', 'dark');
 
         $variables = [
             '{{ $path }}' => $path,
             '{{ $theme }}' => $theme,
+            '{{ $id }}' => uniqid()
         ];
 
         $contents = strtr($this->blade, $variables);

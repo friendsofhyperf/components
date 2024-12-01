@@ -38,7 +38,7 @@ class RegisterRoutesListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        $prefix = $this->config->get('web-tinker.path', '/web-tinker');
+        $prefix = $this->config->get('web-tinker.path', '/tinker');
 
         Router::addGroup($prefix, function () {
             Router::get('', WebTinkerController::class . '@index');
