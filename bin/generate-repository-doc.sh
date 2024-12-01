@@ -16,7 +16,7 @@ function init()
 
     local DOC_FILE=$DOC_PATH/$REPO.md
 
-    if [ ! -f $DOC_PATH/index.md ]; then
+    if [ ! -f $DOC_FILE ]; then
         echo "# $REPO" > $DOC_FILE
         echo "" >> $DOC_FILE
         echo "## 安装" >> $DOC_FILE

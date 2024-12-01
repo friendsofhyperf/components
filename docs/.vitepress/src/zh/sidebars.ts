@@ -221,6 +221,10 @@ const sidebar:DefaultTheme.Sidebar = {
                 {
                     text: 'Validated DTO',
                     link: '/zh_CN/components/validated-dto.md'
+                },
+                {
+                    text: 'Web Tinker',
+                    link: '/en/components/web-tinker.md'
                 }
             ]
         }
