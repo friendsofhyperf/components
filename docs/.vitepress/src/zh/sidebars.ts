@@ -224,7 +224,7 @@ const sidebar:DefaultTheme.Sidebar = {
                 },
                 {
                     text: 'Web Tinker',
-                    link: '/en/components/web-tinker.md'
+                    link: '/zh_CN/components/web-tinker.md'
                 }
             ]
         }
