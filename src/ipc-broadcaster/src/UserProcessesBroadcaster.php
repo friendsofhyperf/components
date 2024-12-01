@@ -50,8 +50,11 @@ class UserProcessesBroadcaster implements BroadcasterInterface
             $processes = ProcessCollector::all();
         }
 
-        foreach ($processes as $process) {
-            $process->write(serialize($message));
+        if ($processes) {
+            $serializeMessage = serialize($message);
+            foreach ($processes as $process) {
+                $process->write($serializeMessage);
+            }
         }
     }
 }
