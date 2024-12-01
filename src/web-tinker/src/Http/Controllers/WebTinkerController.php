@@ -24,6 +24,9 @@ class WebTinkerController
 
     protected ?string $blade = null;
 
+    private array $staticFiles = [];
+    private string $staticId;
+
     public function __construct(
         protected ContainerInterface $container,
         protected ConfigInterface $config,
@@ -33,6 +36,7 @@ class WebTinkerController
         if ($container->has(ValidatorFactoryInterface::class)) {
             $this->validatorFactory = $container->get(ValidatorFactoryInterface::class);
         }
+        $this->staticId = uniqid();
     }
 
     public function index()
@@ -47,7 +51,7 @@ class WebTinkerController
         $variables = [
             '{{ $path }}' => $path,
             '{{ $theme }}' => $theme,
-            '{{ $id }}' => uniqid(),
+            '{{ $id }}' => $this->staticId,
         ];
 
         $contents = strtr($this->blade, $variables);
@@ -71,5 +75,16 @@ class WebTinkerController
         }
 
         return $tinker->execute($validated['code']);
+    }
+
+    public function renderStaticFile(RequestInterface $request, ResponseInterface $response)
+    {
+        $file = sprintf('%s/public/%s', __DIR__ . '/../../../', $request->route('static'));
+
+        if (! isset($this->staticFiles[$file])) {
+            $this->staticFiles[$file] = file_exists($file) ? file_get_contents($file) : null;
+        }
+
+        return $this->staticFiles[$file] ?: $response->html('')->withStatus(404);
     }
 }

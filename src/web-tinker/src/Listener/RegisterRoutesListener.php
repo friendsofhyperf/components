@@ -16,8 +16,6 @@ use FriendsOfHyperf\WebTinker\Http\Middleware\Authorize;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
-use Hyperf\HttpServer\Contract\RequestInterface;
-use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\HttpServer\Router\DispatcherFactory;
 use Hyperf\HttpServer\Router\Router;
 
@@ -43,13 +41,7 @@ class RegisterRoutesListener implements ListenerInterface
         Router::addGroup($prefix, function () {
             Router::get('', WebTinkerController::class . '@index');
             Router::post('', WebTinkerController::class . '@execute');
-            Router::get('/public/{static}', function (RequestInterface $request, ResponseInterface $response) {
-                $file = __DIR__ . '/../../public/' . $request->route('static');
-                if (file_exists($file)) {
-                    return file_get_contents($file);
-                }
-                return $response->html('')->withStatus(404);
-            });
+            Router::get('/public/{static}', WebTinkerController::class . '@renderStaticFile');
         }, ['middleware' => [Authorize::class]]);
     }
 }
