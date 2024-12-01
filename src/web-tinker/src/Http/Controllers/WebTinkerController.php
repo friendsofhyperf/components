@@ -47,7 +47,7 @@ class WebTinkerController
         $variables = [
             '{{ $path }}' => $path,
             '{{ $theme }}' => $theme,
-            '{{ $id }}' => uniqid()
+            '{{ $id }}' => uniqid(),
         ];
 
         $contents = strtr($this->blade, $variables);
