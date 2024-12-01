@@ -25,6 +25,7 @@ class WebTinkerController
     protected ?string $blade = null;
 
     private array $staticFiles = [];
+
     private string $staticId;
 
     public function __construct(
