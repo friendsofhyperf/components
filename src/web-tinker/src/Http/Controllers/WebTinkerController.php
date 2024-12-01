@@ -80,12 +80,28 @@ class WebTinkerController
 
     public function renderStaticFile(RequestInterface $request, ResponseInterface $response)
     {
-        $file = sprintf('%s/public/%s', __DIR__ . '/../../../', $request->route('static'));
+        $file = realpath(sprintf(
+            '%s/public/%s',
+            __DIR__ . '/../../../',
+            $request->route('static')
+        ));
 
         if (! isset($this->staticFiles[$file])) {
-            $this->staticFiles[$file] = file_exists($file) ? file_get_contents($file) : null;
+            if (! file_exists($file)) {
+                return $response->html('')->withStatus(404);
+            }
+            $this->staticFiles[$file] = [
+                'contents' => file_get_contents($file),
+                'content-type' => match (true) {
+                    str_ends_with($file, '.css') => 'text/css',
+                    str_ends_with($file, '.js') => 'application/javascript',
+                    default => mime_content_type($file),
+                },
+            ];
         }
 
-        return $this->staticFiles[$file] ?: $response->html('')->withStatus(404);
+        return $response
+            ->raw($this->staticFiles[$file]['contents'])
+            ->withHeader('Content-Type', $this->staticFiles[$file]['content-type']);
     }
 }
