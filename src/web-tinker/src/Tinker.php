@@ -16,6 +16,7 @@ use FriendsOfHyperf\WebTinker\OutputModifiers\OutputModifier;
 use Hyperf\Collection\Collection;
 use Hyperf\Database\Model\Model;
 use Psy\Configuration;
+use Psy\ExecutionClosure;
 use Psy\ExecutionLoopClosure;
 use Psy\Shell;
 use Symfony\Component\Console\Application;
@@ -48,9 +49,11 @@ class Tinker
     {
         $phpCode = $this->removeComments($phpCode);
 
-        $this->shell->addInput($phpCode);
+        // $this->shell->addInput($phpCode);
+        $this->shell->addCode($phpCode);
 
-        $closure = new ExecutionLoopClosure($this->shell);
+        // $closure = new ExecutionLoopClosure($this->shell);
+        $closure = new ExecutionClosure($this->shell);
 
         $closure->execute();
 
