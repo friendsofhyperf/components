@@ -133,9 +133,14 @@ class Tinker
 
     protected function cleanOutput(string $output): string
     {
+        // Remove the first line (the command)
         $output = preg_replace('/(?s)(<aside.*?<\/aside>)|Exit:  Ctrl\+D/ms', '$2', $output);
 
+        // Remove the last line (the return value)
         $output = preg_replace('/(?s)(<whisper.*?<\/whisper>)|INFO  Ctrl\+D\./ms', '$2', $output);
+
+        // Remove ANSI color codes
+        $output = preg_replace('/\e\[[0-9;]*m/', '', $output);
 
         return trim($output);
     }
