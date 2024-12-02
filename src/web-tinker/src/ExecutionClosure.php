@@ -22,7 +22,7 @@ class ExecutionClosure extends \Psy\ExecutionClosure
     {
         $this->setClosure($__psysh__, function () use ($__psysh__) {
             // Restore execution scope variables
-            \extract($__psysh__->getScopeVariables(false));
+            // \extract($__psysh__->getScopeVariables(false));
 
             try {
                 try {
