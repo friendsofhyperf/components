@@ -32,10 +32,11 @@ class Tinker
 {
     protected Shell $shell;
 
-    public function __construct(
-        protected OutputModifier $outputModifier,
-        protected BufferedOutput $output
-    ) {
+    protected BufferedOutput $output;
+
+    public function __construct(protected OutputModifier $outputModifier)
+    {
+        $this->output = new BufferedOutput();
         $this->shell = $this->createShell($this->output);
     }
 
