@@ -1,5 +1,9 @@
 # Telescope
 
+[![Latest Version](https://img.shields.io/packagist/v/friendsofhyperf/telescope.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/telescope)
+[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/telescope.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/telescope)
+[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/telescope)](https://github.com/friendsofhyperf/telescope)
+
 An elegant debug assistant for the hyperf framework.
 
 ## Functions
