@@ -209,4 +209,8 @@ interface RequestInterface
      * @param int $default
      */
     public function integer($key, $default = 0): int;
+
+    public function validate(array $rules, array $messages = [], array $customAttributes = []): array;
+
+    public function validateWithBag(string $errorBag, array $rules, array $messages = [], array $customAttributes = []): array;
 }
