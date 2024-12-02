@@ -27,22 +27,13 @@ use function Hyperf\Config\config;
 
 class Tinker
 {
-    /** @var \Symfony\Component\Console\Output\BufferedOutput */
-    protected $output;
+    protected Shell $shell;
 
-    /** @var \Psy\Shell */
-    protected $shell;
-
-    /** @var \FriendsOfHyperf\WebTinker\OutputModifiers\OutputModifier */
-    protected $outputModifier;
-
-    public function __construct(OutputModifier $outputModifier)
-    {
-        $this->output = new BufferedOutput();
-
+    public function __construct(
+        protected OutputModifier $outputModifier,
+        protected BufferedOutput $output
+    ) {
         $this->shell = $this->createShell($this->output);
-
-        $this->outputModifier = $outputModifier;
     }
 
     public function execute(string $phpCode): string
