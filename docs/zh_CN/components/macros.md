@@ -33,6 +33,8 @@ composer require friendsofhyperf/macros
 - `Request::exists`
 - `Request::fake`
 - `Request::filled`
+- `Request::float`
+- `Request::fluent`
 - `Request::getHost`
 - `Request::getHttpHost`
 - `Request::getPort`
