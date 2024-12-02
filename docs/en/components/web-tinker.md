@@ -12,6 +12,12 @@ composer require friendsofhyperf/web-tinker
 php bin/hyperf.php vendor:publish friendsofhyperf/web-tinker
 ```
 
-## Access
+## Start Server
 
-Visit `/tinker` to access the Web Tinker page.
+```shell
+php bin/hyperf.php start
+```
+
+## Visit
+
+Visit `http://127.0.0.1:9501/tinker` to visit the Web Tinker page.
