@@ -14,8 +14,8 @@ composer require friendsofhyperf/macros
 
 ### Hyperf\Collection\Collection
 
-- `Collection::isSingle`
 - `Collection::collapseWithKeys`
+- `Collection::isSingle`
 
 ### Hyperf\Collection\LazyCollection
 
@@ -28,52 +28,52 @@ composer require friendsofhyperf/macros
 - `Request::boolean`
 - `Request::collect`
 - `Request::date`
+- `Request::enum`
 - `Request::except`
+- `Request::exists`
 - `Request::fake`
 - `Request::filled`
-- `Request::hasAny`
-- `Request::isEmptyString`
-- `Request::isNotFilled`
-- `Request::keys`
-- `Request::host`
 - `Request::getHost`
-- `Request::httpHost`
 - `Request::getHttpHost`
 - `Request::getPort`
 - `Request::getPsrRequest`
 - `Request::getScheme`
-- `Request::isSecure`
 - `Request::getSchemeAndHttpHost`
-- `Request::schemeAndHttpHost`
+- `Request::hasAny`
+- `Request::host`
+- `Request::httpHost`
+- `Request::integer`
+- `Request::isEmptyString`
+- `Request::isJson`
+- `Request::isNotFilled`
+- `Request::isSecure`
+- `Request::keys`
 - `Request::merge`
 - `Request::mergeIfMissing`
 - `Request::missing`
 - `Request::only`
+- `Request::schemeAndHttpHost`
+- `Request::str`
+- `Request::string`
+- `Request::validate`
+- `Request::validateWithBag`
 - `Request::wantsJson`
 - `Request::whenFilled`
 - `Request::whenHas`
-- `Request::isJson`
-- `Request::enum`
-- `Request::exists`
-- `Request::str`
-- `Request::string`
-- `Request::integer`
-- `Request::validate`
-- `Request::validateWithBag`
 
 ### Hyperf\Stringable\Str
 
-- `Str::createUuidsUsing`
 - `Str::createUuidsNormally`
+- `Str::createUuidsUsing`
 - `Str::deduplicate`
-- `Str::markdown`
 - `Str::inlineMarkdown`
+- `Str::markdown`
 - `Str::transliterate`
 
 ### Hyperf\Stringable\Stringable
 
 - `Stringable::deduplicate`
-- `Stringable::markdown`
 - `Stringable::inlineMarkdown`
+- `Stringable::markdown`
 - `Stringable::toHtmlString`
 - `Stringable::whenIsAscii`
