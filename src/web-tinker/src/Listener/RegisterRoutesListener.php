@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\WebTinker\Listener;
 
 use FriendsOfHyperf\WebTinker\Controller\WebTinkerController;
-use FriendsOfHyperf\WebTinker\Middleware\Authorize;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
@@ -37,11 +36,12 @@ class RegisterRoutesListener implements ListenerInterface
     public function process(object $event): void
     {
         $prefix = $this->config->get('web-tinker.path', '/tinker');
+        $middleware = $this->config->get('web-tinker.middleware', []);
 
         Router::addGroup($prefix, function () {
             Router::get('', WebTinkerController::class . '@index');
             Router::post('', WebTinkerController::class . '@execute');
             Router::get('/public/{static}', WebTinkerController::class . '@renderStaticFile');
-        }, ['middleware' => [Authorize::class]]);
+        }, ['middleware' => $middleware]);
     }
 }
