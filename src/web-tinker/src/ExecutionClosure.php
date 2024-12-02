@@ -57,7 +57,7 @@ class ExecutionClosure extends \Psy\ExecutionClosure
                 $__psysh__->writeException($_e);
             } catch (ThrowUpException $_e) {
                 $__psysh__->writeException($_e);
-                
+
                 throw $_e;
             } catch (Throwable $_e) {
                 $__psysh__->writeException($_e);
