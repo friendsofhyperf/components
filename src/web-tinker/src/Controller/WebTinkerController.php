@@ -86,12 +86,12 @@ class WebTinkerController
     {
         $file = realpath(sprintf(
             '%s/public/%s',
-            __DIR__ . '/../../../',
+            __DIR__ . '/../../',
             $request->route('static')
         ));
 
         if (! isset($this->staticFiles[$file])) {
-            if (! file_exists($file)) {
+            if (! $file || ! file_exists($file)) {
                 return $response->html('')->withStatus(404);
             }
             $this->staticFiles[$file] = [
