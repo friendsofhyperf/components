@@ -16,11 +16,14 @@ use FriendsOfHyperf\WebTinker\OutputModifiers\OutputModifier;
 use Hyperf\Collection\Collection;
 use Hyperf\Database\Model\Model;
 use Psy\Configuration;
+use Psy\Exception\BreakException;
+use Psy\Exception\ThrowUpException;
 use Psy\ExecutionClosure;
 use Psy\ExecutionLoopClosure;
 use Psy\Shell;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Output\BufferedOutput;
+use Throwable;
 
 use function Hyperf\Collection\collect;
 use function Hyperf\Config\config;
@@ -38,15 +41,27 @@ class Tinker
 
     public function execute(string $phpCode): string
     {
-        $phpCode = $this->removeComments($phpCode);
+        \extract($this->shell->getScopeVariables(false));
 
-        // $this->shell->addInput($phpCode);
-        $this->shell->addCode($phpCode);
+        try {
+            $phpCode = $this->removeComments($phpCode);
 
-        // $closure = new ExecutionLoopClosure($this->shell);
-        $closure = new ExecutionClosure($this->shell);
+            // $this->shell->addInput($phpCode);
+            $this->shell->addCode($phpCode);
 
-        $closure->execute();
+            // $closure = new ExecutionLoopClosure($this->shell);
+            $closure = new ExecutionClosure($this->shell);
+
+            $_ = $closure->execute();
+            $this->shell->setScopeVariables(\get_defined_vars());
+            $this->shell->writeReturnValue($_);
+        } catch (BreakException $_e) {
+            $this->shell->writeException($_e);
+        } catch (ThrowUpException $_e) {
+            $this->shell->writeException($_e);
+        } catch (Throwable $_e) {
+            $this->shell->writeException($_e);
+        }
 
         $output = $this->cleanOutput($this->output->fetch());
 
