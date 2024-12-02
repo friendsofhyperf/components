@@ -20,6 +20,7 @@ use Hyperf\Context\RequestContext;
 use Hyperf\HttpMessage\Server\Request as ServerRequest;
 use Hyperf\HttpServer\Request;
 use Hyperf\Stringable\Str;
+use Hyperf\Support\Fluent;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Hyperf\Validation\ValidationException;
 use stdClass;
@@ -144,6 +145,13 @@ class RequestMixin
     public function float()
     {
         return fn ($key, $default = null) => (float) $this->input($key, $default);
+    }
+
+    public function fluent()
+    {
+        return function ($key = null) {
+            return new Fluent(is_array($key) ? $this->only($key) : $this->input($key));
+        };
     }
 
     public function hasAny()

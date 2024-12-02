@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace Hyperf\HttpServer\Contract;
 
 use Closure;
+use Hyperf\Support\Fluent;
 use Psr\Http\Message\ServerRequestInterface;
 
 interface RequestInterface
@@ -64,6 +65,13 @@ interface RequestInterface
      * Determine if the request contains a non-empty value for an input item.
      */
     public function filled(array|string $key): bool;
+
+    public function float(string $key, $default = null): float;
+
+    /**
+     * Retrieve input from the request as a Fluent object instance.
+     */
+    public function fluent(array|string|null $key = null): Fluent;
 
     /**
      * Determine if the request contains any of the given inputs.
