@@ -14,11 +14,14 @@ namespace FriendsOfHyperf\Macros;
 use BackedEnum;
 use Carbon\Carbon;
 use Hyperf\Collection\Arr;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Context\Context;
 use Hyperf\Context\RequestContext;
 use Hyperf\HttpMessage\Server\Request as ServerRequest;
 use Hyperf\HttpServer\Request;
 use Hyperf\Stringable\Str;
+use Hyperf\Validation\Contract\ValidatorFactoryInterface;
+use Hyperf\Validation\ValidationException;
 use stdClass;
 
 use function Hyperf\Collection\collect;
@@ -348,6 +351,29 @@ class RequestMixin
             }
 
             return $this;
+        };
+    }
+
+    public function validate()
+    {
+        return function (array $rules, ...$params) {
+            $container = ApplicationContext::getContainer();
+            $validatorFactory = $container->get(ValidatorFactoryInterface::class);
+            $validator = $validatorFactory->make($this->all(), $rules, ...$params);
+
+            return $validator->validate();
+        };
+    }
+
+    public function validateWithBag()
+    {
+        return function ($errorBag, $rules, ...$params) {
+            try {
+                $this->validate($rules, ...$params);
+            } catch (ValidationException $e) {
+                $e->errorBag = $errorBag;
+                throw new $e();
+            }
         };
     }
 }
