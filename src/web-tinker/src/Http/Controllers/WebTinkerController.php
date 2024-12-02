@@ -18,6 +18,8 @@ use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Psr\Container\ContainerInterface;
 
+use function Hyperf\Support\make;
+
 class WebTinkerController
 {
     protected ?ValidatorFactoryInterface $validatorFactory = null;
@@ -60,7 +62,7 @@ class WebTinkerController
         return $this->response->html($contents);
     }
 
-    public function execute(RequestInterface $request, Tinker $tinker)
+    public function execute(RequestInterface $request)
     {
         if ($this->validatorFactory) {
             $validator = $this->validatorFactory->make(
@@ -74,6 +76,8 @@ class WebTinkerController
         } else {
             $validated = $request->all();
         }
+
+        $tinker = make(Tinker::class);
 
         return $tinker->execute($validated['code']);
     }
