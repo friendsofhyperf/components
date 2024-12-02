@@ -58,6 +58,8 @@ composer require friendsofhyperf/macros
 - `Request::str`
 - `Request::string`
 - `Request::integer`
+- `Request::validate`
+- `Request::validateWithBag`
 
 ### Hyperf\Stringable\Str
 
