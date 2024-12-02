@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\WebTinker\Listener;
 
-use FriendsOfHyperf\WebTinker\Http\Controllers\WebTinkerController;
-use FriendsOfHyperf\WebTinker\Http\Middleware\Authorize;
+use FriendsOfHyperf\WebTinker\Controller\WebTinkerController;
+use FriendsOfHyperf\WebTinker\Middleware\Authorize;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;

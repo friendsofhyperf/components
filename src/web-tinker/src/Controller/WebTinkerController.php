@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\WebTinker\Http\Controllers;
+namespace FriendsOfHyperf\WebTinker\Controller;
 
 use FriendsOfHyperf\WebTinker\Tinker;
 use Hyperf\Contract\ConfigInterface;
@@ -45,7 +45,7 @@ class WebTinkerController
     public function index()
     {
         if (! $this->blade) {
-            $this->blade = file_get_contents(__DIR__ . '/../../../resources/views/web-tinker.blade.php');
+            $this->blade = file_get_contents(__DIR__ . '/../../resources/views/web-tinker.blade.php');
         }
 
         $path = $this->request->input('path') ?: $this->config->get('web-tinker.path', '/tinker');

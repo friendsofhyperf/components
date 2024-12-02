@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\WebTinker\Http\Middleware;
+namespace FriendsOfHyperf\WebTinker\Middleware;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface as HttpResponse;
