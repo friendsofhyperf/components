@@ -35,10 +35,6 @@ class Authorize implements MiddlewareInterface
 
     protected function allowedToUseTinker(): bool
     {
-        if (! $this->config->get('web-tinker.enabled', false)) {
-            return false;
-        }
-
-        return true;
+        return (bool) $this->config->get('web-tinker.enabled', false);
     }
 }

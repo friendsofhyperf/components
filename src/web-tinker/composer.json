@@ -5,6 +5,7 @@
         "web-tinker",
         "hyperf",
         "tinker",
+        "dev",
         "debug",
         "development"
     ],

@@ -91,7 +91,11 @@ class WebTinkerController
         ));
 
         if (! isset($this->staticFiles[$file])) {
-            if (! $file || ! file_exists($file)) {
+            if (
+                ! $file // Invalid file
+                || str_contains($file, '../') // Prevent directory traversal
+                || ! file_exists($file) // File not found
+            ) {
                 return $response->html('')->withStatus(404);
             }
             $this->staticFiles[$file] = [

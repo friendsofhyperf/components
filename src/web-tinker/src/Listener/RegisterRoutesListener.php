@@ -22,7 +22,7 @@ use Hyperf\HttpServer\Router\Router;
 class RegisterRoutesListener implements ListenerInterface
 {
     public function __construct(
-        protected DispatcherFactory $dispatcherFactory,
+        protected DispatcherFactory $dispatcherFactory, // Don't remove this line
         protected ConfigInterface $config
     ) {
     }
