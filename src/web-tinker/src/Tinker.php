@@ -102,7 +102,7 @@ class Tinker
 
         $shell->setOutput($output);
 
-        $composerClassMap = BASE_PATH . 'vendor/composer/autoload_classmap.php';
+        $composerClassMap = BASE_PATH . '/vendor/composer/autoload_classmap.php';
 
         if (file_exists($composerClassMap)) {
             ClassAliasAutoloader::register($shell, $composerClassMap, config('tinker.alias', []), config('tinker.dont_alias', []));
