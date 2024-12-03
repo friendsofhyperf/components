@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Trigger\Snapshot;
 
 use FriendsOfHyperf\Trigger\Consumer;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Redis\Redis;
 use MySQLReplication\BinLog\BinLogCurrent;
 use RuntimeException;
@@ -23,7 +24,8 @@ class RedisBinLogCurrentSnapshot implements BinLogCurrentSnapshotInterface
 {
     public function __construct(
         private Consumer $consumer,
-        private Redis $redis
+        private Redis $redis,
+        private StdoutLoggerInterface $logger,
     ) {
     }
 
@@ -45,7 +47,12 @@ class RedisBinLogCurrentSnapshot implements BinLogCurrentSnapshotInterface
 
                 return $data;
             } catch (Throwable $e) {
-                $this->redis->del($this->key()); // clear invalid cache
+                $this->redis->rename(
+                    $this->key(),
+                    $this->key() . '.bak_' . date('YmdHis')
+                );
+
+                $this->logger->warning('BinLogCurrent cache invalid, rename to backup.');
 
                 return null;
             }
