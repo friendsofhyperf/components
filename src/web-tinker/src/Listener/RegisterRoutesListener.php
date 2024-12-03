@@ -37,11 +37,14 @@ class RegisterRoutesListener implements ListenerInterface
     {
         $prefix = $this->config->get('web-tinker.path', '/tinker');
         $middleware = (array) $this->config->get('web-tinker.middleware', []);
+        $server = $this->config->get('web-tinker.server', 'http');
 
-        Router::addGroup($prefix, function () {
-            Router::get('', WebTinkerController::class . '@index');
-            Router::post('', WebTinkerController::class . '@execute');
-            Router::get('/public/{static}', WebTinkerController::class . '@renderStaticFile');
-        }, ['middleware' => $middleware]);
+        Router::addServer($server, function () use ($prefix, $middleware) {
+            Router::addGroup($prefix, function () {
+                Router::get('', WebTinkerController::class . '@index');
+                Router::post('', WebTinkerController::class . '@execute');
+                Router::get('/public/{static}', WebTinkerController::class . '@renderStaticFile');
+            }, ['middleware' => $middleware]);
+        });
     }
 }

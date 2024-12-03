@@ -17,6 +17,11 @@ return [
     'path' => '/tinker',
 
     /*
+     * The controller and action that will be used to render the web tinker page.
+     */
+    'server' => 'http',
+
+    /*
      * Possible values are 'auto', 'light' and 'dark'.
      */
     'theme' => 'auto',
