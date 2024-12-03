@@ -17,3 +17,9 @@ composer require friendsofhyperf/web-tinker
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/web-tinker
 ```
+
+Or
+
+```shell
+php bin/hyperf.php web-tinker:install
+```

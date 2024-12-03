@@ -12,6 +12,12 @@ composer require friendsofhyperf/web-tinker --dev
 php bin/hyperf.php vendor:publish friendsofhyperf/web-tinker
 ```
 
+或
+
+```shell
+php bin/hyperf.php web-tinker:install
+```
+
 ## 启动
 
 ```shell
