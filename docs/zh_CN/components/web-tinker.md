@@ -3,7 +3,7 @@
 ## 安装
 
 ```shell
-composer require friendsofhyperf/web-tinker
+composer require friendsofhyperf/web-tinker --dev
 ```
 
 ## 发布配置

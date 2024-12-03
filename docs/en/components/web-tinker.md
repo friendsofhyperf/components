@@ -3,7 +3,7 @@
 ## Installation
 
 ```shell
-composer require friendsofhyperf/web-tinker
+composer require friendsofhyperf/web-tinker --dev
 ```
 
 ## Publish Configuration
