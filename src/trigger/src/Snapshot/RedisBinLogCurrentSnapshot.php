@@ -14,6 +14,8 @@ namespace FriendsOfHyperf\Trigger\Snapshot;
 use FriendsOfHyperf\Trigger\Consumer;
 use Hyperf\Redis\Redis;
 use MySQLReplication\BinLog\BinLogCurrent;
+use RuntimeException;
+use Throwable;
 
 use function Hyperf\Support\with;
 
@@ -34,13 +36,19 @@ class RedisBinLogCurrentSnapshot implements BinLogCurrentSnapshotInterface
     public function get(): ?BinLogCurrent
     {
         return with($this->redis->get($this->key()), function ($data) {
-            $data = unserialize((string) $data);
+            try {
+                $data = unserialize((string) $data);
 
-            if (! $data instanceof BinLogCurrent) {
+                if (! $data instanceof BinLogCurrent) {
+                    throw new RuntimeException('Invalid BinLogCurrent cache.');
+                }
+
+                return $data;
+            } catch (Throwable $e) {
+                $this->redis->del($this->key()); // clear invalid cache
+
                 return null;
             }
-
-            return $data;
         });
     }
 
