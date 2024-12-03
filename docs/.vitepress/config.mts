@@ -12,6 +12,21 @@ export default defineConfig({
   title: "FriendsOfHyperf",
   description: "🚀 The most popular components for Hyperf.",
   ignoreDeadLinks: true,
+  head: [
+    [
+      'script',
+      {},
+      `
+      var _hmt = _hmt || [];
+      (function() {
+        var hm = document.createElement("script");
+        hm.src = "https://hm.baidu.com/hm.js?df278fe462855b3046c941a8adc19064";
+        var s = document.getElementsByTagName("script")[0]; 
+        s.parentNode.insertBefore(hm, s);
+      })();
+      `
+    ]
+  ],
   locales:{
     root:{
       label:"中文",
