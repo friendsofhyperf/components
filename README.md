@@ -14,8 +14,6 @@ For more information, visit the [official documentation website](https://hyperf.
 
 ## Mirrors
 
-## Mirrors
-
 - [GitHub](https://github.com/friendsofhyperf/components)
 - [CNB](https://cnb.cool/friendsofhyperf/components)
 
