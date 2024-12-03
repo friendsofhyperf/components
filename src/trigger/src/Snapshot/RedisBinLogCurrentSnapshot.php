@@ -49,10 +49,10 @@ class RedisBinLogCurrentSnapshot implements BinLogCurrentSnapshotInterface
             } catch (Throwable $e) {
                 $this->redis->rename(
                     $this->key(),
-                    $this->key() . '.bak_' . date('YmdHis')
+                    $key = $this->key() . '.bak_' . date('YmdHis')
                 );
 
-                $this->logger->warning('BinLogCurrent cache invalid, rename to backup.');
+                $this->logger->warning('BinLogCurrent cache invalid, rename to ' . $key);
 
                 return null;
             }
