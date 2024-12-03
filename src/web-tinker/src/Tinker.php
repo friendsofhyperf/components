@@ -13,11 +13,8 @@ namespace FriendsOfHyperf\WebTinker;
 
 use FriendsOfHyperf\Tinker\ClassAliasAutoloader;
 use FriendsOfHyperf\WebTinker\OutputModifiers\OutputModifier;
-use Hyperf\Collection\Collection;
-use Hyperf\Database\Model\Model;
 use Psy\Configuration;
 use Psy\Shell;
-use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 use function Hyperf\Collection\collect;
@@ -75,10 +72,16 @@ class Tinker
         $config->setHistoryFile(defined('PHP_WINDOWS_VERSION_BUILD') ? 'null' : '/dev/null');
 
         $config->getPresenter()->addCasters([
-            Collection::class => 'FriendsOfHyperf\Tinker\TinkerCaster::castCollection',
-            Model::class => 'FriendsOfHyperf\Tinker\TinkerCaster::castModel',
-            Application::class => 'FriendsOfHyperf\Tinker\TinkerCaster::castApplication',
-        ]);
+            'Hyperf\Collection\Collection' => 'FriendsOfHyperf\Tinker\TinkerCaster::castCollection',
+            'Hyperf\DbConnection\Model\Model' => 'FriendsOfHyperf\Tinker\TinkerCaster::castModel',
+            'Hyperf\Redis\Redis' => 'FriendsOfHyperf\Tinker\TinkerCaster::castRedis',
+            'Hyperf\Support\Fluent' => 'FriendsOfHyperf\Tinker\TinkerCaster::castFluent',
+            'Hyperf\Support\MessageBag' => 'FriendsOfHyperf\Tinker\TinkerCaster::castMessageBag',
+            'Hyperf\ViewEngine\HtmlString' => 'FriendsOfHyperf\Tinker\TinkerCaster::castHtmlString',
+            'Stringable' => 'FriendsOfHyperf\Tinker\TinkerCaster::castStringable',
+            'Symfony\Component\Console\Application' => 'FriendsOfHyperf\Tinker\TinkerCaster::castApplication',
+            'FriendsOfHyperf\ValidatedDTO\SimpleDTO' => 'FriendsOfHyperf\Tinker\TinkerCaster::castSimpleDTO',
+        ] + config('tinker.casters', []));
 
         $shell = new Shell($config);
 
