@@ -13,3 +13,4 @@ phpstan.neon
 docs/.vitepress/dist
 docs/.vitepress/cache
 docs/node_modules
+src/web-tinker/node_modules
