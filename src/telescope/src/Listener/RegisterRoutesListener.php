@@ -45,10 +45,6 @@ class RegisterRoutesListener implements ListenerInterface
 
         Router::addServer($server, function () use ($prefix, $middleware) {
             Router::addGroup($prefix, function () {
-                Router::get('/{view}', [Controller\ViewController::class, 'index']);
-                Router::get('/{view}/{id}', [Controller\ViewController::class, 'show']);
-                Router::get('/vendor/telescope/{file}', [Controller\ViewController::class, 'renderStaticFile']);
-
                 Router::addGroup('/telescope-api', function () {
                     Router::post('/cache', [Controller\CacheController::class, 'list']);
                     Router::get('/cache/{id}', [Controller\CacheController::class, 'detail']);
@@ -84,6 +80,10 @@ class RegisterRoutesListener implements ListenerInterface
                     Router::post('/services', [Controller\ServicesController::class, 'list']);
                     Router::get('/services/{id}', [Controller\ServicesController::class, 'detail']);
                 });
+
+                Router::get('/{view}', [Controller\ViewController::class, 'index']);
+                Router::get('/{view}/{id}', [Controller\ViewController::class, 'show']);
+                Router::get('/vendor/telescope/{file}', [Controller\ViewController::class, 'renderStaticFile']);
             }, ['middleware' => $middleware]);
         });
     }
