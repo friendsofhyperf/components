@@ -43,7 +43,7 @@ class RegisterRoutesListener implements ListenerInterface
             Router::addGroup($prefix, function () {
                 Router::get('', WebTinkerController::class . '@index');
                 Router::post('', WebTinkerController::class . '@execute');
-                Router::get('/public/{static}', WebTinkerController::class . '@renderStaticFile');
+                Router::get('/public/{file}', WebTinkerController::class . '@renderStaticFile');
             }, ['middleware' => $middleware]);
         });
     }

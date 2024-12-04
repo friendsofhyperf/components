@@ -84,32 +84,20 @@ class WebTinkerController
 
     public function renderStaticFile(RequestInterface $request, ResponseInterface $response)
     {
-        $file = realpath(sprintf(
-            '%s/public/%s',
-            __DIR__ . '/../../',
-            $request->route('static')
-        ));
+        [$file, $contentType] = match ($request->route('file')) {
+            'app.css' => [__DIR__ . '/../../public/app.css', 'text/css'],
+            'app.js' => [__DIR__ . '/../../public/app.js', 'application/javascript'],
+            default => ['', ''],
+        };
 
         if (! isset($this->staticFiles[$file])) {
-            if (
-                ! $file // Invalid file
-                || str_contains($file, '../') // Prevent directory traversal
-                || ! file_exists($file) // File not found
-            ) {
+            if (! file_exists($file)) { // File not found
                 return $response->html('')->withStatus(404);
             }
-            $this->staticFiles[$file] = [
-                'contents' => file_get_contents($file),
-                'content-type' => match (true) {
-                    str_ends_with($file, '.css') => 'text/css',
-                    str_ends_with($file, '.js') => 'application/javascript',
-                    default => mime_content_type($file),
-                },
-            ];
+
+            $this->staticFiles[$file] = file_get_contents($file);
         }
 
-        return $response
-            ->raw($this->staticFiles[$file]['contents'])
-            ->withHeader('Content-Type', $this->staticFiles[$file]['content-type']);
+        return $response->raw($this->staticFiles[$file])->withHeader('Content-Type', $contentType);
     }
 }
