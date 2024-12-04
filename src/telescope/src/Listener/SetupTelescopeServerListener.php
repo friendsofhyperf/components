@@ -16,6 +16,9 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 
+/**
+ * @deprecated since v3.1, will be removed in v3.2
+ */
 class SetupTelescopeServerListener implements ListenerInterface
 {
     public function __construct(

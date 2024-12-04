@@ -12,20 +12,17 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Controller;
 
 use FriendsOfHyperf\Telescope\TelescopeConfig;
-use Hyperf\Di\Annotation\Inject;
-use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\PostMapping;
 
-#[Controller(server: 'telescope')]
 class RecordingController
 {
-    #[Inject()]
-    protected TelescopeConfig $telescopeConfig;
+    public function __construct(
+        protected TelescopeConfig $telescopeConfig
+    ) {
+    }
 
     /**
      * Toggle recording.
      */
-    #[PostMapping(path: '/telescope/telescope-api/toggle-recording')]
     public function toggle(): void
     {
         $this->telescopeConfig->setRecording(! $this->telescopeConfig->isRecording());

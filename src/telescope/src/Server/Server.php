@@ -13,6 +13,9 @@ namespace FriendsOfHyperf\Telescope\Server;
 
 use Hyperf\HttpServer\Server as HttpServerServer;
 
+/**
+ * @deprecated since v3.1, will be removed in v3.2
+ */
 class Server extends HttpServerServer
 {
 }

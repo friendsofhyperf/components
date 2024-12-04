@@ -12,28 +12,21 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Controller;
 
 use FriendsOfHyperf\Telescope\Telescope;
-use Hyperf\Di\Annotation\Inject;
-use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\GetMapping;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Psr\Container\ContainerInterface;
 
-#[Controller(server: 'telescope')]
 class ViewController
 {
-    #[Inject]
-    protected ContainerInterface $container;
-
-    #[Inject]
-    protected RequestInterface $request;
-
-    #[Inject]
-    protected ResponseInterface $response;
-
     private array $caches = [];
 
-    #[GetMapping(path: '/telescope/{view}')]
+    public function __construct(
+        protected ContainerInterface $container,
+        protected RequestInterface $request,
+        protected ResponseInterface $response,
+    ) {
+    }
+
     public function index()
     {
         $blade = __DIR__ . '/../../storage/view/index.blade.php';
@@ -52,7 +45,6 @@ class ViewController
         return $this->response->html($templateContent);
     }
 
-    #[GetMapping(path: '/telescope/{view}/{id}')]
     public function show()
     {
         $blade = __DIR__ . '/../../storage/view/index.blade.php';
@@ -64,7 +56,6 @@ class ViewController
         return $this->response->html($this->caches[$blade]);
     }
 
-    #[GetMapping(path: '/vendor/telescope/{file}')]
     public function renderStaticFile(string $file)
     {
         $files = [

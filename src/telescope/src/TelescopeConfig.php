@@ -33,6 +33,7 @@ class TelescopeConfig
     }
 
     /**
+     * @deprecated since v3.1, will be removed in v3.2
      * @return array{enable: bool, host: string, port: int}
      */
     public function getServerOptions(): array
@@ -50,6 +51,9 @@ class TelescopeConfig
         ], (array) $this->get('server', []));
     }
 
+    /**
+     * @deprecated since v3.1, will be removed in v3.2
+     */
     public function isServerEnable(): bool
     {
         return (bool) $this->getServerOptions()['enable'];
