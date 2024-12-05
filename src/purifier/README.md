@@ -67,10 +67,10 @@ use Trigold\Purifier\Casts\CleanHtmlOutput;
 
 class Monster extends Model
 {
-    protected $casts = [
-        'bio'            => CleanHtml::class, // cleans both when getting and setting the value
-        'description'    => CleanHtmlInput::class, // cleans when setting the value
-        'history'        => CleanHtmlOutput::class, // cleans when getting the value
+    protected array $casts = [
+        'bio' => CleanHtml::class, // cleans both when getting and setting the value
+        'description' => CleanHtmlInput::class, // cleans when setting the value
+        'history' => CleanHtmlOutput::class, // cleans when getting the value
     ];
 }
 ```
@@ -88,24 +88,24 @@ Config file `config/autoload/purifier.php` should like this
 ```php
 
 return [
-    'encoding'           => 'UTF-8',
-    'finalize'           => true,
+    'encoding' => 'UTF-8',
+    'finalize' => true,
     'ignore_non_strings' => false,
-    'cache_path'         => storage_path('app/purifier'),
-    'cache_file_mode'    => 0755,
-    'settings'      => [
+    'cache_path' => storage_path('app/purifier'),
+    'cache_file_mode' => 0755,
+    'settings' => [
         'default' => [
-            'HTML.Doctype'             => 'HTML 4.01 Transitional',
-            'HTML.Allowed'             => 'div,b,strong,i,em,u,a[href|title],ul,ol,li,p[style],br,span[style],img[width|height|alt|src]',
-            'CSS.AllowedProperties'    => 'font,font-size,font-weight,font-style,font-family,text-decoration,padding-left,color,background-color,text-align',
+            'HTML.Doctype' => 'HTML 4.01 Transitional',
+            'HTML.Allowed' => 'div,b,strong,i,em,u,a[href|title],ul,ol,li,p[style],br,span[style],img[width|height|alt|src]',
+            'CSS.AllowedProperties' => 'font,font-size,font-weight,font-style,font-family,text-decoration,padding-left,color,background-color,text-align',
             'AutoFormat.AutoParagraph' => true,
-            'AutoFormat.RemoveEmpty'   => true,
+            'AutoFormat.RemoveEmpty' => true,
         ],
-        'test'    => [
+        'test' => [
             'Attr.EnableID' => 'true',
         ],
         "youtube" => [
-            "HTML.SafeIframe"      => 'true',
+            "HTML.SafeIframe" => 'true',
             "URI.SafeIframeRegexp" => "%^(http://|https://|//)(www.youtube.com/embed/|player.vimeo.com/video/)%",
         ],
         'custom_definition' => [
