@@ -59,9 +59,9 @@ Alternatively, if you're looking to clean your HTML inside your database models,
 namespace App\Models;
 
 use Hyperf\DbConnection\Model\Model;
-use Trigold\Purifier\Casts\CleanHtml;
-use Trigold\Purifier\Casts\CleanHtmlInput;
-use Trigold\Purifier\Casts\CleanHtmlOutput;
+use FriendsOfHyperf\Purifier\Casts\CleanHtml;
+use FriendsOfHyperf\Purifier\Casts\CleanHtmlInput;
+use FriendsOfHyperf\Purifier\Casts\CleanHtmlOutput;
 
 class Monster extends Model
 {
