@@ -183,7 +183,7 @@ class Consumer
             $this->triggerManager->getDatabases($connection)
         );
         // Get tables of replication
-        $tablesOnly = array_replace(
+        $tablesOnly = array_merge(
             $this->config->get('tables_only', []),
             $this->triggerManager->getTables($connection)
         );
