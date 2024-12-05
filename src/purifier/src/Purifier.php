@@ -22,10 +22,6 @@ use Hyperf\Support\Filesystem\Filesystem;
 
 class Purifier
 {
-    protected Filesystem $files;
-
-    protected ConfigInterface $config;
-
     protected HTMLPurifier $purifier;
 
     /**
@@ -33,11 +29,8 @@ class Purifier
      *
      * @throws Exception
      */
-    public function __construct(Filesystem $files, ConfigInterface $config)
+    public function __construct(protected Filesystem $files, protected ConfigInterface $config)
     {
-        $this->files = $files;
-        $this->config = $config;
-
         $this->setUp();
     }
 
@@ -61,6 +54,11 @@ class Purifier
         $this->purifier = new HTMLPurifier($config);
     }
 
+    /**
+     * @template T
+     * @param T $dirty
+     * @return ($dirty is string ? string : ($dirty is array ? array : T))
+     */
     public function clean(mixed $dirty, array|string|null $config = null, ?Closure $postCreateConfigHook = null): mixed
     {
         if (is_array($dirty)) {
@@ -70,6 +68,7 @@ class Purifier
         }
 
         $configObject = null;
+
         if ($config !== null) {
             $configObject = $this->getConfig($config);
 
@@ -77,8 +76,9 @@ class Purifier
         }
 
         // If $dirty is not an explicit string, bypass purification assuming configuration allows this
-        $ignoreNonStrings = $this->config->get('purifier.ignoreNonStrings', false);
+        $ignoreNonStrings = (bool) $this->config->get('purifier.ignoreNonStrings', false);
         $stringTest = is_string($dirty);
+
         if ($stringTest === false && $ignoreNonStrings === true) {
             return $dirty;
         }

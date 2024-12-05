@@ -15,7 +15,12 @@ use Closure;
 use Hyperf\Context\ApplicationContext;
 
 if (! function_exists('clean')) {
-    function clean($dirty, $config = null, ?Closure $postCreateConfigHook = null)
+    /**
+     * @template T
+     * @param T $dirty
+     * @return ($dirty is string ? string : ($dirty is array ? array : T))
+     */
+    function clean(mixed $dirty, array|string|null $config = null, ?Closure $postCreateConfigHook = null)
     {
         return ApplicationContext::getContainer()->get(Purifier::class)->clean($dirty, $config, $postCreateConfigHook);
     }

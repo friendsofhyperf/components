@@ -13,10 +13,7 @@ namespace FriendsOfHyperf\Purifier\Casts;
 
 trait WithConfig
 {
-    protected array|string|null $config;
-
-    public function __construct($config = null)
+    public function __construct(protected array|string|null $config = null)
     {
-        $this->config = $config;
     }
 }

@@ -18,17 +18,6 @@ class ConfigProvider
         defined('BASE_PATH') or define('BASE_PATH', '');
 
         return [
-            'dependencies' => [
-            ],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
-            ],
-            'commands' => [],
-            'listeners' => [],
             'publish' => [
                 [
                     'id' => 'config',
