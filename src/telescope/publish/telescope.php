@@ -60,7 +60,7 @@ return [
         // 'api/*'
     ],
     'ignore_paths' => [
-        // 'nova-api*',
+        'telescope/*',
     ],
     'ignore_commands' => [
         // 'demo:command',
