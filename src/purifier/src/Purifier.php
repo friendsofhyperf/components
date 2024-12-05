@@ -76,7 +76,7 @@ class Purifier
         }
 
         // If $dirty is not an explicit string, bypass purification assuming configuration allows this
-        $ignoreNonStrings = (bool) $this->config->get('purifier.ignoreNonStrings', false);
+        $ignoreNonStrings = (bool) $this->config->get('purifier.ignore_non_strings', false);
         $stringTest = is_string($dirty);
 
         if ($stringTest === false && $ignoreNonStrings === true) {
@@ -107,8 +107,8 @@ class Purifier
         // Set default config
         $defaultConfig = [];
         $defaultConfig['Core.Encoding'] = $this->config->get('purifier.encoding');
-        $defaultConfig['Cache.SerializerPath'] = $this->config->get('purifier.cachePath');
-        $defaultConfig['Cache.SerializerPermissions'] = $this->config->get('purifier.cacheFileMode', 0755);
+        $defaultConfig['Cache.SerializerPath'] = $this->config->get('purifier.cache_path');
+        $defaultConfig['Cache.SerializerPermissions'] = $this->config->get('purifier.cache_file_mode', 0755);
 
         if (! $config) {
             $config = $this->config->get('purifier.settings.default');
@@ -244,11 +244,11 @@ class Purifier
      */
     private function checkCacheDirectory(): void
     {
-        $cachePath = $this->config->get('purifier.cachePath');
+        $cachePath = $this->config->get('purifier.cache_path');
 
         if ($cachePath) {
             if (! $this->files->isDirectory($cachePath)) {
-                $this->files->makeDirectory($cachePath, $this->config->get('purifier.cacheFileMode', 0755), true);
+                $this->files->makeDirectory($cachePath, $this->config->get('purifier.cache_file_mode', 0755), true);
             }
         }
     }

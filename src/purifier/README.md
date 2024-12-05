@@ -88,9 +88,9 @@ Config file `config/autoload/purifier.php` should like this
 return [
     'encoding'           => 'UTF-8',
     'finalize'           => true,
-    'ignoreNonStrings'   => false,
-    'cachePath'          => storage_path('app/purifier'),
-    'cacheFileMode'      => 0755,
+    'ignore_non_strings' => false,
+    'cache_path'         => storage_path('app/purifier'),
+    'cache_file_mode'    => 0755,
     'settings'      => [
         'default' => [
             'HTML.Doctype'             => 'HTML 4.01 Transitional',
@@ -118,15 +118,12 @@ return [
                 ['aside',   'Block', 'Flow', 'Common'],
                 ['header',  'Block', 'Flow', 'Common'],
                 ['footer',  'Block', 'Flow', 'Common'],
-				
 				// Content model actually excludes several tags, not modelled here
                 ['address', 'Block', 'Flow', 'Common'],
                 ['hgroup', 'Block', 'Required: h1 | h2 | h3 | h4 | h5 | h6', 'Common'],
-				
 				// https://developers.whatwg.org/grouping-content.html
                 ['figure', 'Block', 'Optional: (figcaption, Flow) | (Flow, figcaption) | Flow', 'Common'],
                 ['figcaption', 'Inline', 'Flow', 'Common'],
-				
 				// https://developers.whatwg.org/the-video-element.html#the-video-element
                 ['video', 'Block', 'Optional: (source, Flow) | (Flow, source) | Flow', 'Common', [
                     'src' => 'URI',
@@ -141,7 +138,6 @@ return [
 					'src' => 'URI',
 					'type' => 'Text',
                 ]],
-
 				// https://developers.whatwg.org/text-level-semantics.html
                 ['s',    'Inline', 'Inline', 'Common'],
                 ['var',  'Inline', 'Inline', 'Common'],

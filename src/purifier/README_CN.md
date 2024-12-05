@@ -88,9 +88,9 @@ php bin/hyperf.php vendor:publish friendsofhyperf/purifier
 return [
     'encoding'           => 'UTF-8',
     'finalize'           => true,
-    'ignoreNonStrings'   => false,
-    'cachePath'          => storage_path('app/purifier'),
-    'cacheFileMode'      => 0755,
+    'ignore_non_strings' => false,
+    'cache_path'         => storage_path('app/purifier'),
+    'cache_file_mode'    => 0755,
     'settings'      => [
         'default' => [
             'HTML.Doctype'             => 'HTML 4.01 Transitional',

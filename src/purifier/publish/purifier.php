@@ -11,9 +11,9 @@ declare(strict_types=1);
 return [
     'encoding' => 'UTF-8',
     'finalize' => true,
-    'ignoreNonStrings' => false,
-    'cachePath' => BASE_PATH . '/storage/app/purifier',
-    'cacheFileMode' => 0755,
+    'ignore_non_strings' => false,
+    'cache_path' => BASE_PATH . '/storage/app/purifier',
+    'cache_file_mode' => 0755,
     'settings' => [
         'default' => [
             'HTML.Doctype' => 'HTML 4.01 Transitional',
