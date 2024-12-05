@@ -215,7 +215,7 @@ class TestMail extends Mailable
     /**
      * Get the attachments for the message.
      *
-     * @return array<int, \Friendsofhyperf\Mail\Mailables\Attachment>
+     * @return array<int, \FriendsOfHyperf\Mail\Mailables\Attachment>
      */
     public function attachments(): array
     {
