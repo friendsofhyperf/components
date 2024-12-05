@@ -17,6 +17,7 @@
         "php": ">=8.1",
         "barryvdh/reflection-docblock": "^2.0",
         "composer/composer": "^2.0",
+        "ezyang/htmlpurifier": "^4.17.0",
         "google/protobuf": "^3.21",
         "google/recaptcha": "^1.2",
         "guzzlehttp/uri-template": "^1.0",
@@ -148,6 +149,7 @@
         "friendsofhyperf/openai-client": "*",
         "friendsofhyperf/pest-plugin-hyperf": "*",
         "friendsofhyperf/pretty-console": "*",
+        "friendsofhyperf/purifier": "*",
         "friendsofhyperf/recaptcha": "*",
         "friendsofhyperf/redis-subscriber": "*",
         "friendsofhyperf/sentry": "*",
@@ -199,6 +201,7 @@
             "FriendsOfHyperf\\Notification\\Mail\\": "src/notification-mail/src/",
             "FriendsOfHyperf\\OpenAi\\": "src/openai-client/src/",
             "FriendsOfHyperf\\PrettyConsole\\": "src/pretty-console/src/",
+            "FriendsOfHyperf\\Purifier\\": "src/purifier/src/",
             "FriendsOfHyperf\\ReCaptcha\\": "src/recaptcha/src/",
             "FriendsOfHyperf\\Redis\\Subscriber\\": "src/redis-subscriber/src/",
             "FriendsOfHyperf\\Sentry\\": "src/sentry/src/",
@@ -221,6 +224,7 @@
             "src/lock/src/Functions.php",
             "src/mail/src/Functions.php",
             "src/model-factory/src/Functions.php",
+            "src/purifier/src/Functions.php",
             "src/support/src/Functions.php",
             "src/validated-dto/src/Functions.php"
         ]
@@ -287,7 +291,8 @@
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
                 "FriendsOfHyperf\\Trigger\\ConfigProvider",
                 "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider",
-                "FriendsOfHyperf\\WebTinker\\ConfigProvider"
+                "FriendsOfHyperf\\WebTinker\\ConfigProvider",
+                "Friendsofhyperf\\Purifier\\ConfigProvider"
             ]
         }
     },

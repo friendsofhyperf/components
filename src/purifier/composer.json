@@ -1,0 +1,56 @@
+{
+    "name": "friendsofhyperf/purifier",
+    "type": "library",
+    "keywords": [
+        "hyperf",
+        "htmlpurifier",
+        "purifier",
+        "security",
+        "xss"
+    ],
+    "description": "Hyperf HtmlPurifier Package",
+    "require": {
+        "php": ">=8.1",
+        "ezyang/htmlpurifier": "^4.17.0",
+        "hyperf/context": "~3.1.0",
+        "hyperf/contract": "~3.1.0",
+        "hyperf/support": "~3.1.0"
+    },
+    "suggest": {
+        "hyperf/database": "Required to use (~3.1.0)"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Purifier\\": "src/"
+        },
+        "files": [
+            "src/Functions.php"
+        ]
+    },
+    "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Purifier\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        }
+    },
+    "authors": [
+        {
+            "name": "trigold",
+            "email": "422520625@qq.com"
+        },
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "docs": "https://hyperf.fans",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    }
+}
