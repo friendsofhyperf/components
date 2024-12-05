@@ -9,21 +9,21 @@ HTML 过滤器. 派生于 [mews/purifier](https://github.com/mewebstudio/Purifie
 ## 安装
 
 使用 Composer 安裝此组件：
-```
+
+```shell
 composer require friendsofhyperf/purifier
 ```
 
 将自动发现服务提供商。您不需要在任何地方添加 Provider.
 
-
 ## 用法
-
 
 在请求或中间件中使用以下方法，以清理 HTML:
 
 ```php
 clean($request->get('inputname'));
 ```
+
 或者
 
 ```php
@@ -31,10 +31,12 @@ ApplicationContext::getContainer()->get(Purifier::class)->clean($request->get('i
 ```
 
 动态配置：
+
 ```php
 clean('This is my H1 title', 'titles');
 clean('This is my H1 title', array('Attr.EnableID' => true));
 ```
+
 或者
 
 ```php
@@ -77,7 +79,7 @@ class Monster extends Model
 
 要使用您自己的设置，请发布配置.
 
-```
+```sehll
 php bin/hyperf.php vendor:publish friendsofhyperf/purifier
 ```
 
@@ -118,38 +120,33 @@ return [
                 ['aside',   'Block', 'Flow', 'Common'],
                 ['header',  'Block', 'Flow', 'Common'],
                 ['footer',  'Block', 'Flow', 'Common'],
-				
                 ['address', 'Block', 'Flow', 'Common'],
                 ['hgroup', 'Block', 'Required: h1 | h2 | h3 | h4 | h5 | h6', 'Common'],
-				
-				// https://developers.whatwg.org/grouping-content.html
+                // https://developers.whatwg.org/grouping-content.html
                 ['figure', 'Block', 'Optional: (figcaption, Flow) | (Flow, figcaption) | Flow', 'Common'],
                 ['figcaption', 'Inline', 'Flow', 'Common'],
-				
-				// https://developers.whatwg.org/the-video-element.html#the-video-element
+                // https://developers.whatwg.org/the-video-element.html#the-video-element
                 ['video', 'Block', 'Optional: (source, Flow) | (Flow, source) | Flow', 'Common', [
                     'src' => 'URI',
-					'type' => 'Text',
-					'width' => 'Length',
-					'height' => 'Length',
-					'poster' => 'URI',
-					'preload' => 'Enum#auto,metadata,none',
-					'controls' => 'Bool',
+                    'type' => 'Text',
+                    'width' => 'Length',
+                    'height' => 'Length',
+                    'poster' => 'URI',
+                    'preload' => 'Enum#auto,metadata,none',
+                    'controls' => 'Bool',
                 ]],
                 ['source', 'Block', 'Flow', 'Common', [
-					'src' => 'URI',
-					'type' => 'Text',
+                    'src' => 'URI',
+                    'type' => 'Text',
                 ]],
-
-				// https://developers.whatwg.org/text-level-semantics.html
+                // https://developers.whatwg.org/text-level-semantics.html
                 ['s',    'Inline', 'Inline', 'Common'],
                 ['var',  'Inline', 'Inline', 'Common'],
                 ['sub',  'Inline', 'Inline', 'Common'],
                 ['sup',  'Inline', 'Inline', 'Common'],
                 ['mark', 'Inline', 'Inline', 'Common'],
                 ['wbr',  'Inline', 'Empty', 'Core'],
-				
-				// https://developers.whatwg.org/edits.html
+                // https://developers.whatwg.org/edits.html
                 ['ins', 'Block', 'Flow', 'Common', ['cite' => 'URI', 'datetime' => 'CDATA']],
                 ['del', 'Block', 'Flow', 'Common', ['cite' => 'URI', 'datetime' => 'CDATA']],
             ],
