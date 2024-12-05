@@ -1,29 +1,25 @@
-# HTMLPurifier hyperf 3
-
-[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/purifier)](https://packagist.org/packages/friendsofhyperf/purifier)
-[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/purifier)](https://packagist.org/packages/friendsofhyperf/purifier)
-[![License](https://img.shields.io/packagist/l/friendsofhyperf/purifier)](https://github.com/friendsofhyperf/purifier)
+# Purifier
 
 HTML filter. forked from [mews/purifier](https://github.com/mewebstudio/Purifier).
 
 ## Installation
 
 Require this package with composer:
-```
+
+```shell
 composer require friendsofhyperf/purifier
 ```
 
 The service provider will be auto-discovered. You do not need to add the provider anywhere.
 
-
 ## Usage
-
 
 Use these methods inside your requests or middleware, wherever you need the HTML cleaned up:
 
 ```php
 clean($request->get('inputname'));
 ```
+
 or
 
 ```php
@@ -31,16 +27,19 @@ ApplicationContext::getContainer()->get(Purifier::class)->clean($request->get('i
 ```
 
 dynamic config
+
 ```php
 clean('This is my H1 title', 'titles');
 clean('This is my H1 title', array('Attr.EnableID' => true));
 ```
+
 or
 
 ```php
 ApplicationContext::getContainer()->get(Purifier::class)->clean('This is my H1 title', 'titles');
 ApplicationContext::getContainer()->get(Purifier::class)->clean('This is my H1 title', array('Attr.EnableID' => true));
 ```
+
 HTML filter. forked from [mews/purifier](https://github.com/mewebstudio/Purifier).
 
 use [URI filter](http://htmlpurifier.org/docs/enduser-uri-filter.html)
@@ -78,7 +77,7 @@ class Monster extends Model
 
 To use your own settings, publish config.
 
-```
+```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/purifier
 ```
 
@@ -122,35 +121,35 @@ return [
 
                 ['address', 'Block', 'Flow', 'Common'],
                 ['hgroup', 'Block', 'Required: h1 | h2 | h3 | h4 | h5 | h6', 'Common'],
-				
-				// https://developers.whatwg.org/grouping-content.html
+                
+                // https://developers.whatwg.org/grouping-content.html
                 ['figure', 'Block', 'Optional: (figcaption, Flow) | (Flow, figcaption) | Flow', 'Common'],
                 ['figcaption', 'Inline', 'Flow', 'Common'],
-				
-				// https://developers.whatwg.org/the-video-element.html#the-video-element
+                
+                // https://developers.whatwg.org/the-video-element.html#the-video-element
                 ['video', 'Block', 'Optional: (source, Flow) | (Flow, source) | Flow', 'Common', [
                     'src' => 'URI',
-					'type' => 'Text',
-					'width' => 'Length',
-					'height' => 'Length',
-					'poster' => 'URI',
-					'preload' => 'Enum#auto,metadata,none',
-					'controls' => 'Bool',
+                    'type' => 'Text',
+                    'width' => 'Length',
+                    'height' => 'Length',
+                    'poster' => 'URI',
+                    'preload' => 'Enum#auto,metadata,none',
+                    'controls' => 'Bool',
                 ]],
                 ['source', 'Block', 'Flow', 'Common', [
-					'src' => 'URI',
-					'type' => 'Text',
+                    'src' => 'URI',
+                    'type' => 'Text',
                 ]],
 
-				// https://developers.whatwg.org/text-level-semantics.html
+                // https://developers.whatwg.org/text-level-semantics.html
                 ['s',    'Inline', 'Inline', 'Common'],
                 ['var',  'Inline', 'Inline', 'Common'],
                 ['sub',  'Inline', 'Inline', 'Common'],
                 ['sup',  'Inline', 'Inline', 'Common'],
                 ['mark', 'Inline', 'Inline', 'Common'],
                 ['wbr',  'Inline', 'Empty', 'Core'],
-				
-				// https://developers.whatwg.org/edits.html
+                
+                // https://developers.whatwg.org/edits.html
                 ['ins', 'Block', 'Flow', 'Common', ['cite' => 'URI', 'datetime' => 'CDATA']],
                 ['del', 'Block', 'Flow', 'Common', ['cite' => 'URI', 'datetime' => 'CDATA']],
             ],
