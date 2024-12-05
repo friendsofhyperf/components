@@ -1,4 +1,4 @@
-# HTMLPurifier hyperf 3
+# Purifier
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/purifier)](https://packagist.org/packages/friendsofhyperf/purifier)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/purifier)](https://packagist.org/packages/friendsofhyperf/purifier)
