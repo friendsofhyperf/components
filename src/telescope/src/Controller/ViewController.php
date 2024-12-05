@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Controller;
 
 use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Psr\Container\ContainerInterface;
@@ -24,6 +25,7 @@ class ViewController
         protected ContainerInterface $container,
         protected RequestInterface $request,
         protected ResponseInterface $response,
+        protected TelescopeConfig $telescopeConfig
     ) {
     }
 
@@ -36,6 +38,7 @@ class ViewController
         }
         $templateContent = $this->caches[$blade];
         $params = [
+            '{{ $path }}' => $this->telescopeConfig->getPath(),
             '$telescopeScriptVariables' => json_encode(Telescope::scriptVariables()),
         ];
         foreach ($params as $key => $value) {

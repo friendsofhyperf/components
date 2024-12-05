@@ -167,7 +167,7 @@ class Telescope
     public static function scriptVariables(): array
     {
         return [
-            'path' => static::getConfig()->getPath(),
+            'path' => trim(static::getConfig()->getPath(), '/'),
             'timezone' => static::getConfig()->getTimezone(),
             'recording' => static::getConfig()->isRecording(),
         ];

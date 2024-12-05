@@ -5,11 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="robots" content="noindex, nofollow">
-    <link rel="shortcut icon" href="/vendor/telescope/favicon.ico">
+    <link rel="shortcut icon" href="{{ $path }}/public/favicon.ico">
     <title>Hyperf Telescope</title>
 
     <!-- Style sheets-->
-    <link href="/vendor/telescope/app.css" rel="stylesheet" type="text/css">
+    <link href="{{ $path }}/public/app.css" rel="stylesheet" type="text/css">
 </head>
 <body>
 <div id="telescope" v-cloak>
@@ -138,6 +138,6 @@
     window.Telescope = $telescopeScriptVariables;
 </script>
 
-<script src="/vendor/telescope/app.js"></script>
+<script src="{{ $path }}/public/app.js"></script>
 </body>
 </html>
