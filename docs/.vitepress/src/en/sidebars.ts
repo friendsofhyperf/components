@@ -174,6 +174,10 @@ const sidebar:DefaultTheme.Sidebar = {
                     link: '/en/components/pretty-console.md'
                 },
                 {
+                    text: 'Purifier',
+                    link: '/en/components/purifier.md'
+                },
+                {
                     text: 'Recaptcha',
                     link: '/en/components/recaptcha.md'
                 },
