@@ -1,0 +1,48 @@
+{
+    "name": "friendsofhyperf/purifier",
+    "type": "library",
+    "keywords": [
+        "hyperf",
+        "htmlpurifier",
+        "purifier",
+        "security",
+        "xss"
+    ],
+    "description": "Hyperf HtmlPurifier Package",
+    "require": {
+        "php": ">=8.1",
+        "ezyang/htmlpurifier": "^4.17.0",
+        "hyperf/framework": "~3.1.0",
+        "hyperf/support": "~3.1.0",
+        "hyperf/database": "^3.1.0"
+    },
+    "require-dev": {
+        "friendsofphp/php-cs-fixer": "^3.0",
+        "swoole/ide-helper": "^5.0"
+    },
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Purifier\\": "src/"
+        },
+        "files": [
+            "src/Functions.php"
+        ]
+    },
+    "extra": {
+        "hyperf": {
+            "config": "Friendsofhyperf\\Purifier\\ConfigProvider"
+        }
+    },
+    "authors": [
+        {
+            "name": "trigold",
+            "email": "422520625@qq.com"
+        },
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}

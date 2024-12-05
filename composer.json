@@ -17,6 +17,7 @@
         "php": ">=8.1",
         "barryvdh/reflection-docblock": "^2.0",
         "composer/composer": "^2.0",
+        "ezyang/htmlpurifier": "^4.17.0",
         "google/protobuf": "^3.21",
         "google/recaptcha": "^1.2",
         "guzzlehttp/uri-template": "^1.0",
@@ -157,7 +158,8 @@
         "friendsofhyperf/tinker": "*",
         "friendsofhyperf/trigger": "*",
         "friendsofhyperf/validated-dto": "*",
-        "friendsofhyperf/web-tinker": "*"
+        "friendsofhyperf/web-tinker": "*",
+        "friendsofhyperf/purifier": "*"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -209,6 +211,7 @@
             "FriendsOfHyperf\\Trigger\\": "src/trigger/src/",
             "FriendsOfHyperf\\ValidatedDTO\\": "src/validated-dto/src/",
             "FriendsOfHyperf\\WebTinker\\": "src/web-tinker/src/",
+            "FriendsOfHyperf\\Purifier\\": "src/purifier/src/",
             "Pest\\Hyperf\\": "src/pest-plugin-hyperf/src/"
         },
         "files": [
@@ -222,7 +225,8 @@
             "src/mail/src/Functions.php",
             "src/model-factory/src/Functions.php",
             "src/support/src/Functions.php",
-            "src/validated-dto/src/Functions.php"
+            "src/validated-dto/src/Functions.php",
+            "src/purifier/src/Functions.php"
         ]
     },
     "autoload-dev": {
@@ -287,7 +291,8 @@
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
                 "FriendsOfHyperf\\Trigger\\ConfigProvider",
                 "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider",
-                "FriendsOfHyperf\\WebTinker\\ConfigProvider"
+                "FriendsOfHyperf\\WebTinker\\ConfigProvider",
+                "FriendsOfHyperf\\Purifier\\ConfigProvider"
             ]
         }
     },
