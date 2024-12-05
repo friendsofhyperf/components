@@ -216,7 +216,6 @@ class Purifier
 
             $definition->addAttribute($onElement, $attrName, $validValues);
         }
-
     }
 
     /**

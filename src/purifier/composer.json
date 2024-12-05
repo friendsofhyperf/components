@@ -16,10 +16,6 @@
         "hyperf/support": "~3.1.0",
         "hyperf/database": "^3.1.0"
     },
-    "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.0",
-        "swoole/ide-helper": "^5.0"
-    },
     "license": "MIT",
     "autoload": {
         "psr-4": {
@@ -32,6 +28,9 @@
     "extra": {
         "hyperf": {
             "config": "Friendsofhyperf\\Purifier\\ConfigProvider"
+        },
+        "branch-alias": {
+            "dev-main": "3.1-dev"
         }
     },
     "authors": [
@@ -44,5 +43,11 @@
             "email": "huangdijia@gmail.com"
         }
     ],
-    "minimum-stability": "dev"
+    "minimum-stability": "dev",
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "docs": "https://hyperf.fans",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    }
 }

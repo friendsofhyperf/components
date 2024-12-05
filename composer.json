@@ -149,6 +149,7 @@
         "friendsofhyperf/openai-client": "*",
         "friendsofhyperf/pest-plugin-hyperf": "*",
         "friendsofhyperf/pretty-console": "*",
+        "friendsofhyperf/purifier": "*",
         "friendsofhyperf/recaptcha": "*",
         "friendsofhyperf/redis-subscriber": "*",
         "friendsofhyperf/sentry": "*",
@@ -158,8 +159,7 @@
         "friendsofhyperf/tinker": "*",
         "friendsofhyperf/trigger": "*",
         "friendsofhyperf/validated-dto": "*",
-        "friendsofhyperf/web-tinker": "*",
-        "friendsofhyperf/purifier": "*"
+        "friendsofhyperf/web-tinker": "*"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
@@ -201,6 +201,7 @@
             "FriendsOfHyperf\\Notification\\Mail\\": "src/notification-mail/src/",
             "FriendsOfHyperf\\OpenAi\\": "src/openai-client/src/",
             "FriendsOfHyperf\\PrettyConsole\\": "src/pretty-console/src/",
+            "FriendsOfHyperf\\Purifier\\": "src/purifier/src/",
             "FriendsOfHyperf\\ReCaptcha\\": "src/recaptcha/src/",
             "FriendsOfHyperf\\Redis\\Subscriber\\": "src/redis-subscriber/src/",
             "FriendsOfHyperf\\Sentry\\": "src/sentry/src/",
@@ -211,7 +212,6 @@
             "FriendsOfHyperf\\Trigger\\": "src/trigger/src/",
             "FriendsOfHyperf\\ValidatedDTO\\": "src/validated-dto/src/",
             "FriendsOfHyperf\\WebTinker\\": "src/web-tinker/src/",
-            "FriendsOfHyperf\\Purifier\\": "src/purifier/src/",
             "Pest\\Hyperf\\": "src/pest-plugin-hyperf/src/"
         },
         "files": [
@@ -224,9 +224,9 @@
             "src/lock/src/Functions.php",
             "src/mail/src/Functions.php",
             "src/model-factory/src/Functions.php",
+            "src/purifier/src/Functions.php",
             "src/support/src/Functions.php",
-            "src/validated-dto/src/Functions.php",
-            "src/purifier/src/Functions.php"
+            "src/validated-dto/src/Functions.php"
         ]
     },
     "autoload-dev": {
@@ -292,7 +292,7 @@
                 "FriendsOfHyperf\\Trigger\\ConfigProvider",
                 "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider",
                 "FriendsOfHyperf\\WebTinker\\ConfigProvider",
-                "FriendsOfHyperf\\Purifier\\ConfigProvider"
+                "Friendsofhyperf\\Purifier\\ConfigProvider"
             ]
         }
     },
