@@ -63,7 +63,7 @@ class RequestHandledListener implements ListenerInterface
 
         $psr7Request = $event->request;
 
-        if (! $this->incomingRequest($psr7Request)) {
+        if (! $psr7Request || ! $this->incomingRequest($psr7Request)) {
             return;
         }
 
