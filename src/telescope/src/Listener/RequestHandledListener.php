@@ -52,9 +52,18 @@ class RequestHandledListener implements ListenerInterface
         ];
     }
 
+    /**
+     * @param RequestReceived|RpcRequestReceived|RequestTerminated|RpcRequestTerminated $event
+     */
     public function process(object $event): void
     {
         if (! $this->telescopeConfig->isEnable('request')) {
+            return;
+        }
+
+        $psr7Request = $event->request;
+
+        if (! $this->incomingRequest($psr7Request)) {
             return;
         }
 
@@ -85,10 +94,6 @@ class RequestHandledListener implements ListenerInterface
         $psr7Request = $event->request;
         $psr7Response = $event->response;
         $startTime = $psr7Request->getServerParams()['request_time_float'];
-
-        if (! $this->incomingRequest($psr7Request)) {
-            return;
-        }
 
         /** @var Dispatched $dispatched */
         $dispatched = $psr7Request->getAttribute(Dispatched::class);
