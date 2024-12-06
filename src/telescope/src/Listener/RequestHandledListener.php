@@ -86,29 +86,31 @@ class RequestHandledListener implements ListenerInterface
         $psr7Response = $event->response;
         $startTime = $psr7Request->getServerParams()['request_time_float'];
 
-        if ($this->incomingRequest($psr7Request)) {
-            /** @var Dispatched $dispatched */
-            $dispatched = $psr7Request->getAttribute(Dispatched::class);
-            $entry = IncomingEntry::make([
-                'ip_address' => $psr7Request->getServerParams()['remote_addr'] ?? 'unknown',
-                'uri' => $psr7Request->getRequestTarget(),
-                'method' => $psr7Request->getMethod(),
-                'controller_action' => $dispatched->handler ? $dispatched->handler->callback : '',
-                'middleware' => TelescopeContext::getMiddlewares(),
-                'headers' => $psr7Request->getHeaders(),
-                'payload' => $this->getRequestPayload($psr7Request),
-                'session' => '',
-                'response_status' => $psr7Response->getStatusCode(),
-                'response' => $this->getResponsePayload($psr7Response),
-                'duration' => $startTime ? floor((microtime(true) - $startTime) * 1000) : null,
-                'memory' => round(memory_get_peak_usage(true) / 1024 / 1024, 1),
-            ]);
+        if (! $this->incomingRequest($psr7Request)) {
+            return;
+        }
 
-            if ($this->isRpcRequest($psr7Request)) {
-                Telescope::recordService($entry);
-            } else {
-                Telescope::recordRequest($entry);
-            }
+        /** @var Dispatched $dispatched */
+        $dispatched = $psr7Request->getAttribute(Dispatched::class);
+        $entry = IncomingEntry::make([
+            'ip_address' => $psr7Request->getServerParams()['remote_addr'] ?? 'unknown',
+            'uri' => $psr7Request->getRequestTarget(),
+            'method' => $psr7Request->getMethod(),
+            'controller_action' => $dispatched->handler ? $dispatched->handler->callback : '',
+            'middleware' => TelescopeContext::getMiddlewares(),
+            'headers' => $psr7Request->getHeaders(),
+            'payload' => $this->getRequestPayload($psr7Request),
+            'session' => '',
+            'response_status' => $psr7Response->getStatusCode(),
+            'response' => $this->getResponsePayload($psr7Response),
+            'duration' => $startTime ? floor((microtime(true) - $startTime) * 1000) : null,
+            'memory' => round(memory_get_peak_usage(true) / 1024 / 1024, 1),
+        ]);
+
+        if ($this->isRpcRequest($psr7Request)) {
+            Telescope::recordService($entry);
+        } else {
+            Telescope::recordRequest($entry);
         }
     }
 

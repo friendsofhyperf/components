@@ -173,7 +173,7 @@ class TelescopeConfig
             '*favicon.ico',
             'telescope-api*',
             'vendor/telescope*',
-            $this->getPath() . '*',
+            trim($this->getPath(), '/') . '*',
         ];
         $ignorePaths = (array) $this->get('ignore_paths', []);
 

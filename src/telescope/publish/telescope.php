@@ -47,7 +47,7 @@ return [
         // 'api/*'
     ],
     'ignore_paths' => [
-        'telescope/*',
+        // 'nova-api*',
     ],
     'ignore_commands' => [
         // 'demo:command',
