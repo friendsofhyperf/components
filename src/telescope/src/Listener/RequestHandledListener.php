@@ -85,11 +85,13 @@ class RequestHandledListener implements ListenerInterface
     public function requestHandled(RequestTerminated|RpcRequestTerminated $event)
     {
         if (
-            $event->response instanceof ResponsePlusInterface
-            && $batchId = TelescopeContext::getBatchId()
+            ! $event->response instanceof ResponsePlusInterface
+            || ! $batchId = TelescopeContext::getBatchId()
         ) {
-            $event->response->addHeader('batch-id', $batchId);
+            return;
         }
+
+        $event->response->addHeader('batch-id', $batchId);
 
         $psr7Request = $event->request;
         $psr7Response = $event->response;

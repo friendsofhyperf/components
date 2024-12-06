@@ -58,7 +58,10 @@ class CacheAspect extends AbstractAspect
     protected function processGetDriver($proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($driver) use ($proceedingJoinPoint) {
-            if (! $this->telescopeConfig->isEnable('redis')) {
+            if (
+                ! $this->telescopeConfig->isEnable('redis')
+                || ! TelescopeContext::getBatchId()
+            ) {
                 return;
             }
 

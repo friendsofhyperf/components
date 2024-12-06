@@ -39,7 +39,10 @@ class HttpClientAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->telescopeConfig->isEnable('guzzle')) {
+        if (
+            ! $this->telescopeConfig->isEnable('guzzle')
+            || ! TelescopeContext::getBatchId()
+        ) {
             return $proceedingJoinPoint->process();
         }
 

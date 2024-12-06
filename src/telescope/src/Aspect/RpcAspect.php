@@ -33,7 +33,13 @@ class RpcAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function () {
-            if (static::class == self::class && $this->telescopeConfig->isEnable('rpc') === false) {
+            if (
+                static::class == self::class
+                && (
+                    ! $this->telescopeConfig->isEnable('rpc')
+                    || ! TelescopeContext::getBatchId()
+                )
+            ) {
                 return;
             }
 

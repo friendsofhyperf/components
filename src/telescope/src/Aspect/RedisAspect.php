@@ -48,7 +48,10 @@ class RedisAspect extends AbstractAspect
     {
         $startTime = microtime(true);
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint, $startTime) {
-            if (! $this->telescopeConfig->isEnable('redis')) {
+            if (
+                ! $this->telescopeConfig->isEnable('redis')
+                || ! TelescopeContext::getBatchId()
+            ) {
                 return;
             }
 

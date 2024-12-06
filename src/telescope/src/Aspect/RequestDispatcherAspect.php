@@ -34,7 +34,10 @@ class RequestDispatcherAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function () use ($proceedingJoinPoint) {
-            if (! $this->telescopeConfig->isEnable('request')) {
+            if (
+                ! $this->telescopeConfig->isEnable('request')
+                || ! TelescopeContext::getBatchId()
+            ) {
                 return;
             }
 

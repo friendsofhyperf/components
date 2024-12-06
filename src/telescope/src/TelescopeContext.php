@@ -135,7 +135,7 @@ class TelescopeContext
         return Context::get(self::GRPC_RESPONSE_PAYLOAD) ?: null;
     }
 
-    public static function getOrSetBatch(string $batchId): void
+    public static function getOrSetBatch(?string $batchId = null): void
     {
         if ($batchId) {
             $subBatchId = Str::orderedUuid()->toString();

@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Telescope\Listener;
 use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
+use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Collection\Arr;
 use Hyperf\Collection\Collection;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -38,7 +39,10 @@ class ExceptionHandlerListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if (! $this->telescopeConfig->isEnable('exception')) {
+        if (
+            ! $this->telescopeConfig->isEnable('exception')
+            || ! TelescopeContext::getBatchId()
+        ) {
             return;
         }
 
