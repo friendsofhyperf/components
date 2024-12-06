@@ -53,22 +53,7 @@ class ViewController
      */
     public function show()
     {
-        $blade = __DIR__ . '/../../storage/view/index.blade.php';
-
-        if (! isset($this->caches[$blade])) {
-            $this->caches[$blade] = file_get_contents($blade);
-        }
-
-        $templateContent = $this->caches[$blade];
-        $params = [
-            '{{ $path }}' => $this->telescopeConfig->getPath(),
-            '$telescopeScriptVariables' => json_encode(Telescope::scriptVariables()),
-        ];
-        foreach ($params as $key => $value) {
-            $templateContent = str_replace($key, $value, $templateContent);
-        }
-
-        return $this->response->html($templateContent);
+        return $this->index();
     }
 
     public function renderStaticFile(string $file)
