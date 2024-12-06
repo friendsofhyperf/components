@@ -16,6 +16,7 @@ use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Collection\Arr;
+use Hyperf\Collection\Collection;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Event\RequestReceived;
 use Hyperf\HttpServer\Event\RequestTerminated;
@@ -31,7 +32,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Swow\Psr7\Message\ResponsePlusInterface;
 use Throwable;
 
-use function Hyperf\Collection\collect;
 use function Hyperf\Config\config;
 
 class RequestHandledListener implements ListenerInterface
@@ -217,7 +217,7 @@ class RequestHandledListener implements ListenerInterface
     {
         $dispatched = $psr7Request->getAttribute(Dispatched::class);
         $serverName = $dispatched->serverName ?? 'http';
-        $serverConfig = collect(config('server.servers'))->firstWhere('name', $serverName);
+        $serverConfig = (new Collection(config('server.servers')))->firstWhere('name', $serverName);
         $handlerClass = $serverConfig['callbacks'][Event::ON_RECEIVE][0] ?? $serverConfig['callbacks'][Event::ON_REQUEST][0] ?? null;
         return is_string($handlerClass) && $this->container->has($handlerClass) ? $this->container->get($handlerClass) : null;
     }

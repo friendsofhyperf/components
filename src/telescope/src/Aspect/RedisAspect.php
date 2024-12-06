@@ -15,6 +15,7 @@ use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;
+use Hyperf\Collection\Collection;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\PackerInterface;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -23,7 +24,6 @@ use Hyperf\Redis\Redis;
 use Psr\Container\ContainerInterface;
 use Throwable;
 
-use function Hyperf\Collection\collect;
 use function Hyperf\Tappable\tap;
 
 /**
@@ -65,10 +65,10 @@ class RedisAspect extends AbstractAspect
 
     private function formatCommand(string $command, array $parameters): string
     {
-        $parameters = collect($parameters)
+        $parameters = (new Collection($parameters))
             ->map(function ($parameter, $key) use ($command) {
                 if (is_array($parameter)) {
-                    return collect($parameter)
+                    return (new Collection($parameter))
                         ->map(function ($value, $key) {
                             if (is_array($value)) {
                                 return json_encode($value);

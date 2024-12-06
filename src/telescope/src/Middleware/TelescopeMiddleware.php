@@ -26,7 +26,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use function Hyperf\Collection\collect;
 use function Hyperf\Config\config;
 use function Hyperf\Coroutine\defer;
 
@@ -192,7 +191,7 @@ class TelescopeMiddleware implements MiddlewareInterface
     {
         $dispatched = $psr7Request->getAttribute(Dispatched::class);
         $serverName = $dispatched->serverName ?? 'http';
-        $serverConfig = collect(config('server.servers'))->firstWhere('name', $serverName);
+        $serverConfig = (new Collection(config('server.servers')))->firstWhere('name', $serverName);
         $handlerClass = $serverConfig['callbacks'][Event::ON_RECEIVE][0] ?? $serverConfig['callbacks'][Event::ON_REQUEST][0] ?? null;
         return is_string($handlerClass) && $this->container->has($handlerClass) ? $this->container->get($handlerClass) : null;
     }

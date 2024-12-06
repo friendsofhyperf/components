@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Telescope\Aspect;
 use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
+use Hyperf\Collection\Collection;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Event\EventDispatcher;
@@ -21,7 +22,6 @@ use Hyperf\Stringable\Str;
 use Psr\EventDispatcher\ListenerProviderInterface;
 use ReflectionClass;
 
-use function Hyperf\Collection\collect;
 use function Hyperf\Tappable\tap;
 
 class EventAspect extends AbstractAspect
@@ -67,7 +67,7 @@ class EventAspect extends AbstractAspect
 
     protected function extractPayload($eventName, $payload): array
     {
-        return collect($payload)->map(function ($value) {
+        return (new Collection($payload))->map(function ($value) {
             return is_object($value) ? [
                 'class' => get_class($value),
                 'properties' => json_decode(json_encode($value), true),
