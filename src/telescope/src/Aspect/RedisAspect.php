@@ -21,6 +21,7 @@ use Hyperf\Contract\PackerInterface;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Redis\Redis;
+use Hyperf\Stringable\Str;
 use Psr\Container\ContainerInterface;
 use Throwable;
 
@@ -54,6 +55,10 @@ class RedisAspect extends AbstractAspect
             $arguments = $proceedingJoinPoint->arguments['keys'];
             $commands = $this->formatCommand($arguments['name'], $arguments['arguments']);
             $connection = (fn () => $this->poolName ?? 'default')->call($proceedingJoinPoint->getInstance());
+
+            if (Str::contains($commands, 'telescope')) {
+                return;
+            }
 
             Telescope::recordRedis(IncomingEntry::make([
                 'connection' => $connection,
