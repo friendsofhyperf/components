@@ -15,11 +15,10 @@ use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Collection\Arr;
+use Hyperf\Collection\Collection;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Event;
 use Hyperf\Stringable\Str;
-
-use function Hyperf\Collection\collect;
 
 class ExceptionHandlerListener implements ListenerInterface
 {
@@ -47,7 +46,7 @@ class ExceptionHandlerListener implements ListenerInterface
             return;
         }
 
-        $trace = collect($exception->getTrace())->map(function ($item) {
+        $trace = (new Collection($exception->getTrace()))->map(function ($item) {
             return Arr::only($item, ['file', 'line']);
         })->toArray();
 
@@ -70,7 +69,7 @@ class ExceptionHandlerListener implements ListenerInterface
             ];
         }
 
-        return collect(explode("\n", file_get_contents($exception->getFile())))
+        return (new Collection(explode("\n", file_get_contents($exception->getFile()))))
             ->slice($exception->getLine() - 10, 20)
             ->mapWithKeys(function ($value, $key) {
                 return [$key + 1 => $value];
