@@ -17,6 +17,8 @@ use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Psr\Container\ContainerInterface;
 
+use function Hyperf\Collection\value;
+
 class ViewController
 {
     private array $caches = [];
@@ -34,18 +36,17 @@ class ViewController
         $blade = __DIR__ . '/../../storage/view/index.blade.php';
 
         if (! isset($this->caches[$blade])) {
-            $this->caches[$blade] = file_get_contents($blade);
-        }
-        $templateContent = $this->caches[$blade];
-        $params = [
-            '{{ $path }}' => $this->telescopeConfig->getPath(),
-            '$telescopeScriptVariables' => json_encode(Telescope::scriptVariables()),
-        ];
-        foreach ($params as $key => $value) {
-            $templateContent = str_replace($key, $value, $templateContent);
+            $this->caches[$blade] = value(function () use ($blade) {
+                $templateContent = file_get_contents($blade);
+                $params = [
+                    '{{ $path }}' => $this->telescopeConfig->getPath(),
+                    '$telescopeScriptVariables' => json_encode(Telescope::scriptVariables()),
+                ];
+                return strtr($templateContent, $params);
+            });
         }
 
-        return $this->response->html($templateContent);
+        return $this->response->html($this->caches[$blade]);
     }
 
     /**
