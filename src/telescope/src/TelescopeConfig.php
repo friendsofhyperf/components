@@ -186,11 +186,7 @@ class TelescopeConfig
             $path = $path->getUri()->getPath();
         }
 
-        return Str::contains(
-            rawurldecode(trim($path, '/')),
-            $this->getIgnorePaths(),
-            true
-        );
+        return Str::is($this->getIgnorePaths(), rawurldecode(trim($path, '/')));
     }
 
     public function getIgnoreCommands(): array
