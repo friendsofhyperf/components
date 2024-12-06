@@ -16,6 +16,7 @@ use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Collection\Arr;
+use Hyperf\Collection\Collection;
 use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\Rpc\Context as RpcContext;
 use Hyperf\Server\Event;
