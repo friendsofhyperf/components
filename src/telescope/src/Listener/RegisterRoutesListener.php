@@ -84,7 +84,7 @@ class RegisterRoutesListener implements ListenerInterface
                 Router::get('/public/{file}', [Controller\ViewController::class, 'renderStaticFile']);
 
                 Router::get('/{view}', [Controller\ViewController::class, 'index']);
-                Router::get('/{view}/{id}', [Controller\ViewController::class, 'show']);
+                Router::get('/{view}/{id}', [Controller\ViewController::class, 'index']);
             }, ['middleware' => $middleware]);
         });
     }

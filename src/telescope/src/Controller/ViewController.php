@@ -48,6 +48,9 @@ class ViewController
         return $this->response->html($templateContent);
     }
 
+    /**
+     * @deprecated since v3.1, will removed at v3.2
+     */
     public function show()
     {
         $blade = __DIR__ . '/../../storage/view/index.blade.php';
@@ -56,11 +59,14 @@ class ViewController
             $this->caches[$blade] = file_get_contents($blade);
         }
 
-        $templateContent = str_replace(
-            '{{ $path }}',
-            $this->telescopeConfig->getPath(),
-            $this->caches[$blade]
-        );
+        $templateContent = $this->caches[$blade];
+        $params = [
+            '{{ $path }}' => $this->telescopeConfig->getPath(),
+            '$telescopeScriptVariables' => json_encode(Telescope::scriptVariables()),
+        ];
+        foreach ($params as $key => $value) {
+            $templateContent = str_replace($key, $value, $templateContent);
+        }
 
         return $this->response->html($templateContent);
     }
