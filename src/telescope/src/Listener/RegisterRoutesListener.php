@@ -69,7 +69,7 @@ class RegisterRoutesListener implements ListenerInterface
                     Router::post('/queries', [Controller\QueriesController::class, 'list']);
                     Router::get('/queries/{id}', [Controller\QueriesController::class, 'detail']);
 
-                    Router::get('/toggle-recording', [Controller\RecordingController::class, 'toggle']);
+                    Router::post('/toggle-recording', [Controller\RecordingController::class, 'toggle']);
 
                     Router::post('/redis', [Controller\RedisController::class, 'list']);
                     Router::get('/redis/{id}', [Controller\RedisController::class, 'detail']);
