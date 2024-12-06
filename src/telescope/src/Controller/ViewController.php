@@ -56,7 +56,13 @@ class ViewController
             $this->caches[$blade] = file_get_contents($blade);
         }
 
-        return $this->response->html($this->caches[$blade]);
+        $templateContent = str_replace(
+            '{{ $path }}',
+            $this->telescopeConfig->getPath(),
+            $this->caches[$blade]
+        );
+
+        return $this->response->html($templateContent);
     }
 
     public function renderStaticFile(string $file)
