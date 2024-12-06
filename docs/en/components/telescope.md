@@ -83,7 +83,7 @@ return [
 
 ## View Dashboard
 
-`http://127.0.0.1:9509/telescope/requests`
+`http://127.0.0.1:9501/telescope`
 
 ## Database Configuration
 
