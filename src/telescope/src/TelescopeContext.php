@@ -102,7 +102,7 @@ class TelescopeContext
                 /** @var IncomingEntry[] $entries */
                 $entries = Context::get(self::ENTRIES);
                 foreach ($entries as $entry) {
-                    $entry->create();
+                    $entry->store();
                 }
                 Context::destroy(self::ENTRIES);
             });

@@ -209,7 +209,7 @@ class Telescope
 
         match (static::getConfig()->getRecordMode()) {
             RecordMode::ASYNC => TelescopeContext::addEntry($entry),
-            RecordMode::SYNC => $entry->create(),
+            RecordMode::SYNC => $entry->store(),
         };
     }
 }
