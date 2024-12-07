@@ -49,7 +49,7 @@ class Telescope
     public static array $hiddenResponseParameters = [];
 
     /**
-     * Indicates if Telescope should ignore events fired by Laravel.
+     * Indicates if Telescope should ignore events fired by the framework.
      */
     public static bool $ignoreFrameworkEvents = true;
 

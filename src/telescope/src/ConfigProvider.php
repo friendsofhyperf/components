@@ -36,6 +36,9 @@ class ConfigProvider
                 Command\PruneCommand::class,
             ],
             'dependencies' => [
+                Contract\EntriesRepository::class => fn ($container) => $container->get(Storage\DatabaseEntriesRepository::class),
+                Contract\ClearableRepository::class => fn ($container) => $container->get(Storage\DatabaseEntriesRepository::class),
+                Contract\PrunableRepository::class => fn ($container) => $container->get(Storage\DatabaseEntriesRepository::class),
             ],
             'listeners' => [
                 Listener\CommandListener::class,
