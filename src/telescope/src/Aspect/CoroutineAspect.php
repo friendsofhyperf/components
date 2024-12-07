@@ -30,6 +30,10 @@ class CoroutineAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        if (! TelescopeContext::getBatchId()) {
+            return $proceedingJoinPoint->process();
+        }
+
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
         $keys = $this->keys;
         $cid = Co::id();

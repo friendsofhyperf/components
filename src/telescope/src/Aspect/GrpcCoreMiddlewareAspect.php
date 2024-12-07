@@ -35,7 +35,10 @@ class GrpcCoreMiddlewareAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (! $this->telescopeConfig->isEnable('grpc')) {
+            if (
+                ! $this->telescopeConfig->isEnable('grpc')
+                || ! TelescopeContext::getBatchId()
+            ) {
                 return;
             }
 

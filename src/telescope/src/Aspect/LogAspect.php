@@ -15,6 +15,7 @@ use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Severity;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
+use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Stringable\Str;
@@ -36,20 +37,28 @@ class LogAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (! $this->telescopeConfig->isEnable('log')) {
+            if (
+                ! $this->telescopeConfig->isEnable('log')
+                || ! TelescopeContext::getBatchId()
+            ) {
                 return;
             }
+
             $level = $proceedingJoinPoint->arguments['keys']['level'];
             $level = $level instanceof UnitEnum ? (int) $level->value : (int) $level; /* @phpstan-ignore-line */
             $message = $proceedingJoinPoint->arguments['keys']['message'];
             $context = $proceedingJoinPoint->arguments['keys']['context'];
-            if (Str::contains($message, Telescope::getPath())) {
+
+            if (Str::contains($message, 'telescope')) {
                 return;
             }
+
             $name = $proceedingJoinPoint->getInstance()->getName();
+
             if ($this->telescopeConfig->isLogIgnored($name)) {
                 return;
             }
+
             Telescope::recordLog(
                 IncomingEntry::make([
                     'level' => (string) $this->getLogLevel($level),

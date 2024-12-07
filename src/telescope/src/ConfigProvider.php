@@ -18,13 +18,6 @@ class ConfigProvider
         defined('BASE_PATH') or define('BASE_PATH', '');
 
         return [
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
-            ],
             'aspects' => [
                 Aspect\CoroutineAspect::class,
                 Aspect\CacheAspect::class,
@@ -49,8 +42,9 @@ class ConfigProvider
                 Listener\DbQueryListener::class,
                 Listener\ExceptionHandlerListener::class,
                 Listener\FetchRecordingOnBootListener::class,
+                Listener\RegisterRoutesListener::class => -1,
                 Listener\SetRequestLifecycleListener::class,
-                Listener\SetupTelescopeServerListener::class,
+                // Listener\SetupTelescopeServerListener::class,
             ],
             'publish' => [
                 [

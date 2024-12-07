@@ -15,7 +15,6 @@ use FriendsOfHyperf\Telescope\EntryType;
 use FriendsOfHyperf\Telescope\Model\TelescopeEntryModel;
 use FriendsOfHyperf\Telescope\Model\TelescopeEntryTagModel;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
-use Hyperf\Di\Annotation\Inject;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Stringable\Str;
@@ -23,17 +22,13 @@ use Psr\Container\ContainerInterface;
 
 abstract class EntryController
 {
-    #[Inject]
-    protected ContainerInterface $container;
-
-    #[Inject]
-    protected RequestInterface $request;
-
-    #[Inject]
-    protected ResponseInterface $response;
-
-    #[Inject]
-    protected TelescopeConfig $telescopeConfig;
+    public function __construct(
+        protected ContainerInterface $container,
+        protected RequestInterface $request,
+        protected ResponseInterface $response,
+        protected TelescopeConfig $telescopeConfig,
+    ) {
+    }
 
     public function index()
     {

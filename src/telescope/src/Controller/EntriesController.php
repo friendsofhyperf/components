@@ -13,17 +13,13 @@ namespace FriendsOfHyperf\Telescope\Controller;
 
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ApplicationInterface;
-use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\DeleteMapping;
 use Symfony\Component\Console\Input\ArrayInput;
 
-#[Controller(server: 'telescope')]
 class EntriesController
 {
     /**
      * Delete all of the entries from storage.
      */
-    #[DeleteMapping(path: '/telescope/telescope-api/entries')]
     public function destroy(): void
     {
         $application = ApplicationContext::getContainer()->get(ApplicationInterface::class);

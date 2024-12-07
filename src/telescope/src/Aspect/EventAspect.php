@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Telescope\Aspect;
 use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
+use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Collection\Collection;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -30,28 +31,35 @@ class EventAspect extends AbstractAspect
         EventDispatcher::class . '::dispatch',
     ];
 
-    public function __construct(protected TelescopeConfig $telescopeConfig, protected ListenerProviderInterface $listeners)
-    {
+    public function __construct(
+        protected TelescopeConfig $telescopeConfig,
+        protected ListenerProviderInterface $listeners
+    ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (! $this->telescopeConfig->isEnable('event')) {
+            if (
+                ! $this->telescopeConfig->isEnable('event')
+                || ! TelescopeContext::getBatchId()
+            ) {
                 return;
             }
 
             $event = $proceedingJoinPoint->arguments['keys']['event'];
             $eventName = get_class($event);
             $listenerNames = [];
+
             foreach ($this->listeners->getListenersForEvent($event) as $listener) {
                 $listenerNames[] = $this->getListenerName($listener);
             }
+
             if (Str::startsWith($eventName, 'Hyperf\\')) {
                 return;
             }
-            $ref = new ReflectionClass($event);
 
+            $ref = new ReflectionClass($event);
             $constructor = $ref->getConstructor();
             $payload = $constructor->getParameters();
             $payload = $this->extractPayload($eventName, $payload);

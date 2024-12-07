@@ -92,7 +92,7 @@ TELESCOPE_SERVER_ENABLE=true
 
 ## Visit
 
-`http://127.0.0.1:9509/telescope/requests`
+`http://127.0.0.1:9501/telescope`
 
 <img src="./requests.jpg" />
 

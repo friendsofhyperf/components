@@ -84,7 +84,7 @@ return [
 
 ## 查看仪表板
 
-`http://127.0.0.1:9509/telescope/requests`
+`http://127.0.0.1:9501/telescope`
 
 ## 数据库配置
 

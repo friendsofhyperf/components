@@ -52,9 +52,18 @@ class RequestHandledListener implements ListenerInterface
         ];
     }
 
+    /**
+     * @param RequestReceived|RpcRequestReceived|RequestTerminated|RpcRequestTerminated $event
+     */
     public function process(object $event): void
     {
         if (! $this->telescopeConfig->isEnable('request')) {
+            return;
+        }
+
+        $psr7Request = $event->request;
+
+        if (! $psr7Request || ! $this->incomingRequest($psr7Request)) {
             return;
         }
 
@@ -76,39 +85,39 @@ class RequestHandledListener implements ListenerInterface
     public function requestHandled(RequestTerminated|RpcRequestTerminated $event)
     {
         if (
-            $event->response instanceof ResponsePlusInterface
-            && $batchId = TelescopeContext::getBatchId()
+            ! $event->response instanceof ResponsePlusInterface
+            || ! $batchId = TelescopeContext::getBatchId()
         ) {
-            $event->response->addHeader('batch-id', $batchId);
+            return;
         }
+
+        $event->response->addHeader('batch-id', $batchId);
 
         $psr7Request = $event->request;
         $psr7Response = $event->response;
         $startTime = $psr7Request->getServerParams()['request_time_float'];
 
-        if ($this->incomingRequest($psr7Request)) {
-            /** @var Dispatched $dispatched */
-            $dispatched = $psr7Request->getAttribute(Dispatched::class);
-            $entry = IncomingEntry::make([
-                'ip_address' => $psr7Request->getServerParams()['remote_addr'] ?? 'unknown',
-                'uri' => $psr7Request->getRequestTarget(),
-                'method' => $psr7Request->getMethod(),
-                'controller_action' => $dispatched->handler ? $dispatched->handler->callback : '',
-                'middleware' => TelescopeContext::getMiddlewares(),
-                'headers' => $psr7Request->getHeaders(),
-                'payload' => $this->getRequestPayload($psr7Request),
-                'session' => '',
-                'response_status' => $psr7Response->getStatusCode(),
-                'response' => $this->getResponsePayload($psr7Response),
-                'duration' => $startTime ? floor((microtime(true) - $startTime) * 1000) : null,
-                'memory' => round(memory_get_peak_usage(true) / 1024 / 1024, 1),
-            ]);
+        /** @var Dispatched $dispatched */
+        $dispatched = $psr7Request->getAttribute(Dispatched::class);
+        $entry = IncomingEntry::make([
+            'ip_address' => $psr7Request->getServerParams()['remote_addr'] ?? 'unknown',
+            'uri' => $psr7Request->getRequestTarget(),
+            'method' => $psr7Request->getMethod(),
+            'controller_action' => $dispatched->handler ? $dispatched->handler->callback : '',
+            'middleware' => TelescopeContext::getMiddlewares(),
+            'headers' => $psr7Request->getHeaders(),
+            'payload' => $this->getRequestPayload($psr7Request),
+            'session' => '',
+            'response_status' => $psr7Response->getStatusCode(),
+            'response' => $this->getResponsePayload($psr7Response),
+            'duration' => $startTime ? floor((microtime(true) - $startTime) * 1000) : null,
+            'memory' => round(memory_get_peak_usage(true) / 1024 / 1024, 1),
+        ]);
 
-            if ($this->isRpcRequest($psr7Request)) {
-                Telescope::recordService($entry);
-            } else {
-                Telescope::recordRequest($entry);
-            }
+        if ($this->isRpcRequest($psr7Request)) {
+            Telescope::recordService($entry);
+        } else {
+            Telescope::recordRequest($entry);
         }
     }
 
@@ -143,12 +152,10 @@ class RequestHandledListener implements ListenerInterface
                 is_array(json_decode($content, true))
                 && json_last_error() === JSON_ERROR_NONE
             ) {
-                return $this->contentWithinLimits($content) /* @phpstan-ignore-line */
-                ? $this->hideParameters(json_decode($content, true), Telescope::$hiddenResponseParameters)
-                : 'Purged By Hyperf Telescope';
+                return $this->hideParameters(json_decode($content, true), Telescope::$hiddenResponseParameters);
             }
             if (Str::startsWith(strtolower($response->getHeaderLine('content-type') ?: ''), 'text/plain')) {
-                return $this->contentWithinLimits($content) ? $content : 'Purged By Hyperf Telescope'; /* @phpstan-ignore-line */
+                return $content;
             }
             if (Str::contains($response->getHeaderLine('content-type'), 'application/grpc') !== false) {
                 return TelescopeContext::getGrpcResponsePayload() ?: 'Purged By Hyperf Telescope';

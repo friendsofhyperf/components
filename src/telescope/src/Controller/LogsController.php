@@ -12,20 +12,14 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Controller;
 
 use FriendsOfHyperf\Telescope\EntryType;
-use Hyperf\HttpServer\Annotation\Controller;
-use Hyperf\HttpServer\Annotation\GetMapping;
-use Hyperf\HttpServer\Annotation\PostMapping;
 
-#[Controller(server: 'telescope')]
 class LogsController extends EntryController
 {
-    #[PostMapping(path: '/telescope/telescope-api/logs')]
     public function list()
     {
         return $this->index();
     }
 
-    #[GetMapping(path: '/telescope/telescope-api/logs/{id}')]
     public function detail(string $id)
     {
         return $this->show($id);

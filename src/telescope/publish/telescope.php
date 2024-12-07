@@ -8,9 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use FriendsOfHyperf\Telescope\Server\Server;
 use FriendsOfHyperf\Telescope\Telescope;
-use Hyperf\Server\Event;
 
 use function Hyperf\Support\env;
 
@@ -35,20 +33,16 @@ return [
         'connection' => env('TELESCOPE_DB_CONNECTION', 'default'),
         'query_slow' => (int) env('TELESCOPE_QUERY_SLOW', 50),
     ],
-    'server' => [
-        'enable' => env('TELESCOPE_SERVER_ENABLE', false),
-        'name' => env('TELESCOPE_SERVER_NAME', 'telescope'),
-        'host' => env('TELESCOPE_SERVER_HOST', '0.0.0.0'),
-        'port' => (int) env('TELESCOPE_SERVER_PORT', 9509),
-        'sock_type' => SWOOLE_SOCK_TCP,
-        'callbacks' => [
-            Event::ON_REQUEST => [Server::class, 'onRequest'],
-        ],
+
+    'enabled' => env('TELESCOPE_SERVER_ENABLED', false),
+    'server' => env('TELESCOPE_SERVER', 'http'),
+    'path' => env('TELESCOPE_PATH', '/telescope'),
+    'middleware' => [
     ],
+
     'save_mode' => Telescope::ASYNC,
     'ignore_logs' => [
     ],
-    'path' => env('TELESCOPE_PATH', 'telescope'),
     'only_paths' => [
         // 'api/*'
     ],

@@ -33,6 +33,7 @@ class TelescopeConfig
     }
 
     /**
+     * @deprecated since v3.1, will be removed in v3.2
      * @return array{enable: bool, host: string, port: int}
      */
     public function getServerOptions(): array
@@ -50,6 +51,9 @@ class TelescopeConfig
         ], (array) $this->get('server', []));
     }
 
+    /**
+     * @deprecated since v3.1, will be removed in v3.2
+     */
     public function isServerEnable(): bool
     {
         return (bool) $this->getServerOptions()['enable'];
@@ -169,7 +173,7 @@ class TelescopeConfig
             '*favicon.ico',
             'telescope-api*',
             'vendor/telescope*',
-            $this->getPath() . '*',
+            trim($this->getPath(), '/') . '*',
         ];
         $ignorePaths = (array) $this->get('ignore_paths', []);
 
@@ -198,7 +202,13 @@ class TelescopeConfig
 
     public function fetchRecording(): bool
     {
-        return (bool) $this->redis->get($this->getRecordingKey());
+        /** @var string|false $recording */
+        $recording = $this->redis->get($this->getRecordingKey());
+        // default record when key does not exist
+        if ($recording === false) {
+            return true;
+        }
+        return (bool) $recording;
     }
 
     public function isRecording(): bool

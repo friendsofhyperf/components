@@ -14,4 +14,4 @@ mix
         // file, which we'll read for plugins.
         postCss: require('./postcss.config').plugins,
     })
-    .copy('public', '../web-tinker-app/public/vendor/web-tinker');
+    .copy('public', './public');

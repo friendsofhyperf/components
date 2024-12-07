@@ -167,7 +167,7 @@ class Telescope
     public static function scriptVariables(): array
     {
         return [
-            'path' => static::getConfig()->getPath(),
+            'path' => trim(static::getConfig()->getPath(), '/'),
             'timezone' => static::getConfig()->getTimezone(),
             'recording' => static::getConfig()->isRecording(),
         ];
@@ -188,7 +188,10 @@ class Telescope
 
     protected static function record(string $type, IncomingEntry $entry): void
     {
-        $batchId = (string) TelescopeContext::getBatchId();
+        if (! $batchId = TelescopeContext::getBatchId()) {
+            return;
+        }
+
         $subBatchId = (string) TelescopeContext::getSubBatchId();
         $entry->batchId($batchId)->subBatchId($subBatchId)->type($type)->user();
 
