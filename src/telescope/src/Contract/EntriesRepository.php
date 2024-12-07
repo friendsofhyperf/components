@@ -19,12 +19,12 @@ use Hyperf\Collection\Collection;
 interface EntriesRepository
 {
     /**
-     * @param Collection<IncomingEntry> $entries
+     * @param Collection<int,IncomingEntry> $entries
      */
     public function store($entries): void;
 
     /**
-     * @return Collection<EntryResult>
+     * @return Collection<int,EntryResult>
      */
     public function get(?string $type, EntryQueryOptions $options);
 
