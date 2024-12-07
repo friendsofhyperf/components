@@ -37,6 +37,8 @@ class ConfigProvider
             ],
             'dependencies' => [
                 Contract\EntriesRepository::class => Storage\DatabaseEntriesRepository::class,
+                Contract\ClearableRepository::class => fn ($container) => $container->get(Contract\EntriesRepository::class),
+                Contract\PrunableRepository::class => fn ($container) => $container->get(Contract\EntriesRepository::class),
             ],
             'listeners' => [
                 Listener\CommandListener::class,
