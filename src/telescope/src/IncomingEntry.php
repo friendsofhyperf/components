@@ -9,13 +9,11 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Telescope\Storage;
+namespace FriendsOfHyperf\Telescope;
 
 use Carbon\Carbon;
-use FriendsOfHyperf\Telescope\EntryType;
-use FriendsOfHyperf\Telescope\Model\TelescopeEntryModel;
-use FriendsOfHyperf\Telescope\Model\TelescopeEntryTagModel;
-use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\Model\EntryModel;
+use FriendsOfHyperf\Telescope\Model\EntryTagModel;
 use Hyperf\Stringable\Str;
 
 class IncomingEntry
@@ -274,10 +272,10 @@ class IncomingEntry
 
     public function create()
     {
-        TelescopeEntryModel::query()->create($this->toArray());
+        EntryModel::query()->create($this->toArray());
 
         foreach ($this->tags as $tag) {
-            TelescopeEntryTagModel::query()->create([
+            EntryTagModel::query()->create([
                 'entry_uuid' => $this->uuid,
                 'tag' => $tag,
             ]);
