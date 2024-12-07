@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\RecordMode;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Config\Config;
 use Hyperf\Redis\Redis;
@@ -46,7 +46,7 @@ beforeEach(function () {
                 'host' => '0.0.0.0',
                 'port' => 9509,
             ],
-            'save_mode' => Telescope::SYNC,
+            'record_mode' => RecordMode::SYNC,
             'ignore_logs' => [
             ],
             'path' => 'telescope',

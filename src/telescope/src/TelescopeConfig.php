@@ -118,13 +118,16 @@ class TelescopeConfig
         return (string) $this->get('timezone', date_default_timezone_get());
     }
 
-    public function getSaveMode(): int
+    public function getRecordMode(): RecordMode
     {
-        return match ($this->get('save_mode', Telescope::SYNC)) {
-            Telescope::ASYNC => Telescope::ASYNC,
-            Telescope::SYNC => Telescope::SYNC,
-            default => Telescope::SYNC,
-        };
+        /** @var RecordMode|int $mode */
+        $mode = $this->get('record_mode', RecordMode::SYNC);
+
+        if ($mode instanceof RecordMode) {
+            return $mode;
+        }
+
+        return RecordMode::tryFrom((int) $mode) ?: RecordMode::SYNC;
     }
 
     public function getPath(): string
