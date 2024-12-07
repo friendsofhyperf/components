@@ -23,7 +23,7 @@ use Hyperf\DbConnection\Db;
 
 class DatabaseEntriesRepository implements EntriesRepository, ClearableRepository, PrunableRepository
 {
-    public function clear()
+    public function clear(): void
     {
         $connection = Telescope::getConfig()->getDatabaseConnection();
         Db::connection($connection)->table('telescope_entries')->delete();
@@ -69,7 +69,7 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
             })->values();
     }
 
-    public function prune(DateTimeInterface $before, $keepExceptions)
+    public function prune(DateTimeInterface $before, $keepExceptions): int
     {
         $connection = Telescope::getConfig()->getDatabaseConnection();
         $deleted = Db::connection($connection)->table('telescope_entries')

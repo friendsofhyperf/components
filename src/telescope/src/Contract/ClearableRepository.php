@@ -16,5 +16,5 @@ interface ClearableRepository
     /**
      * Clear all of the entries.
      */
-    public function clear();
+    public function clear(): void;
 }
