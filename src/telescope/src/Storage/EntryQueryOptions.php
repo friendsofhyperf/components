@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Storage;
 
-use Hyperf\HttpServer\Request;
+use Hyperf\HttpServer\Contract\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class EntryQueryOptions
@@ -48,7 +48,7 @@ class EntryQueryOptions
 
     /**
      * Create new entry query options from the incoming request.
-     * @param Request $request
+     * @param RequestInterface $request
      */
     public static function fromRequest(ServerRequestInterface $request): static
     {
