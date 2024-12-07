@@ -36,6 +36,7 @@ class ConfigProvider
                 Command\PruneCommand::class,
             ],
             'dependencies' => [
+                Contract\EntriesRepository::class => Storage\DatabaseEntriesRepository::class,
             ],
             'listeners' => [
                 Listener\CommandListener::class,
