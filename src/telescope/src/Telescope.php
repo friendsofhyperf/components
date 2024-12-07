@@ -18,8 +18,14 @@ use Hyperf\Context\ApplicationContext;
 
 class Telescope
 {
+    /**
+     * @deprecated since v3.1, use `\FriendsOfHyperf\Telescope\SaveMode::SYNC` instead, will be removed in v3.2
+     */
     public const SYNC = 0;
 
+    /**
+     * @deprecated since v3.1, use `\FriendsOfHyperf\Telescope\SaveMode::ASYNC` instead, will be removed in v3.2
+     */
     public const ASYNC = 1;
 
     /**
@@ -200,14 +206,11 @@ class Telescope
             return;
         }
 
-        $entry->tags(Arr::collapse(array_map(function ($tagCallback) use ($entry) {
-            return $tagCallback($entry);
-        }, static::$tagUsing)));
+        $entry->tags(Arr::collapse(array_map(fn ($tagCallback) => $tagCallback($entry), static::$tagUsing)));
 
-        match (static::getConfig()->getSaveMode()) {
-            self::ASYNC => TelescopeContext::addEntry($entry),
-            self::SYNC => $entry->create(),
-            default => $entry->create(),
+        match (static::getConfig()->getRecordMode()) {
+            RecordMode::ASYNC => TelescopeContext::addEntry($entry),
+            RecordMode::SYNC => $entry->create(),
         };
     }
 }

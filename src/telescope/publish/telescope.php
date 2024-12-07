@@ -8,7 +8,8 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\Middleware\Authorize;
+use FriendsOfHyperf\Telescope\RecordMode;
 
 use function Hyperf\Support\env;
 
@@ -38,10 +39,10 @@ return [
     'server' => env('TELESCOPE_SERVER', 'http'),
     'path' => env('TELESCOPE_PATH', '/telescope'),
     'middleware' => [
-        FriendsOfHyperf\Telescope\Middleware\Authorize::class,
+        Authorize::class,
     ],
 
-    'save_mode' => Telescope::ASYNC,
+    'record_mode' => RecordMode::ASYNC,
     'ignore_logs' => [
     ],
     'only_paths' => [
