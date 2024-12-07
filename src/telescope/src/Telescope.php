@@ -193,7 +193,8 @@ class Telescope
     public static function store(IncomingEntry $entry): void
     {
         if (static::getConfig()->getRecordMode() === RecordMode::SYNC) {
-            $entry->store();
+            self::getStorage()->store(collect([$entry]));
+
             return;
         }
 

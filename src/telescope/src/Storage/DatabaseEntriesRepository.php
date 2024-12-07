@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Telescope\Storage;
 use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
 use FriendsOfHyperf\Telescope\EntryResult;
 use FriendsOfHyperf\Telescope\Model\EntryModel;
+use FriendsOfHyperf\Telescope\Model\EntryTagModel;
 
 class DatabaseEntriesRepository implements EntriesRepository
 {
@@ -24,7 +25,13 @@ class DatabaseEntriesRepository implements EntriesRepository
         }
 
         $entries->each(function ($entry) {
-            $entry->store();
+            EntryModel::query()->create($entry->toArray());
+            foreach ($entry->tags as $tag) {
+                EntryTagModel::query()->create([
+                    'entry_uuid' => $entry->uuid,
+                    'tag' => $tag,
+                ]);
+            }
         });
     }
 

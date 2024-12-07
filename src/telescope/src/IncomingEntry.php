@@ -270,7 +270,10 @@ class IncomingEntry
         ];
     }
 
-    public function store(): void
+    /**
+     * @deprecated since v3.1, use `store()`, will be removed in v3.2
+     */
+    public function create(): void
     {
         EntryModel::query()->create($this->toArray());
 
@@ -280,13 +283,5 @@ class IncomingEntry
                 'tag' => $tag,
             ]);
         }
-    }
-
-    /**
-     * @deprecated since v3.1, use `store()`, will be removed in v3.2
-     */
-    public function create(): void
-    {
-        $this->store();
     }
 }
