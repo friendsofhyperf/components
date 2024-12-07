@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Listener;
 
 use FriendsOfHyperf\Telescope\Controller;
+use FriendsOfHyperf\Telescope\Middleware\Authorize;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
@@ -37,7 +38,9 @@ class RegisterRoutesListener implements ListenerInterface
     {
         $server = $this->config->get('telescope.server', 'http');
         $prefix = $this->config->get('telescope.path', '/telescope');
-        $middleware = (array) $this->config->get('telescope.middleware', []);
+        $middleware = (array) $this->config->get('telescope.middleware', [
+            Authorize::class,
+        ]);
 
         Router::addServer($server, function () use ($prefix, $middleware) {
             Router::addGroup($prefix, function () {
