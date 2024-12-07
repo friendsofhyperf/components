@@ -20,6 +20,7 @@ use FriendsOfHyperf\Telescope\EntryResult;
 use FriendsOfHyperf\Telescope\EntryType;
 use FriendsOfHyperf\Telescope\EntryUpdate;
 use FriendsOfHyperf\Telescope\Exception\UniqueConstraintViolationException;
+use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Model\EntryModel;
 use Hyperf\Collection\Collection;
 use Hyperf\DbConnection\Db;

@@ -13,8 +13,8 @@ namespace FriendsOfHyperf\Telescope\Contract;
 
 use FriendsOfHyperf\Telescope\EntryResult;
 use FriendsOfHyperf\Telescope\EntryUpdate;
+use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Storage\EntryQueryOptions;
-use FriendsOfHyperf\Telescope\Storage\IncomingEntry;
 use Hyperf\Collection\Collection;
 
 interface EntriesRepository
