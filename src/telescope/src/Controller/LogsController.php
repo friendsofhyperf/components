@@ -34,13 +34,4 @@ class LogsController extends EntryController
     {
         return EntryType::LOG;
     }
-
-    /**
-     * The watcher class for the controller.
-     */
-    protected function watcher()
-    {
-        // return RequestWatcher::class;
-        return null;
-    }
 }

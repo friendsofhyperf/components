@@ -34,13 +34,4 @@ class EventsController extends EntryController
     {
         return EntryType::EVENT;
     }
-
-    /**
-     * The watcher class for the controller.
-     */
-    protected function watcher()
-    {
-        // return RequestWatcher::class;
-        return null;
-    }
 }

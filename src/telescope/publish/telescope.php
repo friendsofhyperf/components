@@ -38,6 +38,7 @@ return [
     'server' => env('TELESCOPE_SERVER', 'http'),
     'path' => env('TELESCOPE_PATH', '/telescope'),
     'middleware' => [
+        FriendsOfHyperf\Telescope\Middleware\Authorize::class,
     ],
 
     'save_mode' => Telescope::ASYNC,

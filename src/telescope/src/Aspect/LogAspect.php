@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Aspect;
 
-use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Severity;
+use FriendsOfHyperf\Telescope\Storage\IncomingEntry;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;

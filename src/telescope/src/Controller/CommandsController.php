@@ -34,13 +34,4 @@ class CommandsController extends EntryController
     {
         return EntryType::COMMAND;
     }
-
-    /**
-     * The watcher class for the controller.
-     */
-    protected function watcher()
-    {
-        // return RequestWatcher::class;
-        return null;
-    }
 }

@@ -34,13 +34,4 @@ class ClientRequestController extends EntryController
     {
         return EntryType::CLIENT_REQUEST;
     }
-
-    /**
-     * The watcher class for the controller.
-     */
-    protected function watcher()
-    {
-        // return RequestWatcher::class;
-        return null;
-    }
 }

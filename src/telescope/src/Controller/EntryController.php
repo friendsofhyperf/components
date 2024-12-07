@@ -105,13 +105,6 @@ abstract class EntryController
     abstract protected function entryType();
 
     /**
-     * The watcher class for the controller.
-     *
-     * @return string|null
-     */
-    abstract protected function watcher();
-
-    /**
      * Determine the watcher recording status.
      */
     protected function status(): string

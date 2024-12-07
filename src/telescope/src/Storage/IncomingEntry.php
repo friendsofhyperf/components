@@ -9,11 +9,13 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Telescope;
+namespace FriendsOfHyperf\Telescope\Storage;
 
 use Carbon\Carbon;
+use FriendsOfHyperf\Telescope\EntryType;
 use FriendsOfHyperf\Telescope\Model\TelescopeEntryModel;
 use FriendsOfHyperf\Telescope\Model\TelescopeEntryTagModel;
+use FriendsOfHyperf\Telescope\Telescope;
 use Hyperf\Stringable\Str;
 
 class IncomingEntry

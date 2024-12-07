@@ -34,13 +34,4 @@ class RequestsController extends EntryController
     {
         return EntryType::REQUEST;
     }
-
-    /**
-     * The watcher class for the controller.
-     */
-    protected function watcher()
-    {
-        // return RequestWatcher::class;
-        return null;
-    }
 }

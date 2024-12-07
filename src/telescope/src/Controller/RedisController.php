@@ -34,13 +34,4 @@ class RedisController extends EntryController
     {
         return EntryType::REDIS;
     }
-
-    /**
-     * The watcher class for the controller.
-     */
-    protected function watcher()
-    {
-        // return RequestWatcher::class;
-        return null;
-    }
 }

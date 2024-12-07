@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Telescope;
+namespace FriendsOfHyperf\Telescope\Storage;
 
 use Hyperf\HttpServer\Request;
 use Psr\Http\Message\ServerRequestInterface;

@@ -34,13 +34,4 @@ class ServicesController extends EntryController
     {
         return EntryType::SERVICE;
     }
-
-    /**
-     * The watcher class for the controller.
-     */
-    protected function watcher()
-    {
-        // return RequestWatcher::class;
-        return null;
-    }
 }
