@@ -105,7 +105,11 @@ class TelescopeConfig
 
     public function isEnabled(): bool
     {
-        return (bool) $this->get('enabled', false);
+        $enabled = $this->get('enabled');
+        if ($enabled === null) {
+            return true;
+        }
+        return (bool) $enabled;
     }
 
     public function getAppName(): string
