@@ -202,7 +202,12 @@ class TelescopeConfig
 
     public function fetchRecording(): bool
     {
-        return (bool) $this->redis->get($this->getRecordingKey());
+        $recording = $this->redis->get($this->getRecordingKey());
+        // default record when key does not exist
+        if ($recording === false) {
+            return true;
+        }
+        return (bool) $recording;
     }
 
     public function isRecording(): bool
