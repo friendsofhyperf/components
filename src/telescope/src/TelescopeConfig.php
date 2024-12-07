@@ -98,7 +98,9 @@ class TelescopeConfig
 
     public function isEnable(string $key): bool
     {
-        return ((bool) $this->get('enable.' . $key, false)) && $this->isRecording();
+        return $this->isEnabled()
+            && ((bool) $this->get('enable.' . $key, false))
+            && $this->isRecording();
     }
 
     public function isEnabled(): bool
