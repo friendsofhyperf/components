@@ -13,16 +13,6 @@ namespace FriendsOfHyperf\Telescope\Controller;
 
 class QueriesController extends EntryController
 {
-    public function list()
-    {
-        return $this->index();
-    }
-
-    public function detail($id)
-    {
-        return $this->show($id);
-    }
-
     /**
      * The entry type for the controller.
      *

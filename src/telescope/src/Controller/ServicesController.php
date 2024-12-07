@@ -15,16 +15,6 @@ use FriendsOfHyperf\Telescope\EntryType;
 
 class ServicesController extends EntryController
 {
-    public function list()
-    {
-        return $this->index();
-    }
-
-    public function detail($id)
-    {
-        return $this->show($id);
-    }
-
     /**
      * The entry type for the controller.
      *

@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Controller;
 
 use FriendsOfHyperf\Telescope\EntryType;
-use FriendsOfHyperf\Telescope\Model\TelescopeEntryModel;
-use FriendsOfHyperf\Telescope\Model\TelescopeEntryTagModel;
+use FriendsOfHyperf\Telescope\Model\EntryModel;
+use FriendsOfHyperf\Telescope\Model\EntryTagModel;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
@@ -35,7 +35,7 @@ abstract class EntryController
         $before = $this->request->input('before');
         $limit = $this->request->input('take', 50);
         $tag = $this->request->input('tag');
-        $query = TelescopeEntryModel::query()
+        $query = EntryModel::query()
             ->with('tags')
             ->where('type', $this->entryType())
             ->orderByDesc('sequence');
@@ -71,11 +71,11 @@ abstract class EntryController
 
     public function show($id)
     {
-        /** @var TelescopeEntryModel $entry */
-        $entry = TelescopeEntryModel::query()->find($id);
-        $entry->tags = TelescopeEntryTagModel::query()->where('entry_uuid', $id)->pluck('tag')->toArray(); /* @phpstan-ignore-line */
+        /** @var EntryModel $entry */
+        $entry = EntryModel::query()->find($id);
+        $entry->tags = EntryTagModel::query()->where('entry_uuid', $id)->pluck('tag')->toArray(); /* @phpstan-ignore-line */
 
-        $query = TelescopeEntryModel::query()->where('batch_id', $entry->batch_id); /* @phpstan-ignore-line */
+        $query = EntryModel::query()->where('batch_id', $entry->batch_id); /* @phpstan-ignore-line */
         if ($this->entryType() == EntryType::SERVICE) {
             $query->where('sub_batch_id', $entry->sub_batch_id); /* @phpstan-ignore-line */
         }

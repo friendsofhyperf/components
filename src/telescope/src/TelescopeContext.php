@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope;
 
-use FriendsOfHyperf\Telescope\Storage\IncomingEntry;
 use Hyperf\Context\Context;
 use Hyperf\Contract\PackerInterface;
 use Hyperf\Stringable\Str;

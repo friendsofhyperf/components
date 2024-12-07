@@ -48,14 +48,6 @@ class ViewController
         return $this->response->html($templateContent);
     }
 
-    /**
-     * @deprecated since v3.1, will removed at v3.2
-     */
-    public function show()
-    {
-        return $this->index();
-    }
-
     public function renderStaticFile(string $file)
     {
         $files = [

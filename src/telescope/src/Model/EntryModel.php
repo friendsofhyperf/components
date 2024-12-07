@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Model;
 
-class TelescopeEntryModel extends Model
+class EntryModel extends Model
 {
     /**
      * The name of the "updated at" column.
@@ -71,6 +71,6 @@ class TelescopeEntryModel extends Model
 
     public function tags()
     {
-        return $this->hasMany(TelescopeEntryTagModel::class, 'entry_uuid', 'uuid');
+        return $this->hasMany(EntryTagModel::class, 'entry_uuid', 'uuid');
     }
 }

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Model;
 
-class TelescopeEntryTagModel extends Model
+class EntryTagModel extends Model
 {
     public const CREATED_AT = null;
 
