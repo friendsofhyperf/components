@@ -34,13 +34,4 @@ class ExceptionsController extends EntryController
     {
         return EntryType::EXCEPTION;
     }
-
-    /**
-     * The watcher class for the controller.
-     */
-    protected function watcher()
-    {
-        // return RequestWatcher::class;
-        return null;
-    }
 }

@@ -34,13 +34,4 @@ class CacheController extends EntryController
     {
         return EntryType::CACHE;
     }
-
-    /**
-     * The watcher class for the controller.
-     */
-    protected function watcher()
-    {
-        // return RequestWatcher::class;
-        return null;
-    }
 }

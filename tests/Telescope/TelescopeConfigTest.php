@@ -20,6 +20,7 @@ beforeEach(function () {
 
     $config = new Config([
         'telescope' => [
+            'enabled' => true,
             'enable' => [
                 'request' => true,
                 'command' => true,

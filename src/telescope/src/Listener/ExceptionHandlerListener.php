@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Listener;
 
-use FriendsOfHyperf\Telescope\IncomingEntry;
+use FriendsOfHyperf\Telescope\Storage\IncomingEntry;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;

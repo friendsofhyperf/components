@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope;
 
 use Closure;
+use FriendsOfHyperf\Telescope\Storage\IncomingEntry;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\ApplicationContext;
 
