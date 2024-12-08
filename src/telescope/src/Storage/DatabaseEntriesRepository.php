@@ -12,15 +12,18 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Storage;
 
 use DateTimeInterface;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use FriendsOfHyperf\Telescope\Contract\ClearableRepository;
 use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
 use FriendsOfHyperf\Telescope\Contract\PrunableRepository;
 use FriendsOfHyperf\Telescope\Contract\TerminableRepository;
 use FriendsOfHyperf\Telescope\EntryResult;
+use FriendsOfHyperf\Telescope\EntryType;
+use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Model\EntryModel;
-use FriendsOfHyperf\Telescope\Model\EntryTagModel;
 use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
+use Hyperf\Collection\Collection;
 use Hyperf\DbConnection\Db;
 use Throwable;
 
@@ -109,15 +112,23 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
             return;
         }
 
-        $entries->each(function ($entry) {
-            EntryModel::on($this->connection)->create($entry->toArray());
-            foreach ($entry->tags as $tag) {
-                EntryTagModel::on($this->connection)->create([
-                    'entry_uuid' => $entry->uuid,
-                    'tag' => $tag,
-                ]);
-            }
+        /** @var Collection<int,IncomingEntry> $exceptions */
+        /** @var Collection<int,IncomingEntry> $entries */
+        [$exceptions, $entries] = $entries->partition->isException(); // @phpstan-ignore-line
+
+        $this->storeExceptions($exceptions);
+
+        $table = $this->table('telescope_entries');
+
+        $entries->chunk($this->chunkSize)->each(function ($chunked) use ($table) {
+            $table->insert($chunked->map(function ($entry) { // @phpstan-ignore-line
+                $entry->content = json_encode($entry->content, JSON_INVALID_UTF8_SUBSTITUTE);
+
+                return $entry->toArray();
+            })->toArray());
         });
+
+        $this->storeTags($entries->pluck('tags', 'uuid'));
     }
 
     /**
@@ -197,6 +208,69 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
         do {
             $deleted = $this->table('telescope_monitoring')->take($this->chunkSize)->delete();
         } while ($deleted !== 0);
+    }
+
+    /**
+     * Store the given array of exception entries.
+     *
+     * @param Collection|IncomingEntry[] $exceptions
+     */
+    protected function storeExceptions(Collection $exceptions)
+    {
+        $exceptions->chunk($this->chunkSize)->each(function ($chunked) {
+            $this->table('telescope_entries')->insert($chunked->map(function ($exception) {
+                $occurrences = $this->countExceptionOccurences($exception);
+
+                $this->table('telescope_entries')
+                    ->where('type', EntryType::EXCEPTION)
+                    ->where('family_hash', $exception->familyHash())
+                    ->update(['should_display_on_index' => false]);
+
+                return array_merge($exception->toArray(), [
+                    'family_hash' => $exception->familyHash(),
+                    'content' => json_encode(array_merge(
+                        $exception->content,
+                        ['occurrences' => $occurrences + 1]
+                    )),
+                ]);
+            })->toArray());
+        });
+
+        $this->storeTags($exceptions->pluck('tags', 'uuid'));
+    }
+
+    /**
+     * Store the tags for the given entries.
+     */
+    protected function storeTags(Collection $results)
+    {
+        $results->chunk($this->chunkSize)->each(function ($chunked) {
+            try {
+                $this->table('telescope_entries_tags')->insert($chunked->flatMap(function ($tags, $uuid) {
+                    return collect($tags)->map(function ($tag) use ($uuid) {
+                        return [
+                            'entry_uuid' => $uuid,
+                            'tag' => $tag,
+                        ];
+                    });
+                })->all());
+            } catch (UniqueConstraintViolationException $e) {
+                // Ignore tags that already exist...
+            }
+        });
+    }
+
+    /**
+     * Counts the occurences of an exception.
+     *
+     * @return int
+     */
+    protected function countExceptionOccurences(IncomingEntry $exception)
+    {
+        return $this->table('telescope_entries')
+            ->where('type', EntryType::EXCEPTION)
+            ->where('family_hash', $exception->familyHash())
+            ->count();
     }
 
     /**
