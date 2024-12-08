@@ -25,7 +25,6 @@ use function Hyperf\Collection\collect;
  * @property bool $should_display_on_index
  * @property string $type
  * @property array $content
- * @property string $data
  * @property Collection<int,EntryTagModel> $tags
  * @property \Carbon\Carbon $created_at
  */
