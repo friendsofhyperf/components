@@ -45,7 +45,7 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
     public function find($id): EntryResult
     {
         /** @var EntryModel $entry */
-        $entry = EntryModel::query()->findOrFail($id);
+        $entry = EntryModel::query()->where('uuid', $id)->firstOrFail();
 
         return new EntryResult(
             $entry->uuid,
