@@ -34,10 +34,9 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
 
     public function clear(): void
     {
-        $connection = Telescope::getConfig()->getDatabaseConnection();
-        Db::connection($connection)->table('telescope_entries')->delete();
-        Db::connection($connection)->table('telescope_entries_tags')->delete();
-        Db::connection($connection)->table('telescope_monitoring')->delete();
+        $this->table('telescope_entries')->delete();
+        $this->table('telescope_entries_tags')->delete();
+        $this->table('telescope_monitoring')->delete();
     }
 
     public function find($id): EntryResult
