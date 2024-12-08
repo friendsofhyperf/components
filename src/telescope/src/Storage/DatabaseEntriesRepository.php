@@ -114,7 +114,7 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
     /**
      * Load the monitored tags from storage.
      */
-    public function loadMonitoredTags()
+    public function loadMonitoredTags(): void
     {
         try {
             $this->monitoredTags = $this->monitoring();
@@ -125,10 +125,8 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
 
     /**
      * Determine if any of the given tags are currently being monitored.
-     *
-     * @return bool
      */
-    public function isMonitoring(array $tags)
+    public function isMonitoring(array $tags): bool
     {
         if (is_null($this->monitoredTags)) {
             $this->loadMonitoredTags();
@@ -139,10 +137,8 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
 
     /**
      * Get the list of tags currently being monitored.
-     *
-     * @return array
      */
-    public function monitoring()
+    public function monitoring(): array
     {
         return $this->table('telescope_monitoring')->pluck('tag')->all();
     }
@@ -150,7 +146,7 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
     /**
      * Begin monitoring the given list of tags.
      */
-    public function monitor(array $tags)
+    public function monitor(array $tags): void
     {
         $tags = array_diff($tags, $this->monitoring());
 
@@ -168,7 +164,7 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
     /**
      * Stop monitoring the given list of tags.
      */
-    public function stopMonitoring(array $tags)
+    public function stopMonitoring(array $tags): void
     {
         $this->table('telescope_monitoring')->whereIn('tag', $tags)->delete();
     }
