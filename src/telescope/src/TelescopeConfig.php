@@ -80,11 +80,14 @@ class TelescopeConfig
      */
     public function getDatabaseOptions(): array
     {
+        $databaseOptions = $this->get('storage.database')
+            ?? $this->get('database') // will be removed in v3.2
+            ?? [];
         return array_replace([
             'connection' => 'default',
             'query_slow' => 50,
             'chunk' => 1000,
-        ], (array) $this->get('database', []));
+        ], (array) $databaseOptions);
     }
 
     public function getDatabaseConnection(): string
