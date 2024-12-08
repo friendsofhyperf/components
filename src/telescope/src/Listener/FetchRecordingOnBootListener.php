@@ -25,7 +25,6 @@ use Hyperf\Framework\Event\MainWorkerStart;
 use Hyperf\Process\Event\BeforeCoroutineHandle;
 use Hyperf\Process\Event\BeforeProcessHandle;
 use Hyperf\Server\Event\MainCoroutineServerStart;
-use Swoole\Process;
 use Throwable;
 
 class FetchRecordingOnBootListener implements ListenerInterface
