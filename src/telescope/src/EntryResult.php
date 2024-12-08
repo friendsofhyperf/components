@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope;
 
+use Hyperf\Collection\Collection;
 use JsonSerializable;
 use ReturnTypeWillChange;
 
@@ -77,7 +78,7 @@ class EntryResult implements JsonSerializable
     /**
      * The tags assigned to the entry.
      *
-     * @var array
+     * @var array|Collection
      */
     private $tags;
 
@@ -87,7 +88,7 @@ class EntryResult implements JsonSerializable
      * @param mixed $id
      * @param mixed $sequence
      * @param \Carbon\CarbonInterface|\Carbon\Carbon $createdAt
-     * @param array $tags
+     * @param array|Collection $tags
      */
     public function __construct(
         $id,

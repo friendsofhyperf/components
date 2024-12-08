@@ -12,26 +12,22 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Model;
 
 use FriendsOfHyperf\Telescope\Storage\EntryQueryOptions;
+use Hyperf\Database\Model\Collection;
 
 use function Hyperf\Collection\collect;
 
 /**
+ * @property int $sequence
  * @property string $uuid
- * @property string $batchId
- * @property string $connectionName
- * @property string $name
- * @property string $description
- * @property string $data
- * @property array $tags
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property string $sequence
+ * @property string $batch_id
  * @property string $sub_batch_id
  * @property string $family_hash
- * @property string $should_display_on_index
+ * @property bool $should_display_on_index
  * @property string $type
  * @property array $content
- * @property string $batch_id
+ * @property string $data
+ * @property Collection<int,EntryTagModel> $tags
+ * @property \Carbon\Carbon $created_at
  */
 class EntryModel extends Model
 {
