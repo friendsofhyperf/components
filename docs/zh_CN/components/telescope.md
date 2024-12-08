@@ -42,10 +42,9 @@ php bin/hyperf.php migrate
 ```php
 <?php
 
-use FriendsOfHyperf\Telescope\Listener\RequestHandledListener;
-
 return [
-    RequestHandledListener::class,
+    FriendsOfHyperf\Telescope\Listener\RequestHandledListener::class,
+    FriendsOfHyperf\Telescope\Listener\SetRequestLifecycleListener::class,
 ];
 
 ```
@@ -59,11 +58,9 @@ return [
 ```php
 <?php
 
-use FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware;
-
 return [
     'http' => [
-        TelescopeMiddleware::class,
+        FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware::class,
     ],
 ];
 ```
@@ -73,11 +70,9 @@ return [
 ```php
 <?php
 
-use FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware;
-
 return [
     'grpc' => [
-        TelescopeMiddleware::class,
+        FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware::class,
     ],
 ];
 ```
