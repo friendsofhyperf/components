@@ -80,7 +80,7 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
             })->values();
     }
 
-    public function prune(DateTimeInterface $before, $keepExceptions): int
+    public function prune(DateTimeInterface $before, bool $keepExceptions): int
     {
         $connection = Telescope::getConfig()->getDatabaseConnection();
         $deleted = Db::connection($connection)->table('telescope_entries')
@@ -172,7 +172,7 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
     /**
      * Perform any clean-up tasks needed after storing Telescope entries.
      */
-    public function terminate()
+    public function terminate(): void
     {
         $this->monitoredTags = null;
     }

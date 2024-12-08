@@ -17,8 +17,6 @@ interface PrunableRepository
 {
     /**
      * Prune all of the entries older than the given date.
-     *
-     * @param bool $keepExceptions
      */
-    public function prune(DateTimeInterface $before, $keepExceptions): int;
+    public function prune(DateTimeInterface $before, bool $keepExceptions): int;
 }
