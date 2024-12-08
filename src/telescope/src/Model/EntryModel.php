@@ -28,6 +28,7 @@ use function Hyperf\Collection\collect;
  * @property array $content
  * @property Collection<int,EntryTagModel> $tags
  * @property \Carbon\Carbon $created_at
+ * @method static \Hyperf\Database\Model\Builder withTelescopeOptions(string $type, EntryQueryOptions $options = null)
  */
 class EntryModel extends Model
 {
