@@ -20,6 +20,7 @@ use FriendsOfHyperf\Telescope\EntryResult;
 use FriendsOfHyperf\Telescope\Model\EntryModel;
 use FriendsOfHyperf\Telescope\Model\EntryTagModel;
 use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\DbConnection\Db;
 use Throwable;
 
@@ -32,17 +33,20 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
      */
     protected ?array $monitoredTags = null;
 
-    public function clear(): void
+    protected string $connection;
+
+    protected int $chunkSize;
+
+    public function __construct(protected TelescopeConfig $telescopeConfig)
     {
-        $this->table('telescope_entries')->delete();
-        $this->table('telescope_entries_tags')->delete();
-        $this->table('telescope_monitoring')->delete();
+        $this->connection = $telescopeConfig->getDatabaseConnection();
+        $this->chunkSize = $telescopeConfig->getDatabaseChunk();
     }
 
     public function find($id): EntryResult
     {
         /** @var EntryModel $entry */
-        $entry = EntryModel::query()->where('uuid', $id)->firstOrFail();
+        $entry = EntryModel::on($this->connection)->where('uuid', $id)->firstOrFail();
 
         return new EntryResult(
             $entry->uuid,
@@ -58,7 +62,8 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
 
     public function get($type, EntryQueryOptions $options)
     {
-        return EntryModel::withTelescopeOptions($type, $options)
+        return EntryModel::on($this->connection) // @phpstan-ignore-line
+            ->withTelescopeOptions($type, $options)
             ->take($options->limit)
             ->orderByDesc('sequence')
             ->get()->reject(function ($entry) {
@@ -79,16 +84,23 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
 
     public function prune(DateTimeInterface $before, bool $keepExceptions): int
     {
-        $connection = Telescope::getConfig()->getDatabaseConnection();
-        $deleted = Db::connection($connection)->table('telescope_entries')
-            ->where('created_at', '<', $before)
-            ->when($keepExceptions, fn ($query) => $query->where('type', '!=', 'exception'))
-            ->delete();
-        Db::connection($connection)
-            ->table('telescope_monitoring')
-            ->delete();
+        $totalDeleted = 0;
+        do {
+            $deleted = $this->table('telescope_entries')
+                ->where('created_at', '<', $before)
+                ->when($keepExceptions, fn ($query) => $query->where('type', '!=', 'exception'))
+                ->take($this->chunkSize)
+                ->delete();
+            $totalDeleted += $deleted;
+        } while ($deleted !== 0);
 
-        return $deleted;
+        do {
+            $deleted = $this->table('telescope_monitoring')
+                ->take($this->chunkSize)
+                ->delete();
+        } while ($deleted !== 0);
+
+        return $totalDeleted;
     }
 
     public function store($entries): void
@@ -98,9 +110,9 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
         }
 
         $entries->each(function ($entry) {
-            EntryModel::query()->create($entry->toArray());
+            EntryModel::on($this->connection)->create($entry->toArray());
             foreach ($entry->tags as $tag) {
-                EntryTagModel::query()->create([
+                EntryTagModel::on($this->connection)->create([
                     'entry_uuid' => $entry->uuid,
                     'tag' => $tag,
                 ]);
@@ -174,6 +186,19 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
         $this->monitoredTags = null;
     }
 
+    public function clear(): void
+    {
+        do {
+            $deleted = $this->table('telescope_entries')->take($this->chunkSize)->delete();
+        } while ($deleted !== 0);
+        do {
+            $deleted = $this->table('telescope_entries_tags')->take($this->chunkSize)->delete();
+        } while ($deleted !== 0);
+        do {
+            $deleted = $this->table('telescope_monitoring')->take($this->chunkSize)->delete();
+        } while ($deleted !== 0);
+    }
+
     /**
      * Get a query builder instance for the given table.
      *
@@ -181,8 +206,6 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
      */
     protected function table(string $table)
     {
-        $connection = Telescope::getConfig()->getDatabaseConnection();
-
-        return Db::connection($connection)->table($table);
+        return Db::connection($this->connection)->table($table);
     }
 }

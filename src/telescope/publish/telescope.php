@@ -33,6 +33,7 @@ return [
     'database' => [
         'connection' => env('TELESCOPE_DB_CONNECTION', 'default'),
         'query_slow' => (int) env('TELESCOPE_QUERY_SLOW', 50),
+        'chunk' => (int) env('TELESCOPE_DB_CHUNK', 1000),
     ],
 
     'enabled' => env('TELESCOPE_SERVER_ENABLED', false),
