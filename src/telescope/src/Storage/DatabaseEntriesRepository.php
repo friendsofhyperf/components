@@ -29,10 +29,8 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
 {
     /**
      * The tags currently being monitored.
-     *
-     * @var array|null
      */
-    protected $monitoredTags;
+    protected ?array $monitoredTags = null;
 
     public function clear(): void
     {
