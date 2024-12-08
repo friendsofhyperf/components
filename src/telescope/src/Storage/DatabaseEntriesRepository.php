@@ -184,10 +184,9 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
     /**
      * Get a query builder instance for the given table.
      *
-     * @param string $table
      * @return \Hyperf\Database\Query\Builder
      */
-    protected function table($table)
+    protected function table(string $table)
     {
         $connection = Telescope::getConfig()->getDatabaseConnection();
 
