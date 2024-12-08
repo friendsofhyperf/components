@@ -29,4 +29,33 @@ interface EntriesRepository
     public function get(?string $type, EntryQueryOptions $options);
 
     public function find($id): EntryResult;
+
+    /**
+     * Load the monitored tags from storage.
+     */
+    public function loadMonitoredTags();
+
+    /**
+     * Determine if any of the given tags are currently being monitored.
+     *
+     * @return bool
+     */
+    public function isMonitoring(array $tags);
+
+    /**
+     * Get the list of tags currently being monitored.
+     *
+     * @return array
+     */
+    public function monitoring();
+
+    /**
+     * Begin monitoring the given list of tags.
+     */
+    public function monitor(array $tags);
+
+    /**
+     * Stop monitoring the given list of tags.
+     */
+    public function stopMonitoring(array $tags);
 }

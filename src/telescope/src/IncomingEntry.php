@@ -12,8 +12,10 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope;
 
 use Carbon\Carbon;
+use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
 use FriendsOfHyperf\Telescope\Model\EntryModel;
 use FriendsOfHyperf\Telescope\Model\EntryTagModel;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Stringable\Str;
 
 class IncomingEntry
@@ -169,9 +171,9 @@ class IncomingEntry
      */
     public function hasMonitoredTag(): bool
     {
-        // if (! empty($this->tags)) {
-        //     return app(EntriesRepository::class)->isMonitoring($this->tags);
-        // }
+        if (! empty($this->tags)) {
+            return ApplicationContext::getContainer()->get(EntriesRepository::class)->isMonitoring($this->tags);
+        }
 
         return false;
     }

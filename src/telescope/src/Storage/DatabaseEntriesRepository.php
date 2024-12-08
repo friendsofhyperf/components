@@ -15,14 +15,25 @@ use DateTimeInterface;
 use FriendsOfHyperf\Telescope\Contract\ClearableRepository;
 use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
 use FriendsOfHyperf\Telescope\Contract\PrunableRepository;
+use FriendsOfHyperf\Telescope\Contract\TerminableRepository;
 use FriendsOfHyperf\Telescope\EntryResult;
 use FriendsOfHyperf\Telescope\Model\EntryModel;
 use FriendsOfHyperf\Telescope\Model\EntryTagModel;
 use FriendsOfHyperf\Telescope\Telescope;
 use Hyperf\DbConnection\Db;
+use Throwable;
 
-class DatabaseEntriesRepository implements EntriesRepository, ClearableRepository, PrunableRepository
+use function Hyperf\Collection\collect;
+
+class DatabaseEntriesRepository implements EntriesRepository, ClearableRepository, PrunableRepository, TerminableRepository
 {
+    /**
+     * The tags currently being monitored.
+     *
+     * @var array|null
+     */
+    protected $monitoredTags;
+
     public function clear(): void
     {
         $connection = Telescope::getConfig()->getDatabaseConnection();
@@ -98,5 +109,88 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
                 ]);
             }
         });
+    }
+
+    /**
+     * Load the monitored tags from storage.
+     */
+    public function loadMonitoredTags()
+    {
+        try {
+            $this->monitoredTags = $this->monitoring();
+        } catch (Throwable $e) {
+            $this->monitoredTags = [];
+        }
+    }
+
+    /**
+     * Determine if any of the given tags are currently being monitored.
+     *
+     * @return bool
+     */
+    public function isMonitoring(array $tags)
+    {
+        if (is_null($this->monitoredTags)) {
+            $this->loadMonitoredTags();
+        }
+
+        return count(array_intersect($tags, $this->monitoredTags)) > 0;
+    }
+
+    /**
+     * Get the list of tags currently being monitored.
+     *
+     * @return array
+     */
+    public function monitoring()
+    {
+        return $this->table('telescope_monitoring')->pluck('tag')->all();
+    }
+
+    /**
+     * Begin monitoring the given list of tags.
+     */
+    public function monitor(array $tags)
+    {
+        $tags = array_diff($tags, $this->monitoring());
+
+        if (empty($tags)) {
+            return;
+        }
+
+        $this->table('telescope_monitoring')
+            ->insert(collect($tags)
+                ->mapWithKeys(function ($tag) {
+                    return ['tag' => $tag];
+                })->all());
+    }
+
+    /**
+     * Stop monitoring the given list of tags.
+     */
+    public function stopMonitoring(array $tags)
+    {
+        $this->table('telescope_monitoring')->whereIn('tag', $tags)->delete();
+    }
+
+    /**
+     * Perform any clean-up tasks needed after storing Telescope entries.
+     */
+    public function terminate()
+    {
+        $this->monitoredTags = null;
+    }
+
+    /**
+     * Get a query builder instance for the given table.
+     *
+     * @param string $table
+     * @return \Hyperf\Database\Query\Builder
+     */
+    protected function table($table)
+    {
+        $connection = Telescope::getConfig()->getDatabaseConnection();
+
+        return Db::connection($connection)->table($table);
     }
 }
