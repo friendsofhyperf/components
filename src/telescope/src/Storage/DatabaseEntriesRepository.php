@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Storage;
 
 use DateTimeInterface;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Exception;
 use FriendsOfHyperf\Telescope\Contract\ClearableRepository;
 use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
 use FriendsOfHyperf\Telescope\Contract\PrunableRepository;
@@ -21,7 +21,6 @@ use FriendsOfHyperf\Telescope\EntryResult;
 use FriendsOfHyperf\Telescope\EntryType;
 use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Model\EntryModel;
-use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Collection\Collection;
 use Hyperf\DbConnection\Db;
@@ -254,10 +253,22 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
                         ];
                     });
                 })->all());
-            } catch (UniqueConstraintViolationException $e) {
+            } catch (Exception $e) {
                 // Ignore tags that already exist...
+                if (! $this->isUniqueConstraintError($e)) {
+                    throw $e;
+                }
             }
         });
+    }
+
+    /**
+     * @internal
+     * Determine if the given database exception was caused by a unique constraint violation
+     */
+    protected function isUniqueConstraintError(Exception $exception): bool
+    {
+        return boolval(preg_match('#Integrity constraint violation: 1062#i', $exception->getMessage()));
     }
 
     /**
