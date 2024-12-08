@@ -17,6 +17,7 @@ use Hyperf\Database\Model\Collection;
 use function Hyperf\Collection\collect;
 
 /**
+ * @property string $id
  * @property int $sequence
  * @property string $uuid
  * @property string $batch_id
