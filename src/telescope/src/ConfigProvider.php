@@ -46,7 +46,7 @@ class ConfigProvider
                 Listener\ExceptionHandlerListener::class,
                 Listener\FetchRecordingOnBootListener::class,
                 Listener\RegisterRoutesListener::class => -1,
-                Listener\SetRequestLifecycleListener::class,
+                Listener\SetRequestLifecycleListener::class, // will removed in v3.2
                 // Listener\SetupTelescopeServerListener::class,
             ],
             'publish' => [
