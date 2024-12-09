@@ -68,20 +68,18 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
             ->withTelescopeOptions($type, $options)
             ->take($options->limit)
             ->orderByDesc('sequence')
-            ->get()->reject(function ($entry) {
-                return ! is_array($entry->content);
-            })->map(function ($entry) {
-                return new EntryResult(
-                    $entry->uuid,
-                    $entry->sequence,
-                    $entry->batch_id,
-                    $entry->type,
-                    $entry->family_hash,
-                    $entry->content,
-                    $entry->created_at,
-                    []
-                );
-            })->values();
+            ->get()->reject(fn ($entry) => ! is_array($entry->content))
+            ->map(fn ($entry) => new EntryResult(
+                $entry->uuid,
+                $entry->sequence,
+                $entry->batch_id,
+                $entry->type,
+                $entry->family_hash,
+                $entry->content,
+                $entry->created_at,
+                []
+            ))
+            ->values();
     }
 
     public function prune(DateTimeInterface $before, bool $keepExceptions): int
@@ -174,10 +172,9 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
         }
 
         $this->table('telescope_monitoring')
-            ->insert(collect($tags)
-                ->mapWithKeys(function ($tag) {
-                    return ['tag' => $tag];
-                })->all());
+            ->insert(
+                collect($tags)->mapWithKeys(fn ($tag) => ['tag' => $tag])->all()
+            );
     }
 
     /**
@@ -245,14 +242,10 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
     {
         $results->chunk($this->chunkSize)->each(function ($chunked) {
             try {
-                $this->table('telescope_entries_tags')->insert($chunked->flatMap(function ($tags, $uuid) {
-                    return collect($tags)->map(function ($tag) use ($uuid) {
-                        return [
-                            'entry_uuid' => $uuid,
-                            'tag' => $tag,
-                        ];
-                    });
-                })->all());
+                $this->table('telescope_entries_tags')
+                    ->insert($chunked->flatMap(
+                        fn ($tags, $uuid) => collect($tags)->map(fn ($tag) => ['entry_uuid' => $uuid, 'tag' => $tag])
+                    )->all());
             } catch (Exception $e) {
                 // Ignore tags that already exist...
                 if (! $this->isUniqueConstraintError($e)) {
