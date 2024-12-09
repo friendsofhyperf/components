@@ -21,7 +21,6 @@ use FriendsOfHyperf\Telescope\EntryResult;
 use FriendsOfHyperf\Telescope\EntryType;
 use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Model\EntryModel;
-use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Collection\Collection;
 use Hyperf\DbConnection\Db;
 use Throwable;
@@ -35,14 +34,8 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
      */
     protected ?array $monitoredTags = null;
 
-    protected string $connection;
-
-    protected int $chunkSize;
-
-    public function __construct(protected TelescopeConfig $telescopeConfig)
+    public function __construct(protected string $connection, protected int $chunkSize = 1000)
     {
-        $this->connection = $telescopeConfig->getDatabaseConnection();
-        $this->chunkSize = $telescopeConfig->getDatabaseChunk();
     }
 
     public function find($id): EntryResult

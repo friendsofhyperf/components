@@ -8,10 +8,11 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use FriendsOfHyperf\Telescope\Telescope;
 use Hyperf\Database\Migrations\Migration;
 use Hyperf\Database\Schema\Blueprint;
 use Hyperf\Database\Schema\Schema;
+
+use function Hyperf\Config\config;
 
 class TelescopeEntries extends Migration
 {
@@ -67,6 +68,6 @@ class TelescopeEntries extends Migration
      */
     public function getConnection(): string
     {
-        return Telescope::getConfig()->getDatabaseConnection();
+        return (string) config('telescope.storage.database.connection', 'default');
     }
 }
