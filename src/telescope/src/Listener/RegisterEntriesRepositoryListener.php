@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Listener;
 
+use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
 use FriendsOfHyperf\Telescope\Storage\DatabaseEntriesRepository;
 use FriendsOfHyperf\Telescope\Storage\EntriesRepositoryManager;
 use Hyperf\Contract\ConfigInterface;
@@ -36,7 +37,7 @@ class RegisterEntriesRepositoryListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        /** @var array<string, array{driver?: class-string}> */
+        /** @var array<string, array{driver?: class-string<EntriesRepository>}}> */
         $drivers = (array) $this->config->get('telescope.storage', []);
 
         foreach ($drivers as $driver => $options) {
