@@ -291,7 +291,7 @@ class IncomingEntry
     }
 
     /**
-     * @deprecated since v3.1, use `store()`, will be removed in v3.2
+     * @deprecated since v3.1, will be removed in v3.2
      */
     public function create(): void
     {
