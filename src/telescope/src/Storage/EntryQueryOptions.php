@@ -17,42 +17,42 @@ use Psr\Http\Message\ServerRequestInterface;
 class EntryQueryOptions
 {
     /**
-     * the batch ID that entries should belong to.
+     * The batch ID that entries should belong to.
      *
      * @var string|null
      */
     public $batchId;
 
     /**
-     * the tag that must belong to retrieved entries.
+     * The tag that must belong to retrieved entries.
      *
      * @var string|null
      */
     public $tag;
 
     /**
-     * the family hash that must belong to retrieved entries.
+     * The family hash that must belong to retrieved entries.
      *
      * @var string
      */
     public $familyHash;
 
     /**
-     * the ID that all retrieved entries should be less than.
+     * The ID that all retrieved entries should be less than.
      *
      * @var mixed
      */
     public $beforeSequence;
 
     /**
-     * the list of UUIDs of entries tor retrieve.
+     * The list of UUIDs of entries tor retrieve.
      *
      * @var mixed
      */
     public $uuids;
 
     /**
-     * the number of entries to retrieve.
+     * The number of entries to retrieve.
      *
      * @var int
      */
