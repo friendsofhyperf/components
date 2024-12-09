@@ -85,7 +85,7 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
                     $entry->family_hash,
                     $entry->content,
                     $entry->created_at,
-                    $entry->tags,
+                    $entry->tags->pluck('tag')->all(),
                 );
             })
             ->values();

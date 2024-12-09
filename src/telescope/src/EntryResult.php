@@ -129,7 +129,6 @@ class EntryResult implements JsonSerializable
     public function jsonSerialize(): array
     {
         $tag = collect($this->tags)
-            ->pluck('tag')
             ->where(fn ($tag) => str_starts_with($tag, 'app_name:'))
             ->first();
         return collect([
