@@ -9,14 +9,22 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Telescope\Model;
+namespace FriendsOfHyperf\Telescope\Storage\Model;
 
 /**
- * @deprecated since v3.1, use `\FriendsOfHyperf\Telescope\Storage\Model\EntryTagModel` instead, will be removed in v3.2
- *
  * @property string $entry_uuid
  * @property string $tag
  */
-class EntryTagModel extends \FriendsOfHyperf\Telescope\Storage\Model\EntryTagModel
+class EntryTagModel extends Model
 {
+    public const CREATED_AT = null;
+
+    public const UPDATED_AT = null;
+
+    protected ?string $table = 'telescope_entries_tags';
+
+    protected array $fillable = [
+        'entry_uuid',
+        'tag',
+    ];
 }

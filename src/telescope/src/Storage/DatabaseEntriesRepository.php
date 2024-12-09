@@ -21,7 +21,7 @@ use FriendsOfHyperf\Telescope\EntryResult;
 use FriendsOfHyperf\Telescope\EntryType;
 use FriendsOfHyperf\Telescope\EntryUpdate;
 use FriendsOfHyperf\Telescope\IncomingEntry;
-use FriendsOfHyperf\Telescope\Model\EntryModel;
+use FriendsOfHyperf\Telescope\Storage\Model\EntryModel;
 use Hyperf\Collection\Collection;
 use Hyperf\DbConnection\Db;
 use Throwable;

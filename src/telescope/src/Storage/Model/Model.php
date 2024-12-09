@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Telescope\Model;
+namespace FriendsOfHyperf\Telescope\Storage\Model;
 
 use function Hyperf\Config\config;
 

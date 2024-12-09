@@ -13,8 +13,6 @@ namespace FriendsOfHyperf\Telescope;
 
 use Carbon\Carbon;
 use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
-use FriendsOfHyperf\Telescope\Model\EntryModel;
-use FriendsOfHyperf\Telescope\Model\EntryTagModel;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Stringable\Str;
 
@@ -295,13 +293,6 @@ class IncomingEntry
      */
     public function create(): void
     {
-        EntryModel::query()->create($this->toArray());
-
-        foreach ($this->tags as $tag) {
-            EntryTagModel::query()->create([
-                'entry_uuid' => $this->uuid,
-                'tag' => $tag,
-            ]);
-        }
+        Telescope::store($this);
     }
 }
