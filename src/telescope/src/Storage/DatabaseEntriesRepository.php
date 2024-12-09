@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Storage;
 
 use DateTimeInterface;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use FriendsOfHyperf\Telescope\Contract\ClearableRepository;
 use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
@@ -20,6 +19,7 @@ use FriendsOfHyperf\Telescope\Contract\PrunableRepository;
 use FriendsOfHyperf\Telescope\Contract\TerminableRepository;
 use FriendsOfHyperf\Telescope\EntryResult;
 use FriendsOfHyperf\Telescope\EntryType;
+use FriendsOfHyperf\Telescope\EntryUpdate;
 use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Model\EntryModel;
 use Hyperf\Collection\Collection;
@@ -209,10 +209,6 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
         } while ($deleted !== 0);
     }
 
-    /**
-     * Store the given entry updates and return the failed updates.
-     * @param mixed $updates
-     */
     public function update($updates)
     {
         $failedUpdates = [];
@@ -248,7 +244,7 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
     /**
      * Update tags of the given entry.
      *
-     * @param mixed $entry
+     * @param EntryUpdate $entry
      */
     protected function updateTags($entry)
     {
@@ -262,8 +258,11 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
                         ];
                     })->toArray()
                 );
-            } catch (UniqueConstraintViolationException $e) {
+            } catch (Exception $e) {
                 // Ignore tags that already exist...
+                if (! $this->isUniqueConstraintError($e)) {
+                    throw $e;
+                }
             }
         }
 
