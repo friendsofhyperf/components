@@ -74,7 +74,8 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
             ->withTelescopeOptions($type, $options)
             ->take($options->limit)
             ->orderByDesc('sequence')
-            ->get()->reject(fn ($entry) => ! is_array($entry->content))
+            ->get()
+            ->reject(fn ($entry) => ! is_array($entry->content))
             ->map(function ($entry) {
                 return new EntryResult(
                     $entry->uuid,
