@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Contract;
 
 use FriendsOfHyperf\Telescope\EntryResult;
+use FriendsOfHyperf\Telescope\EntryUpdate;
 use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Storage\EntryQueryOptions;
 use Hyperf\Collection\Collection;
@@ -22,6 +23,12 @@ interface EntriesRepository
      * @param Collection<int,IncomingEntry> $entries
      */
     public function store($entries): void;
+
+    /**
+     * Store the given entry updates and return the failed updates.
+     * @param Collection<int,EntryUpdate> $updates
+     */
+    public function update($updates);
 
     /**
      * @return Collection<int,EntryResult>

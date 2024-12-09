@@ -63,6 +63,7 @@ class RegisterRoutesListener implements ListenerInterface
                     Router::get('/events/{event}', [Controller\EventsController::class, 'show']);
 
                     Router::post('/exceptions', [Controller\ExceptionsController::class, 'index']);
+                    Router::put('/exceptions/{id}', [Controller\ExceptionsController::class, 'update']);
                     Router::get('/exceptions/{id}', [Controller\ExceptionsController::class, 'show']);
 
                     Router::post('/logs', [Controller\LogsController::class, 'index']);
