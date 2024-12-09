@@ -11,21 +11,19 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Controller;
 
-use Hyperf\Context\ApplicationContext;
-use Hyperf\Contract\ApplicationInterface;
-use Symfony\Component\Console\Input\ArrayInput;
+use FriendsOfHyperf\Telescope\Contract\ClearableRepository;
 
 class EntriesController
 {
+    public function __construct(private ClearableRepository $repository)
+    {
+    }
+
     /**
      * Delete all of the entries from storage.
      */
     public function destroy(): void
     {
-        $application = ApplicationContext::getContainer()->get(ApplicationInterface::class);
-        $application->setAutoExit(false);
-        $application->run(
-            new ArrayInput(['command' => 'telescope:clear', '--disable-event-dispatcher' => true])
-        );
+        $this->repository->clear();
     }
 }

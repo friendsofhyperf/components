@@ -11,6 +11,10 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Model;
 
+/**
+ * @property string $entry_uuid
+ * @property string $tag
+ */
 class EntryTagModel extends Model
 {
     public const CREATED_AT = null;

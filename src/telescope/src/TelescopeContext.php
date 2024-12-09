@@ -15,15 +15,11 @@ use Hyperf\Context\Context;
 use Hyperf\Contract\PackerInterface;
 use Hyperf\Stringable\Str;
 
-use function Hyperf\Coroutine\defer;
-
 class TelescopeContext
 {
     public const BATCH_ID = 'telescope.context.batch_id';
 
     public const SUB_BATCH_ID = 'telescope.context.sub_batch_id';
-
-    public const ENTRIES = 'telescope.context.entries';
 
     public const CACHE_PACKER = 'telescope.context.cache_packer';
 
@@ -91,28 +87,6 @@ class TelescopeContext
     public static function setCacheDriver(string $driver): void
     {
         Context::set(self::CACHE_DRIVER, $driver);
-    }
-
-    public static function addEntry(IncomingEntry $entry): void
-    {
-        if (! Context::has(self::ENTRIES)) {
-            Context::set(self::ENTRIES, []);
-
-            defer(function () {
-                /** @var IncomingEntry[] $entries */
-                $entries = Context::get(self::ENTRIES);
-                foreach ($entries as $entry) {
-                    $entry->store();
-                }
-                Context::destroy(self::ENTRIES);
-            });
-        }
-
-        /** @var IncomingEntry[] $entries */
-        $entries = Context::get(self::ENTRIES);
-        $entries[] = $entry;
-
-        Context::set(self::ENTRIES, $entries);
     }
 
     public static function setGrpcRequestPayload(array $payload): void

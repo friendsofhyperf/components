@@ -46,6 +46,7 @@ php bin/hyperf.php migrate
 // config/autoload/listeners.php
 
 return [
+    FriendsOfHyperf\Telescope\Listener\SetRequestLifecycleListener::class,
     FriendsOfHyperf\Telescope\Listener\RequestHandledListener::class,
 ];
 
