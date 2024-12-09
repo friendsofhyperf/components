@@ -78,7 +78,7 @@ class EntryResult implements JsonSerializable
     /**
      * The tags assigned to the entry.
      *
-     * @var array|Collection
+     * @var string[]|Collection<array-key,string>
      */
     private $tags;
 
