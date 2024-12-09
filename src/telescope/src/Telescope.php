@@ -141,7 +141,7 @@ class Telescope
 
     public static function getQuerySlow(): int
     {
-        return static::getConfig()->getDatabaseQuerySlow();
+        return static::getConfig()->getQuerySlow();
     }
 
     public static function getPath(): string

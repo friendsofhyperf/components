@@ -76,6 +76,8 @@ class TelescopeConfig
     }
 
     /**
+     * @deprecated since v3.1, will be removed in v3.2
+     *
      * @return array{connection:string, query_slow:int, chunk:int}
      */
     public function getDatabaseOptions(): array
@@ -90,19 +92,33 @@ class TelescopeConfig
         ], (array) $databaseOptions);
     }
 
+    /**
+     * @deprecated since v3.1, will be removed in v3.2
+     */
     public function getDatabaseConnection(): string
     {
         return (string) $this->getDatabaseOptions()['connection'];
     }
 
+    /**
+     * @deprecated since v3.1, will be removed in v3.2
+     */
     public function getDatabaseChunk(): int
     {
         return (int) $this->getDatabaseOptions()['chunk'];
     }
 
+    /**
+     * @deprecated since v3.1, will be removed in v3.2
+     */
     public function getDatabaseQuerySlow(): int
     {
         return (int) $this->getDatabaseOptions()['query_slow'];
+    }
+
+    public function getQuerySlow(): int
+    {
+        return (int) $this->get('query_slow', 50);
     }
 
     public function isEnable(string $key): bool

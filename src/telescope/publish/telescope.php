@@ -31,10 +31,11 @@ return [
     'recording' => true,
     'timezone' => env('TELESCOPE_TIMEZONE', 'Asia/Shanghai'),
 
+    'driver' => env('TELESCOPE_DRIVER', 'database'),
+
     'storage' => [
         'database' => [
             'connection' => env('TELESCOPE_DB_CONNECTION', 'default'),
-            'query_slow' => (int) env('TELESCOPE_QUERY_SLOW', 50),
             'chunk' => (int) env('TELESCOPE_DB_CHUNK', 1000),
         ],
     ],
@@ -58,4 +59,6 @@ return [
     'ignore_commands' => [
         // 'demo:command',
     ],
+
+    'query_slow' => (int) env('TELESCOPE_QUERY_SLOW', 50),
 ];
