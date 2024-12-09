@@ -17,7 +17,9 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 
-class RegisterDatabaseEntriesRepositoryListener implements ListenerInterface
+use function Hyperf\Support\make;
+
+class RegisterEntriesRepositoryListener implements ListenerInterface
 {
     public function __construct(
         protected ConfigInterface $config,
@@ -34,9 +36,12 @@ class RegisterDatabaseEntriesRepositoryListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        $connection = $this->config->get('telescope.storage.database.connection', 'default');
-        $chunkSize = $this->config->get('telescope.storage.database.chunk', 1000);
+        /** @var array<string, array{driver?: class-string}> */
+        $drivers = (array) $this->config->get('telescope.storage', []);
 
-        $this->manager->register('database', new DatabaseEntriesRepository($connection, $chunkSize));
+        foreach ($drivers as $driver => $options) {
+            $driver = $options['driver'] ?? DatabaseEntriesRepository::class;
+            $this->manager->register($driver, make($options['driver']));
+        }
     }
 }
