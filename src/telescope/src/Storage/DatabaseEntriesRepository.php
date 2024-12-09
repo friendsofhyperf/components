@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Storage;
 
 use DateTimeInterface;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use FriendsOfHyperf\Telescope\Contract\ClearableRepository;
 use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
@@ -206,6 +207,72 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
         do {
             $deleted = $this->table('telescope_monitoring')->take($this->chunkSize)->delete();
         } while ($deleted !== 0);
+    }
+
+    /**
+     * Store the given entry updates and return the failed updates.
+     * @param mixed $updates
+     */
+    public function update($updates)
+    {
+        $failedUpdates = [];
+
+        foreach ($updates as $update) {
+            $entry = $this->table('telescope_entries')
+                ->where('uuid', $update->uuid)
+                ->where('type', $update->type)
+                ->first();
+
+            if (! $entry) {
+                $failedUpdates[] = $update;
+
+                continue;
+            }
+
+            $content = json_encode(array_merge(
+                json_decode($entry->content ?? $entry['content'] ?? [], true) ?: [],
+                $update->changes
+            ));
+
+            $this->table('telescope_entries')
+                ->where('uuid', $update->uuid)
+                ->where('type', $update->type)
+                ->update(['content' => $content]);
+
+            $this->updateTags($update);
+        }
+
+        return collect($failedUpdates);
+    }
+
+    /**
+     * Update tags of the given entry.
+     *
+     * @param mixed $entry
+     */
+    protected function updateTags($entry)
+    {
+        if (! empty($entry->tagsChanges['added'])) {
+            try {
+                $this->table('telescope_entries_tags')->insert(
+                    collect($entry->tagsChanges['added'])->map(function ($tag) use ($entry) {
+                        return [
+                            'entry_uuid' => $entry->uuid,
+                            'tag' => $tag,
+                        ];
+                    })->toArray()
+                );
+            } catch (UniqueConstraintViolationException $e) {
+                // Ignore tags that already exist...
+            }
+        }
+
+        collect($entry->tagsChanges['removed'])->each(function ($tag) use ($entry) {
+            $this->table('telescope_entries_tags')->where([
+                'entry_uuid' => $entry->uuid,
+                'tag' => $tag,
+            ])->delete();
+        });
     }
 
     /**

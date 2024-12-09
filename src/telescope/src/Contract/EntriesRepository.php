@@ -24,6 +24,12 @@ interface EntriesRepository
     public function store($entries): void;
 
     /**
+     * Store the given entry updates and return the failed updates.
+     * @param mixed $updates
+     */
+    public function update($updates);
+
+    /**
      * @return Collection<int,EntryResult>
      */
     public function get(?string $type, EntryQueryOptions $options);
