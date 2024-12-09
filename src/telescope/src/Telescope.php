@@ -18,6 +18,7 @@ use Hyperf\Context\ApplicationContext;
 use Hyperf\Context\Context;
 
 use function Hyperf\Collection\collect;
+use function Hyperf\Coroutine\defer;
 
 class Telescope
 {

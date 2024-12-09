@@ -20,12 +20,12 @@ class EntryQueryOptions
     /**
      * The batch ID that entries should belong to.
      */
-    public string $batchId;
+    public ?string $batchId;
 
     /**
      * The tag that must belong to retrieved entries.
      */
-    public string $tag;
+    public ?string $tag;
 
     /**
      * The family hash that must belong to retrieved entries.
@@ -59,7 +59,7 @@ class EntryQueryOptions
             ->beforeSequence($request->input('before'))
             ->tag($request->input('tag'))
             ->familyHash($request->input('family_hash'))
-            ->limit($request->input('take') ?? 50);
+            ->limit((int) $request->input('take', 50));
     }
 
     /**
