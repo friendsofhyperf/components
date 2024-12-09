@@ -76,12 +76,6 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
             ->orderByDesc('sequence')
             ->get()->reject(fn ($entry) => ! is_array($entry->content))
             ->map(function ($entry) {
-                $appName = '';
-                foreach ($entry->tags as $tag) {
-                    if (str_starts_with($tag['tag'], 'app_name:')) {
-                        $appName = substr($tag['tag'], strlen('app_name:'));
-                    }
-                }
                 return new EntryResult(
                     $entry->uuid,
                     $entry->sequence,
@@ -90,8 +84,7 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
                     $entry->family_hash,
                     $entry->content,
                     $entry->created_at,
-                    [],
-                    $appName
+                    $entry->tags,
                 );
             })
             ->values();
