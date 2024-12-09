@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope\Storage;
 
 use Hyperf\HttpServer\Contract\RequestInterface;
-use Hyperf\HttpServer\Request;
 use Psr\Http\Message\ServerRequestInterface;
 
 class EntryQueryOptions
@@ -20,12 +19,12 @@ class EntryQueryOptions
     /**
      * The batch ID that entries should belong to.
      */
-    public ?string $batchId;
+    public ?string $batchId = null;
 
     /**
      * The tag that must belong to retrieved entries.
      */
-    public ?string $tag;
+    public ?string $tag = null;
 
     /**
      * The family hash that must belong to retrieved entries.

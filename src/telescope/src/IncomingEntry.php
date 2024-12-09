@@ -22,48 +22,66 @@ class IncomingEntry
 {
     /**
      * The entry's UUID.
+     *
+     * @var string
      */
-    public string $uuid = '';
+    public $uuid = '';
 
     /**
      * The entry's batch ID.
+     *
+     * @var string
      */
-    public string $batchId = '';
+    public $batchId = '';
 
     /**
      * The entry's sub batch ID.
+     *
+     * @var string
      */
-    public string $subBatchId = '';
+    public $subBatchId = '';
 
     /**
      * The entry's type.
+     *
+     * @var string
      */
-    public string $type = '';
+    public $type = '';
 
     /**
      * The entry's family hash.
+     *
+     * @var string|null
      */
-    public ?string $familyHash = null;
+    public $familyHash;
 
     /**
      * The currently authenticated user, if applicable.
+     *
+     * @var mixed
      */
-    public mixed $user;
+    public $user;
 
     /**
      * The entry's content.
+     *
+     * @var array
      */
-    public array $content = [];
+    public $content = [];
 
     /**
      * The entry's tags.
+     *
+     * @var array
      */
-    public array $tags = [];
+    public $tags = [];
 
     /**
      * The DateTime that indicates when the entry was recorded.
+     *
+     * @var string
      */
-    public string $recordedAt = '';
+    public $recordedAt = '';
 
     /**
      * Create a new incoming entry instance.
