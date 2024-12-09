@@ -244,6 +244,6 @@ class Telescope
 
         $entry->tags(Arr::collapse(array_map(fn ($tagCallback) => $tagCallback($entry), static::$tagUsing)));
 
-        self::store($entry);
+        static::store($entry);
     }
 }
