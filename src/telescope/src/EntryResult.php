@@ -83,12 +83,20 @@ class EntryResult implements JsonSerializable
     private $tags;
 
     /**
+     * The app name of tag.
+     *
+     * @var string
+     */
+    private $appName;
+
+    /**
      * Create a new entry result instance.
      *
      * @param mixed $id
      * @param mixed $sequence
      * @param \Carbon\CarbonInterface|\Carbon\Carbon $createdAt
      * @param array|Collection $tags
+     * @param string $appName
      */
     public function __construct(
         $id,
@@ -98,7 +106,8 @@ class EntryResult implements JsonSerializable
         ?string $familyHash,
         array $content,
         $createdAt,
-        $tags = []
+        $tags = [],
+        $appName = '',
     ) {
         $this->id = $id;
         $this->type = $type;
@@ -108,6 +117,7 @@ class EntryResult implements JsonSerializable
         $this->sequence = $sequence;
         $this->createdAt = $createdAt;
         $this->familyHash = $familyHash;
+        $this->appName = $appName;
     }
 
     /**
@@ -135,6 +145,7 @@ class EntryResult implements JsonSerializable
             'type' => $this->type,
             'content' => $this->content,
             'tags' => $this->tags,
+            'tag' => $this->appName,
             'family_hash' => $this->familyHash,
             'created_at' => $this->createdAt->toDateTimeString(),
         ])->when($this->avatar, function ($items) {

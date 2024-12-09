@@ -50,6 +50,11 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
         /** @var EntryModel $entry */
         $entry = EntryModel::on($this->connection)->where('uuid', $id)->firstOrFail();
 
+        $tags = $this->table('telescope_entries_tags')
+            ->where('entry_uuid', $id)
+            ->pluck('tag')
+            ->all();
+
         return new EntryResult(
             $entry->uuid,
             $entry->sequence,
@@ -58,27 +63,37 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
             $entry->family_hash,
             $entry->content,
             $entry->created_at,
-            $entry->tags
+            $tags
         );
     }
 
     public function get($type, EntryQueryOptions $options)
     {
         return EntryModel::on($this->connection) // @phpstan-ignore-line
+            ->with('tags')
             ->withTelescopeOptions($type, $options)
             ->take($options->limit)
             ->orderByDesc('sequence')
             ->get()->reject(fn ($entry) => ! is_array($entry->content))
-            ->map(fn ($entry) => new EntryResult(
-                $entry->uuid,
-                $entry->sequence,
-                $entry->batch_id,
-                $entry->type,
-                $entry->family_hash,
-                $entry->content,
-                $entry->created_at,
-                []
-            ))
+            ->map(function ($entry) {
+                $appName = '';
+                foreach ($entry->tags as $tag) {
+                    if (str_starts_with($tag['tag'], 'app_name:')) {
+                        $appName = substr($tag['tag'], strlen('app_name:'));
+                    }
+                }
+                return new EntryResult(
+                    $entry->uuid,
+                    $entry->sequence,
+                    $entry->batch_id,
+                    $entry->type,
+                    $entry->family_hash,
+                    $entry->content,
+                    $entry->created_at,
+                    [],
+                    $appName
+                );
+            })
             ->values();
     }
 
