@@ -11,19 +11,20 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Command;
 
-use FriendsOfHyperf\Telescope\Telescope;
+use FriendsOfHyperf\Telescope\Contract\ClearableRepository;
 use Hyperf\Command\Command;
-use Hyperf\DbConnection\Db;
 
 class ClearCommand extends Command
 {
-    protected ?string $signature = 'telescope:clear';
+    public function __construct(private ClearableRepository $storage)
+    {
+        parent::__construct('telescope:clear');
+    }
 
     public function handle()
     {
-        $connection = Telescope::getConfig()->getDatabaseConnection();
-        Db::connection($connection)->table('telescope_entries')->delete();
-        Db::connection($connection)->table('telescope_entries_tags')->delete();
-        Db::connection($connection)->table('telescope_monitoring')->delete();
+        $this->storage->clear();
+
+        $this->info('Telescope entries cleared!');
     }
 }

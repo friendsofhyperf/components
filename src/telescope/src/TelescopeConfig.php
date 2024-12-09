@@ -76,19 +76,28 @@ class TelescopeConfig
     }
 
     /**
-     * @return array{connection: string, query_slow: int}
+     * @return array{connection:string, query_slow:int, chunk:int}
      */
     public function getDatabaseOptions(): array
     {
+        $databaseOptions = $this->get('storage.database')
+            ?? $this->get('database') // will be removed in v3.2
+            ?? [];
         return array_replace([
             'connection' => 'default',
             'query_slow' => 50,
-        ], (array) $this->get('database', []));
+            'chunk' => 1000,
+        ], (array) $databaseOptions);
     }
 
     public function getDatabaseConnection(): string
     {
-        return (string) ($this->getDatabaseOptions()['connection'] ?: 'default');
+        return (string) $this->getDatabaseOptions()['connection'];
+    }
+
+    public function getDatabaseChunk(): int
+    {
+        return (int) $this->getDatabaseOptions()['chunk'];
     }
 
     public function getDatabaseQuerySlow(): int

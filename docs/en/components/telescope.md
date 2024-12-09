@@ -42,10 +42,9 @@ Add the listener in the `config/autoload/listeners.php` configuration file
 ```php
 <?php
 
-use FriendsOfHyperf\Telescope\Listener\RequestHandledListener;
-
 return [
-    RequestHandledListener::class,
+    FriendsOfHyperf\Telescope\Listener\RequestHandledListener::class,
+    FriendsOfHyperf\Telescope\Listener\SetRequestLifecycleListener::class,
 ];
 ```
 
@@ -58,11 +57,9 @@ To record HTTP requests, use the `http` middleware
 ```php
 <?php
 
-use FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware;
-
 return [
     'http' => [
-        TelescopeMiddleware::class,
+        FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware::class,
     ],
 ];
 ```

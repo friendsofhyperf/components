@@ -12,56 +12,76 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope;
 
 use Carbon\Carbon;
+use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
 use FriendsOfHyperf\Telescope\Model\EntryModel;
 use FriendsOfHyperf\Telescope\Model\EntryTagModel;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Stringable\Str;
 
 class IncomingEntry
 {
     /**
      * The entry's UUID.
+     *
+     * @var string
      */
-    public string $uuid = '';
+    public $uuid = '';
 
     /**
      * The entry's batch ID.
+     *
+     * @var string
      */
-    public string $batchId = '';
+    public $batchId = '';
 
     /**
      * The entry's sub batch ID.
+     *
+     * @var string
      */
-    public string $subBatchId = '';
+    public $subBatchId = '';
 
     /**
      * The entry's type.
+     *
+     * @var string
      */
-    public string $type = '';
+    public $type = '';
 
     /**
      * The entry's family hash.
+     *
+     * @var string|null
      */
-    public ?string $familyHash = null;
+    public $familyHash;
 
     /**
      * The currently authenticated user, if applicable.
+     *
+     * @var mixed
      */
-    public mixed $user;
+    public $user;
 
     /**
      * The entry's content.
+     *
+     * @var array
      */
-    public array $content = [];
+    public $content = [];
 
     /**
      * The entry's tags.
+     *
+     * @var array
      */
-    public array $tags = [];
+    public $tags = [];
 
     /**
      * The DateTime that indicates when the entry was recorded.
+     *
+     * @var string
      */
-    public string $recordedAt = '';
+    public $recordedAt = '';
 
     /**
      * Create a new incoming entry instance.
@@ -169,9 +189,9 @@ class IncomingEntry
      */
     public function hasMonitoredTag(): bool
     {
-        // if (! empty($this->tags)) {
-        //     return app(EntriesRepository::class)->isMonitoring($this->tags);
-        // }
+        if (! empty($this->tags)) {
+            return ApplicationContext::getContainer()->get(EntriesRepository::class)->isMonitoring($this->tags);
+        }
 
         return false;
     }
@@ -270,7 +290,10 @@ class IncomingEntry
         ];
     }
 
-    public function store(): void
+    /**
+     * @deprecated since v3.1, will be removed in v3.2
+     */
+    public function create(): void
     {
         EntryModel::query()->create($this->toArray());
 
@@ -280,13 +303,5 @@ class IncomingEntry
                 'tag' => $tag,
             ]);
         }
-    }
-
-    /**
-     * @deprecated since v3.1, use `store()`, will be removed in v3.2
-     */
-    public function create(): void
-    {
-        $this->store();
     }
 }

@@ -11,44 +11,56 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Storage;
 
-use Hyperf\HttpServer\Request;
+use Hyperf\HttpServer\Contract\RequestInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
 class EntryQueryOptions
 {
     /**
      * The batch ID that entries should belong to.
+     *
+     * @var string|null
      */
-    public string $batchId;
+    public $batchId;
 
     /**
      * The tag that must belong to retrieved entries.
+     *
+     * @var string|null
      */
-    public string $tag;
+    public $tag;
 
     /**
      * The family hash that must belong to retrieved entries.
+     *
+     * @var string
      */
-    public string $familyHash;
+    public $familyHash;
 
     /**
      * The ID that all retrieved entries should be less than.
+     *
+     * @var mixed
      */
-    public mixed $beforeSequence;
+    public $beforeSequence;
 
     /**
      * The list of UUIDs of entries tor retrieve.
+     *
+     * @var mixed
      */
-    public mixed $uuids;
+    public $uuids;
 
     /**
      * The number of entries to retrieve.
+     *
+     * @var int
      */
-    public int $limit = 50;
+    public $limit = 50;
 
     /**
      * Create new entry query options from the incoming request.
-     * @param Request $request
+     * @param RequestInterface $request
      */
     public static function fromRequest(ServerRequestInterface $request): static
     {
@@ -58,7 +70,7 @@ class EntryQueryOptions
             ->beforeSequence($request->input('before'))
             ->tag($request->input('tag'))
             ->familyHash($request->input('family_hash'))
-            ->limit($request->input('take') ?? 50);
+            ->limit((int) $request->input('take', 50));
     }
 
     /**

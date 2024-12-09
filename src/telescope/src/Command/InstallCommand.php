@@ -15,7 +15,10 @@ use Hyperf\Command\Command;
 
 class InstallCommand extends Command
 {
-    protected ?string $name = 'telescope:install';
+    public function __construct()
+    {
+        parent::__construct('telescope:install');
+    }
 
     public function handle()
     {

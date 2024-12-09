@@ -36,6 +36,9 @@ class ConfigProvider
                 Command\PruneCommand::class,
             ],
             'dependencies' => [
+                Contract\EntriesRepository::class => Storage\DatabaseEntriesRepository::class,
+                Contract\ClearableRepository::class => fn ($container) => $container->get(Contract\EntriesRepository::class),
+                Contract\PrunableRepository::class => fn ($container) => $container->get(Contract\EntriesRepository::class),
             ],
             'listeners' => [
                 Listener\CommandListener::class,
@@ -43,7 +46,7 @@ class ConfigProvider
                 Listener\ExceptionHandlerListener::class,
                 Listener\FetchRecordingOnBootListener::class,
                 Listener\RegisterRoutesListener::class => -1,
-                Listener\SetRequestLifecycleListener::class,
+                // Listener\SetRequestLifecycleListener::class,
                 // Listener\SetupTelescopeServerListener::class,
             ],
             'publish' => [

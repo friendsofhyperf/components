@@ -12,8 +12,13 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope;
 
 use Closure;
+use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
 use Hyperf\Collection\Arr;
 use Hyperf\Context\ApplicationContext;
+use Hyperf\Context\Context;
+
+use function Hyperf\Collection\collect;
+use function Hyperf\Coroutine\defer;
 
 class Telescope
 {
@@ -26,6 +31,8 @@ class Telescope
      * @deprecated since v3.1, use `\FriendsOfHyperf\Telescope\SaveMode::ASYNC` instead, will be removed in v3.2
      */
     public const ASYNC = 1;
+
+    public const ENTRIES = 'telescope.context.entries';
 
     /**
      * The list of hidden request headers.
@@ -167,6 +174,11 @@ class Telescope
         return ApplicationContext::getContainer()->get(TelescopeConfig::class);
     }
 
+    public static function getStorage(): EntriesRepository
+    {
+        return ApplicationContext::getContainer()->get(EntriesRepository::class);
+    }
+
     /**
      * Get the default JavaScript variables for Telescope.
      */
@@ -177,6 +189,32 @@ class Telescope
             'timezone' => static::getConfig()->getTimezone(),
             'recording' => static::getConfig()->isRecording(),
         ];
+    }
+
+    public static function store(IncomingEntry $entry): void
+    {
+        if (static::getConfig()->getRecordMode() === RecordMode::SYNC) {
+            self::getStorage()->store(collect([$entry]));
+
+            return;
+        }
+
+        if (! Context::has(self::ENTRIES)) {
+            Context::set(self::ENTRIES, []);
+            defer(function () {
+                self::getStorage()->store(
+                    collect(Context::get(self::ENTRIES))
+                );
+                Context::destroy(self::ENTRIES);
+            });
+        }
+
+        Context::override(self::ENTRIES, function ($entries) use ($entry) {
+            $entries = (array) $entries;
+            $entries[] = $entry;
+
+            return $entries;
+        });
     }
 
     /**
@@ -207,9 +245,6 @@ class Telescope
 
         $entry->tags(Arr::collapse(array_map(fn ($tagCallback) => $tagCallback($entry), static::$tagUsing)));
 
-        match (static::getConfig()->getRecordMode()) {
-            RecordMode::ASYNC => TelescopeContext::addEntry($entry),
-            RecordMode::SYNC => $entry->store(),
-        };
+        static::store($entry);
     }
 }
