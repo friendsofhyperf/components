@@ -15,6 +15,7 @@ use ArrayAccess;
 use Closure;
 use Hyperf\Collection\Collection;
 use Hyperf\Macroable\Macroable;
+use Hyperf\Support\Fluent;
 use LogicException;
 use Stringable;
 
@@ -140,6 +141,17 @@ class Response implements ArrayAccess, Stringable
     public function collect($key = null)
     {
         return Collection::make($this->json($key));
+    }
+
+    /**
+     * Get the JSON decoded body of the response as a fluent object.
+     *
+     * @param string|null $key
+     * @return Fluent
+     */
+    public function fluent($key = null)
+    {
+        return new Fluent((array) $this->json($key));
     }
 
     /**
