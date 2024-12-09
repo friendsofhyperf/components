@@ -83,13 +83,6 @@ class EntryResult implements JsonSerializable
     private $tags;
 
     /**
-     * The app name of tag.
-     *
-     * @var string
-     */
-    private $appName;
-
-    /**
      * Create a new entry result instance.
      *
      * @param mixed $id
