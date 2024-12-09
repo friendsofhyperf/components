@@ -11,21 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Listener;
 
-use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
-use FriendsOfHyperf\Telescope\Storage\DatabaseEntriesRepository;
-use FriendsOfHyperf\Telescope\Storage\EntriesRepositoryManager;
-use Hyperf\Contract\ConfigInterface;
+use FriendsOfHyperf\Telescope\Storage\EntriesRepositoryFactory;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 
-use function Hyperf\Support\make;
-
 class RegisterEntriesRepositoryListener implements ListenerInterface
 {
-    public function __construct(
-        protected ConfigInterface $config,
-        protected EntriesRepositoryManager $manager
-    ) {
+    public function __construct(protected EntriesRepositoryFactory $factory)
+    {
     }
 
     public function listen(): array
@@ -37,12 +30,6 @@ class RegisterEntriesRepositoryListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        /** @var array<string, array{driver?: class-string<EntriesRepository>}}> */
-        $drivers = (array) $this->config->get('telescope.storage', []);
-
-        foreach ($drivers as $driver => $options) {
-            $driver = $options['driver'] ?? DatabaseEntriesRepository::class;
-            $this->manager->register($driver, make($options['driver']));
-        }
+        $this->factory->register();
     }
 }
