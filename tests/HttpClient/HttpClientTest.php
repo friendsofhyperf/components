@@ -45,6 +45,7 @@ use RuntimeException;
 use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\VarDumper\VarDumper;
 
+use function FriendsOfHyperf\Helpers\fluent;
 use function FriendsOfHyperf\Helpers\now;
 use function Hyperf\Collection\collect;
 use function Hyperf\Tappable\tap;
@@ -342,6 +343,21 @@ class HttpClientTest extends TestCase
         $this->assertEquals(collect(['foo' => 'bar']), $response->collect('result'));
         $this->assertEquals(collect(['bar']), $response->collect('result.foo'));
         $this->assertEquals(collect(), $response->collect('missing_key'));
+    }
+
+    public function testResponseCanBeReturnedAsFluent()
+    {
+        $this->factory->fake([
+            '*' => ['result' => ['foo' => 'bar']],
+        ]);
+
+        $response = $this->factory->get('http://foo.com/api');
+
+        $this->assertInstanceOf(Fluent::class, $response->fluent());
+        $this->assertEquals(fluent(['result' => ['foo' => 'bar']]), $response->fluent());
+        $this->assertEquals(fluent(['foo' => 'bar']), $response->fluent('result'));
+        $this->assertEquals(fluent(['bar']), $response->fluent('result.foo'));
+        $this->assertEquals(fluent([]), $response->fluent('missing_key'));
     }
 
     public function testSendRequestBodyAsJsonByDefault()
