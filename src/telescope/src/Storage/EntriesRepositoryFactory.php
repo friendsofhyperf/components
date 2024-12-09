@@ -15,7 +15,7 @@ use Hyperf\Contract\ConfigInterface;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 
-class RepositoryFactory
+class EntriesRepositoryFactory
 {
     public function __invoke(ContainerInterface $container)
     {
