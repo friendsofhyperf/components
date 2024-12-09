@@ -98,7 +98,7 @@ class EntryResult implements JsonSerializable
         ?string $familyHash,
         array $content,
         $createdAt,
-        $tags = [],
+        $tags = []
     ) {
         $this->id = $id;
         $this->type = $type;
