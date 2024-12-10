@@ -45,7 +45,6 @@ class ConfigProvider
                 Listener\DbQueryListener::class,
                 Listener\ExceptionHandlerListener::class,
                 Listener\FetchRecordingOnBootListener::class,
-                Listener\RegisterEntriesRepositoryListener::class,
                 Listener\RegisterRoutesListener::class => -1,
             ],
             'publish' => [

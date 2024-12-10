@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Storage;
 
-use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
 use Hyperf\Contract\ConfigInterface;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
@@ -20,41 +19,40 @@ use function Hyperf\Support\make;
 
 class EntriesRepositoryFactory
 {
-    /**
-     * @var array<string,EntriesRepository>
-     */
-    protected array $regisitries = [];
-
-    public function __construct(
-        protected ContainerInterface $container,
-        protected ConfigInterface $config
-    ) {
-    }
-
-    public function __invoke()
+    public function __invoke(?ContainerInterface $container = null)
     {
-        $driver = $this->config->get('telescope.driver', 'database');
+        $config = $container->get(ConfigInterface::class);
 
-        return $this->get($driver);
-    }
+        // Compatibility with v3.1
+        $this->compatibility($config);
 
-    public function get(string $driver): EntriesRepository
-    {
-        if (! isset($this->regisitries[$driver])) {
+        $driver = $config->get('telescope.driver', 'database');
+
+        if (! $config->has('telescope.storage.' . $driver)) {
             throw new InvalidArgumentException(sprintf('The driver [%s] has not been registered.', $driver));
         }
 
-        return $this->regisitries[$driver];
+        $options = (array) $config->get('telescope.storage.' . $driver);
+
+        return make($options['driver']);
     }
 
-    public function register(): void
+    /**
+     * @deprecated since v3.1, will be removed in v3.2
+     */
+    private function compatibility(ConfigInterface $config)
     {
-        /** @var array<string, array{driver?: class-string<EntriesRepository>}> */
-        $drivers = (array) $this->config->get('telescope.storage', []);
-
-        foreach ($drivers as $driver => $options) {
-            $driver = $options['driver'] ?? DatabaseEntriesRepository::class;
-            $this->regisitries[$driver] = make($options['driver']);
+        if (
+            ! $config->has('telescope.storage')
+            && $config->has('telescope.database')
+        ) {
+            $config->set('telescope.storage.database', $config->get('telescope.database'));
+        }
+        if (
+            $config->has('telescope.storage.database')
+            && ! $config->has('telescope.storage.database.driver')
+        ) {
+            $config->set('telescope.storage.database.driver', DatabaseEntriesRepository::class);
         }
     }
 }
