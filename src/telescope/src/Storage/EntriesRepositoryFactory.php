@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Storage;
 
+use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
 use Hyperf\Contract\ConfigInterface;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
@@ -34,7 +35,21 @@ class EntriesRepositoryFactory
 
         $options = (array) $config->get('telescope.storage.' . $driver);
 
-        return make($options['driver']);
+        if (! isset($options['driver'])) {
+            throw new InvalidArgumentException(sprintf('The driver [%s] has not been registered.', $driver));
+        }
+
+        $driver = make($options['driver']);
+
+        if (is_callable($driver)) {
+            $driver = $driver($container, $options);
+        }
+
+        if ($driver instanceof EntriesRepository) {
+            return $driver;
+        }
+
+        throw new InvalidArgumentException(sprintf('The driver [%s] must be an instance of %s.', $driver, EntriesRepository::class));
     }
 
     /**
