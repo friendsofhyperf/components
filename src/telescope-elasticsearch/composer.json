@@ -23,6 +23,8 @@
     "require": {
         "friendsofhyperf/telescope": "~3.1.0",
         "friendsofhyperf/elasticsearch": "~3.1.0",
+        "hyperf/collection": "~3.1.0",
+        "hyperf/stringable": "~3.1.0",
         "elasticsearch/elasticsearch": "^8.8.0"
     },
     "autoload": {
