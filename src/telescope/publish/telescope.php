@@ -10,6 +10,7 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Telescope\Middleware\Authorize;
 use FriendsOfHyperf\Telescope\RecordMode;
+use FriendsOfHyperf\Telescope\Storage\DatabaseEntriesRepository;
 
 use function Hyperf\Support\env;
 
@@ -35,6 +36,7 @@ return [
 
     'storage' => [
         'database' => [
+            'driver' => DatabaseEntriesRepository::class,
             'connection' => env('TELESCOPE_DB_CONNECTION', 'default'),
             'chunk' => (int) env('TELESCOPE_DB_CHUNK', 1000),
         ],
