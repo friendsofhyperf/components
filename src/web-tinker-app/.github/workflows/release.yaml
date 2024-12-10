@@ -1,0 +1,10 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  build:
+    uses: friendsofhyperf/.github/.github/workflows/release.yaml@main

@@ -156,6 +156,7 @@
         "friendsofhyperf/support": "*",
         "friendsofhyperf/tcp-sender": "*",
         "friendsofhyperf/telescope": "*",
+        "friendsofhyperf/telescope-elasticsearch": "*",
         "friendsofhyperf/tinker": "*",
         "friendsofhyperf/trigger": "*",
         "friendsofhyperf/validated-dto": "*",
@@ -207,6 +208,7 @@
             "FriendsOfHyperf\\Sentry\\": "src/sentry/src/",
             "FriendsOfHyperf\\Support\\": "src/support/src/",
             "FriendsOfHyperf\\TcpSender\\": "src/tcp-sender/src/",
+            "FriendsOfHyperf\\TelescopeElasticsearch\\": "src/telescope-elasticsearch/src/",
             "FriendsOfHyperf\\Telescope\\": "src/telescope/src/",
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
             "FriendsOfHyperf\\Trigger\\": "src/trigger/src/",
@@ -283,6 +285,7 @@
                 "FriendsOfHyperf\\Notification\\Mail\\ConfigProvider",
                 "FriendsOfHyperf\\OpenAi\\ConfigProvider",
                 "FriendsOfHyperf\\PrettyConsole\\ConfigProvider",
+                "FriendsOfHyperf\\Purifier\\ConfigProvider",
                 "FriendsOfHyperf\\ReCaptcha\\ConfigProvider",
                 "FriendsOfHyperf\\Sentry\\ConfigProvider",
                 "FriendsOfHyperf\\Support\\ConfigProvider",
@@ -291,8 +294,7 @@
                 "FriendsOfHyperf\\Tinker\\ConfigProvider",
                 "FriendsOfHyperf\\Trigger\\ConfigProvider",
                 "FriendsOfHyperf\\ValidatedDTO\\ConfigProvider",
-                "FriendsOfHyperf\\WebTinker\\ConfigProvider",
-                "Friendsofhyperf\\Purifier\\ConfigProvider"
+                "FriendsOfHyperf\\WebTinker\\ConfigProvider"
             ]
         }
     },
