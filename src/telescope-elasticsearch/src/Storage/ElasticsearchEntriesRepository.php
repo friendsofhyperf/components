@@ -28,7 +28,6 @@ use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Storage\EntryQueryOptions;
 use Hyperf\Collection\Arr;
 use Hyperf\Collection\Collection;
-use Hyperf\Contract\ConfigInterface;
 use Hyperf\Stringable\Str;
 use Throwable;
 
@@ -48,11 +47,9 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
 
     private EntriesIndex $index;
 
-    public function __construct(
-        private ConfigInterface $config
-    ) {
-        $options = $this->config->get('telescope.storage.elasticsearch', []);
-        $this->index = make(EntriesIndex::class, $options);
+    public function __construct(string $index = 'telescope_entries', array $options = [])
+    {
+        $this->index = make(EntriesIndex::class, $options + ['index' => $index]);
     }
 
     /**
@@ -179,6 +176,7 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
     {
         $entry = $document['_source'] ?? [];
         $requestSequence = 50;
+
         if ($options?->beforeSequence >= 50) {
             $requestSequence = $options->beforeSequence + $requestSequence;
         }
@@ -265,7 +263,8 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
             ];
             $entry = $this->index->client()->search($params)->asArray();
 
-            if (! isset($entry['hits']['hits'][0])
+            if (
+                ! isset($entry['hits']['hits'][0])
                 || (gettype($entry['hits']['hits'][0]) !== 'array')
             ) {
                 continue;
