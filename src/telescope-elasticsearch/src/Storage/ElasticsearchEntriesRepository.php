@@ -61,18 +61,18 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
      */
     public function find($id): EntryResult
     {
-        $entry = $this->index->client()->get([
+        $response = $this->index->client()->get([
             'index' => $this->index->index,
             'id' => $id,
         ]);
 
-        if (! $entry->asBool()) {
+        if (! $response->asBool()) {
             throw new Exception('Entry not found');
         }
 
-        $entryCollect = collect($entry->asArray());
+        $entry = collect($response->asArray());
 
-        return $this->toEntryResult($entryCollect->all());
+        return $this->toEntryResult($entry->all());
     }
 
     /**
@@ -150,11 +150,10 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
                 ...$query,
             ],
         ];
-        $data = $this->index->client()->search($params);
+        $response = $this->index->client()->search($params);
 
-        return $this->toEntryResults(collect($data->asArray()), $options)->reject(function ($entry) {
-            return ! is_array($entry->content);
-        });
+        return $this->toEntryResults(collect($response->asArray()), $options)
+            ->reject(fn ($entry) => ! is_array($entry->content));
     }
 
     /**
@@ -162,11 +161,9 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
      */
     public function toEntryResults(Collection $results, EntryQueryOptions $options): Collection
     {
-        $collect = collect($results->all()['hits']['hits']);
+        $entries = collect($results->all()['hits']['hits']);
 
-        return $collect->map(function ($entry) use ($options) {
-            return $this->toEntryResult($entry, $options);
-        });
+        return $entries->map(fn ($entry) => $this->toEntryResult($entry, $options));
     }
 
     /**
