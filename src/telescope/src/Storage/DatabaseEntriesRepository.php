@@ -38,10 +38,10 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
 
     public function __construct(
         protected ?string $connection = null,
-        protected ?int $chunkSize = null
+        protected ?int $chunk = null
     ) {
         $this->connection ??= (string) config('telescope.storage.database.connection', 'default');
-        $this->chunkSize ??= (int) config('telescope.storage.dateabase.chunk', 200);
+        $this->chunk ??= (int) config('telescope.storage.dateabase.chunk', 200);
     }
 
     public function find($id): EntryResult
@@ -97,14 +97,14 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
             $deleted = $this->table('telescope_entries')
                 ->where('created_at', '<', $before)
                 ->when($keepExceptions, fn ($query) => $query->where('type', '!=', 'exception'))
-                ->take($this->chunkSize)
+                ->take($this->chunk)
                 ->delete();
             $totalDeleted += $deleted;
         } while ($deleted !== 0);
 
         do {
             $deleted = $this->table('telescope_monitoring')
-                ->take($this->chunkSize)
+                ->take($this->chunk)
                 ->delete();
         } while ($deleted !== 0);
 
@@ -125,7 +125,7 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
 
         $table = $this->table('telescope_entries');
 
-        $entries->chunk($this->chunkSize)->each(function ($chunked) use ($table) {
+        $entries->chunk($this->chunk)->each(function ($chunked) use ($table) {
             $table->insert($chunked->map(function ($entry) { // @phpstan-ignore-line
                 $entry->content = json_encode($entry->content, JSON_INVALID_UTF8_SUBSTITUTE);
 
@@ -204,13 +204,13 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
     public function clear(): void
     {
         do {
-            $deleted = $this->table('telescope_entries')->take($this->chunkSize)->delete();
+            $deleted = $this->table('telescope_entries')->take($this->chunk)->delete();
         } while ($deleted !== 0);
         do {
-            $deleted = $this->table('telescope_entries_tags')->take($this->chunkSize)->delete();
+            $deleted = $this->table('telescope_entries_tags')->take($this->chunk)->delete();
         } while ($deleted !== 0);
         do {
-            $deleted = $this->table('telescope_monitoring')->take($this->chunkSize)->delete();
+            $deleted = $this->table('telescope_monitoring')->take($this->chunk)->delete();
         } while ($deleted !== 0);
     }
 
@@ -286,7 +286,7 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
      */
     protected function storeExceptions(Collection $exceptions)
     {
-        $exceptions->chunk($this->chunkSize)->each(function ($chunked) {
+        $exceptions->chunk($this->chunk)->each(function ($chunked) {
             $this->table('telescope_entries')->insert($chunked->map(function ($exception) {
                 $occurrences = $this->countExceptionOccurences($exception);
 
@@ -313,7 +313,7 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
      */
     protected function storeTags(Collection $results)
     {
-        $results->chunk($this->chunkSize)->each(function ($chunked) {
+        $results->chunk($this->chunk)->each(function ($chunked) {
             try {
                 $this->table('telescope_entries_tags')
                     ->insert($chunked->flatMap(
