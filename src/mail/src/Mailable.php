@@ -27,6 +27,7 @@ use Hyperf\Filesystem\FilesystemFactory;
 use Hyperf\Macroable\Macroable;
 use Hyperf\Stringable\Str;
 use Hyperf\Support\Traits\ForwardsCalls;
+use Hyperf\Tappable\Tappable;
 use Hyperf\ViewEngine\Contract\DeferringDisplayableValue;
 use Hyperf\ViewEngine\Contract\Htmlable;
 use PHPUnit\Framework\Assert as Phpunit;
@@ -45,7 +46,7 @@ use function Hyperf\Tappable\tap;
 
 class Mailable implements Contract\Mailable
 {
-    use Conditionable, ForwardsCalls, Macroable {
+    use Conditionable, ForwardsCalls, Tappable, Macroable {
         __call as macroCall;
     }
 
