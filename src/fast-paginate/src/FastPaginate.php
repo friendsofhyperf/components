@@ -167,7 +167,7 @@ class FastPaginate
             // The $paginator is full of records that are primary keys only. Here,
             // we create a new paginator with all of the *stats* from the index-
             // only paginator, but the *items* from the outer query.
-            $items = $this->simplePaginate($perPage, $columns, $pageName, 1)->getCollection(); /* @phpstan-ignore-line */
+            $items = $this->simplePaginate($perPage, $columns, $pageName, 1)->items();
 
             return Closure::fromCallable($paginatorOutput)->call($this, $items, $paginator);
         };
