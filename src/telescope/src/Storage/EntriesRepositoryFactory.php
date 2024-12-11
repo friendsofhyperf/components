@@ -39,7 +39,7 @@ class EntriesRepositoryFactory
             throw new InvalidArgumentException(sprintf('The driver [%s] has not been registered.', $driver));
         }
 
-        $driver = make($options['driver']);
+        $driver = make($options['driver'], $options);
 
         if (is_callable($driver)) {
             $driver = $driver($container, $options);
