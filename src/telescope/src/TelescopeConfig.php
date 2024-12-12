@@ -32,6 +32,16 @@ class TelescopeConfig
         return $this->config->get('telescope.' . $key, $default);
     }
 
+    public function getStorageDriver(string $default = 'database'): string
+    {
+        return (string) $this->get('storage.driver', $default);
+    }
+
+    public function getStorageOptions(string $driver = 'database'): ?array
+    {
+        return $this->get('storage.' . $driver);
+    }
+
     /**
      * @deprecated since v3.1, will be removed in v3.2
      * @return array{enable: bool, host: string, port: int}

@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope\Storage;
 
+use Closure;
 use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
+use FriendsOfHyperf\Telescope\TelescopeConfig;
 use Hyperf\Contract\ConfigInterface;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
@@ -22,31 +24,28 @@ class EntriesRepositoryFactory
 {
     public function __invoke(?ContainerInterface $container = null)
     {
-        $config = $container->get(ConfigInterface::class);
+        $telescopeConfig = $container->get(TelescopeConfig::class);
 
         // Compatibility with v3.1
-        $this->compatibility($config);
+        $this->compatibilityWithLegacyConfig($container->get(ConfigInterface::class));
 
-        $driver = $config->get('telescope.driver', 'database');
+        $driver = $telescopeConfig->getStorageDriver();
+        $options = $telescopeConfig->getStorageOptions($driver);
 
-        if (! $config->has('telescope.storage.' . $driver)) {
+        if (! $options || ! isset($options['driver'])) {
             throw new InvalidArgumentException(sprintf('The driver [%s] has not been registered.', $driver));
         }
 
-        $options = (array) $config->get('telescope.storage.' . $driver);
+        $driver = $options['driver'];
+        $instance = match (true) {
+            $driver instanceof Closure => $driver($container, $options),
+            is_string($driver) && class_exists($driver) && method_exists($driver, '__invoke') => make($driver, $options)($container, $options),
+            is_a($driver, EntriesRepository::class, true) => is_string($driver) ? make($driver, $options) : $driver,
+            default => null,
+        };
 
-        if (! isset($options['driver'])) {
-            throw new InvalidArgumentException(sprintf('The driver [%s] has not been registered.', $driver));
-        }
-
-        $driver = make($options['driver'], $options);
-
-        if (is_callable($driver)) {
-            $driver = $driver($container, $options);
-        }
-
-        if ($driver instanceof EntriesRepository) {
-            return $driver;
+        if ($instance instanceof EntriesRepository) {
+            return $instance;
         }
 
         throw new InvalidArgumentException(sprintf('The driver [%s] must be an instance of %s.', $driver, EntriesRepository::class));
@@ -55,18 +54,15 @@ class EntriesRepositoryFactory
     /**
      * @deprecated since v3.1, will be removed in v3.2
      */
-    private function compatibility(ConfigInterface $config)
+    /**
+     * 兼容旧配置，优化命名.
+     */
+    private function compatibilityWithLegacyConfig(ConfigInterface $config): void
     {
-        if (
-            ! $config->has('telescope.storage')
-            && $config->has('telescope.database')
-        ) {
+        if (! $config->has('telescope.storage') && $config->has('telescope.database')) {
             $config->set('telescope.storage.database', $config->get('telescope.database'));
         }
-        if (
-            $config->has('telescope.storage.database')
-            && ! $config->has('telescope.storage.database.driver')
-        ) {
+        if ($config->has('telescope.storage.database') && ! $config->has('telescope.storage.database.driver')) {
             $config->set('telescope.storage.database.driver', DatabaseEntriesRepository::class);
         }
     }
