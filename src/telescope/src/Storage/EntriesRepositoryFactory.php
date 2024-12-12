@@ -27,7 +27,7 @@ class EntriesRepositoryFactory
         $telescopeConfig = $container->get(TelescopeConfig::class);
 
         // Compatibility with v3.1
-        $this->compatibility($container->get(ConfigInterface::class));
+        $this->compatibilityWithLegacyConfig($container->get(ConfigInterface::class));
 
         $driver = $telescopeConfig->getStorageDriver();
         $options = $telescopeConfig->getStorageOptions($driver);
@@ -54,7 +54,10 @@ class EntriesRepositoryFactory
     /**
      * @deprecated since v3.1, will be removed in v3.2
      */
-    private function compatibility(ConfigInterface $config)
+    /**
+     * 兼容旧配置，优化命名.
+     */
+    private function compatibilityWithLegacyConfig(ConfigInterface $config): void
     {
         if (! $config->has('telescope.storage') && $config->has('telescope.database')) {
             $config->set('telescope.storage.database', $config->get('telescope.database'));
