@@ -91,7 +91,7 @@ class EntriesIndex
     public function client()
     {
         $options = $this->options;
-        $clientBuilder = $this->clientBuilderFactory()->create([]);
+        $clientBuilder = $this->clientBuilderFactory()->create();
         if (isset($options['hosts'])) {
             $clientBuilder->setHosts((array) $options['hosts']);
         }
