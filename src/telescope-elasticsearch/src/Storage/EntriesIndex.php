@@ -19,15 +19,24 @@ use Elastic\Elasticsearch\Response\Elasticsearch;
 use FriendsOfHyperf\Elasticsearch\ClientBuilderFactory;
 use Http\Promise\Promise;
 use Hyperf\Contract\StdoutLoggerInterface;
+use Psr\Container\ContainerInterface;
 
 class EntriesIndex
 {
+    private ClientBuilderFactory $clientBuilderFactory;
+
+    private ?StdoutLoggerInterface $logger = null;
+
     public function __construct(
-        private ClientBuilderFactory $clientBuilderFactory,
+        private ContainerInterface $container,
         public string $index = 'telescope_entries',
         private array $options = [],
-        private ?StdoutLoggerInterface $logger = null,
     ) {
+        $this->clientBuilderFactory = $this->container->get(ClientBuilderFactory::class);
+
+        if ($this->container->has(StdoutLoggerInterface::class)) {
+            $this->logger = $this->container->get(StdoutLoggerInterface::class);
+        }
     }
 
     /**
@@ -150,7 +159,7 @@ class EntriesIndex
         $options = $this->options;
         $clientBuilderFactory = $this->clientBuilderFactory->create([]);
         if (isset($options['hosts'])) {
-            $clientBuilderFactory->setHosts($options['hosts']);
+            $clientBuilderFactory->setHosts((array) $options['hosts']);
         }
         if (isset($options['username'], $options['password'])) {
             $clientBuilderFactory->setBasicAuthentication($options['username'], $options['password']);
