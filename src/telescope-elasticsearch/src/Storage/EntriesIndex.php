@@ -159,7 +159,7 @@ class EntriesIndex
         $options = $this->options;
         $clientBuilderFactory = $this->clientBuilderFactory->create([]);
         if (isset($options['hosts'])) {
-            $clientBuilderFactory->setHosts($options['hosts']);
+            $clientBuilderFactory->setHosts((array) $options['hosts']);
         }
         if (isset($options['username'], $options['password'])) {
             $clientBuilderFactory->setBasicAuthentication($options['username'], $options['password']);
