@@ -11,20 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\TelescopeElasticsearch\Storage;
 
-use Elastic\Elasticsearch\Client;
-use Elastic\Elasticsearch\Exception\ClientResponseException;
-use Elastic\Elasticsearch\Exception\MissingParameterException;
-use Elastic\Elasticsearch\Exception\ServerResponseException;
 use Elastic\Elasticsearch\Response\Elasticsearch;
-use FriendsOfHyperf\Elasticsearch\ClientBuilderFactory;
-use Http\Promise\Promise;
+use Exception;
 use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Coroutine\Coroutine;
 use Psr\Container\ContainerInterface;
 
 class EntriesIndex
 {
-    private ClientBuilderFactory $clientBuilderFactory;
-
     private ?StdoutLoggerInterface $logger = null;
 
     public function __construct(
@@ -32,15 +26,13 @@ class EntriesIndex
         public string $index = 'telescope_entries',
         private array $options = [],
     ) {
-        $this->clientBuilderFactory = $this->container->get(ClientBuilderFactory::class);
-
         if ($this->container->has(StdoutLoggerInterface::class)) {
             $this->logger = $this->container->get(StdoutLoggerInterface::class);
         }
     }
 
     /**
-     * @return Elasticsearch|Promise|void
+     * @return \Elastic\Elasticsearch\Response\Elasticsearch|\Http\Promise\Promise|array|void
      */
     public function create()
     {
@@ -62,16 +54,54 @@ class EntriesIndex
                     ],
                 ],
             ]);
-        } catch (ClientResponseException $e) {
-            $this->logger?->error('the 4xx error', ['message' => $e->getMessage()]);
-        } catch (MissingParameterException $e) {
-            $this->logger?->error('the 5xx error', ['message' => $e->getMessage()]);
-        } catch (ServerResponseException $e) {
-            $this->logger?->error('network error like NoNodeAvailableException', ['message' => $e->getMessage()]);
+        } catch (Exception $e) {
+            $this->logger?->error((string) $e);
         }
     }
 
-    public function properties(): array
+    public function delete(): void
+    {
+        try {
+            $this->client()->indices()->delete([
+                'index' => $this->index,
+            ]);
+        } catch (Exception $e) {
+            $this->logger?->error((string) $e);
+        }
+    }
+
+    public function exists(): bool
+    {
+        try {
+            /** @var bool|Elasticsearch $exists */
+            $exists = $this->client()->indices()->exists([
+                'index' => $this->index,
+            ]);
+            return is_bool($exists) ? $exists : $exists->getStatusCode() !== 404;
+        } catch (Exception $e) {
+            $this->logger?->error((string) $e);
+        }
+
+        return false;
+    }
+
+    /**
+     * @return \Elastic\Elasticsearch\Client|\Elasticsearch\Client
+     */
+    public function client()
+    {
+        $options = $this->options;
+        $clientBuilder = $this->clientBuilderFactory()->create([]);
+        if (isset($options['hosts'])) {
+            $clientBuilder->setHosts((array) $options['hosts']);
+        }
+        if (isset($options['username'], $options['password'])) {
+            $clientBuilder->setBasicAuthentication($options['username'], $options['password']);
+        }
+        return $clientBuilder->create()->build();
+    }
+
+    private function properties(): array
     {
         return [
             'uuid' => [
@@ -119,51 +149,30 @@ class EntriesIndex
         ];
     }
 
-    public function delete(): void
+    /**
+     * @return \Elasticsearch\ClientBuilder|\Elastic\Elasticsearch\ClientBuilder
+     */
+    private function clientBuilderFactory()
     {
-        try {
-            $this->client()->indices()->delete([
-                'index' => $this->index,
-            ]);
-        } catch (ClientResponseException $e) {
-            $this->logger?->error('the 4xx error', ['message' => $e->getMessage()]);
-        } catch (MissingParameterException $e) {
-            $this->logger?->error('the 5xx error', ['message' => $e->getMessage()]);
-        } catch (ServerResponseException $e) {
-            $this->logger?->error('network error like NoNodeAvailableException', ['message' => $e->getMessage()]);
-        }
-    }
+        if (class_exists('Elastic\Elasticsearch\ClientBuilder')) {
+            $guzzleClientFactory = $this->container->get(\Hyperf\Guzzle\ClientFactory::class);
+            $builder = \Elastic\Elasticsearch\ClientBuilder::create();
+            $builder->setHttpClient(
+                $guzzleClientFactory->create()
+            );
 
-    public function exists(): bool
-    {
-        try {
-            return $this->client()
-                ->indices()
-                ->exists([
-                    'index' => $this->index,
-                ])
-                ->getStatusCode() !== 404;
-        } catch (ClientResponseException $e) {
-            $this->logger?->error('the 4xx error', ['message' => $e->getMessage()]);
-        } catch (MissingParameterException $e) {
-            $this->logger?->error('the 5xx error', ['message' => $e->getMessage()]);
-        } catch (ServerResponseException $e) {
-            $this->logger?->error('network error like NoNodeAvailableException', ['message' => $e->getMessage()]);
+            return $builder;
         }
 
-        return false;
-    }
+        if (class_exists('Elasticsearch\ClientBuilder')) {
+            $builder = \Elasticsearch\ClientBuilder::create();
+            if (Coroutine::inCoroutine()) {
+                $builder->setHandler(new \Hyperf\Guzzle\RingPHP\CoroutineHandler());
+            }
 
-    public function client(): Client
-    {
-        $options = $this->options;
-        $clientBuilderFactory = $this->clientBuilderFactory->create([]);
-        if (isset($options['hosts'])) {
-            $clientBuilderFactory->setHosts((array) $options['hosts']);
+            return $builder;
         }
-        if (isset($options['username'], $options['password'])) {
-            $clientBuilderFactory->setBasicAuthentication($options['username'], $options['password']);
-        }
-        return $clientBuilderFactory->create()->build();
+
+        throw new Exception('Please install elasticsearch/elasticsearch');
     }
 }
