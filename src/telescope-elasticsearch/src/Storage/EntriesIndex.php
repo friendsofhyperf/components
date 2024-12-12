@@ -155,8 +155,8 @@ class EntriesIndex
      */
     private function clientBuilderFactory()
     {
-        $guzzleClientFactory = $this->container->get(\Hyperf\Guzzle\ClientFactory::class);
         if (class_exists('Elastic\Elasticsearch\ClientBuilder')) {
+            $guzzleClientFactory = $this->container->get(\Hyperf\Guzzle\ClientFactory::class);
             $builder = \Elastic\Elasticsearch\ClientBuilder::create();
             $builder->setHttpClient(
                 $guzzleClientFactory->create()
