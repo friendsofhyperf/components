@@ -13,8 +13,6 @@ namespace FriendsOfHyperf\TelescopeElasticsearch\Storage;
 
 use Carbon\Carbon;
 use DateTimeInterface;
-use Elastic\Elasticsearch\Exception\ClientResponseException;
-use Elastic\Elasticsearch\Exception\ServerResponseException;
 use Exception;
 use FriendsOfHyperf\Telescope\Contract\ClearableRepository;
 use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
@@ -76,8 +74,6 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
      * @param string|null $type
      *
      * @return Collection<array-key,EntryResult>
-     * @throws ClientResponseException
-     * @throws ServerResponseException
      */
     public function get($type, EntryQueryOptions $options)
     {
