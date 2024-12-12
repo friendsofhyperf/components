@@ -174,6 +174,6 @@ class EntriesIndex
             return $builder;
         }
 
-        throw new Exception('Please install elasticsearch/elasticsearch or elasticsearch/elasticsearch-php');
+        throw new Exception('Please install elasticsearch/elasticsearch');
     }
 }
