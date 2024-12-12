@@ -15,23 +15,34 @@ use Hyperf\Command\Command;
 
 class InstallCommand extends Command
 {
-    public function __construct()
-    {
-        parent::__construct('telescope:install');
-    }
+    protected ?string $signature = 'telescope:install --driver=database';
 
     public function handle()
     {
-        if (! $this->call('vendor:publish', ['package' => 'friendsofhyperf/telescope'])) {
-            $this->info('publish successfully');
+        if (! $this->call('vendor:publish', [
+            'package' => 'friendsofhyperf/telescope',
+            '--id' => 'config',
+        ])) {
+            $this->info('publish config successfully');
         } else {
-            $this->error('publish failed');
+            $this->error('publish config failed');
         }
 
-        if (! $this->call('migrate')) {
-            $this->info('migrate successfully');
-        } else {
-            $this->error('migrate failed');
+        if ($this->option('driver') === 'database') {
+            if (! $this->call('vendor:publish', [
+                'package' => 'friendsofhyperf/telescope',
+                '--id' => 'migrations',
+            ])) {
+                $this->info('publish migrations successfully');
+            } else {
+                $this->error('publish migrations failed');
+            }
+
+            if (! $this->call('migrate')) {
+                $this->info('migrate successfully');
+            } else {
+                $this->error('migrate failed');
+            }
         }
     }
 }
