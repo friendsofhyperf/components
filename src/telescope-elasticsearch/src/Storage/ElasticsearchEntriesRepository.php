@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\TelescopeElasticsearch\Storage;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Elastic\Elasticsearch\Exception\ClientResponseException;
-use Elastic\Elasticsearch\Exception\MissingParameterException;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
 use Exception;
 use FriendsOfHyperf\Telescope\Contract\ClearableRepository;
@@ -66,11 +65,7 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
             'id' => $id,
         ]);
 
-        if (! $response->asBool()) {
-            throw new Exception('Entry not found');
-        }
-
-        $entry = collect($response->asArray());
+        $entry = collect(is_object($response) ? $response->asArray() : $response);
 
         return $this->toEntryResult($entry->all());
     }
@@ -150,9 +145,11 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
                 ...$query,
             ],
         ];
-        $response = $this->index->client()->search($params);
 
-        return $this->toEntryResults(collect($response->asArray()), $options)
+        $response = $this->index->client()->search($params);
+        $entries = is_object($response) ? $response->asArray() : $response;
+
+        return $this->toEntryResults(collect($entries), $options)
             ->reject(fn ($entry) => ! is_array($entry->content));
     }
 
@@ -194,9 +191,6 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
      * Store the given entries.
      *
      * @param Collection<array-key,IncomingEntry> $entries
-     *
-     * @throws ClientResponseException
-     * @throws ServerResponseException
      */
     public function store($entries): void
     {
@@ -236,9 +230,6 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
      * Store the given entry updates.
      *
      * @param Collection<array-key,EntryUpdate> $updates
-     *
-     * @throws ClientResponseException
-     * @throws ServerResponseException
      */
     public function update($updates): void
     {
@@ -258,7 +249,8 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
                     'size' => 1,
                 ],
             ];
-            $entry = $this->index->client()->search($params)->asArray();
+            $response = $this->index->client()->search($params);
+            $entry = is_object($response) ? $response->asArray() : $response;
 
             if (
                 ! isset($entry['hits']['hits'][0])
@@ -337,10 +329,6 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
      * Prune all of the entries older than the given date.
      *
      * @param bool $keepExceptions
-     *
-     * @throws ClientResponseException
-     * @throws MissingParameterException
-     * @throws ServerResponseException
      */
     public function prune(DateTimeInterface $before, $keepExceptions): int
     {
@@ -373,10 +361,6 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
 
     /**
      * Clear all the entries.
-     *
-     * @throws ClientResponseException
-     * @throws MissingParameterException
-     * @throws ServerResponseException
      */
     public function clear(): void
     {
@@ -393,9 +377,6 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
 
     /**
      * Store the given array of exception entries.
-     *
-     * @throws ClientResponseException
-     * @throws ServerResponseException
      */
     protected function storeExceptions(Collection $exceptions): void
     {
@@ -416,12 +397,13 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
                     'size' => 1000,
                 ],
             ];
-            $documents = $this->index->client()->search($params);
+            $response = $this->index->client()->search($params);
+            $documents = is_object($response) ? $response->asArray() : $response;
             $content = array_merge(
                 $exception->content,
-                ['occurrences' => $documents->offsetGet('hits')['total']['value'] + 1]
+                ['occurrences' => $documents['hits']['total']['value'] + 1]
             );
-            $collectDocuments = collect($documents->asArray()['hits']['hits']);
+            $collectDocuments = collect($documents['hits']['hits']);
             $entries->merge(
                 $collectDocuments->map(function ($document) {
                     $document = collect($document)->toArray();
@@ -449,6 +431,7 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
 
             $entries->merge($occurrences);
         });
+
         $this->bulkSend($entries);
     }
 
@@ -456,9 +439,6 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
      * Use Elasticsearch bulk API to send list of documents.
      *
      * @param Collection<IncomingEntry> $entries
-     *
-     * @throws ClientResponseException
-     * @throws ServerResponseException
      */
     protected function bulkSend(Collection $entries): void
     {

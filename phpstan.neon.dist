@@ -29,3 +29,15 @@ parameters:
       message: '#Parameter \#2 \$mutators of method FriendsOfHyperf\\PrettyConsole\\View\\Components\\Component::mutate\(\) expects#'
       paths:
         - src/pretty-console/src/View/Components/*.php
+    -
+      message: '#Call to method \w+\(\) on an unknown class Elasticsearch\\Client.#'
+      paths:
+        - src/telescope-elasticsearch/*/*.php
+    - 
+      message: '#Else branch is unreachable because ternary operator condition is always true.#'
+      paths:
+        - src/telescope-elasticsearch/*/*.php
+    - 
+      message: '#.* has invalid return type Elasticsearch\\Client.#'
+      paths:
+        - src/telescope-elasticsearch/*/*.php
