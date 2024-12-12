@@ -140,7 +140,7 @@ class EntriesIndex
     public function client()
     {
         $options = $this->options;
-        $clientBuilder = $this->getClientBuilderFactory()->create([]);
+        $clientBuilder = $this->clientBuilderFactory()->create([]);
         if (isset($options['hosts'])) {
             $clientBuilder->setHosts((array) $options['hosts']);
         }
@@ -153,7 +153,7 @@ class EntriesIndex
     /**
      * @return \Elasticsearch\ClientBuilder|\Elastic\Elasticsearch\ClientBuilder
      */
-    private function getClientBuilderFactory()
+    private function clientBuilderFactory()
     {
         $guzzleClientFactory = $this->container->get(\Hyperf\Guzzle\ClientFactory::class);
         if (class_exists('Elastic\Elasticsearch\ClientBuilder')) {
