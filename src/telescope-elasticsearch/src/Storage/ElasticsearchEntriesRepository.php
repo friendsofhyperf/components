@@ -141,7 +141,6 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
         }
         $params = [
             'index' => $this->index->index,
-            'type' => $type,
             'body' => [
                 ...$query,
             ],
