@@ -31,7 +31,7 @@ class ViewController
 
     public function index()
     {
-        $blade = __DIR__ . '/../../storage/view/index.blade.php';
+        $blade = __DIR__ . '/../../resources/views/index.blade.php';
 
         if (! isset($this->caches[$blade])) {
             $this->caches[$blade] = file_get_contents($blade);
