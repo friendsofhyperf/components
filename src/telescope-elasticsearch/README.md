@@ -17,6 +17,7 @@ composer require friendsofhyperf/telescope-elasticsearch
 ```php
 // config/autoload/telescope.php
 return [
+    'driver' => 'elasticsearch',
     'storage' => [
         'elasticsearch' => [
             'driver' => FriendsOfHyperf\TelescopeElasticsearch\Storage\ElasticsearchEntriesRepository::class,
