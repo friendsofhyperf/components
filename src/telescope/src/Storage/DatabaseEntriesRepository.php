@@ -28,7 +28,6 @@ use Hyperf\DbConnection\Db;
 use Throwable;
 
 use function Hyperf\Collection\collect;
-use function Hyperf\Config\config;
 
 class DatabaseEntriesRepository implements EntriesRepository, ClearableRepository, PrunableRepository, TerminableRepository
 {
@@ -38,11 +37,9 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
     protected ?array $monitoredTags = null;
 
     public function __construct(
-        protected ?string $connection = null,
-        protected ?int $chunk = null
+        protected ?string $connection = 'default',
+        protected ?int $chunk = 200
     ) {
-        $this->connection ??= (string) config('telescope.storage.database.connection', 'default');
-        $this->chunk ??= (int) config('telescope.storage.dateabase.chunk', 200);
     }
 
     public function find($id): EntryResult
