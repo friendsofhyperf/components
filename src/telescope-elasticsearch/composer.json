@@ -21,7 +21,7 @@
         }
     ],
     "require": {
-        "friendsofhyperf/telescope": "~3.1.0",
+        "friendsofhyperf/telescope": "~3.1.49",
         "friendsofhyperf/elasticsearch": "~3.1.0",
         "hyperf/collection": "~3.1.0",
         "hyperf/stringable": "~3.1.0",
