@@ -23,6 +23,7 @@ use FriendsOfHyperf\Telescope\EntryUpdate;
 use FriendsOfHyperf\Telescope\IncomingEntry;
 use FriendsOfHyperf\Telescope\Storage\Model\EntryModel;
 use Hyperf\Collection\Collection;
+use Hyperf\Database\Exception\UniqueConstraintViolationException;
 use Hyperf\DbConnection\Db;
 use Throwable;
 
@@ -263,11 +264,7 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
                         ];
                     })->toArray()
                 );
-            } catch (Exception $e) {
-                // Ignore tags that already exist...
-                if (! $this->isUniqueConstraintError($e)) {
-                    throw $e;
-                }
+            } catch (UniqueConstraintViolationException $e) {
             }
         }
 
@@ -319,22 +316,9 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
                     ->insert($chunked->flatMap(
                         fn ($tags, $uuid) => collect($tags)->map(fn ($tag) => ['entry_uuid' => $uuid, 'tag' => $tag])
                     )->all());
-            } catch (Exception $e) {
-                // Ignore tags that already exist...
-                if (! $this->isUniqueConstraintError($e)) {
-                    throw $e;
-                }
+            } catch (UniqueConstraintViolationException $e) {
             }
         });
-    }
-
-    /**
-     * @internal
-     * Determine if the given database exception was caused by a unique constraint violation
-     */
-    protected function isUniqueConstraintError(Exception $exception): bool
-    {
-        return boolval(preg_match('#Integrity constraint violation: 1062#i', $exception->getMessage()));
     }
 
     /**
