@@ -34,12 +34,12 @@ class TelescopeConfig
 
     public function getStorageDriver(string $default = 'database'): string
     {
-        return (string) $this->get('storage.driver', $default);
+        return (string) $this->get('driver', $default);
     }
 
-    public function getStorageOptions(string $driver = 'database'): ?array
+    public function getStorageOptions(string $driver = 'database'): array
     {
-        return $this->get('storage.' . $driver);
+        return (array) $this->get('storage.' . $driver, []);
     }
 
     /**
