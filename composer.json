@@ -58,7 +58,7 @@
         "hyperf/context": "~3.1.0",
         "hyperf/coroutine": "~3.1.0",
         "hyperf/crontab": "~3.1.0",
-        "hyperf/database": "~3.1.0",
+        "hyperf/database": "~3.1.48",
         "hyperf/db": "~3.1.0",
         "hyperf/db-connection": "~3.1.0",
         "hyperf/devtool": "~3.1.0",
