@@ -35,11 +35,12 @@ use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Database\Model\Model;
 use Hyperf\HttpMessage\Upload\UploadedFile;
 use Hyperf\Validation\ValidationException;
+use JsonSerializable;
 use ReflectionClass;
 use ReflectionProperty;
 use UnitEnum;
 
-abstract class SimpleDTO implements BaseDTO, CastsAttributes
+abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
 {
     use DataResolver;
     use DataTransformer;
@@ -140,6 +141,14 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes
             $value instanceof ValidatedDTO => $value->toJson(),
             default => '',
         };
+    }
+
+    /*
+     * JsonSerializable
+     */
+    public function jsonSerialize(): mixed
+    {
+        return $this->toArray();
     }
 
     /**
