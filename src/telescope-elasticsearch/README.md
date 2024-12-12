@@ -25,8 +25,6 @@ return [
             'hosts' => ['127.0.0.1'],
             'username' => null,
             'password' => null,
-            // or
-            'connection' => 'default', // use the connection in friendsofhyperf/elasticsearch
         ],
     ],
 ];

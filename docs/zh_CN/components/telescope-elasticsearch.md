@@ -21,8 +21,6 @@ return [
             'hosts' => ['127.0.0.1'],
             'username' => null,
             'password' => null,
-            // 或者
-            'connection' => 'default', // 使用 friendsofhyperf/elasticsearch 的连接
         ],
     ],
 ];

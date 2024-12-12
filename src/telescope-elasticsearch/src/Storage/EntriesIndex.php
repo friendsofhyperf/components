@@ -17,7 +17,6 @@ use Elastic\Elasticsearch\Exception\MissingParameterException;
 use Elastic\Elasticsearch\Exception\ServerResponseException;
 use Elastic\Elasticsearch\Response\Elasticsearch;
 use FriendsOfHyperf\Elasticsearch\ClientBuilderFactory;
-use FriendsOfHyperf\Elasticsearch\Facade\Elasticsearch as ES;
 use Http\Promise\Promise;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Psr\Container\ContainerInterface;
@@ -157,10 +156,6 @@ class EntriesIndex
 
     public function client(): Client
     {
-        if (isset($this->options['connection'])) {
-            return ES::connection($this->options['connection']);
-        }
-
         $options = $this->options;
         $clientBuilderFactory = $this->clientBuilderFactory->create([]);
         if (isset($options['hosts'])) {
