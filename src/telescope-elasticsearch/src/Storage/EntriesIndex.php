@@ -59,7 +59,49 @@ class EntriesIndex
         }
     }
 
-    public function properties(): array
+    public function delete(): void
+    {
+        try {
+            $this->client()->indices()->delete([
+                'index' => $this->index,
+            ]);
+        } catch (Exception $e) {
+            $this->logger?->error((string) $e);
+        }
+    }
+
+    public function exists(): bool
+    {
+        try {
+            /** @var bool|Elasticsearch $exists */
+            $exists = $this->client()->indices()->exists([
+                'index' => $this->index,
+            ]);
+            return is_bool($exists) ? $exists : $exists->getStatusCode() !== 404;
+        } catch (Exception $e) {
+            $this->logger?->error((string) $e);
+        }
+
+        return false;
+    }
+
+    /**
+     * @return \Elastic\Elasticsearch\Client|\Elasticsearch\Client
+     */
+    public function client()
+    {
+        $options = $this->options;
+        $clientBuilder = $this->clientBuilderFactory()->create([]);
+        if (isset($options['hosts'])) {
+            $clientBuilder->setHosts((array) $options['hosts']);
+        }
+        if (isset($options['username'], $options['password'])) {
+            $clientBuilder->setBasicAuthentication($options['username'], $options['password']);
+        }
+        return $clientBuilder->create()->build();
+    }
+
+    private function properties(): array
     {
         return [
             'uuid' => [
@@ -105,48 +147,6 @@ class EntriesIndex
                 'type' => 'date',
             ],
         ];
-    }
-
-    public function delete(): void
-    {
-        try {
-            $this->client()->indices()->delete([
-                'index' => $this->index,
-            ]);
-        } catch (Exception $e) {
-            $this->logger?->error((string) $e);
-        }
-    }
-
-    public function exists(): bool
-    {
-        try {
-            /** @var bool|Elasticsearch $exists */
-            $exists = $this->client()->indices()->exists([
-                'index' => $this->index,
-            ]);
-            return is_bool($exists) ? $exists : $exists->getStatusCode() !== 404;
-        } catch (Exception $e) {
-            $this->logger?->error((string) $e);
-        }
-
-        return false;
-    }
-
-    /**
-     * @return \Elastic\Elasticsearch\Client|\Elasticsearch\Client
-     */
-    public function client()
-    {
-        $options = $this->options;
-        $clientBuilder = $this->clientBuilderFactory()->create([]);
-        if (isset($options['hosts'])) {
-            $clientBuilder->setHosts((array) $options['hosts']);
-        }
-        if (isset($options['username'], $options['password'])) {
-            $clientBuilder->setBasicAuthentication($options['username'], $options['password']);
-        }
-        return $clientBuilder->create()->build();
     }
 
     /**
