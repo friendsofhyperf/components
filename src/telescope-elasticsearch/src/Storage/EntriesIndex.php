@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\TelescopeElasticsearch\Storage;
 
 use Elastic\Elasticsearch\Response\Elasticsearch;
 use Exception;
-use Http\Promise\Promise;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coroutine\Coroutine;
 use Psr\Container\ContainerInterface;
@@ -33,7 +32,7 @@ class EntriesIndex
     }
 
     /**
-     * @return Elasticsearch|Promise|void
+     * @return \Elastic\Elasticsearch\Response\Elasticsearch|\Http\Promise\Promise|array|void
      */
     public function create()
     {
