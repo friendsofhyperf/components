@@ -56,16 +56,10 @@ class EntriesRepositoryFactory
      */
     private function compatibility(ConfigInterface $config)
     {
-        if (
-            ! $config->has('telescope.storage')
-            && $config->has('telescope.database')
-        ) {
+        if (! $config->has('telescope.storage') && $config->has('telescope.database')) {
             $config->set('telescope.storage.database', $config->get('telescope.database'));
         }
-        if (
-            $config->has('telescope.storage.database')
-            && ! $config->has('telescope.storage.database.driver')
-        ) {
+        if ($config->has('telescope.storage.database') && ! $config->has('telescope.storage.database.driver')) {
             $config->set('telescope.storage.database.driver', DatabaseEntriesRepository::class);
         }
     }
