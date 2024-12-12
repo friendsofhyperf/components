@@ -15,7 +15,7 @@ use Hyperf\Command\Command;
 
 class InstallCommand extends Command
 {
-    protected ?string $signature = 'telescope:install --driver=database';
+    protected ?string $signature = 'telescope:install {--driver=database : The storage driver, database or elasticsearch}';
 
     public function handle()
     {
