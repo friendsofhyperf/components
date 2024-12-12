@@ -29,13 +29,14 @@ class EntriesRepositoryFactory
         // Compatibility with v3.1
         $this->compatibilityWithLegacyConfig($container->get(ConfigInterface::class));
 
-        $driver = $telescopeConfig->getStorageDriver();
-        $options = $telescopeConfig->getStorageOptions($driver);
+        $options = array_replace(
+            [
+                'driver' => NullEntriesRepository::class,
+            ],
+            $telescopeConfig->getStorageOptions($telescopeConfig->getStorageDriver())
+        );
 
-        if (! $options || ! isset($options['driver'])) {
-            throw new InvalidArgumentException(sprintf('The driver [%s] has not been registered.', $driver));
-        }
-
+        /** @var mixed $driver */
         $driver = $options['driver'];
         $instance = match (true) {
             $driver instanceof Closure => $driver($container, $options),

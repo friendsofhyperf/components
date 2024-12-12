@@ -91,14 +91,14 @@ class EntriesIndex
     public function client()
     {
         $options = $this->options;
-        $clientBuilder = $this->clientBuilderFactory()->create();
+        $clientBuilder = $this->clientBuilderFactory();
         if (isset($options['hosts'])) {
             $clientBuilder->setHosts((array) $options['hosts']);
         }
         if (isset($options['username'], $options['password'])) {
             $clientBuilder->setBasicAuthentication($options['username'], $options['password']);
         }
-        return $clientBuilder->create()->build();
+        return $clientBuilder->build();
     }
 
     private function properties(): array

@@ -44,9 +44,14 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
 
     private EntriesIndex $index;
 
-    public function __construct(string $index = 'telescope_entries', array $options = [])
-    {
-        $this->index = make(EntriesIndex::class, $options + ['index' => $index]);
+    public function __construct(
+        string $index = 'telescope_entries',
+        array $hosts = [],
+        ?string $username = null,
+        ?string $password = null
+    ) {
+        $options = compact('hosts', 'username', 'password');
+        $this->index = make(EntriesIndex::class, compact('index', 'options'));
     }
 
     /**
@@ -136,7 +141,6 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
         }
         $params = [
             'index' => $this->index->index,
-            'type' => $type,
             'body' => [
                 ...$query,
             ],
