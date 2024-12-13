@@ -215,6 +215,10 @@ const sidebar:DefaultTheme.Sidebar = {
                     link: '/zh_CN/components/telescope.md'
                 },
                 {
+                    text: 'Telescope Elasticsearch Driver',
+                    link: '/zh_CN/components/telescope-elasticsearch.md'
+                },
+                {
                     text: 'Tinker',
                     link: '/zh_CN/components/tinker.md'
                 },
