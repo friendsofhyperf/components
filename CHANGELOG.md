@@ -1,5 +1,23 @@
 # Changelog
 
+## v3.1.50 - 2024-12-13
+
+### What's Changed
+
+* refactor(fast-paginate): optimize paginator items retrieval method by @huangdijia in https://github.com/friendsofhyperf/components/pull/788
+* refactor(telescope): improve database unique constraint handling by @huangdijia in https://github.com/friendsofhyperf/components/pull/789
+* Bumps `hyperf/database` to v3.1.48 by @huangdijia in https://github.com/friendsofhyperf/components/pull/790
+* feat(telescope-elasticsearch): implement elasticsearch index management by @huangdijia in https://github.com/friendsofhyperf/components/pull/791
+* refactor(telescope): enhance storage driver configuration by @huangdijia in https://github.com/friendsofhyperf/components/pull/792
+* Support both v7 and v8 elasticsearch clients (^7.17.0||^8.8.0) by @huangdijia in https://github.com/friendsofhyperf/components/pull/793
+* refactor(telescope): improve storage driver configuration by @huangdijia in https://github.com/friendsofhyperf/components/pull/794
+* feat(SimpleDTO): implement JsonSerializable interface by @huangdijia in https://github.com/friendsofhyperf/components/pull/795
+* docs(telescope-elasticsearch): update component documentation by @huangdijia in https://github.com/friendsofhyperf/components/pull/797
+* fix(telescope): replace Laravel branding with Hyperf in UI by @huangdijia in https://github.com/friendsofhyperf/components/pull/796
+* docs(Up Sidebars): Add Telescope Elasticsearch Driver by @zds-s in https://github.com/friendsofhyperf/components/pull/798
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.49...v3.1.50
+
 ## v3.1.49 - 2024-12-11
 
 ### What's Changed
