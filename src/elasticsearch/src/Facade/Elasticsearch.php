@@ -44,7 +44,7 @@ class Elasticsearch
 
     public static function connection(string $connection = 'default'): Client
     {
-        /** @var \Hyperf\Di\Container $container */
+        /** @var \Psr\Container\ContainerInterface $container */
         $container = ApplicationContext::getContainer();
         /** @var array{hosts?:string|array} $config */
         $config = $container->get(ConfigInterface::class)->get('elasticsearch.' . $connection, null);
