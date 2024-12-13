@@ -15,7 +15,7 @@ use Hyperf\Command\Command;
 
 class InstallCommand extends Command
 {
-    protected ?string $signature = 'telescope:install {--driver=database : The storage driver, database or elasticsearch}';
+    protected ?string $signature = 'telescope:install {--migrate}';
 
     public function handle()
     {
@@ -28,7 +28,7 @@ class InstallCommand extends Command
             $this->error('publish config failed');
         }
 
-        if ($this->option('driver') === 'database') {
+        if ($this->option('migrate')) {
             if (! $this->call('vendor:publish', [
                 'package' => 'friendsofhyperf/telescope',
                 '--id' => 'migrations',

@@ -12,6 +12,12 @@ It will allow you to switch from an SQL database to Elasticsearch as a driver fo
 composer require friendsofhyperf/telescope-elasticsearch
 ```
 
+## Publish Config
+
+```shell
+php bin/hyperf.php vendor:publish friendsofhyperf/telescope --id=config
+```
+
 ## Configuration
 
 ```php
