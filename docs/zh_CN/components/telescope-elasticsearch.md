@@ -8,11 +8,18 @@
 composer require friendsofhyperf/telescope-elasticsearch
 ```
 
+## 发布配置
+
+```shell
+php bin/hyperf.php vendor:publish friendsofhyperf/telescope --id=config
+```
+
 ## 配置
 
 ```php
 // config/autoload/telescope.php
 return [
+    'driver' => 'elasticsearch',
     'storage' => [
         'elasticsearch' => [
             'driver' => FriendsOfHyperf\TelescopeElasticsearch\Storage\ElasticsearchEntriesRepository::class,
