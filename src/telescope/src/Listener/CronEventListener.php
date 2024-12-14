@@ -42,7 +42,7 @@ class CronEventListener implements ListenerInterface
             return;
         }
 
-        TelescopeContext::getOrSetBatch((string) TelescopeContext::getBatchId());
+        TelescopeContext::getOrSetBatch();
 
         $output = match (true) {
             $event instanceof Event\AfterExecute => 'success',
