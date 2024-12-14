@@ -29,6 +29,7 @@ class ConfigProvider
                 Aspect\RpcAspect::class,
                 Aspect\RequestDispatcherAspect::class,
                 Aspect\GrpcCoreMiddlewareAspect::class,
+                Aspect\ScheduleAspect::class,
             ],
             'commands' => [
                 Command\ClearCommand::class,

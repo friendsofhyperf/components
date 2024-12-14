@@ -57,6 +57,9 @@ class RegisterRoutesListener implements ListenerInterface
                     Router::post('/commands', [Controller\CommandsController::class, 'index']);
                     Router::get('/commands/{id}', [Controller\CommandsController::class, 'show']);
 
+                    Router::post('/schedule', [Controller\ScheduleController::class, 'index']);
+                    Router::get('/schedule/{id}', [Controller\ScheduleController::class, 'show']);
+
                     Router::delete('/entries', [Controller\EntriesController::class, 'destroy']);
 
                     Router::post('/events', [Controller\EventsController::class, 'index']);
