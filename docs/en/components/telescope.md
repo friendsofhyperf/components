@@ -12,6 +12,7 @@
 - [x] Event Watcher
 - [x] HTTP Client Watcher
 - [x] Cache Watcher
+- [x] Schedule Watcher
 
 ## Installation
 

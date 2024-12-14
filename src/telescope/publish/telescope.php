@@ -28,6 +28,7 @@ return [
         'guzzle' => env('TELESCOPE_ENABLE_GUZZLE', false),
         'cache' => env('TELESCOPE_ENABLE_CACHE', false),
         'rpc' => env('TELESCOPE_ENABLE_RPC', false),
+        'schedule' => env('TELESCOPE_ENABLE_SCHEDULE', true),
     ],
     'recording' => true,
     'timezone' => env('TELESCOPE_TIMEZONE', 'Asia/Shanghai'),

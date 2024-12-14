@@ -19,6 +19,7 @@ An elegant debug assistant for the hyperf framework.
 - [x] guzzle
 - [x] cache
 - [x] rpc server/client
+- [x] schedule
 
 ## Installation
 

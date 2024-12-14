@@ -17,6 +17,8 @@ class EntryType
 
     public const COMMAND = 'command';
 
+    public const SCHEDULE = 'schedule';
+
     public const DUMP = 'dump';
 
     public const EVENT = 'event';
