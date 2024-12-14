@@ -34,7 +34,7 @@ class CronEventListener implements ListenerInterface
     }
 
     /**
-     * @param Event\AfterExecute|Event\FailToExecute $event
+     * @param Event\AfterExecute|Event\FailToExecute|object $event
      */
     public function process(object $event): void
     {
