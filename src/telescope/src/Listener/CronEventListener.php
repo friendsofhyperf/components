@@ -47,6 +47,7 @@ class CronEventListener implements ListenerInterface
         $output = match (true) {
             $event instanceof Event\AfterExecute => 'success',
             $event instanceof Event\FailToExecute => '[fail]' . (string) $event->getThrowable(),
+            default => '',
         };
 
         Telescope::recordSchedule(IncomingEntry::make([
