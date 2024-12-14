@@ -29,7 +29,6 @@ class ConfigProvider
                 Aspect\RpcAspect::class,
                 Aspect\RequestDispatcherAspect::class,
                 Aspect\GrpcCoreMiddlewareAspect::class,
-                Aspect\ScheduleAspect::class,
             ],
             'commands' => [
                 Command\ClearCommand::class,
@@ -42,6 +41,7 @@ class ConfigProvider
                 Contract\PrunableRepository::class => fn ($container) => $container->get(Contract\EntriesRepository::class),
             ],
             'listeners' => [
+                Listener\CronEventListener::class,
                 Listener\CommandListener::class,
                 Listener\DbQueryListener::class,
                 Listener\ExceptionHandlerListener::class,
