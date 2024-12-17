@@ -1,5 +1,9 @@
 # Cache
 
+## 简介
+
+`friendsofhyperf/cache` 是一个基于 `hyperf/cache` 的组件。 提供更多简洁性的扩展方法
+
 ## 安装
 
 ```shell
