@@ -27,6 +27,9 @@ features:
   - title: Tinker
     details: Tinker 是 Hyperf 框架的强大 REPL。
     link: /zh_CN/components/tinker/
+  - title: Web Tinker
+    details: 在浏览器中使用 Tinker。
+    link: /zh_CN/components/web-tinker/
   - title: Encryption
     details: Encryption 提供了一个简单、方便的加密和解密功能。
     link: /zh_CN/components/encryption/

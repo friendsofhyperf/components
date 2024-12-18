@@ -27,6 +27,9 @@ features:
   - title: Tinker
     details: Tinker is a powerful REPL for the Hyperf framework.
     link: /en/components/tinker/
+  - title: Web Tinker
+    details: Tinker in your browser.
+    link: /zh_CN/components/web-tinker/
   - title: Encryption
     details: Encryption provides simple and convenient encryption and decryption functionality.
     link: /en/components/encryption/
