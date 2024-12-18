@@ -28,6 +28,7 @@ use Hyperf\AsyncQueue\JobInterface;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\SessionInterface;
 use Hyperf\Contract\ValidatorInterface;
+use Hyperf\Database\Model\Model;
 use Hyperf\HttpMessage\Cookie\Cookie;
 use Hyperf\HttpMessage\Cookie\CookieJarInterface;
 use Hyperf\HttpMessage\Stream\SwooleStream;
@@ -95,6 +96,10 @@ function blank($value): bool
     }
 
     if (is_numeric($value) || is_bool($value)) {
+        return false;
+    }
+
+    if ($value instanceof Model) {
         return false;
     }
 
