@@ -55,6 +55,9 @@ jobs:
         #     swoole: '5.0.3'
       max-parallel: 20
       fail-fast: false
+    env:
+      SW_VERSION: ${{ matrix.swoole }}
+      PHP_VERSION: ${{ matrix.php }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -62,9 +65,11 @@ jobs:
         uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: redis, pdo, pdo_mysql, bcmath, swoole-${{ matrix.swoole }}
+          extensions: redis, pdo, pdo_mysql, bcmath #, swoole-${{ matrix.swoole }}
           tools: phpize
           coverage: none
+      - name: Setup Swoole
+        run: ./.travis/setup.swoole.sh
       - name: Show PHP Information
         run: php -v && php --ri swoole
       - name: Setup Dependencies
