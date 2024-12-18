@@ -1,4 +1,4 @@
-# friendsofhyperf/components
+# Components
 
 [![Latest Test](https://github.com/friendsofhyperf/components/workflows/tests/badge.svg)](https://github.com/friendsofhyperf/components/actions)
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/components/v)](https://packagist.org/packages/friendsofhyperf/components)
