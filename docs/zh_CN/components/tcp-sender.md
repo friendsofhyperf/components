@@ -1,6 +1,10 @@
 # Tcp Sender
 
-Another TcpSender component for Hyperf.
+## 简介
+
+`friendsofhyperf/tcp-sender` 是一个类似 `hyperf/websocket-server` 的 TCP 服务组件，可以用于向指定的 fd 发送消息。
+无需额外关注底层的实现，只需关注业务逻辑即可。
+
 
 ## 安装
 
