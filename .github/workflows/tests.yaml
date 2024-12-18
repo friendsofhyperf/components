@@ -3,10 +3,10 @@ name: tests
 on:
   push:
     paths-ignore:
-      - "docs/"
+      - "docs/**"
   pull_request:
     paths-ignore:
-      - "docs/"
+      - "docs/**"
   schedule:
     - cron: '0 2 * * *'
 
