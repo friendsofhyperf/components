@@ -2,11 +2,17 @@ name: tests
 
 on:
   push:
-    paths-ignore:
-      - "docs/**"
+    paths:
+      - "**"
+      - "!docs/**"
+      - "!.vscode/**"
+      - "!**.md"
   pull_request:
-    paths-ignore:
-      - "docs/**"
+    paths:
+      - "**"
+      - "!docs/**"
+      - "!.vscode/**"
+      - "!**.md"
   schedule:
     - cron: '0 2 * * *'
 
