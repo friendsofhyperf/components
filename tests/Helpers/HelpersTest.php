@@ -8,6 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+use FriendsOfHyperf\Compoships\Database\Eloquent\Model;
 use Hyperf\Contract\ApplicationInterface;
 use Hyperf\Stringable\Stringable;
 
@@ -92,6 +93,7 @@ test('test blank', function ($expect, $value) {
     [true, '  '],
     [true, new Stringable('')],
     [true, new Stringable('  ')],
+    [false, new Model()],
     [false, 10],
     [false, true],
     [false, false],
