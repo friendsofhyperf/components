@@ -63,7 +63,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: redis, pdo, pdo_mysql, bcmath, swoole-${{ matrix.swoole }}
-          tools: phpize, pie
+          tools: phpize
           coverage: none
       - name: Show PHP Information
         run: php -v && php --ri swoole
