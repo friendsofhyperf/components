@@ -15,7 +15,7 @@ class Collection
 {
     /**
      * Determine if the collection contains a single element.
-     *
+     * @deprecated since v3.1, use `containsOneItem` instead, will be removed in v3.2.
      * @return bool
      */
     public function isSingle()
