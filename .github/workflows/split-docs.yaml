@@ -2,8 +2,11 @@ name: Split Docs
 
 on:
   push:
+    paths:
+      - 'docs/**'
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   split:
