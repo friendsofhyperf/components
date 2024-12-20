@@ -41,6 +41,8 @@ class Onceable
 
             return new static($hash, $object, $callable);
         }
+
+        return null;
     }
 
     /**
