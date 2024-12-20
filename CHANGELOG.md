@@ -1,5 +1,20 @@
 # Changelog
 
+## v3.1.50.1 - 2024-12-20
+
+### What's Changed
+
+* Added schedule record for telescope by @guandeng in https://github.com/friendsofhyperf/components/pull/799
+* ci: add Code Rabbit configuration by @zds-s in https://github.com/friendsofhyperf/components/pull/801
+* docs(zh_CN): add introduction to Amqp Job component by @zds-s in https://github.com/friendsofhyperf/components/pull/802
+* docs(cache): add introduction for friendsofhyperf/cache component by @zds-s in https://github.com/friendsofhyperf/components/pull/803
+* fix(helper): exclude Model instances from blank check by @huangdijia in https://github.com/friendsofhyperf/components/pull/804
+* Update Chinese Documentation for TcpSender Component with Code Examples by @zds-s in https://github.com/friendsofhyperf/components/pull/805
+* fix(tests): streamline workflow by combining PHP info commands and adding Redis setup script by @huangdijia in https://github.com/friendsofhyperf/components/pull/806
+* docs(amqp-job): add introduction section to clarify component functionality by @huangdijia in https://github.com/friendsofhyperf/components/pull/807
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.50...v3.1.50.1
+
 ## v3.1.50 - 2024-12-13
 
 ### What's Changed
