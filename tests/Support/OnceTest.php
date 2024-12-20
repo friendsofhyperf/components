@@ -20,6 +20,7 @@ use function FriendsOfHyperf\Support\once;
  * @internal
  * @coversNothing
  */
+#[\PHPUnit\Framework\Attributes\Group('support')]
 class OnceTest extends TestCase
 {
     protected function tearDown(): void
