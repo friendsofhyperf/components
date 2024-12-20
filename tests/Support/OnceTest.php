@@ -8,287 +8,392 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use FriendsOfHyperf\Support\Once\Cache;
-use FriendsOfHyperf\Tests\Support\Stub\TestClass;
+
+namespace FriendsOfHyperf\Tests\Support;
+
+use FriendsOfHyperf\Support\Once;
+use PHPUnit\Framework\TestCase;
 
 use function FriendsOfHyperf\Support\once;
 
-beforeEach(function () {
-    $this->cache = Cache::getInstance();
-    $this->cache->enable();
-    $this->cache->flush();
-});
-
-it('will run the a callback without arguments only once', function () {
-    $testClass = new class {
-        public function getNumber()
-        {
-            return once(function () {
-                return rand(1, 10000000);
-            });
-        }
-    };
-
-    $firstResult = $testClass->getNumber();
-
-    expect($firstResult)->toBeGreaterThanOrEqual(1);
-    expect($firstResult)->toBeLessThanOrEqual(10000000);
-
-    foreach (range(1, 100) as $i) {
-        expect($testClass->getNumber())->toBe($firstResult);
-    }
-});
-
-it('will run the given callback only once per variation arguments in use', function () {
-    $testClass = new class {
-        public function getNumberForLetter($letter)
-        {
-            return once(function () use ($letter) {
-                return $letter . rand(1, 10000000);
-            });
-        }
-    };
-
-    foreach (range('A', 'Z') as $letter) {
-        $firstResult = $testClass->getNumberForLetter($letter);
-        expect($firstResult)->toStartWith($letter);
-
-        foreach (range(1, 100) as $i) {
-            expect($testClass->getNumberForLetter($letter))->toBe($firstResult);
-        }
-    }
-});
-
-it('will run the given callback only once for falsy result', function () {
-    $testClass = new class {
-        public $counter = 0;
-
-        public function getNull()
-        {
-            return once(function () {
-                ++$this->counter;
-            });
-        }
-    };
-
-    expect($testClass->getNull())->toBeNull();
-    expect($testClass->getNull())->toBeNull();
-    expect($testClass->getNull())->toBeNull();
-
-    expect($testClass->counter)->toBe(1);
-});
-
-it('will work properly with unset objects', function () {
-    $previousNumbers = [];
-
-    foreach (range(1, 5) as $number) {
-        $testClass = new TestClass();
-
-        $number = $testClass->getRandomNumber();
-
-        expect($previousNumbers)->not()->toContain($number);
-
-        $previousNumbers[] = $number;
-
-        unset($testClass);
-    }
-});
-
-it('will remember the memoized value when serialized when called in the same request', function () {
-    $testClass = new TestClass();
-
-    $firstNumber = $testClass->getRandomNumber();
-
-    expect($testClass->getRandomNumber())->toBe($firstNumber);
-
-    $serialized = serialize($testClass);
-    $unserialized = unserialize($serialized);
-    unset($unserialized);
-
-    expect($testClass->getRandomNumber())->toBe($firstNumber);
-});
-
-it('will run callback once on static method', function () {
-    $object = new class {
-        public static function getNumber()
-        {
-            return once(function () {
-                return rand(1, 10000000);
-            });
-        }
-    };
-    $class = get_class($object);
-
-    $firstResult = $class::getNumber();
-
-    expect($firstResult)->toBeGreaterThanOrEqual(1);
-    expect($firstResult)->toBeLessThanOrEqual(10000000);
-
-    foreach (range(1, 100) as $i) {
-        expect($class::getNumber())->toBe($firstResult);
-    }
-});
-
-it('will run callback once on static method per variation arguments in use', function () {
-    $object = new class {
-        public static function getNumberForLetter($letter)
-        {
-            return once(function () use ($letter) {
-                return $letter . rand(1, 10000000);
-            });
-        }
-    };
-    $class = get_class($object);
-
-    foreach (range('A', 'Z') as $letter) {
-        $firstResult = $class::getNumberForLetter($letter);
-        expect($firstResult)->toStartWith($letter);
-
-        foreach (range(1, 100) as $i) {
-            expect($class::getNumberForLetter($letter))->toBe($firstResult);
-        }
-    }
-});
-
-it('can flush the entire cache', function () {
-    $testClass = new class {
-        public function getNumber()
-        {
-            return once(function () {
-                return random_int(1, 10000000);
-            });
-        }
-    };
-
-    $firstResult = $testClass->getNumber();
-
-    Cache::getInstance()->flush();
-
-    expect($testClass->getNumber())->not()->toBe($firstResult);
-});
-
-it('can enable and disable the cache', function () {
-    $testClass = new class {
-        public function getNumber()
-        {
-            return once(function () {
-                return random_int(1, 10000000);
-            });
-        }
-    };
-
-    expect($this->cache->isEnabled())->toBeTrue();
-    expect($testClass->getNumber())->toBe($testClass->getNumber());
-
-    $this->cache->disable();
-    expect($this->cache->isEnabled())->toBeFalse();
-    expect($testClass->getNumber())->not()->toBe($testClass->getNumber());
-
-    $this->cache->enable();
-    expect($this->cache->isEnabled())->toBeTrue();
-    expect($testClass->getNumber())->toBe($testClass->getNumber());
-});
-
-it('will not throw error with eval', function () {
-    $result = eval('return FriendsOfHyperf\Support\once( function () { return random_int(1, 1000); } ) ;');
-
-    expect(in_array($result, range(1, 1000)))->toBeTrue();
-});
-
-it('will differentiate between closures', function () {
-    $testClass = new class {
-        public function getNumber()
-        {
-            $closure = function () {
-                return once(function () {
-                    return random_int(1, 1000);
-                });
-            };
-
-            return $closure();
-        }
-
-        public function secondNumber()
-        {
-            $closure = function () {
-                return once(function () {
-                    return random_int(1001, 2000);
-                });
-            };
-
-            return $closure();
-        }
-    };
-
-    expect($testClass->secondNumber())->not()->toBe($testClass->getNumber());
-});
-
-it('will run callback once for closure called on differemt lines', function () {
-    $testClass = new class {
-        public function getNumbers()
-        {
-            $closure = function () {
-                return once(function () {
-                    return random_int(1, 10000000);
-                });
-            };
-
-            $numbers[] = $closure();
-            $numbers[] = $closure();
-
-            return $numbers;
-        }
-    };
-
-    $results = $testClass->getNumbers();
-    expect($results[1])->toBe($results[0]);
-});
-
-it('will work in global functions', function () {
-    function globalFunction()
+/**
+ * @internal
+ * @coversNothing
+ */
+#[\PHPUnit\Framework\Attributes\Group('support')]
+class OnceTest extends TestCase
+{
+    protected function tearDown(): void
     {
-        return once(function () {
-            return random_int(1, 10000000);
-        });
+        parent::tearDown();
+
+        Once::flush();
+        Once::enable();
     }
 
-    expect(globalFunction())->toBe(globalFunction());
-});
+    public function testResultMemoization()
+    {
+        $instance = new class {
+            public function rand()
+            {
+                return once(fn () => rand(1, PHP_INT_MAX));
+            }
+        };
 
-it('will work with two static functions with the same name', function () {
-    $a = new class {
-        public static function getName()
-        {
-            return once(function () {
-                return 'A';
-            });
+        $first = $instance->rand();
+        $second = $instance->rand();
+
+        $this->assertSame($first, $second);
+    }
+
+    public function testCallableIsCalledOnce()
+    {
+        $instance = new class {
+            public int $count = 0;
+
+            public function increment()
+            {
+                return once(fn () => ++$this->count);
+            }
+        };
+
+        $first = $instance->increment();
+        $second = $instance->increment();
+
+        $this->assertSame(1, $first);
+        $this->assertSame(1, $second);
+        $this->assertSame(1, $instance->count);
+    }
+
+    public function testFlush()
+    {
+        $instance = new MyClass();
+
+        $first = $instance->rand();
+
+        Once::flush();
+
+        $second = $instance->rand();
+
+        $this->assertNotSame($first, $second);
+
+        Once::disable();
+        Once::flush();
+
+        $first = $instance->rand();
+        $second = $instance->rand();
+
+        $this->assertNotSame($first, $second);
+    }
+
+    public function testNotMemoizedWhenObjectIsGarbageCollected()
+    {
+        $instance = new MyClass();
+
+        $first = $instance->rand();
+        unset($instance);
+        gc_collect_cycles();
+        $instance = new MyClass();
+        $second = $instance->rand();
+
+        $this->assertNotSame($first, $second);
+    }
+
+    public function testIsNotMemoizedWhenCallableUsesChanges()
+    {
+        $instance = new class {
+            public function rand(string $letter)
+            {
+                return once(function () use ($letter) {
+                    return $letter . rand(1, 10000000);
+                });
+            }
+        };
+
+        $first = $instance->rand('a');
+        $second = $instance->rand('b');
+
+        $this->assertNotSame($first, $second);
+
+        $first = $instance->rand('a');
+        $second = $instance->rand('a');
+
+        $this->assertSame($first, $second);
+
+        $results = [];
+        $letter = 'a';
+
+        a:
+        $results[] = once(fn () => $letter . rand(1, 10000000));
+
+        if (count($results) < 2) {
+            goto a;
         }
-    };
 
-    $b = new class {
-        public static function getName()
-        {
-            return once(function () {
-                return 'B';
-            });
-        }
-    };
+        $this->assertSame($results[0], $results[1]);
+    }
 
-    $aClass = get_class($a);
-    $bClass = get_class($b);
+    public function testUsageOfThis()
+    {
+        $instance = new MyClass();
 
-    expect($aClass::getName())->toBe('A');
-    expect($bClass::getName())->toBe('B');
-});
+        $first = $instance->callRand();
+        $second = $instance->callRand();
 
-it('can count the items in the cache', function () {
-    expect($this->cache->count())->toBe(0);
+        $this->assertSame($first, $second);
+    }
 
-    $testClass = (new TestClass());
-    $testClass->getRandomNumber();
-    expect($this->cache->count())->toBe(1);
+    public function testInvokables()
+    {
+        $invokable = new class {
+            public static $count = 0;
 
-    $anotherTestClass = (new TestClass());
-    $anotherTestClass->getRandomNumber();
-    expect($this->cache->count())->toBe(2);
-});
+            public function __invoke()
+            {
+                return self::$count = self::$count + 1;
+            }
+        };
+
+        $instance = new class($invokable) {
+            public function __construct(protected $invokable)
+            {
+            }
+
+            public function call()
+            {
+                return once($this->invokable);
+            }
+        };
+
+        $first = $instance->call();
+        $second = $instance->call();
+        $third = $instance->call();
+
+        $this->assertSame($first, $second);
+        $this->assertSame($first, $third);
+        $this->assertSame(1, $invokable::$count);
+    }
+
+    public function testFirstClassCallableSyntax()
+    {
+        $instance = new class {
+            public function rand()
+            {
+                return once(MyClass::staticRand(...));
+            }
+        };
+
+        $first = $instance->rand();
+        $second = $instance->rand();
+
+        $this->assertSame($first, $second);
+    }
+
+    public function testFirstClassCallableSyntaxWithArraySyntax()
+    {
+        $instance = new class {
+            public function rand()
+            {
+                return once([MyClass::class, 'staticRand']);
+            }
+        };
+
+        $first = $instance->rand();
+        $second = $instance->rand();
+
+        $this->assertSame($first, $second);
+    }
+
+    public function testStaticMemoization()
+    {
+        $first = MyClass::staticRand();
+        $second = MyClass::staticRand();
+
+        $this->assertSame($first, $second);
+    }
+
+    public function testMemoizationWhenOnceIsWithinClosure()
+    {
+        $resolver = fn () => once(fn () => rand(1, PHP_INT_MAX));
+
+        $first = $resolver();
+        $second = $resolver();
+
+        $this->assertSame($first, $second);
+    }
+
+    public function testMemoizationOnGlobalFunctions()
+    {
+        $first = my_rand();
+        $second = my_rand();
+
+        $this->assertSame($first, $second);
+    }
+
+    public function testDisable()
+    {
+        Once::disable();
+
+        $first = my_rand();
+        $second = my_rand();
+
+        $this->assertNotSame($first, $second);
+    }
+
+    public function testTemporaryDisable()
+    {
+        $first = my_rand();
+        $second = my_rand();
+
+        Once::disable();
+
+        $third = my_rand();
+
+        Once::enable();
+
+        $fourth = my_rand();
+
+        $this->assertSame($first, $second);
+        $this->assertNotSame($first, $third);
+        $this->assertSame($first, $fourth);
+    }
+
+    public function testMemoizationWithinEvals()
+    {
+        $firstResolver = eval('return fn () => FriendsOfHyperf\Support\once( function () { return random_int(1, PHP_INT_MAX); } ) ;');
+
+        $firstA = $firstResolver();
+        $firstB = $firstResolver();
+
+        $secondResolver = eval('return fn () => fn () => FriendsOfHyperf\Support\once( function () { return random_int(1, PHP_INT_MAX); } ) ;');
+
+        $secondA = $secondResolver()();
+        $secondB = $secondResolver()();
+
+        $third = eval('return FriendsOfHyperf\Support\once( function () { return random_int(1, PHP_INT_MAX); } ) ;');
+        $fourth = eval('return FriendsOfHyperf\Support\once( function () { return random_int(1, PHP_INT_MAX); } ) ;');
+
+        $this->assertNotSame($firstA, $firstB);
+        $this->assertNotSame($secondA, $secondB);
+        $this->assertNotSame($third, $fourth);
+    }
+
+    public function testMemoizationOnSameLine()
+    {
+        $this->markTestSkipped('This test shows a limitation of the current implementation.');
+
+        $result = [once(fn () => rand(1, PHP_INT_MAX)), once(fn () => rand(1, PHP_INT_MAX))];
+
+        $this->assertNotSame($result[0], $result[1]);
+    }
+
+    public function testResultIsDifferentWhenCalledFromDifferentClosures()
+    {
+        $resolver = fn () => once(fn () => rand(1, PHP_INT_MAX));
+        $resolver2 = fn () => once(fn () => rand(1, PHP_INT_MAX));
+
+        $first = $resolver();
+        $second = $resolver2();
+
+        $this->assertNotSame($first, $second);
+    }
+
+    public function testResultIsMemoizedWhenCalledFromMethodsWithSameName()
+    {
+        $instanceA = new class {
+            public function rand()
+            {
+                return once(fn () => rand(1, PHP_INT_MAX));
+            }
+        };
+
+        $instanceB = new class {
+            public function rand()
+            {
+                return once(fn () => rand(1, PHP_INT_MAX));
+            }
+        };
+
+        $first = $instanceA->rand();
+        $second = $instanceB->rand();
+
+        $this->assertNotSame($first, $second);
+    }
+
+    public function testRecursiveOnceCalls()
+    {
+        $instance = new class {
+            public function rand()
+            {
+                return once(fn () => once(fn () => rand(1, PHP_INT_MAX)));
+            }
+        };
+
+        $first = $instance->rand();
+        $second = $instance->rand();
+
+        $this->assertSame($first, $second);
+    }
+
+    public function testGlobalClosures()
+    {
+        $first = $GLOBALS['onceable1']();
+        $second = $GLOBALS['onceable1']();
+
+        $this->assertSame($first, $second);
+
+        $third = $GLOBALS['onceable2']();
+        $fourth = $GLOBALS['onceable2']();
+
+        $this->assertSame($third, $fourth);
+
+        $this->assertNotSame($first, $third);
+    }
+
+    public function testMemoizationNullValues()
+    {
+        $instance = new class {
+            public $i = 0;
+
+            public function null()
+            {
+                return once(function () {
+                    ++$this->i;
+
+                    return null;
+                });
+            }
+        };
+
+        $this->assertSame($instance->null(), $instance->null());
+        $this->assertSame(1, $instance->i);
+    }
+}
+
+$letter = 'a';
+
+$GLOBALS['onceable1'] = fn () => once(fn () => $letter . rand(1, PHP_INT_MAX));
+$GLOBALS['onceable2'] = fn () => once(fn () => $letter . rand(1, PHP_INT_MAX));
+
+function my_rand()
+{
+    return once(fn () => rand(1, PHP_INT_MAX));
+}
+
+class MyClass
+{
+    public function rand()
+    {
+        return once(fn () => rand(1, PHP_INT_MAX));
+    }
+
+    public static function staticRand()
+    {
+        return once(fn () => rand(1, PHP_INT_MAX));
+    }
+
+    public function callRand()
+    {
+        return once(fn () => $this->rand());
+    }
+}
