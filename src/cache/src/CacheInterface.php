@@ -11,13 +11,13 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Cache;
 
-class_alias(Contract\Repository::class, CacheInterface::class);
+class_alias(Contract\CacheInterface::class, CacheInterface::class);
 
 if (false) { // @phpstan-ignore-line
     /**
      * @deprecated since v3.1, use `\FriendsOfHyperf\Cache\Contract\Repository` instead, will removed in v3.2
      */
-    interface CacheInterface extends Contract\Repository
+    interface CacheInterface extends Contract\CacheInterface
     {
     }
 }

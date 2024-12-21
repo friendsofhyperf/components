@@ -15,7 +15,7 @@ use Closure;
 use DateInterval;
 use DateTimeInterface;
 
-interface Repository
+interface CacheInterface extends \Psr\SimpleCache\CacheInterface
 {
     /**
      * @param string $key

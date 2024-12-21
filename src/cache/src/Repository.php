@@ -37,7 +37,7 @@ use function Hyperf\Coroutine\defer;
 use function Hyperf\Support\with;
 use function Hyperf\Tappable\tap;
 
-class Repository implements Contract\Repository
+class Repository implements Contract\CacheInterface
 {
     use InteractsWithTime;
     use Macroable;
@@ -47,6 +47,21 @@ class Repository implements Contract\Repository
         protected ?EventDispatcherInterface $eventDispatcher = null,
         protected string $name = 'default'
     ) {
+    }
+
+    public function set($key, $value, $ttl = null)
+    {
+        return $this->put($key, $value, $ttl);
+    }
+
+    public function delete($key)
+    {
+        return $this->forget($key);
+    }
+
+    public function clear()
+    {
+        return $this->flush();
     }
 
     public function add($key, $value, $ttl = null): bool
@@ -298,7 +313,10 @@ class Repository implements Contract\Repository
         return $this->putMany(is_array($values) ? $values : iterator_to_array($values), $ttl);
     }
 
-    public function deleteMultiple(array $keys)
+    /**
+     * @param iterable $keys
+     */
+    public function deleteMultiple($keys): bool
     {
         $result = true;
 

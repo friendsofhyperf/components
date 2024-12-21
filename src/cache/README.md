@@ -21,7 +21,7 @@ composer require friendsofhyperf/cache
 ```php
 namespace App\Controller;
 
-use FriendsOfHyperf\Cache\Contract\Repository as CacheInterface;
+use FriendsOfHyperf\Cache\Contract\CacheInterface;
 use Hyperf\Di\Annotation\Inject;
 
 class IndexController
