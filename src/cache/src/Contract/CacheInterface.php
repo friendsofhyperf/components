@@ -15,7 +15,7 @@ use Closure;
 use DateInterval;
 use DateTimeInterface;
 
-interface Repository
+interface CacheInterface extends \Psr\SimpleCache\CacheInterface
 {
     /**
      * @param string $key
@@ -86,17 +86,6 @@ interface Repository
      * @return bool|int
      */
     public function increment($key, $value = 1);
-
-    /**
-     * Retrieve an item from the cache by key.
-     *
-     * @template TCacheValue
-     *
-     * @param string[]|string $key
-     * @param (Closure(): TCacheValue)|TCacheValue $default
-     * @return (TCacheValue is null ? mixed : TCacheValue)
-     */
-    public function get($key, $default = null);
 
     /**
      * @return iterable

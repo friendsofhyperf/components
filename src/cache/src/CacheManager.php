@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Cache;
 
-use FriendsOfHyperf\Cache\Contract\Repository as CacheContract;
+use FriendsOfHyperf\Cache\Contract\CacheInterface;
 use Hyperf\Cache\CacheManager as HyperfCacheManager;
 
 use function Hyperf\Support\make;
@@ -19,7 +19,7 @@ use function Hyperf\Support\make;
 class CacheManager
 {
     /**
-     * @var CacheContract[]
+     * @var CacheInterface[]
      */
     protected array $drivers = [];
 
@@ -30,7 +30,7 @@ class CacheManager
     /**
      * Get a cache driver instance.
      */
-    public function store(string $name = 'default'): CacheContract
+    public function store(string $name = 'default'): CacheInterface
     {
         return $this->drivers[$name] ?? $this->drivers[$name] = $this->resolve($name);
     }
@@ -38,7 +38,7 @@ class CacheManager
     /**
      * Alias for the "store" method.
      */
-    public function driver(string $name = 'default'): CacheContract
+    public function driver(string $name = 'default'): CacheInterface
     {
         return $this->store($name);
     }
@@ -46,7 +46,7 @@ class CacheManager
     /**
      * Resolve a cache repository instance.
      */
-    public function resolve(string $name): CacheContract
+    public function resolve(string $name): CacheInterface
     {
         return make(Repository::class, [
             'name' => $name,
