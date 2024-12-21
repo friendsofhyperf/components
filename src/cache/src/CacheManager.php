@@ -27,11 +27,22 @@ class CacheManager
     {
     }
 
+    /**
+     * Get a cache driver instance.
+     */
     public function store(string $name = 'default'): CacheContract
     {
         return $this->drivers[$name] ?? $this->drivers[$name] = make(Repository::class, [
             'name' => $name,
             'driver' => $this->cacheManager->getDriver($name),
         ]);
+    }
+
+    /**
+     * Alias for the "store" method.
+     */
+    public function driver(string $name = 'default'): CacheContract
+    {
+        return $this->store($name);
     }
 }
