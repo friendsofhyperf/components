@@ -88,17 +88,6 @@ interface CacheInterface extends \Psr\SimpleCache\CacheInterface
     public function increment($key, $value = 1);
 
     /**
-     * Retrieve an item from the cache by key.
-     *
-     * @template TCacheValue
-     *
-     * @param string[]|string $key
-     * @param (Closure(): TCacheValue)|TCacheValue $default
-     * @return (TCacheValue is null ? mixed : TCacheValue)
-     */
-    public function get($key, $default = null);
-
-    /**
      * @return iterable
      */
     public function many(array $keys);

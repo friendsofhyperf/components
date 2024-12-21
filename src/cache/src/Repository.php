@@ -49,16 +49,29 @@ class Repository implements Contract\CacheInterface
     ) {
     }
 
+    /**
+     * @param string $key
+     * @param mixed $value
+     * @param int|DateInterval|null $ttl
+     * @return bool
+     */
     public function set($key, $value, $ttl = null)
     {
         return $this->put($key, $value, $ttl);
     }
 
+    /**
+     * @param string $key
+     * @return bool
+     */
     public function delete($key)
     {
         return $this->forget($key);
     }
 
+    /**
+     * @return bool
+     */
     public function clear()
     {
         return $this->flush();
@@ -223,6 +236,15 @@ class Repository implements Contract\CacheInterface
         return with((int) $this->get($key, 0) + (int) $value, fn ($value) => ! $this->put($key, $value) ? false : $value);
     }
 
+    /**
+     * Retrieve an item from the cache by key.
+     *
+     * @template TCacheValue
+     *
+     * @param string[]|string $key
+     * @param (Closure(): TCacheValue)|TCacheValue $default
+     * @return (TCacheValue is null ? mixed : TCacheValue)
+     */
     public function get($key, $default = null)
     {
         if (is_array($key)) {
