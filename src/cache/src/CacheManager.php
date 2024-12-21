@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Cache;
 
+use FriendsOfHyperf\Cache\Contract\Repository as CacheContract;
 use Hyperf\Cache\CacheManager as HyperfCacheManager;
 
 use function Hyperf\Support\make;
@@ -18,7 +19,7 @@ use function Hyperf\Support\make;
 class CacheManager
 {
     /**
-     * @var CacheInterface[]
+     * @var CacheContract[]
      */
     protected array $drivers = [];
 
@@ -26,9 +27,9 @@ class CacheManager
     {
     }
 
-    public function store(string $name = 'default'): CacheInterface
+    public function store(string $name = 'default'): CacheContract
     {
-        return $this->drivers[$name] ?? $this->drivers[$name] = make(Cache::class, [
+        return $this->drivers[$name] ?? $this->drivers[$name] = make(Repository::class, [
             'name' => $name,
             'driver' => $this->cacheManager->getDriver($name),
         ]);
