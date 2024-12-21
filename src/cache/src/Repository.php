@@ -53,26 +53,21 @@ class Repository implements Contract\CacheInterface
      * @param string $key
      * @param mixed $value
      * @param int|DateInterval|null $ttl
-     * @return bool
      */
-    public function set($key, $value, $ttl = null)
+    public function set($key, $value, $ttl = null): bool
     {
         return $this->put($key, $value, $ttl);
     }
 
     /**
      * @param string $key
-     * @return bool
      */
-    public function delete($key)
+    public function delete($key): bool
     {
         return $this->forget($key);
     }
 
-    /**
-     * @return bool
-     */
-    public function clear()
+    public function clear(): bool
     {
         return $this->flush();
     }
@@ -245,7 +240,7 @@ class Repository implements Contract\CacheInterface
      * @param (Closure(): TCacheValue)|TCacheValue $default
      * @return (TCacheValue is null ? mixed : TCacheValue)
      */
-    public function get($key, $default = null)
+    public function get($key, $default = null): mixed
     {
         if (is_array($key)) {
             return $this->many($key);
