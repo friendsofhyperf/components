@@ -16,7 +16,7 @@ use Psr\Container\ContainerInterface;
 /**
  * @internal
  */
-class CacheFactory
+class RepositoryFactory
 {
     public function __invoke(ContainerInterface $container)
     {
