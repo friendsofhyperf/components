@@ -32,10 +32,7 @@ class CacheManager
      */
     public function store(string $name = 'default'): CacheContract
     {
-        return $this->drivers[$name] ?? $this->drivers[$name] = make(Repository::class, [
-            'name' => $name,
-            'driver' => $this->cacheManager->getDriver($name),
-        ]);
+        return $this->drivers[$name] ?? $this->drivers[$name] = $this->resolve($name);
     }
 
     /**
@@ -44,5 +41,13 @@ class CacheManager
     public function driver(string $name = 'default'): CacheContract
     {
         return $this->store($name);
+    }
+
+    public function resolve(string $name): CacheContract
+    {
+        return make(Repository::class, [
+            'name' => $name,
+            'driver' => $this->cacheManager->getDriver($name),
+        ]);
     }
 }

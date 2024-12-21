@@ -32,12 +32,17 @@ class Cache
 
     public static function store(string $name = 'default'): CacheContract
     {
-        return ApplicationContext::getContainer()->get(CacheManager::class)->store($name);
+        return self::getFacadeAccessor()->store($name);
     }
 
     public static function driver(string $name = 'default'): CacheContract
     {
-        return self::store($name);
+        return self::getFacadeAccessor()->driver($name);
+    }
+
+    public static function resolve(string $name): CacheContract
+    {
+        return self::getFacadeAccessor()->resolve($name);
     }
 
     /**
@@ -220,5 +225,10 @@ class Cache
     public static function sear($key, Closure $callback)
     {
         return self::__callStatic(__FUNCTION__, func_get_args());
+    }
+
+    protected static function getFacadeAccessor(): CacheManager
+    {
+        return ApplicationContext::getContainer()->get(CacheManager::class);
     }
 }
