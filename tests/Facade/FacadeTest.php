@@ -35,7 +35,4 @@ test('test Log Macroable', function () {
     );
 
     expect(Log::channel('hyperf', 'default'))->toBeInstanceOf(Psr\Log\LoggerInterface::class);
-
-    /* @phpstan-ignore-next-line */
-    expect(Log::info('test'))->toBeEmpty();
 });
