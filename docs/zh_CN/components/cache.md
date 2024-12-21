@@ -17,7 +17,7 @@ composer require friendsofhyperf/cache
 ```php
 namespace App\Controller;
 
-use FriendsOfHyperf\Cache\CacheInterface;
+use FriendsOfHyperf\Cache\Contract\Repository as CacheInterface;
 use Hyperf\Di\Annotation\Inject;
 
 class IndexController
@@ -51,11 +51,11 @@ Cache::remember($key, $ttl=60, function() {
 use FriendsOfHyperf\Cache\Facade\Cache;
 use FriendsOfHyperf\Cache\CacheManager;
 
-Cache::driver('co')->remember($key, $ttl=60, function() {
+Cache::store('co')->remember($key, $ttl=60, function() {
     // return sth
 });
 
-CacheManager::get('co')->remember($key, $ttl=60, function() {
+di(CacheManager::class)->store('co')->remember($key, $ttl=60, function() {
     // return sth
 });
 ```
