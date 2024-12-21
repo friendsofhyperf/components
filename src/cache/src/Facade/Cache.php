@@ -14,8 +14,8 @@ namespace FriendsOfHyperf\Cache\Facade;
 use Closure;
 use DateInterval;
 use DateTimeInterface;
-use FriendsOfHyperf\Cache\CacheInterface;
 use FriendsOfHyperf\Cache\CacheManager;
+use FriendsOfHyperf\Cache\Contract\Repository as CacheContract;
 use Hyperf\Context\ApplicationContext;
 
 class Cache
@@ -30,12 +30,12 @@ class Cache
         return self::store()->{$name}(...$arguments);
     }
 
-    public static function store(string $name = 'default'): CacheInterface
+    public static function store(string $name = 'default'): CacheContract
     {
         return ApplicationContext::getContainer()->get(CacheManager::class)->store($name);
     }
 
-    public static function driver(string $name = 'default'): CacheInterface
+    public static function driver(string $name = 'default'): CacheContract
     {
         return self::store($name);
     }
