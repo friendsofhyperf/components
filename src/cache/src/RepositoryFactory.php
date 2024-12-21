@@ -13,7 +13,10 @@ namespace FriendsOfHyperf\Cache;
 
 use Psr\Container\ContainerInterface;
 
-class CacheFactory
+/**
+ * @internal
+ */
+class RepositoryFactory
 {
     public function __invoke(ContainerInterface $container)
     {

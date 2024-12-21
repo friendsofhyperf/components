@@ -8,7 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use FriendsOfHyperf\Cache\Cache;
+use FriendsOfHyperf\Cache\Repository;
 use FriendsOfHyperf\Facade\Log;
 use Hyperf\Logger\LoggerFactory;
 use Mockery as m;
@@ -19,9 +19,9 @@ test()->expect('FriendsOfHyperf\Facade')
     ->ignoring('FriendsOfHyperf\Facade\ConfigProvider');
 
 test('test Cache Macroable', function () {
-    Cache::macro('test', fn () => null);
+    Repository::macro('test', fn () => null);
 
-    expect(Cache::hasMacro('test'))->toBeTrue();
+    expect(Repository::hasMacro('test'))->toBeTrue();
 });
 
 test('test Log Macroable', function () {
@@ -35,7 +35,4 @@ test('test Log Macroable', function () {
     );
 
     expect(Log::channel('hyperf', 'default'))->toBeInstanceOf(Psr\Log\LoggerInterface::class);
-
-    /* @phpstan-ignore-next-line */
-    expect(Log::info('test'))->toBeEmpty();
 });

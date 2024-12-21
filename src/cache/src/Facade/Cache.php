@@ -14,8 +14,8 @@ namespace FriendsOfHyperf\Cache\Facade;
 use Closure;
 use DateInterval;
 use DateTimeInterface;
-use FriendsOfHyperf\Cache\CacheInterface;
 use FriendsOfHyperf\Cache\CacheManager;
+use FriendsOfHyperf\Cache\Contract\Repository as CacheContract;
 use Hyperf\Context\ApplicationContext;
 
 class Cache
@@ -30,14 +30,19 @@ class Cache
         return self::store()->{$name}(...$arguments);
     }
 
-    public static function store(string $name = 'default'): CacheInterface
+    public static function store(string $name = 'default'): CacheContract
     {
-        return ApplicationContext::getContainer()->get(CacheManager::class)->store($name);
+        return self::getFacadeAccessor()->store($name);
     }
 
-    public static function driver(string $name = 'default'): CacheInterface
+    public static function driver(string $name = 'default'): CacheContract
     {
-        return self::store($name);
+        return self::getFacadeAccessor()->driver($name);
+    }
+
+    public static function resolve(string $name): CacheContract
+    {
+        return self::getFacadeAccessor()->resolve($name);
     }
 
     /**
@@ -220,5 +225,10 @@ class Cache
     public static function sear($key, Closure $callback)
     {
         return self::__callStatic(__FUNCTION__, func_get_args());
+    }
+
+    protected static function getFacadeAccessor(): CacheManager
+    {
+        return ApplicationContext::getContainer()->get(CacheManager::class);
     }
 }
