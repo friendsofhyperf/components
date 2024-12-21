@@ -43,6 +43,9 @@ class CacheManager
         return $this->store($name);
     }
 
+    /**
+     * Resolve a cache repository instance.
+     */
     public function resolve(string $name): CacheContract
     {
         return make(Repository::class, [
