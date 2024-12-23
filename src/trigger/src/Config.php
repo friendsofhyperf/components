@@ -77,7 +77,7 @@ class Config
     }
 
     /**
-     * @return class-string<AbstractSubscriber>[]
+     * @return class-string<\FriendsOfHyperf\Trigger\Subscriber\AbstractSubscriber>[]
      */
     public function subscribers(): array
     {
