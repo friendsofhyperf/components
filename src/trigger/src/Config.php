@@ -26,6 +26,11 @@ class Config
         return Arr::get($this->configs, $key, $default);
     }
 
+    public function has(string $key): bool
+    {
+        return Arr::has($this->configs, $key);
+    }
+
     public function enable(): bool
     {
         return $this->get('enable', false);
