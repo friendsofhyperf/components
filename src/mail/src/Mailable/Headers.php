@@ -95,7 +95,7 @@ class Headers
     public function referencesString(): string
     {
         return collect($this->references)->map(function ($messageId) {
-            return Str::finish(Str::start($messageId, '<'), '>');
+            return Str::wrap($messageId, '<', '>');
         })->implode(' ');
     }
 }
