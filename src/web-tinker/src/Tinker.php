@@ -127,6 +127,6 @@ class Tinker
         // Remove ANSI color codes
         $output = preg_replace('/\e\[[0-9;]*m/', '', $output);
 
-        return trim($output);
+        return htmlentities($output);
     }
 }
