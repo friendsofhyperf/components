@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.1.52 - 2024-12-23
+
+### What's Changed
+
+* feat: introduce Once and Onceable classes, deprecate Cache and Backtrace by @huangdijia in https://github.com/friendsofhyperf/components/pull/808
+* refactor(cache): refactor Cache class by @huangdijia in https://github.com/friendsofhyperf/components/pull/809
+* refactor(cache): update CacheInterface references and remove deprecated Repository interface by @huangdijia in https://github.com/friendsofhyperf/components/pull/810
+* Use Str::wrap() instead of nesting Str::start() inside Str::finish() by @huangdijia in https://github.com/friendsofhyperf/components/pull/811
+* Prevent HTML injection by @huangdijia in https://github.com/friendsofhyperf/components/pull/812
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.50.1...v3.1.52
+
 ## v3.1.50.1 - 2024-12-20
 
 ### What's Changed
