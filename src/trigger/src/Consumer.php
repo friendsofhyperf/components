@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Trigger;
 use FriendsOfHyperf\Trigger\Monitor\HealthMonitor;
 use FriendsOfHyperf\Trigger\Mutex\ServerMutexInterface;
 use FriendsOfHyperf\Trigger\Snapshot\BinLogCurrentSnapshotInterface;
-use Hyperf\Config\Config;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Coroutine;

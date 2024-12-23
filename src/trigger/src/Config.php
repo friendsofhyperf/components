@@ -11,10 +11,21 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Trigger;
 
+use Hyperf\Collection\Arr;
+
 use function Hyperf\Support\env;
 
-class Config extends \Hyperf\Config\Config
+class Config
 {
+    public function __construct(private array $configs = [])
+    {
+    }
+
+    public function get(string $key, mixed $default = null): mixed
+    {
+        return Arr::get($this->configs, $key, $default);
+    }
+
     public function enable(): bool
     {
         return $this->get('enable', false);
