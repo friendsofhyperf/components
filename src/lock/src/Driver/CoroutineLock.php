@@ -11,28 +11,36 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Lock\Driver;
 
-use Hyperf\Cache\Driver\CoroutineMemoryDriver;
+use Hyperf\Engine\Channel;
 use Override;
-use Psr\SimpleCache\CacheInterface;
-
-use function Hyperf\Support\make;
+use Throwable;
+use WeakMap;
 
 class CoroutineLock extends AbstractLock
 {
     /**
-     * The cache store implementation.
+     * @var array<string, Channel>
      */
-    protected CacheInterface $store;
+    protected static array $channels = [];
+
+    protected static ?WeakMap $owners = null;
 
     /**
      * Create a new lock instance.
      */
-    public function __construct(string $name, int $seconds, ?string $owner = null, array $constructor = [])
-    {
-        parent::__construct($name, $seconds, $owner);
+    public function __construct(
+        string $name,
+        int $seconds,
+        ?string $owner = null,
+        array $constructor = []
+    ) {
+        $constructor = array_merge([
+            'prefix' => '',
+        ], $constructor);
 
-        $constructor = array_merge(['prefix' => ''], $constructor);
-        $this->store = make(CoroutineMemoryDriver::class, ['config' => $constructor]);
+        $name = $constructor['prefix'] . $name;
+
+        parent::__construct($name, $seconds, $owner);
     }
 
     /**
@@ -41,11 +49,25 @@ class CoroutineLock extends AbstractLock
     #[Override]
     public function acquire(): bool
     {
-        if ($this->store->has($this->name)) {
+        try {
+            if (! isset(self::$channels[$this->name])) {
+                self::$channels[$this->name] = new Channel(1);
+            }
+
+            // Wait for the specified number of seconds to acquire the lock.
+            self::$channels[$this->name]->push(true, $this->seconds * 1000);
+
+            if (is_null(self::$owners)) {
+                self::$owners = new WeakMap();
+            }
+
+            // Save the owner so we can release the lock later.
+            self::$owners[self::$channels[$this->name]] = $this->owner;
+        } catch (Throwable) {
             return false;
         }
 
-        return $this->store->set($this->name, $this->owner, $this->seconds);
+        return true;
     }
 
     /**
@@ -55,7 +77,8 @@ class CoroutineLock extends AbstractLock
     public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
-            return $this->store->delete($this->name);
+            $this->forceRelease();
+            return true;
         }
 
         return false;
@@ -67,7 +90,13 @@ class CoroutineLock extends AbstractLock
     #[Override]
     public function forceRelease(): void
     {
-        $this->store->delete($this->name);
+        if (! isset(self::$channels[$this->name])) {
+            return;
+        }
+
+        $chan = self::$channels[$this->name];
+        self::$channels[$this->name] = null;
+        $chan->close();
     }
 
     /**
@@ -76,6 +105,10 @@ class CoroutineLock extends AbstractLock
      */
     protected function getCurrentOwner()
     {
-        return $this->store->get($this->name);
+        if (! $chan = self::$channels[$this->name] ?? null) {
+            return '';
+        }
+
+        return self::$owners[$chan] ?? '';
     }
 }
