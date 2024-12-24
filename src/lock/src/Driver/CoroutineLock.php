@@ -50,19 +50,17 @@ class CoroutineLock extends AbstractLock
     public function acquire(): bool
     {
         try {
-            if (! isset(self::$channels[$this->name])) {
-                self::$channels[$this->name] = new Channel(1);
-            }
+            $chan = self::$channels[$this->name] ??= new Channel(1);
 
             // Wait for the specified number of seconds to acquire the lock.
-            self::$channels[$this->name]->push(true, $this->seconds * 1000);
+            $chan->push(true, $this->seconds * 1000);
 
             if (is_null(self::$owners)) {
                 self::$owners = new WeakMap();
             }
 
             // Save the owner so we can release the lock later.
-            self::$owners[self::$channels[$this->name]] = $this->owner;
+            self::$owners[$chan] = $this->owner;
         } catch (Throwable) {
             return false;
         }
@@ -90,12 +88,12 @@ class CoroutineLock extends AbstractLock
     #[Override]
     public function forceRelease(): void
     {
-        if (! isset(self::$channels[$this->name])) {
+        if (! $chan = self::$channels[$this->name] ?? null) {
             return;
         }
 
-        $chan = self::$channels[$this->name];
         self::$channels[$this->name] = null;
+
         $chan->close();
     }
 
