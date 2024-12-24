@@ -53,7 +53,7 @@ class CoroutineLock extends AbstractLock
             $chan = self::$channels[$this->name] ??= new Channel(1);
 
             // Wait for the specified number of seconds to acquire the lock.
-            $chan->push(true, $this->seconds * 1000);
+            $chan->push(1, $this->seconds * 1000);
 
             if ($chan->isTimeout() || $chan->isClosing()) {
                 return false;
