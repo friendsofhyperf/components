@@ -60,10 +60,6 @@ class CoroutineLock extends AbstractLock
                 return false;
             }
 
-            if ($chan->isClosing()) {
-                $chan = self::$channels[$this->name] = new Channel(1);
-            }
-
             self::$owners[$chan] = $this->owner;
         } catch (Throwable) {
             return false;
