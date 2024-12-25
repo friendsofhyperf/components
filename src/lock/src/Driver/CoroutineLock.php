@@ -40,6 +40,10 @@ class CoroutineLock extends AbstractLock
 
         $name = $constructor['prefix'] . $name;
 
+        if (is_null(self::$owners)) {
+            self::$owners = new WeakMap();
+        }
+
         parent::__construct($name, $seconds, $owner);
     }
 
@@ -58,10 +62,6 @@ class CoroutineLock extends AbstractLock
 
             if ($chan->isClosing()) {
                 $chan = self::$channels[$this->name] = new Channel(1);
-            }
-
-            if (is_null(self::$owners)) {
-                self::$owners = new WeakMap();
             }
 
             self::$owners[$chan] = $this->owner;
