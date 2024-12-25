@@ -52,12 +52,7 @@ class CoroutineLock extends AbstractLock
         try {
             $chan = self::$channels[$this->name] ??= new Channel(1);
 
-            // Wait for the specified number of seconds to acquire the lock.
-            if ($chan->push(1, 0.01)) {
-                return false;
-            }
-
-            if ($chan->isTimeout()) {
+            if (! $chan->push(1, 0.01)) {
                 return false;
             }
 
@@ -69,7 +64,6 @@ class CoroutineLock extends AbstractLock
                 self::$owners = new WeakMap();
             }
 
-            // Save the owner so we can release the lock later.
             self::$owners[$chan] = $this->owner;
         } catch (Throwable) {
             return false;
