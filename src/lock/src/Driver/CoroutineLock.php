@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Lock\Driver;
 
+use Hyperf\Coordinator\Timer;
 use Hyperf\Engine\Channel;
 use Override;
 use Throwable;
@@ -24,6 +25,10 @@ class CoroutineLock extends AbstractLock
     protected static array $channels = [];
 
     protected static ?WeakMap $owners = null;
+
+    protected static ?Timer $timer = null;
+
+    protected static array $timerIds = [];
 
     /**
      * Create a new lock instance.
@@ -40,11 +45,15 @@ class CoroutineLock extends AbstractLock
 
         $name = $constructor['prefix'] . $name;
 
+        parent::__construct($name, $seconds, $owner);
+
         if (is_null(self::$owners)) {
             self::$owners = new WeakMap();
         }
 
-        parent::__construct($name, $seconds, $owner);
+        if (is_null(self::$timer)) {
+            self::$timer = new Timer();
+        }
     }
 
     /**
@@ -61,6 +70,14 @@ class CoroutineLock extends AbstractLock
             }
 
             self::$owners[$chan] = $this->owner;
+
+            if ($timeId = self::$timerIds[$this->name] ?? null) {
+                self::$timer?->clear($timeId);
+            }
+
+            if ($this->seconds > 0) {
+                self::$timerIds[$this->name] = self::$timer?->after($this->seconds * 1000, fn () => $this->forceRelease());
+            }
         } catch (Throwable) {
             return false;
         }
