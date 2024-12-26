@@ -3,8 +3,7 @@ name: Translate docs
 on:
   push:
     branches:
-      - release-*
-      - docs-*
+      - "!main"
 
 jobs:
   translate:
