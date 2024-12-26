@@ -11,7 +11,7 @@ hero:
       text: 组件
       link: /zh-cn/components/
     - theme: alt
-      text: 仓库
+      text: GitHub
       link: "https://github.com/friendsofhyperf/components"
 
 features:
