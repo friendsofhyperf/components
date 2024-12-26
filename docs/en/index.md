@@ -29,7 +29,7 @@ features:
     link: /en/components/tinker/
   - title: Web Tinker
     details: Tinker in your browser.
-    link: /zh_CN/components/web-tinker/
+    link: /zh-cn/components/web-tinker/
   - title: Encryption
     details: Encryption provides simple and convenient encryption and decryption functionality.
     link: /en/components/encryption/

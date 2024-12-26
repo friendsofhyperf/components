@@ -17,11 +17,11 @@ use Symfony\Component\Finder\Finder;
 
 $config = [
     'zh-tw' => [
-        'targetDir' => BASE_PATH . '/docs/zh-TW/',
+        'targetDir' => BASE_PATH . '/docs/zh-tw/',
         'rule' => 's2twp.json',
     ],
     'zh-hk' => [
-        'targetDir' => BASE_PATH . '/docs/zh-HK/',
+        'targetDir' => BASE_PATH . '/docs/zh-hk/',
         'rule' => 's2hk.json',
     ],
     // 'en' => [
@@ -31,7 +31,7 @@ $config = [
 ];
 
 $finder = new Finder();
-$finder->files()->in(BASE_PATH . '/docs/zh_CN');
+$finder->files()->in(BASE_PATH . '/docs/zh-cn');
 
 foreach ($config as $key => $item) {
     $od = opencc_open($item['rule']);

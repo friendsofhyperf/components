@@ -1,13 +1,13 @@
 import {DefaultTheme} from "vitepress";
 
 const sidebar:DefaultTheme.Sidebar = {
-    // '/zh_CN/guide/': [
+    // '/zh-cn/guide/': [
     //     {
     //         text: '介绍',
     //         items: [
     //             {
     //                 text: '关于 FriendsOfHyperf',
-    //                 link: '/zh_CN/guide/introduce/about',
+    //                 link: '/zh-cn/guide/introduce/about',
     //             },
     //         ]
     //     },
@@ -16,223 +16,223 @@ const sidebar:DefaultTheme.Sidebar = {
     //         items: [
     //             {
     //                 text: "支持的组件列表",
-    //                 link: "/zh_CN/guide/start/components"
+    //                 link: "/zh-cn/guide/start/components"
     //             }
     //         ]
     //     }
     // ],
-    '/zh_CN/faq/':[{
+    '/zh-cn/faq/':[{
         text: '常见问题',
         items: [
             {
                 text: '关于 FriendsOfHyperf',
-                link: '/zh_CN/faq/about'
+                link: '/zh-cn/faq/about'
             },
             {
                 text: '如何使用',
-                link: '/zh_CN/faq/how-to-use'
+                link: '/zh-cn/faq/how-to-use'
             }
         ]
     }],
-    '/zh_CN/components/':[
+    '/zh-cn/components/':[
         {
             text: '组件',
             items: [
                 {
                     text: 'Amqp Job',
-                    link: '/zh_CN/components/amqp-job.md'
+                    link: '/zh-cn/components/amqp-job.md'
                 },
                 {
                     text: 'Cache',
-                    link: '/zh_CN/components/cache.md'
+                    link: '/zh-cn/components/cache.md'
                 },
                 {
                     text: 'Command Signals',
-                    link: '/zh_CN/components/command-signals.md'
+                    link: '/zh-cn/components/command-signals.md'
                 },
                 {
                     text: 'Command Validation',
-                    link: '/zh_CN/components/command-validation.md'
+                    link: '/zh-cn/components/command-validation.md'
                 },
                 {
                     text: 'Compoships',
-                    link: '/zh_CN/components/compoships.md'
+                    link: '/zh-cn/components/compoships.md'
                 },
                 {
                     text: 'Confd',
-                    link: '/zh_CN/components/confd.md'
+                    link: '/zh-cn/components/confd.md'
                 },
                 {
                     text: 'Config Consul',
-                    link: '/zh_CN/components/config-consul.md'
+                    link: '/zh-cn/components/config-consul.md'
                 },
                 {
                     text: 'Console Spinner',
-                    link: '/zh_CN/components/console-spinner.md'
+                    link: '/zh-cn/components/console-spinner.md'
                 },
                 {
                     text: 'Di Plus',
-                    link: '/zh_CN/components/di-plus.md'
+                    link: '/zh-cn/components/di-plus.md'
                 },
                 {
                     text: 'Elasticsearch',
-                    link: '/zh_CN/components/elasticsearch.md'
+                    link: '/zh-cn/components/elasticsearch.md'
                 },
                 {
                     text: 'Encryption',
-                    link: '/zh_CN/components/encryption.md'
+                    link: '/zh-cn/components/encryption.md'
                 },
                 {
                     text: 'Exception Event',
-                    link: '/zh_CN/components/exception-event.md'
+                    link: '/zh-cn/components/exception-event.md'
                 },
                 {
                     text: 'Facade',
-                    link: '/zh_CN/components/facade.md'
+                    link: '/zh-cn/components/facade.md'
                 },
                 {
                     text: 'Fast Paginate',
-                    link: '/zh_CN/components/fast-paginate.md'
+                    link: '/zh-cn/components/fast-paginate.md'
                 },
                 {
                     text: 'Grpc Validation',
-                    link: '/zh_CN/components/grpc-validation.md'
+                    link: '/zh-cn/components/grpc-validation.md'
                 },
                 {
                     text: 'Helpers',
-                    link: '/zh_CN/components/helpers.md'
+                    link: '/zh-cn/components/helpers.md'
                 },
                 {
                     text: 'Http Client',
-                    link: '/zh_CN/components/http-client.md'
+                    link: '/zh-cn/components/http-client.md'
                 },
                 {
                     text: 'Http Logger',
-                    link: '/zh_CN/components/http-logger.md'
+                    link: '/zh-cn/components/http-logger.md'
                 },
                 {
                     text: 'Ide Helper',
-                    link: '/zh_CN/components/ide-helper.md'
+                    link: '/zh-cn/components/ide-helper.md'
                 },
                 {
                     text: 'Ipc Broadcaster',
-                    link: '/zh_CN/components/ipc-broadcaster.md'
+                    link: '/zh-cn/components/ipc-broadcaster.md'
                 },
                 {
                     text: 'Lock',
-                    link: '/zh_CN/components/lock.md'
+                    link: '/zh-cn/components/lock.md'
                 },
                 {
                     text: 'Macros',
-                    link: '/zh_CN/components/macros.md'
+                    link: '/zh-cn/components/macros.md'
                 },
                 {
                     text: 'Mail',
-                    link: '/zh_CN/components/mail.md'
+                    link: '/zh-cn/components/mail.md'
                 },
                 {
                     text: 'Middleware Plus',
-                    link: '/zh_CN/components/middleware-plus.md'
+                    link: '/zh-cn/components/middleware-plus.md'
                 },
                 {
                     text: 'Model Factory',
-                    link: '/zh_CN/components/model-factory.md'
+                    link: '/zh-cn/components/model-factory.md'
                 },
                 {
                     text: 'Model Hashids',
-                    link: '/zh_CN/components/model-hashids.md'
+                    link: '/zh-cn/components/model-hashids.md'
                 },
                 {
                     text: 'Model Morph Addon',
-                    link: '/zh_CN/components/model-morph-addon.md'
+                    link: '/zh-cn/components/model-morph-addon.md'
                 },
                 {
                     text: 'Model Observer',
-                    link: '/zh_CN/components/model-observer.md'
+                    link: '/zh-cn/components/model-observer.md'
                 },
                 {
                     text: 'Model Scope',
-                    link: '/zh_CN/components/model-scope.md'
+                    link: '/zh-cn/components/model-scope.md'
                 },
                 {
                     text: 'Monolog Hook',
-                    link: '/zh_CN/components/monolog-hook.md'
+                    link: '/zh-cn/components/monolog-hook.md'
                 },
                 {
                     text: 'Mysql Grammar Addon',
-                    link: '/zh_CN/components/mysql-grammar-addon.md'
+                    link: '/zh-cn/components/mysql-grammar-addon.md'
                 },
                 {
                     text: 'Notification',
-                    link: '/zh_CN/components/notification.md'
+                    link: '/zh-cn/components/notification.md'
                 },
                 {
                     text: 'Notification Easysms',
-                    link: '/zh_CN/components/notification-easysms.md'
+                    link: '/zh-cn/components/notification-easysms.md'
                 },
                 {
                     text: 'Notification Mail',
-                    link: '/zh_CN/components/notification-mail.md'
+                    link: '/zh-cn/components/notification-mail.md'
                 },
                 {
                     text: 'OpenAI Client',
-                    link: '/zh_CN/components/openai-client.md'
+                    link: '/zh-cn/components/openai-client.md'
                 },
                 {
                     text: 'Pest Plugin Hyperf',
-                    link: '/zh_CN/components/pest-plugin-hyperf.md'
+                    link: '/zh-cn/components/pest-plugin-hyperf.md'
                 },
                 {
                     text: 'Pretty Console',
-                    link: '/zh_CN/components/pretty-console.md'
+                    link: '/zh-cn/components/pretty-console.md'
                 },
                 {
                     text: 'Purifier',
-                    link: '/zh_CN/components/purifier.md'
+                    link: '/zh-cn/components/purifier.md'
                 },
                 {
                     text: 'Recaptcha',
-                    link: '/zh_CN/components/recaptcha.md'
+                    link: '/zh-cn/components/recaptcha.md'
                 },
                 {
                     text: 'Redis Subscriber',
-                    link: '/zh_CN/components/redis-subscriber.md'
+                    link: '/zh-cn/components/redis-subscriber.md'
                 },
                 {
                     text: 'Sentry',
-                    link: '/zh_CN/components/sentry.md'
+                    link: '/zh-cn/components/sentry.md'
                 },
                 {
                     text: 'Support',
-                    link: '/zh_CN/components/support.md'
+                    link: '/zh-cn/components/support.md'
                 },
                 {
                     text: 'Tcp Sender',
-                    link: '/zh_CN/components/tcp-sender.md'
+                    link: '/zh-cn/components/tcp-sender.md'
                 },
                 {
                     text: 'Telescope',
-                    link: '/zh_CN/components/telescope.md'
+                    link: '/zh-cn/components/telescope.md'
                 },
                 {
                     text: 'Telescope Elasticsearch Driver',
-                    link: '/zh_CN/components/telescope-elasticsearch.md'
+                    link: '/zh-cn/components/telescope-elasticsearch.md'
                 },
                 {
                     text: 'Tinker',
-                    link: '/zh_CN/components/tinker.md'
+                    link: '/zh-cn/components/tinker.md'
                 },
                 {
                     text: 'Trigger',
-                    link: '/zh_CN/components/trigger.md'
+                    link: '/zh-cn/components/trigger.md'
                 },
                 {
                     text: 'Validated DTO',
-                    link: '/zh_CN/components/validated-dto.md'
+                    link: '/zh-cn/components/validated-dto.md'
                 },
                 {
                     text: 'Web Tinker',
-                    link: '/zh_CN/components/web-tinker.md'
+                    link: '/zh-cn/components/web-tinker.md'
                 }
             ]
         }
