@@ -31,7 +31,7 @@ $config = [
 ];
 
 $finder = new Finder();
-$finder->files()->in(BASE_PATH . '/docs/zh-CN');
+$finder->files()->in(BASE_PATH . '/docs/zh_CN');
 
 foreach ($config as $key => $item) {
     $od = opencc_open($item['rule']);
