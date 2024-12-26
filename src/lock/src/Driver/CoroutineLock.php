@@ -92,8 +92,7 @@ class CoroutineLock extends AbstractLock
     public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
-            self::$channels[$this->name]?->pop();
-            return true;
+            return self::$channels[$this->name]?->pop(0.01) ? true : false;
         }
 
         return false;
