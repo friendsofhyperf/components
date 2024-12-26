@@ -1,6 +1,6 @@
 # Elasticsearch
 
-The Elasticsearch client for Hyperf.
+一个为 Hyperf 定制的 Elasticsearch 客户端组件。
 
 ## 安装
 

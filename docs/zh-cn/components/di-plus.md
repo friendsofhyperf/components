@@ -1,6 +1,6 @@
 # DI Plus
 
-The di plus component for Hyperf.
+Hyperf 的依赖注入增强组件。
 
 ## 安装
 

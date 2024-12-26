@@ -1,6 +1,6 @@
 # Middleware Plus
 
-The middleware plus component for Hyperf.
+中间件增强组件
 
 ## 安装
 

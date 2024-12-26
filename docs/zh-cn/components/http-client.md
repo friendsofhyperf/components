@@ -1,6 +1,6 @@
 # HTTP Client
 
-The HTTP Client component for Hyperf, from Laravel.
+适用于 Hyperf 的 HTTP 客户端组件，移植自 Laravel。
 
 ## 安装
 

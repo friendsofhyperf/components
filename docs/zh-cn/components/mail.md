@@ -1,6 +1,6 @@
 # Mail
 
-Email component of Hyperf
+电子邮件组件，支持使用 SMTP、SendMail、Log 等驱动发送邮件，并支持 Markdown 模板渲染。
 
 ## 安装
 

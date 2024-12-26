@@ -1,6 +1,6 @@
 # Grpc Validation
 
-The GRPC validation component for Hyperf.
+适用于 Hyperf 的 GRPC 验证组件。
 
 ## 安装
 

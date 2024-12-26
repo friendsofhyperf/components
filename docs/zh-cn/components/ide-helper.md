@@ -1,6 +1,6 @@
 # IDE Helper
 
-The ide-helper component for Hyperf.
+Hyperf 的 IDE 助手组件
 
 ## 安装
 

@@ -1,6 +1,6 @@
 # Http Logger
 
-The http logger component for Hyperf.
+为 Hyperf 提供的 HTTP 日志组件。
 
 ## 安装
 

@@ -1,6 +1,6 @@
 # Model Observer
 
-The model observer component for Hyperf.
+模型观察者组件，适用于 Hyperf 框架。
 
 ## 安装
 
