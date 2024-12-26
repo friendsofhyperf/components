@@ -2,8 +2,7 @@
 
 ## 簡介
 
-`friendsofhyperf/amqp-job` 是一個基於 `hyperf/amqp` 元件實現的非同步任務元件，支援將任務分發到 AMQP 服務，然後透過消費者消費任務。
-封裝了 `hyperf/amqp` 元件，提供了更加便捷的任務分發和消費方式。
+`friendsofhyperf/amqp-job` 是一個基於 `hyperf/amqp` 元件實現的非同步任務元件，支援將任務分發到 AMQP 服務，然後透過消費者消費任務。封裝了 `hyperf/amqp` 元件，提供了更加便捷的任務分發和消費方式。
 
 ## 安裝
 

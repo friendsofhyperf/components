@@ -2,8 +2,7 @@
 
 ## 簡介
 
-`friendsofhyperf/amqp-job` 是一個基於 `hyperf/amqp` 組件實現的異步任務組件，支持將任務分發到 AMQP 服務，然後通過消費者消費任務。
-封裝了 `hyperf/amqp` 組件，提供了更加便捷的任務分發和消費方式。
+`friendsofhyperf/amqp-job` 是一個基於 `hyperf/amqp` 組件實現的異步任務組件，支持將任務分發到 AMQP 服務，然後通過消費者消費任務。封裝了 `hyperf/amqp` 組件，提供了更加便捷的任務分發和消費方式。
 
 ## 安裝
 
