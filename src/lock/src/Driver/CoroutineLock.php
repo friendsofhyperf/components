@@ -79,7 +79,8 @@ class CoroutineLock extends AbstractLock
             }
 
             if ($this->seconds > 0) {
-                self::$timers[$chan] = self::$timer?->after($this->seconds * 1000, fn () => $this->forceRelease());
+                $timeId = self::$timer?->after($this->seconds * 1000, fn () => $this->forceRelease());
+                $timeId && self::$timers[$chan] = $timeId;
             }
         } catch (Throwable) {
             return false;
@@ -95,7 +96,7 @@ class CoroutineLock extends AbstractLock
     public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
-            return self::$channels[$this->name]?->pop(0.01) ? true : false;
+            return (self::$channels[$this->name] ?? null)?->pop(0.01) ? true : false;
         }
 
         return false;
