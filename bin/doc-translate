@@ -15,7 +15,8 @@ require BASE_PATH . '/vendor/autoload.php';
 
 use Symfony\Component\Finder\Finder;
 
-$config = [
+// Translate docs
+$docs = [
     'zh-tw' => [
         'targetDir' => BASE_PATH . '/docs/zh-tw/',
         'rule' => 's2twp.json',
@@ -33,10 +34,10 @@ $config = [
 $finder = new Finder();
 $finder->files()->in(BASE_PATH . '/docs/zh-cn');
 
-foreach ($config as $key => $item) {
-    $od = opencc_open($item['rule']);
+foreach ($docs as $lang => $doc) {
+    $od = opencc_open($doc['rule']);
     foreach ($finder as $fileInfo) {
-        $targetDir = $item['targetDir'];
+        $targetDir = $doc['targetDir'];
         $targetPath = $targetDir . $fileInfo->getRelativePath();
         $isCreateDir = false;
         if (! is_dir($targetPath)) {
@@ -50,10 +51,62 @@ foreach ($config as $key => $item) {
         if ($fileInfo->getExtension() === 'md') {
             $translated = opencc_convert($fileInfo->getContents(), $od);
             $patterns = [
-                '](zh-cn/' => '](' . $key . '/',
-                '](/zh-cn/' => '](/' . $key . '/',
-                '](./zh-cn/' => '](./' . $key . '/',
-                '/zh-cn/' => '/' . $key . '/',
+                '](zh-cn/' => '](' . $lang . '/',
+                '](/zh-cn/' => '](/' . $lang . '/',
+                '](./zh-cn/' => '](./' . $lang . '/',
+                '/zh-cn/' => '/' . $lang . '/',
+            ];
+            $translated = str_replace(array_keys($patterns), array_values($patterns), $translated);
+            $targetTranslatedPath = $targetDir . $fileInfo->getRelativePathname();
+            @file_put_contents($targetTranslatedPath, $translated);
+        } else {
+            $targetTranslatedPath = $targetDir . $fileInfo->getRelativePathname();
+            @copy($fileInfo->getRealPath(), $targetTranslatedPath);
+        }
+    }
+    opencc_close($od);
+}
+
+// Translate navs and sidebars
+$configs = [
+    'zh-tw' => [
+        'targetDir' => BASE_PATH . '/docs/.vitepress/src/zh-tw/',
+        'rule' => 's2twp.json',
+    ],
+    'zh-hk' => [
+        'targetDir' => BASE_PATH . '/docs/.vitepress/src/zh-hk/',
+        'rule' => 's2hk.json',
+    ],
+    // 'en' => [
+    //     'targetDir' => BASE_PATH . '/docs/en/',
+    //     'rule' => 's2en.json',
+    // ],
+];
+
+$finder = new Finder();
+$finder->files()->in(BASE_PATH . '/docs/.vitepress/src/zh-cn');
+
+foreach ($configs as $lang => $config) {
+    $od = opencc_open($config['rule']);
+    foreach ($finder as $fileInfo) {
+        $targetDir = $config['targetDir'];
+        $targetPath = $targetDir . $fileInfo->getRelativePath();
+        $isCreateDir = false;
+        if (! is_dir($targetPath)) {
+            mkdir($targetPath, 0777, true);
+            chmod($targetPath, 0777);
+            $isCreateDir = true;
+        }
+        if (! is_writable($targetPath)) {
+            echo sprintf('Target path %s is not writable.' . PHP_EOL, $targetPath);
+        }
+        if ($fileInfo->getExtension() === 'ts') {
+            $translated = opencc_convert($fileInfo->getContents(), $od);
+            $patterns = [
+                '](zh-cn/' => '](' . $lang . '/',
+                '](/zh-cn/' => '](/' . $lang . '/',
+                '](./zh-cn/' => '](./' . $lang . '/',
+                '/zh-cn/' => '/' . $lang . '/',
             ];
             $translated = str_replace(array_keys($patterns), array_values($patterns), $translated);
             $targetTranslatedPath = $targetDir . $fileInfo->getRelativePathname();
