@@ -46,17 +46,13 @@ class CoroutineLock extends AbstractLock
         array $constructor = []
     ) {
         $constructor = array_merge(['prefix' => ''], $constructor);
-
         $name = $constructor['prefix'] . $name;
 
         parent::__construct($name, $seconds, $owner);
 
         self::$owners ??= new WeakMap();
         self::$timers ??= new WeakMap();
-
-        if (is_null(self::$timer)) {
-            self::$timer = new Timer();
-        }
+        self::$timer ??= new Timer();
     }
 
     /**
