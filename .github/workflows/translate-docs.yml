@@ -37,10 +37,11 @@ jobs:
           cd ..
           rm -rf opencc4php
 
+      - name: Setup Dependencies
+        run: composer install
+
       - name: Start Translate
-        run: |
-          composer install
-          php bin/doc-translate
+        run: php bin/doc-translate
 
       - name: Commit Updated
         uses: stefanzweifel/git-auto-commit-action@v4
