@@ -1,6 +1,6 @@
 # Command Signals
 
-The signals component for Hyperf Command.
+Hyperf Command 的信号处理组件。
 
 ## 安装
 
