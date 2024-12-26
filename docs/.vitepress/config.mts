@@ -51,26 +51,12 @@ export default defineConfig({
   ],
   locales:{
     root:{
-      label:"中文",
+      label:"简体中文",
       lang:"zh",
       ...cnGetConfig,
     },
-    en:{
-      label:"English",
-      lang:"en",
-      link:"/en/index",
-      ...enGetConfig,
-      themeConfig:{
-        logo: '/logo.svg',
-        nav: enGetNavs,
-        sidebar:enGetSidebar,
-        outline:{
-          level:[2 ,4],
-        },
-      }
-    },
     "zh-hk":{
-      label:"繁體中文",
+      label:"繁體中文（港）",
       lang:"zh-hk",
       link:"/zh-hk/index",
       ...hkGetConfig,
@@ -84,7 +70,7 @@ export default defineConfig({
       }
     },
     "zh-tw":{
-      label:"繁體中文",
+      label:"繁體中文（臺）",
       lang:"zh-tw",
       link:"/zh-tw/index",
       ...twGetConfig,
@@ -92,6 +78,20 @@ export default defineConfig({
         logo: '/logo.svg',
         nav: twGetNavs,
         sidebar:twGetSidebar,
+        outline:{
+          level:[2 ,4],
+        },
+      }
+    },
+    en:{
+      label:"English",
+      lang:"en",
+      link:"/en/index",
+      ...enGetConfig,
+      themeConfig:{
+        logo: '/logo.svg',
+        nav: enGetNavs,
+        sidebar:enGetSidebar,
         outline:{
           level:[2 ,4],
         },
