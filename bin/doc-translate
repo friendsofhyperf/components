@@ -1,0 +1,63 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+/**
+ * This file is part of friendsofhyperf/components.
+ *
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ */
+! defined('BASE_PATH') && define('BASE_PATH', dirname(__DIR__, 1));
+
+require BASE_PATH . '/vendor/autoload.php';
+
+use Symfony\Component\Finder\Finder;
+
+$config = [
+    // 'zh-tw' => [
+    //     'targetDir' => BASE_PATH . '/docs/zh-TW/',
+    //     'rule' => 's2twp.json',
+    // ],
+    // 'zh-hk' => [
+    //     'targetDir' => BASE_PATH . '/docs/zh-HK/',
+    //     'rule' => 's2hk.json',
+    // ],
+    'en' => [
+        'targetDir' => BASE_PATH . '/docs/en/',
+        'rule' => 's2en.json',
+    ],
+];
+
+$finder = new Finder();
+$finder->files()->in(BASE_PATH . '/docs/zh-CN');
+
+foreach ($config as $key => $item) {
+    $od = opencc_open($item['rule']);
+    foreach ($finder as $fileInfo) {
+        $targetDir = $item['targetDir'];
+        $targetPath = $targetDir . $fileInfo->getRelativePath();
+        $isCreateDir = false;
+        if (! is_dir($targetPath)) {
+            mkdir($targetPath, 0777, true);
+            chmod($targetPath, 0777);
+            $isCreateDir = true;
+        }
+        if (! is_writable($targetPath)) {
+            echo sprintf('Target path %s is not writable.' . PHP_EOL, $targetPath);
+        }
+        if ($fileInfo->getExtension() === 'md') {
+            $translated = opencc_convert($fileInfo->getContents(), $od);
+            $translated = str_replace('](zh-cn/', '](' . $key . '/', $translated);
+            $translated = str_replace('](/zh-cn/', '](/' . $key . '/', $translated);
+            $translated = str_replace('](./zh-cn/', '](./' . $key . '/', $translated);
+            $targetTranslatedPath = $targetDir . $fileInfo->getRelativePathname();
+            @file_put_contents($targetTranslatedPath, $translated);
+        } else {
+            $targetTranslatedPath = $targetDir . $fileInfo->getRelativePathname();
+            @copy($fileInfo->getRealPath(), $targetTranslatedPath);
+        }
+    }
+    opencc_close($od);
+}
