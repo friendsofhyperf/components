@@ -1,4 +1,4 @@
-name: Split Docs
+name: Docs
 
 on:
   push:
