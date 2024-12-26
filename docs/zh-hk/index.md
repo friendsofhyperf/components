@@ -9,10 +9,10 @@ hero:
   actions:
     # - theme: brand
     #   text: 入門
-    #   link: /zh-cn/guide/
+    #   link: /zh-hk/guide/
     - theme: brand
       text: 組件
-      link: /zh-cn/components/
+      link: /zh-hk/components/
     - theme: alt
       text: GitHub
       link: "https://github.com/friendsofhyperf/components"
@@ -20,33 +20,33 @@ hero:
 features:
   - title: Sentry
     details: 這是 Sentry 的 Hyperf SDK。
-    link: /zh-cn/components/sentry/
+    link: /zh-hk/components/sentry/
   - title: Telecope
     details: Telescope 是 Hyperf 框架的優雅調試助手。
-    link: /zh-cn/components/telescope/
+    link: /zh-hk/components/telescope/
   - title: Tinker
     details: Tinker 是 Hyperf 框架的強大 REPL。
-    link: /zh-cn/components/tinker/
+    link: /zh-hk/components/tinker/
   - title: Web Tinker
     details: 在瀏覽器中使用 Tinker。
-    link: /zh-cn/components/web-tinker/
+    link: /zh-hk/components/web-tinker/
   - title: Encryption
     details: Encryption 提供了一個簡單、方便的加密和解密功能。
-    link: /zh-cn/components/encryption/
+    link: /zh-hk/components/encryption/
   - title: Cache
     details: Cache 提供了一個富有表現力的統一緩存 API。
-    link: /zh-cn/components/cache/
+    link: /zh-hk/components/cache/
   - title: HttpClient
     details: HttpClient 提供了一個簡單、方便的 HTTP 客户端。
-    link: /zh-cn/components/http-client/
+    link: /zh-hk/components/http-client/
   - title: Validated DTO
     details: Validated DTO 提供了一個簡單、方便的數據驗證功能。
-    link: /zh-cn/components/validated-dto/
+    link: /zh-hk/components/validated-dto/
   - title: Lock
     details: Lock 提供了一個簡單、方便的分佈式鎖功能。
-    link: /zh-cn/components/lock/
+    link: /zh-hk/components/lock/
   - title: More
     details: 更多組件…
-    link: /zh-cn/components/
+    link: /zh-hk/components/
 ---
 
