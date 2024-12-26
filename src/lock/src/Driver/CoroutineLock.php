@@ -24,11 +24,17 @@ class CoroutineLock extends AbstractLock
      */
     protected static array $channels = [];
 
+    /**
+     * @var WeakMap<Channel, string>|null
+     */
     protected static ?WeakMap $owners = null;
 
     protected static ?Timer $timer = null;
 
-    protected static array $timerIds = [];
+    /**
+     * @var WeakMap<Channel, int>|null
+     */
+    protected static ?WeakMap $timers = null;
 
     /**
      * Create a new lock instance.
@@ -45,9 +51,8 @@ class CoroutineLock extends AbstractLock
 
         parent::__construct($name, $seconds, $owner);
 
-        if (is_null(self::$owners)) {
-            self::$owners = new WeakMap();
-        }
+        self::$owners ??= new WeakMap();
+        self::$timers ??= new WeakMap();
 
         if (is_null(self::$timer)) {
             self::$timer = new Timer();
@@ -69,12 +74,12 @@ class CoroutineLock extends AbstractLock
 
             self::$owners[$chan] = $this->owner;
 
-            if ($timeId = self::$timerIds[$this->name] ?? null) {
-                self::$timer?->clear($timeId);
+            if ($timeId = self::$timers[$chan] ?? null) {
+                self::$timer?->clear((int) $timeId);
             }
 
             if ($this->seconds > 0) {
-                self::$timerIds[$this->name] = self::$timer?->after($this->seconds * 1000, fn () => $this->forceRelease());
+                self::$timers[$chan] = self::$timer?->after($this->seconds * 1000, fn () => $this->forceRelease());
             }
         } catch (Throwable) {
             return false;
