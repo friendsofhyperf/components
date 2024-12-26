@@ -1,6 +1,6 @@
 # Model Factory
 
-## Installation
+## 安裝
 
 ```shell
 composer require friendsofhyperf/model-factory --dev

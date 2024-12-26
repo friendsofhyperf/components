@@ -1,6 +1,6 @@
 # Console Spinner
 
-The progress bar component For Hyperf.
+為 Hyperf 框架提供的進度條組件。
 
 ## 安裝
 

@@ -1,6 +1,6 @@
 # Confd
 
-The confd component for Hyperf.
+Hyperf 的配置管理元件。
 
 ## 安裝
 

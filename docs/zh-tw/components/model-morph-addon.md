@@ -1,6 +1,6 @@
 # Model Morph Addon
 
-The model morph addon for Hyperf.
+模型多型擴充套件包，支援在 Hyperf 模型中使用多型關聯。
 
 ## 安裝
 

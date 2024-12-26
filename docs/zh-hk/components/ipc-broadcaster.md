@@ -1,6 +1,6 @@
 # Ipc Broadcaster
 
-Ipc Broadcaster component for Hyperf.
+Hyperf 進程通信廣播組件。
 
 ## 安裝
 
