@@ -1,6 +1,6 @@
 # Command Validation
 
-The command validation component for Hyperf.
+用于 Hyperf 命令行的验证组件。
 
 ## 安装
 
