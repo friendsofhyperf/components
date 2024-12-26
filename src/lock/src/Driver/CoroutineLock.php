@@ -39,9 +39,7 @@ class CoroutineLock extends AbstractLock
         ?string $owner = null,
         array $constructor = []
     ) {
-        $constructor = array_merge([
-            'prefix' => '',
-        ], $constructor);
+        $constructor = array_merge(['prefix' => ''], $constructor);
 
         $name = $constructor['prefix'] . $name;
 
