@@ -1,0 +1,75 @@
+name: Split Docs
+
+on:
+  push:
+    paths:
+      - 'docs/**'
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  translate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          tools: phpize
+          extensions: swoole, redis
+          ini-values: extension=opencc
+
+      - name: Install OpenCC
+        run: |
+          sudo apt-get install libopencc-dev -y
+
+      - name: Build opencc4php
+        run: |
+          git clone https://github.com/nauxliu/opencc4php.git --depth 1
+          cd opencc4php
+          phpize
+          ./configure
+          make
+          sudo make install
+          php --ri opencc
+          cd ..
+          rm -rf opencc4php
+
+      - name: Setup Dependencies
+        run: composer install
+
+      - name: Start Translate
+        run: php bin/doc-translate
+
+      - name: Commit Updated
+        uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+          commit_message: Update docs and translate
+  split:
+    needs: translate
+    name: Split on branch ${{ github.ref }}
+    if: github.repository == 'friendsofhyperf/components'
+    runs-on: ubuntu-22.04
+    env:
+      SSH_PRIVATE_KEY: ${{ secrets.SPLIT_PRIVATE_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Setup Private Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          echo "StrictHostKeyChecking no" >> ~/.ssh/config
+      - name: Split And Push
+        run: |
+          git config pull.rebase true
+          git config --global user.email "huangdijia@gmail.com"
+          git config --global user.name "Deeka Wong"
+          ./bin/split-docs.sh

@@ -1,10 +1,21 @@
 import { defineConfig } from 'vitepress'
+
 import enGetConfig from "./src/en/config";
 import enGetNavs from "./src/en/nav";
 import enGetSidebar from "./src/en/sidebars";
-import zhGetConfig from "./src/zh/config";
-import zhGetNavs from "./src/zh/nav";
-import zhGetSidebar from "./src/zh/sidebars";
+
+import cnGetConfig from "./src/zh-cn/config";
+import cnGetNavs from "./src/zh-cn/nav";
+import cnGetSidebar from "./src/zh-cn/sidebars";
+
+import hkGetConfig from "./src/zh-hk/config";
+import hkGetNavs from "./src/zh-hk/nav";
+import hkGetSidebar from "./src/zh-hk/sidebars";
+
+import twGetConfig from "./src/zh-tw/config";
+import twGetNavs from "./src/zh-tw/nav";
+import twGetSidebar from "./src/zh-tw/sidebars";
+
 import taskLists from 'markdown-it-task-lists' 
 
 // https://vitepress.dev/reference/site-config
@@ -40,9 +51,37 @@ export default defineConfig({
   ],
   locales:{
     root:{
-      label:"中文",
+      label:"简体中文",
       lang:"zh",
-      ...zhGetConfig,
+      ...cnGetConfig,
+    },
+    "zh-hk":{
+      label:"繁體中文（港）",
+      lang:"zh-hk",
+      link:"/zh-hk/index",
+      ...hkGetConfig,
+      themeConfig:{
+        logo: '/logo.svg',
+        nav: hkGetNavs,
+        sidebar:hkGetSidebar,
+        outline:{
+          level:[2 ,4],
+        },
+      }
+    },
+    "zh-tw":{
+      label:"繁體中文（臺）",
+      lang:"zh-tw",
+      link:"/zh-tw/index",
+      ...twGetConfig,
+      themeConfig:{
+        logo: '/logo.svg',
+        nav: twGetNavs,
+        sidebar:twGetSidebar,
+        outline:{
+          level:[2 ,4],
+        },
+      }
     },
     en:{
       label:"English",
@@ -128,9 +167,9 @@ export default defineConfig({
     i18nRouting:false,
     // https://vitepress.dev/reference/default-theme-config
 
-    nav: zhGetNavs,
+    nav: cnGetNavs,
 
-    sidebar: zhGetSidebar,
+    sidebar: cnGetSidebar,
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/friendsofhyperf/components' },
