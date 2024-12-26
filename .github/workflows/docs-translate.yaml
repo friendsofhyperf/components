@@ -40,7 +40,9 @@ jobs:
         run: composer install
 
       - name: Start Translate
-        run: php bin/doc-translate
+        run: |
+          cp docs/index.md docs/zh-cn/index.md
+          php bin/doc-translate
 
       - name: Commit Updated
         uses: stefanzweifel/git-auto-commit-action@v4

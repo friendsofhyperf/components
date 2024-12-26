@@ -7,9 +7,6 @@ hero:
   text: "最受歡迎的 Hyperf 組件"
   tagline: "讓 Hyperf 像 Laravel 一樣簡單且強大 🚀"
   actions:
-    # - theme: brand
-    #   text: 入門
-    #   link: /zh-hk/guide/
     - theme: brand
       text: 組件
       link: /zh-hk/components/

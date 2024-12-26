@@ -7,9 +7,6 @@ hero:
   text: "最受歡迎的 Hyperf 元件"
   tagline: "讓 Hyperf 像 Laravel 一樣簡單且強大 🚀"
   actions:
-    # - theme: brand
-    #   text: 入門
-    #   link: /zh-tw/guide/
     - theme: brand
       text: 元件
       link: /zh-tw/components/
@@ -22,7 +19,7 @@ features:
     details: 這是 Sentry 的 Hyperf SDK。
     link: /zh-tw/components/sentry/
   - title: Telecope
-    details: Telescope 是 Hyperf 框架的優雅偵錯助手。
+    details: Telescope 是 Hyperf 框架的優雅除錯助手。
     link: /zh-tw/components/telescope/
   - title: Tinker
     details: Tinker 是 Hyperf 框架的強大 REPL。
