@@ -16,18 +16,18 @@ require BASE_PATH . '/vendor/autoload.php';
 use Symfony\Component\Finder\Finder;
 
 $config = [
-    // 'zh-tw' => [
-    //     'targetDir' => BASE_PATH . '/docs/zh-TW/',
-    //     'rule' => 's2twp.json',
-    // ],
-    // 'zh-hk' => [
-    //     'targetDir' => BASE_PATH . '/docs/zh-HK/',
-    //     'rule' => 's2hk.json',
-    // ],
-    'en' => [
-        'targetDir' => BASE_PATH . '/docs/en/',
-        'rule' => 's2en.json',
+    'zh-tw' => [
+        'targetDir' => BASE_PATH . '/docs/zh-TW/',
+        'rule' => 's2twp.json',
     ],
+    'zh-hk' => [
+        'targetDir' => BASE_PATH . '/docs/zh-HK/',
+        'rule' => 's2hk.json',
+    ],
+    // 'en' => [
+    //     'targetDir' => BASE_PATH . '/docs/en/',
+    //     'rule' => 's2en.json',
+    // ],
 ];
 
 $finder = new Finder();
