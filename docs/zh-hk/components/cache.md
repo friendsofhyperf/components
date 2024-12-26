@@ -2,7 +2,7 @@
 
 ## 簡介
 
-`friendsofhyperf/cache` 是一個基於 `hyperf/cache` 的組件。 提供更多簡潔性的擴展方法
+`friendsofhyperf/cache` 是一個基於 `hyperf/cache` 的組件。 提供更多簡潔性的擴展方法。
 
 ## 安裝
 
