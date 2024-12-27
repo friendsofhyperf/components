@@ -1,4 +1,7 @@
 {
+	"scripts": {
+		"docs:translate": "node bin/doc-translate.js"
+	},
 	"type": "module",
 	"dependencies": {
 		"openai": "^4.77.0"

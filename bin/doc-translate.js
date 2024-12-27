@@ -4,7 +4,7 @@ import path from 'path';
 
 const token = process.env["GITHUB_TOKEN"];
 const endpoint = "https://models.inference.ai.azure.com";
-const modelName = "o1-mini";
+const modelName = "gpt-4o";
 
 async function translateFiles() {
   const client = new OpenAI({
