@@ -1,6 +1,6 @@
 # Model Scope
 
-The model scope annotation for Hyperf.
+Hyperf 框架的模型 Scope 註解組件。
 
 ## 安裝
 

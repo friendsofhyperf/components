@@ -1,6 +1,6 @@
 # ReCaptcha
 
-The Google recaptcha component for Hyperf.
+適用於 Hyperf 的 Google ReCaptcha 組件。
 
 ## 安裝
 

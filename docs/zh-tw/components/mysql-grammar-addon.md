@@ -1,6 +1,6 @@
 # Mysql Grammar Addon
 
-The MySqlGrammar addon for Hyperf.
+Hyperf 框架的 MySqlGrammar 擴充套件元件。
 
 ## 安裝
 

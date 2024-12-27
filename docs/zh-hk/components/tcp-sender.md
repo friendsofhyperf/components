@@ -5,7 +5,6 @@
 `friendsofhyperf/tcp-sender` 是一個類似 `hyperf/websocket-server` 的 TCP 服務組件，可以用於向指定的 fd 發送消息。
 無需額外關注底層的實現，只需關注業務邏輯即可。
 
-
 ## 安裝
 
 ```shell
