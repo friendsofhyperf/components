@@ -97,5 +97,5 @@ SENTRY_TRACING_SPANS_SQL_QUERIES=true
 
 ## Sentry 開發文檔
 
-- https://github.com/open-telemetry/semantic-conventions/tree/main
-- https://develop.sentry.dev/sdk/performance/span-operations/#database
+- OpenTelemetry 語義約定 [semantic-conventions](https://github.com/open-telemetry/semantic-conventions/tree/main)
+- Sentry Span 操作命名規範 [span-operations](https://develop.sentry.dev/sdk/performance/span-operations/#database)
