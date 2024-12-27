@@ -1,6 +1,6 @@
 # Pretty Console
 
-The pretty console component for Hyperf.
+用于 Hyperf 的精美控制台组件。
 
 ![Pretty Console](https://user-images.githubusercontent.com/5457236/178333036-b11abb56-ba70-4c0d-a2f6-79afe3a0a78c.png)
 

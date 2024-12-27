@@ -1,6 +1,6 @@
 # Tinker
 
-The Powerful REPL for Hyperf.
+Hyperf 的强大的 REPL 工具。
 
 ## 安装
 

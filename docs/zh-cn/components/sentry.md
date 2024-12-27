@@ -1,6 +1,6 @@
 # Sentry
 
-The sentry component for Hyperf.
+Hyperf 的 Sentry 组件。
 
 ## 安装
 

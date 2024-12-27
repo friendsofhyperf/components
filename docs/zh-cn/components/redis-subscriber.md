@@ -1,12 +1,8 @@
 # Redis Subscriber
 
-Forked from [mix-php/redis-subscriber](https://github.com/mix-php/redis-subscriber)
+基于 Swoole 协程的 Redis 原生协议订阅器，代码从 [mix-php/redis-subscriber](https://github.com/mix-php/redis-subscriber) 复刻而来。
 
-Redis native protocol Subscriber based on Swoole coroutine
-
-基于 Swoole 协程的 Redis 原生协议订阅库
-
-使用 Socket 直接连接 Redis 服务器，不依赖 phpredis 扩展，该订阅器有如下优点：
+基于 Swoole 协程的 Redis 原生协议订阅库，使用 Socket 直接连接 Redis 服务器，不依赖 phpredis 扩展，该订阅器有如下优点：
 
 - 平滑修改：可随时增加、取消订阅通道，实现无缝切换通道的需求。
 - 跨协程安全关闭：可在任意时刻关闭订阅。
