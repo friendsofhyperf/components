@@ -20,7 +20,7 @@ import taskLists from 'markdown-it-task-lists'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  title: "FriendsOfHyperf",
+  title: "Hyperf Fans",
   description: "🚀 The most popular components for Hyperf.",
   ignoreDeadLinks: true,
   head: [
