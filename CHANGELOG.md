@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.1.52.1 - 2024-12-27
+
+### What's Changed
+
+* Adds translate support by @huangdijia in https://github.com/friendsofhyperf/components/pull/815
+* Update the "Command Signal" document, translate the component description into Chinese by @huangdijia in https://github.com/friendsofhyperf/components/pull/816
+* Patch docs by @huangdijia in https://github.com/friendsofhyperf/components/pull/817
+* Add file translation feature, use OpenAI API to translate Chinese Markdown documents into English by @huangdijia in https://github.com/friendsofhyperf/components/pull/818
+* Improve trigger config by @huangdijia in https://github.com/friendsofhyperf/components/pull/813
+* refactor(lock): improve CoroutineLock implementation and manage channels with WeakMap by @huangdijia in https://github.com/friendsofhyperf/components/pull/814
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.52...v3.1.52.1
+
 ## v3.1.52 - 2024-12-23
 
 ### What's Changed
