@@ -1,26 +1,6 @@
 import {DefaultTheme} from "vitepress";
 
 const sidebar:DefaultTheme.Sidebar = {
-    // '/en/guide/': [
-    //     {
-    //         text: 'Introduce',
-    //         items: [
-    //             {
-    //                 text: 'About',
-    //                 link: '/en/guide/introduce/about',
-    //             },
-    //         ]
-    //     },
-    //     {
-    //         text: 'Quick Start',
-    //         items: [
-    //             {
-    //                 text: "Supported Components List",
-    //                 link: "/en/guide/start/components"
-    //             }
-    //         ]
-    //     }
-    // ],
     '/en/components/':[
         {
             text: 'Components',
