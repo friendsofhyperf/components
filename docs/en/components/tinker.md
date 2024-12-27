@@ -22,7 +22,7 @@ php bin/hyperf.php tinker
 
 ## Commands
 
-- Run Commands
+- Running Commands
 
 ````shell
 Psy Shell v0.10.4 (PHP 7.3.11 — cli)
@@ -37,7 +37,7 @@ Psy Shell v0.10.4 (PHP 7.3.11 — cli)
 >>>
 ````
 
-- View Command Help
+- Viewing Command Help
 
 ```shell
 >>> help
@@ -66,7 +66,7 @@ Psy Shell v0.10.4 (PHP 7.3.11 — cli)
   inspire          Display an inspiring quote
 ```
 
-- Get Environment Variables
+- Fetching Environment Variables
 
 ```shell
 Psy Shell v0.10.4 (PHP 7.2.34 — cli)
@@ -99,4 +99,91 @@ Unable to check for updates
      +wasRecentlyCreated: false,
      +timestamps: true,
    }
+>>> var_dump($user)
+object(App\Model\User)#81816 (28) {
+  ["table":protected]=>
+  string(5) "users"
+  ["fillable":protected]=>
+  array(2) {
+    [0]=>
+    string(2) "id"
+    [1]=>
+    string(4) "name"
+  }
+  ["casts":protected]=>
+  array(0) {
+  }
+  ["incrementing"]=>
+  bool(true)
+  ["exists"]=>
+  bool(true)
+ 
+  ["attributes":protected]=>
+  array(4) {
+    ["id"]=>
+    int(1)
+    ["name"]=>
+    string(5) "arvin"
+    ["created_at"]=>
+    string(19) "2020-11-23 18:38:00"
+    ["updated_at"]=>
+    string(19) "2020-11-23 18:38:03"
+  }
+  ["original":protected]=>
+  array(4) {
+    ["id"]=>
+    int(1)
+    ["name"]=>
+    string(5) "arvin"
+    ["created_at"]=>
+    string(19) "2020-11-23 18:38:00"
+    ["updated_at"]=>
+    string(19) "2020-11-23 18:38:03"
+  }
+  
+}
+=> null
+```
+
+- Viewing Documentation
+
+```shell
+>>> doc md5
+function md5($str, $raw_output = unknown)
+
+PHP manual not found
+    To document core PHP functionality, download the PHP reference manual:
+    https://github.com/bobthecow/psysh/wiki/PHP-manual
+>>>
+```
+
+- Viewing Source Code
+
+```shell
+>>> show App\Model\User
+ 7: /**
+ 8:  */
+ 9: class User extends Model
+10: {
+11:     /**
+12:      * The table associated with the model.
+13:      *
+14:      * @var string
+15:      */
+16:     protected $table = 'users';
+17:     /**
+18:      * The attributes that are mass assignable.
+19:      *
+20:      * @var array
+21:      */
+22:     protected $fillable = ['id','name'];
+23:     /**
+24:      * The attributes that should be cast to native types.
+25:      *
+26:      * @var array
+27:      */
+28:     protected $casts = [];
+29: }
+
+>>>
 ```

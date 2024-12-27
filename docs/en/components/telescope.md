@@ -1,18 +1,18 @@
 # Telescope
 
-## Available Watchers
+## Available Monitors
 
-- [x] Request Watcher
-- [x] Exception Watcher
-- [x] Database Query Watcher
-- [x] gRPC Request Watcher
-- [x] Redis Watcher
-- [x] Log Watcher
-- [x] Command Line Watcher
-- [x] Event Watcher
-- [x] HTTP Client Watcher
-- [x] Cache Watcher
-- [x] Schedule Watcher
+- [x] Request Monitor
+- [x] Exception Monitor
+- [x] Query Monitor
+- [x] gRPC Request Monitor
+- [x] Redis Monitor
+- [x] Log Monitor
+- [x] Command Monitor
+- [x] Event Monitor
+- [x] HTTP Client Monitor
+- [x] Cache Monitor
+- [x] Scheduled Task Monitor
 
 ## Installation
 
@@ -20,13 +20,13 @@
 composer require friendsofhyperf/telescope:~3.1.0
 ```
 
-Use the `vendor:publish` command to publish its public resources
+Use the `vendor:publish` command to publish its public resources.
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/telescope
 ```
 
-Run the `migrate` command to execute database changes to create and save the data needed by Telescope
+Run the `migrate` command to execute database changes necessary to create and store the data needed by Telescope.
 
 ```shell
 php bin/hyperf.php migrate
@@ -34,11 +34,11 @@ php bin/hyperf.php migrate
 
 ## Usage
 
-> Choose either listeners or middleware
+> You can choose between using listeners or middleware.
 
-### Request Listener
+### Request Listeners
 
-Add the listener in the `config/autoload/listeners.php` configuration file
+Add the listeners in the `config/autoload/listeners.php` configuration file.
 
 ```php
 <?php
@@ -51,9 +51,9 @@ return [
 
 ### Middleware
 
-Add global middleware in the `config/autoload/middlewares.php` configuration file
+Add the global middleware in the `config/autoload/middlewares.php` configuration file.
 
-To record HTTP requests, use the `http` middleware
+To log HTTP requests, use the `http` middleware.
 
 ```php
 <?php
@@ -65,27 +65,25 @@ return [
 ];
 ```
 
-To record gRPC requests, use the `grpc` middleware
+To log gRPC requests, use the `grpc` middleware.
 
 ```php
 <?php
 
-use FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware;
-
 return [
     'grpc' => [
-        TelescopeMiddleware::class,
+        FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware::class,
     ],
 ];
 ```
 
-## View Dashboard
+## Access the Dashboard
 
 `http://127.0.0.1:9501/telescope`
 
 ## Database Configuration
 
-Manage database connection configuration in `config/autoload/telescope.php`, uses `default` connection by default
+In the `config/autoload/telescope.php` file, you can configure the database connection. By default, it uses the `default` connection.
 
 ```php
 'connection' => env('TELESCOPE_DB_CONNECTION', 'default'),
@@ -93,13 +91,13 @@ Manage database connection configuration in `config/autoload/telescope.php`, use
 
 ## Tags
 
-You may want to attach your own custom tags to entries. To do this, you can use the **`Telescope::tag`** method.
+You may want to attach custom tags to entries. To do so, you can use the **`Telescope::tag`** method.
 
 ## Batch Filtering
 
-You might want to record entries only under certain special conditions. For this, you can use the **`Telescope::filter`** method.
+You may want to record entries only under specific conditions. To do so, you can use the **`Telescope::filter`** method.
 
-Example
+Example:
 
 ```php
 use FriendsOfHyperf\Telescope\Telescope;
@@ -118,7 +116,7 @@ class TelescopeInitListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        // attach your own custom tags
+        // Attach your own custom tags
         Telescope::tag(function (IncomingEntry $entry) {
             if ($entry->type === 'request') {
                 return [
@@ -128,15 +126,16 @@ class TelescopeInitListener implements ListenerInterface
             }
         });
 
-        // filter entry
+        // Filter entries
         Telescope::filter(function (IncomingEntry $entry): bool {
-            if ($entry->type === 'request'){
-                if ($entry->content['uri'] == 'xxxx') {
+            if ($entry->type === 'request') {
+                if ($entry->content['uri'] === 'xxxx') {
                     return false;
                 }
             }
             return true;
         });
+
     }
 }
 ```

@@ -1,6 +1,6 @@
 # DI Plus
 
-The di plus component for Hyperf.
+The dependency injection enhancement component for Hyperf.
 
 ## Installation
 
@@ -36,23 +36,25 @@ class Foo2
     {
     }
 }
+```
 
-class Bar
+Support for annotation-based configuration:
+
+```php
+<?php
+namespace App;
+
+use Hyperf\Di\Annotation\Inject;
+
+class Foo1
 {
+    #[Inject]
+    public Bar $bar;
 }
 
-class BarAtFoo1Factory
+class Foo2
 {
-    public function __invoke()
-    {
-        return new Bar();
-    }
+    #[Inject]
+    public Bar $bar;
 }
-
-class BarAtFoo2Factory
-{
-    public function __invoke()
-    {
-        return new Bar();
-    }
-}
+```

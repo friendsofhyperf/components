@@ -1,6 +1,6 @@
 # Config Consul
 
-The consul config component for Hyperf.
+Consul configuration component for Hyperf.
 
 ## Installation
 

@@ -1,6 +1,6 @@
 # Encryption
 
-The encryption component for Hyperf.
+Hyperf Encryption Component.
 
 ## Installation
 

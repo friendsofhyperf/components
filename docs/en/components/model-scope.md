@@ -10,7 +10,7 @@ composer require friendsofhyperf/model-scope
 
 ## Usage
 
-- Define Scope
+- Define a Scope
 
 ```php
 namespace App\Model\Scope;
@@ -31,7 +31,7 @@ class AncientScope implements Scope
 }
 ```
 
-- Bind to Model
+- Attach Scope to a Model
 
 ```php
 namespace App\Model;

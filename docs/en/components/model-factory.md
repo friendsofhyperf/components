@@ -6,7 +6,7 @@
 composer require friendsofhyperf/model-factory --dev
 ```
 
-Additionally, publish the vendor configuration file to your application (required by dependencies):
+Additionally, publish the vendor configuration files to your application (mandatory for dependencies):
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/model-factory
@@ -60,4 +60,5 @@ class UserSeeder extends Seeder
         factory(User::class, 20)->create();
     }
 }
+
 ```

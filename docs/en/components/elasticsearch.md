@@ -1,6 +1,6 @@
 # Elasticsearch
 
-The Elasticsearch client for Hyperf.
+A customized Elasticsearch client component for Hyperf.
 
 ## Installation
 

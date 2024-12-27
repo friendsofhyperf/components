@@ -1,6 +1,6 @@
 # Middleware Plus
 
-The middleware plus component for Hyperf.
+Middleware Enhancement Component
 
 ## Installation
 
@@ -40,7 +40,7 @@ class FooMiddleware implements MiddlewareInterface
 
 ```
 
-- Set Middleware in Route
+- Set Middleware in Routes
 
 ```php
 use App\Middleware\FooMiddleware;
@@ -52,7 +52,7 @@ Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController::
 ]);
 ```
 
-- Set Middleware Alias
+- Set Middleware Aliases
 
 ```php
 // config/autoload/dependencies.php
@@ -62,7 +62,7 @@ return [
 ];
 ```
 
-- Use Middleware Alias
+- Use Middleware Aliases
 
 ```php
 use App\Middleware\FooMiddleware;

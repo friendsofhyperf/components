@@ -23,14 +23,14 @@ class FooCommand extends HyperfCommand
 {
     use Prettyable;
 
-    public function function handle()
+    public function handle()
     {
         $this->components->info('Your message here.');
     }
 }
 ```
 
-## Acknowledgments
+## Acknowledgements
 
 - [nunomaduro/termwind](https://github.com/nunomaduro/termwind)
-- [The idea from pr of laravel](https://github.com/laravel/framework/pull/43065)
+- [The idea from PR of Laravel](https://github.com/laravel/framework/pull/43065)

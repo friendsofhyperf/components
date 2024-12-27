@@ -14,12 +14,12 @@ composer require friendsofhyperf/sentry
 php bin/hyperf.php vendor:publish friendsofhyperf/sentry
 ```
 
-## Register LoggerHandler
+## Register `LoggerHandler`
 
 ```php
 <?php
 
-# use it send customer log to sentry
+# Use this to send custom logs to Sentry.
 //\FriendsOfHyperf\Helpers\logs('project-name', 'sentry')->warning('this is a test warning issue!');
 
 return [
@@ -42,9 +42,10 @@ return [
     ],
     // ...
 ];
+
 ```
 
-## Configure Sentry Runtime Logs
+## Configure Sentry to Handle Application Logs
 
 ```php
 <?php
@@ -75,7 +76,7 @@ class Foo
 }
 ```
 
-## Tracing
+## Distributed Tracing
 
 ```env
 SENTRY_TRACING_ENABLE_AMQP=true

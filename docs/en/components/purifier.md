@@ -1,48 +1,46 @@
 # Purifier
 
-HTML filter. forked from [mews/purifier](https://github.com/mewebstudio/Purifier).
+An HTML filter derived from [mews/purifier](https://github.com/mewebstudio/Purifier).
 
 ## Installation
 
-Require this package with composer:
+Use Composer to install this package:
 
 ```shell
 composer require friendsofhyperf/purifier
 ```
 
-The service provider will be auto-discovered. You do not need to add the provider anywhere.
+Service providers will be automatically discovered. You do not need to add any providers manually.
 
 ## Usage
 
-Use these methods inside your requests or middleware, wherever you need the HTML cleaned up:
+Use the following method in your requests or middleware to clean HTML:
 
 ```php
 clean($request->get('inputname'));
 ```
 
-or
+Or:
 
 ```php
 ApplicationContext::getContainer()->get(Purifier::class)->clean($request->get('inputname'));
 ```
 
-dynamic config
+Dynamic configuration:
 
 ```php
 clean('This is my H1 title', 'titles');
 clean('This is my H1 title', array('Attr.EnableID' => true));
 ```
 
-or
+Or:
 
 ```php
 ApplicationContext::getContainer()->get(Purifier::class)->clean('This is my H1 title', 'titles');
 ApplicationContext::getContainer()->get(Purifier::class)->clean('This is my H1 title', array('Attr.EnableID' => true));
 ```
 
-HTML filter. forked from [mews/purifier](https://github.com/mewebstudio/Purifier).
-
-use [URI filter](http://htmlpurifier.org/docs/enduser-uri-filter.html)
+Using [URI filters](http://htmlpurifier.org/docs/enduser-uri-filter.html):
 
 ```php
 ApplicationContext::getContainer()->get(Purifier::class)->clean('This is my H1 title', 'titles', function (HTMLPurifier_Config $config) {
@@ -51,7 +49,7 @@ ApplicationContext::getContainer()->get(Purifier::class)->clean('This is my H1 t
 });
 ```
 
-Alternatively, if you're looking to clean your HTML inside your database models, you can use our custom casts:
+Alternatively, if you want to clean HTML in a database model, you can use our custom casts:
 
 ```php
 <?php
@@ -66,22 +64,22 @@ use FriendsOfHyperf\Purifier\Casts\CleanHtmlOutput;
 class Monster extends Model
 {
     protected $casts = [
-        'bio'            => CleanHtml::class, // cleans both when getting and setting the value
-        'description'    => CleanHtmlInput::class, // cleans when setting the value
-        'history'        => CleanHtmlOutput::class, // cleans when getting the value
+        'bio'            => CleanHtml::class, // Cleans when both setting and retrieving values
+        'description'    => CleanHtmlInput::class, // Cleans when setting values
+        'history'        => CleanHtmlOutput::class, // Cleans when retrieving values
     ];
 }
 ```
 
 ## Configuration
 
-To use your own settings, publish config.
+To use your own settings, publish the configuration.
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/purifier
 ```
 
-Config file `config/autoload/purifier.php` should like this
+The configuration file `config/autoload/purifier.php` will look like this:
 
 ```php
 
@@ -111,14 +109,14 @@ return [
             'rev' => 1,
             'debug' => false,
             'elements' => [
-                // https://html.spec.whatwg.org/dev/sections.html
+                // https://developers.whatwg.org/sections.html
                 ['section', 'Block', 'Flow', 'Common'],
                 ['nav',     'Block', 'Flow', 'Common'],
                 ['article', 'Block', 'Flow', 'Common'],
                 ['aside',   'Block', 'Flow', 'Common'],
                 ['header',  'Block', 'Flow', 'Common'],
                 ['footer',  'Block', 'Flow', 'Common'],
-
+                
                 ['address', 'Block', 'Flow', 'Common'],
                 ['hgroup', 'Block', 'Required: h1 | h2 | h3 | h4 | h5 | h6', 'Common'],
                 

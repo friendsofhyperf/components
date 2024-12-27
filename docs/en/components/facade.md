@@ -22,7 +22,7 @@ composer require friendsofhyperf/facade
 - [x] Redis
 - [x] Request
 - [x] Response
-- [x] Route
 - [x] Session
-- [x] Storage
+- [x] Translator
+- [x] Validator
 - [x] View

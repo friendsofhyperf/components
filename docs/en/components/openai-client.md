@@ -2,9 +2,9 @@
 
 ------
 
-**OpenAI PHP** for Laravel is a powerful community PHP API client that allows you to interact with the [Open AI API](https://beta.openai.com/docs/api-reference/introduction).
+**OpenAI PHP** for Laravel is a robust community PHP API client that allows you to interact with the [Open AI API](https://beta.openai.com/docs/api-reference/introduction).
 
-> **Note:** This repository contains the Hyperf integration code for **OpenAI PHP**. If you want to use the **OpenAI PHP** client in a framework-agnostic way, check out the [openai-php/client](https://github.com/openai-php/client) repository.
+> **Note:** This repository contains the Hyperf integration code for **OpenAI PHP**. If you want to use the **OpenAI PHP** client in a framework-agnostic way, please refer to the [openai-php/client](https://github.com/openai-php/client) repository.
 
 ## Quick Start
 
@@ -22,13 +22,13 @@ Next, publish the configuration file:
 php bin/hyperf.php vendor:publish friendsofhyperf/openai-client
 ```
 
-This will create a `config/autoload/openai.php` configuration file in your project that you can modify as needed using environment variables:
+This will create a `config/autoload/openai.php` configuration file in your project, which you can modify using environment variables as needed:
 
 ```env
 OPENAI_API_KEY=sk-...
 ```
 
-Finally, you can use the `OpenAI\Client` instance from the container to access the OpenAI API:
+Finally, you can access the OpenAI API using the `OpenAI\Client` instance from the container:
 
 ```php
 use OpenAI\Client;
@@ -43,7 +43,7 @@ echo $result['choices'][0]['text']; // an open-source, widely-used, server-side 
 
 ## Azure
 
-To use Azure OpenAI Service, you must manually build the client using the factory.
+To use the Azure OpenAI service, you need to manually build the client using a factory.
 
 ```php
 $client = OpenAI::factory()
@@ -53,9 +53,9 @@ $client = OpenAI::factory()
     ->make();
 ```
 
-For Azure usage, you must deploy a model which is identified by the {deployment-id} that is integrated into the API call. Therefore, you don't have to provide the model during the call as it's already included in the BaseUri.
+When using Azure, you must deploy a model identified by `{deployment-id}`, which is integrated into the API calls. Therefore, you don't need to specify a model during the call because it is already included in the `BaseUri`.
 
-Thus, a basic example completion call would be:
+For example, a basic completion call would look like this:
 
 ```php
 $result = $client->completions()->create([
@@ -65,4 +65,4 @@ $result = $client->completions()->create([
 
 ## Official Guide
 
-For usage examples, please check out the [openai-php/client](https://github.com/openai-php/client) repository.
+For usage examples, please refer to the [openai-php/client](https://github.com/openai-php/client) repository.

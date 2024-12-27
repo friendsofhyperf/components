@@ -1,6 +1,6 @@
 # IDE Helper
 
-The ide-helper component for Hyperf.
+The IDE helper component for Hyperf
 
 ## Installation
 
@@ -10,13 +10,13 @@ composer require friendsofhyperf/ide-helper
 
 ## Usage
 
-- Generate model helper
+- Generate model helpers
 
 ```shell
 php ./bin/hyperf.php ide-helper:model
 ```
 
-- Generate macro helper
+- Generate macro helpers
 
 ```shell
 php ./bin/hyperf.php ide-helper:macro

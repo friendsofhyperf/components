@@ -1,6 +1,6 @@
 # Pest Plugin Hyperf
 
-> This is a [Pest](https://pestphp.com) plugin that enables your Hyperf project's Pest to run in a Swoole-based coroutine environment.
+> This is a [Pest](https://pestphp.com) plugin that allows your Hyperf project to run Pest tests in a coroutine-based Swoole environment.
 
 ## Installation
 
@@ -33,4 +33,5 @@ defined('BASE_PATH') or define('BASE_PATH', dirname(__DIR__, 1));
     
     // $container->get(Hyperf\Contract\ApplicationInterface::class);
 })();
+
 ```

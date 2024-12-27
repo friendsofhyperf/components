@@ -8,7 +8,7 @@ composer require friendsofhyperf/exception-event
 
 ## Usage
 
-### Define Listener
+### Define a Listener
 
 ```php
 <?php

@@ -1,6 +1,6 @@
 # Telescope Elasticsearch Driver
 
-It will allow you to switch from an SQL database to Elasticsearch as a driver for your data storage, and it will eliminate deadlocks, making Telescope a ready-for-production logging system.
+It allows you to switch from an SQL database to Elasticsearch as a data storage driver, and it eliminates deadlocks, making Telescope a log system suitable for a production environment.
 
 ## Installation
 
@@ -8,7 +8,7 @@ It will allow you to switch from an SQL database to Elasticsearch as a driver fo
 composer require friendsofhyperf/telescope-elasticsearch
 ```
 
-## Publish Config
+## Publish Configuration
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/telescope --id=config

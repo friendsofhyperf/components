@@ -1,6 +1,6 @@
 # Model Observer
 
-The model observer component for Hyperf.
+The Model Observer component is designed for the Hyperf framework.
 
 ## Installation
 
@@ -10,7 +10,7 @@ composer require friendsofhyperf/model-observer
 
 ## Usage
 
-- Generate through command
+- Generate via command
 
 ```shell
 php bin/hyperf.php gen:observer TestObserver --model="App\\Model\\User"
@@ -29,15 +29,15 @@ class FooObserver
 {
     public function creating(User $model)
     {
-        // do sth...
+        // do something...
     }
 
     public function created(User $model)
     {
-        // do sth...
+        // do something...
     }
 
-    // another events
+    // other events
 }
 ```
 
@@ -55,15 +55,15 @@ class FooObserver
 {
     public function creating($model)
     {
-        // do sth...
+        // do something...
     }
 
     public function created($model)
     {
-        // do sth...
+        // do something...
     }
 
-    // another events
+    // other events
 }
 ```
 

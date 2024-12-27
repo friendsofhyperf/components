@@ -12,5 +12,5 @@ phpstan.neon
 .phpactor.json
 docs/.vitepress/dist
 docs/.vitepress/cache
-docs/node_modules
+**/node_modules
 src/web-tinker/node_modules

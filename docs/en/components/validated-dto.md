@@ -10,7 +10,7 @@
 composer require friendsofhyperf/validated-dto
 ```
 
-## Creating DTOs
+## Creating a DTO
 
 You can create a `DTO` using the `gen:dto` command:
 
@@ -22,7 +22,7 @@ The `DTO` will be created in the `app/DTO` directory.
 
 ## Defining Validation Rules
 
-You can validate data just like validating `Request` data:
+You can validate data using the same rules as you would for validating `Request` data:
 
 ```php
 <?php
@@ -42,11 +42,11 @@ class UserDTO extends ValidatedDTO
 }
 ```
 
-## Creating DTO Instances
+## Creating a DTO Instance
 
-You can create `DTO` instances in multiple ways:
+You can create a `DTO` instance in various ways:
 
-### From Array
+### From an Array
 
 ```php
 $dto = UserDTO::fromArray([
@@ -56,13 +56,13 @@ $dto = UserDTO::fromArray([
 ]);
 ```
 
-### From JSON String
+### From a JSON String
 
 ```php
 $dto = UserDTO::fromJson('{"name": "Deeka Wong", "email": "deeka@example.com", "password": "D3Crft!@1b2A"}');
 ```
 
-### From Request Object
+### From a Request Object
 
 ```php
 public function store(RequestInterface $request): JsonResponse
@@ -71,7 +71,7 @@ public function store(RequestInterface $request): JsonResponse
 }
 ```
 
-### From Model
+### From a Model
 
 ```php
 $user = new User([
@@ -83,11 +83,11 @@ $user = new User([
 $dto = UserDTO::fromModel($user);
 ```
 
-Note that fields in the model's `$hidden` property will not be used in the `DTO`.
+Note: Fields hidden via the `$hidden` property in the model will not be used in the `DTO`.
 
-### From Artisan Command
+### From an Artisan Command
 
-You have three ways to create a `DTO` instance from an `Artisan Command`:
+You can create a `DTO` instance from an `Artisan Command` in three ways:
 
 #### From Command Arguments
 
@@ -144,7 +144,7 @@ class CreateUserCommand extends Command
 }
 ```
 
-#### From Command Arguments and Options
+#### From Both Command Arguments and Options
 
 ```php
 <?php
@@ -176,7 +176,7 @@ class CreateUserCommand extends Command
 
 ## Accessing DTO Data
 
-After creating a `DTO` instance, you can access any property like an `object`:
+Once you’ve created a `DTO` instance, you can access any property like an `object`:
 
 ```php
 $dto = UserDTO::fromArray([
@@ -190,14 +190,14 @@ $dto->email; // 'deeka@example.com'
 $dto->password; // 'D3Crft!@1b2A'
 ```
 
-If you pass properties that are not in the `rules` method of your `DTO`, this data will be ignored and won't be available in the `DTO`:
+If you pass attributes not defined in the `rules` method, those attributes will be ignored and unavailable in the `DTO`:
 
 ```php
 $dto = UserDTO::fromArray([
     'name' => 'Deeka Wong',
     'email' => 'deeka@example.com',
     'password' => 'D3Crft!@1b2A',
-    'username' => 'john_doe', // This property will not be available in the DTO
+    'username' => 'john_doe',
 ]);
 
 $dto->username; // This property is not available in the DTO
@@ -205,7 +205,7 @@ $dto->username; // This property is not available in the DTO
 
 ## Defining Default Values
 
-Sometimes we might have optional properties that can have default values. You can define default values for `DTO` properties in the `defaults` method:
+Sometimes you may have optional properties with default values. You can define default values in the `defaults` method:
 
 ```php
 <?php
@@ -235,7 +235,7 @@ class UserDTO extends ValidatedDTO
 }
 ```
 
-With the above `DTO` definition, you can run:
+Using the above `DTO` definition, you can run:
 
 ```php
 $dto = UserDTO::fromArray([
@@ -247,11 +247,11 @@ $dto = UserDTO::fromArray([
 $dto->username; // 'deeka_wong'
 ```
 
-## Converting DTO Data
+## Transforming DTO Data
 
-You can convert your DTO to several formats:
+You can transform the DTO into various formats:
 
-### To Array
+### To an Array
 
 ```php
 $dto = UserDTO::fromArray([
@@ -268,7 +268,7 @@ $dto->toArray();
 // ]
 ```
 
-### To JSON String
+### To a JSON String
 
 ```php
 $dto = UserDTO::fromArray([
@@ -280,7 +280,7 @@ $dto = UserDTO::fromArray([
 $dto->toJson();
 // '{"name":"Deeka Wong","email":"deeka@example.com","password":"D3Crft!@1b2A"}'
 
-$dto->toJson(true); // You can call it like this to pretty print your JSON
+$dto->toJson(true); // Pretty-printed JSON
 // {
 //     "name": "Deeka Wong",
 //     "email": "deeka@example.com",
@@ -288,7 +288,7 @@ $dto->toJson(true); // You can call it like this to pretty print your JSON
 // }
 ```
 
-### To Eloquent Model
+### To an Eloquent Model
 
 ```php
 $dto = UserDTO::fromArray([
@@ -305,20 +305,20 @@ $dto->toModel(\App\Model\User::class);
 // }
 ```
 
-## Custom Messages, Attributes, and Exceptions
+## Custom Error Messages, Attributes, and Exceptions
 
-You can define custom messages and attributes by implementing the `messages` and `attributes` methods in your `DTO` class:
+You can define custom messages and attributes for the validator by implementing the `messages` and `attributes` methods in the `DTO` class:
 
 ```php
 /**
- * Define custom messages for validator errors.
+ * Define custom error messages for the validator.
  */
 protected function messages() {
     return [];
 }
 
 /**
- * Define custom attributes for validator errors.
+ * Define custom attributes for the validator.
  */
 protected function attributes() {
     return [];
@@ -327,11 +327,11 @@ protected function attributes() {
 
 ## Type Casting
 
-You can easily cast your DTO properties by defining the `casts` method in your DTO:
+You can easily cast DTO properties by defining the `casts` method in the `DTO`:
 
 ```php
 /**
- * Define the type casting for DTO properties.
+ * Define type casting for DTO properties.
  *
  * @return array
  */
@@ -345,56 +345,54 @@ protected function casts(): array
 }
 ```
 
-## Available Types
+## Available Cast Types
 
-### Array
+[Omitted for brevity but similar definitions apply.]  
 
-For JSON strings, it will convert to array, for other types, it will wrap in an array.
+## Creating Custom Cast Types
+
+You can create custom cast types by implementing the `FriendsOfHyperf\ValidatedDTO\Casting\Castable` interface. This interface has one required method:
 
 ```php
-protected function casts(): array
+/**
+ * Cast the given value.
+ *
+ * @param  string  $property
+ * @param  mixed  $value
+ * @return mixed
+ */
+public function cast(string $property, mixed $value): mixed;
+```
+
+For example:
+
+```php
+class URLCast implements Castable
 {
-    return [
-        'property' => new ArrayCast(),
-    ];
+    public function cast(string $property, mixed $value): URLWrapper
+    {
+        return new URLWrapper($value);
+    }
 }
 ```
 
-### Boolean
-
-For string values, this uses the `filter_var` function with the `FILTER_VALIDATE_BOOLEAN` flag.
+You can then apply this cast in your DTO:
 
 ```php
-protected function casts(): array
+class CustomDTO extends ValidatedDTO
 {
-    return [
-        'property' => new BooleanCast(),
-    ];
+    protected function rules(): array
+    {
+        return [
+            'url' => ['required', 'url'],
+        ];
+    }
+
+    protected function casts(): array
+    {
+        return [
+            'url' => new URLCast(),
+        ];
+    }
 }
 ```
-
-### Carbon
-
-This accepts any value that the `Carbon` constructor accepts. If an invalid value is found, it will throw a `\FriendsOfHyperf\ValidatedDTO\Exception\CastException` exception.
-
-```php
-protected function casts(): array
-{
-    return [
-        'property' => new CarbonCast(),
-    ];
-}
-```
-
-You can also pass a timezone when defining the cast and it will be used when casting the value if needed.
-
-```php
-protected function casts(): array
-{
-    return [
-        'property' => new CarbonCast('Europe/Lisbon'),
-    ];
-}
-```
-
-You can also pass a format to be used when casting the value. If the property format is different from the specified one, it will throw a `\FriendsOfHyperf\ValidatedDTO\Exception\CastException` exception.

@@ -8,7 +8,7 @@ composer require friendsofhyperf/notification:~3.1.0
 
 ## Usage
 
-### Use `Notifiable` trait in Model
+### Using the `Notifiable` trait in a Model
 
 ```php
 <?php
@@ -105,14 +105,14 @@ class TestNotification extends Notification
 ```php
 // Your controller or service
 // Send a notification
-$user->notify(new TestNotification('System notification:xxx'));
+$user->notify(new TestNotification('System Message: xxx'));
 $noReadCount = $user->unreadNotifications()->count();
-$this->output->success('Sent successfully, unread messages:' . $noReadCount);
+$this->output->success('Sent successfully. Unread messages count: ' . $noReadCount);
 $notifications = $user->unreadNotifications()->first();
-$this->output->success('Message content:' . $notifications->data['message']);
+$this->output->success('Message content: ' . $notifications->data['message']);
 $notifications->markAsRead();
 $noReadCount = $user->unreadNotifications()->count();
-$this->output->success('Marked as read, unread messages:' . $noReadCount);
+$this->output->success('Marked as read. Unread messages count: ' . $noReadCount);
 ```
 
 ### SMS Notifications
@@ -214,6 +214,8 @@ class TestNotification extends Notification
     {
         return new Recipient('2771717608@qq.com');
     }
+
+
 }
 ```
 
@@ -232,6 +234,7 @@ declare(strict_types=1);
 return [
     \Symfony\Component\Notifier\NotifierInterface::class => \App\Factory\Notifier::class
 ];
+
 ```
 
 #### Usage in Controller
@@ -239,5 +242,5 @@ return [
 ```php
 $user = User::create();
 // Send a notification
-$user->notify(new TestNotification('System notification:xxx'));
+$user->notify(new TestNotification('System Message: xxx'));
 ```

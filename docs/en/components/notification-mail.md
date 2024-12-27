@@ -8,7 +8,7 @@ composer require friendsofhyperf/notification-mail:~3.1.0
 
 ## Usage
 
-### Use `Notifiable` trait in Model
+### Use `Notifiable` Trait in Model
 
 ```php
 <?php
@@ -35,7 +35,9 @@ class User extends Model
      */
     protected ?string $table = 'user';
     
-    // Notification email
+    
+
+    // Notification email address
     public function routeNotificationForMail(): string|PhoneNumber
     {
         return $this->mail;
@@ -49,9 +51,10 @@ class User extends Model
 php bin/hyperf.php gen:markdown-mail Test
 ```
 
-output
+Output
 
 ```php
+
 namespace App\Mail;
 
 use FriendsOfHyperf\Notification\Mail\Message\MailMessage;
@@ -82,7 +85,7 @@ class Test extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)->from('xxx@xxx.cn','Hyperf')->replyTo('xxx@qq.com','zds')->markdown('email');
+        return (new MailMessage)->from('xxx@xxx.cn', 'Hyperf')->replyTo('xxx@qq.com', 'zds')->markdown('email');
     }
 
     /**
@@ -96,5 +99,13 @@ class Test extends Notification
             //
         ];
     }
+
 }
+```
+
+### Mail Template
+
+```php
+// storage/view/email.blade.php
+xxx
 ```

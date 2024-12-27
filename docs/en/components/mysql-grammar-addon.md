@@ -8,7 +8,7 @@ The MySqlGrammar addon for Hyperf.
 composer require friendsofhyperf/mysql-grammar-addon --dev
 ```
 
-## Before Usage
+## Before Use
 
 ```php
 /**
@@ -26,7 +26,7 @@ class Event extends Model
 {}
 ```
 
-## After Usage
+## After Use
 
 ```php
 /**
@@ -36,9 +36,9 @@ class Event extends Model
  * @property string $event_name Event Name
  * @property string $page_name Page
  * @property string $extra Extra Information
- * @property string $device pc,android,ios,touch
+ * @property string $device pc, android, ios, touch
  * @property string $device_id Device ID
- * @property \Carbon\Carbon $created_at Create Time
+ * @property \Carbon\Carbon $created_at Creation Time
  */
 class Event extends Model
 {}

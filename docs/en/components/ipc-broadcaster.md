@@ -1,6 +1,6 @@
 # Ipc Broadcaster
 
-Ipc Broadcaster component for Hyperf.
+The Hyperf process communication broadcaster component.
 
 ## Installation
 
@@ -41,4 +41,5 @@ class FooMessage extends IpcMessage
 use function FriendsOfHyperf\IpcBroadcaster\broadcast;
 
 broadcast(new FooMessage('bar'));
+
 ```

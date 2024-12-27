@@ -1,6 +1,6 @@
 # Model Morph Addon
 
-The model morph addon for Hyperf.
+A polymorphic extension package that supports using polymorphic relationships in Hyperf models.
 
 ## Installation
 

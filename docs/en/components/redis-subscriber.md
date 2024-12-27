@@ -2,13 +2,13 @@
 
 Forked from [mix-php/redis-subscriber](https://github.com/mix-php/redis-subscriber)
 
-Redis native protocol Subscriber based on Swoole coroutine
+Redis native protocol subscriber based on Swoole coroutine.
 
-Using Socket to directly connect to Redis server, without relying on the phpredis extension, this subscriber has the following advantages:
+A subscription library based on Swoole coroutine that connects directly to the Redis server using Socket, without relying on the `phpredis` extension. This subscriber has the following advantages:
 
-- Smooth modification: You can add or cancel channel subscriptions at any time, implementing seamless channel switching requirements.
-- Cross-coroutine safe shutdown: Can close subscription at any time.
-- Channel message retrieval: This library's encapsulation style references the golang language [go-redis](https://github.com/go-redis/redis) library, retrieving subscription messages through channels.
+- **Seamless Modification**: Channels can be added or removed at any time, enabling seamless channel switching.
+- **Cross-Coroutine Safe Shutdown**: Subscriptions can be safely closed at any time.
+- **Message Retrieval via Channels**: Inspired by the Golang [go-redis](https://github.com/go-redis/redis) library, this package wraps functionality to retrieve subscription messages via channels.
 
 ## Installation
 
@@ -18,18 +18,18 @@ composer require friendsofhyperf/redis-subscriber
 
 ## Subscribe to Channels
 
-- Connection and subscription failures will throw exceptions
+- Exceptions will be thrown in case of connection or subscription failures.
 
 ```php
-$sub = new \FriendsOfHyperf\Redis\Subscriber\Subscriber('127.0.0.1', 6379, '', 5); // Connection failure will throw an exception
-$sub->subscribe('foo', 'bar'); // Subscription failure will throw an exception
+$sub = new \FriendsOfHyperf\Redis\Subscriber\Subscriber('127.0.0.1', 6379, '', 5); // Exception will be thrown if connection fails
+$sub->subscribe('foo', 'bar'); // Exception will be thrown if subscription fails
 
 $chan = $sub->channel();
 while (true) {
     $data = $chan->pop();
-    if (empty($data)) { // Both manual close and redis abnormal disconnection will cause return false
+    if (empty($data)) { // Both manual close and abnormal Redis disconnection will return false
         if (!$sub->closed) {
-            // Redis abnormal disconnection handling
+            // Handle abnormal Redis disconnection
             var_dump('Redis connection is disconnected abnormally');
         }
         break;
@@ -38,7 +38,7 @@ while (true) {
 }
 ```
 
-Received subscription message:
+When a subscription message is received:
 
 ```shell
 object(FriendsOfHyperf\Redis\Subscriber\Message)#8 (2) {
@@ -53,9 +53,9 @@ object(FriendsOfHyperf\Redis\Subscriber\Message)#8 (2) {
 
 | Method | Description |
 | --- | --- |
-| subscribe(string ...$channels) : void | Add subscription |
-| unsubscribe(string ...$channels) : void | Cancel subscription |
-| psubscribe(string ...$channels) : void | Add pattern subscription |
-| punsubscribe(string ...$channels) : void | Cancel pattern subscription |
-| channel() : Hyperf\Engine\Channel | Get message channel |
-| close() : void | Close subscription |
+| `subscribe(string ...$channels) : void` | Add subscriptions |
+| `unsubscribe(string ...$channels) : void` | Remove subscriptions |
+| `psubscribe(string ...$channels) : void` | Add pattern-based subscriptions |
+| `punsubscribe(string ...$channels) : void` | Remove pattern-based subscriptions |
+| `channel() : Hyperf\Engine\Channel` | Get the message channel |
+| `close() : void` | Close the subscription |

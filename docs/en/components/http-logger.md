@@ -1,11 +1,11 @@
 # Http Logger
 
-The http logger component for Hyperf.
+An HTTP logging component provided for Hyperf.
 
 ## Installation
 
 ```shell
-composer require "friendsofhyperf/http-logger
+composer require "friendsofhyperf/http-logger"
 ```
 
 ## Publish Configuration
@@ -19,7 +19,7 @@ php bin/hyperf.php vendor:publish friendsofhyperf/http-logger
 ```php
 return [
     'http' => [
-        // Configuration here
+        \FriendsOfHyperf\Http\Logger\Middleware\HttpLogger::class,
     ],
 ];
 ```

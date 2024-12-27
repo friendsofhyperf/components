@@ -1,6 +1,6 @@
 # Mail
 
-Email component of Hyperf
+The email component supports sending emails using drivers such as SMTP, SendMail, Log, and more. It also supports Markdown template rendering.
 
 ## Installation
 
@@ -96,8 +96,8 @@ return [
 
         'log' => [
             'transport' => 'log',
-            'group' => env('MAIL_LOG_GROUP','default'),
-            'name' => env('MAIL_LOG_NAME','mail'),
+            'group' => env('MAIL_LOG_GROUP', 'default'),
+            'name' => env('MAIL_LOG_NAME', 'mail'),
         ],
 
         'array' => [
@@ -157,7 +157,7 @@ return [
 ];
 ```
 
-### Creating Mail Classes
+### Creating a Mail Class
 
 ```shell
 php bin/hyperf.php gen:mail TestMail
@@ -174,6 +174,7 @@ use FriendsOfHyperf\Mail\Mailable\Envelope;
 
 class TestMail extends Mailable
 {
+
     /**
      * Create a new message instance.
      */
@@ -216,7 +217,7 @@ class TestMail extends Mailable
 }
 ```
 
-### Defining Controllers or Services
+### Define a Controller or Service
 
 ```php
 // app/Controller/IndexController.php
@@ -229,7 +230,7 @@ class IndexController extends AbstractController
     {
         $user = $this->request->input('user', 'Hyperf');
         $mailer = Mail::mailer('smtp');
-        $mailer->alwaysFrom('root@imoi.cn','Hyperf');
+        $mailer->alwaysFrom('root@imoi.cn', 'Hyperf');
 
         $mailer->to('2771717608@qq.com')->send(new \App\Mail\TestMail($user));
         $method = $this->request->getMethod();

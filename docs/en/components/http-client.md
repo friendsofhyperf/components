@@ -1,6 +1,6 @@
 # HTTP Client
 
-The HTTP Client component for Hyperf, from Laravel.
+An HTTP client component for Hyperf, ported from Laravel.
 
 ## Installation
 
@@ -16,6 +16,6 @@ use FriendsOfHyperf\Http\Client\Http;
 $response = Http::get('https://example.com');
 ```
 
-## Documentation Reference
+## Reference Documentation
 
 For more information, please refer to the [Laravel HTTP Client Documentation](https://laravel.com/docs/9.x/http-client).

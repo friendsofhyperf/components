@@ -1,5 +1,9 @@
 # Cache
 
+## Introduction
+
+`friendsofhyperf/cache` is a component based on `hyperf/cache`. It provides additional simplified extension methods.
+
 ## Installation
 
 ```shell
@@ -8,7 +12,7 @@ composer require friendsofhyperf/cache
 
 ## Usage
 
-### Annotation
+### Annotations
 
 ```php
 namespace App\Controller;
@@ -41,7 +45,7 @@ Cache::remember($key, $ttl=60, function() {
 });
 ```
 
-### Switch Driver
+### Switching Drivers
 
 ```php
 use FriendsOfHyperf\Cache\Facade\Cache;
@@ -55,3 +59,7 @@ di(CacheManager::class)->store('co')->remember($key, $ttl=60, function() {
     // return sth
 });
 ```
+
+## References
+
+Similar to [Laravel-Cache](https://laravel.com/docs/8.x/cache)

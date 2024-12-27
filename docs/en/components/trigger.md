@@ -8,7 +8,7 @@
 composer require friendsofhyperf/trigger
 ```
 
-- Publish Configuration
+- Publish configuration
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/trigger
@@ -24,7 +24,7 @@ return [
 ];
 ```
 
-## Define Trigger
+## Define Triggers
 
 ```php
 namespace App\Trigger;
@@ -53,7 +53,7 @@ class FooTrigger extends AbstractTrigger
 }
 ```
 
-## Define Subscriber
+## Define Subscribers
 
 ```php
 namespace App\Subscriber;

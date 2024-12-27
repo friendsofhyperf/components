@@ -1,6 +1,6 @@
 # Confd
 
-The confd component for Hyperf.
+The configuration management component for Hyperf.
 
 ## Installation
 
@@ -13,13 +13,13 @@ composer require friendsofhyperf/nacos
 
 ## Commands
 
-Get configuration from `etcd/nacos` and update `.env`.
+Fetch configuration from `etcd/nacos` and update the `.env` file.
 
 ```shell
 php bin/hyperf.php confd:env
 ```
 
-## Define Listener
+## Define a Listener
 
 ```php
 <?php
@@ -48,7 +48,7 @@ class ConfigChangedListener implements ListenerInterface
     public function process(object $event): void
     {
         $this->logger->warning('[confd] ConfdChanged');
-        // do something
+        // Handle changes
     }
 }
 ```
