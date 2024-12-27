@@ -3,7 +3,7 @@
 layout: home
 
 hero:
-  name: "FriendsOfHyperf"
+  name: "Hyperf Fans"
   text: "最受歡迎的 Hyperf 元件"
   tagline: "讓 Hyperf 像 Laravel 一樣簡單且強大 🚀"
   actions:
