@@ -26,7 +26,7 @@ async function translateFiles() {
         await combineFiles(fullPath);
       } else if (file.name.endsWith('.md')) {
         const content = await fs.readFile(fullPath, 'utf8');
-        combinedContent += `<!-- ${fullPath} -->\n${content}\n\n`;
+        combinedContent += `<!-- {{${fullPath}}} -->\n${content}\n\n`;
       }
     }
   }
@@ -42,7 +42,7 @@ async function translateFiles() {
   });
 
   const translatedContent = response.choices[0].message.content;
-  const sections = translatedContent.split(/<!--\s*(.*?)\s*-->/);
+  const sections = translatedContent.split(/<!--\s*\{\{(.*?)\}\}\s*-->/);
 
   for (let i = 1; i < sections.length; i += 2) {
     const filePath = sections[i];
