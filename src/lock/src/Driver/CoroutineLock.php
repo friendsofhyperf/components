@@ -11,28 +11,48 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Lock\Driver;
 
-use Hyperf\Cache\Driver\CoroutineMemoryDriver;
+use Hyperf\Coordinator\Timer;
+use Hyperf\Engine\Channel;
 use Override;
-use Psr\SimpleCache\CacheInterface;
-
-use function Hyperf\Support\make;
+use Throwable;
+use WeakMap;
 
 class CoroutineLock extends AbstractLock
 {
     /**
-     * The cache store implementation.
+     * @var array<string, Channel>
      */
-    protected CacheInterface $store;
+    protected static array $channels = [];
+
+    /**
+     * @var WeakMap<Channel, string>|null
+     */
+    protected static ?WeakMap $owners = null;
+
+    protected static ?Timer $timer = null;
+
+    /**
+     * @var WeakMap<Channel, int>|null
+     */
+    protected static ?WeakMap $timers = null;
 
     /**
      * Create a new lock instance.
      */
-    public function __construct(string $name, int $seconds, ?string $owner = null, array $constructor = [])
-    {
+    public function __construct(
+        string $name,
+        int $seconds,
+        ?string $owner = null,
+        array $constructor = []
+    ) {
+        $constructor = array_merge(['prefix' => ''], $constructor);
+        $name = $constructor['prefix'] . $name;
+
         parent::__construct($name, $seconds, $owner);
 
-        $constructor = array_merge(['prefix' => ''], $constructor);
-        $this->store = make(CoroutineMemoryDriver::class, ['config' => $constructor]);
+        self::$owners ??= new WeakMap();
+        self::$timers ??= new WeakMap();
+        self::$timer ??= new Timer();
     }
 
     /**
@@ -41,11 +61,28 @@ class CoroutineLock extends AbstractLock
     #[Override]
     public function acquire(): bool
     {
-        if ($this->store->has($this->name)) {
+        try {
+            $chan = self::$channels[$this->name] ??= new Channel(1);
+
+            if (! $chan->push(1, 0.01)) {
+                return false;
+            }
+
+            self::$owners[$chan] = $this->owner;
+
+            if ($timeId = self::$timers[$chan] ?? null) {
+                self::$timer?->clear((int) $timeId);
+            }
+
+            if ($this->seconds > 0) {
+                $timeId = self::$timer?->after($this->seconds * 1000, fn () => $this->forceRelease());
+                $timeId && self::$timers[$chan] = $timeId;
+            }
+        } catch (Throwable) {
             return false;
         }
 
-        return $this->store->set($this->name, $this->owner, $this->seconds);
+        return true;
     }
 
     /**
@@ -55,7 +92,7 @@ class CoroutineLock extends AbstractLock
     public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
-            return $this->store->delete($this->name);
+            return (self::$channels[$this->name] ?? null)?->pop(0.01) ? true : false;
         }
 
         return false;
@@ -67,7 +104,13 @@ class CoroutineLock extends AbstractLock
     #[Override]
     public function forceRelease(): void
     {
-        $this->store->delete($this->name);
+        if (! $chan = self::$channels[$this->name] ?? null) {
+            return;
+        }
+
+        self::$channels[$this->name] = null;
+
+        $chan->close();
     }
 
     /**
@@ -76,6 +119,10 @@ class CoroutineLock extends AbstractLock
      */
     protected function getCurrentOwner()
     {
-        return $this->store->get($this->name);
+        if (! $chan = self::$channels[$this->name] ?? null) {
+            return '';
+        }
+
+        return self::$owners[$chan] ?? '';
     }
 }
