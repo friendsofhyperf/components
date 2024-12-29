@@ -1,6 +1,6 @@
 # Command Signals
 
-The signal handling component of Hyperf Command.
+Signal handling component for Hyperf Command.
 
 ## Installation
 
@@ -47,7 +47,7 @@ class FooCommand extends HyperfCommand
 }
 ```
 
-## Execution
+## Running
 
 - `Ctrl + C`
 

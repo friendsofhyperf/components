@@ -2,7 +2,7 @@
 
 ## Introduction
 
-`friendsofhyperf/amqp-job` is an asynchronous task component built on the `hyperf/amqp` package. It supports distributing tasks to the AMQP service and consuming these tasks through consumers. It encapsulates the `hyperf/amqp` package and provides a more convenient way to distribute and consume tasks.
+`friendsofhyperf/amqp-job` is an asynchronous task component based on the `hyperf/amqp` component. It supports dispatching tasks to an AMQP service, which are then consumed by consumers. By encapsulating the `hyperf/amqp` component, it provides a more convenient way to dispatch and consume tasks.
 
 ## Installation
 
@@ -35,9 +35,10 @@ class FooJob extends Job
 }
 
 dispatch(new FooJob());
+
 ```
 
-### Registering a Consumer [Optional]
+### Registering Consumers [Optional]
 
 ```php
 
@@ -52,9 +53,11 @@ use Hyperf\Amqp\Annotation\Consumer;
     queue: 'hyperf.queue',
     name: 'MyConsumer',
     nums: 4
+
 )]
 class MyConsumer extends JobConsumer
 {
     //
 }
+
 ```

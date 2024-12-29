@@ -1,6 +1,6 @@
 # Command Validation
 
-Validation component for Hyperf command-line usage.
+A validation component for Hyperf command line.
 
 ## Installation
 

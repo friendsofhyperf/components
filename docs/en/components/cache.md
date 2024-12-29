@@ -2,7 +2,7 @@
 
 ## Introduction
 
-`friendsofhyperf/cache` is a component based on `hyperf/cache`. It provides additional simplified extension methods.
+`friendsofhyperf/cache` is a component based on `hyperf/cache`. It provides more concise extension methods.
 
 ## Installation
 
@@ -62,4 +62,4 @@ di(CacheManager::class)->store('co')->remember($key, $ttl=60, function() {
 
 ## References
 
-Similar to [Laravel-Cache](https://laravel.com/docs/8.x/cache)
+Like [Laravel-Cache](https://laravel.com/docs/8.x/cache)

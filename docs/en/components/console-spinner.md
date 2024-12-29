@@ -1,6 +1,6 @@
 # Console Spinner
 
-A progress bar component for the Hyperf framework.
+A progress bar component provided for the Hyperf framework.
 
 ## Installation
 
@@ -37,7 +37,7 @@ class FooCommand extends Command
 }
 ```
 
-The `$spinner` is compatible with Symfony ProgressBar, so you can call any method of that class. Alternatively, you can use the `withSpinner` method by providing an iterable object.
+`$spinner` is compatible with Symfony ProgressBar, so you can run any methods from this class. Alternatively, you can use the `withSpinner` method by providing an iterable object.
 
 ```php
 $this->withSpinner(User::all(), function($user) {
