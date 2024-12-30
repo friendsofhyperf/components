@@ -21,7 +21,12 @@ class SafeCaller
 {
     /**
      * Example
-     * $data['scores'] = FriendsOfHyperf\Sentry\Util\SafeCaller::call(fn () => di(ScoresInterface::class)->get(), 'default');.
+     * $data['scores'] = di(FriendsOfHyperf\Sentry\Util\SafeCaller::class)->call(fn () => time(), 'default');.
+     *
+     * @template TReturn
+     *
+     * @param Closure(): TReturn $closure
+     * @return TReturn|mixed
      */
     public function call(Closure $closure, mixed $default = null, ?Closure $exceptionHandler = null): mixed
     {
