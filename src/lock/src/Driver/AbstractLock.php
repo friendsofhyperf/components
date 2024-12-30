@@ -176,7 +176,6 @@ abstract class AbstractLock implements LockInterface
                         $this->set();
                     } catch (Throwable $throwable){
                         ApplicationContext::getContainer()->get(StdoutLoggerInterface::class)?->error((string) $throwable);
-                        sleep(5);
                     }
                 }
             }
