@@ -21,7 +21,7 @@ interface LockInterface
      * @param (callable(): T)|null $callback
      * @return ($callback is null ? bool : T)
      */
-    public function get(?callable $callback = null);
+    public function get(?callable $callback = null, int $heartbeat = 0);
 
     /**
      * Attempt to acquire the lock for the given number of seconds.
@@ -31,7 +31,7 @@ interface LockInterface
      * @return ($callback is null ? bool : T)
      * @throws LockTimeoutException
      */
-    public function block(int $seconds, ?callable $callback = null);
+    public function block(int $seconds, ?callable $callback = null, int $heartbeat = 0);
 
     /**
      * Release the lock.

@@ -12,10 +12,14 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Lock\Driver;
 
 use FriendsOfHyperf\Lock\Exception\LockTimeoutException;
+use Hyperf\Context\ApplicationContext;
+use Hyperf\Contract\StdoutLoggerInterface;
+use Hyperf\Engine\Coroutine;
 use Hyperf\Stringable\Str;
 use Hyperf\Support\Traits\InteractsWithTime;
 use Override;
 
+use Throwable;
 use function Hyperf\Support\now;
 
 abstract class AbstractLock implements LockInterface
@@ -32,6 +36,8 @@ abstract class AbstractLock implements LockInterface
      */
     protected int $sleepMilliseconds = 250;
 
+    protected bool $isRun = true;
+
     /**
      * Create a new lock instance.
      */
@@ -46,6 +52,11 @@ abstract class AbstractLock implements LockInterface
     abstract public function acquire(): bool;
 
     /**
+     * Set the lock.
+     */
+    abstract protected function set(): bool;
+
+    /**
      * Release the lock.
      */
     abstract public function release(): bool;
@@ -55,9 +66,13 @@ abstract class AbstractLock implements LockInterface
      * {@inheritdoc}
      */
     #[Override]
-    public function get(?callable $callback = null)
+    public function get(?callable $callback = null, int $heartbeat = 0)
     {
         $result = $this->acquire();
+
+        if ($result && $heartbeat > 0){
+            $this->loop($heartbeat);
+        }
 
         if ($result && is_callable($callback)) {
             try {
@@ -75,7 +90,7 @@ abstract class AbstractLock implements LockInterface
      * {@inheritdoc}
      */
     #[Override]
-    public function block(int $seconds, ?callable $callback = null)
+    public function block(int $seconds, ?callable $callback = null, int $heartbeat = 0)
     {
         $starting = ((int) now()->format('Uu')) / 1000;
         $milliseconds = $seconds * 1000;
@@ -88,6 +103,10 @@ abstract class AbstractLock implements LockInterface
             }
 
             usleep($this->sleepMilliseconds * 1000);
+        }
+
+        if ($heartbeat > 0){
+            $this->loop($heartbeat);
         }
 
         if (is_callable($callback)) {
@@ -143,4 +162,25 @@ abstract class AbstractLock implements LockInterface
     {
         return $this->isOwnedBy($this->owner);
     }
+
+    protected function loop(int $heartbeat = 5): void
+    {
+         Coroutine::create(
+            function () use ($heartbeat) {
+                while ($this->isRun) {
+                    sleep($heartbeat);
+                    if (!$this->isRun){
+                        return;
+                    }
+                    try {
+                        $this->set();
+                    } catch (Throwable $throwable){
+                        ApplicationContext::getContainer()->get(StdoutLoggerInterface::class)?->error((string) $throwable);
+                        sleep(5);
+                    }
+                }
+            }
+        );
+    }
+
 }

@@ -48,11 +48,21 @@ class FileSystemLock extends AbstractLock
     }
 
     /**
+     * Set the lock.
+     */
+    #[Override]
+    protected function set(): bool
+    {
+        return $this->store->set($this->name, $this->owner, $this->seconds) == true;
+    }
+
+    /**
      * Release the lock.
      */
     #[Override]
     public function release(): bool
     {
+        $this->isRun = false;
         if ($this->isOwnedByCurrentProcess()) {
             return $this->store->delete($this->name);
         }
@@ -66,6 +76,7 @@ class FileSystemLock extends AbstractLock
     #[Override]
     public function forceRelease(): void
     {
+        $this->isRun = false;
         $this->store->delete($this->name);
     }
 

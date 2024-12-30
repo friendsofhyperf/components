@@ -85,12 +85,21 @@ class CoroutineLock extends AbstractLock
         return true;
     }
 
+    #[Override]
+    protected function set(): bool
+    {
+        return false;
+    }
+
+
     /**
      * Release the lock.
      */
     #[Override]
     public function release(): bool
     {
+        $this->isRun = false;
+
         if ($this->isOwnedByCurrentProcess()) {
             return (self::$channels[$this->name] ?? null)?->pop(0.01) ? true : false;
         }
@@ -104,6 +113,8 @@ class CoroutineLock extends AbstractLock
     #[Override]
     public function forceRelease(): void
     {
+        $this->isRun = false;
+
         if (! $chan = self::$channels[$this->name] ?? null) {
             return;
         }

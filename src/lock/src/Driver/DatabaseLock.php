@@ -71,11 +71,31 @@ class DatabaseLock extends AbstractLock
     }
 
     /**
+     * Set the lock.
+     */
+    #[Override]
+    protected function set(): bool
+    {
+        $updated = $this->connection->table($this->table)
+            ->where('key', $this->name)
+            ->where('owner', $this->owner)
+            ->update(
+                [
+                    'expiration' => $this->expiresAt()
+                ]
+            );
+        return $updated >= 1;
+    }
+
+
+    /**
      * Release the lock.
      */
     #[Override]
     public function release(): bool
     {
+        $this->isRun = false;
+
         if ($this->isOwnedByCurrentProcess()) {
             $this->connection->table($this->table)
                 ->where('key', $this->name)
@@ -94,6 +114,8 @@ class DatabaseLock extends AbstractLock
     #[Override]
     public function forceRelease(): void
     {
+        $this->isRun = false;
+
         $this->connection->table($this->table)
             ->where('key', $this->name)
             ->delete();
