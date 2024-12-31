@@ -18,8 +18,11 @@ jobs:
 
       - name: Get Changes
         id: get_changes
+        env:
+          BRANCH: ${{ github.head_ref }}
         run: |
-          git diff-tree --no-commit-id --name-only -r HEAD | grep 'docs/' > changes.txt
+          echo "Branch is ... ${BRANCH}"
+          git diff-tree --no-commit-id --name-only "$GITHUB_BASE_REF..${BRANCH}" | grep 'docs/' > changes.txt
           cat changes.txt
 
       - name: Install pnpm
