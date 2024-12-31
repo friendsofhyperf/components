@@ -27,7 +27,7 @@ class FooCommand extends HyperfCommand
     use ValidatesInput;
 
     /**
-     * The command line to be executed.
+     * The command to execute.
      */
     protected string $name = 'foo:hello {?name : The name of the person to greet.}';
 

@@ -18,4 +18,4 @@ $response = Http::get('https://example.com');
 
 ## Documentation
 
-For more information, please refer to the [Laravel HTTP Client Documentation](https://laravel.com/docs/9.x/http-client).
+For more information, please refer to the [Laravel HTTP Client documentation](https://laravel.com/docs/9.x/http-client).

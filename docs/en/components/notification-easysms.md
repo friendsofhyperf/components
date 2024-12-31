@@ -88,7 +88,7 @@ class TestNotification extends Notification implements Smsable
         ];
     }
 
-    // or return customer Message
+    // or return custom Message
     // public function toSms(mixed $notifiable): array|Message
     // {
     //     return new Message();

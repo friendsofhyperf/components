@@ -30,7 +30,7 @@ if ($lock->get()) {
 }
 ```
 
-The `get` method can also accept a closure. After the closure is executed, the lock will be automatically released:
+The `get` method can also accept a closure. The lock will be automatically released after the closure is executed:
 
 ```php
 lock('foo')->get(function () {
@@ -38,7 +38,7 @@ lock('foo')->get(function () {
 });
 ```
 
-If the lock is unavailable when requested, you can control the wait time in seconds. If the lock cannot be acquired within the specified time limit, a `FriendsOfHyperf\Lock\Exception\LockTimeoutException` will be thrown.
+If the lock is not available when requested, you can control the number of seconds to wait. If the lock cannot be acquired within the specified time limit, a `FriendsOfHyperf\Lock\Exception\LockTimeoutException` will be thrown:
 
 ```php
 use FriendsOfHyperf\Lock\Exception\LockTimeoutException;

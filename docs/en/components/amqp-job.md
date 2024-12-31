@@ -2,7 +2,7 @@
 
 ## Introduction
 
-`friendsofhyperf/amqp-job` is an asynchronous task component based on the `hyperf/amqp` component, which supports distributing tasks to AMQP services and then consuming them via consumers. It encapsulates the `hyperf/amqp` component, providing a more convenient way to dispatch and consume tasks.
+`friendsofhyperf/amqp-job` is an asynchronous task component based on the `hyperf/amqp` component, which supports distributing tasks to the AMQP service and then consuming the tasks through consumers. It encapsulates the `hyperf/amqp` component, providing a more convenient way to distribute and consume tasks.
 
 ## Installation
 

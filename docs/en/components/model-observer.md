@@ -1,6 +1,6 @@
 # Model Observer
 
-The Model Observer component, designed for the Hyperf framework.
+The Model Observer component is designed for the Hyperf framework.
 
 ## Installation
 

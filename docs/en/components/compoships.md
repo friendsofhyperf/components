@@ -1,10 +1,10 @@
 # Compoships
 
-**Compoships** provides the ability to specify relationships based on two (or more) columns in the Model ORM of Hyperf. When dealing with third-party or pre-existing schemas/databases, it is common to encounter situations where you need to match multiple columns in the definition of Eloquent relationships.
+**Compoships** provides the ability to specify relationships based on two (or more) columns in Hyperf's Model ORM. This is particularly useful when dealing with third-party or pre-existing schemas/databases where it's common to have the need to match multiple columns in the definition of Eloquent relationships.
 
 ## The Problem
 
-Eloquent does not support composite keys. Therefore, it is not possible to define a relationship from one model to another by matching multiple columns. Attempting to use a `where` clause (as shown in the example below) does not work when eager loading relationships because **$this->team_id** is null when the relationship is being processed.
+Eloquent does not support composite keys. As a result, there is no way to define a relationship from one model to another by matching multiple columns. Attempting to use a `where` clause (as shown in the example below) does not work when eager loading relationships because **$this->team_id** is null when the relationship is being processed.
 
 ```php
 namespace App;
@@ -23,7 +23,7 @@ class User extends Model
 
 ## Installation
 
-It is recommended to install the **Compoships** component via [Composer](http://getcomposer.org/).
+It is recommended to install **Compoships** via [Composer](http://getcomposer.org/).
 
 ```shell
 composer require friendsofhyperf/compoships
@@ -37,7 +37,7 @@ Simply have your model class extend the `FriendsOfHyperf\Compoships\Database\Elo
 
 ### Using the `FriendsOfHyperf\Compoships\Compoships` Trait
 
-If for some reason you cannot extend your model from `FriendsOfHyperf\Compoships\Database\Eloquent\Model`, you can utilize the `FriendsOfHyperf\Compoships\Compoships` trait. Just use the trait in your model.
+If for some reason you cannot extend your model from `FriendsOfHyperf\Compoships\Database\Eloquent\Model`, you can take advantage of the `FriendsOfHyperf\Compoships\Compoships` trait. Just use the trait in your model.
 
 **Note:** To define a multi-column relationship from model *A* to another model *B*, **both models must extend `FriendsOfHyperf\Compoships\Database\Eloquent\Model` or use the `FriendsOfHyperf\Compoships\Compoships` trait**
 
@@ -107,7 +107,7 @@ class User extends Model
 }
 ```
 
-The same syntax can define the inverse of the relationship:
+The same syntax can be used to define the inverse of the relationship:
 
 ```php
 namespace App;

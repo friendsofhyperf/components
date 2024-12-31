@@ -8,7 +8,7 @@ composer require friendsofhyperf/notification:~3.1.0
 
 ## Usage
 
-### Using `Notifiable` Trait in Model
+### Using the `Notifiable` Trait in a Model
 
 ```php
 <?php
@@ -18,7 +18,8 @@ declare(strict_types=1);
 namespace App\Model;
 
 use Hyperf\DbConnection\Model\Model;
-use FriendsOfHyperf\Notification\Traits\Notifiable;use Overtrue\EasySms\PhoneNumber;
+use FriendsOfHyperf\Notification\Traits\Notifiable;
+use Overtrue\EasySms\PhoneNumber;
 
 /**
  * @property int $id 
@@ -237,7 +238,7 @@ return [
 
 ```
 
-#### Using in Controller
+#### Using in a Controller
 
 ```php
 $user = User::create();

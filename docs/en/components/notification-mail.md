@@ -8,7 +8,7 @@ composer require friendsofhyperf/notification-mail:~3.1.0
 
 ## Usage
 
-### Use `Notifiable` Trait in Model
+### Use `Notifiable` trait in Model
 
 ```php
 <?php
@@ -51,7 +51,7 @@ class User extends Model
 php bin/hyperf.php gen:markdown-mail Test
 ```
 
-Output:
+output
 
 ```php
 

@@ -1,6 +1,6 @@
 # Http Logger
 
-An HTTP logging component for Hyperf.
+A HTTP logging component for Hyperf.
 
 ## Installation
 
