@@ -16,6 +16,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Get Changes
+        id: get_changes
+        run: |
+          echo "::set-output name=changes::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})"
+
       - name: Install pnpm
         uses: pnpm/action-setup@v4
         with:
@@ -63,9 +68,9 @@ jobs:
           cp docs/index.md docs/zh-cn/index.md
           php bin/doc-translate
 
-      - name: Start Translate EN
-        run: |
-          pnpm run docs:translate
+      # - name: Start Translate EN
+      #   run: |
+      #     pnpm run docs:translate
 
       - name: Commit Updated
         uses: stefanzweifel/git-auto-commit-action@v5
