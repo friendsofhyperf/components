@@ -1,6 +1,6 @@
 # Components
 
-## List of Supported Components
+## Supported Components List
 
 | Repository | Stable Version | Total Downloads | Monthly Downloads |
 |--|--|--|--|

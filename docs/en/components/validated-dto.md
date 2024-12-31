@@ -176,7 +176,7 @@ class CreateUserCommand extends Command
 
 ## Accessing DTO Data
 
-After creating a `DTO` instance, you can access any property as you would with an `object`:
+Once you have created a `DTO` instance, you can access any property as you would with an `object`:
 
 ```php
 $dto = UserDTO::fromArray([
@@ -205,7 +205,7 @@ $dto->username; // This property is not available in the DTO
 
 ## Defining Default Values
 
-Sometimes we may have optional properties that can have default values. You can define default values for `DTO` properties in the `defaults` method:
+Sometimes we may have some optional properties that can have default values. You can define default values for `DTO` properties in the `defaults` method:
 
 ```php
 <?php
@@ -247,9 +247,9 @@ $dto = UserDTO::fromArray([
 $dto->username; // 'deeka_wong'
 ```
 
-## Converting DTO Data
+## Transforming DTO Data
 
-You can convert your DTO to some formats:
+You can transform your DTO into some formats:
 
 ### To Array
 
@@ -346,7 +346,7 @@ protected function casts(): array
 }
 ```
 
-## Available Casts
+## Available Types
 
 ### Array
 
@@ -478,7 +478,7 @@ If the data is invalid for the DTO, this will throw a `Hyperf\Validation\Validat
 
 If the property is not a valid array or a valid JSON string, this will throw a `FriendsOfHyperf\ValidatedDTO\Exception\CastException`.
 
-If the class passed to the `DTOCast` constructor is not an instance of `ValidatedDTO`, this will throw a `FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException`.
+If the class passed to the `DTOCast` constructor is not a `ValidatedDTO` instance, this will throw a `FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException`.
 
 ```php
 protected function casts(): array
@@ -521,7 +521,7 @@ This works for arrays and JSON strings.
 
 If the property is not a valid array or a valid JSON string, this will throw a `FriendsOfHyperf\ValidatedDTO\Exception\CastException`.
 
-If the class passed to the `ModelCast` constructor is not an instance of `Model`, this will throw a `FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException`.
+If the class passed to the `ModelCast` constructor is not a `Model` instance, this will throw a `FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException`.
 
 ```php
 protected function casts(): array
@@ -560,7 +560,7 @@ protected function casts(): array
 }
 ```
 
-## Creating Your Own Casts
+## Creating Your Own Cast Types
 
 You can easily create new `Castable` types for your project by implementing the `FriendsOfHyperf\ValidatedDTO\Casting\Castable` interface. This interface has one method that must be implemented:
 
@@ -575,7 +575,7 @@ You can easily create new `Castable` types for your project by implementing the 
 public function cast(string $property, mixed $value): mixed;
 ```
 
-Suppose you have a `URLWrapper` class in your project, and you want it to always return a `URLWrapper` instance instead of a simple string when a URL is passed to your `DTO`:
+Suppose you have a `URLWrapper` class in your project, and you want it to always return a `URLWrapper` instance instead of a simple string when passing a URL to your `DTO`:
 
 ```php
 class URLCast implements Castable

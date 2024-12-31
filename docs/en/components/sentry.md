@@ -1,6 +1,6 @@
 # Sentry
 
-Sentry Component for Hyperf.
+Hyperf's Sentry component.
 
 ## Installation
 
@@ -19,7 +19,7 @@ php bin/hyperf.php vendor:publish friendsofhyperf/sentry
 ```php
 <?php
 
-# use it send customer log to sentry
+# Use it to send custom logs to Sentry
 //\FriendsOfHyperf\Helpers\logs('project-name', 'sentry')->warning('this is a test warning issue!');
 
 return [
