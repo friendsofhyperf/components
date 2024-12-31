@@ -50,6 +50,7 @@ jobs:
           commit_message: Update docs and translate
 
   translate-en:
+    needs: translate-zh
     runs-on: ubuntu-latest
     env:
       DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
