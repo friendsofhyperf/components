@@ -19,7 +19,7 @@ jobs:
       - name: Get Changes
         id: get_changes
         run: |
-          echo "::set-output name=changes::$(git diff --name-only ${{ github.event.before }} ${{ github.sha }})"
+          echo "::set-output name=changes::$(git diff --name-only HEAD^ HEAD)"
 
       - name: Install pnpm
         uses: pnpm/action-setup@v4
