@@ -58,6 +58,14 @@ jobs:
       - name: Setup Dependencies
         run: composer install
 
+      - name: Get Changed Files
+        id: changed-files
+        run: |
+          touch ${{ github.workspace }}/changed_files.txt
+          echo ${{github.sha}}
+          echo $(git diff-tree --no-commit-id --name-only ${{github.sha}} -r) > changed_files.txt
+          cat ${{ github.workspace }}/changed_files.txt ; echo
+
       - name: Start Translate ZH
         run: |
           cp docs/index.md docs/zh-cn/index.md
