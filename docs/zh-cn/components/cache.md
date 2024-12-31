@@ -62,4 +62,4 @@ di(CacheManager::class)->store('co')->remember($key, $ttl=60, function() {
 
 ## 参考
 
-参阅 [Laravel-Cache](https://laravel.com/docs/8.x/cache)
+有关更多信息，请参阅 [Laravel-Cache](https://laravel.com/docs/8.x/cache)
