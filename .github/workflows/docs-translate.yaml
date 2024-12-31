@@ -6,7 +6,7 @@ on:
       - 'docs/**'
 
 jobs:
-  translate-zh:
+  translate:
     env:
       DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
     runs-on: ubuntu-latest
