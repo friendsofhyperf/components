@@ -16,7 +16,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Get all changed markdown files
+      - name: Get All Changed Markdown Files
         id: changed-markdown-files
         uses: tj-actions/changed-files@v45
         with:
@@ -25,7 +25,7 @@ jobs:
             **.md
             docs/**.md
 
-      - name: List all changed files markdown files
+      - name: List All Changed Markdown Files
         if: steps.changed-markdown-files.outputs.any_changed == 'true'
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-markdown-files.outputs.all_changed_files }}
@@ -82,6 +82,7 @@ jobs:
           php bin/doc-translate
 
       - name: Start Translate EN
+        if: steps.changed-markdown-files.outputs.any_changed == 'true'
         env:
           ALL_CHANGED_FILES: ${{ steps.changed-markdown-files.outputs.all_changed_files }}
         run: |
