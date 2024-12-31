@@ -49,14 +49,14 @@ class FooCommand extends HyperfCommand
 
 ## 运行
 
-- `Ctrl + C`
+- 执行 `Ctrl + C` 手动退出
 
 ```shell
 $ hyperf foo
 ^CReceived signal 2, exiting...
 ```
 
-- `killall php`
+- `killall php` 杀死进程
 
 ```shell
 $ hyperf foo

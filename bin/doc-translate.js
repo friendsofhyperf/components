@@ -4,7 +4,7 @@ import path from 'path';
 
 const endpoint = "https://api.deepseek.com";
 const token = process.env["DEEPSEEK_API_KEY"];
-const MAX_CONCURRENT = 5; // 最大并发数
+const MAX_CONCURRENT = 10; // 最大并发数
 const MAX_RETRIES = 3; // 最大重试次数
 
 const openai = new OpenAI({

@@ -8,7 +8,7 @@ This is a fast `limit`/`offset` pagination macro for Hyperf. It can replace the 
 
 This package uses an SQL approach similar to "deferred joins" to achieve this speedup. Deferred joins are a technique where the requested columns are accessed only after applying the `offset` and `limit`.
 
-In our case, we don't actually perform a join but use a `where in` with a subquery. Using this technique, we create a subquery that can be optimized with a specific index for maximum speed, and then use these results to fetch the full rows.
+In our case, we don't actually perform a join but use a `where in` with a subquery. Using this technique, we create a subquery that can be optimized with specific indexes for maximum speed, and then use these results to fetch the full rows.
 
 The SQL statement looks like this:
 
@@ -25,7 +25,7 @@ select * from contacts              -- The full data that you want to show your 
 
 Depending on your dataset, the performance improvement may vary, but this approach allows the database to examine as little data as possible to meet the user's needs.
 
-While this method is unlikely to perform worse than the traditional `offset` / `limit`, it is possible, so be sure to test it on your data!
+While this method is unlikely to perform worse than traditional `offset` / `limit`, it is possible, so be sure to test it on your data!
 
 > If you want to read a 3,000-word article on the theory behind this package, visit [aaronfrancis.com/2022/efficient-pagination-using-deferred-joins](https://aaronfrancis.com/2022/efficient-pagination-using-deferred-joins).
 
@@ -41,7 +41,7 @@ No additional steps are required; the service provider will be automatically loa
 
 Anywhere you would use `Model::query()->paginate()`, you can use `Model::query()->fastPaginate()`! It's that simple! The method signature is the same.
 
-Relations are also supported:
+Relationships are also supported:
 
 ```php
 User::first()->posts()->fastPaginate();

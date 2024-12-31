@@ -1,4 +1,3 @@
-```markdown
 ---
 # https://vitepress.dev/reference/default-theme-home-page
 layout: home
@@ -20,7 +19,7 @@ features:
     details: This is the Hyperf SDK for Sentry.
     link: /en/components/sentry/
   - title: Telescope
-    details: Telescope is an elegant debugging assistant for the Hyperf framework.
+    details: Telescope is an elegant debug assistant for the Hyperf framework.
     link: /en/components/telescope/
   - title: Tinker
     details: Tinker is a powerful REPL for the Hyperf framework.
@@ -41,10 +40,9 @@ features:
     details: Validated DTO provides a simple and convenient way to validate data.
     link: /en/components/validated-dto/
   - title: Lock
-    details: Lock provides a simple and convenient distributed locking mechanism.
+    details: Lock provides a simple and convenient distributed lock functionality.
     link: /en/components/lock/
   - title: More
     details: More components…
     link: /en/components/
 ---
-```

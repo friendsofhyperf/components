@@ -53,7 +53,7 @@ $client = OpenAI::factory()
     ->make();
 ```
 
-To use Azure, you must deploy a model, which is identified by {deployment-id}, integrated into the API call. Therefore, you do not need to provide the model during the call, as it is already included in the BaseUri.
+To use Azure, you must deploy a model identified by {deployment-id}, which is integrated into the API call. Therefore, you do not need to provide the model during the call, as it is already included in the BaseUri.
 
 Thus, a basic example completion call would be:
 

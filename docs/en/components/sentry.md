@@ -1,6 +1,6 @@
 # Sentry
 
-Sentry component for Hyperf.
+Sentry Component for Hyperf.
 
 ## Installation
 
@@ -19,7 +19,7 @@ php bin/hyperf.php vendor:publish friendsofhyperf/sentry
 ```php
 <?php
 
-# Use it to send custom logs to Sentry
+# use it send customer log to sentry
 //\FriendsOfHyperf\Helpers\logs('project-name', 'sentry')->warning('this is a test warning issue!');
 
 return [
@@ -76,7 +76,7 @@ class Foo
 }
 ```
 
-## Tracing
+## Distributed Tracing
 
 ```env
 SENTRY_TRACING_ENABLE_AMQP=true

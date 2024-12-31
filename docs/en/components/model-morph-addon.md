@@ -1,6 +1,6 @@
 # Model Morph Addon
 
-The Model Morph Addon supports polymorphic relationships in Hyperf models.
+The Model Morph Addon supports polymorphic associations in Hyperf models.
 
 ## Installation
 

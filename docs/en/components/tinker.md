@@ -1,6 +1,6 @@
 # Tinker
 
-A powerful REPL tool for Hyperf.
+Hyperf's powerful REPL tool.
 
 ## Installation
 
