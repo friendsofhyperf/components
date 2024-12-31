@@ -2,8 +2,8 @@
 
 ## Introduction
 
-The `friendsofhyperf/tcp-sender` is a TCP service component similar to `hyperf/websocket-server`, which can be used to send messages to a specified file descriptor (fd).  
-You don't need to worry about the underlying implementation; just focus on your business logic.
+`friendsofhyperf/tcp-sender` is a TCP service component similar to `hyperf/websocket-server`, which can be used to send messages to a specified fd.
+There's no need to worry about the underlying implementation; just focus on the business logic.
 
 ## Installation
 
@@ -13,7 +13,7 @@ composer require friendsofhyperf/tcp-sender
 
 ## Usage
 
-### Configure `config/autoload/servers.php`
+### Configure config/autoload/servers.php
 
 ```php
 'servers' => [
@@ -24,9 +24,9 @@ composer require friendsofhyperf/tcp-sender
             'port' => 9401,
             'sock_type' => SWOOLE_SOCK_TCP,
             'callbacks' => [
-                Event::ON_CONNECT => [TcpServer::class, 'onConnect'],
-                Event::ON_CLOSE => [TcpServer::class, 'onClose'],
-                Event::ON_RECEIVE => [TcpServer::class, 'onReceive'],
+                Event::ON_CONNECT => [TcpServer::class,'onConnect'],
+                Event::ON_CLOSE => [TcpServer::class,'onClose'],
+                Event::ON_RECEIVE => [TcpServer::class,'onReceive'],
             ],
             'options' => [
                 // Whether to enable request lifecycle event
@@ -48,7 +48,7 @@ use Hyperf\Contract\OnReceiveInterface;
 use FriendsOfHyperf\TcpSender\Sender;
 use Swoole\Server;
 
-class TcpServer implements OnCloseInterface, OnReceiveInterface
+class TcpServer implements OnCloseInterface,OnReceiveInterface
 {
     public function __construct(private Sender $sender)
     {
@@ -59,19 +59,21 @@ class TcpServer implements OnCloseInterface, OnReceiveInterface
      */
     public function onConnect($server, $fd, $reactorId): void
     {
-        $server->send($fd, sprintf('Client %s connected.' . PHP_EOL, $fd));
+        $server->send($fd, sprintf('Client %s connected.'.PHP_EOL, $fd));
     }
 
     public function onClose($server, int $fd, int $reactorId): void
     {
-        $server->send($fd, sprintf('Client %s closed.' . PHP_EOL, $fd));
+        $server->send($fd, sprintf('Client %s closed.'.PHP_EOL, $fd));
     }
 
     public function onReceive($server, int $fd, int $reactorId, string $data): void
     {
-        $server->send($fd, sprintf('Client %s sent: %s' . PHP_EOL, $fd, $data));
+        $server->send($fd, sprintf('Client %s send: %s'.PHP_EOL, $fd, $data));
         var_dump($data);
     }
+
+
 }
 ```
 
@@ -94,24 +96,26 @@ class TcpServer implements OnReceiveInterface
     public function onConnect(Connection $connection, $fd): void
     {
         // Set the mapping between fd and connection
-        $this->sender->setResponse($fd, $connection);
-        $connection->send(sprintf('Client %s connected.' . PHP_EOL, $fd));
+        $this->sender->setResponse($fd,$connection);
+        $connection->send(sprintf('Client %s connected.'.PHP_EOL, $fd));
     }
 
     public function onClose($connection, int $fd): void
     {
         // Remove the mapping between fd and connection
-        $this->sender->setResponse($fd, null);
+        $this->sender->setResponse($fd,null);
     }
 
     public function onReceive($server, int $fd, int $reactorId, string $data): void
     {
-        $server->send($fd, sprintf('Client %s sent: %s' . PHP_EOL, $fd, $data));
+        $server->send($fd, sprintf('Client %s send: %s'.PHP_EOL, $fd, $data));
     }
+
+
 }
 ```
 
-## Usage in Controllers
+## Usage in Controller
 
 ```php
 <?php
@@ -141,4 +145,5 @@ class IndexController extends AbstractController
         ];
     }
 }
+
 ```

@@ -1,52 +1,70 @@
 import OpenAI from "openai";
-import { promises as fs } from 'fs';
+import { readdir, readFile, writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 
-const token = process.env["GITHUB_TOKEN"];
-const endpoint = "https://models.inference.ai.azure.com";
-const modelName = "o1-mini";
+const endpoint = "https://api.deepseek.com";
+const token = process.env["DEEPSEEK_API_KEY"];
+const MAX_CONCURRENT = 5; // 最大并发数
+const MAX_RETRIES = 3; // 最大重试次数
 
-async function translateFiles() {
-  const client = new OpenAI({
+const openai = new OpenAI({
     baseURL: endpoint,
     apiKey: token,
-    dangerouslyAllowBrowser: true
-  });
+});
 
-  const docsPath = path.join(process.cwd(), 'docs/zh-cn');
-
-  async function translateFile(filePath) {
-    const content = await fs.readFile(filePath, 'utf8');
-    const response = await client.chat.completions.create({
-      messages: [
-        { role: "user", content: "You are a professional translator. Translate the following Markdown content from Chinese to English. Preserve all Markdown formatting." },
-        { role: "user", content: content }
-      ],
-      model: modelName
-    });
-
-    const translatedContent = response.choices[0].message.content;
-    const englishPath = filePath.replace('/zh-cn/', '/en/');
-    await fs.mkdir(path.dirname(englishPath), { recursive: true });
-    await fs.writeFile(englishPath, translatedContent);
-    console.log(`Translated: ${filePath} -> ${englishPath}`);
-  }
-
-  async function processDirectory(dirPath) {
-    const files = await fs.readdir(dirPath, { withFileTypes: true });
-
-    for (const file of files) {
-      const fullPath = path.join(dirPath, file.name);
-
-      if (file.isDirectory()) {
-        await processDirectory(fullPath);
-      } else if (file.name.endsWith('.md')) {
-        await translateFile(fullPath);
-      }
+async function translateWithRetry(content, retries = 0) {
+    try {
+        const completion = await openai.chat.completions.create({
+            messages: [
+                { role: "system", content: "You are a professional translator. Translate the following Chinese markdown content to English. Keep all markdown formatting intact." },
+                { role: "user", content: content }
+            ],
+            model: "deepseek-chat",
+        });
+        return completion.choices[0].message.content;
+    } catch (error) {
+        if (retries < MAX_RETRIES) {
+            await new Promise(resolve => setTimeout(resolve, 1000 * (retries + 1)));
+            return translateWithRetry(content, retries + 1);
+        }
+        throw error;
     }
-  }
-
-  await processDirectory(docsPath);
 }
 
-translateFiles().catch(console.error);
+async function processFile(srcPath, destPath) {
+    const destFolder = path.dirname(destPath);
+    await mkdir(destFolder, { recursive: true });
+    
+    const content = await readFile(srcPath, 'utf8');
+    const translatedContent = await translateWithRetry(content);
+    const finalContent = translatedContent.replace(/\/zh-cn\//g, '/en/');
+    await writeFile(destPath, finalContent);
+    console.log(`Translated: ${path.basename(srcPath)}`);
+}
+
+async function translateFiles(srcDir, destDir) {
+    try {
+        const files = await readdir(srcDir, { recursive: true });
+        const mdFiles = files.filter(file => file.endsWith('.md'));
+        
+        // 将文件分批处理
+        for (let i = 0; i < mdFiles.length; i += MAX_CONCURRENT) {
+            const batch = mdFiles.slice(i, i + MAX_CONCURRENT);
+            const promises = batch.map(file => {
+                const srcPath = path.join(srcDir, file);
+                const destPath = path.join(destDir, file);
+                return processFile(srcPath, destPath).catch(error => {
+                    console.error(`Error translating ${file}:`, error);
+                });
+            });
+            
+            await Promise.all(promises);
+        }
+        
+        console.log('All translations completed!');
+    } catch (error) {
+        console.error('Translation error:', error);
+    }
+}
+
+translateFiles('docs/zh-cn', 'docs/en');

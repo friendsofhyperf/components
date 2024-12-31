@@ -1,6 +1,6 @@
 # DI Plus
 
-A dependency injection enhancement component for Hyperf.
+Enhanced Dependency Injection Component for Hyperf.
 
 ## Installation
 
@@ -38,7 +38,7 @@ class Foo2
 }
 ```
 
-Supports annotation-based configuration
+Supports annotation-based injection
 
 ```php
 <?php

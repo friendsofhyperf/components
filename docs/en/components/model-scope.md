@@ -1,6 +1,6 @@
 # Model Scope
 
-The model scope annotation for Hyperf.
+The Model Scope annotation component for the Hyperf framework.
 
 ## Installation
 
@@ -10,7 +10,7 @@ composer require friendsofhyperf/model-scope
 
 ## Usage
 
-- Define a Scope
+- Defining a Scope
 
 ```php
 namespace App\Model\Scope;
@@ -31,7 +31,7 @@ class AncientScope implements Scope
 }
 ```
 
-- Attach Scope to a Model
+- Binding to a Model
 
 ```php
 namespace App\Model;

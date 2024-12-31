@@ -51,7 +51,7 @@ class User extends Model
 php bin/hyperf.php gen:markdown-mail Test
 ```
 
-Output
+Output:
 
 ```php
 
@@ -85,7 +85,7 @@ class Test extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        return (new MailMessage)->from('xxx@xxx.cn', 'Hyperf')->replyTo('xxx@qq.com', 'zds')->markdown('email');
+        return (new MailMessage)->from('xxx@xxx.cn','Hyperf')->replyTo('xxx@qq.com','zds')->markdown('email');
     }
 
     /**

@@ -20,7 +20,7 @@ select * from contacts              -- The full data that you want to show your 
     )
 ```
 
-> 运行上述查询时，您可能会遇到错误！例如 `This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery.` 
+> 运行上述查询时，您可能会遇到错误！例如 `This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery.`
 > 在这个包中，我们将它们作为[两个独立的查询](https://github.com/hammerstonedev/fast-paginate/blob/154da286f8160a9e75e64e8025b0da682aa2ba23/src/BuilderMixin.php#L62-L79)来运行以解决这个问题！
 
 根据您的数据集，性能提升可能会有所不同，但这种方法允许数据库检查尽可能少的数据以满足用户的需求。

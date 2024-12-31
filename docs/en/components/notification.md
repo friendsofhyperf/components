@@ -8,7 +8,7 @@ composer require friendsofhyperf/notification:~3.1.0
 
 ## Usage
 
-### Using the `Notifiable` trait in a Model
+### Using the `Notifiable` Trait in a Model
 
 ```php
 <?php
@@ -104,15 +104,15 @@ class TestNotification extends Notification
 
 ```php
 // Your controller or service
-// Send a notification
-$user->notify(new TestNotification('System Message: xxx'));
+// Notify a message
+$user->notify(new TestNotification('System Notification:xxx'));
 $noReadCount = $user->unreadNotifications()->count();
-$this->output->success('Sent successfully. Unread messages count: ' . $noReadCount);
+$this->output->success('Sent successfully, unread messages count:' . $noReadCount);
 $notifications = $user->unreadNotifications()->first();
-$this->output->success('Message content: ' . $notifications->data['message']);
+$this->output->success('Message content:' . $notifications->data['message']);
 $notifications->markAsRead();
 $noReadCount = $user->unreadNotifications()->count();
-$this->output->success('Marked as read. Unread messages count: ' . $noReadCount);
+$this->output->success('Marked as read, unread messages count:' . $noReadCount);
 ```
 
 ### SMS Notifications
@@ -237,10 +237,10 @@ return [
 
 ```
 
-#### Usage in Controller
+#### Using in a Controller
 
 ```php
 $user = User::create();
-// Send a notification
-$user->notify(new TestNotification('System Message: xxx'));
+// Notify a message
+$user->notify(new TestNotification('System Notification:xxx'));
 ```

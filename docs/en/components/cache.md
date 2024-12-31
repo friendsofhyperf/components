@@ -12,7 +12,7 @@ composer require friendsofhyperf/cache
 
 ## Usage
 
-### Annotations
+### Annotation
 
 ```php
 namespace App\Controller;
@@ -29,7 +29,7 @@ class IndexController
     public function index()
     {
         return $this->cache->remember($key, $ttl=60, function() {
-            // return sth
+            // Return value
         });
     }
 }
@@ -41,7 +41,7 @@ class IndexController
 use FriendsOfHyperf\Cache\Facade\Cache;
 
 Cache::remember($key, $ttl=60, function() {
-    // return sth
+    // Return value
 });
 ```
 
@@ -52,14 +52,14 @@ use FriendsOfHyperf\Cache\Facade\Cache;
 use FriendsOfHyperf\Cache\CacheManager;
 
 Cache::store('co')->remember($key, $ttl=60, function() {
-    // return sth
+    // Return value
 });
 
 di(CacheManager::class)->store('co')->remember($key, $ttl=60, function() {
-    // return sth
+    // Return value
 });
 ```
 
-## References
+## Reference
 
-Like [Laravel-Cache](https://laravel.com/docs/8.x/cache)
+For more information, please refer to [Laravel-Cache](https://laravel.com/docs/8.x/cache)

@@ -7,10 +7,24 @@ on:
 
 jobs:
   translate:
+    env:
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Install pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -36,13 +50,20 @@ jobs:
           cd ..
           rm -rf opencc4php
 
+      - name: Install Packages
+        run: pnpm install
+
       - name: Setup Dependencies
         run: composer install
 
-      - name: Start Translate
+      - name: Start Translate ZH
         run: |
           cp docs/index.md docs/zh-cn/index.md
           php bin/doc-translate
+
+      - name: Start Translate EN
+        run: |
+          pnpm run docs:translate
 
       - name: Commit Updated
         uses: stefanzweifel/git-auto-commit-action@v4

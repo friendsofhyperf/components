@@ -1,6 +1,6 @@
 # Pretty Console
 
-The pretty console component for Hyperf.
+A beautiful console component for Hyperf.
 
 ![Pretty Console](https://user-images.githubusercontent.com/5457236/178333036-b11abb56-ba70-4c0d-a2f6-79afe3a0a78c.png)
 
@@ -23,14 +23,14 @@ class FooCommand extends HyperfCommand
 {
     use Prettyable;
 
-    public function handle()
+    public function function handle()
     {
         $this->components->info('Your message here.');
     }
 }
 ```
 
-## Acknowledgements
+## Acknowledgments
 
 - [nunomaduro/termwind](https://github.com/nunomaduro/termwind)
-- [The idea from PR of Laravel](https://github.com/laravel/framework/pull/43065)
+- [The idea from pr of laravel](https://github.com/laravel/framework/pull/43065)

@@ -1,14 +1,14 @@
 # Telescope
 
-## Available Monitors
+## Available Listeners
 
 - [x] Request Monitor
 - [x] Exception Monitor
-- [x] Query Monitor
+- [x] Data Query Monitor
 - [x] gRPC Request Monitor
 - [x] Redis Monitor
 - [x] Log Monitor
-- [x] Command Monitor
+- [x] Command Line Monitor
 - [x] Event Monitor
 - [x] HTTP Client Monitor
 - [x] Cache Monitor
@@ -20,13 +20,13 @@
 composer require friendsofhyperf/telescope:~3.1.0
 ```
 
-Use the `vendor:publish` command to publish its public resources.
+Use the `vendor:publish` command to publish its public resources
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/telescope
 ```
 
-Run the `migrate` command to execute database changes necessary to create and store the data needed by Telescope.
+Run the `migrate` command to execute database changes to create and store the data required by Telescope
 
 ```shell
 php bin/hyperf.php migrate
@@ -34,11 +34,11 @@ php bin/hyperf.php migrate
 
 ## Usage
 
-> You can choose between using listeners or middleware.
+> Listeners and middleware, choose one
 
-### Request Listeners
+### Request Listener
 
-Add the listeners in the `config/autoload/listeners.php` configuration file.
+Add the listener in the `config/autoload/listeners.php` configuration file
 
 ```php
 <?php
@@ -47,13 +47,14 @@ return [
     FriendsOfHyperf\Telescope\Listener\RequestHandledListener::class,
     FriendsOfHyperf\Telescope\Listener\SetRequestLifecycleListener::class,
 ];
+
 ```
 
 ### Middleware
 
-Add the global middleware in the `config/autoload/middlewares.php` configuration file.
+Add the global middleware in the `config/autoload/middlewares.php` configuration file
 
-To log HTTP requests, use the `http` middleware.
+To record HTTP requests, use the `http` middleware
 
 ```php
 <?php
@@ -65,7 +66,7 @@ return [
 ];
 ```
 
-To log gRPC requests, use the `grpc` middleware.
+To record gRPC requests, use the `grpc` middleware
 
 ```php
 <?php
@@ -77,13 +78,13 @@ return [
 ];
 ```
 
-## Access the Dashboard
+## View Dashboard
 
 `http://127.0.0.1:9501/telescope`
 
 ## Database Configuration
 
-In the `config/autoload/telescope.php` file, you can configure the database connection. By default, it uses the `default` connection.
+Manage database connection configuration in `config/autoload/telescope.php`, default uses `default` connection
 
 ```php
 'connection' => env('TELESCOPE_DB_CONNECTION', 'default'),
@@ -91,13 +92,13 @@ In the `config/autoload/telescope.php` file, you can configure the database conn
 
 ## Tags
 
-You may want to attach custom tags to entries. To do so, you can use the **`Telescope::tag`** method.
+You may wish to attach your own custom tags to entries. To do this, you may use the **`Telescope::tag`** method.
 
 ## Batch Filtering
 
-You may want to record entries only under specific conditions. To do so, you can use the **`Telescope::filter`** method.
+You may want to record entries only under certain special conditions. To do this, you may use the **`Telescope::filter`** method.
 
-Example:
+Example
 
 ```php
 use FriendsOfHyperf\Telescope\Telescope;
@@ -116,7 +117,7 @@ class TelescopeInitListener implements ListenerInterface
 
     public function process(object $event): void
     {
-        // Attach your own custom tags
+        // attach your own custom tags
         Telescope::tag(function (IncomingEntry $entry) {
             if ($entry->type === 'request') {
                 return [
@@ -126,10 +127,10 @@ class TelescopeInitListener implements ListenerInterface
             }
         });
 
-        // Filter entries
+        // filter entry
         Telescope::filter(function (IncomingEntry $entry): bool {
-            if ($entry->type === 'request') {
-                if ($entry->content['uri'] === 'xxxx') {
+            if ($entry->type === 'request'){
+                if ($entry->content['uri'] == 'xxxx') {
                     return false;
                 }
             }

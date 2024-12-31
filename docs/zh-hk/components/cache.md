@@ -29,7 +29,7 @@ class IndexController
     public function index()
     {
         return $this->cache->remember($key, $ttl=60, function() {
-            // return sth
+            // 返回值
         });
     }
 }
@@ -41,7 +41,7 @@ class IndexController
 use FriendsOfHyperf\Cache\Facade\Cache;
 
 Cache::remember($key, $ttl=60, function() {
-    // return sth
+    // 返回值
 });
 ```
 
@@ -52,14 +52,14 @@ use FriendsOfHyperf\Cache\Facade\Cache;
 use FriendsOfHyperf\Cache\CacheManager;
 
 Cache::store('co')->remember($key, $ttl=60, function() {
-    // return sth
+    // 返回值
 });
 
 di(CacheManager::class)->store('co')->remember($key, $ttl=60, function() {
-    // return sth
+    // 返回值
 });
 ```
 
 ## 參考
 
-Likes [Laravel-Cache](https://laravel.com/docs/8.x/cache)
+有關更多信息，請參閲 [Laravel-Cache](https://laravel.com/docs/8.x/cache)

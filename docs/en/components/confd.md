@@ -1,6 +1,6 @@
 # Confd
 
-Configuration management component for Hyperf.
+Hyperf's configuration management component.
 
 ## Installation
 
@@ -13,13 +13,13 @@ composer require friendsofhyperf/nacos
 
 ## Commands
 
-Fetch configuration from `etcd/nacos` and update `.env`.
+Fetch configurations from `etcd/nacos` and update `.env`.
 
 ```shell
 php bin/hyperf.php confd:env
 ```
 
-## Define Listener
+## Defining Listeners
 
 ```php
 <?php
@@ -53,7 +53,7 @@ class ConfigChangedListener implements ListenerInterface
 }
 ```
 
-## Support
+## Supported
 
 - [x] Etcd
 - [x] Nacos

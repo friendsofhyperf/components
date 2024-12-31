@@ -16,7 +16,7 @@ php bin/hyperf.php vendor:publish friendsofhyperf/encryption
 
 ## 使用
 
-```shell
+```php
 $encryptString = encrypt($string);
 $decryptString = decrypt($encryptString);
 ```

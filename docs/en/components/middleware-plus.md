@@ -52,7 +52,7 @@ Router::addRoute(['GET', 'POST', 'HEAD'], '/', 'App\Controller\IndexController::
 ]);
 ```
 
-- Set Middleware Aliases
+- Set Middleware Alias
 
 ```php
 // config/autoload/dependencies.php
@@ -62,7 +62,7 @@ return [
 ];
 ```
 
-- Use Middleware Aliases
+- Use Middleware Alias
 
 ```php
 use App\Middleware\FooMiddleware;

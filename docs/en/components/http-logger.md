@@ -1,11 +1,11 @@
 # Http Logger
 
-An HTTP logging component provided for Hyperf.
+An HTTP logging component for Hyperf.
 
 ## Installation
 
 ```shell
-composer require "friendsofhyperf/http-logger"
+composer require "friendsofhyperf/http-logger
 ```
 
 ## Publish Configuration

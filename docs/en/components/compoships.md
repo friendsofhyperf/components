@@ -1,10 +1,10 @@
 # Compoships
 
-**Compoships** provides the ability to define relationships based on two (or more) columns in Hyperf's Model ORM. When dealing with third-party or pre-existing schemas/databases, there is often a need to match multiple columns in the definition of Eloquent relationships.
+**Compoships** provides the ability to specify relationships based on two (or more) columns in Hyperf's Model ORM. This is particularly useful when dealing with third-party or pre-existing schemas/databases where you need to match multiple columns in the definition of Eloquent relationships.
 
-## Problem
+## The Problem
 
-Eloquent does not support composite keys. Therefore, it is not possible to define relationships from one model to another by matching multiple columns. Attempting to use `where` clauses (as shown in the example below) does not work when eager loading relationships because **$this->team_id** is null when handling the relationship.
+Eloquent does not support composite keys. Therefore, it is not possible to define a relationship from one model to another by matching multiple columns. Attempting to use a `where` clause (as shown in the example below) does not work when eager loading relationships because **$this->team_id** is null when the relationship is being processed.
 
 ```php
 namespace App;
@@ -23,7 +23,7 @@ class User extends Model
 
 ## Installation
 
-It is recommended to install the **Compoships** component using [Composer](http://getcomposer.org/).
+It is recommended to install **Compoships** via [Composer](http://getcomposer.org/).
 
 ```shell
 composer require friendsofhyperf/compoships
@@ -33,17 +33,17 @@ composer require friendsofhyperf/compoships
 
 ### Using the `FriendsOfHyperf\Compoships\Database\Eloquent\Model` Class
 
-Simply have your model classes extend the `FriendsOfHyperf\Compoships\Database\Eloquent\Model` base class. `FriendsOfHyperf\Compoships\Database\Eloquent\Model` extends the `Eloquent` base class without altering its core functionality.
+Simply have your model class extend the `FriendsOfHyperf\Compoships\Database\Eloquent\Model` base class. `FriendsOfHyperf\Compoships\Database\Eloquent\Model` extends the `Eloquent` base class without altering its core functionality.
 
 ### Using the `FriendsOfHyperf\Compoships\Compoships` Trait
 
-If for some reason you cannot extend `FriendsOfHyperf\Compoships\Database\Eloquent\Model` in your model, you can use the `FriendsOfHyperf\Compoships\Compoships` trait. Simply use this trait in your model.
+If for some reason you cannot extend your model from `FriendsOfHyperf\Compoships\Database\Eloquent\Model`, you can utilize the `FriendsOfHyperf\Compoships\Compoships` trait. Just use the trait in your model.
 
 **Note:** To define a multi-column relationship from model *A* to another model *B*, **both models must extend `FriendsOfHyperf\Compoships\Database\Eloquent\Model` or use the `FriendsOfHyperf\Compoships\Compoships` trait**
 
 ### Usage
 
-... Now we can define relationships from model *A* to another model *B* by matching two or more columns (by passing an array of columns instead of a string).
+... Now we can define a relationship from model *A* to another model *B* by matching two or more columns (by passing an array of columns instead of a string).
 
 ```php
 namespace App;
@@ -61,7 +61,7 @@ class A extends Model
 }
 ```
 
-We can use the same syntax to define the inverse relationship:
+We can use the same syntax to define the inverse of the relationship:
 
 ```php
 namespace App;
@@ -81,15 +81,15 @@ class B extends Model
 
 ### Example
 
-As an example, suppose we have a task list with categories, managed by multiple user teams, where:
+As an example, let's assume we have a task list with categories, managed by multiple user teams, where:
 
 - A task belongs to a category
 - A task is assigned to a team
 - A team has many users
 - A user belongs to a team
-- A user is responsible for a category's tasks
+- A user is responsible for tasks in a category
 
-The user responsible for a specific task is the currently responsible user for that category within the team.
+The user responsible for a specific task is the user currently responsible for that category within the assigned team.
 
 ```php
 namespace App;
@@ -107,7 +107,7 @@ class User extends Model
 }
 ```
 
-The same syntax can be used to define the inverse relationship:
+The same syntax can be used to define the inverse of the relationship:
 
 ```php
 namespace App;
