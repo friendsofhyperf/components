@@ -19,7 +19,7 @@ jobs:
       - name: Get Changes
         id: get_changes
         run: |
-          echo $(git diff-tree --no-commit-id --name-only -r HEAD | grep 'docs/') > changes.txt
+          git diff-tree --no-commit-id --name-only -r HEAD | grep 'docs/' > changes.txt
           cat changes.txt
 
       - name: Install pnpm
