@@ -4,8 +4,8 @@ on:
   push:
     paths:
       - 'docs/**'
-    branches:
-      - "!main"
+    branches-ignore:
+      - "main"
 
 jobs:
   translate:
