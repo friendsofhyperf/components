@@ -75,7 +75,7 @@ jobs:
       - name: Start Translate
         run: |
           cp docs/index.md docs/en/index.md
-          pnpm run doc-translate
+          pnpm run docs:translate
 
       - name: Commit Updated
         uses: stefanzweifel/git-auto-commit-action@v4
