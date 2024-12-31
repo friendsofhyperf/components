@@ -1,52 +1,49 @@
 import OpenAI from "openai";
-import { promises as fs } from 'fs';
+import { readdir, readFile, writeFile, mkdir } from 'fs/promises';
 import path from 'path';
 
-const token = process.env["GITHUB_TOKEN"];
-const endpoint = "https://models.inference.ai.azure.com";
-const modelName = "o1-mini";
+const endpoint = "https://api.deepseek.com";
+const token = process.env["DEEPSEEK_API_KEY"];
 
-async function translateFiles() {
-  const client = new OpenAI({
+const openai = new OpenAI({
     baseURL: endpoint,
     apiKey: token,
-    dangerouslyAllowBrowser: true
-  });
+});
 
-  const docsPath = path.join(process.cwd(), 'docs/zh-cn');
-
-  async function translateFile(filePath) {
-    const content = await fs.readFile(filePath, 'utf8');
-    const response = await client.chat.completions.create({
-      messages: [
-        { role: "user", content: "You are a professional translator. Translate the following Markdown content from Chinese to English. Preserve all Markdown formatting." },
-        { role: "user", content: content }
-      ],
-      model: modelName
+async function translateContent(content) {
+    const completion = await openai.chat.completions.create({
+        messages: [
+            { role: "system", content: "You are a professional translator. Translate the following Chinese markdown content to English. Keep all markdown formatting intact." },
+            { role: "user", content: content }
+        ],
+        model: "deepseek-chat",
     });
-
-    const translatedContent = response.choices[0].message.content;
-    const englishPath = filePath.replace('/zh-cn/', '/en/');
-    await fs.mkdir(path.dirname(englishPath), { recursive: true });
-    await fs.writeFile(englishPath, translatedContent);
-    console.log(`Translated: ${filePath} -> ${englishPath}`);
-  }
-
-  async function processDirectory(dirPath) {
-    const files = await fs.readdir(dirPath, { withFileTypes: true });
-
-    for (const file of files) {
-      const fullPath = path.join(dirPath, file.name);
-
-      if (file.isDirectory()) {
-        await processDirectory(fullPath);
-      } else if (file.name.endsWith('.md')) {
-        await translateFile(fullPath);
-      }
-    }
-  }
-
-  await processDirectory(docsPath);
+    return completion.choices[0].message.content;
 }
 
-translateFiles().catch(console.error);
+async function translateFiles(srcDir, destDir) {
+    try {
+        const files = await readdir(srcDir, { recursive: true });
+
+        for (const file of files) {
+            if (!file.endsWith('.md')) continue;
+
+            const srcPath = path.join(srcDir, file);
+            const destPath = path.join(destDir, file);
+            const destFolder = path.dirname(destPath);
+
+            await mkdir(destFolder, { recursive: true });
+
+            const content = await readFile(srcPath, 'utf8');
+            const translatedContent = await translateContent(content);
+            const finalContent = translatedContent.replace(/\/zh-cn\//g, '/en/');
+            await writeFile(destPath, finalContent);
+
+            console.log(`Translated: ${file}`);
+        }
+    } catch (error) {
+        console.error('Translation error:', error);
+    }
+}
+
+translateFiles('docs/zh-cn', 'docs/en');
