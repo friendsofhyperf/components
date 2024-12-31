@@ -59,5 +59,4 @@ class MyConsumer extends JobConsumer
 {
     //
 }
-
 ```
