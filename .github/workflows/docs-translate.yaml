@@ -22,7 +22,6 @@ jobs:
         with:
           # Avoid using single or double quotes for multiline patterns
           files: |
-            **.md
             docs/**.md
 
       - name: List all changed files markdown files
@@ -81,9 +80,11 @@ jobs:
           cp docs/index.md docs/zh-cn/index.md
           php bin/doc-translate
 
-      # - name: Start Translate EN
-      #   run: |
-      #     pnpm run docs:translate
+      - name: Start Translate EN
+        env:
+          ALL_CHANGED_FILES: ${{ steps.changed-markdown-files.outputs.all_changed_files }}
+        run: |
+          pnpm run docs:translate
 
       - name: Commit Updated
         uses: stefanzweifel/git-auto-commit-action@v5
