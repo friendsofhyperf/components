@@ -75,6 +75,7 @@ jobs:
 
       - name: Start Translate
         run: |
+          git pull
           cp docs/index.md docs/en/index.md
           pnpm run docs:translate
 
