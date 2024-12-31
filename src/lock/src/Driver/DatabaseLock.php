@@ -59,7 +59,8 @@ class DatabaseLock extends AbstractLock
         } catch (QueryException) {
             $updated = $this->connection->table($this->table)
                 ->where('key', $this->name)
-                ->where(fn ($query) => $query->where('owner', $this->owner)->orWhere('expiration', '<=', time()))->update([
+                ->where(fn ($query) => $query->where('owner', $this->owner)->orWhere('expiration', '<=', time()))
+                ->update([
                     'owner' => $this->owner,
                     'expiration' => $this->expiresAt(),
                 ]);
