@@ -1,6 +1,6 @@
 # Compoships
 
-**Compoships** provides the ability to specify relationships based on two (or more) columns in Hyperf's Model ORM. This is particularly useful when dealing with third-party or pre-existing schemas/databases where you need to match multiple columns in the definition of Eloquent relationships.
+**Compoships** provides the ability to specify relationships based on two (or more) columns in the Model ORM of Hyperf. When dealing with third-party or pre-existing schemas/databases, it is common to encounter situations where you need to match multiple columns in the definition of Eloquent relationships.
 
 ## The Problem
 
@@ -23,7 +23,7 @@ class User extends Model
 
 ## Installation
 
-It is recommended to install **Compoships** via [Composer](http://getcomposer.org/).
+It is recommended to install the **Compoships** component via [Composer](http://getcomposer.org/).
 
 ```shell
 composer require friendsofhyperf/compoships
@@ -107,7 +107,7 @@ class User extends Model
 }
 ```
 
-The same syntax can be used to define the inverse of the relationship:
+The same syntax can define the inverse of the relationship:
 
 ```php
 namespace App;

@@ -34,7 +34,7 @@ php bin/hyperf.php migrate
 
 ## Usage
 
-> Listeners and middleware, choose one
+> Choose either the listener or middleware
 
 ### Request Listener
 
@@ -84,7 +84,7 @@ return [
 
 ## Database Configuration
 
-Manage database connection configuration in `config/autoload/telescope.php`, default uses `default` connection
+Manage the database connection configuration in `config/autoload/telescope.php`, defaulting to the `default` connection
 
 ```php
 'connection' => env('TELESCOPE_DB_CONNECTION', 'default'),
@@ -92,11 +92,11 @@ Manage database connection configuration in `config/autoload/telescope.php`, def
 
 ## Tags
 
-You may wish to attach your own custom tags to entries. To do this, you may use the **`Telescope::tag`** method.
+You may wish to attach your own custom tags to entries. To do this, you can use the **`Telescope::tag`** method.
 
 ## Batch Filtering
 
-You may want to record entries only under certain special conditions. To do this, you may use the **`Telescope::filter`** method.
+You may want to record entries only under certain special conditions. To do this, you can use the **`Telescope::filter`** method.
 
 Example
 

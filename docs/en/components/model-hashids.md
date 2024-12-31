@@ -2,7 +2,7 @@
 
 Using hashids instead of integer IDs in URLs and list items can be more attractive and clever. For more information, visit [hashids.org](https://hashids.org/).
 
-This package adds hashids to Hyperf models by dynamically encoding/decoding them, rather than persisting them to the database. This eliminates the need for additional database columns and allows for higher performance by using primary keys in queries.
+This package adds hashids to Hyperf models by dynamically encoding/decoding them, rather than persisting them in the database. This eliminates the need for additional database columns and allows for higher performance by using primary keys in queries.
 
 Features include:
 
@@ -42,7 +42,7 @@ Class Item extends Model
 
 ### Customizing Hashid Settings
 
-You can customize hashid settings for each model by overriding `getHashidsConnection()`. It must return the name of the connection in `config/autoload/hashids.php`.
+Hashid settings can be customized per model by overriding `getHashidsConnection()`. It must return the name of the connection in `config/autoload/hashids.php`.
 
 ## Usage
 
@@ -77,7 +77,7 @@ $item->getHashidsConnection();
 
 ### Adding Hashid to Serialized Models
 
-Set it as the default:
+Setting it as default:
 
 ```php
 
@@ -98,7 +98,7 @@ class Item extends Model
 
 ```
 
-Set it for a specific route:
+Setting it for a specific route:
 
 `return $item->append('hashid')->toJson();`
 
@@ -133,7 +133,7 @@ Route::get('/items/{item:slug}', function (Item $item) {
 
 #### Customizing the Default Route Key Name
 
-If you want to resolve implicit route bindings using another field by default, you can override `getRouteKeyName()` to return the field name used in the resolution process and `getRouteKey()` to return its value in links.
+If you want to resolve implicit route bindings using another field by default, you can override `getRouteKeyName()` to return the field name during resolution and `getRouteKey()` to return its value in links.
 
 ```php
 
@@ -158,7 +158,7 @@ class Item extends Model
 
 ```
 
-You can still specify the hashid for specific routes.
+You can still specify hashid for specific routes.
 
 ```php
 
@@ -170,7 +170,7 @@ Route::get('/items/{item:hashid}', function (Item $item) {
 
 #### Supporting Other Laravel Implicit Route Binding Features
 
-When using `HashidRouting`, you can still use soft-deletes and child route bindings.
+When using `HashidRouting`, you can still use soft deletion and child route bindings.
 
 ```php
 

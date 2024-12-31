@@ -8,7 +8,7 @@ composer require friendsofhyperf/notification:~3.1.0
 
 ## Usage
 
-### Using the `Notifiable` Trait in a Model
+### Using `Notifiable` Trait in Model
 
 ```php
 <?php
@@ -237,7 +237,7 @@ return [
 
 ```
 
-#### Using in a Controller
+#### Using in Controller
 
 ```php
 $user = User::create();

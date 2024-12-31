@@ -37,7 +37,7 @@ class FooCommand extends Command
 }
 ```
 
-The `$spinner` is compatible with Symfony ProgressBar, so you can run any method of this class. Alternatively, you can also use the `withSpinner` method by providing an iterable object.
+The `$spinner` is compatible with Symfony's ProgressBar, so you can run any method of this class. Alternatively, you can also use the `withSpinner` method by providing an iterable object.
 
 ```php
 $this->withSpinner(User::all(), function($user) {

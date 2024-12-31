@@ -2,8 +2,7 @@
 
 ## Introduction
 
-`friendsofhyperf/tcp-sender` is a TCP service component similar to `hyperf/websocket-server`, which can be used to send messages to a specified fd.
-There's no need to worry about the underlying implementation; just focus on the business logic.
+`friendsofhyperf/tcp-sender` is a TCP service component similar to `hyperf/websocket-server`, designed to send messages to specified file descriptors (fd). It allows developers to focus on business logic without worrying about the underlying implementation details.
 
 ## Installation
 

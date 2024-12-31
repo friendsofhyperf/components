@@ -2,11 +2,11 @@
 
 A Redis native protocol subscriber based on Swoole coroutines, forked from [mix-php/redis-subscriber](https://github.com/mix-php/redis-subscriber).
 
-This Redis subscription library, based on Swoole coroutines, connects directly to the Redis server using sockets, without relying on the phpredis extension. The subscriber offers the following advantages:
+This Redis subscription library, built on Swoole coroutines, connects directly to the Redis server using sockets without relying on the phpredis extension. The subscriber offers the following advantages:
 
-- Smooth Modifications: You can add or cancel subscription channels at any time, enabling seamless channel switching.
-- Cross-Coroutine Safe Closure: The subscription can be closed at any moment.
-- Channel Message Retrieval: The library's encapsulation style is inspired by the [go-redis](https://github.com/go-redis/redis) library in Golang, retrieving subscription messages through channels.
+- **Smooth Modifications**: You can add or cancel subscription channels at any time, enabling seamless channel switching.
+- **Cross-Coroutine Safe Shutdown**: The subscription can be closed at any moment safely.
+- **Channel Message Retrieval**: The library's encapsulation style is inspired by the [go-redis](https://github.com/go-redis/redis) library in Golang, allowing you to retrieve subscribed messages through channels.
 
 ## Installation
 
@@ -55,5 +55,5 @@ object(FriendsOfHyperf\Redis\Subscriber\Message)#8 (2) {
 | unsubscribe(string ...$channels) : void | Cancel subscriptions |
 | psubscribe(string ...$channels) : void | Add pattern subscriptions |
 | punsubscribe(string ...$channels) : void | Cancel pattern subscriptions |
-| channel() : Hyperf\Engine\Channel | Get message channel |
-| close() : void | Close subscription |
+| channel() : Hyperf\Engine\Channel | Get the message channel |
+| close() : void | Close the subscription |

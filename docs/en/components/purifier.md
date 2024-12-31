@@ -79,7 +79,7 @@ To use your own settings, publish the configuration.
 php bin/hyperf.php vendor:publish friendsofhyperf/purifier
 ```
 
-The configuration file `config/autoload/purifier.php` is as follows:
+The configuration file `config/autoload/purifier.php` will look like this:
 
 ```php
 

@@ -1,6 +1,6 @@
 # HTTP Client
 
-An HTTP client component for Hyperf, ported from Laravel.
+A HTTP client component for Hyperf, ported from Laravel.
 
 ## Installation
 

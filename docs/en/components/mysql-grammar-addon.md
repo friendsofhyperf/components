@@ -34,8 +34,8 @@ class Event extends Model
  * @property int $user_id User ID
  * @property string $group_name Event Group
  * @property string $event_name Event Name
- * @property string $page_name Page Name
- * @property string $extra Extra Information
+ * @property string $page_name Page
+ * @property string $extra Additional Information
  * @property string $device pc,android,ios,touch
  * @property string $device_id Device ID
  * @property \Carbon\Carbon $created_at Creation Time

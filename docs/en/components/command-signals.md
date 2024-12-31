@@ -49,14 +49,14 @@ class FooCommand extends HyperfCommand
 
 ## Execution
 
-- `Ctrl + C`
+- Manually exit by pressing `Ctrl + C`
 
 ```shell
 $ hyperf foo
 ^CReceived signal 2, exiting...
 ```
 
-- `killall php`
+- Kill the process using `killall php`
 
 ```shell
 $ hyperf foo
