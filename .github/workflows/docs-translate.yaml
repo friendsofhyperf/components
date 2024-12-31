@@ -7,10 +7,24 @@ on:
 
 jobs:
   translate-zh:
+    env:
+      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        name: Install pnpm
+        with:
+          version: 9
+          run_install: false
+
+      - name: Install Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'pnpm'
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -36,47 +50,19 @@ jobs:
           cd ..
           rm -rf opencc4php
 
+      - name: Install Packages
+        run: pnpm install
+
       - name: Setup Dependencies
         run: composer install
 
-      - name: Start Translate
+      - name: Start Translate ZH
         run: |
           cp docs/index.md docs/zh-cn/index.md
           php bin/doc-translate
 
-      - name: Commit Updated
-        uses: stefanzweifel/git-auto-commit-action@v4
-        with:
-          commit_message: Update docs and translate
-
-  translate-en:
-    needs: translate-zh
-    runs-on: ubuntu-latest
-    env:
-      DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        name: Install pnpm
-        with:
-          version: 9
-          run_install: false
-
-      - name: Install Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'pnpm'
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Start Translate
+      - name: Start Translate EN
         run: |
-          git pull
-          cp docs/index.md docs/en/index.md
           pnpm run docs:translate
 
       - name: Commit Updated
