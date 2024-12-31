@@ -1,6 +1,6 @@
 # Config Consul
 
-适用于 Hyperf 的 Consul 配置组件。
+适用于 Hyperf 的 Consul 配置中心引擎。
 
 ## 安装
 
