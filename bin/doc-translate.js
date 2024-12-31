@@ -1,6 +1,7 @@
 import OpenAI from "openai";
 import { readdir, readFile, writeFile, mkdir } from 'fs/promises';
 import path from 'path';
+import { execSync } from 'child_process';
 
 const endpoint = "https://api.deepseek.com";
 const token = process.env["DEEPSEEK_API_KEY"];
@@ -11,6 +12,20 @@ const openai = new OpenAI({
     baseURL: endpoint,
     apiKey: token,
 });
+
+// 获取最近一次提交修改的md文件
+async function getRecentlyChangedFiles() {
+    try {
+        const output = execSync('git diff-tree --no-commit-id --name-only -r HEAD').toString();
+        return output
+            .split('\n')
+            .filter(file => file.startsWith('docs/zh-cn/') && file.endsWith('.md'))
+            .map(file => file.replace('docs/zh-cn/', ''));
+    } catch (error) {
+        console.error('Error getting changed files:', error);
+        return [];
+    }
+}
 
 async function translateWithRetry(content, retries = 0) {
     try {
@@ -44,12 +59,16 @@ async function processFile(srcPath, destPath) {
 
 async function translateFiles(srcDir, destDir) {
     try {
-        const files = await readdir(srcDir, { recursive: true });
-        const mdFiles = files.filter(file => file.endsWith('.md'));
+        const changedFiles = await getRecentlyChangedFiles();
         
+        if (changedFiles.length === 0) {
+            console.log('No markdown files were changed in the last commit.');
+            return;
+        }
+
         // 将文件分批处理
-        for (let i = 0; i < mdFiles.length; i += MAX_CONCURRENT) {
-            const batch = mdFiles.slice(i, i + MAX_CONCURRENT);
+        for (let i = 0; i < changedFiles.length; i += MAX_CONCURRENT) {
+            const batch = changedFiles.slice(i, i + MAX_CONCURRENT);
             const promises = batch.map(file => {
                 const srcPath = path.join(srcDir, file);
                 const destPath = path.join(destDir, file);
@@ -61,7 +80,7 @@ async function translateFiles(srcDir, destDir) {
             await Promise.all(promises);
         }
         
-        console.log('All translations completed!');
+        console.log('Translation of changed files completed!');
     } catch (error) {
         console.error('Translation error:', error);
     }
