@@ -1,6 +1,6 @@
 # Grpc Validation
 
-GRPC validation component for Hyperf.
+A GRPC validation component for Hyperf.
 
 ## Installation
 

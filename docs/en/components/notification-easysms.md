@@ -8,7 +8,7 @@ composer require friendsofhyperf/notification-easysms:~3.1.0
 
 ## Usage
 
-### Use `Notifiable` Trait in Model
+### Use `Notifiable` trait in Model
 
 ```php
 <?php
@@ -74,8 +74,8 @@ class TestNotification extends Notification implements Smsable
     }
     
     /**
-     * The returned content will be assembled into the SMS model using new Message($notification->toSms()). 
-     * Documentation: https://github.com/overtrue/easy-sms?tab=readme-ov-file#%E5%AE%9A%E4%B9%89%E7%9F%AD%E4%BF%A1 
+     * The returned content will be assembled into the SMS model new Message($notification->toSms()). 
+     * Documentation https://github.com/overtrue/easy-sms?tab=readme-ov-file#%E5%AE%9A%E4%B9%89%E7%9F%AD%E4%BF%A1 
      */
     public function toSms(mixed $notifiable): array|Message
     {

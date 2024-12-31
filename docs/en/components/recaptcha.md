@@ -1,6 +1,6 @@
 # ReCaptcha
 
-The Google ReCaptcha component for Hyperf.
+A Google ReCaptcha component for Hyperf.
 
 ## Installation
 
@@ -34,7 +34,7 @@ class V2CaptchaMiddleware extends ReCaptchaMiddleware
 }
 ```
 
-- Using the Validator
+- Validator Usage
 
 ```php
 <?php
@@ -59,7 +59,7 @@ class IndexController
             ],
             [
                 'g-recaptcha.required' => 'g-recaptcha is required',
-                'g-recaptcha.recaptcha' => 'Google ReCaptcha verification failed',
+                'g-recaptcha.recaptcha' => 'Google ReCaptcha Verify Fails',
             ]
         );
 

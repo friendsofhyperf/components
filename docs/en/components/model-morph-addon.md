@@ -1,6 +1,6 @@
 # Model Morph Addon
 
-A polymorphic extension package that supports using polymorphic relationships in Hyperf models.
+The Model Morph Addon supports polymorphic relationships in Hyperf models.
 
 ## Installation
 

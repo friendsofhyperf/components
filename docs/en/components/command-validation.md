@@ -1,6 +1,6 @@
 # Command Validation
 
-A validation component for Hyperf command line.
+A validation component for Hyperf command-line applications.
 
 ## Installation
 
@@ -27,7 +27,7 @@ class FooCommand extends HyperfCommand
     use ValidatesInput;
 
     /**
-     * The command line to execute
+     * The command line to be executed.
      */
     protected string $name = 'foo:hello {?name : The name of the person to greet.}';
 

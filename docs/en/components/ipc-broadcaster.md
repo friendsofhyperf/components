@@ -1,6 +1,6 @@
 # Ipc Broadcaster
 
-The Hyperf process communication broadcaster component.
+Hyperf Inter-Process Communication Broadcast Component.
 
 ## Installation
 

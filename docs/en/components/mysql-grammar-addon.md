@@ -1,6 +1,6 @@
 # Mysql Grammar Addon
 
-The MySqlGrammar addon for Hyperf.
+MySqlGrammar extension component for the Hyperf framework.
 
 ## Installation
 
@@ -8,7 +8,7 @@ The MySqlGrammar addon for Hyperf.
 composer require friendsofhyperf/mysql-grammar-addon --dev
 ```
 
-## Before Use
+## Before Usage
 
 ```php
 /**
@@ -26,7 +26,7 @@ class Event extends Model
 {}
 ```
 
-## After Use
+## After Usage
 
 ```php
 /**
@@ -34,9 +34,9 @@ class Event extends Model
  * @property int $user_id User ID
  * @property string $group_name Event Group
  * @property string $event_name Event Name
- * @property string $page_name Page
+ * @property string $page_name Page Name
  * @property string $extra Extra Information
- * @property string $device pc, android, ios, touch
+ * @property string $device pc,android,ios,touch
  * @property string $device_id Device ID
  * @property \Carbon\Carbon $created_at Creation Time
  */

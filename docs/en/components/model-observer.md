@@ -1,6 +1,6 @@
 # Model Observer
 
-The Model Observer component is designed for the Hyperf framework.
+The Model Observer component, designed for the Hyperf framework.
 
 ## Installation
 
@@ -29,15 +29,15 @@ class FooObserver
 {
     public function creating(User $model)
     {
-        // do something...
+        // do sth...
     }
 
     public function created(User $model)
     {
-        // do something...
+        // do sth...
     }
 
-    // other events
+    // another events
 }
 ```
 
@@ -55,19 +55,19 @@ class FooObserver
 {
     public function creating($model)
     {
-        // do something...
+        // do sth...
     }
 
     public function created($model)
     {
-        // do something...
+        // do sth...
     }
 
-    // other events
+    // another events
 }
 ```
 
-- Bind to model
+- Binding to a model
 
 ```php
 namespace App\Model;

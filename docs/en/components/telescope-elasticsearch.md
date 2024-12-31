@@ -1,6 +1,6 @@
 # Telescope Elasticsearch Driver
 
-It allows you to switch from an SQL database to Elasticsearch as a data storage driver, and it eliminates deadlocks, making Telescope a log system suitable for a production environment.
+This driver allows you to switch from an SQL database to Elasticsearch as the data storage for Telescope, eliminating deadlocks and making Telescope a production-ready logging system.
 
 ## Installation
 

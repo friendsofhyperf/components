@@ -1,6 +1,6 @@
 # Tinker
 
-The Powerful REPL for Hyperf.
+A powerful REPL tool for Hyperf.
 
 ## Installation
 
@@ -22,7 +22,7 @@ php bin/hyperf.php tinker
 
 ## Commands
 
-- Running Commands
+- Run Commands
 
 ````shell
 Psy Shell v0.10.4 (PHP 7.3.11 — cli)
@@ -37,7 +37,7 @@ Psy Shell v0.10.4 (PHP 7.3.11 — cli)
 >>>
 ````
 
-- Viewing Command Help
+- View Command Help
 
 ```shell
 >>> help
@@ -66,7 +66,7 @@ Psy Shell v0.10.4 (PHP 7.3.11 — cli)
   inspire          Display an inspiring quote
 ```
 
-- Fetching Environment Variables
+- Get Environment Variables
 
 ```shell
 Psy Shell v0.10.4 (PHP 7.2.34 — cli)
@@ -145,7 +145,7 @@ object(App\Model\User)#81816 (28) {
 => null
 ```
 
-- Viewing Documentation
+- View Documentation
 
 ```shell
 >>> doc md5
@@ -157,7 +157,7 @@ PHP manual not found
 >>>
 ```
 
-- Viewing Source Code
+- View Source Code
 
 ```shell
 >>> show App\Model\User
