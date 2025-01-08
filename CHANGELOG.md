@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.1.53 - 2025-01-08
+
+### What's Changed
+
+* Improves phpstan docs for `FriendsOfHyperf\Sentry\Util\SafeCaller` by @xuanyanwow in https://github.com/friendsofhyperf/components/pull/819
+* Support auto translate to english by @huangdijia in https://github.com/friendsofhyperf/components/pull/821
+* Optimize English translation by @huangdijia in https://github.com/friendsofhyperf/components/pull/822
+* ci: add step to get changes in docs translation workflow by @huangdijia in https://github.com/friendsofhyperf/components/pull/823
+* Clientside output purifying by @huangdijia in https://github.com/friendsofhyperf/components/pull/824
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.52.1...v3.1.53
+
 ## v3.1.52.1 - 2024-12-27
 
 ### What's Changed
