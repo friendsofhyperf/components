@@ -27,4 +27,10 @@ return [
         'driver' => FriendsOfHyperf\Lock\Driver\CoroutineLock::class,
         'constructor' => ['prefix' => 'lock:'],
     ],
+    // continuous locking loop, suitable for scenarios with long task times
+    // default heartbeat time of 10 seconds
+    'loop' => [
+        'driver' => FriendsOfHyperf\Lock\Driver\LoopRedisLock::class,
+        'constructor' => ['prefix' => 'lock:'],
+    ],
 ];
