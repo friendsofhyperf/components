@@ -72,5 +72,5 @@ return [
     ],
 
     // Watch interval
-    'interval' => 1,
+    'interval' => (int) env('CONFD_INTERVAL', 1),
 ];
