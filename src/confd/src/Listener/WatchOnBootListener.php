@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Confd\Listener;
 
 use FriendsOfHyperf\Confd\Confd;
 use FriendsOfHyperf\Confd\Traits\Logger;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\MainWorkerStart;
 use Hyperf\Server\Event\MainCoroutineServerStart;
@@ -22,8 +23,10 @@ class WatchOnBootListener implements ListenerInterface
 {
     use Logger;
 
-    public function __construct(private ContainerInterface $container)
-    {
+    public function __construct(
+        private ContainerInterface $container,
+        private ConfigInterface $config
+    ) {
         $this->resolveLogger();
     }
 
@@ -40,6 +43,10 @@ class WatchOnBootListener implements ListenerInterface
      */
     public function process(object $event): void
     {
+        if (! $this->config->get('confd.watch', true)) {
+            return;
+        }
+
         $this->container->get(Confd::class)->watch();
         $this->logger?->debug('[confd] Start watching.');
     }

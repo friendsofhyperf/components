@@ -63,9 +63,14 @@ return [
 
     'env_path' => BASE_PATH . '/.env',
 
-    'interval' => 1,
+    // Watch on boot
+    'watch' => (bool) env('CONFD_WATCH', true),
 
+    // Watch keys
     'watches' => [
         'DB_HOST',
     ],
+
+    // Watch interval
+    'interval' => (int) env('CONFD_INTERVAL', 1),
 ];
