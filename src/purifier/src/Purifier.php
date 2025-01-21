@@ -40,6 +40,10 @@ class Purifier
      */
     public function __construct(protected Filesystem $files, protected ConfigInterface $config)
     {
+        if (! $this->config->has('purifier')) {
+            throw new Exception('Configuration parameters not loaded!');
+        }
+        $this->checkCacheDirectory();
         $this->instances = new WeakMap();
     }
 
@@ -64,15 +68,7 @@ class Purifier
             return $dirty;
         }
 
-        if (! isset($this->instances[$configObject])) {
-            if (! $this->config->has('purifier')) {
-                throw new Exception('Configuration parameters not loaded!');
-            }
-
-            $this->checkCacheDirectory();
-
-            $this->instances[$configObject] = new HTMLPurifier($configObject);
-        }
+        $this->instances[$configObject] ??= new HTMLPurifier($configObject);
 
         return $this->instances[$configObject]->purify($dirty, $configObject);
     }
