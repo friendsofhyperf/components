@@ -40,11 +40,22 @@ class Purifier
      */
     public function __construct(protected Filesystem $files, protected ConfigInterface $config)
     {
+        $this->instances = new WeakMap();
+        $this->setUp();
+    }
+
+    /**
+     * Setup.
+     *
+     * @throws Exception
+     */
+    private function setUp(): void
+    {
         if (! $this->config->has('purifier')) {
             throw new Exception('Configuration parameters not loaded!');
         }
+
         $this->checkCacheDirectory();
-        $this->instances = new WeakMap();
     }
 
     /**
