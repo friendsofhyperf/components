@@ -19,10 +19,19 @@ use HTMLPurifier_Config;
 use HTMLPurifier_HTMLDefinition;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Support\Filesystem\Filesystem;
+use WeakMap;
 
 class Purifier
 {
-    protected HTMLPurifier $purifier;
+    /**
+     * @var WeakMap<object, HTMLPurifier>
+     */
+    protected WeakMap $instances;
+
+    /**
+     * @var array<string, HTMLPurifier_Config>
+     */
+    protected array $configObjects = [];
 
     /**
      * Constructor.
@@ -31,27 +40,7 @@ class Purifier
      */
     public function __construct(protected Filesystem $files, protected ConfigInterface $config)
     {
-        $this->setUp();
-    }
-
-    /**
-     * Setup.
-     *
-     * @throws Exception
-     */
-    private function setUp(): void
-    {
-        if (! $this->config->has('purifier')) {
-            throw new Exception('Configuration parameters not loaded!');
-        }
-
-        $this->checkCacheDirectory();
-
-        // Create a new configuration object
-        $config = $this->getConfig();
-
-        // Create HTMLPurifier object
-        $this->purifier = new HTMLPurifier($config);
+        $this->instances = new WeakMap();
     }
 
     /**
@@ -62,40 +51,49 @@ class Purifier
     public function clean(mixed $dirty, array|string|null $config = null, ?Closure $postCreateConfigHook = null): mixed
     {
         if (is_array($dirty)) {
-            return array_map(function ($item) use ($config) {
-                return $this->clean($item, $config);
-            }, $dirty);
+            return array_map(fn ($item) => $this->clean($item, $config), $dirty);
         }
 
-        $configObject = null;
-
-        if ($config !== null) {
-            $configObject = $this->getConfig($config);
-
-            $postCreateConfigHook?->call($this, $configObject);
-        }
+        $configObject = $this->getConfig($config);
+        $postCreateConfigHook?->call($this, $configObject);
 
         // If $dirty is not an explicit string, bypass purification assuming configuration allows this
         $ignoreNonStrings = (bool) $this->config->get('purifier.ignore_non_strings', false);
-        $stringTest = is_string($dirty);
 
-        if ($stringTest === false && $ignoreNonStrings === true) {
+        if (is_string($dirty) === false && $ignoreNonStrings === true) {
             return $dirty;
         }
 
-        return $this->purifier->purify($dirty, $configObject);
+        if (! isset($this->instances[$configObject])) {
+            if (! $this->config->has('purifier')) {
+                throw new Exception('Configuration parameters not loaded!');
+            }
+
+            $this->checkCacheDirectory();
+
+            $this->instances[$configObject] = new HTMLPurifier($configObject);
+        }
+
+        return $this->instances[$configObject]->purify($dirty, $configObject);
     }
 
     /**
      * Get HTMLPurifier instance.
+     * @deprecated since v3.1, will removed in v3.2
      */
     public function getInstance(): HTMLPurifier
     {
-        return $this->purifier;
+        return new HTMLPurifier($this->getConfig());
     }
 
     protected function getConfig(array|string|null $config = null): HTMLPurifier_Config
     {
+        $configKey = serialize($config);
+
+        if (isset($this->configObjects[$configKey])) {
+            return $this->configObjects[$configKey];
+        }
+
         // Create a new configuration object
         $configObject = HTMLPurifier_Config::createDefault();
 
@@ -145,7 +143,7 @@ class Purifier
             }
         }
 
-        return $configObject;
+        return $this->configObjects[$configKey] = $configObject;
     }
 
     /**
@@ -246,10 +244,12 @@ class Purifier
     {
         $cachePath = $this->config->get('purifier.cache_path');
 
-        if ($cachePath) {
-            if (! $this->files->isDirectory($cachePath)) {
-                $this->files->makeDirectory($cachePath, $this->config->get('purifier.cache_file_mode', 0755), true);
-            }
+        if ($cachePath && ! $this->files->isDirectory($cachePath)) {
+            $this->files->makeDirectory(
+                $cachePath,
+                $this->config->get('purifier.cache_file_mode', 0755),
+                true
+            );
         }
     }
 }
