@@ -27,6 +27,10 @@ class CollectionMixin
     public function collapseWithKeys()
     {
         return function () {
+            if (! $this->items) {
+                return new static();
+            }
+
             $results = [];
 
             foreach ($this->items as $key => $values) { // @phpstan-ignore-line
