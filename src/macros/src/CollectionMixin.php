@@ -27,7 +27,7 @@ class CollectionMixin
     public function collapseWithKeys()
     {
         return function () {
-            if (! $this->items) {
+            if (! $this->items) { // @phpstan-ignore-line
                 return new static();
             }
 
