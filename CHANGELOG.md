@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.1.54 - 2025-01-22
+
+### What's Changed
+
+* Add `confd.watch` option, default as `true`. by @huangdijia in https://github.com/friendsofhyperf/components/pull/826
+* Update nav.ts by @zds-s in https://github.com/friendsofhyperf/components/pull/827
+* fix: collapseWithKeys on empty collection by @huangdijia in https://github.com/friendsofhyperf/components/pull/829
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.53...v3.1.54
+
 ## v3.1.53 - 2025-01-08
 
 ### What's Changed
