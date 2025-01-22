@@ -36,3 +36,8 @@ test('test collapseWithKeysOnNestedCollections', function ($collection) {
     $data = new $collection([new $collection(['a' => '1a', 'b' => '1b']), new $collection(['b' => '2b', 'c' => '2c']), 'drop']);
     $this->assertEquals(['a' => '1a', 'b' => '2b', 'c' => '2c'], $data->collapseWithKeys()->all());
 })->with('collectionClassProvider');
+
+test('test collapseWithKeysOnEmptyCollection', function ($collection) {
+    $data = new $collection();
+    $this->assertEquals([], $data->collapseWithKeys()->all());
+})->with('collectionClassProvider');
