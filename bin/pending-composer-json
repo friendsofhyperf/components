@@ -18,24 +18,42 @@ foreach ([__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', 
     }
 }
 
+$options = $argv;
+// ./bin/composer-json-fixer --version=~3.1.0
+$version = '';
+foreach ($options as $option) {
+    if (str_starts_with($option, '--') && $option = substr($option, 2)) {
+        [$key, $value] = explode('=', $option, 2);
+        match ($key) {
+            'version' => $version = $value,
+            default => null,
+        };
+    }
+}
+
 $files = Finder::create()
     ->in(__DIR__ . '/../src')
     ->name('composer.json')
     ->files();
+
+$packages = [];
+foreach ($files as $file) {
+    $packages[] = 'hyperf/' . basename(dirname($file->getRealPath()));
+}
 
 foreach ($files as $file) {
     $file = (string) $file->getRealPath();
     $component = basename(dirname($file));
     $composerJson = json_decode(file_get_contents($file));
 
-    // foreach ($composerJson->require as $package => &$version) {
-    //     if ($package == 'hyperf/engine') {
-    //         continue;
-    //     }
-    //     if (strpos($package, 'hyperf/') === 0) {
-    //         $version = '~3.1.0';
-    //     }
-    // }
+    // Bumps version
+    if ($version) {
+        foreach ($composerJson->require ?? [] as $key => $item) {
+            if (in_array($key, $packages)) {
+                $composerJson->require->{$key} = $version;
+            }
+        }
+    }
 
     // Authors
     if (! isset($composerJson->authors)) {
