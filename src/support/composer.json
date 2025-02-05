@@ -32,7 +32,7 @@
         "nesbot/carbon": "^2.0 || ^3.0"
     },
     "suggest": {
-        "hyperf/async-queue": "Required to use Hyperf\\AsyncQueue\\Job.(~3.1.0)",
+        "hyperf/async-queue": "Required to use Hyperf\\AsyncQueue\\Job.(~3.2.0)",
         "vlucas/phpdotenv": "Required to use Dotenv.(^5.0)"
     },
     "minimum-stability": "dev",

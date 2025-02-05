@@ -31,15 +31,15 @@
         "nesbot/carbon": "^2.0 || ^3.0"
     },
     "suggest": {
-        "hyperf/amqp": "Required to use (~3.1.0)",
-        "hyperf/async-queue": "Required to use (~3.1.0)",
-        "hyperf/cache": "Required to use (~3.1.0)",
-        "hyperf/di": "Required to use (~3.1.0)",
-        "hyperf/framework": "Required to use (~3.1.0)",
-        "hyperf/kafka": "Required to use (~3.1.0)",
-        "hyperf/logger": "Required to use (~3.1.0)",
-        "hyperf/session": "Required to use (~3.1.0)",
-        "hyperf/validation": "Required to use (~3.1.0)"
+        "hyperf/amqp": "Required to use (~3.2.0)",
+        "hyperf/async-queue": "Required to use (~3.2.0)",
+        "hyperf/cache": "Required to use (~3.2.0)",
+        "hyperf/di": "Required to use (~3.2.0)",
+        "hyperf/framework": "Required to use (~3.2.0)",
+        "hyperf/kafka": "Required to use (~3.2.0)",
+        "hyperf/logger": "Required to use (~3.2.0)",
+        "hyperf/session": "Required to use (~3.2.0)",
+        "hyperf/validation": "Required to use (~3.2.0)"
     },
     "minimum-stability": "dev",
     "autoload": {

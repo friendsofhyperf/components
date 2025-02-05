@@ -38,7 +38,7 @@
     },
     "suggest": {
         "aws/aws-sdk-php": "Required to use the SES mail driver (^3.235.5).",
-        "hyperf/devtool": "Required to use the GeneratorCommand (~3.1.0).",
+        "hyperf/devtool": "Required to use the GeneratorCommand (~3.2.0).",
         "symfony/http-client": "Required to use the Symfony API mail transports (^6.2).",
         "symfony/mailgun-mailer": "Required to enable support for the Mailgun mail transport (^6.2).",
         "symfony/postmark-mailer": "Required to enable support for the Postmark mail transport (^6.2)."

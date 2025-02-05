@@ -29,8 +29,8 @@
         "nesbot/carbon": "^2.0 || ^3.0"
     },
     "suggest": {
-        "friendsofhyperf/lock": "Required to use lock function.(~3.1.0)",
-        "hyperf/coroutine": "Required to use defer function.(~3.1.0)"
+        "friendsofhyperf/lock": "Required to use lock function.(~3.2.0)",
+        "hyperf/coroutine": "Required to use defer function.(~3.2.0)"
     },
     "autoload": {
         "psr-4": {

@@ -28,7 +28,7 @@
         "nesbot/carbon": "^2.0 || ^3.0"
     },
     "suggest": {
-        "hyperf/http-server": "Required to use (~3.1.0)",
+        "hyperf/http-server": "Required to use (~3.2.0)",
         "league/commonmark": "Required to use (^1.3|^2.0.2)",
         "opis/closure": "Required to use (^3.1)",
         "ramsey/uuid": "Required to generate UUIDs (^4.7)",

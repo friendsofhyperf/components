@@ -25,7 +25,7 @@
         "hyperf/stdlib": "~3.2.0"
     },
     "suggest": {
-        "hyperf/database": "Required to use (~3.1.0)"
+        "hyperf/database": "Required to use (~3.2.0)"
     },
     "autoload": {
         "psr-4": {
