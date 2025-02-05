@@ -36,10 +36,10 @@ $files = Finder::create()
     ->name('composer.json')
     ->files();
 
-$packages = [];
-foreach ($files as $file) {
-    $packages[] = 'hyperf/' . basename(dirname($file->getRealPath()));
-}
+$skipPackages = [
+    'hyperf/engine',
+    'hyperf/engine-swow',
+];
 
 foreach ($files as $file) {
     $file = (string) $file->getRealPath();
@@ -49,7 +49,10 @@ foreach ($files as $file) {
     // Bumps version
     if ($version) {
         foreach ($composerJson->require ?? [] as $key => $item) {
-            if (in_array($key, $packages)) {
+            if (
+                (str_starts_with($key, 'hyperf/') || str_starts_with($key, 'friendsofhyperf/'))
+                && ! in_array($key, $skipPackages)
+            ) {
                 $composerJson->require->{$key} = $version;
             }
         }
