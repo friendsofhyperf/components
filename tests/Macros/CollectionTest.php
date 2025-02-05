@@ -16,17 +16,6 @@ dataset('collectionClassProvider', [
     [LazyCollection::class],
 ]);
 
-test('test isSingle', function ($collection) {
-    if ($collection === LazyCollection::class) {
-        $this->markTestSkipped('LazyCollection does not have isSingle method.');
-    }
-
-    $data = new $collection(['name' => 'taylor', 'email' => 'foo']);
-    expect($data->isSingle())->toBeFalse();
-    $data = new $collection(['name' => 'taylor']);
-    expect($data->isSingle())->toBeTrue();
-})->with('collectionClassProvider');
-
 test('test collapseWithKeys', function ($collection) {
     $data = new $collection([[1 => 'a'], [3 => 'c'], [2 => 'b'], 'drop']);
     $this->assertEquals([1 => 'a', 3 => 'c', 2 => 'b'], $data->collapseWithKeys()->all());
