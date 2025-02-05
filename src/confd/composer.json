@@ -20,13 +20,13 @@
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
-        "hyperf/codec": "~3.1.0",
-        "hyperf/collection": "~3.1.0",
-        "hyperf/command": "~3.1.0",
-        "hyperf/di": "~3.1.0",
-        "hyperf/event": "~3.1.0",
-        "hyperf/framework": "~3.1.0",
-        "hyperf/support": "~3.1.0"
+        "hyperf/codec": "~3.2.0",
+        "hyperf/collection": "~3.2.0",
+        "hyperf/command": "~3.2.0",
+        "hyperf/di": "~3.2.0",
+        "hyperf/event": "~3.2.0",
+        "hyperf/framework": "~3.2.0",
+        "hyperf/support": "~3.2.0"
     },
     "suggest": {
         "hyperf/etcd": "For etcd driver.",

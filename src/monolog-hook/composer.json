@@ -20,8 +20,8 @@
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
-        "hyperf/coroutine": "~3.1.0",
-        "hyperf/logger": "~3.1.0"
+        "hyperf/coroutine": "~3.2.0",
+        "hyperf/logger": "~3.2.0"
     },
     "minimum-stability": "dev",
     "autoload": {

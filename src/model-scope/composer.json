@@ -20,9 +20,9 @@
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
-        "hyperf/di": "~3.1.0",
-        "hyperf/event": "~3.1.0",
-        "hyperf/stdlib": "~3.1.0"
+        "hyperf/di": "~3.2.0",
+        "hyperf/event": "~3.2.0",
+        "hyperf/stdlib": "~3.2.0"
     },
     "suggest": {
         "hyperf/database": "Required to use (~3.1.0)"

@@ -24,10 +24,10 @@
     "require": {
         "barryvdh/reflection-docblock": "^2.0",
         "composer/composer": "^1.0 || ^2.0",
-        "hyperf/collection": "~3.1.0",
-        "hyperf/filesystem": "~3.1.0",
-        "hyperf/stringable": "~3.1.0",
-        "hyperf/support": "~3.1.0"
+        "hyperf/collection": "~3.2.0",
+        "hyperf/filesystem": "~3.2.0",
+        "hyperf/stringable": "~3.2.0",
+        "hyperf/support": "~3.2.0"
     },
     "suggest": {
         "doctrine/dbal": "Required to rename columns (^2.5|^3.0)."

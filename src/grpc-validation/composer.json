@@ -20,10 +20,10 @@
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
-        "hyperf/context": "~3.1.0",
-        "hyperf/di": "~3.1.0",
-        "hyperf/grpc-server": "~3.1.0",
-        "hyperf/validation": "~3.1.0"
+        "hyperf/context": "~3.2.0",
+        "hyperf/di": "~3.2.0",
+        "hyperf/grpc-server": "~3.2.0",
+        "hyperf/validation": "~3.2.0"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,

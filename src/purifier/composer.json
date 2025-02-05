@@ -12,9 +12,9 @@
     "require": {
         "php": ">=8.1",
         "ezyang/htmlpurifier": "^4.17.0",
-        "hyperf/context": "~3.1.0",
-        "hyperf/contract": "~3.1.0",
-        "hyperf/support": "~3.1.0"
+        "hyperf/context": "~3.2.0",
+        "hyperf/contract": "~3.2.0",
+        "hyperf/support": "~3.2.0"
     },
     "suggest": {
         "hyperf/database": "Required to use (~3.1.0)"
