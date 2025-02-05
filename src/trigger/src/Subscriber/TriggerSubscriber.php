@@ -116,15 +116,8 @@ class TriggerSubscriber extends AbstractSubscriber
         $context = ['connection' => $this->consumer->connection];
         $this->loop();
 
-        $database = match (true) {
-            property_exists($event, 'tableMap') => $event->tableMap->database, // @phpstan-ignore property.private
-            default => null,
-        };
-
-        $table = match (true) {
-            property_exists($event, 'tableMap') => $event->tableMap->table, // @phpstan-ignore property.private
-            default => null,
-        };
+        $database = $event->tableMap->database;
+        $table = $event->tableMap->table;
 
         $key = join('.', [
             $this->consumer->connection,
@@ -136,10 +129,7 @@ class TriggerSubscriber extends AbstractSubscriber
         $eventType = $event->getType();
 
         foreach ($this->triggerManager->get($key) as $callable) {
-            $values = match (true) {
-                property_exists($event, 'values') => $event->values, // @phpstan-ignore property.private
-                default => [],
-            };
+            $values = $event->values;
             foreach ($values as $value) {
                 $this->chan->push(function () use ($callable, $value, $eventType, $context) {
                     [$class, $method] = $callable;
