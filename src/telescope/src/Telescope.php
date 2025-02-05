@@ -22,16 +22,6 @@ use function Hyperf\Coroutine\defer;
 
 class Telescope
 {
-    /**
-     * @deprecated since v3.1, use `\FriendsOfHyperf\Telescope\SaveMode::SYNC` instead, will be removed in v3.2
-     */
-    public const SYNC = 0;
-
-    /**
-     * @deprecated since v3.1, use `\FriendsOfHyperf\Telescope\SaveMode::ASYNC` instead, will be removed in v3.2
-     */
-    public const ASYNC = 1;
-
     public const ENTRIES = 'telescope.context.entries';
 
     /**
@@ -133,15 +123,6 @@ class Telescope
     public static function recordClientRequest(IncomingEntry $entry): void
     {
         static::record(EntryType::CLIENT_REQUEST, $entry);
-    }
-
-    /**
-     * @deprecated since v3.1, the method has been deprecated and its usage is discouraged, will be removed in v3.2
-     */
-    public static function getAppName(): string
-    {
-        $appName = static::getConfig()->getAppName();
-        return $appName ? '[' . $appName . '] ' : '';
     }
 
     public static function getQuerySlow(): int

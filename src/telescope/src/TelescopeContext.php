@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Telescope;
 
 use Hyperf\Context\Context;
-use Hyperf\Contract\PackerInterface;
 use Hyperf\Stringable\Str;
 
 class TelescopeContext
@@ -49,24 +48,6 @@ class TelescopeContext
     public static function getSubBatchId(): ?string
     {
         return Context::get(self::SUB_BATCH_ID) ?: null;
-    }
-
-    /**
-     * @deprecated since v3.1, the method has been deprecated and its usage is discouraged, will be removed in v3.2
-     */
-    public static function setCachePacker(PackerInterface $packer): void
-    {
-        Context::set(self::CACHE_PACKER, $packer);
-    }
-
-    /**
-     * @deprecated since v3.1, the method has been deprecated and its usage is discouraged, will be removed in v3.2
-     */
-    public static function getCachePacker(): ?PackerInterface
-    {
-        /** @var PackerInterface|null $packer */
-        $packer = Context::get(self::CACHE_PACKER);
-        return $packer instanceof PackerInterface ? $packer : null;
     }
 
     public static function getMiddlewares(): ?array

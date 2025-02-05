@@ -12,15 +12,11 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Helpers;
 
 use BackedEnum;
-use Carbon\Carbon;
 use Closure;
 use Countable;
-use DateTimeZone;
 use Exception;
-use FriendsOfHyperf\AsyncTask\Task as AsyncTask;
 use FriendsOfHyperf\AsyncTask\TaskInterface as AsyncTaskInterface;
 use FriendsOfHyperf\Support\AsyncQueue\ClosureJob;
-use FriendsOfHyperf\Support\Environment;
 use Hyperf\Amqp\Message\ProducerMessageInterface;
 use Hyperf\Amqp\Producer;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
@@ -229,25 +225,8 @@ function dispatch($job, ...$arguments)
         $job instanceof ProduceMessage => di(ProducerManager::class)
             ->getProducer((string) ($arguments[0] ?? 'default'))
             ->sendBatch([$job]),
-        class_exists(AsyncTask::class) && interface_exists(AsyncTaskInterface::class) && $job instanceof AsyncTaskInterface => AsyncTask::deliver($job, ...$arguments), // @deprecated since v3.1, will be removed in v3.2
         default => throw new InvalidArgumentException('Not Support job type.')
     };
-}
-
-/**
- * @param mixed $environments
- * @return bool|Environment
- * @deprecated since 3.1, use `Str::is($patterns, env('APP_ENV'))` instead, will removed in 3.2.
- */
-function environment(...$environments)
-{
-    $environment = di(Environment::class);
-
-    if (count($environments) > 0) {
-        return $environment->is(...$environments);
-    }
-
-    return $environment;
 }
 
 /**
@@ -358,18 +337,6 @@ function logger($message = null, array $context = [], bool $backtrace = false)
 function logs(string $name = 'hyperf', string $group = 'default'): LoggerInterface
 {
     return di(LoggerFactory::class)->get($name, $group);
-}
-
-/**
- * Create a new Carbon instance for the current time.
- *
- * @param DateTimeZone|string|null $tz
- *
- * @deprecated since v3.1, use Hyperf\Support\now() instead, will be removed in v3.2
- */
-function now($tz = null): Carbon
-{
-    return Carbon::now($tz);
 }
 
 /**
@@ -505,18 +472,6 @@ function session($key = null, $default = null)
     }
 
     return $session->get($key, $default);
-}
-
-/**
- * Create a new Carbon instance for the current date.
- *
- * @param DateTimeZone|string|null $tz
- *
- * @deprecated since v3.1, use Hyperf\Support\today() instead, will be removed in v3.2
- */
-function today($tz = null): Carbon
-{
-    return Carbon::today($tz);
 }
 
 /**

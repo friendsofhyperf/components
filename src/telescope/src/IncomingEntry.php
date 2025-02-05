@@ -287,12 +287,4 @@ class IncomingEntry
             'created_at' => $this->recordedAt,
         ];
     }
-
-    /**
-     * @deprecated since v3.1, will be removed in v3.2
-     */
-    public function create(): void
-    {
-        Telescope::store($this);
-    }
 }

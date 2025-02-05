@@ -29,13 +29,6 @@ class Message
 {
     use ForwardsCalls;
 
-    /**
-     * CIDs of files embedded in the message.
-     *
-     * @deprecated since v3.1, will be removed in v3.2
-     */
-    protected array $embeddedFiles = [];
-
     public function __construct(
         protected Email $message
     ) {

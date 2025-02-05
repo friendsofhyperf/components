@@ -19,11 +19,6 @@ use Hyperf\Collection\Collection;
  */
 class CollectionMixin
 {
-    public function isSingle()
-    {
-        return fn () => $this->count() === 1;
-    }
-
     public function collapseWithKeys()
     {
         return function () {

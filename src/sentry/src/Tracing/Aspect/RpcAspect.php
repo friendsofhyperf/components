@@ -95,7 +95,6 @@ class RpcAspect extends AbstractAspect
             'rpc.service' => $service,
         ];
 
-        Context::set(static::DATA, $data); // @deprecated since v3.1, will be removed in v3.2
         Context::set(static::SPAN, $span->setData($data));
 
         if ($this->container->has(Rpc\Context::class)) {
