@@ -25,8 +25,8 @@
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
-        "hyperf/coordinator": "~3.1.0",
-        "hyperf/coroutine": "~3.1.0",
+        "hyperf/coordinator": "~3.2.0",
+        "hyperf/coroutine": "~3.2.0",
         "hyperf/engine": "^2.1"
     },
     "autoload": {

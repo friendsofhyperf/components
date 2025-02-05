@@ -24,8 +24,8 @@
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
-        "hyperf/database": "~3.1.0",
-        "hyperf/di": "~3.1.0"
+        "hyperf/database": "~3.2.0",
+        "hyperf/di": "~3.2.0"
     },
     "minimum-stability": "dev",
     "autoload": {

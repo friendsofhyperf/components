@@ -20,14 +20,14 @@
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
-        "hyperf/collection": "~3.1.0",
-        "hyperf/context": "~3.1.0",
-        "hyperf/di": "~3.1.0",
-        "hyperf/macroable": "~3.1.0",
-        "hyperf/pipeline": "~3.1.0",
-        "hyperf/stringable": "~3.1.0",
-        "hyperf/support": "~3.1.0",
-        "hyperf/tappable": "~3.1.0",
+        "hyperf/collection": "~3.2.0",
+        "hyperf/context": "~3.2.0",
+        "hyperf/di": "~3.2.0",
+        "hyperf/macroable": "~3.2.0",
+        "hyperf/pipeline": "~3.2.0",
+        "hyperf/stringable": "~3.2.0",
+        "hyperf/support": "~3.2.0",
+        "hyperf/tappable": "~3.2.0",
         "laravel/serializable-closure": "^1.0",
         "nesbot/carbon": "^2.0 || ^3.0"
     },
