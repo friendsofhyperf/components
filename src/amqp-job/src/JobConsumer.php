@@ -72,7 +72,6 @@ class JobConsumer extends ConsumerMessage
         }
 
         return $logger = match (true) {
-            $this->container->has(LoggerInterface::class) => $this->container->get(LoggerInterface::class), // @deprecated, will be removed in v3.2
             $this->container->has(Contract\LoggerInterface::class) => $this->container->get(Contract\LoggerInterface::class),
             $this->container->has(StdoutLoggerInterface::class) => $this->container->get(StdoutLoggerInterface::class),
             default => null,

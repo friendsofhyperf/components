@@ -20,11 +20,6 @@ use Hyperf\Collection\LazyCollection;
  */
 class LazyCollectionMixin
 {
-    public function isSingle()
-    {
-        return fn () => $this->count() === 1;
-    }
-
     public function collapseWithKeys()
     {
         return function () {

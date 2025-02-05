@@ -11,11 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Telescope;
 
-use FriendsOfHyperf\Telescope\Server\Server;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Redis\Redis;
-use Hyperf\Server\Event;
-use Hyperf\Server\ServerInterface;
 use Hyperf\Stringable\Str;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -40,90 +37,6 @@ class TelescopeConfig
     public function getStorageOptions(string $driver = 'database'): array
     {
         return (array) $this->get('storage.' . $driver, []);
-    }
-
-    /**
-     * @deprecated since v3.1, will be removed in v3.2
-     * @return array{enable: bool, host: string, port: int}
-     */
-    public function getServerOptions(): array
-    {
-        return array_replace([
-            'enable' => false,
-            'name' => 'telescope',
-            'type' => ServerInterface::SERVER_HTTP,
-            'host' => '0.0.0.0',
-            'port' => 9509,
-            'sock_type' => SWOOLE_SOCK_TCP,
-            'callbacks' => [
-                Event::ON_REQUEST => [Server::class, 'onRequest'],
-            ],
-        ], (array) $this->get('server', []));
-    }
-
-    /**
-     * @deprecated since v3.1, will be removed in v3.2
-     */
-    public function isServerEnable(): bool
-    {
-        return (bool) $this->getServerOptions()['enable'];
-    }
-
-    /**
-     * @deprecated since v3.1, will be removed in v3.2
-     */
-    public function getServerHost(): string
-    {
-        return (string) ($this->getServerOptions()['host'] ?: '0.0.0.0');
-    }
-
-    /**
-     * @deprecated since v3.1, will be removed in v3.2
-     */
-    public function getServerPort(): int
-    {
-        return (int) ($this->getServerOptions()['port'] ?: 9509);
-    }
-
-    /**
-     * @deprecated since v3.1, will be removed in v3.2
-     *
-     * @return array{connection:string, query_slow:int, chunk:int}
-     */
-    public function getDatabaseOptions(): array
-    {
-        $databaseOptions = $this->get('storage.database')
-            ?? $this->get('database') // will be removed in v3.2
-            ?? [];
-        return array_replace([
-            'connection' => 'default',
-            'query_slow' => 50,
-            'chunk' => 1000,
-        ], (array) $databaseOptions);
-    }
-
-    /**
-     * @deprecated since v3.1, will be removed in v3.2
-     */
-    public function getDatabaseConnection(): string
-    {
-        return (string) $this->getDatabaseOptions()['connection'];
-    }
-
-    /**
-     * @deprecated since v3.1, will be removed in v3.2
-     */
-    public function getDatabaseChunk(): int
-    {
-        return (int) $this->getDatabaseOptions()['chunk'];
-    }
-
-    /**
-     * @deprecated since v3.1, will be removed in v3.2
-     */
-    public function getDatabaseQuerySlow(): int
-    {
-        return (int) $this->getDatabaseOptions()['query_slow'];
     }
 
     public function getQuerySlow(): int

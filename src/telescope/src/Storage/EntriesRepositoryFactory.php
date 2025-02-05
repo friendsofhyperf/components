@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Telescope\Storage;
 use Closure;
 use FriendsOfHyperf\Telescope\Contract\EntriesRepository;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
-use Hyperf\Contract\ConfigInterface;
 use InvalidArgumentException;
 use Psr\Container\ContainerInterface;
 
@@ -25,9 +24,6 @@ class EntriesRepositoryFactory
     public function __invoke(?ContainerInterface $container = null)
     {
         $telescopeConfig = $container->get(TelescopeConfig::class);
-
-        // Compatibility with v3.1
-        $this->compatibilityWithLegacyConfig($container->get(ConfigInterface::class));
 
         $options = array_replace(
             [
@@ -50,21 +46,5 @@ class EntriesRepositoryFactory
         }
 
         throw new InvalidArgumentException(sprintf('The driver [%s] must be an instance of %s.', $driver, EntriesRepository::class));
-    }
-
-    /**
-     * @deprecated since v3.1, will be removed in v3.2
-     */
-    /**
-     * 兼容旧配置，优化命名.
-     */
-    private function compatibilityWithLegacyConfig(ConfigInterface $config): void
-    {
-        if (! $config->has('telescope.storage') && $config->has('telescope.database')) {
-            $config->set('telescope.storage.database', $config->get('telescope.database'));
-        }
-        if ($config->has('telescope.storage.database') && ! $config->has('telescope.storage.database.driver')) {
-            $config->set('telescope.storage.database.driver', DatabaseEntriesRepository::class);
-        }
     }
 }

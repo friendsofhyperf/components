@@ -46,8 +46,8 @@ use Symfony\Component\HttpFoundation\Response as HttpResponse;
 use Symfony\Component\VarDumper\VarDumper;
 
 use function FriendsOfHyperf\Helpers\fluent;
-use function FriendsOfHyperf\Helpers\now;
 use function Hyperf\Collection\collect;
+use function Hyperf\Support\now;
 use function Hyperf\Tappable\tap;
 
 /**

@@ -18,7 +18,6 @@ class ConfigProvider
         return [
             'dependencies' => [
                 Contract\CacheInterface::class => RepositoryFactory::class,
-                CacheInterface::class => fn ($container) => $container->get(Contract\CacheInterface::class), // Will removed in v3.2
             ],
         ];
     }

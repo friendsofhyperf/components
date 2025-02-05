@@ -49,7 +49,6 @@ test('test CheckWithNonTcpSocket', function () {
 test('test ProxyWithSuccessfulSend', function () {
     $this->server->method('send')->willReturn(true);
     $this->server->method('connection_info')->willReturn(['socket_type' => SWOOLE_SOCK_TCP]);
-    $this->sender->setWorkerId(1);
     $this->assertTrue($this->sender->proxy('send', 1, [1, 'message']));
 });
 

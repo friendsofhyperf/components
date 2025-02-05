@@ -43,14 +43,6 @@ class ConsumerManager
         }
     }
 
-    /**
-     * @deprecated since v3.1, will be removed in v3.2
-     */
-    public function run(): void
-    {
-        $this->register();
-    }
-
     protected function createProcess(string $connection, array $options = []): AbstractProcess
     {
         return new class($this->container, $connection, $options) extends AbstractProcess {

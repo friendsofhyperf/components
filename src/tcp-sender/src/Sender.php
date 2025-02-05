@@ -72,21 +72,6 @@ class Sender
         return true;
     }
 
-    /**
-     * @deprecated since v3.1, will remove in v3.2.
-     */
-    public function setWorkerId(int $workerId): void
-    {
-    }
-
-    /**
-     * @deprecated since v3.1, use `Sender::getServer()->getWorkerId()` instead, will remove in v3.2.
-     */
-    public function getWorkerId(): int
-    {
-        return $this->getServer()->getWorkerId() ?: 0;
-    }
-
     public function check(int $fd): bool
     {
         $info = $this->getServer()->connection_info($fd);

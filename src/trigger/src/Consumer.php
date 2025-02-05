@@ -110,58 +110,6 @@ class Consumer
         }
     }
 
-    /**
-     * @deprecated since v3.1, use `$this->binLogCurrentSnapshot` instead, will be removed in v3.2.
-     */
-    public function getBinLogCurrentSnapshot(): BinLogCurrentSnapshotInterface
-    {
-        return $this->binLogCurrentSnapshot;
-    }
-
-    /**
-     * @deprecated since v3.1, use `$this->healthMonitor` instead, will be removed in v3.2.
-     */
-    public function getHealthMonitor(): ?HealthMonitor
-    {
-        return $this->healthMonitor;
-    }
-
-    /**
-     * @deprecated since v3.1, use `$this->name` instead, will be removed in v3.2.
-     */
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @deprecated since v3.1, use `$this->config->get($key, $default)` instead, will be removed in v3.2.
-     */
-    public function getOption(?string $key = null, mixed $default = null): mixed
-    {
-        if (is_null($key)) {
-            return (fn () => $this->configs ?? [])->call($this->config);
-        }
-
-        return $this->config->get($key, $default);
-    }
-
-    /**
-     * @deprecated since v3.1, use `$this->connection` instead, will be removed in v3.2.
-     */
-    public function getConnection(): string
-    {
-        return $this->connection;
-    }
-
-    /**
-     * @deprecated since v3.1, use `$this->identifier` instead, will be removed in v3.2.
-     */
-    public function getIdentifier(): string
-    {
-        return $this->identifier;
-    }
-
     public function stop(): void
     {
         $this->stopped = true;

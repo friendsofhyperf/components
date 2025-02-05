@@ -15,7 +15,6 @@ composer require friendsofhyperf/macros
 ### Hyperf\Collection\Collection
 
 - `Collection::collapseWithKeys`
-- `Collection::isSingle`
 
 ### Hyperf\Collection\LazyCollection
 

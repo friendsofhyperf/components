@@ -125,7 +125,7 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
 
         $entries->chunk($this->chunk)->each(function ($chunked) use ($table) {
             $table->insert($chunked->map(function ($entry) { // @phpstan-ignore-line
-                $entry->content = json_encode($entry->content, JSON_INVALID_UTF8_SUBSTITUTE);
+                // $entry->content = json_encode($entry->content, JSON_INVALID_UTF8_SUBSTITUTE);
 
                 return $entry->toArray();
             })->toArray());
