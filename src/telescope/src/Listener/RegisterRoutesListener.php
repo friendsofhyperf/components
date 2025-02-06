@@ -37,9 +37,6 @@ class RegisterRoutesListener implements ListenerInterface
     public function process(object $event): void
     {
         $server = $this->config->get('telescope.server', 'http');
-        if (! is_string($server)) { // will be removed in v3.2
-            $server = 'http';
-        }
         $prefix = $this->config->get('telescope.path', '/telescope');
         $middleware = (array) $this->config->get('telescope.middleware', [
             Authorize::class,
