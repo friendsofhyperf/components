@@ -20,6 +20,7 @@ use Hyperf\Collection\Collection;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Event;
 use Hyperf\Stringable\Str;
+use Throwable;
 
 class ExceptionHandlerListener implements ListenerInterface
 {
@@ -35,12 +36,13 @@ class ExceptionHandlerListener implements ListenerInterface
     }
 
     /**
-     * @param Event\RequestTerminated $event
+     * @param Event\RequestTerminated|object $event
      */
     public function process(object $event): void
     {
         if (
-            ! $this->telescopeConfig->isEnable('exception')
+            ! $event instanceof Event\RequestTerminated
+            || ! $this->telescopeConfig->isEnable('exception')
             || ! TelescopeContext::getBatchId()
         ) {
             return;
@@ -50,9 +52,9 @@ class ExceptionHandlerListener implements ListenerInterface
             return;
         }
 
-        $trace = (new Collection($exception->getTrace()))->map(function ($item) {
-            return Arr::only($item, ['file', 'line']);
-        })->toArray();
+        $trace = (new Collection($exception->getTrace()))
+            ->map(fn ($item) => Arr::only($item, ['file', 'line']))
+            ->toArray();
 
         Telescope::recordException(IncomingEntry::make([
             'class' => get_class($exception),
@@ -65,6 +67,9 @@ class ExceptionHandlerListener implements ListenerInterface
         ]));
     }
 
+    /**
+     * @param Throwable $exception
+     */
     protected function getContext($exception): array
     {
         if (Str::contains($exception->getFile(), "eval()'d code")) {
@@ -75,8 +80,7 @@ class ExceptionHandlerListener implements ListenerInterface
 
         return (new Collection(explode("\n", file_get_contents($exception->getFile()))))
             ->slice($exception->getLine() - 10, 20)
-            ->mapWithKeys(function ($value, $key) {
-                return [$key + 1 => $value];
-            })->all();
+            ->mapWithKeys(fn ($value, $key) => [$key + 1 => $value])
+            ->all();
     }
 }

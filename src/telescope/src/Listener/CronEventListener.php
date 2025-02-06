@@ -38,7 +38,10 @@ class CronEventListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if (! $this->telescopeConfig->isEnable('schedule')) {
+        if (
+            ! ($event instanceof Event\AfterExecute || $event instanceof Event\FailToExecute)
+            || ! $this->telescopeConfig->isEnable('schedule')
+        ) {
             return;
         }
 

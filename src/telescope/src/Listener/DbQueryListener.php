@@ -34,12 +34,13 @@ class DbQueryListener implements ListenerInterface
     }
 
     /**
-     * @param QueryExecuted $event
+     * @param object|QueryExecuted $event
      */
     public function process(object $event): void
     {
         if (
-            ! $this->telescopeConfig->isEnable('db')
+            ! $event instanceof QueryExecuted
+            || ! $this->telescopeConfig->isEnable('db')
             || ! TelescopeContext::getBatchId()
         ) {
             return;
