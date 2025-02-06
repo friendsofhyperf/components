@@ -41,11 +41,12 @@ class ConfigProvider
                 Contract\PrunableRepository::class => fn ($container) => $container->get(Contract\EntriesRepository::class),
             ],
             'listeners' => [
-                Listener\CronEventListener::class,
                 Listener\CommandListener::class,
+                Listener\CronEventListener::class,
                 Listener\DbQueryListener::class,
                 Listener\ExceptionHandlerListener::class,
                 Listener\FetchRecordingOnBootListener::class,
+                Listener\RedisCommandExecutedListener::class,
                 Listener\RegisterRoutesListener::class => -1,
             ],
             'publish' => [
