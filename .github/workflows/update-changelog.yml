@@ -33,3 +33,4 @@ jobs:
           branch: ${{ github.event.release.target_commitish }}
           commit_message: Update CHANGELOG
           file_pattern: CHANGELOG-3.1.md
+          path-to-changelog: CHANGELOG-3.1.md
