@@ -26,7 +26,6 @@ class ConfigProvider
                 Aspect\GrpcCoreMiddlewareAspect::class,
                 Aspect\GuzzleHttpClientAspect::class,
                 Aspect\LogAspect::class,
-                Aspect\RedisAspect::class,
                 Aspect\RequestDispatcherAspect::class,
                 Aspect\RpcAspect::class,
             ],
