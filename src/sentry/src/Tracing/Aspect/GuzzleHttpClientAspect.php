@@ -20,6 +20,7 @@ use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Container\ContainerInterface;
+use Psr\Http\Message\RequestInterface;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
@@ -52,8 +53,8 @@ class GuzzleHttpClientAspect extends AbstractAspect
         }
 
         $arguments = $proceedingJoinPoint->arguments['keys'];
-        $uri = (string) ($arguments['uri'] ?? '/');
-        $method = $arguments['method'] ?? 'GET';
+        /** @var RequestInterface $request */
+        $request = $arguments['request'];
         $options = $arguments['options'] ?? [];
         $guzzleConfig = (fn () => match (true) {
             method_exists($this, 'getConfig') => $this->getConfig(), // @deprecated ClientInterface::getConfig will be removed in guzzlehttp/guzzle:8.0.
@@ -79,7 +80,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
         $proceedingJoinPoint->arguments['keys']['options']['headers'] = $options['headers'];
 
         // Start span
-        $span = $this->startSpan('http.client', $method . ' ' . (string) $uri);
+        $span = $this->startSpan('http.client', $request->getMethod() . ' ' . (string) $request->getUri());
 
         if (! $span) {
             return $proceedingJoinPoint->process();
