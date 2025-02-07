@@ -26,6 +26,7 @@ jobs:
         with:
           latest-version: ${{ github.event.release.tag_name }}
           release-notes: ${{ github.event.release.body }}
+          path-to-changelog: CHANGELOG-3.1.md
 
       - name: Commit updated CHANGELOG
         uses: stefanzweifel/git-auto-commit-action@v5
@@ -33,4 +34,3 @@ jobs:
           branch: ${{ github.event.release.target_commitish }}
           commit_message: Update CHANGELOG
           file_pattern: CHANGELOG-3.1.md
-          path-to-changelog: CHANGELOG-3.1.md
