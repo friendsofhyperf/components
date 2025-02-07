@@ -14,9 +14,9 @@ namespace FriendsOfHyperf\Sentry\Aspect;
 use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Switcher;
 use GuzzleHttp\Client;
+use GuzzleHttp\TransferStats;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Psr\Http\Message\ResponseInterface;
 use Sentry\Breadcrumb;
 
 /**
@@ -26,8 +26,7 @@ use Sentry\Breadcrumb;
 class GuzzleHttpClientAspect extends AbstractAspect
 {
     public array $classes = [
-        Client::class . '::request',
-        Client::class . '::requestAsync',
+        Client::class . '::transfer',
     ];
 
     public function __construct(protected Switcher $switcher)
@@ -36,47 +35,52 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        // If the guzzle aspect is disabled, we will not record the request.
         if (! $this->switcher->isBreadcrumbEnable('guzzle')) {
             return $proceedingJoinPoint->process();
         }
 
-        $startTime = microtime(true);
-        $instance = $proceedingJoinPoint->getInstance();
-        $arguments = $proceedingJoinPoint->arguments;
-        $options = $arguments['keys']['options'] ?? [];
-        $guzzleConfig = (fn () => $this->config ?? [])->call($instance);
+        $options = $proceedingJoinPoint->arguments['keys']['options'] ?? [];
+        $guzzleConfig = (fn () => match (true) {
+            method_exists($this, 'getConfig') => $this->getConfig(), // @deprecated ClientInterface::getConfig will be removed in guzzlehttp/guzzle:8.0.
+            property_exists($this, 'config') => $this->config,
+            default => [],
+        })->call($proceedingJoinPoint->getInstance());
 
+        // If the no_sentry_aspect option is set to true, we will not record the request.
         if (($options['no_sentry_aspect'] ?? null) === true || ($guzzleConfig['no_sentry_aspect'] ?? null) === true) {
             return $proceedingJoinPoint->process();
         }
 
-        // Disable the aspect for the requestAsync method.
-        if ($proceedingJoinPoint->methodName == 'request') {
-            $proceedingJoinPoint->arguments['keys']['options']['no_sentry_aspect'] = true;
-        }
+        $onStats = $options['on_stats'] ?? null;
 
-        $uri = (string) ($arguments['keys']['uri'] ?? '');
-        $data['config'] = $guzzleConfig;
-        $data['request']['method'] = $arguments['keys']['method'] ?? 'GET';
-        $data['request']['options'] = $arguments['keys']['options'] ?? [];
+        $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($onStats, $guzzleConfig, $options) {
+            $request = $stats->getRequest();
+            $response = $stats->getResponse();
 
-        $result = $proceedingJoinPoint->process();
+            $uri = $request->getUri()->__toString();
+            $data = [];
+            $data['config'] = $guzzleConfig;
+            $data['request']['method'] = $request->getMethod();
+            $data['request']['options'] = $options;
+            $data['response']['status'] = $response?->getStatusCode();
+            $data['response']['reason'] = $response?->getReasonPhrase();
+            $data['response']['headers'] = $response?->getHeaders();
+            $data['duration'] = $stats->getTransferTime() * 1000;
 
-        if ($result instanceof ResponseInterface) {
-            $data['response']['status'] = $result->getStatusCode();
-            $data['response']['reason'] = $result->getReasonPhrase();
-            $data['response']['headers'] = $result->getHeaders();
-        }
-        $data['timeMs'] = (microtime(true) - $startTime) * 1000;
+            Integration::addBreadcrumb(new Breadcrumb(
+                Breadcrumb::LEVEL_INFO,
+                Breadcrumb::TYPE_DEFAULT,
+                'guzzle',
+                $uri,
+                $data
+            ));
 
-        Integration::addBreadcrumb(new Breadcrumb(
-            Breadcrumb::LEVEL_INFO,
-            Breadcrumb::TYPE_DEFAULT,
-            'guzzle',
-            $uri,
-            $data
-        ));
+            if (is_callable($onStats)) {
+                ($onStats)($stats);
+            }
+        };
 
-        return $result;
+        return $proceedingJoinPoint->process();
     }
 }
