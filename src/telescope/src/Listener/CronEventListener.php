@@ -38,7 +38,10 @@ class CronEventListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if (! $this->telescopeConfig->isEnable('schedule')) {
+        if (
+            ! ($event instanceof Event\AfterExecute || $event instanceof Event\FailToExecute)
+            || ! $this->telescopeConfig->isEnable('schedule')
+        ) {
             return;
         }
 
@@ -47,7 +50,6 @@ class CronEventListener implements ListenerInterface
         $output = match (true) {
             $event instanceof Event\AfterExecute => 'success',
             $event instanceof Event\FailToExecute => '[fail]' . (string) $event->getThrowable(),
-            default => '',
         };
 
         Telescope::recordSchedule(IncomingEntry::make([
