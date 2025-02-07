@@ -61,24 +61,28 @@ class GuzzleHttpClientAspect extends AbstractAspect
         // Add or override the on_stats option to record the request duration.
         $onStats = $options['on_stats'] ?? null;
         $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($onStats) {
-            $request = $stats->getRequest();
-            $response = $stats->getResponse();
-            $data = [
-                'status' => $response->getStatusCode(),
-                'reason' => $response->getReasonPhrase(),
-                'headers' => $response->getHeaders(),
-                'body' => $this->getResponsePayload($response),
-            ];
+            try {
+                $request = $stats->getRequest();
+                $response = $stats->getResponse();
+                $data = [
+                    'status' => $response->getStatusCode(),
+                    'reason' => $response->getReasonPhrase(),
+                    'headers' => $response->getHeaders(),
+                    'body' => $this->getResponsePayload($response),
+                ];
 
-            Telescope::recordClientRequest(IncomingEntry::make([
-                'method' => $request->getMethod(),
-                'uri' => $request->getUri()->__toString(),
-                'headers' => $request->getHeaders(),
-                'response_status' => $data['status'],
-                'response_headers' => $data['headers'],
-                'response_data' => $data,
-                'duration' => $stats->getTransferTime() * 1000,
-            ]));
+                Telescope::recordClientRequest(IncomingEntry::make([
+                    'method' => $request->getMethod(),
+                    'uri' => $request->getUri()->__toString(),
+                    'headers' => $request->getHeaders(),
+                    'response_status' => $data['status'],
+                    'response_headers' => $data['headers'],
+                    'response_data' => $data,
+                    'duration' => $stats->getTransferTime() * 1000,
+                ]));
+            } catch (Throwable $e) {
+                // We will catch the exception to prevent the request from being interrupted.
+            }
 
             if (is_callable($onStats)) {
                 $onStats($stats);
