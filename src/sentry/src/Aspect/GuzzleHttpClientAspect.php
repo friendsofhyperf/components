@@ -61,11 +61,20 @@ class GuzzleHttpClientAspect extends AbstractAspect
             $uri = $request->getUri()->__toString();
             $data = [];
             $data['config'] = $guzzleConfig;
-            $data['request']['method'] = $request->getMethod();
-            $data['request']['options'] = $options;
-            $data['response']['status'] = $response?->getStatusCode();
-            $data['response']['reason'] = $response?->getReasonPhrase();
-            $data['response']['headers'] = $response?->getHeaders();
+            // request
+            $data['request.method'] = $request->getMethod();
+            $data['request.body.size'] = strlen($options['body'] ?? '');
+            $data['request.full_url'] = (string) $request->getUri();
+            $data['request.path'] = $request->getUri()->getPath();
+            $data['request.scheme'] = $request->getUri()->getScheme();
+            $data['request.host'] = $request->getUri()->getHost();
+            $data['request.port'] = $request->getUri()->getPort();
+            $data['request.user_agent'] = $request->getHeaderLine('User-Agent'); // updated key for consistency
+            $data['request.headers'] = $request->getHeaders();
+            // response
+            $data['response.status'] = $response?->getStatusCode();
+            $data['response.reason'] = $response?->getReasonPhrase();
+            $data['response.headers'] = $response?->getHeaders();
             $data['duration'] = $stats->getTransferTime() * 1000;
 
             Integration::addBreadcrumb(new Breadcrumb(
