@@ -1,5 +1,9 @@
 # Changelog
 
+## v3.1.55.3 - 2025-02-07
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.55.2...v3.1.55.3
+
 ## v3.1.55.2 - 2025-02-07
 
 **Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.55.1...v3.1.55.2
