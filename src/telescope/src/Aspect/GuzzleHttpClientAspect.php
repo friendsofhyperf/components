@@ -47,9 +47,8 @@ class GuzzleHttpClientAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $instance = $proceedingJoinPoint->getInstance();
         $options = $proceedingJoinPoint->arguments['keys']['options'] ?? [];
-        $guzzleConfig = (fn () => $this->config ?? [])->call($instance);
+        $guzzleConfig = (fn () => $this->config ?? [])->call($proceedingJoinPoint->getInstance());
 
         // If the no_telescope_aspect option is set to true, we will not record the request.
         if (
