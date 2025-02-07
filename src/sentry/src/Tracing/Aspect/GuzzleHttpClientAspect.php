@@ -123,9 +123,9 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     'error' => true,
                     'exception.class' => $exception::class,
                     'exception.code' => $exception->getCode(),
-                    'exception.message' => $exception->getMessage(),
                 ]);
                 if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
+                    $data['exception.message'] = $exception->getMessage();
                     $data['exception.stack_trace'] = (string) $exception;
                 }
             } elseif ($statusCode >= 400 && $statusCode < 600) {
