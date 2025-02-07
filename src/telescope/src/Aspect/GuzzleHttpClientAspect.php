@@ -62,26 +62,25 @@ class GuzzleHttpClientAspect extends AbstractAspect
         $onStats = $options['on_stats'] ?? null;
         $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($onStats) {
             $request = $stats->getRequest();
-            $result = $stats->getResponse();
+            $response = $stats->getResponse();
             $method = $request->getMethod();
             $duration = $stats->getTransferTime();
             $uri = $request->getUri()->__toString();
             $headers = $request->getHeaders();
-            $response = [
-                'status' => $result->getStatusCode(),
-                'reason' => $result->getReasonPhrase(),
-                'headers' => $result->getHeaders(),
-                'body' => $this->getResponsePayload($result),
+            $data = [
+                'status' => $response->getStatusCode(),
+                'reason' => $response->getReasonPhrase(),
+                'headers' => $response->getHeaders(),
+                'body' => $this->getResponsePayload($response),
             ];
-            $result->getBody()->rewind();
 
             Telescope::recordClientRequest(IncomingEntry::make([
                 'method' => $method,
                 'uri' => $uri,
                 'headers' => $headers,
-                'response_status' => $response['status'],
-                'response_headers' => $response['headers'],
-                'response' => $response,
+                'response_status' => $data['status'],
+                'response_headers' => $data['headers'],
+                'response_data' => $data,
                 'duration' => $duration * 1000,
             ]));
 
@@ -104,6 +103,10 @@ class GuzzleHttpClientAspect extends AbstractAspect
             $content = $stream->getContents();
         } catch (Throwable $e) {
             return 'Purged By Hyperf Telescope: ' . $e->getMessage();
+        } finally {
+            if ($stream->isSeekable()) {
+                $stream->rewind();
+            }
         }
 
         if (is_string($content)) {
