@@ -39,6 +39,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        // If the guzzle aspect is disabled or the batch id is not set, we will not record the request.
         if (
             ! $this->telescopeConfig->isEnable('guzzle')
             || ! TelescopeContext::getBatchId()
@@ -47,10 +48,10 @@ class GuzzleHttpClientAspect extends AbstractAspect
         }
 
         $instance = $proceedingJoinPoint->getInstance();
-        $arguments = $proceedingJoinPoint->arguments;
-        $options = $arguments['keys']['options'] ?? [];
+        $options = $proceedingJoinPoint->arguments['keys']['options'] ?? [];
         $guzzleConfig = (fn () => $this->config ?? [])->call($instance);
 
+        // If the no_telescope_aspect option is set to true, we will not record the request.
         if (
             ($options['no_telescope_aspect'] ?? null) === true
             || ($guzzleConfig['no_telescope_aspect'] ?? null) === true
@@ -63,10 +64,6 @@ class GuzzleHttpClientAspect extends AbstractAspect
         $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($onStats) {
             $request = $stats->getRequest();
             $response = $stats->getResponse();
-            $method = $request->getMethod();
-            $duration = $stats->getTransferTime();
-            $uri = $request->getUri()->__toString();
-            $headers = $request->getHeaders();
             $data = [
                 'status' => $response->getStatusCode(),
                 'reason' => $response->getReasonPhrase(),
@@ -75,13 +72,13 @@ class GuzzleHttpClientAspect extends AbstractAspect
             ];
 
             Telescope::recordClientRequest(IncomingEntry::make([
-                'method' => $method,
-                'uri' => $uri,
-                'headers' => $headers,
+                'method' => $request->getMethod(),
+                'uri' => $request->getUri()->__toString(),
+                'headers' => $request->getHeaders(),
                 'response_status' => $data['status'],
                 'response_headers' => $data['headers'],
                 'response_data' => $data,
-                'duration' => $duration * 1000,
+                'duration' => $stats->getTransferTime() * 1000,
             ]));
 
             if (is_callable($onStats)) {
