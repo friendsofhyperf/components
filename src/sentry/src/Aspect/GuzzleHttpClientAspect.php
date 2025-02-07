@@ -41,7 +41,11 @@ class GuzzleHttpClientAspect extends AbstractAspect
         }
 
         $options = $proceedingJoinPoint->arguments['keys']['options'] ?? [];
-        $guzzleConfig = (fn () => $this->config ?? [])->call($proceedingJoinPoint->getInstance());
+        $guzzleConfig = (fn () => match (true) {
+            method_exists($this, 'getConfig') => $this->getConfig(), // @deprecated ClientInterface::getConfig will be removed in guzzlehttp/guzzle:8.0.
+            property_exists($this, 'config') => $this->config,
+            default => [],
+        })->call($proceedingJoinPoint->getInstance());
 
         // If the no_sentry_aspect option is set to true, we will not record the request.
         if (($options['no_sentry_aspect'] ?? null) === true || ($guzzleConfig['no_sentry_aspect'] ?? null) === true) {
