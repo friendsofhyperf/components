@@ -86,6 +86,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
         $onStats = $options['on_stats'] ?? null;
 
+        // Add or override the on_stats option to record the request duration.
         $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($arguments, $guzzleConfig, $onStats, $span) {
             $request = $stats->getRequest();
             $response = $stats->getResponse();
