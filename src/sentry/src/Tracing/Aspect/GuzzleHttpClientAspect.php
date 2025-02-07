@@ -89,7 +89,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
         $onStats = $options['on_stats'] ?? null;
 
         // Add or override the on_stats option to record the request duration.
-        $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($arguments, $guzzleConfig, $onStats, $span) {
+        $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($options, $guzzleConfig, $onStats, $span) {
             $request = $stats->getRequest();
             $response = $stats->getResponse();
             $uri = $request->getUri();
@@ -100,12 +100,19 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 'http.query' => $uri->getQuery(),
                 'http.fragment' => $uri->getFragment(),
                 'http.request.method' => $method,
-                'http.request.body.size' => strlen($arguments['options']['body'] ?? ''),
+                'http.request.body.size' => strlen($options['body'] ?? ''),
+                'http.request.full_url' => (string) $request->getUri(),
+                'http.request.path' => $request->getUri()->getPath(),
+                'http.request.scheme' => $request->getUri()->getScheme(),
+                'http.request.host' => $request->getUri()->getHost(),
+                'http.request.port' => $request->getUri()->getPort(),
+                'http.request.user_agent' => $request->getHeaderLine('User-Agent'), // updated key for consistency
+                'http.request.headers' => $request->getHeaders(),
                 // Other
                 'coroutine.id' => Coroutine::id(),
                 'http.system' => 'guzzle',
                 'http.guzzle.config' => $guzzleConfig,
-                'http.guzzle.options' => $arguments['options'] ?? [],
+                'http.guzzle.options' => $options ?? [],
                 'duration' => $stats->getTransferTime() * 1000, // in milliseconds
                 'response.status' => $statusCode,
                 'response.reason' => $response->getReasonPhrase(),
