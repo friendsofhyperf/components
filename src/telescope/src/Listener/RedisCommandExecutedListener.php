@@ -30,7 +30,7 @@ class RedisCommandExecutedListener implements ListenerInterface
         private ConfigInterface $config,
         private TelescopeConfig $telescopeConfig,
     ) {
-        $this->setRedisEventEnable();
+        $this->telescopeConfig->isEnable('redis') && $this->setRedisEventEnable();
     }
 
     public function listen(): array
