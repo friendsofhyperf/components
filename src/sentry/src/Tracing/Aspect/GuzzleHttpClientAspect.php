@@ -22,6 +22,7 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Container\ContainerInterface;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
+use Throwable;
 
 /**
  * @method array getConfig()
@@ -115,9 +116,23 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 $response->getBody()->isSeekable() && $response->getBody()->rewind();
             }
 
-            if ($statusCode >= 400 && $statusCode < 600) {
+            if (($exception = $stats->getHandlerErrorData()) instanceof Throwable) {
                 $span->setStatus(SpanStatus::internalError());
-                $span->setTags(['error' => true]);
+                $span->setTags([
+                    'error' => true,
+                    'exception.class' => $exception::class,
+                    'exception.message' => $exception->getMessage(),
+                    'exception.code' => $exception->getCode(),
+                ]);
+                if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
+                    $data['exception.stack_trace'] = (string) $exception;
+                }
+            } elseif ($statusCode >= 400 && $statusCode < 600) {
+                $span->setStatus(SpanStatus::internalError());
+                $span->setTags([
+                    'error' => true,
+                    'response.reason' => $response->getReasonPhrase(),
+                ]);
             }
 
             $span->setData($data);
