@@ -19,16 +19,16 @@ class ConfigProvider
 
         return [
             'aspects' => [
-                Aspect\CoroutineAspect::class,
                 Aspect\CacheAspect::class,
+                Aspect\CoroutineAspect::class,
                 Aspect\EventAspect::class,
                 Aspect\GrpcClientAspect::class,
-                Aspect\HttpClientAspect::class,
+                Aspect\GrpcCoreMiddlewareAspect::class,
+                Aspect\GuzzleHttpClientAspect::class,
                 Aspect\LogAspect::class,
                 Aspect\RedisAspect::class,
-                Aspect\RpcAspect::class,
                 Aspect\RequestDispatcherAspect::class,
-                Aspect\GrpcCoreMiddlewareAspect::class,
+                Aspect\RpcAspect::class,
             ],
             'commands' => [
                 Command\ClearCommand::class,
