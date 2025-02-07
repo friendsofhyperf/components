@@ -36,11 +36,14 @@ class CommandListener implements ListenerInterface
     }
 
     /**
-     * @param AfterExecute $event
+     * @param AfterExecute|object $event
      */
     public function process(object $event): void
     {
-        if (! $this->telescopeConfig->isEnable('command')) {
+        if (
+            ! $event instanceof AfterExecute
+            || ! $this->telescopeConfig->isEnable('command')
+        ) {
             return;
         }
 
