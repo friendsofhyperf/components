@@ -101,36 +101,36 @@ class GuzzleHttpClientAspect extends AbstractAspect
             }
 
             $content = $stream->getContents();
+
+            if (is_string($content)) {
+                if (! $this->contentWithinLimits($content)) {
+                    return 'Purged By Hyperf Telescope';
+                }
+                if (
+                    is_array(json_decode($content, true))
+                    && json_last_error() === JSON_ERROR_NONE
+                ) {
+                    return $this->contentWithinLimits($content) /* @phpstan-ignore-line */
+                    ? $this->hideParameters(json_decode($content, true), Telescope::$hiddenResponseParameters)
+                    : 'Purged By Hyperf Telescope';
+                }
+                if (Str::startsWith(strtolower($response->getHeaderLine('content-type') ?: ''), 'text/plain')) {
+                    return $this->contentWithinLimits($content) ? $content : 'Purged By Hyperf Telescope'; /* @phpstan-ignore-line */
+                }
+                if (Str::contains($response->getHeaderLine('content-type'), 'application/grpc') !== false) {
+                    return TelescopeContext::getGrpcResponsePayload() ?: 'Purged By Hyperf Telescope';
+                }
+            }
+
+            if (empty($content)) {
+                return 'Empty Response';
+            }
         } catch (Throwable $e) {
             return 'Purged By Hyperf Telescope: ' . $e->getMessage();
         } finally {
             if ($stream->isSeekable()) {
                 $stream->rewind();
             }
-        }
-
-        if (is_string($content)) {
-            if (! $this->contentWithinLimits($content)) {
-                return 'Purged By Hyperf Telescope';
-            }
-            if (
-                is_array(json_decode($content, true))
-                && json_last_error() === JSON_ERROR_NONE
-            ) {
-                return $this->contentWithinLimits($content) /* @phpstan-ignore-line */
-                ? $this->hideParameters(json_decode($content, true), Telescope::$hiddenResponseParameters)
-                : 'Purged By Hyperf Telescope';
-            }
-            if (Str::startsWith(strtolower($response->getHeaderLine('content-type') ?: ''), 'text/plain')) {
-                return $this->contentWithinLimits($content) ? $content : 'Purged By Hyperf Telescope'; /* @phpstan-ignore-line */
-            }
-            if (Str::contains($response->getHeaderLine('content-type'), 'application/grpc') !== false) {
-                return TelescopeContext::getGrpcResponsePayload() ?: 'Purged By Hyperf Telescope';
-            }
-        }
-
-        if (empty($content)) {
-            return 'Empty Response';
         }
 
         return 'HTML Response';
