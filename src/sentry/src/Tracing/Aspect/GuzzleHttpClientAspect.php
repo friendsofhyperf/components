@@ -14,12 +14,13 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use GuzzleHttp\Client;
+use GuzzleHttp\TransferStats;
 use Hyperf\Context\Context;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Container\ContainerInterface;
-use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\RequestInterface;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
@@ -33,8 +34,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
     use SpanStarter;
 
     public array $classes = [
-        Client::class . '::request',
-        Client::class . '::requestAsync',
+        Client::class . '::transfer',
     ];
 
     public function __construct(
@@ -52,15 +52,17 @@ class GuzzleHttpClientAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $instance = $proceedingJoinPoint->getInstance();
         $arguments = $proceedingJoinPoint->arguments['keys'];
+        /** @var RequestInterface $request */
+        $request = $arguments['request'];
         $options = $arguments['options'] ?? [];
         $guzzleConfig = (fn () => match (true) {
             method_exists($this, 'getConfig') => $this->getConfig(), // @deprecated ClientInterface::getConfig will be removed in guzzlehttp/guzzle:8.0.
             property_exists($this, 'config') => $this->config,
             default => [],
-        })->call($instance);
+        })->call($proceedingJoinPoint->getInstance());
 
+        // If the no_sentry_tracing option is set to true, we will not record the request.
         if (
             ($options['no_sentry_tracing'] ?? null) === true
             || ($guzzleConfig['no_sentry_tracing'] ?? null) === true
@@ -68,28 +70,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        // Disable the aspect for the requestAsync method.
-        if ($proceedingJoinPoint->methodName == 'request') {
-            $proceedingJoinPoint->arguments['keys']['options']['no_sentry_tracing'] = true;
-        }
-
-        $uri = (string) ($arguments['uri'] ?? '/');
-        $method = $arguments['method'] ?? 'GET';
-        $fullUri = new \GuzzleHttp\Psr7\Uri($uri);
-
-        $data = [
-            // See: https://develop.sentry.dev/sdk/performance/span-data-conventions/#http
-            'http.query' => $fullUri->getQuery(),
-            'http.fragment' => $fullUri->getFragment(),
-            'http.request.method' => $method,
-            'http.request.body.size' => strlen($arguments['options']['body'] ?? ''),
-            // Other
-            'coroutine.id' => Coroutine::id(),
-            'http.system' => 'guzzle',
-            'http.guzzle.config' => $guzzleConfig,
-            'http.guzzle.options' => $arguments['options'] ?? [],
-        ];
-
+        // Inject trace context
         $parent = SentrySdk::getCurrentHub()->getSpan();
         $options['headers'] = array_replace($options['headers'] ?? [], [
             'sentry-trace' => $parent->toTraceparent(),
@@ -98,44 +79,71 @@ class GuzzleHttpClientAspect extends AbstractAspect
         ]);
         $proceedingJoinPoint->arguments['keys']['options']['headers'] = $options['headers'];
 
-        $span = $this->startSpan('http.client', $method . ' ' . (string) $uri);
+        // Start span
+        $span = $this->startSpan('http.client', $request->getMethod() . ' ' . (string) $request->getUri());
 
-        try {
-            $result = $proceedingJoinPoint->process();
-
-            if (! $span) {
-                return $result;
-            }
-
-            if ($result instanceof ResponseInterface) {
-                $data += [
-                    'response.status' => $result->getStatusCode(),
-                    'response.reason' => $result->getReasonPhrase(),
-                    'response.headers' => $result->getHeaders(),
-                ];
-                if ($this->switcher->isTracingExtraTagEnable('response.body')) {
-                    $data['response.body'] = $result->getBody()->getContents();
-                    $result->getBody()->rewind();
-                }
-            }
-        } catch (Throwable $exception) {
-            $span->setStatus(SpanStatus::internalError());
-            $span->setTags([
-                'error' => true,
-                'exception.class' => $exception::class,
-                'exception.message' => $exception->getMessage(),
-                'exception.code' => $exception->getCode(),
-            ]);
-            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
-                $data['exception.stack_trace'] = (string) $exception;
-            }
-
-            throw $exception;
-        } finally {
-            $span->setData($data);
-            $span->finish();
+        if (! $span) {
+            return $proceedingJoinPoint->process();
         }
 
-        return $result;
+        $onStats = $options['on_stats'] ?? null;
+
+        // Add or override the on_stats option to record the request duration.
+        $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($arguments, $guzzleConfig, $onStats, $span) {
+            $request = $stats->getRequest();
+            $response = $stats->getResponse();
+            $uri = $request->getUri();
+            $method = $request->getMethod();
+            $statusCode = $response->getStatusCode();
+            $data = [
+                // See: https://develop.sentry.dev/sdk/performance/span-data-conventions/#http
+                'http.query' => $uri->getQuery(),
+                'http.fragment' => $uri->getFragment(),
+                'http.request.method' => $method,
+                'http.request.body.size' => strlen($arguments['options']['body'] ?? ''),
+                // Other
+                'coroutine.id' => Coroutine::id(),
+                'http.system' => 'guzzle',
+                'http.guzzle.config' => $guzzleConfig,
+                'http.guzzle.options' => $arguments['options'] ?? [],
+                'duration' => $stats->getTransferTime() * 1000, // in milliseconds
+                'response.status' => $statusCode,
+                'response.reason' => $response->getReasonPhrase(),
+                'response.headers' => $response->getHeaders(),
+            ];
+
+            if ($this->switcher->isTracingExtraTagEnable('response.body')) {
+                $data['response.body'] = $response->getBody()->getContents();
+                $response->getBody()->isSeekable() && $response->getBody()->rewind();
+            }
+
+            if (($exception = $stats->getHandlerErrorData()) instanceof Throwable) {
+                $span->setStatus(SpanStatus::internalError());
+                $span->setTags([
+                    'error' => true,
+                    'exception.class' => $exception::class,
+                    'exception.message' => $exception->getMessage(),
+                    'exception.code' => $exception->getCode(),
+                ]);
+                if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
+                    $data['exception.stack_trace'] = (string) $exception;
+                }
+            } elseif ($statusCode >= 400 && $statusCode < 600) {
+                $span->setStatus(SpanStatus::internalError());
+                $span->setTags([
+                    'error' => true,
+                    'response.reason' => $response->getReasonPhrase(),
+                ]);
+            }
+
+            $span->setData($data);
+            $span->finish();
+
+            if (is_callable($onStats)) {
+                ($onStats)($stats);
+            }
+        };
+
+        return $proceedingJoinPoint->process();
     }
 }
