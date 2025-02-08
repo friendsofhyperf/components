@@ -28,6 +28,7 @@ use Hyperf\DbConnection\Db;
 use Throwable;
 
 use function Hyperf\Collection\collect;
+use function Hyperf\Support\with;
 
 class DatabaseEntriesRepository implements EntriesRepository, ClearableRepository, PrunableRepository, TerminableRepository
 {
@@ -125,9 +126,10 @@ class DatabaseEntriesRepository implements EntriesRepository, ClearableRepositor
 
         $entries->chunk($this->chunk)->each(function ($chunked) use ($table) {
             $table->insert($chunked->map(function ($entry) { // @phpstan-ignore-line
-                // $entry->content = json_encode($entry->content, JSON_INVALID_UTF8_SUBSTITUTE);
-
-                return $entry->toArray();
+                return with($entry->toArray(), function ($entry) {
+                    $entry['content'] = json_encode($entry['content'] ?? '', JSON_INVALID_UTF8_SUBSTITUTE);
+                    return $entry;
+                });
             })->toArray());
         });
 
