@@ -21,7 +21,6 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
-use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
@@ -70,17 +69,14 @@ class GuzzleHttpClientAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        // Inject trace context
-        $parent = SentrySdk::getCurrentHub()->getSpan();
+        // Inject trace context && Start span
+        $span = $this->startSpan('http.client', $request->getMethod() . ' ' . (string) $request->getUri());
         $options['headers'] = array_replace($options['headers'] ?? [], [
-            'sentry-trace' => $parent->toTraceparent(),
-            'baggage' => $parent->toBaggage(),
-            'traceparent' => $parent->toW3CTraceparent(),
+            'sentry-trace' => $span->toTraceparent(),
+            'baggage' => $span->toBaggage(),
+            'traceparent' => $span->toW3CTraceparent(),
         ]);
         $proceedingJoinPoint->arguments['keys']['options']['headers'] = $options['headers'];
-
-        // Start span
-        $span = $this->startSpan('http.client', $request->getMethod() . ' ' . (string) $request->getUri());
 
         if (! $span) {
             return $proceedingJoinPoint->process();
