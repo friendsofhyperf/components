@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
+use Error;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use GuzzleHttp\Client;
@@ -87,15 +88,12 @@ class GuzzleHttpClientAspect extends AbstractAspect
         // Add or override the on_stats option to record the request duration.
         $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($options, $guzzleConfig, $onStats, $span) {
             $request = $stats->getRequest();
-            $response = $stats->getResponse();
             $uri = $request->getUri();
-            $method = $request->getMethod();
-            $statusCode = $response->getStatusCode();
             $data = [
                 // See: https://develop.sentry.dev/sdk/performance/span-data-conventions/#http
                 'http.query' => $uri->getQuery(),
                 'http.fragment' => $uri->getFragment(),
-                'http.request.method' => $method,
+                'http.request.method' => $request->getMethod(),
                 'http.request.body.size' => strlen($options['body'] ?? ''),
                 'http.request.full_url' => (string) $request->getUri(),
                 'http.request.path' => $request->getUri()->getPath(),
@@ -110,18 +108,31 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 'http.guzzle.config' => $guzzleConfig,
                 'http.guzzle.options' => $options ?? [],
                 'duration' => $stats->getTransferTime() * 1000, // in milliseconds
-                'response.status' => $statusCode,
-                'response.reason' => $response->getReasonPhrase(),
-                'response.headers' => $response->getHeaders(),
             ];
 
-            if ($this->switcher->isTracingExtraTagEnable('response.body')) {
-                $data['response.body'] = $response->getBody()->getContents();
-                $response->getBody()->isSeekable() && $response->getBody()->rewind();
+            if ($response = $stats->getResponse()) {
+                $data['response.status'] = $response->getStatusCode();
+                $data['response.reason'] = $response->getReasonPhrase();
+                $data['response.headers'] = $response->getHeaders();
+                $data['response.body.size'] = $response->getBody()->getSize() ?? 0;
+
+                if ($this->switcher->isTracingExtraTagEnable('response.body')) {
+                    $data['response.body'] = $response->getBody()->getContents();
+                    $response->getBody()->isSeekable() && $response->getBody()->rewind();
+                }
+
+                if ($response->getStatusCode() >= 400 && $response->getStatusCode() < 600) {
+                    $span->setStatus(SpanStatus::internalError());
+                    $span->setTags([
+                        'error' => true,
+                        'response.reason' => $response->getReasonPhrase(),
+                    ]);
+                }
             }
 
-            if (($exception = $stats->getHandlerErrorData()) instanceof Throwable) {
+            if ($stats->getHandlerErrorData()) {
                 $span->setStatus(SpanStatus::internalError());
+                $exception = $stats->getHandlerErrorData() instanceof Throwable ? $stats->getHandlerErrorData() : new Error();
                 $span->setTags([
                     'error' => true,
                     'exception.class' => $exception::class,
@@ -131,12 +142,6 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     $data['exception.message'] = $exception->getMessage();
                     $data['exception.stack_trace'] = (string) $exception;
                 }
-            } elseif ($statusCode >= 400 && $statusCode < 600) {
-                $span->setStatus(SpanStatus::internalError());
-                $span->setTags([
-                    'error' => true,
-                    'response.reason' => $response->getReasonPhrase(),
-                ]);
             }
 
             $span->setData($data);
