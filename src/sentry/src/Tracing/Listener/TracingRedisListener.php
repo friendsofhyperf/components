@@ -21,7 +21,7 @@ use Hyperf\Redis\Pool\PoolFactory;
 use Psr\Container\ContainerInterface;
 use Sentry\Tracing\SpanStatus;
 
-class RedisCommandExecutedListener implements ListenerInterface
+class TracingRedisListener implements ListenerInterface
 {
     use SpanStarter;
 

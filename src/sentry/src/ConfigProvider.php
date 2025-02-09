@@ -56,6 +56,7 @@ class ConfigProvider
                 Listener\CrontabExceptionListener::class,
                 Listener\DbQueryListener::class,
                 Listener\KafkaExceptionListener::class,
+                Listener\RedisCommandExecutedListener::class,
                 Listener\RequestExceptionListener::class,
                 Listener\SetRequestLifecycleListener::class,
                 Crons\Listener\CronEventListener::class,
@@ -65,6 +66,7 @@ class ConfigProvider
                 Tracing\Listener\TracingCrontabListener::class,
                 Tracing\Listener\TracingDbQueryListener::class,
                 Tracing\Listener\TracingKafkaListener::class,
+                Tracing\Listener\TracingRedisListener::class,
                 Tracing\Listener\TracingRequestListener::class,
             ],
             'annotations' => [
