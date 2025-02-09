@@ -16,6 +16,7 @@ use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Hyperf\Redis\Event\CommandExecuted;
 use Hyperf\Redis\Pool\PoolFactory;
 use Hyperf\Redis\Redis;
 use Psr\Container\ContainerInterface;
@@ -23,6 +24,8 @@ use Sentry\Tracing\SpanStatus;
 use Throwable;
 
 /**
+ * @deprecated since v3.1, will be removed in v3.2.
+ *
  * @property string $poolName
  * @method array getConfig()
  * @property array $config
@@ -43,7 +46,10 @@ class RedisAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnable('redis')) {
+        if (
+            class_exists(CommandExecuted::class)
+            || ! $this->switcher->isTracingSpanEnable('redis')
+        ) {
             return $proceedingJoinPoint->process();
         }
 
