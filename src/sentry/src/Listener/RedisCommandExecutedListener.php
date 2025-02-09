@@ -48,9 +48,9 @@ class RedisCommandExecutedListener implements ListenerInterface
             'redis',
             $event->command,
             [
-                'result' => $event->result,
                 'arguments' => $event->parameters,
-                'timeMs' => $event->time * 1000,
+                'result' => $event->result,
+                'duration' => $event->time * 1000,
             ]
         ));
     }

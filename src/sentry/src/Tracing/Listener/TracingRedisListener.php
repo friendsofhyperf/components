@@ -53,6 +53,7 @@ class TracingRedisListener implements ListenerInterface
 
         $data = [
             'coroutine.id' => Coroutine::id(),
+            'duration' => $event->time * 1000,
             'db.system' => 'redis',
             'db.redis.connection' => $event->connectionName,
             'db.redis.database_index' => $config['db'] ?? 0,
