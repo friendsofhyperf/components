@@ -17,9 +17,8 @@ use Hyperf\Framework\Event\BootApplication;
 
 class SetRedisEventEnableListener implements ListenerInterface
 {
-    public function __construct(
-        protected ConfigInterface $config
-    ) {
+    public function __construct(protected ConfigInterface $config)
+    {
     }
 
     public function listen(): array
