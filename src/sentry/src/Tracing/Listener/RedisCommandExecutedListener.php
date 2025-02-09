@@ -9,55 +9,51 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
+namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coroutine\Coroutine;
-use Hyperf\Di\Aop\AbstractAspect;
-use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Redis\Event\CommandExecuted;
 use Hyperf\Redis\Pool\PoolFactory;
-use Hyperf\Redis\Redis;
 use Psr\Container\ContainerInterface;
 use Sentry\Tracing\SpanStatus;
-use Throwable;
 
-/**
- * @deprecated since v3.1, will be removed in v3.2.
- *
- * @property string $poolName
- * @method array getConfig()
- * @property array $config
- */
-class RedisAspect extends AbstractAspect
+class RedisCommandExecutedListener implements ListenerInterface
 {
     use SpanStarter;
 
-    public array $classes = [
-        Redis::class . '::__call',
-    ];
-
     public function __construct(
         protected ContainerInterface $container,
+        protected ConfigInterface $config,
         protected Switcher $switcher
     ) {
+        $this->setRedisEventEnable();
     }
 
-    public function process(ProceedingJoinPoint $proceedingJoinPoint)
+    public function listen(): array
     {
-        if (
-            class_exists(CommandExecuted::class)
-            || ! $this->switcher->isTracingSpanEnable('redis')
-        ) {
-            return $proceedingJoinPoint->process();
+        return [
+            CommandExecuted::class,
+        ];
+    }
+
+    /**
+     * @param object|CommandExecuted $event
+     */
+    public function process(object $event): void
+    {
+        if (! $this->switcher->isTracingSpanEnable('redis')) {
+            return;
         }
 
-        $arguments = $proceedingJoinPoint->arguments['keys'];
+        $arguments = $event->parameters;
 
-        $poolName = (fn () => $this->poolName ?? null)->call($proceedingJoinPoint->getInstance());
+        $poolName = $event->connectionName;
         $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
-        $config = (fn () => $this->config ?? [])->call($pool);
+        $config = $this->config->get('redis.' . $poolName, []);
 
         $data = [
             'coroutine.id' => Coroutine::id(),
@@ -85,17 +81,15 @@ class RedisAspect extends AbstractAspect
         );
         $span = $this->startSpan($op, $description);
 
-        try {
-            $result = $proceedingJoinPoint->process();
+        if (! $span) {
+            return;
+        }
 
-            if (! $span) {
-                return $result;
-            }
+        if ($this->switcher->isTracingExtraTagEnable('redis.result')) {
+            $data['redis.result'] = $event->result;
+        }
 
-            if ($this->switcher->isTracingExtraTagEnable('redis.result')) {
-                $data['redis.result'] = $result;
-            }
-        } catch (Throwable $exception) {
+        if ($exception = $event->throwable) {
             $span->setStatus(SpanStatus::internalError());
             $span->setTags([
                 'error' => true,
@@ -108,11 +102,16 @@ class RedisAspect extends AbstractAspect
             }
 
             throw $exception;
-        } finally {
-            $span->setData($data);
-            $span->finish();
         }
 
-        return $result;
+        $span->setData($data);
+        $span->finish();
+    }
+
+    private function setRedisEventEnable()
+    {
+        foreach ((array) $this->config->get('redis', []) as $connection => $_) {
+            $this->config->set('redis.' . $connection . '.event.enable', true);
+        }
     }
 }
