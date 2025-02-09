@@ -83,16 +83,19 @@ class Repository implements Contract\CacheInterface
 
     public function flexible($key, $ttl, $callback, $lock = null)
     {
+        $keyPrefix = 'hyperf:cache:flexible:';
+        $createdKey = "{$keyPrefix}{$key}";
+        $lockKey = "{$keyPrefix}lock:{$key}";
         /* @phpstan-ignore-next-line */
         [
             $key => $value,
-            "hyperf:cache:flexible:created:{$key}" => $created,
-        ] = $this->many([$key, "hyperf:cache:flexible:created:{$key}"]);
+            $createdKey => $created,
+        ] = $this->many([$key, $createdKey]);
 
         if (in_array(null, [$value, $created], true)) {
             return tap(value($callback), fn ($value) => $this->putMany([
                 $key => $value,
-                "hyperf:cache:flexible:created:{$key}" => Carbon::now()->getTimestamp(),
+                $createdKey => Carbon::now()->getTimestamp(),
             ], $ttl[1]));
         }
 
@@ -100,19 +103,19 @@ class Repository implements Contract\CacheInterface
             return $value;
         }
 
-        $refresh = function () use ($key, $ttl, $callback, $lock, $created) {
+        $refresh = function () use ($key, $ttl, $callback, $lock, $created, $createdKey, $lockKey) {
             lock(
-                "hyperf:cache:flexible:lock:{$key}",
+                $lockKey,
                 $lock['seconds'] ?? 0,
                 $lock['owner'] ?? null,
-            )->get(function () use ($key, $callback, $created, $ttl) {
-                if ($created !== $this->get("hyperf:cache:flexible:created:{$key}")) {
+            )->get(function () use ($key, $callback, $created, $ttl, $createdKey) {
+                if ($created !== $this->get($createdKey)) {
                     return;
                 }
 
                 $this->putMany([
                     $key => value($callback),
-                    "hyperf:cache:flexible:created:{$key}" => Carbon::now()->getTimestamp(),
+                    $createdKey => Carbon::now()->getTimestamp(),
                 ], $ttl[1]);
             });
         };
