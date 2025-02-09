@@ -66,7 +66,6 @@ class TracingRedisListener implements ListenerInterface
         ];
 
         // rule: operation db.table
-        $key = $event->parameters[0] ?? '';
         $op = 'db.redis';
         $description = sprintf(
             '%s %s',
