@@ -24,7 +24,6 @@ class ConfigProvider
                 Aspect\CoroutineAspect::class,
                 Aspect\GuzzleHttpClientAspect::class,
                 Aspect\LoggerAspect::class,
-                Aspect\RedisAspect::class,
                 Aspect\SingletonAspect::class,
                 Tracing\Aspect\AmqpProducerAspect::class,
                 Tracing\Aspect\AsyncQueueJobMessageAspect::class,
@@ -37,7 +36,6 @@ class ConfigProvider
                 Tracing\Aspect\GuzzleHttpClientAspect::class,
                 Tracing\Aspect\KafkaProducerAspect::class,
                 Tracing\Aspect\RpcAspect::class,
-                Tracing\Aspect\RedisAspect::class,
                 Tracing\Aspect\TraceAnnotationAspect::class,
             ],
             'commands' => [
