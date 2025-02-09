@@ -26,11 +26,10 @@ class TracingRedisListener implements ListenerInterface
     use SpanStarter;
 
     public function __construct(
-        protected ContainerInterface $container,
-        protected ConfigInterface $config,
-        protected Switcher $switcher
+        private ContainerInterface $container,
+        private ConfigInterface $config,
+        private Switcher $switcher
     ) {
-        $this->setRedisEventEnable();
     }
 
     public function listen(): array
@@ -99,12 +98,5 @@ class TracingRedisListener implements ListenerInterface
 
         $span->setData($data);
         $span->finish();
-    }
-
-    private function setRedisEventEnable()
-    {
-        foreach ((array) $this->config->get('redis', []) as $connection => $_) {
-            $this->config->set('redis.' . $connection . '.event.enable', true);
-        }
     }
 }

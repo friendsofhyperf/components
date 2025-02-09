@@ -58,6 +58,7 @@ class ConfigProvider
                 Listener\KafkaExceptionListener::class,
                 Listener\RedisCommandExecutedListener::class,
                 Listener\RequestExceptionListener::class,
+                Listener\SetRedisEventEnableListener::class,
                 Listener\SetRequestLifecycleListener::class,
                 Crons\Listener\CronEventListener::class,
                 Tracing\Listener\TracingAmqpListener::class,

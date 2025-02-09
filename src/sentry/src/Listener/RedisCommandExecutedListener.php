@@ -13,18 +13,14 @@ namespace FriendsOfHyperf\Sentry\Listener;
 
 use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Switcher;
-use Hyperf\Contract\ConfigInterface;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Redis\Event\CommandExecuted;
 use Sentry\Breadcrumb;
 
 class RedisCommandExecutedListener implements ListenerInterface
 {
-    public function __construct(
-        protected ConfigInterface $config,
-        protected Switcher $switcher
-    ) {
-        $this->setRedisEventEnable();
+    public function __construct(private Switcher $switcher)
+    {
     }
 
     public function listen(): array
@@ -57,12 +53,5 @@ class RedisCommandExecutedListener implements ListenerInterface
                 'timeMs' => $event->time * 1000,
             ]
         ));
-    }
-
-    private function setRedisEventEnable()
-    {
-        foreach ((array) $this->config->get('redis', []) as $connection => $_) {
-            $this->config->set('redis.' . $connection . '.event.enable', true);
-        }
     }
 }
