@@ -49,20 +49,17 @@ class TracingRedisListener implements ListenerInterface
             return;
         }
 
-        $arguments = $event->parameters;
-
-        $poolName = $event->connectionName;
-        $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
-        $config = $this->config->get('redis.' . $poolName, []);
+        $pool = $this->container->get(PoolFactory::class)->getPool($event->connectionName);
+        $config = $this->config->get('redis.' . $event->connectionName, []);
 
         $data = [
             'coroutine.id' => Coroutine::id(),
             'db.system' => 'redis',
-            'db.redis.connection' => $poolName,
+            'db.redis.connection' => $event->connectionName,
             'db.redis.database_index' => $config['db'] ?? 0,
-            'db.redis.parameters' => $arguments['arguments'],
-            // 'db.statement' => strtoupper($arguments['name']) . implode(' ', $arguments['arguments']),
-            'db.redis.pool.name' => $poolName,
+            'db.redis.parameters' => $event->parameters,
+            // 'db.statement' => strtoupper($event->command) . implode(' ', $event->parameters),
+            'db.redis.pool.name' => $event->connectionName,
             'db.redis.pool.max' => $pool->getOption()->getMaxConnections(),
             'db.redis.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
             'db.redis.pool.idle' => $pool->getConnectionsInChannel(),
@@ -70,13 +67,11 @@ class TracingRedisListener implements ListenerInterface
         ];
 
         // rule: operation db.table
-        // $op = sprintf('%s %s', $arguments['name'], $arguments['arguments']['key'] ?? '');
-        // $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
-        $key = $arguments['arguments'][0] ?? '';
+        $key = $event->parameters[0] ?? '';
         $op = 'db.redis';
         $description = sprintf(
             '%s %s',
-            strtoupper($arguments['name'] ?? ''),
+            strtoupper($event->command),
             is_array($key) ? implode(',', $key) : $key
         );
         $span = $this->startSpan($op, $description);
@@ -86,7 +81,7 @@ class TracingRedisListener implements ListenerInterface
         }
 
         if ($this->switcher->isTracingExtraTagEnable('redis.result')) {
-            $data['redis.result'] = $event->result;
+            $data['db.redis.result'] = $event->result;
         }
 
         if ($exception = $event->throwable) {
@@ -100,8 +95,6 @@ class TracingRedisListener implements ListenerInterface
             if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
-
-            throw $exception;
         }
 
         $span->setData($data);
