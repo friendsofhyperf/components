@@ -15,11 +15,15 @@ use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Hyperf\Redis\Event\CommandExecuted;
 use Hyperf\Redis\RedisConnection;
 use Sentry\Breadcrumb;
 
 use function Hyperf\Tappable\tap;
 
+/**
+ * @deprecated since v3.1, will be removed in v3.2.
+ */
 class RedisAspect extends AbstractAspect
 {
     public array $classes = [
@@ -36,7 +40,10 @@ class RedisAspect extends AbstractAspect
         $startTime = microtime(true);
 
         return tap($proceedingJoinPoint->process(), function ($result) use ($arguments, $startTime) {
-            if (! $this->switcher->isBreadcrumbEnable('redis')) {
+            if (
+                class_exists(CommandExecuted::class)
+                || ! $this->switcher->isBreadcrumbEnable('redis')
+            ) {
                 return;
             }
 
