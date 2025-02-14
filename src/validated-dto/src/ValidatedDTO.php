@@ -61,6 +61,11 @@ abstract class ValidatedDTO extends SimpleDTO
         // Do nothing
     }
 
+    protected function initValidator(ValidatorInterface $validator): void
+    {
+        // Do nothing
+    }
+
     protected function scenes(): array
     {
         return [];
@@ -150,6 +155,8 @@ abstract class ValidatedDTO extends SimpleDTO
                 $this->attributes()
             );
 
+        $this->initValidator($this->validator);
+
         $this->validator->after(fn ($validator) => $this->after($validator));
 
         return ! $this->validator->fails();
@@ -196,6 +203,8 @@ abstract class ValidatedDTO extends SimpleDTO
                 $this->messagesList(),
                 $this->attributes()
             );
+
+        $this->initValidator($this->validator);
 
         $this->validator->after(fn (ValidatorInterface $validator) => $this->after($validator));
 
