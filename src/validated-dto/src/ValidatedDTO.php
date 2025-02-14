@@ -19,6 +19,7 @@ use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\ValidatorInterface;
 use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Hyperf\Validation\ValidationException;
+use Hyperf\Validation\Validator;
 use InvalidArgumentException;
 
 abstract class ValidatedDTO extends SimpleDTO
@@ -61,9 +62,9 @@ abstract class ValidatedDTO extends SimpleDTO
         // Do nothing
     }
 
-    protected function initValidator(ValidatorInterface $validator): void
+    protected function addExtensions(): array
     {
-        // Do nothing
+        return [];
     }
 
     protected function scenes(): array
@@ -155,7 +156,9 @@ abstract class ValidatedDTO extends SimpleDTO
                 $this->attributes()
             );
 
-        $this->initValidator($this->validator);
+        if ($this->validator instanceof Validator) {
+            $this->validator->addExtensions($this->addExtensions());
+        }
 
         $this->validator->after(fn ($validator) => $this->after($validator));
 
@@ -204,7 +207,9 @@ abstract class ValidatedDTO extends SimpleDTO
                 $this->attributes()
             );
 
-        $this->initValidator($this->validator);
+        if ($this->validator instanceof Validator) {
+            $this->validator->addExtensions($this->addExtensions());
+        }
 
         $this->validator->after(fn (ValidatorInterface $validator) => $this->after($validator));
 
