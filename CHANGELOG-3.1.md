@@ -1,5 +1,16 @@
 # Changelog
 
+## v3.1.56 - 2025-02-14
+
+### What's Changed
+
+* fix: Optimize content encoding logic in DatabaseEntries Repository using the with function by @xuanyanwow in https://github.com/friendsofhyperf/components/pull/836
+* Optimized `GuzzleHttpClientAspect` by @huangdijia in https://github.com/friendsofhyperf/components/pull/837
+* feat: add RedisCommandExecutedListener for enhanced Redis command tracking by @huangdijia in https://github.com/friendsofhyperf/components/pull/838
+* feature: Added `afterValidatorResolving` method for `validated-dto`. by @xuanyanwow in https://github.com/friendsofhyperf/components/pull/839
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.55.3...v3.1.56
+
 ## v3.1.55.3 - 2025-02-07
 
 **Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.55.2...v3.1.55.3
