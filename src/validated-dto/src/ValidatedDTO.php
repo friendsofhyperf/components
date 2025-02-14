@@ -211,8 +211,8 @@ abstract class ValidatedDTO extends SimpleDTO
                 $this->attributes()
             );
 
-        if ($this->validator instanceof Validator) {
-            $this->validator->addExtensions($this->extensions());
+        if (method_exists($this->validator, 'addExtensions') && $extensions = $this->extensions()) {
+            $this->validator->addExtensions($extensions);
         }
 
         $this->validator->after(fn (ValidatorInterface $validator) => $this->after($validator));
