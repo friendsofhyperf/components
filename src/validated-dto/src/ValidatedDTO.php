@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ValidatedDTO;
 
+use Closure;
 use FriendsOfHyperf\ValidatedDTO\Casting\Castable;
 use FriendsOfHyperf\ValidatedDTO\Exception\CastTargetException;
 use FriendsOfHyperf\ValidatedDTO\Exception\MissingCastTypeException;
@@ -62,7 +63,10 @@ abstract class ValidatedDTO extends SimpleDTO
         // Do nothing
     }
 
-    protected function addExtensions(): array
+    /**
+     * @return array<string, Closure(string $attribute, mixed $value, array $parameters, ValidatorInterface $validator):bool>
+     */
+    protected function extensions(): array
     {
         return [];
     }
@@ -156,8 +160,8 @@ abstract class ValidatedDTO extends SimpleDTO
                 $this->attributes()
             );
 
-        if ($this->validator instanceof Validator) {
-            $this->validator->addExtensions($this->addExtensions());
+        if (method_exists($this->validator, 'addExtensions') && $extensions = $this->extensions()) {
+            $this->validator->addExtensions($extensions);
         }
 
         $this->validator->after(fn ($validator) => $this->after($validator));
@@ -208,7 +212,7 @@ abstract class ValidatedDTO extends SimpleDTO
             );
 
         if ($this->validator instanceof Validator) {
-            $this->validator->addExtensions($this->addExtensions());
+            $this->validator->addExtensions($this->extensions());
         }
 
         $this->validator->after(fn (ValidatorInterface $validator) => $this->after($validator));
