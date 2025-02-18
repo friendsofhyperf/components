@@ -326,6 +326,29 @@ protected function attributes() {
 }
 ```
 
+## Customizing Validation Rules
+
+You can add DTO-specific custom rules in the `afterValidatorResolving` method, or add global custom rules through Hyperf's `ValidatorFactoryResolved` event.
+
+This depends on your code maintenance habits. If the rules are only used in a single DTO, it is recommended to add them in the `afterValidatorResolving` method. According to the `principle of proximity`, this will make the source code easier to read.
+
+```php
+
+use Hyperf\Contract\ValidatorInterface;
+use Hyperf\Validation\Validator;
+
+protected function afterValidatorResolving(ValidatorInterface $validator): void
+{
+    if (! $validator instanceof Validator) {
+        return;
+    }
+
+    $validator->addExtension('diy_rule', function ($attribute, $value, $parameters, $validator) {
+        return $value === 'diy_rule';
+    });
+}
+```
+
 ## Type Casting
 
 You can easily cast your DTO properties by defining the `casts` method in your DTO:
