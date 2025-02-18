@@ -326,6 +326,29 @@ protected function attributes() {
 }
 ```
 
+## 自定義規則
+
+你可以在 `afterValidatorResolving` 方法中新增 DTO 專用的自定義規則，也可以透過 Hyperf 的 `ValidatorFactoryResolved` 事件新增全域性自定義規則。
+
+這取決於你的程式碼維護習慣，如果規則僅在單一 DTO 中使用，那麼建議在 `afterValidatorResolving` 方法中新增，根據 `就近原則` 將會使得原始碼更易讀。
+
+```php
+
+use Hyperf\Contract\ValidatorInterface;
+use Hyperf\Validation\Validator;
+
+protected function afterValidatorResolving(ValidatorInterface $validator): void
+{
+    if (! $validator instanceof Validator) {
+        return;
+    }
+
+    $validator->addExtension('diy_rule', function ($attribute, $value, $parameters, $validator) {
+        return $value === 'diy_rule';
+    });
+}
+```
+
 ## 型別轉換
 
 你可以透過在 `DTO` 中定義 `casts` 方法輕鬆轉換你的 DTO 屬性：
