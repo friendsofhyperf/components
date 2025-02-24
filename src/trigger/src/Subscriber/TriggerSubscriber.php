@@ -76,10 +76,10 @@ class TriggerSubscriber extends AbstractSubscriber
             try {
                 while (true) {
                     while (true) {
-                        /** @var Closure|null $closure */
+                        /** @var Closure|false|null $closure */
                         $closure = $this->chan?->pop();
 
-                        if ($closure === null) {
+                        if ($closure === null || $closure === false) {
                             break 2;
                         }
 
