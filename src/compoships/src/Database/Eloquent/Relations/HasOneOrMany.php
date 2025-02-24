@@ -154,8 +154,8 @@ trait HasOneOrMany
             ->whereColumn(
                 $this->getQualifiedParentKeyName(),
                 '=',
-                is_array($this->getForeignKeyName()) ? // Check for multi-columns relationship
-                    array_map(function ($k) use ($hash) {
+                is_array($this->getForeignKeyName()) // Check for multi-columns relationship
+                    ? array_map(function ($k) use ($hash) {
                         return $hash . '.' . $k;
                     }, $this->getForeignKeyName()) : $hash . '.' . $this->getForeignKeyName()
             );

@@ -302,9 +302,9 @@ class Alias
             // When the database connection is not set, some classes will be skipped
         } catch (PDOException $e) {
             $this->error(
-                'PDOException: ' . $e->getMessage() .
-                "\nPlease configure your database connection correctly, or use the sqlite memory driver (-M)." .
-                " Skipping {$facade}."
+                'PDOException: ' . $e->getMessage()
+                . "\nPlease configure your database connection correctly, or use the sqlite memory driver (-M)."
+                . " Skipping {$facade}."
             );
         } catch (Exception $e) {
             $this->error('Exception: ' . $e->getMessage() . "\nSkipping {$facade}.");
