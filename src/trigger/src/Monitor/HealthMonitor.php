@@ -50,8 +50,8 @@ class HealthMonitor
                 if ($this->binLogCurrent instanceof BinLogCurrent) {
                     $this->consumer->logger?->debug(
                         '[{connection}] Health monitoring, binLogCurrent: [{binlog_current}]',
-                        $context +
-                        [
+                        $context
+                        + [
                             'binlog_current' => json_encode($this->binLogCurrent->jsonSerialize(), JSON_THROW_ON_ERROR),
                         ]
                     );

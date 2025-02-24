@@ -162,8 +162,8 @@ class BelongsTo extends BaseBelongsTo
             ->whereColumn(
                 $this->getQualifiedForeignKey(),
                 '=',
-                is_array($this->ownerKey) ? // Check for multi-columns relationship
-                    array_map(function ($k) use ($modelTable) {
+                is_array($this->ownerKey) // Check for multi-columns relationship
+                    ? array_map(function ($k) use ($modelTable) {
                         return $modelTable . '.' . $k;
                     }, $this->ownerKey) : $modelTable . '.' . $this->ownerKey
             );

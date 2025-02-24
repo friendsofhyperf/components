@@ -182,9 +182,9 @@ class ModelCommand extends HyperfCommand
                     $ignore[] = $name;
                     $this->nullableColumns = [];
                 } catch (Throwable $e) {
-                    $this->error('Exception: ' . $e->getMessage() .
-                                 "\nCould not analyze class {$name}.\n\nTrace:\n" .
-                                 $e->getTraceAsString());
+                    $this->error('Exception: ' . $e->getMessage()
+                                 . "\nCould not analyze class {$name}.\n\nTrace:\n"
+                                 . $e->getTraceAsString());
                 }
             }
         }
