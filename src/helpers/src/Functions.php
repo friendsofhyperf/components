@@ -491,16 +491,16 @@ function response($content = '', $status = 200, array $headers = [])
  *
  * @param callable(): TValue $callback
  * @param (callable(Throwable): TFallback)|TFallback $rescue
- * @param Closure(Throwable): void|null $report
+ * @param Closure(Throwable): void|null $exceptionHandler
  * @return TValue|TFallback
  */
-function rescue(callable $callback, mixed $rescue = null, ?Closure $report = null)
+function rescue(callable $callback, mixed $rescue = null, ?Closure $exceptionHandler = null)
 {
     try {
         return $callback();
     } catch (Throwable $e) {
-        if ($report) {
-            $report($e);
+        if ($exceptionHandler) {
+            $exceptionHandler($e);
         }
 
         return value($rescue, $e);
