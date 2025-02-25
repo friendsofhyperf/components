@@ -20,6 +20,7 @@ use function FriendsOfHyperf\Helpers\filled;
 use function FriendsOfHyperf\Helpers\literal;
 use function FriendsOfHyperf\Helpers\object_get;
 use function FriendsOfHyperf\Helpers\preg_replace_array;
+use function FriendsOfHyperf\Helpers\rescue;
 use function FriendsOfHyperf\Helpers\transform;
 
 test('test ClassNamespace', function () {
@@ -149,6 +150,45 @@ test('test it_can_handle_enum_value', function ($given, $expected) {
     [1337, 1337],
     [1.0, 1.0],
 ]);
+
+test('test rescue', function () {
+    $this->assertEquals(
+        'rescued!',
+        rescue(function () {
+            throw new Exception();
+        }, 'rescued!')
+    );
+
+    $this->assertEquals(
+        'rescued!',
+        rescue(function () {
+            throw new Exception();
+        }, function () {
+            return 'rescued!';
+        })
+    );
+
+    $this->assertEquals(
+        'no need to rescue',
+        rescue(function () {
+            return 'no need to rescue';
+        }, 'rescued!')
+    );
+
+    $testClass = new class {
+        public function test(int $a)
+        {
+            return $a;
+        }
+    };
+
+    $this->assertEquals(
+        'rescued!',
+        rescue(function () use ($testClass) {
+            $testClass->test([]);
+        }, 'rescued!')
+    );
+});
 
 enum TestEnum
 {
