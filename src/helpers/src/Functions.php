@@ -49,6 +49,7 @@ use Psr\SimpleCache\CacheInterface;
 use RuntimeException;
 use stdClass;
 use Stringable;
+use Throwable;
 use UnitEnum;
 
 use function Hyperf\Collection\value;
@@ -480,6 +481,30 @@ function response($content = '', $status = 200, array $headers = [])
             }
         }
     );
+}
+
+/**
+ * Catch a potential exception and return a default value.
+ *
+ * @template TValue
+ * @template TFallback
+ *
+ * @param callable(): TValue $callback
+ * @param (callable(Throwable): TFallback)|TFallback $rescue
+ * @param Closure(Throwable): void|null $exceptionHandler
+ * @return TValue|TFallback
+ */
+function rescue(callable $callback, mixed $rescue = null, ?Closure $exceptionHandler = null)
+{
+    try {
+        return $callback();
+    } catch (Throwable $e) {
+        if ($exceptionHandler) {
+            $exceptionHandler($e);
+        }
+
+        return value($rescue, $e);
+    }
 }
 
 /**
