@@ -24,9 +24,12 @@ class SafeCaller
      * $data['scores'] = di(FriendsOfHyperf\Sentry\Util\SafeCaller::class)->call(fn () => time(), 'default');.
      *
      * @template TReturn
+     * @template TDefault
      *
      * @param Closure(): TReturn $closure
-     * @return TReturn|mixed
+     * @param TDefault $default
+     * @param Closure(Throwable $e):bool|null $exceptionHandler
+     * @return TReturn|TDefault
      */
     public function call(Closure $closure, mixed $default = null, ?Closure $exceptionHandler = null): mixed
     {
