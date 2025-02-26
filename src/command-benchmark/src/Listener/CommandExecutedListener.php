@@ -87,6 +87,7 @@ class CommandExecutedListener implements ListenerInterface
             'memory' => "<bg=green;fg=black> MEM: {$value} </>",
             'queries' => "<bg=yellow;fg=black> SQL: {$value} </>",
             'rows' => "<bg=magenta;fg=black> ROWS: {$value} </>",
+            default => '',
         });
 
         $command->newLine();
