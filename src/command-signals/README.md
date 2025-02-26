@@ -6,11 +6,6 @@
 
 The signals component for Hyperf Command.
 
-## Requirements
-
-- PHP >= 8.0
-- Hyperf >= 3.0
-
 ## Installation
 
 ```shell
