@@ -114,6 +114,7 @@
     "replace": {
         "friendsofhyperf/amqp-job": "*",
         "friendsofhyperf/cache": "*",
+        "friendsofhyperf/command-benchmark": "*",
         "friendsofhyperf/command-signals": "*",
         "friendsofhyperf/command-validation": "*",
         "friendsofhyperf/compoships": "*",
@@ -168,6 +169,7 @@
         "psr-4": {
             "FriendsOfHyperf\\AmqpJob\\": "src/amqp-job/src/",
             "FriendsOfHyperf\\Cache\\": "src/cache/src/",
+            "FriendsOfHyperf\\CommandBenchmark\\": "src/command-benchmark/src/",
             "FriendsOfHyperf\\CommandSignals\\": "src/command-signals/src/",
             "FriendsOfHyperf\\CommandValidation\\": "src/command-validation/src/",
             "FriendsOfHyperf\\Compoships\\": "src/compoships/src/",
@@ -253,6 +255,7 @@
             "config": [
                 "FriendsOfHyperf\\AmqpJob\\ConfigProvider",
                 "FriendsOfHyperf\\Cache\\ConfigProvider",
+                "FriendsOfHyperf\\CommandBenchmark\\ConfigProvider",
                 "FriendsOfHyperf\\CommandSignals\\ConfigProvider",
                 "FriendsOfHyperf\\CommandValidation\\ConfigProvider",
                 "FriendsOfHyperf\\Compoships\\ConfigProvider",
@@ -303,7 +306,7 @@
         "cs-fix": "@php vendor/bin/php-cs-fixer fix $1 --verbose",
         "gen:readme": [
             "./bin/regenerate-readme.sh > src/.github/profile/README.md",
-            "./bin/regenerate-readme.sh > docs/zh_CN/guide/start/components.md"
+            "./bin/regenerate-readme.sh > docs/zh-cn/guide/start/components.md"
         ],
         "json-fix": [
             "@php ./bin/composer-json-fixer",
