@@ -1,4 +1,4 @@
-# Command Signals
+# Command benchmark
 
 [![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/command-benchmark)](https://packagist.org/packages/friendsofhyperf/command-benchmark)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/command-benchmark)](https://packagist.org/packages/friendsofhyperf/command-benchmark)
