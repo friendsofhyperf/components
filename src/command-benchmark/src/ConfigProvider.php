@@ -16,8 +16,8 @@ class ConfigProvider
     public function __invoke()
     {
         return [
-            'listeners' => [
-                Listener\CommandExecutedListener::class,
+            'aspects' => [
+                Aspect\CommandAspect::class,
             ],
         ];
     }
