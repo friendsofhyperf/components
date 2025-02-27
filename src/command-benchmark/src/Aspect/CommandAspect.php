@@ -59,11 +59,11 @@ class CommandAspect extends AbstractAspect
                 ++$this->metrics[$command]['queries'];
             });
 
-            $command->addOption('benchmark', null, null, 'Benchmark the command');
-            $command->addOption('tableToWatch', null, null, 'Table to watch');
+            $command->addOption('enable-benchmark', null, null, 'Enable benchmark current command');
+            // $command->addOption('tableToWatch', null, null, 'Table to watch');
         }
 
-        if ($method === 'execute' && $command->option('benchmark')) {
+        if ($method === 'execute' && $command->option('enable-benchmark')) {
             $metrics = collect([
                 'time' => $this->formatExecutionTime(microtime(true) - $this->metrics[$command]['start_at']),
                 'memory' => round((memory_get_usage() - $this->metrics[$command]['start_memory']) / 1024 / 1024, 2) . 'MB',
@@ -91,7 +91,7 @@ class CommandAspect extends AbstractAspect
             'time' => "<bg=blue;fg=black> TIME: {$value} </>",
             'memory' => "<bg=green;fg=black> MEM: {$value} </>",
             'queries' => "<bg=yellow;fg=black> SQL: {$value} </>",
-            'rows' => "<bg=magenta;fg=black> ROWS: {$value} </>",
+            // 'rows' => "<bg=magenta;fg=black> ROWS: {$value} </>",
             default => '',
         });
 
