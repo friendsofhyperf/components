@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.1.57 - 2025-02-27
+
+### What's Changed
+
+* Added docs for validated-dto by @xuanyanwow in https://github.com/friendsofhyperf/components/pull/840
+* fix: handle false return value for Channel::pop in TriggerSubscriber by @guandeng in https://github.com/friendsofhyperf/components/pull/841
+* Removed custom transformModelToArray function by @huangdijia in https://github.com/friendsofhyperf/components/pull/842
+* feat: add rescue function for exception handling with default values by @huangdijia in https://github.com/friendsofhyperf/components/pull/843
+* Add `command-benchmark` component by @huangdijia in https://github.com/friendsofhyperf/components/pull/844
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.56...v3.1.57
+
 ## v3.1.56 - 2025-02-14
 
 ### What's Changed
