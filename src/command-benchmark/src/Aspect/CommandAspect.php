@@ -9,14 +9,14 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\CommandBenchmark\Listener;
+namespace FriendsOfHyperf\CommandBenchmark\Aspect;
 
 use Hyperf\Collection\Collection;
 use Hyperf\Command\Command;
-use Hyperf\Command\Event\AfterHandle;
-use Hyperf\Command\Event\BeforeHandle;
 use Hyperf\Database\Events\QueryExecuted;
-use Hyperf\Event\Contract\ListenerInterface;
+use Hyperf\Di\Annotation\Aspect;
+use Hyperf\Di\Aop\AbstractAspect;
+use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Event\ListenerProvider;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\ListenerProviderInterface;
@@ -24,8 +24,14 @@ use WeakMap;
 
 use function Hyperf\Collection\collect;
 
-class CommandExecutedListener implements ListenerInterface
+#[Aspect()]
+class CommandAspect extends AbstractAspect
 {
+    public array $classes = [
+        Command::class . '::__construct',
+        Command::class . '::execute',
+    ];
+
     private WeakMap $metrics;
 
     public function __construct(private ContainerInterface $container)
@@ -33,21 +39,14 @@ class CommandExecutedListener implements ListenerInterface
         $this->metrics = new WeakMap();
     }
 
-    public function listen(): array
+    public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        return [
-            BeforeHandle::class,
-            AfterHandle::class,
-        ];
-    }
+        /** @var Command $command */
+        $command = $proceedingJoinPoint->getInstance();
+        $method = $proceedingJoinPoint->methodName;
+        $result = $proceedingJoinPoint->process();
 
-    /**
-     * @param BeforeHandle|AfterHandle $event
-     */
-    public function process(object $event): void
-    {
-        $command = $event->getCommand();
-        if ($event instanceof BeforeHandle) {
+        if ($method === '__construct') {
             $this->metrics[$command] = [
                 'start_at' => microtime(true),
                 'start_memory' => memory_get_usage(true),
@@ -59,8 +58,12 @@ class CommandExecutedListener implements ListenerInterface
             $listenerProvider->on(QueryExecuted::class, function () use ($command) {
                 ++$this->metrics[$command]['queries'];
             });
+
+            $command->addOption('benchmark', null, null, 'Benchmark the command');
+            $command->addOption('tableToWatch', null, null, 'Table to watch');
         }
-        if ($event instanceof AfterHandle) {
+
+        if ($method === 'execute' && $command->option('benchmark')) {
             $metrics = collect([
                 'time' => $this->formatExecutionTime(microtime(true) - $this->metrics[$command]['start_at']),
                 'memory' => round((memory_get_usage() - $this->metrics[$command]['start_memory']) / 1024 / 1024, 2) . 'MB',
@@ -69,6 +72,8 @@ class CommandExecutedListener implements ListenerInterface
             $this->renderBenchmarkResults($command, $metrics);
             $this->metrics->offsetUnset($command);
         }
+
+        return $result;
     }
 
     private function formatExecutionTime(float $executionTime): string
