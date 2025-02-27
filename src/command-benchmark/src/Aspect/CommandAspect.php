@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\CommandBenchmark\Aspect;
 use Hyperf\Collection\Collection;
 use Hyperf\Command\Command;
 use Hyperf\Database\Events\QueryExecuted;
-use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Event\ListenerProvider;
@@ -24,7 +23,6 @@ use WeakMap;
 
 use function Hyperf\Collection\collect;
 
-#[Aspect()]
 class CommandAspect extends AbstractAspect
 {
     public array $classes = [
