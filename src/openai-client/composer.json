@@ -22,7 +22,6 @@
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
-        "php": ">=8.1",
         "hyperf/config": "~3.1.0",
         "hyperf/di": "~3.1.0",
         "hyperf/guzzle": "~3.1.0",
