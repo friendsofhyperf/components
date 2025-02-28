@@ -53,7 +53,6 @@ class Elasticsearch
             throw new InvalidArgumentException(sprintf('Elasticsearch connection [%s] not configured.', $connection));
         }
 
-        /** @var \Elastic\Elasticsearch\ClientBuilder $builder */
         $builder = $container->get(ClientBuilderFactory::class)->create();
 
         // Set the hosts

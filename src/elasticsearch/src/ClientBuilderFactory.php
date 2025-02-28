@@ -20,13 +20,11 @@ class ClientBuilderFactory
     {
     }
 
-    public function create(array $options = [])
+    public function create(array $options = []): ClientBuilder
     {
-        $builder = ClientBuilder::create();
-        $builder->setHttpClient(
-            $this->guzzleClientFactory->create($options)
-        );
-
-        return $builder;
+        return ClientBuilder::create()
+            ->setHttpClient(
+                $this->guzzleClientFactory->create($options)
+            );
     }
 }
