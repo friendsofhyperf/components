@@ -58,7 +58,7 @@ class TracingRedisListener implements ListenerInterface
             'db.redis.connection' => $event->connectionName,
             'db.redis.database_index' => $config['db'] ?? 0,
             'db.redis.parameters' => $event->parameters,
-            'db.statement' => strtoupper($event->command) . implode(' ', $event->parameters),
+            'db.statement' => implode(' ', [$event->parameters[0] ?? '', $event->parameters[1] ?? '']), // @todo optimize
             'db.redis.pool.name' => $event->connectionName,
             'db.redis.pool.max' => $pool->getOption()->getMaxConnections(),
             'db.redis.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
@@ -71,7 +71,7 @@ class TracingRedisListener implements ListenerInterface
         $description = sprintf(
             '%s %s',
             strtoupper($event->command),
-            implode(' ', $event->parameters)
+            implode(' ', [$event->parameters[0] ?? '', $event->parameters[1] ?? ''])
         );
         $span = $this->startSpan($op, $description);
 
