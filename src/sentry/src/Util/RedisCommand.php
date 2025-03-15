@@ -23,7 +23,12 @@ class RedisCommand implements Stringable
 
     public function __toString(): string
     {
-        $parameters = collect($this->parameters)->map(function ($parameter) {
+        return $this->formatCommand($this->command, $this->parameters);
+    }
+
+    protected function formatCommand(string $command, array $parameters): string
+    {
+        $parameters = collect($parameters)->map(function ($parameter) {
             if (is_array($parameter)) {
                 return collect($parameter)->map(function ($value, $key) {
                     if (is_array($value)) {
@@ -37,6 +42,6 @@ class RedisCommand implements Stringable
             return $parameter;
         })->implode(' ');
 
-        return sprintf('%s %s', $this->command, $parameters);
+        return sprintf('%s %s', $command, $parameters);
     }
 }
