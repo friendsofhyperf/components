@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
+use FriendsOfHyperf\Sentry\Util\RedisCommand;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -65,7 +66,7 @@ class RedisAspect extends AbstractAspect
             'db.redis.connection' => $poolName,
             'db.redis.database_index' => $config['db'] ?? 0,
             'db.redis.parameters' => $arguments['arguments'],
-            // 'db.statement' => strtoupper($arguments['name']) . implode(' ', $arguments['arguments']),
+            'db.statement' => (new RedisCommand($arguments['name'], $arguments['arguments']))->__toString(),
             'db.redis.pool.name' => $poolName,
             'db.redis.pool.max' => $pool->getOption()->getMaxConnections(),
             'db.redis.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
