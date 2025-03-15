@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
+use FriendsOfHyperf\Sentry\Util\RedisCommand;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -58,7 +59,7 @@ class TracingRedisListener implements ListenerInterface
             'db.redis.connection' => $event->connectionName,
             'db.redis.database_index' => $config['db'] ?? 0,
             'db.redis.parameters' => $event->parameters,
-            'db.statement' => implode(' ', [$event->parameters[0] ?? '', $event->parameters[1] ?? '']), // @todo optimize
+            'db.statement' => (new RedisCommand($event->command, $event->parameters))->__toString(),
             'db.redis.pool.name' => $event->connectionName,
             'db.redis.pool.max' => $pool->getOption()->getMaxConnections(),
             'db.redis.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
