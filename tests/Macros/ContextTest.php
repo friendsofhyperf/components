@@ -28,15 +28,15 @@ class ContextTest extends TestCase
         $id = 'test.increment.non.coroutine';
         Context::destroy($id);
 
-        // 测试初始递增
+        // Test initial increment
         $result = Context::increment($id);
         $this->assertSame(1, $result);
 
-        // 测试再次递增
+        // Test increment again
         $result = Context::increment($id);
         $this->assertSame(2, $result);
 
-        // 测试指定步长递增
+        // Test increment with specific step
         $result = Context::increment($id, 3);
         $this->assertSame(5, $result);
     }
@@ -46,15 +46,15 @@ class ContextTest extends TestCase
         $id = 'test.decrement.non.coroutine';
         Context::destroy($id);
 
-        // 测试不存在的键递减
+        // Test decrement for non-existent key
         $result = Context::decrement($id);
         $this->assertSame(-1, $result);
 
-        // 测试已存在的键递减
+        // Test decrement for existing key
         $result = Context::decrement($id);
         $this->assertSame(-2, $result);
 
-        // 测试指定步长递减
+        // Test decrement with specific step
         $result = Context::decrement($id, 3);
         $this->assertSame(-5, $result);
     }
@@ -62,16 +62,16 @@ class ContextTest extends TestCase
     public function testIncrementInCoroutineEnvironment()
     {
         (new Waiter())->wait(function () {
-            // 测试初始递增
+            // Test initial increment
             $id = 'test.co.increment';
             $result = Context::increment($id);
             $this->assertSame(1, $result);
 
-            // 测试再次递增
+            // Test increment again
             $result = Context::increment($id);
             $this->assertSame(2, $result);
 
-            // 测试指定步长递增
+            // Test increment with specific step
             $result = Context::increment($id, 3);
             $this->assertSame(5, $result);
         });
@@ -80,16 +80,16 @@ class ContextTest extends TestCase
     public function testDecrementInCoroutineEnvironment()
     {
         (new Waiter())->wait(function () {
-            // 测试初始递减
+            // Test initial decrement
             $id = 'test.co.decrement';
             $result = Context::decrement($id);
             $this->assertSame(-1, $result);
 
-            // 测试再次递减
+            // Test decrement again
             $result = Context::decrement($id);
             $this->assertSame(-2, $result);
 
-            // 测试指定步长递减
+            // Test decrement with specific step
             $result = Context::decrement($id, 3);
             $this->assertSame(-5, $result);
         });
@@ -112,7 +112,7 @@ class ContextTest extends TestCase
         $id = 'test.specific.decrement';
         Context::set($id, 3);
         (new Waiter())->wait(function () use ($id, $cid) {
-            // 测试特定协程ID的递减
+            // Test decrement with specific coroutine ID
             $result = Context::decrement($id, 2, $cid);
             $this->assertSame(1, $result);
         });
