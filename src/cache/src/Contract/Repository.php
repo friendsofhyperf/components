@@ -39,6 +39,11 @@ interface Repository extends \Psr\SimpleCache\CacheInterface
     public function flexible($key, $ttl, $callback, $lock = null);
 
     /**
+     * Alias for the `clear` method.
+     */
+    public function flush(): bool;
+
+    /**
      * @param string $key
      * @param mixed $value
      */

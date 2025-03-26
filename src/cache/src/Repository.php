@@ -141,6 +141,11 @@ class Repository implements Contract\Repository
         return $value;
     }
 
+    public function flush(): bool
+    {
+        return $this->clear();
+    }
+
     public function forever($key, $value): bool
     {
         $this->event(new WritingKey($this->getName(), $key, $value));

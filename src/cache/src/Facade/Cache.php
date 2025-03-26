@@ -72,6 +72,14 @@ class Cache
     }
 
     /**
+     * Alias for the `clear` method.
+     */
+    public function flush(): bool
+    {
+        return self::__callStatic(__FUNCTION__, func_get_args());
+    }
+
+    /**
      * @param string $key
      * @param mixed $value
      */
