@@ -11,12 +11,13 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Cache;
 
+use FriendsOfHyperf\Cache\Contract\Factory;
 use FriendsOfHyperf\Cache\Contract\Repository;
 use Hyperf\Cache\CacheManager as HyperfCacheManager;
 
 use function Hyperf\Support\make;
 
-class CacheManager
+class CacheManager implements Factory
 {
     /**
      * @var Repository[]
