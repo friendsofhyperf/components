@@ -30,6 +30,7 @@ use FriendsOfHyperf\Cache\Event\WritingManyKeys;
 use Hyperf\Cache\Driver\DriverInterface;
 use Hyperf\Macroable\Macroable;
 use Hyperf\Support\Traits\InteractsWithTime;
+use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 use function FriendsOfHyperf\Lock\lock;
@@ -44,11 +45,16 @@ class Repository implements Contract\Repository
     use InteractsWithTime;
     use Macroable;
 
+    protected ?EventDispatcherInterface $eventDispatcher = null;
+
     public function __construct(
+        protected ContainerInterface $container,
         protected DriverInterface $driver,
-        protected ?EventDispatcherInterface $eventDispatcher = null,
         protected string $name = 'default'
     ) {
+        if ($container->has(EventDispatcherInterface::class)) {
+            $this->eventDispatcher = $container->get(EventDispatcherInterface::class);
+        }
     }
 
     /**
