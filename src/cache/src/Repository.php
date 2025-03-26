@@ -15,6 +15,8 @@ use Carbon\Carbon;
 use Closure;
 use DateInterval;
 use DateTimeInterface;
+use FriendsOfHyperf\Cache\Event\CacheFlushed;
+use FriendsOfHyperf\Cache\Event\CacheFlushing;
 use FriendsOfHyperf\Cache\Event\CacheHit;
 use FriendsOfHyperf\Cache\Event\CacheMissed;
 use FriendsOfHyperf\Cache\Event\ForgettingKey;
@@ -28,6 +30,7 @@ use FriendsOfHyperf\Cache\Event\WritingManyKeys;
 use Hyperf\Cache\Driver\DriverInterface;
 use Hyperf\Macroable\Macroable;
 use Hyperf\Support\Traits\InteractsWithTime;
+use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
 use function FriendsOfHyperf\Lock\lock;
@@ -37,16 +40,21 @@ use function Hyperf\Coroutine\defer;
 use function Hyperf\Support\with;
 use function Hyperf\Tappable\tap;
 
-class Repository implements Contract\CacheInterface
+class Repository implements Contract\Repository
 {
     use InteractsWithTime;
     use Macroable;
 
+    protected ?EventDispatcherInterface $eventDispatcher = null;
+
     public function __construct(
+        protected ContainerInterface $container,
         protected DriverInterface $driver,
-        protected ?EventDispatcherInterface $eventDispatcher = null,
         protected string $name = 'default'
     ) {
+        if ($container->has(EventDispatcherInterface::class)) {
+            $this->eventDispatcher = $container->get(EventDispatcherInterface::class);
+        }
     }
 
     /**
@@ -69,7 +77,15 @@ class Repository implements Contract\CacheInterface
 
     public function clear(): bool
     {
-        return $this->flush();
+        $this->event(new CacheFlushing($this->getName()));
+
+        $result = $this->driver->clear();
+
+        if ($result) {
+            $this->event(new CacheFlushed($this->getName()));
+        }
+
+        return $result;
     }
 
     public function add($key, $value, $ttl = null): bool
@@ -125,9 +141,13 @@ class Repository implements Contract\CacheInterface
         return $value;
     }
 
+    /**
+     * Alias for the "clear" method.
+     * @deprecated since v3.1, use "clear" instead, will removed at v3.2
+     */
     public function flush(): bool
     {
-        return $this->driver->clear();
+        return $this->clear();
     }
 
     public function forever($key, $value): bool
@@ -347,6 +367,16 @@ class Repository implements Contract\CacheInterface
         }
 
         return $result;
+    }
+
+    public function getDriver(): DriverInterface
+    {
+        return $this->driver;
+    }
+
+    public function getStore(): DriverInterface
+    {
+        return $this->getDriver();
     }
 
     protected function getName(): string
