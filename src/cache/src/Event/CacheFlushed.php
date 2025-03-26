@@ -9,16 +9,11 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Cache;
+namespace FriendsOfHyperf\Cache\Event;
 
-class ConfigProvider
+class CacheFlushed
 {
-    public function __invoke(): array
+    public function __construct(public ?string $storeName)
     {
-        return [
-            'dependencies' => [
-                Contract\Repository::class => RepositoryFactory::class,
-            ],
-        ];
     }
 }

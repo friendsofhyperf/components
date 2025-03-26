@@ -15,7 +15,7 @@ use Closure;
 use DateInterval;
 use DateTimeInterface;
 use FriendsOfHyperf\Cache\CacheManager;
-use FriendsOfHyperf\Cache\Contract\CacheInterface;
+use FriendsOfHyperf\Cache\Contract\Repository;
 use Hyperf\Context\ApplicationContext;
 
 class Cache
@@ -30,17 +30,17 @@ class Cache
         return self::store()->{$name}(...$arguments);
     }
 
-    public static function store(string $name = 'default'): CacheInterface
+    public static function store(string $name = 'default'): Repository
     {
         return self::getFacadeAccessor()->store($name);
     }
 
-    public static function driver(string $name = 'default'): CacheInterface
+    public static function driver(string $name = 'default'): Repository
     {
         return self::getFacadeAccessor()->driver($name);
     }
 
-    public static function resolve(string $name): CacheInterface
+    public static function resolve(string $name): Repository
     {
         return self::getFacadeAccessor()->resolve($name);
     }
