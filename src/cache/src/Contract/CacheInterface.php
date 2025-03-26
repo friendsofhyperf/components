@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Cache\Contract;
 use Closure;
 use DateInterval;
 use DateTimeInterface;
+use Hyperf\Cache\Driver\DriverInterface;
 
 interface CacheInterface extends \Psr\SimpleCache\CacheInterface
 {
@@ -140,4 +141,11 @@ interface CacheInterface extends \Psr\SimpleCache\CacheInterface
      * @return TCacheValue
      */
     public function sear($key, Closure $callback);
+
+    public function getDriver(): DriverInterface;
+
+    /**
+     * Alias for the `getDriver` method.
+     */
+    public function getStore(): DriverInterface;
 }

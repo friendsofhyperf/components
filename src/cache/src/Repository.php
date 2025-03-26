@@ -363,6 +363,16 @@ class Repository implements Contract\CacheInterface
         return $result;
     }
 
+    public function getDriver(): DriverInterface
+    {
+        return $this->driver;
+    }
+
+    public function getStore(): DriverInterface
+    {
+        return $this->getDriver();
+    }
+
     protected function getName(): string
     {
         return $this->name;
