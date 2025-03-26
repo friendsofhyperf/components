@@ -40,7 +40,6 @@ interface Repository extends \Psr\SimpleCache\CacheInterface
 
     /**
      * Alias for the "clear" method.
-     * @deprecated since v3.1, use "clear" instead, will removed at v3.2
      */
     public function flush(): bool;
 

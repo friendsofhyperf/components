@@ -71,9 +71,6 @@ class Cache
         return self::__callStatic(__FUNCTION__, func_get_args());
     }
 
-    /**
-     * @deprecated since v3.1, use "clear" instead, will removed at v3.2
-     */
     public static function flush(): bool
     {
         return self::__callStatic(__FUNCTION__, func_get_args());
