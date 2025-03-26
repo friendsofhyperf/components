@@ -71,11 +71,6 @@ class Cache
         return self::__callStatic(__FUNCTION__, func_get_args());
     }
 
-    public static function flush(): bool
-    {
-        return self::__callStatic(__FUNCTION__, func_get_args());
-    }
-
     /**
      * @param string $key
      * @param mixed $value
