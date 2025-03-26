@@ -39,7 +39,7 @@ use function Hyperf\Coroutine\defer;
 use function Hyperf\Support\with;
 use function Hyperf\Tappable\tap;
 
-class Repository implements Contract\CacheInterface
+class Repository implements Contract\Repository
 {
     use InteractsWithTime;
     use Macroable;
