@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Cache\Contract;
 
+class_alias(Repository::class, CacheInterface::class);
+
 if (false) { // @phpstan-ignore-line
     /**
      * @deprecated since v3.1, use `\FriendsOfHyperf\Cache\Contract\Repository` instead, will removed in v3.2
