@@ -15,6 +15,8 @@ use Carbon\Carbon;
 use Closure;
 use DateInterval;
 use DateTimeInterface;
+use FriendsOfHyperf\Cache\Event\CacheFlushed;
+use FriendsOfHyperf\Cache\Event\CacheFlushing;
 use FriendsOfHyperf\Cache\Event\CacheHit;
 use FriendsOfHyperf\Cache\Event\CacheMissed;
 use FriendsOfHyperf\Cache\Event\ForgettingKey;
@@ -69,7 +71,15 @@ class Repository implements Contract\CacheInterface
 
     public function clear(): bool
     {
-        return $this->flush();
+        $this->event(new CacheFlushing($this->getName()));
+
+        $result = $this->driver->clear();
+
+        if ($result) {
+            $this->event(new CacheFlushed($this->getName()));
+        }
+
+        return $result;
     }
 
     public function add($key, $value, $ttl = null): bool
@@ -125,9 +135,13 @@ class Repository implements Contract\CacheInterface
         return $value;
     }
 
+    /**
+     * Alias for the "clear" method.
+     * @deprecated since v3.1, use "clear" instead, will removed at v3.2
+     */
     public function flush(): bool
     {
-        return $this->driver->clear();
+        return $this->clear();
     }
 
     public function forever($key, $value): bool
