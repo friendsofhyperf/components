@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Cache\Contract;
 
-/**
- * @deprecated since v3.1, use `\FriendsOfHyperf\Cache\Contract\RepositoryInterface` instead, will removed in v3.2
- */
-interface CacheInterface extends Repository
-{
+if (false) { // @phpstan-ignore-line
+    /**
+     * @deprecated since v3.1, use `\FriendsOfHyperf\Cache\Contract\Repository` instead, will removed in v3.2
+     */
+    interface CacheInterface extends Repository
+    {
+    }
 }
