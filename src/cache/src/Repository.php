@@ -58,6 +58,14 @@ class Repository implements Contract\Repository
     }
 
     /**
+     * Clone cache repository instance.
+     */
+    public function __clone()
+    {
+        $this->driver = clone $this->driver;
+    }
+
+    /**
      * @param string $key
      * @param mixed $value
      * @param int|DateInterval|null $ttl
