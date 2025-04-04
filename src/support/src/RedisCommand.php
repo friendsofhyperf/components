@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Sentry\Util;
+namespace FriendsOfHyperf\Support;
 
 use Stringable;
 

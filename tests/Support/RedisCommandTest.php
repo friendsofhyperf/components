@@ -9,9 +9,9 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Tests\Sentry;
+namespace FriendsOfHyperf\Tests\Support;
 
-use FriendsOfHyperf\Sentry\Util\RedisCommand;
+use FriendsOfHyperf\Support\RedisCommand;
 
 test('redis command with simple parameters', function () {
     $command = new RedisCommand('GET', ['key']);
