@@ -11,37 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Util;
 
-use Stringable;
-
-use function Hyperf\Collection\collect;
-
-class RedisCommand implements Stringable
+/**
+ * @deprecated since v3.1, use \FriendsOfHyperf\Support\RedisCommand instead, will be removed in v3.2
+ */
+class RedisCommand extends \FriendsOfHyperf\Support\RedisCommand
 {
-    public function __construct(public string $command, public array $parameters = [])
-    {
-    }
-
-    public function __toString(): string
-    {
-        return $this->formatCommand($this->command, $this->parameters);
-    }
-
-    protected function formatCommand(string $command, array $parameters): string
-    {
-        $parameters = collect($parameters)->map(function ($parameter) {
-            if (is_array($parameter)) {
-                return collect($parameter)->map(function ($value, $key) {
-                    if (is_array($value)) {
-                        return sprintf('%s %s', $key, json_encode($value));
-                    }
-
-                    return is_int($key) ? $value : sprintf('%s %s', $key, $value);
-                })->implode(' ');
-            }
-
-            return $parameter;
-        })->implode(' ');
-
-        return sprintf('%s %s', $command, $parameters);
-    }
 }
