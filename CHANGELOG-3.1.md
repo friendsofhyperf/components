@@ -1,5 +1,16 @@
 # Changelog
 
+## v3.1.58 - 2025-04-04
+
+### What's Changed
+
+* Bumps swoole version to v6.0.1 by @huangdijia in https://github.com/friendsofhyperf/components/pull/846
+* Improved redis tracing by @huangdijia in https://github.com/friendsofhyperf/components/pull/847
+* Added `CacheFlushed` Event by @huangdijia in https://github.com/friendsofhyperf/components/pull/850
+* refactor(redis): Update the namespace of the RedisCommand class and remove deprecated implementations by @huangdijia in https://github.com/friendsofhyperf/components/pull/851
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.57...v3.1.58
+
 ## v3.1.57 - 2025-02-27
 
 ### What's Changed
