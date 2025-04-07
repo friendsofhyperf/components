@@ -59,7 +59,7 @@ class FetchRecordingOnBootListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-         if ($event instanceof BeforeHandle) {
+        if ($event instanceof BeforeHandle) {
             $this->config->set('telescope.recording', $this->telescopeConfig->fetchRecording());
             return;
         }
