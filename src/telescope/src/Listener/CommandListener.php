@@ -40,6 +40,10 @@ class CommandListener implements ListenerInterface
      */
     public function process(object $event): void
     {
+        if ($this->telescopeConfig->isEnable('command') && $event instanceof BeforeHandle) {
+            TelescopeContext::getOrSetBatch((string) TelescopeContext::getBatchId());
+            return;
+        }
         if (
             ! $event instanceof AfterExecute
             || ! $this->telescopeConfig->isEnable('command')
