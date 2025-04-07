@@ -16,6 +16,7 @@ use FriendsOfHyperf\Telescope\Telescope;
 use FriendsOfHyperf\Telescope\TelescopeConfig;
 use FriendsOfHyperf\Telescope\TelescopeContext;
 use Hyperf\Command\Event\AfterExecute;
+use Hyperf\Command\Event\BeforeHandle;
 use Hyperf\Event\Contract\ListenerInterface;
 
 /**
@@ -31,6 +32,7 @@ class CommandListener implements ListenerInterface
     public function listen(): array
     {
         return [
+            BeforeHandle::class,
             AfterExecute::class,
         ];
     }
