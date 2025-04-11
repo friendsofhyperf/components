@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.1.59 - 2025-04-11
+
+### What's Changed
+
+* fix(Listener): 在BeforeHandle事件时提前设置telescope.recording by @guandeng in https://github.com/friendsofhyperf/components/pull/852
+* refactor(Listener): 优化FetchRecordingOnBootListener的状态通知处理 by @guandeng in https://github.com/friendsofhyperf/components/pull/853
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.58...v3.1.59
+
 ## v3.1.58 - 2025-04-04
 
 ### What's Changed
