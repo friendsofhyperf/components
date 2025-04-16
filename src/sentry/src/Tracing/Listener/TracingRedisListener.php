@@ -72,7 +72,10 @@ class TracingRedisListener implements ListenerInterface
         $description = sprintf(
             '%s %s',
             strtoupper($event->command),
-            implode(' ', [$event->parameters[0] ?? '', $event->parameters[1] ?? ''])
+            match (strtoupper($event->command)) {
+                'EVAL' => '',
+                default => implode(' ', [$event->parameters[0] ?? '', $event->parameters[1] ?? '']),
+            }
         );
         $span = $this->startSpan($op, $description);
 
