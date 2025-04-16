@@ -69,10 +69,12 @@ class TracingRedisListener implements ListenerInterface
 
         // rule: operation db.table
         $op = 'db.redis';
+        $key = $event->parameters[0] ?? '';
+
         $description = sprintf(
             '%s %s',
-            strtoupper($event->command),
-            implode(' ', [$event->parameters[0] ?? '', $event->parameters[1] ?? ''])
+            strtoupper($event->command ?? ''),
+            is_array($key) ? implode(',', $key) : $key
         );
         $span = $this->startSpan($op, $description);
 
