@@ -66,3 +66,15 @@ test('redis command with SET EX option', function () {
 
     expect((string) $command)->toBe('SET key value EX 60');
 });
+
+test('redis command with EVAL option', function () {
+    $command = new RedisCommand('EVAL', ['return redis.call(\'set\', KEYS[1], ARGV[1])', 1, 'key', 'value']);
+
+    expect((string) $command)->toBe('EVAL return redis.call(\'set\', KEYS[1], ARGV[1]) 1 key value');
+});
+
+test('redis command with SADD option', function () {
+    $command = new RedisCommand('SADD', ['set', ['item1', 'item2', 'item3']]);
+
+    expect((string) $command)->toBe('SADD set item1 item2 item3');
+});
