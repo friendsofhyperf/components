@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.1.60 - 2025-04-25
+
+### What's Changed
+
+* fix(sentry): 参数类型处理异常 by @xuanyanwow in https://github.com/friendsofhyperf/components/pull/854
+* fix(sentry): prevent crash on non-scalar redis parameters using RedisCommand by @alexsyvolap in https://github.com/friendsofhyperf/components/pull/856
+
+### New Contributors
+
+* @alexsyvolap made their first contribution in https://github.com/friendsofhyperf/components/pull/856
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.59...v3.1.60
+
 ## v3.1.59 - 2025-04-11
 
 ### What's Changed
