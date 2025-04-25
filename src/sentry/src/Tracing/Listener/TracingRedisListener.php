@@ -52,6 +52,8 @@ class TracingRedisListener implements ListenerInterface
         $pool = $this->container->get(PoolFactory::class)->getPool($event->connectionName);
         $config = $this->config->get('redis.' . $event->connectionName, []);
 
+        $redisStatement = (string) new RedisCommand($event->command, $event->parameters);
+
         $data = [
             'coroutine.id' => Coroutine::id(),
             'duration' => $event->time * 1000,
@@ -59,7 +61,7 @@ class TracingRedisListener implements ListenerInterface
             'db.redis.connection' => $event->connectionName,
             'db.redis.database_index' => $config['db'] ?? 0,
             'db.redis.parameters' => $event->parameters,
-            'db.statement' => (new RedisCommand($event->command, $event->parameters))->__toString(),
+            'db.statement' => $redisStatement,
             'db.redis.pool.name' => $event->connectionName,
             'db.redis.pool.max' => $pool->getOption()->getMaxConnections(),
             'db.redis.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
@@ -69,12 +71,7 @@ class TracingRedisListener implements ListenerInterface
 
         // rule: operation db.table
         $op = 'db.redis';
-        $description = sprintf(
-            '%s %s',
-            strtoupper($event->command),
-            implode(' ', [$event->parameters[0] ?? '', $event->parameters[1] ?? ''])
-        );
-        $span = $this->startSpan($op, $description);
+        $span = $this->startSpan($op, $redisStatement);
 
         if (! $span) {
             return;
