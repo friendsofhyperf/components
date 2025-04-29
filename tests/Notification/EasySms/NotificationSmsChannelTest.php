@@ -44,6 +44,7 @@ class NotificationSmsChannelTest extends TestCase
             $this->assertSame('content', $params->getContent());
             $this->assertSame('template', $params->getTemplate());
             $this->assertSame(['xxx'], $params->getData());
+            return [];
         });
         $channel = new EasySmsChannel($sms);
         $notification = new SmsNotificationToSmsMessageStub('content', 'template', ['data']);
