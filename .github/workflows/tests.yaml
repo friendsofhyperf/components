@@ -85,4 +85,4 @@ jobs:
       - name: Setup Services
         run: ./.travis/setup.services.sh
       - name: Run Test Cases
-        run: php vendor/bin/pest --parallel
+        run: php vendor/bin/pest # --parallel
