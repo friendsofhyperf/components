@@ -16,6 +16,7 @@ use Carbon\CarbonInterval;
 use Exception;
 use FriendsOfHyperf\Support\Sleep;
 use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -26,13 +27,15 @@ use function FriendsOfHyperf\Helpers\now;
  * @coversNothing
  */
 #[\PHPUnit\Framework\Attributes\Group('support')]
+#[RequiresPhp('!= 8.3.20')]
 class SleepTest extends TestCase
 {
     protected function setUp(): void
     {
-        if (PHP_VERSION === '8.3.20') {
-            $this->markTestSkipped('Skipped on PHP 8.3.20 due to known issues.');
-        }
+        // if (PHP_VERSION === '8.3.20') {
+        //     $this->markTestSkipped('Skipped on PHP 8.3.20 due to known issues.');
+        // }
+        parent::setUp();
     }
 
     protected function tearDown(): void
