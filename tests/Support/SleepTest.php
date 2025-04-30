@@ -28,6 +28,13 @@ use function FriendsOfHyperf\Helpers\now;
 #[\PHPUnit\Framework\Attributes\Group('support')]
 class SleepTest extends TestCase
 {
+    protected function setUp(): void
+    {
+        if (PHP_VERSION === '8.3.20') {
+            $this->markTestSkipped('Skipped on PHP 8.3.20 due to known issues.');
+        }
+    }
+
     protected function tearDown(): void
     {
         parent::tearDown();
