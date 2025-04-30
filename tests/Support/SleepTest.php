@@ -16,6 +16,7 @@ use Carbon\CarbonInterval;
 use Exception;
 use FriendsOfHyperf\Support\Sleep;
 use PHPUnit\Framework\AssertionFailedError;
+use PHPUnit\Framework\Attributes\RequiresPhp;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 
@@ -26,6 +27,7 @@ use function FriendsOfHyperf\Helpers\now;
  * @coversNothing
  */
 #[\PHPUnit\Framework\Attributes\Group('support')]
+#[RequiresPhp('!= 8.3.20')]
 class SleepTest extends TestCase
 {
     protected function tearDown(): void
