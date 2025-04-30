@@ -14,6 +14,8 @@ use FriendsOfHyperf\ValidatedDTO\Casting\CarbonCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\CarbonImmutableCast;
 use FriendsOfHyperf\ValidatedDTO\Exception\CastException;
 
+test()->skipOnPhp('8.3.20');
+
 it('casts to carbon', function () {
     $castable = new CarbonCast();
 
@@ -65,7 +67,7 @@ it('casts to carbon with timezone', function () {
 
     $this->expectException(CastException::class);
     $castable->cast(test_property(), 'TEST');
-})->skipOnPhp('8.3.20');
+});
 
 it('casts to carbon immutable', function () {
     $castable = new CarbonImmutableCast();
