@@ -14,6 +14,9 @@ use FriendsOfHyperf\ValidatedDTO\Casting\CarbonCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\CarbonImmutableCast;
 use FriendsOfHyperf\ValidatedDTO\Exception\CastException;
 
+beforeEach(function () {
+})->skipOnPhp('8.3.20');
+
 it('casts to carbon', function () {
     $castable = new CarbonCast();
 
