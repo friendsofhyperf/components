@@ -10,6 +10,26 @@ declare(strict_types=1);
  */
 use Hyperf\Collection\Arr;
 
+require_once __DIR__ . '/Stubs/Common.php';
+
+test('test arrayable', function () {
+    $this->assertTrue(Arr::arrayable([]));
+    $this->assertTrue(Arr::arrayable(new FriendsOfHyperf\Tests\Macros\Stubs\TestArrayableObject()));
+    $this->assertTrue(Arr::arrayable(new FriendsOfHyperf\Tests\Macros\Stubs\TestJsonableObject()));
+    $this->assertTrue(Arr::arrayable(new FriendsOfHyperf\Tests\Macros\Stubs\TestJsonSerializeObject()));
+    $this->assertTrue(Arr::arrayable(new FriendsOfHyperf\Tests\Macros\Stubs\TestTraversableAndJsonSerializableObject()));
+
+    $this->assertFalse(Arr::arrayable(null));
+    $this->assertFalse(Arr::arrayable('abc'));
+    $this->assertFalse(Arr::arrayable(new stdClass()));
+    $this->assertFalse(Arr::arrayable((object) ['a' => 1, 'b' => 2]));
+    $this->assertFalse(Arr::arrayable(123));
+    $this->assertFalse(Arr::arrayable(12.34));
+    $this->assertFalse(Arr::arrayable(true));
+    $this->assertFalse(Arr::arrayable(new DateTime()));
+    $this->assertFalse(Arr::arrayable(static fn () => null));
+});
+
 test('test getsAString', function () {
     $test_array = ['string' => 'foo bar', 'integer' => 1234];
 
@@ -71,6 +91,31 @@ test('test getsAFloat', function () {
     $this->expectException(InvalidArgumentException::class);
     $this->expectExceptionMessageMatches('#^Array value for key \[string\] must be a float, (.*) found.#');
     Arr::float($test_array, 'string');
+});
+
+test('test from', function () {
+    $this->assertSame(['foo' => 'bar'], Arr::from(['foo' => 'bar']));
+    $this->assertSame(['foo' => 'bar'], Arr::from((object) ['foo' => 'bar']));
+    $this->assertSame(['foo' => 'bar'], Arr::from(new FriendsOfHyperf\Tests\Macros\Stubs\TestArrayableObject()));
+    $this->assertSame(['foo' => 'bar'], Arr::from(new FriendsOfHyperf\Tests\Macros\Stubs\TestJsonableObject()));
+    $this->assertSame(['foo' => 'bar'], Arr::from(new FriendsOfHyperf\Tests\Macros\Stubs\TestJsonSerializeObject()));
+    $this->assertSame(['foo'], Arr::from(new FriendsOfHyperf\Tests\Macros\Stubs\TestJsonSerializeWithScalarValueObject()));
+
+    $this->assertSame(['name' => 'A'], Arr::from(TestEnum::A));
+    $this->assertSame(['name' => 'A', 'value' => 1], Arr::from(TestBackedEnum::A));
+    $this->assertSame(['name' => 'A', 'value' => 'A'], Arr::from(TestStringBackedEnum::A));
+
+    $subject = [new stdClass(), new stdClass()];
+    $items = new FriendsOfHyperf\Tests\Macros\Stubs\TestTraversableAndJsonSerializableObject($subject);
+    $this->assertSame($subject, Arr::from($items));
+
+    $items = new WeakMap();
+    $items[$temp = new class {}] = 'bar';
+    $this->assertSame(['bar'], Arr::from($items));
+
+    $this->expectException(InvalidArgumentException::class);
+    $this->expectExceptionMessage('Items cannot be represented by a scalar value.');
+    Arr::from(123);
 });
 
 test('test getsABoolean', function () {
