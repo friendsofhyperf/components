@@ -94,7 +94,7 @@ class ArrMixin
             $items instanceof Arrayable => $items->toArray(),
             $items instanceof WeakMap => iterator_to_array($items, false),
             $items instanceof Traversable => iterator_to_array($items),
-            $items instanceof Jsonable => json_decode($items->toJson(), true),
+            $items instanceof Jsonable => json_decode($items->__toString(), true),
             $items instanceof JsonSerializable => (array) $items->jsonSerialize(),
             is_object($items) => (array) $items,
             default => throw new InvalidArgumentException('Items cannot be represented by a scalar value.'),
