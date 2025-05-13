@@ -13,14 +13,29 @@ namespace FriendsOfHyperf\Macros;
 
 use ArrayAccess;
 use Hyperf\Collection\Arr;
+use Hyperf\Collection\Enumerable;
+use Hyperf\Contract\Arrayable;
+use Hyperf\Contract\Jsonable;
 use InvalidArgumentException;
+use JsonSerializable;
+use Traversable;
+use WeakMap;
 
 /**
  * @mixin Arr
  */
 class ArrMixin
 {
-    public static function array()
+    public function arrayable()
+    {
+        return fn ($value) => is_array($value)
+            || $value instanceof Arrayable
+            || $value instanceof Traversable
+            || $value instanceof Jsonable
+            || $value instanceof JsonSerializable;
+    }
+
+    public function array()
     {
         return function (ArrayAccess|array $array, string|int|null $key, ?array $default = null) {
             $value = Arr::get($array, $key, $default);
@@ -38,7 +53,7 @@ class ArrMixin
     /**
      * Get a boolean item from an array using "dot" notation.
      */
-    public static function boolean()
+    public function boolean()
     {
         return function (ArrayAccess|array $array, string|int|null $key, ?bool $default = null) {
             $value = Arr::get($array, $key, $default);
@@ -56,7 +71,7 @@ class ArrMixin
     /**
      * Get a float item from an array using "dot" notation.
      */
-    public static function float()
+    public function float()
     {
         return function (ArrayAccess|array $array, string|int|null $key, ?float $default = null) {
             $value = Arr::get($array, $key, $default);
@@ -71,10 +86,25 @@ class ArrMixin
         };
     }
 
+    public function from()
+    {
+        return fn ($items) => match (true) {
+            is_array($items) => $items,
+            $items instanceof Enumerable => $items->all(),
+            $items instanceof Arrayable => $items->toArray(),
+            $items instanceof WeakMap => iterator_to_array($items, false),
+            $items instanceof Traversable => iterator_to_array($items),
+            $items instanceof Jsonable => json_decode($items->toJson(), true),
+            $items instanceof JsonSerializable => (array) $items->jsonSerialize(),
+            is_object($items) => (array) $items,
+            default => throw new InvalidArgumentException('Items cannot be represented by a scalar value.'),
+        };
+    }
+
     /**
      * Get an integer item from an array using "dot" notation.
      */
-    public static function integer()
+    public function integer()
     {
         return function (ArrayAccess|array $array, string|int|null $key, ?int $default = null) {
             $value = Arr::get($array, $key, $default);
@@ -92,7 +122,7 @@ class ArrMixin
     /**
      * Get a string item from an array using "dot" notation.
      */
-    public static function string()
+    public function string()
     {
         return function (ArrayAccess|array $array, string|int|null $key, ?string $default = null) {
             $value = Arr::get($array, $key, $default);

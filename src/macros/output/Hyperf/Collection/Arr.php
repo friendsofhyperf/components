@@ -17,6 +17,16 @@ use InvalidArgumentException;
 class Arr
 {
     /**
+     * Determine whether the given value is arrayable.
+     *
+     * @param mixed $value
+     * @return bool
+     */
+    public static function arrayable($value)
+    {
+    }
+
+    /**
      * Get an array item from an array using "dot" notation.
      * @return array
      * @throws InvalidArgumentException
@@ -40,6 +50,21 @@ class Arr
      * @throws InvalidArgumentException
      */
     public static function float(ArrayAccess|array $array, string|int|null $key, ?float $default = null)
+    {
+    }
+
+    /**
+     * Get the underlying array of items from the given argument.
+     *
+     * @template TKey of array-key = array-key
+     * @template TValue = mixed
+     *
+     * @param array<TKey, TValue>|Enumerable<TKey, TValue>|Arrayable<TKey, TValue>|WeakMap<object, TValue>|Traversable<TKey, TValue>|Jsonable|JsonSerializable|object $items
+     * @return ($items is WeakMap ? list<TValue> : array<TKey, TValue>)
+     *
+     * @throws InvalidArgumentException
+     */
+    public static function from($items)
     {
     }
 
