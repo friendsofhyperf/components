@@ -49,6 +49,37 @@ class Number
     }
 
     /**
+     * Parse the given string according to the specified format type.
+     */
+    public static function parse(string $string, ?int $type = NumberFormatter::TYPE_DOUBLE, ?string $locale = null): int|float
+    {
+        static::ensureIntlExtensionIsInstalled();
+
+        $formatter = new NumberFormatter($locale ?? static::$locale, NumberFormatter::DECIMAL);
+
+        return $formatter->parse($string, $type);
+    }
+
+    /**
+     * Parse a string into an integer according to the specified locale.
+     */
+    public static function parseInt(string $string, ?string $locale = null): int
+    {
+        return self::parse($string, NumberFormatter::TYPE_INT32, $locale);
+    }
+
+    /**
+     * Parse a string into a float according to the specified locale.
+     *
+     * @param string $string The string to parse
+     * @param string|null $locale The locale to use
+     */
+    public static function parseFloat(string $string, ?string $locale = null): float
+    {
+        return self::parse($string, NumberFormatter::TYPE_DOUBLE, $locale);
+    }
+
+    /**
      * Spell out the given number in the given locale.
      *
      * @return string
