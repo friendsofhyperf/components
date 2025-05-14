@@ -50,8 +50,6 @@ class Number
 
     /**
      * Parse the given string according to the specified format type.
-     *
-     * @return int|float|false
      */
     public static function parse(string $string, ?int $type = NumberFormatter::TYPE_DOUBLE, ?string $locale = null): int|float
     {
@@ -64,8 +62,6 @@ class Number
 
     /**
      * Parse a string into an integer according to the specified locale.
-     *
-     * @return int|false
      */
     public static function parseInt(string $string, ?string $locale = null): int
     {
@@ -77,7 +73,6 @@ class Number
      *
      * @param string $string The string to parse
      * @param string|null $locale The locale to use
-     * @return float|false
      */
     public static function parseFloat(string $string, ?string $locale = null): float
     {
