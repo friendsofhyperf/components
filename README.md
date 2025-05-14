@@ -5,6 +5,7 @@
 [![License](https://poser.pugx.org/friendsofhyperf/components/license)](https://packagist.org/packages/friendsofhyperf/components)
 [![PHP Version Require](https://poser.pugx.org/friendsofhyperf/components/require/php)](https://packagist.org/packages/friendsofhyperf/components)
 [![Hyperf Version Require](https://img.shields.io/badge/hyperf->=3.1.0-brightgreen.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/components)
+[![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/friendsofhyperf/components)
 
 The most popular components for Hyperf.
 
