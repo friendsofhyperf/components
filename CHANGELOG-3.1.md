@@ -1,5 +1,16 @@
 # Changelog
 
+## v3.1.61 - 2025-05-14
+
+### What's Changed
+
+* Typed getters for Arr helper by @huangdijia in https://github.com/friendsofhyperf/components/pull/857
+* feat(Number): 添加 fileSize 方法的二进制前缀选项及相应测试 by @huangdijia in https://github.com/friendsofhyperf/components/pull/859
+* feat(tests): 添加 arrayable 和 from 方法的测试用例及相关辅助类 by @huangdijia in https://github.com/friendsofhyperf/components/pull/860
+* feat(Support): Add number parsing methods to Number class by @huangdijia in https://github.com/friendsofhyperf/components/pull/861
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.60...v3.1.61
+
 ## v3.1.60 - 2025-04-25
 
 ### What's Changed
