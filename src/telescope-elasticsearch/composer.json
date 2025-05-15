@@ -1,14 +1,14 @@
 {
     "name": "friendsofhyperf/telescope-elasticsearch",
     "description": "it will allow you to switch from sql database to elasticsearch as driver for your data storage and it will eliminate the deadlock so it makes telescope a ready for production logging system.",
+    "license": "MIT",
+    "type": "library",
     "keywords": [
         "friendsofhyperf",
         "telescope-elasticsearch",
         "telescope",
         "hyperf"
     ],
-    "license": "MIT",
-    "type": "library",
     "authors": [
         {
             "name": "Saman Jafari",
@@ -20,6 +20,12 @@
             "email": "huangdijia@gmail.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "docs": "https://hyperf.fans",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
     "require": {
         "friendsofhyperf/telescope": "~3.1.49",
         "hyperf/collection": "~3.1.0",
@@ -38,19 +44,13 @@
         "sort-packages": true
     },
     "extra": {
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        },
         "laravel": {
             "providers": [
                 "FriendsOfHyperf\\TelescopeElasticsearch\\ConfigProvider"
             ]
-        },
-        "branch-alias": {
-            "dev-main": "3.1-dev"
         }
-    },
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components",
-        "docs": "https://hyperf.fans",
-        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     }
 }
