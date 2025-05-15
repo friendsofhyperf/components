@@ -25,7 +25,7 @@
         "hyperf/config": "~3.1.0",
         "hyperf/di": "~3.1.0",
         "hyperf/guzzle": "~3.1.0",
-        "openai-php/client": "^0.10.0"
+        "openai-php/client": "^0.13.0"
     },
     "minimum-stability": "dev",
     "prefer-stable": true,
