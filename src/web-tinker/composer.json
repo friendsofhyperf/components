@@ -1,6 +1,7 @@
 {
     "name": "friendsofhyperf/web-tinker",
     "description": "Artisan Tinker in your browser",
+    "license": "MIT",
     "keywords": [
         "web-tinker",
         "hyperf",
@@ -9,13 +10,6 @@
         "debug",
         "development"
     ],
-    "support": {
-        "issues": "https://github.com/friendsofhyperf/components/issues",
-        "source": "https://github.com/friendsofhyperf/components",
-        "docs": "https://hyperf.fans",
-        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
-    },
-    "license": "MIT",
     "authors": [
         {
             "name": "Freek Van der Herten",
@@ -28,12 +22,20 @@
             "email": "huangdijia@gmail.com"
         }
     ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "docs": "https://hyperf.fans",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
     "require": {
+        "friendsofhyperf/tinker": "~3.2.0",
         "hyperf/collection": "~3.2.0",
         "hyperf/config": "~3.2.0",
-        "hyperf/support": "~3.2.0",
-        "friendsofhyperf/tinker": "~3.2.0"
+        "hyperf/support": "~3.2.0"
     },
+    "minimum-stability": "dev",
+    "prefer-stable": true,
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\WebTinker\\": "src"
@@ -46,7 +48,5 @@
         "hyperf": {
             "config": "FriendsOfHyperf\\WebTinker\\ConfigProvider"
         }
-    },
-    "minimum-stability": "dev",
-    "prefer-stable": true
+    }
 }

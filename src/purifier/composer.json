@@ -1,5 +1,7 @@
 {
     "name": "friendsofhyperf/purifier",
+    "description": "Hyperf HtmlPurifier Package",
+    "license": "MIT",
     "type": "library",
     "keywords": [
         "hyperf",
@@ -8,33 +10,6 @@
         "security",
         "xss"
     ],
-    "description": "Hyperf HtmlPurifier Package",
-    "require": {
-        "ezyang/htmlpurifier": "^4.17.0",
-        "hyperf/context": "~3.2.0",
-        "hyperf/contract": "~3.2.0",
-        "hyperf/support": "~3.2.0"
-    },
-    "suggest": {
-        "hyperf/database": "Required to use (~3.2.0)"
-    },
-    "license": "MIT",
-    "autoload": {
-        "psr-4": {
-            "FriendsOfHyperf\\Purifier\\": "src/"
-        },
-        "files": [
-            "src/Functions.php"
-        ]
-    },
-    "extra": {
-        "hyperf": {
-            "config": "FriendsOfHyperf\\Purifier\\ConfigProvider"
-        },
-        "branch-alias": {
-            "dev-main": "3.1-dev"
-        }
-    },
     "authors": [
         {
             "name": "trigold",
@@ -45,11 +20,36 @@
             "email": "huangdijia@gmail.com"
         }
     ],
-    "minimum-stability": "dev",
     "support": {
         "issues": "https://github.com/friendsofhyperf/components/issues",
         "source": "https://github.com/friendsofhyperf/components",
         "docs": "https://hyperf.fans",
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
+    "require": {
+        "ezyang/htmlpurifier": "^4.17.0",
+        "hyperf/context": "~3.2.0",
+        "hyperf/contract": "~3.2.0",
+        "hyperf/support": "~3.2.0"
+    },
+    "suggest": {
+        "hyperf/database": "Required to use (~3.2.0)"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\Purifier\\": "src/"
+        },
+        "files": [
+            "src/Functions.php"
+        ]
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Purifier\\ConfigProvider"
+        }
     }
 }
