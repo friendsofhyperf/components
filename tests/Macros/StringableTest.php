@@ -17,6 +17,12 @@ test('test deduplicate', function () {
     $this->assertSame('ムだム', (string) $this->stringable('ムだだム')->deduplicate('だ'));
 });
 
+test('test hash', function () {
+    $this->assertSame(hash('xxh3', 'foo'), (string) $this->stringable('foo')->hash('xxh3'));
+    $this->assertSame(hash('xxh3', 'foobar'), (string) $this->stringable('foobar')->hash('xxh3'));
+    $this->assertSame(hash('sha256', 'foobarbaz'), (string) $this->stringable('foobarbaz')->hash('sha256'));
+});
+
 test('test toHtmlString', function () {
     $this->assertEquals(
         new HtmlString('<h1>Test string</h1>'),

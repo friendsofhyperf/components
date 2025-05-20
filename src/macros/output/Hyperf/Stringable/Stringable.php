@@ -23,6 +23,15 @@ class Stringable
     }
 
     /**
+     * Hash the string using the given algorithm.
+     *
+     * @return static
+     */
+    public function hash(string $algorithm)
+    {
+    }
+
+    /**
      * Convert GitHub flavored Markdown into HTML.
      *
      * @return static
