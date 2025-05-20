@@ -27,6 +27,12 @@ class StringableMixin
         return fn (string $character = ' ') => new static(Str::deduplicate($this->value, $character));
     }
 
+    public function hash()
+    {
+        /* @phpstan-ignore-next-line */
+        return fn (string $algorithm) => new static(hash($algorithm, $this->value));
+    }
+
     public function inlineMarkdown()
     {
         /* @phpstan-ignore-next-line */
