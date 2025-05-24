@@ -101,11 +101,6 @@ class ArrMixin
         };
     }
 
-    /**
-     * Determine if all keys exist in an array using "dot" notation.
-     *
-     * @return bool
-     */
     public static function hasAll()
     {
         return function ($array, $keys) {
