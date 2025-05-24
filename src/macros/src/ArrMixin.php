@@ -102,6 +102,30 @@ class ArrMixin
     }
 
     /**
+     * Determine if all keys exist in an array using "dot" notation.
+     *
+     * @return bool
+     */
+    public static function hasAll()
+    {
+        return function ($array, $keys) {
+            $keys = (array) $keys;
+
+            if (! $array || $keys === []) {
+                return false;
+            }
+
+            foreach ($keys as $key) {
+                if (! static::has($array, $key)) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+    }
+
+    /**
      * Get an integer item from an array using "dot" notation.
      */
     public function integer()
