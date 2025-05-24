@@ -71,8 +71,8 @@ class Arr
     /**
      * Determine if all keys exist in an array using "dot" notation.
      *
-     * @param  \ArrayAccess|array  $array
-     * @param  string|array  $keys
+     * @param ArrayAccess|array $array
+     * @param string|array $keys
      * @return bool
      */
     public static function hasAll($array, $keys)
