@@ -101,6 +101,25 @@ class ArrMixin
         };
     }
 
+    public static function hasAll()
+    {
+        return function ($array, $keys) {
+            $keys = (array) $keys;
+
+            if (! $array || $keys === []) {
+                return false;
+            }
+
+            foreach ($keys as $key) {
+                if (! static::has($array, $key)) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+    }
+
     /**
      * Get an integer item from an array using "dot" notation.
      */

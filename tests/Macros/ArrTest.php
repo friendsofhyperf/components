@@ -118,6 +118,28 @@ test('test from', function () {
     Arr::from(123);
 });
 
+test('test hasAll', function () {
+    $array = ['name' => 'Deeka', 'age' => '', 'city' => null];
+    $this->assertTrue(Arr::hasAll($array, 'name'));
+    $this->assertTrue(Arr::hasAll($array, 'age'));
+    $this->assertFalse(Arr::hasAll($array, ['age', 'car']));
+    $this->assertTrue(Arr::hasAll($array, 'city'));
+    $this->assertFalse(Arr::hasAll($array, ['city', 'some']));
+    $this->assertTrue(Arr::hasAll($array, ['name', 'age', 'city']));
+    $this->assertFalse(Arr::hasAll($array, ['name', 'age', 'city', 'country']));
+
+    $array = ['user' => ['name' => 'Deeka']];
+    $this->assertTrue(Arr::hasAll($array, 'user.name'));
+    $this->assertFalse(Arr::hasAll($array, 'user.age'));
+
+    $array = ['name' => 'Deeka', 'age' => '', 'city' => null];
+    $this->assertFalse(Arr::hasAll($array, 'foo'));
+    $this->assertFalse(Arr::hasAll($array, 'bar'));
+    $this->assertFalse(Arr::hasAll($array, 'baz'));
+    $this->assertFalse(Arr::hasAll($array, 'bah'));
+    $this->assertFalse(Arr::hasAll($array, ['foo', 'bar', 'baz', 'bar']));
+});
+
 test('test getsABoolean', function () {
     $test_array = ['string' => 'foo bar', 'boolean' => true];
 
