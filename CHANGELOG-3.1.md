@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.1.62 - 2025-05-26
+
+### What's Changed
+
+* feat(Stringable): 添加 hash 方法及相应测试 by @huangdijia in https://github.com/friendsofhyperf/components/pull/862
+* Introducing `Arr::hasAll` by @huangdijia in https://github.com/friendsofhyperf/components/pull/863
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.61...v3.1.62
+
 ## v3.1.61 - 2025-05-14
 
 ### What's Changed
