@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Cache;
 
 use FriendsOfHyperf\Cache\Contract\Factory;
 use FriendsOfHyperf\Cache\Contract\Repository;
+use FriendsOfHyperf\Cache\Repository as CacheRepository;
 use Hyperf\Cache\CacheManager as HyperfCacheManager;
 
 use function Hyperf\Support\make;
@@ -49,7 +50,7 @@ class CacheManager implements Factory
      */
     public function resolve(string $name): Repository
     {
-        return make(Repository::class, [
+        return make(CacheRepository::class, [
             'name' => $name,
             'driver' => $this->cacheManager->getDriver($name),
         ]);
