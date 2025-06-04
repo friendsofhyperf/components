@@ -58,7 +58,9 @@ class RepositoryEventTest extends TestCase
 
         $repository = new Repository($this->container, $driver);
 
-        $repository->forget('foo');
+        $result = $repository->forget('foo');
+
+        $this->assertTrue($result);
     }
 
     public function testForgetDispatchesKeyForgetFailedEvent(): void
@@ -73,6 +75,8 @@ class RepositoryEventTest extends TestCase
 
         $repository = new Repository($this->container, $driver);
 
-        $repository->forget('foo');
+        $result = $repository->forget('foo');
+
+        $this->assertFalse($result);
     }
 }
