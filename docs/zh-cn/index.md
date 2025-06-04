@@ -18,7 +18,7 @@ features:
   - title: Sentry
     details: 这是 Sentry 的 Hyperf SDK。
     link: /zh-cn/components/sentry/
-  - title: Telecope
+  - title: Telescope
     details: Telescope 是 Hyperf 框架的优雅调试助手。
     link: /zh-cn/components/telescope/
   - title: Tinker
