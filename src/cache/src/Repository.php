@@ -20,6 +20,7 @@ use FriendsOfHyperf\Cache\Event\CacheFlushing;
 use FriendsOfHyperf\Cache\Event\CacheHit;
 use FriendsOfHyperf\Cache\Event\CacheMissed;
 use FriendsOfHyperf\Cache\Event\ForgettingKey;
+use FriendsOfHyperf\Cache\Event\KeyForgetFailed;
 use FriendsOfHyperf\Cache\Event\KeyForgotten;
 use FriendsOfHyperf\Cache\Event\KeyWriteFailed;
 use FriendsOfHyperf\Cache\Event\KeyWritten;
@@ -180,7 +181,7 @@ class Repository implements Contract\Repository
             if ($result) {
                 $this->event(new KeyForgotten($this->getName(), $key));
             } else {
-                $this->event(new ForgettingKey($this->getName(), $key));
+                $this->event(new KeyForgetFailed($this->getName(), $key));
             }
         });
     }
