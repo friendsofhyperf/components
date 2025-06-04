@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Tests\Cache;
 
 use FriendsOfHyperf\Cache\Event\ForgettingKey;
-use FriendsOfHyperf\Cache\Event\KeyForgotten;
 use FriendsOfHyperf\Cache\Event\KeyForgetFailed;
+use FriendsOfHyperf\Cache\Event\KeyForgotten;
 use FriendsOfHyperf\Cache\Repository;
 use Hyperf\Cache\Driver\DriverInterface;
 use Mockery as m;
