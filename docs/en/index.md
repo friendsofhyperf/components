@@ -5,7 +5,7 @@ layout: home
 hero:
   name: "Hyperf Fans"
   text: "The Most Popular Hyperf Components"
-  tagline: "Making Hyperf as Simple and Powerful as Laravel �"
+  tagline: "Making Hyperf as Simple and Powerful as Laravel 🚀"
   actions:
     - theme: brand
       text: Components
