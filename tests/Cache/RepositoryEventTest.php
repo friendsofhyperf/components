@@ -16,7 +16,6 @@ use FriendsOfHyperf\Cache\Event\KeyForgetFailed;
 use FriendsOfHyperf\Cache\Event\KeyForgotten;
 use FriendsOfHyperf\Cache\Repository;
 use FriendsOfHyperf\Tests\Concerns\InteractsWithContainer;
-use FriendsOfHyperf\Tests\Concerns\RunTestsInCoroutine;
 use Hyperf\Cache\Driver\DriverInterface;
 use Mockery as m;
 use PHPUnit\Framework\Attributes\Group;
@@ -31,7 +30,6 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 class RepositoryEventTest extends TestCase
 {
     use InteractsWithContainer;
-    use RunTestsInCoroutine;
 
     protected function setUp(): void
     {
