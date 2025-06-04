@@ -20,6 +20,7 @@ use FriendsOfHyperf\Cache\Event\CacheFlushing;
 use FriendsOfHyperf\Cache\Event\CacheHit;
 use FriendsOfHyperf\Cache\Event\CacheMissed;
 use FriendsOfHyperf\Cache\Event\ForgettingKey;
+use FriendsOfHyperf\Cache\Event\KeyForgetFailed;
 use FriendsOfHyperf\Cache\Event\KeyForgotten;
 use FriendsOfHyperf\Cache\Event\KeyWriteFailed;
 use FriendsOfHyperf\Cache\Event\KeyWritten;
