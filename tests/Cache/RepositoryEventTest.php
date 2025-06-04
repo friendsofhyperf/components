@@ -13,14 +13,13 @@ namespace FriendsOfHyperf\Tests\Cache;
 
 use FriendsOfHyperf\Cache\Event\ForgettingKey;
 use FriendsOfHyperf\Cache\Event\KeyForgetFailed;
+use FriendsOfHyperf\Cache\Event\KeyForgotten;
+use FriendsOfHyperf\Cache\Repository;
 use FriendsOfHyperf\Tests\Concerns\InteractsWithContainer;
 use FriendsOfHyperf\Tests\Concerns\RunTestsInCoroutine;
-use PHPUnit\Framework\Attributes\Group;
-#[Group('cache')]
-    use InteractsWithContainer;
-    use RunTestsInCoroutine;
 use Hyperf\Cache\Driver\DriverInterface;
 use Mockery as m;
+use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Psr\EventDispatcher\EventDispatcherInterface;
 
@@ -28,10 +27,11 @@ use Psr\EventDispatcher\EventDispatcherInterface;
  * @internal
  * @coversNothing
  */
+#[Group('cache')]
 class RepositoryEventTest extends TestCase
 {
-    use \FriendsOfHyperf\Tests\Concerns\InteractsWithContainer;
-    use \FriendsOfHyperf\Tests\Concerns\RunTestsInCoroutine;
+    use InteractsWithContainer;
+    use RunTestsInCoroutine;
 
     protected function setUp(): void
     {
