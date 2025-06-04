@@ -180,7 +180,7 @@ class Repository implements Contract\Repository
             if ($result) {
                 $this->event(new KeyForgotten($this->getName(), $key));
             } else {
-                $this->event(new ForgettingKey($this->getName(), $key));
+                $this->event(new KeyForgetFailed($this->getName(), $key));
             }
         });
     }
