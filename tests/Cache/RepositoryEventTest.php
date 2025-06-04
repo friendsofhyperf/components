@@ -18,12 +18,13 @@ use FriendsOfHyperf\Cache\Repository;
 use Hyperf\Cache\Driver\DriverInterface;
 use Mockery as m;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
  * @coversNothing
  */
-class RepositoryEventTest extends \PHPUnit\Framework\TestCase
+class RepositoryEventTest extends TestCase
 {
     use \FriendsOfHyperf\Tests\Concerns\InteractsWithContainer;
     use \FriendsOfHyperf\Tests\Concerns\RunTestsInCoroutine;
