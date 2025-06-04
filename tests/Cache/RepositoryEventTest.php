@@ -21,8 +21,8 @@ use PHPUnit\Framework\Attributes\Group;
     use RunTestsInCoroutine;
 use Hyperf\Cache\Driver\DriverInterface;
 use Mockery as m;
-use Psr\EventDispatcher\EventDispatcherInterface;
 use PHPUnit\Framework\TestCase;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 /**
  * @internal
