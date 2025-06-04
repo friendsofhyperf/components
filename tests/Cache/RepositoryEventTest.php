@@ -13,8 +13,12 @@ namespace FriendsOfHyperf\Tests\Cache;
 
 use FriendsOfHyperf\Cache\Event\ForgettingKey;
 use FriendsOfHyperf\Cache\Event\KeyForgetFailed;
-use FriendsOfHyperf\Cache\Event\KeyForgotten;
-use FriendsOfHyperf\Cache\Repository;
+use FriendsOfHyperf\Tests\Concerns\InteractsWithContainer;
+use FriendsOfHyperf\Tests\Concerns\RunTestsInCoroutine;
+use PHPUnit\Framework\Attributes\Group;
+#[Group('cache')]
+    use InteractsWithContainer;
+    use RunTestsInCoroutine;
 use Hyperf\Cache\Driver\DriverInterface;
 use Mockery as m;
 use Psr\EventDispatcher\EventDispatcherInterface;
