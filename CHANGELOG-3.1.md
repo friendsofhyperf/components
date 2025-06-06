@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.1.63 - 2025-06-06
+
+### What's Changed
+
+* Fix incorrect repository class in CacheManager by @huangdijia in https://github.com/friendsofhyperf/components/pull/865
+* Fix event dispatch on cache forget failure by @huangdijia in https://github.com/friendsofhyperf/components/pull/866
+* Fix telescope heading in docs by @huangdijia in https://github.com/friendsofhyperf/components/pull/867
+* Add repository forget event tests by @huangdijia in https://github.com/friendsofhyperf/components/pull/868
+* Fix docs tagline by @huangdijia in https://github.com/friendsofhyperf/components/pull/869
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.62...v3.1.63
+
 ## v3.1.62 - 2025-05-26
 
 ### What's Changed
