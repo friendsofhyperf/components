@@ -14,6 +14,10 @@ namespace FriendsOfHyperf\Macros;
 use FriendsOfHyperf\Support\HtmlString;
 use Hyperf\Stringable\Str;
 use Hyperf\Stringable\Stringable;
+use RuntimeException;
+
+use function FriendsOfHyperf\Encryption\decrypt;
+use function FriendsOfHyperf\Encryption\encrypt;
 
 /**
  * @mixin Stringable
@@ -21,6 +25,26 @@ use Hyperf\Stringable\Stringable;
  */
 class StringableMixin
 {
+    public function encrypt()
+    {
+        if (! function_exists('FriendsOfHyperf\Encryption\encrypt')) {
+            throw new RuntimeException('The "encrypt" function is not defined. Please ensure the "friendsofhyperf/encryption" component is installed and configured.');
+        }
+
+        /* @phpstan-ignore-next-line */
+        return fn (bool $serialize = false) => new static(encrypt($this->value, $serialize));
+    }
+
+    public function decrypt()
+    {
+        if (! function_exists('FriendsOfHyperf\Encryption\decrypt')) {
+            throw new RuntimeException('The "decrypt" function is not defined. Please ensure the "friendsofhyperf/encryption" component is installed and configured.');
+        }
+
+        /* @phpstan-ignore-next-line */
+        return fn (bool $serialize = false) => new static(decrypt($this->value, $serialize));
+    }
+
     public function deduplicate()
     {
         /* @phpstan-ignore-next-line */
