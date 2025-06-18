@@ -14,6 +14,24 @@ namespace Hyperf\Stringable;
 class Stringable
 {
     /**
+     * Encrypt the string.
+     *
+     * @return static
+     */
+    public function encrypt(bool $serialize = false)
+    {
+    }
+
+    /**
+     * Decrypt the string.
+     *
+     * @return static
+     */
+    public function decrypt(bool $serialize = false)
+    {
+    }
+
+    /**
      * Replace consecutive instances of a given character with a single character.
      *
      * @return static
