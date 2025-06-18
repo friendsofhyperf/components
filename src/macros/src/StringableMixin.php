@@ -31,6 +31,7 @@ class StringableMixin
             throw new RuntimeException('The "encrypt" function is not defined. Please ensure the "friendsofhyperf/encryption" component is installed and configured.');
         }
 
+        /* @phpstan-ignore-next-line */
         return fn (bool $serialize = false) => new static(encrypt($this->value, $serialize));
     }
 
@@ -40,6 +41,7 @@ class StringableMixin
             throw new RuntimeException('The "decrypt" function is not defined. Please ensure the "friendsofhyperf/encryption" component is installed and configured.');
         }
 
+        /* @phpstan-ignore-next-line */
         return fn (bool $serialize = false) => new static(decrypt($this->value, $serialize));
     }
 
