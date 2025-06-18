@@ -14,8 +14,6 @@ use FriendsOfHyperf\Support\HtmlString;
 use Hyperf\Config\Config;
 use Hyperf\Contract\ConfigInterface;
 
-use function FriendsOfHyperf\Encryption\encrypt;
-
 test('test deduplicate', function () {
     $this->assertSame(' laravel php framework ', (string) $this->stringable(' laravel   php  framework ')->deduplicate());
     $this->assertSame('what', (string) $this->stringable('whaaat')->deduplicate('a'));
@@ -83,6 +81,6 @@ test('test encryptAndDecrypt', function () {
     $this->instance(Encrypter::class, (new EncrypterFactory())($this->container));
     $encrypted = $this->stringable('foo')->encrypt();
 
-    $this->assertNotSame((string) $encrypted, encrypt('foo'));
-    $this->assertSame('foo', (string) $encrypted->decrypt());
+    $this->assertNotSame('foo', $encrypted->value());
+    $this->assertSame('foo', $encrypted->decrypt()->value());
 });
