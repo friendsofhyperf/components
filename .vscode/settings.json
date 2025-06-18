@@ -28,7 +28,7 @@
         "**/.history/**",
         "**/vendor/**/vendor/**",
         "**/vendor/google/crc32/**",
-        "**/vendor/mockery/mockery/library/helpers.php",
+        "**/vendor/mockery/mockery/library/helpers.php"
     ],
     "phpunit.phpunit": "vendor/bin/pest"
 }
