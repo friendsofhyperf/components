@@ -8,7 +8,11 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+use FriendsOfHyperf\Encryption\Encrypter;
+use FriendsOfHyperf\Encryption\EncrypterFactory;
 use FriendsOfHyperf\Support\HtmlString;
+use Hyperf\Config\Config;
+use Hyperf\Contract\ConfigInterface;
 
 test('test deduplicate', function () {
     $this->assertSame(' laravel php framework ', (string) $this->stringable(' laravel   php  framework ')->deduplicate());
@@ -65,4 +69,18 @@ test('test whenIsAscii', function () {
     }, function ($stringable) {
         return $stringable->prepend('Not Ascii: ');
     }));
+});
+
+test('test encryptAndDecrypt', function () {
+    $this->instance(ConfigInterface::class, new Config([
+        'encryption' => [
+            'key' => 'base64:MhEHk72OcV2ttAljUu9Caaam3iP2BnGcwb6GWKkUfV4=',
+            'cipher' => 'AES-256-CBC',
+        ],
+    ]));
+    $this->instance(Encrypter::class, (new EncrypterFactory())($this->container));
+    $encrypted = $this->stringable('foo')->encrypt();
+
+    $this->assertNotSame('foo', $encrypted->value());
+    $this->assertSame('foo', $encrypted->decrypt()->value());
 });
