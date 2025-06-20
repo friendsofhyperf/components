@@ -21,7 +21,7 @@
     },
     "require": {
         "friendsofhyperf/macros": "~3.1.0",
-        "friendsofhyperf/support": "~3.1.0",
+        "friendsofhyperf/support": "~3.1.61",
         "hyperf/context": "~3.1.0",
         "hyperf/macroable": "~3.1.0",
         "hyperf/stringable": "~3.1.0",

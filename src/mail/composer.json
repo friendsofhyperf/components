@@ -25,7 +25,7 @@
     },
     "require": {
         "php": "^8.1",
-        "friendsofhyperf/support": "~3.1.0",
+        "friendsofhyperf/support": "~3.1.61",
         "hyperf/collection": "~3.1.0",
         "hyperf/contract": "~3.1.0",
         "hyperf/di": "~3.1.0",
