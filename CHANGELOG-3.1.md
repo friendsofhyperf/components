@@ -1,5 +1,15 @@
 # Changelog
 
+## v3.1.64 - 2025-06-20
+
+### What's Changed
+
+* Add encrypt and decrypt Str helper methods by @huangdijia in https://github.com/friendsofhyperf/components/pull/871
+* Fix issue of missing nested DTO properties when transforming DTO by @huangdijia in https://github.com/friendsofhyperf/components/pull/872
+* Add serialization support to SimpleDTO by @huangdijia in https://github.com/friendsofhyperf/components/pull/873
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.63...v3.1.64
+
 ## v3.1.63 - 2025-06-06
 
 ### What's Changed
