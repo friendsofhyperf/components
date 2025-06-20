@@ -17,6 +17,7 @@ use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\SimpleMapDataDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\SimpleMappedNameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\SimpleNameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\SimpleNullableDTO;
+use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\SimpleOuterDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\SimpleUserDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\User;
 use FriendsOfHyperf\ValidatedDTO\Exception\InvalidJsonException;
@@ -296,4 +297,41 @@ it('checks that update for property reflects while converting DTO', function () 
 
     expect($dto->age)->toBe(20)
         ->and($dto->toArray())->toBe(['age' => 20, 'doc' => 'test']);
+});
+
+it('checks that update for nested DTO property reflects while converting DTO to array', function () {
+    $dto = SimpleOuterDTO::fromArray([
+        'name' => 'name',
+        'inner' => [
+            'name' => 'inner name',
+            'number' => 2,
+        ],
+    ]);
+
+    $dto->inner->name = 'updated inner name';
+
+    expect($dto->inner->name)->toBe('updated inner name')
+        ->and($dto->toArray())->toBe([
+            'name' => 'name',
+            'inner' => [
+                'name' => 'updated inner name',
+                'number' => 2,
+            ],
+        ]);
+});
+
+it('checks that update for nested DTO property reflects while converting DTO to json', function () {
+    $array = [
+        'name' => 'name',
+        'inner' => [
+            'name' => 'inner name',
+            'number' => 2,
+        ],
+    ];
+    $dto = SimpleOuterDTO::fromArray($array);
+
+    $dto->inner->name = 'updated inner name';
+
+    expect($dto->inner->name)->toBe('updated inner name')
+        ->and($dto->toJson())->toBe(json_encode(['name' => 'name', 'inner' => ['name' => 'updated inner name', 'number' => 2]]));
 });
