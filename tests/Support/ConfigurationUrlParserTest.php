@@ -29,36 +29,6 @@ class ConfigurationUrlParserTest extends TestCase
         $this->assertEquals($expectedOutput, (new ConfigurationUrlParser())->parseConfiguration($config));
     }
 
-    public function testDriversAliases()
-    {
-        $this->assertEquals([
-            'mssql' => 'sqlsrv',
-            'mysql2' => 'mysql',
-            'postgres' => 'pgsql',
-            'postgresql' => 'pgsql',
-            'sqlite3' => 'sqlite',
-            'redis' => 'tcp',
-            'rediss' => 'tls',
-        ], ConfigurationUrlParser::getDriverAliases());
-
-        ConfigurationUrlParser::addDriverAlias('some-particular-alias', 'mysql');
-
-        $this->assertEquals([
-            'mssql' => 'sqlsrv',
-            'mysql2' => 'mysql',
-            'postgres' => 'pgsql',
-            'postgresql' => 'pgsql',
-            'sqlite3' => 'sqlite',
-            'redis' => 'tcp',
-            'rediss' => 'tls',
-            'some-particular-alias' => 'mysql',
-        ], ConfigurationUrlParser::getDriverAliases());
-
-        $this->assertEquals([
-            'driver' => 'mysql',
-        ], (new ConfigurationUrlParser())->parseConfiguration('some-particular-alias://null'));
-    }
-
     public static function databaseUrls()
     {
         return [
@@ -433,5 +403,35 @@ class ConfigurationUrlParserTest extends TestCase
                 ],
             ],
         ];
+    }
+
+    public function testDriversAliases()
+    {
+        $this->assertEquals([
+            'mssql' => 'sqlsrv',
+            'mysql2' => 'mysql',
+            'postgres' => 'pgsql',
+            'postgresql' => 'pgsql',
+            'sqlite3' => 'sqlite',
+            'redis' => 'tcp',
+            'rediss' => 'tls',
+        ], ConfigurationUrlParser::getDriverAliases());
+
+        ConfigurationUrlParser::addDriverAlias('some-particular-alias', 'mysql');
+
+        $this->assertEquals([
+            'mssql' => 'sqlsrv',
+            'mysql2' => 'mysql',
+            'postgres' => 'pgsql',
+            'postgresql' => 'pgsql',
+            'sqlite3' => 'sqlite',
+            'redis' => 'tcp',
+            'rediss' => 'tls',
+            'some-particular-alias' => 'mysql',
+        ], ConfigurationUrlParser::getDriverAliases());
+
+        $this->assertEquals([
+            'driver' => 'mysql',
+        ], (new ConfigurationUrlParser())->parseConfiguration('some-particular-alias://null'));
     }
 }
