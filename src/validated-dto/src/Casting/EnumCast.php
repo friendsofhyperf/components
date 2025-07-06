@@ -21,7 +21,7 @@ final class EnumCast implements Castable
     /**
      * @param class-string<UnitEnum|BackedEnum> $enum
      */
-    public function __construct(protected string $enum)
+    public function __construct(private string $enum)
     {
     }
 
