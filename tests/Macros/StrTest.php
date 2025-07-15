@@ -64,3 +64,23 @@ test('test transliterateOverrideUnknown', function ($args, $expected): void {
 test('test transliterateStrict', function (string $value, string $expected): void {
     $this->assertSame($expected, Str::transliterate($value, '?', true));
 })->with('ialCharacterProvider');
+
+test('test doesntEndWith', function () {
+    expect(Str::doesntEndWith('hello world', 'world'))->toBeFalse();
+    expect(Str::doesntEndWith('hello world', 'foo'))->toBeTrue();
+    expect(Str::doesntEndWith('hello world', ['foo', 'bar']))->toBeTrue();
+    expect(Str::doesntEndWith('hello world', ['foo', 'world']))->toBeFalse();
+    expect(Str::doesntEndWith('hello world', ''))->toBeTrue();
+    expect(Str::doesntEndWith('', 'world'))->toBeTrue();
+    expect(Str::doesntEndWith('', ''))->toBeTrue();
+});
+
+test('test doesntStartWith', function () {
+    expect(Str::doesntStartWith('hello world', 'hello'))->toBeFalse();
+    expect(Str::doesntStartWith('hello world', 'foo'))->toBeTrue();
+    expect(Str::doesntStartWith('hello world', ['foo', 'bar']))->toBeTrue();
+    expect(Str::doesntStartWith('hello world', ['foo', 'hello']))->toBeFalse();
+    expect(Str::doesntStartWith('hello world', ''))->toBeTrue();
+    expect(Str::doesntStartWith('', 'hello'))->toBeTrue();
+    expect(Str::doesntStartWith('', ''))->toBeTrue();
+});
