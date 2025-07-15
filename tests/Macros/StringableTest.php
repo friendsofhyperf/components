@@ -84,3 +84,23 @@ test('test encryptAndDecrypt', function () {
     $this->assertNotSame('foo', $encrypted->value());
     $this->assertSame('foo', $encrypted->decrypt()->value());
 });
+
+test('test doesntEndWith', function () {
+    expect($this->stringable('hello world')->doesntEndWith('world'))->toBeFalse();
+    expect($this->stringable('hello world')->doesntEndWith('foo'))->toBeTrue();
+    expect($this->stringable('hello world')->doesntEndWith(['foo', 'bar']))->toBeTrue();
+    expect($this->stringable('hello world')->doesntEndWith(['foo', 'world']))->toBeFalse();
+    expect($this->stringable('hello world')->doesntEndWith(''))->toBeTrue();
+    expect($this->stringable('')->doesntEndWith('world'))->toBeTrue();
+    expect($this->stringable('')->doesntEndWith(''))->toBeTrue();
+});
+
+test('test doesntStartWith', function () {
+    expect($this->stringable('hello world')->doesntStartWith('hello'))->toBeFalse();
+    expect($this->stringable('hello world')->doesntStartWith('foo'))->toBeTrue();
+    expect($this->stringable('hello world')->doesntStartWith(['foo', 'bar']))->toBeTrue();
+    expect($this->stringable('hello world')->doesntStartWith(['foo', 'hello']))->toBeFalse();
+    expect($this->stringable('hello world')->doesntStartWith(''))->toBeTrue();
+    expect($this->stringable('')->doesntStartWith('hello'))->toBeTrue();
+    expect($this->stringable('')->doesntStartWith(''))->toBeTrue();
+});

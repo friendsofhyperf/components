@@ -80,4 +80,16 @@ class StringableMixin
         /* @phpstan-ignore-next-line */
         return fn ($callback, $default = null) => $this->when($this->isAscii(), $callback, $default);
     }
+
+    public function doesntEndWith()
+    {
+        /* @phpstan-ignore-next-line */
+        return fn ($needles) => ! $this->endsWith($needles);
+    }
+
+    public function doesntStartWith()
+    {
+        /* @phpstan-ignore-next-line */
+        return fn ($needles) => ! $this->startsWith($needles);
+    }
 }
