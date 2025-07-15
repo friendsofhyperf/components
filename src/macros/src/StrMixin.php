@@ -72,4 +72,18 @@ class StrMixin
     {
         return fn ($string, $unknown = '?', $strict = false) => ASCII::to_transliterate($string, $unknown, $strict);
     }
+
+    public function doesntEndWith()
+    {
+        return function ($haystack, $needles) {
+            return ! Str::endsWith($haystack, $needles);
+        };
+    }
+
+    public function doesntStartWith()
+    {
+        return function ($haystack, $needles) {
+            return ! Str::startsWith($haystack, $needles);
+        };
+    }
 }
