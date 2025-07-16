@@ -86,7 +86,7 @@ final class ClientManager implements ClientManagerInterface
     }
 
     /**
-     * @return array{grants?: list<Grant>, redirect_uris?: list<RedirectUri>, scopes?: list<Scope>}
+     * @return array{grants?: list<Grant>, redirects?: list<RedirectUri>, scopes?: list<Scope>}
      */
     private static function filterToCriteria(?ClientFilter $clientFilter): array
     {
