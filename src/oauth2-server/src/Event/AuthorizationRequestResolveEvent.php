@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Oauth2\Server\Event;
 use FriendsOfHyperf\Oauth2\Server\Model\ClientInterface;
 use FriendsOfHyperf\Oauth2\Server\ValueObject\Scope;
 use Hyperf\HttpServer\Contract\ResponseInterface as Response;
+use League\OAuth2\Server\Entities\UserEntityInterface;
 use League\OAuth2\Server\RequestTypes\AuthorizationRequestInterface;
 use Symfony\Contracts\EventDispatcher\Event;
 
@@ -34,7 +35,7 @@ class AuthorizationRequestResolveEvent extends Event
         private readonly AuthorizationRequestInterface $authorizationRequest,
         private array $scopes,
         private ClientInterface $client,
-        private mixed $user
+        private UserEntityInterface $user
     ) {
     }
 

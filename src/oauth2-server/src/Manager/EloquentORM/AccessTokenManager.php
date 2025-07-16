@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Oauth2\Server\Manager\ElquentORM;
+namespace FriendsOfHyperf\Oauth2\Server\Manager\EloquentORM;
 
 use Carbon\Carbon;
 use FriendsOfHyperf\Oauth2\Server\Interfaces\ConfigInterface;
@@ -34,7 +34,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
 
     public function save(AccessTokenInterface $accessToken): void
     {
-        if ($this->persistAccessToken()) {
+        if (! $this->persistAccessToken()) {
             return;
         }
         $accessToken->save();

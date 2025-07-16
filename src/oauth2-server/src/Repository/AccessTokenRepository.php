@@ -98,7 +98,7 @@ final class AccessTokenRepository implements AccessTokenRepositoryInterface
             $accessToken->user_id = $userIdentifier;
             $accessToken->expires_at = Carbon::createFromImmutable($accessTokenEntity->getExpiryDateTime());
             $accessToken->scopes = $this->scopeConverter->toDomainArray($accessTokenEntity->getScopes());
-            $accessToken->revoked = true;
+            $accessToken->revoked = false;
         });
     }
 }

@@ -131,7 +131,7 @@ class Client extends Model implements ClientInterface
         return $this;
     }
 
-    public function newClientInstance(string $name, string $identifier, string $secret): ClientInterface
+    public function newClientInstance(string $name, string $identifier, ?string $secret): ClientInterface
     {
         return new static([
             'name' => $name,

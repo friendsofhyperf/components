@@ -18,6 +18,7 @@ use Hyperf\HttpServer\Contract\RequestInterface;
 use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Psr\Http\Message\ResponseInterface;
 
 final class AuthorizationController
 {
@@ -29,7 +30,7 @@ final class AuthorizationController
     ) {
     }
 
-    public function index(RequestInterface $request)
+    public function index(RequestInterface $request): ResponseInterface
     {
         $response = ResponseContext::get();
         try {

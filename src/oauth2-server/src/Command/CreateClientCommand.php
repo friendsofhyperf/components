@@ -88,20 +88,18 @@ final class CreateClientCommand extends Command
             );
     }
 
-    protected function handle()
+    protected function handle(): int
     {
         $input = $this->input;
         $output = $this->output;
         $io = new SymfonyStyle($input, $output);
-
         try {
             $client = $this->buildClientFromInput($input);
         } catch (InvalidArgumentException $exception) {
             $io->error($exception->getMessage());
 
-            return 1;
+            return Command::FAILURE;
         }
-
         $this->clientManager->save($client);
         $io->success('New OAuth2 client created successfully.');
 
@@ -118,7 +116,6 @@ final class CreateClientCommand extends Command
         $name = $input->getArgument('name');
         $identifier = (string) $input->getArgument('identifier') ?: hash('md5', random_bytes(16));
         $isPublic = $input->getOption('public');
-
         if ($isPublic && $input->getArgument('secret') !== null) {
             throw new InvalidArgumentException('The client cannot have a secret and be public.');
         }
@@ -133,7 +130,6 @@ final class CreateClientCommand extends Command
         $grantStrings = $input->getOption('grant-type');
         /** @var list<non-empty-string> $scopeStrings */
         $scopeStrings = $input->getOption('scope');
-
         return $client
             ->setRedirectUris(...array_map(static function (string $redirectUri): RedirectUri {
                 return new RedirectUri($redirectUri);

@@ -57,5 +57,5 @@ interface ClientInterface
 
     public function setAllowPlainTextPkce(bool $allowPlainTextPkce): self;
 
-    public function newClientInstance(string $name, string $identifier, string $secret): self;
+    public function newClientInstance(string $name, string $identifier, ?string $secret): self;
 }

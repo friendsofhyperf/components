@@ -37,8 +37,12 @@ final class UserRepository implements UserRepositoryInterface
         string $grantType,
         ClientEntityInterface $clientEntity,
     ): ?UserEntityInterface {
-        /** @var ClientInterface $client */
+        /** @var ClientInterface|null $client */
         $client = $this->clientManager->find($clientEntity->getIdentifier());
+
+        if ($client === null) {
+            return null;
+        }
 
         $event = $this->eventDispatcher->dispatch(
             new UserResolveEvent(

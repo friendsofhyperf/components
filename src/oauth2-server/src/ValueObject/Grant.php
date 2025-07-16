@@ -11,11 +11,17 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Oauth2\Server\ValueObject;
 
+use FriendsOfHyperf\Oauth2\Server\Enums\OAuth2Grants;
+use InvalidArgumentException;
+
 class Grant
 {
     public function __construct(
-        private string $grant
+        private readonly string $grant
     ) {
+        if (! in_array(OAuth2Grants::from($this->grant), OAuth2Grants::cases(), true)) {
+            throw new InvalidArgumentException(sprintf('Invalid grant type: %s', $this->grant));
+        }
     }
 
     public function __toString(): string

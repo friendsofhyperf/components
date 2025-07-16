@@ -122,7 +122,7 @@ class AuthorizationServerFactory
             ->setRefreshTokenTTL($refreshTokenTTL);
         $this->container->get(AuthCodeGrant::class)
             ->setRefreshTokenTTL($refreshTokenTTL);
-        if ($this->config->get('authorization_server.require_code_challenge_for_public_clients')) {
+        if (! $this->config->get('authorization_server.require_code_challenge_for_public_clients')) {
             $this->container->get(AuthCodeGrant::class)->disableRequireCodeChallengeForPublicClients();
         }
         if ($this->config->get('authorization_server.enable_implicit_grant')) {

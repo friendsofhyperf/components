@@ -18,6 +18,7 @@ use FriendsOfHyperf\Oauth2\Server\ValueObject\Scope;
 use Hyperf\Database\Model\Concerns\HasUuids;
 use Hyperf\Database\Model\Relations\BelongsTo;
 use Hyperf\DbConnection\Model\Model;
+use RuntimeException;
 
 /**
  * @property string $id
@@ -85,8 +86,14 @@ class AccessToken extends Model implements AccessTokenInterface
 
     public function getClient(): ClientInterface
     {
-        // @phpstan-ignore-next-line
-        return $this->client()->firstOrFail();
+        /**
+         * @var ClientInterface|null $client
+         */
+        $client = $this->client()->first();
+        if ($client === null) {
+            throw new RuntimeException('Access token has no associated client');
+        }
+        return $client;
     }
 
     public function getScopes(): array

@@ -24,7 +24,7 @@ class GrantsCast implements CastsAttributes
         }
 
         if (is_array($value)) {
-            return array_map(fn ($grant) => new Grant($grant), $value);
+            return array_map(fn (string $grant) => new Grant($grant), $value);
         }
 
         return [];

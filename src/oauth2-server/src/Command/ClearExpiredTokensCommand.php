@@ -54,7 +54,7 @@ final class ClearExpiredTokensCommand extends Command
             );
     }
 
-    protected function handle()
+    protected function handle(): int
     {
         $input = $this->input;
         $output = $this->output;

@@ -18,7 +18,7 @@ use Symfony\Contracts\EventDispatcher\Event;
 
 final class UserResolveEvent extends Event
 {
-    private UserInterface $user;
+    private ?UserInterface $user = null;
 
     public function __construct(
         private readonly string $username,
@@ -48,7 +48,7 @@ final class UserResolveEvent extends Event
         return $this->client;
     }
 
-    public function getUser(): UserInterface
+    public function getUser(): ?UserInterface
     {
         return $this->user;
     }

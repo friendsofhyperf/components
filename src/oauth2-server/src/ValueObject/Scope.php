@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Oauth2\Server\ValueObject;
 
-class Scope
+final class Scope
 {
     public function __construct(
         private readonly string $scope

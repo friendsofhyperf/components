@@ -62,6 +62,7 @@ final class GenerateKeyPairCommand extends Command
         $output = $this->output;
         $io = new SymfonyStyle($input, $output);
         $algorithm = $input->getArgument('algorithm');
+
         if (! \in_array($algorithm, self::ACCEPTED_ALGORITHMS, true)) {
             $io->error(\sprintf('Cannot generate key pair with the provided algorithm `%s`.', $algorithm));
             return Command::FAILURE;
@@ -122,7 +123,7 @@ final class GenerateKeyPairCommand extends Command
         $this->addOption('dry-run', null, InputOption::VALUE_NONE, 'Do not update key files.');
         $this->addOption('skip-if-exists', null, InputOption::VALUE_NONE, 'Do not update key files if they already exist.');
         $this->addOption('overwrite', null, InputOption::VALUE_NONE, 'Overwrite key files if they already exist.');
-        $this->addArgument('algorithm', InputArgument::OPTIONAL, \sprintf('The algorithm code, possible values : %s', implode('', self::ACCEPTED_ALGORITHMS)), 'RS256');
+        $this->addArgument('algorithm', InputArgument::OPTIONAL, \sprintf('The algorithm code, possible values : %s', implode(',', self::ACCEPTED_ALGORITHMS)), 'RS256');
     }
 
     private function handleExistingKeys(InputInterface $input): void
@@ -149,7 +150,7 @@ final class GenerateKeyPairCommand extends Command
 
         $resource = openssl_pkey_new($config);
         if ($resource === false) {
-            throw new RuntimeException(openssl_error_string() ?: '');
+            throw new RuntimeException(openssl_error_string() ?: 'Failed to generate key pair');
         }
 
         $success = openssl_pkey_export($resource, $privateKey, $passphrase);
@@ -211,7 +212,7 @@ final class GenerateKeyPairCommand extends Command
         ];
 
         $curves = [
-            'ES256' => 'secp256k1',
+            'ES256' => 'secp256r1',
             'ES384' => 'secp384r1',
             'ES512' => 'secp521r1',
         ];

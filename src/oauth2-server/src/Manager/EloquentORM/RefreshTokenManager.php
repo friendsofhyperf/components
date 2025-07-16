@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Oauth2\Server\Manager\ElquentORM;
+namespace FriendsOfHyperf\Oauth2\Server\Manager\EloquentORM;
 
 use Carbon\Carbon;
 use FriendsOfHyperf\Oauth2\Server\Manager\RefreshTokenManagerInterface;
@@ -31,7 +31,7 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
     public function clearExpired(): int
     {
         return RefreshToken::query()
-            ->where('expires', '<', Carbon::now())
+            ->where('expires_at', '<', Carbon::now())
             ->delete();
     }
 }

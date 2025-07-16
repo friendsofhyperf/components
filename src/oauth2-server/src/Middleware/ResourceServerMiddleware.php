@@ -30,10 +30,11 @@ final class ResourceServerMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {
-            RequestContext::set($this->server->validateAuthenticatedRequest($request));
+            $validatedRequest = $this->server->validateAuthenticatedRequest($request);
+            RequestContext::set($validatedRequest);
+            return $handler->handle($validatedRequest);
         } catch (OAuthServerException $exception) {
             return $exception->generateHttpResponse(ResponseContext::get());
         }
-        return $handler->handle($request);
     }
 }

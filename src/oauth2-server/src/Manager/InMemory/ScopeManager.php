@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Oauth2\Server\Manager\InMemory;
 
 use FriendsOfHyperf\Oauth2\Server\Manager\ScopeManagerInterface;
 use FriendsOfHyperf\Oauth2\Server\ValueObject\Scope;
+use Hyperf\Collection\Arr;
 
 class ScopeManager implements ScopeManagerInterface
 {
@@ -21,13 +22,9 @@ class ScopeManager implements ScopeManagerInterface
      */
     private array $scopes = [];
 
-    public function __construct()
-    {
-    }
-
     public function find(string $identifier): ?Scope
     {
-        return $this->scopes[$identifier];
+        return Arr::get($this->scopes, $identifier);
     }
 
     public function save(Scope $scope): void

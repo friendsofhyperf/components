@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Oauth2\Server\Manager\ElquentORM;
+namespace FriendsOfHyperf\Oauth2\Server\Manager\EloquentORM;
 
 use FriendsOfHyperf\Oauth2\Server\Event\PreSaveClientEvent;
 use FriendsOfHyperf\Oauth2\Server\Manager\ClientFilter;
@@ -54,13 +54,25 @@ final class ClientManager implements ClientManagerInterface
         $criteria = self::filterToCriteria($clientFilter);
         $query = Client::query();
         if (! empty($criteria['grants'])) {
-            $query->whereIn('grants', $criteria['grants']);
+            $query->where(function ($query) use ($criteria) {
+                foreach ($criteria['grants'] as $grant) {
+                    $query->orWhereJsonContains('grants', (string) $grant);
+                }
+            });
         }
         if (! empty($criteria['redirects'])) {
-            $query->whereIn('redirects', $criteria['redirects']);
+            $query->where(function ($query) use ($criteria) {
+                foreach ($criteria['redirects'] as $redirect) {
+                    $query->orWhereJsonContains('redirects', (string) $redirect);
+                }
+            });
         }
         if (! empty($criteria['scopes'])) {
-            $query->whereIn('scopes', $criteria['scopes']);
+            $query->where(function ($query) use ($criteria) {
+                foreach ($criteria['scopes'] as $scope) {
+                    $query->orWhereJsonContains('scopes', (string) $scope);
+                }
+            });
         }
         return $query->get()->all();
     }
@@ -83,7 +95,7 @@ final class ClientManager implements ClientManagerInterface
 
         $redirectUris = $clientFilter->getRedirectUris();
         if ($redirectUris) {
-            $criteria['redirect_uris'] = $redirectUris;
+            $criteria['redirects'] = $redirectUris;
         }
 
         $scopes = $clientFilter->getScopes();

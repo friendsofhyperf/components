@@ -23,7 +23,7 @@ return new class extends Migration {
             $table->string('user_id', 100)->nullable()->default(null);
             $table->string('client_id', 100)->nullable()->default(null);
             $table->json('scopes')->nullable()->default(null);
-            $table->tinyInteger('revoked')->default(1);
+            $table->tinyInteger('revoked')->default(0);
             $table->dateTime('expires_at')->nullable()->default(null);
             $table->datetimes();
             $table->index('user_id');
@@ -35,7 +35,7 @@ return new class extends Migration {
             $table->string('client_id', 100)->nullable()->default(null);
             $table->json('scopes')->nullable()->default(null);
             $table->dateTime('expires_at')->nullable()->default(null);
-            $table->tinyInteger('revoked')->default(1);
+            $table->tinyInteger('revoked')->default(0);
             $table->datetimes();
             $table->index('user_id');
             $table->index('client_id');
@@ -53,10 +53,9 @@ return new class extends Migration {
             $table->index('name');
         });
         Schema::create('oauth_refresh_token', function (Blueprint $table) {
-            // 'id', 'access_token_id', 'revoked', 'expires_at', 'created_at', 'updated_at',
             $table->string('id', 100)->primary();
             $table->string('access_token_id', 100)->index();
-            $table->tinyInteger('revoked')->default(1);
+            $table->tinyInteger('revoked')->default(0);
             $table->datetimes();
             $table->dateTime('expires_at')->nullable()->default(null);
         });

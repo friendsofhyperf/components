@@ -17,6 +17,7 @@ use FriendsOfHyperf\Oauth2\Server\Model\Casts\ScopesCast;
 use FriendsOfHyperf\Oauth2\Server\ValueObject\Scope;
 use Hyperf\Database\Model\Relations\BelongsTo;
 use Hyperf\DbConnection\Model\Model;
+use RuntimeException;
 
 /**
  * @property string $code
@@ -46,6 +47,7 @@ class AuthorizationCode extends Model implements AuthorizationCodeInterface
         'client_id',
         'scopes',
         'revoked',
+        'redirect_uri',
         'expires_at',
         'created_at',
         'updated_at',
@@ -80,7 +82,7 @@ class AuthorizationCode extends Model implements AuthorizationCodeInterface
 
     public function getExpiryDateTime(): DateTimeInterface
     {
-        return $this->expires_at;
+        return $this->expires_at->toDateTimeImmutable();
     }
 
     public function getUserIdentifier(): ?string
@@ -90,8 +92,14 @@ class AuthorizationCode extends Model implements AuthorizationCodeInterface
 
     public function getClient(): ClientInterface
     {
-        // @phpstan-ignore-next-line
-        return $this->client()->firstOrFail();
+        /**
+         * @var ClientInterface|null $client
+         */
+        $client = $this->client()->first();
+        if ($client === null) {
+            throw new RuntimeException('Access token has no associated client');
+        }
+        return $client;
     }
 
     public function getScopes(): array
