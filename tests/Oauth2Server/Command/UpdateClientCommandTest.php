@@ -308,7 +308,7 @@ it('deactivates client', function () {
 
     $this->clientManager->shouldReceive('find')->with($identifier)->andReturn($this->client);
     $this->client->shouldReceive('isActive')->andReturn(true);
-    $this->client->shouldReceive('setActive')->once()->with(true)->andReturnSelf();
+    $this->client->shouldReceive('setActive')->once()->with(false)->andReturnSelf();
     $this->client->shouldReceive('getRedirectUris')->andReturn([]);
     $this->client->shouldReceive('getGrants')->andReturn([]);
     $this->client->shouldReceive('getScopes')->andReturn([]);
@@ -319,6 +319,7 @@ it('deactivates client', function () {
 
     $input = new ArrayInput([
         'identifier' => $identifier,
+        '--deactivate' => true,
         '--disable-event-dispatcher' => true,
     ]);
     $input->setInteractive(false);
