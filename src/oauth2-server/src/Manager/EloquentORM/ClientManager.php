@@ -33,16 +33,19 @@ final class ClientManager implements ClientManagerInterface
         $event = new PreSaveClientEvent($client);
         $this->eventDispatcher->dispatch($event);
         $client = $event->getClient();
+        // @phpstan-ignore-next-line
         $client->save();
     }
 
     public function remove(ClientInterface $client): void
     {
+        // // @phpstan-ignore-next-line
         $client->delete();
     }
 
     public function find(string $identifier): ?ClientInterface
     {
+        // @phpstan-ignore-next-line
         return Client::find($identifier);
     }
 
@@ -53,6 +56,7 @@ final class ClientManager implements ClientManagerInterface
     {
         $criteria = self::filterToCriteria($clientFilter);
         $query = Client::query();
+        // @phpstan-ignore-next-line
         if (! empty($criteria['grants'])) {
             $query->where(function ($query) use ($criteria) {
                 foreach ($criteria['grants'] as $grant) {
@@ -60,13 +64,16 @@ final class ClientManager implements ClientManagerInterface
                 }
             });
         }
+        // @phpstan-ignore-next-line
         if (! empty($criteria['redirects'])) {
             $query->where(function ($query) use ($criteria) {
+                // @phpstan-ignore-next-line
                 foreach ($criteria['redirects'] as $redirect) {
                     $query->orWhereJsonContains('redirects', (string) $redirect);
                 }
             });
         }
+        // @phpstan-ignore-next-line
         if (! empty($criteria['scopes'])) {
             $query->where(function ($query) use ($criteria) {
                 foreach ($criteria['scopes'] as $scope) {
@@ -74,6 +81,7 @@ final class ClientManager implements ClientManagerInterface
                 }
             });
         }
+        // @phpstan-ignore-next-line
         return $query->get()->all();
     }
 

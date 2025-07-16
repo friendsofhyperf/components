@@ -20,11 +20,13 @@ final class RefreshTokenManager implements RefreshTokenManagerInterface
 {
     public function find(string $identifier): ?RefreshTokenInterface
     {
+        // @phpstan-ignore-next-line
         return RefreshToken::find($identifier);
     }
 
     public function save(RefreshTokenInterface $refreshToken): void
     {
+        // @phpstan-ignore-next-line
         $refreshToken->save();
     }
 

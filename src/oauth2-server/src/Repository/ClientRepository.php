@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Oauth2\Server\Repository;
 use FriendsOfHyperf\Oauth2\Server\Entity\Client as ClientEntity;
 use FriendsOfHyperf\Oauth2\Server\Manager\ClientManagerInterface;
 use FriendsOfHyperf\Oauth2\Server\Model\ClientInterface;
+use FriendsOfHyperf\Oauth2\Server\ValueObject\Grant;
 use League\OAuth2\Server\Entities\ClientEntityInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 
@@ -78,12 +79,12 @@ final class ClientRepository implements ClientRepositoryInterface
             return true;
         }
 
-        $grants = $client->getGrants();
+        $grants = array_map(fn (Grant $grantArg) => (string) $grantArg, $client->getGrants());
 
         if (empty($grants)) {
             return true;
         }
 
-        return in_array($grant, $client->getGrants(), true);
+        return in_array($grant, $grants, true);
     }
 }

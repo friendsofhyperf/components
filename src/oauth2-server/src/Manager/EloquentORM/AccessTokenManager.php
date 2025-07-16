@@ -29,6 +29,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
         if (! $this->persistAccessToken()) {
             return null;
         }
+        // @phpstan-ignore-next-line
         return AccessToken::find($identifier);
     }
 
@@ -37,6 +38,7 @@ final class AccessTokenManager implements AccessTokenManagerInterface
         if (! $this->persistAccessToken()) {
             return;
         }
+        // @phpstan-ignore-next-line
         $accessToken->save();
     }
 

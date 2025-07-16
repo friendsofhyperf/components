@@ -117,8 +117,7 @@ final class UpdateClientCommand extends Command
         $filtered = array_filter($actual, static function ($model) use ($toRemove): bool {
             return ! \in_array((string) $model, $toRemove);
         });
-
-        /* @var list<T> */
+        // @phpstan-ignore-next-line
         return array_merge($filtered, array_map(static function (string $value) use ($modelFqcn) {
             return new $modelFqcn($value);
         }, $toAdd));

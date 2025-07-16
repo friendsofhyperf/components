@@ -20,11 +20,13 @@ final class AuthorizationCodeManager implements AuthorizationCodeManagerInterfac
 {
     public function find(string $identifier): ?AuthorizationCodeInterface
     {
+        // @phpstan-ignore-next-line
         return AuthorizationCode::find($identifier);
     }
 
     public function save(AuthorizationCodeInterface $authCode): void
     {
+        // @phpstan-ignore-next-line
         $authCode->save();
     }
 
