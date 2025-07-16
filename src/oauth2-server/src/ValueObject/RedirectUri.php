@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Oauth2\Server\ValueObject;
 
 use RuntimeException;
 
-class RedirectUri
+final class RedirectUri
 {
     public function __construct(
         private readonly string $redirectUri

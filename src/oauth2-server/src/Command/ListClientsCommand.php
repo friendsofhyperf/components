@@ -79,23 +79,23 @@ final class ListClientsCommand extends Command
 
     private function getFindByCriteria(InputInterface $input): ClientFilter
     {
-        /** @var list<non-empty-string> $grantStrings */
+        /** @var list<non-empty-string>|string $grantStrings */
         $grantStrings = $input->getOption('grant-type');
-        /** @var list<non-empty-string> $redirectUriStrings */
+        /** @var list<non-empty-string>|string $redirectUriStrings */
         $redirectUriStrings = $input->getOption('redirect-uri');
-        /** @var list<non-empty-string> $scopeStrings */
+        /** @var list<non-empty-string>|string $scopeStrings */
         $scopeStrings = $input->getOption('scope');
 
         return ClientFilter::create()
             ->addGrantCriteria(...array_map(static function (string $grant): Grant {
                 return new Grant($grant);
-            }, $grantStrings))
+            }, (array) $grantStrings))
             ->addRedirectUriCriteria(...array_map(static function (string $redirectUri): RedirectUri {
                 return new RedirectUri($redirectUri);
-            }, $redirectUriStrings))
+            }, (array) $redirectUriStrings))
             ->addScopeCriteria(...array_map(static function (string $scope): Scope {
                 return new Scope($scope);
-            }, $scopeStrings));
+            }, (array) $scopeStrings));
     }
 
     /**

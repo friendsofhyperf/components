@@ -113,7 +113,6 @@ final class UpdateClientCommand extends Command
         if ([] !== $colliding = array_intersect($toAdd, $toRemove)) {
             throw new RuntimeException(\sprintf('Cannot specify "%s" in either "--%s" and "--%s".', implode('", "', $colliding), $addArgument, $removeArgument));
         }
-
         $filtered = array_filter($actual, static function ($model) use ($toRemove): bool {
             return ! \in_array((string) $model, $toRemove);
         });

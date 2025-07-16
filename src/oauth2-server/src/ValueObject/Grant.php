@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\Oauth2\Server\ValueObject;
 use FriendsOfHyperf\Oauth2\Server\Enums\OAuth2Grants;
 use InvalidArgumentException;
 
-class Grant
+final class Grant
 {
     public function __construct(
         private readonly string $grant
