@@ -16,6 +16,8 @@ use FriendsOfHyperf\Oauth2\Server\Command\CreateClientCommand;
 use FriendsOfHyperf\Oauth2\Server\Command\DeleteClientCommand;
 use FriendsOfHyperf\Oauth2\Server\Command\GenerateKeyPairCommand;
 use FriendsOfHyperf\Oauth2\Server\Command\ListClientsCommand;
+use FriendsOfHyperf\Oauth2\Server\Converter\ClientConverter;
+use FriendsOfHyperf\Oauth2\Server\Converter\ClientConverterInterface;
 use FriendsOfHyperf\Oauth2\Server\Converter\ScopeConverter;
 use FriendsOfHyperf\Oauth2\Server\Converter\ScopeConverterInterface;
 use FriendsOfHyperf\Oauth2\Server\Factory\AuthorizationServerFactory;
@@ -25,9 +27,11 @@ use FriendsOfHyperf\Oauth2\Server\Interfaces\ConfigInterface;
 use FriendsOfHyperf\Oauth2\Server\Manager\AccessTokenManagerInterface;
 use FriendsOfHyperf\Oauth2\Server\Manager\AuthorizationCodeManagerInterface;
 use FriendsOfHyperf\Oauth2\Server\Manager\ClientManagerInterface;
+use FriendsOfHyperf\Oauth2\Server\Manager\DeviceCodeManagerInterface;
 use FriendsOfHyperf\Oauth2\Server\Manager\EloquentORM\AccessTokenManager;
 use FriendsOfHyperf\Oauth2\Server\Manager\EloquentORM\AuthorizationCodeManager;
 use FriendsOfHyperf\Oauth2\Server\Manager\EloquentORM\ClientManager;
+use FriendsOfHyperf\Oauth2\Server\Manager\EloquentORM\DeviceCodeManager;
 use FriendsOfHyperf\Oauth2\Server\Manager\EloquentORM\RefreshTokenManager;
 use FriendsOfHyperf\Oauth2\Server\Manager\InMemory\ScopeManager;
 use FriendsOfHyperf\Oauth2\Server\Manager\RefreshTokenManagerInterface;
@@ -41,6 +45,7 @@ use FriendsOfHyperf\Oauth2\Server\Model\RefreshTokenInterface;
 use FriendsOfHyperf\Oauth2\Server\Repository\AccessTokenRepository;
 use FriendsOfHyperf\Oauth2\Server\Repository\AuthCodeRepository;
 use FriendsOfHyperf\Oauth2\Server\Repository\ClientRepository;
+use FriendsOfHyperf\Oauth2\Server\Repository\DeviceCodeRepository;
 use FriendsOfHyperf\Oauth2\Server\Repository\RefreshTokenRepository;
 use FriendsOfHyperf\Oauth2\Server\Repository\ScopeRepository;
 use FriendsOfHyperf\Oauth2\Server\Repository\UserRepository;
@@ -48,6 +53,7 @@ use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
+use League\OAuth2\Server\Repositories\DeviceCodeRepositoryInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
@@ -76,8 +82,10 @@ class ConfigProvider
                 ClientManagerInterface::class => ClientManager::class,
                 RefreshTokenManagerInterface::class => RefreshTokenManager::class,
                 ScopeManagerInterface::class => ScopeManager::class,
+                DeviceCodeManagerInterface::class => DeviceCodeManager::class,
                 // converters
                 ScopeConverterInterface::class => ScopeConverter::class,
+                ClientConverterInterface::class => ClientConverter::class,
                 // repositories
                 AccessTokenRepositoryInterface::class => AccessTokenRepository::class,
                 AuthCodeRepositoryInterface::class => AuthCodeRepository::class,
@@ -85,6 +93,7 @@ class ConfigProvider
                 RefreshTokenRepositoryInterface::class => RefreshTokenRepository::class,
                 ScopeRepositoryInterface::class => ScopeRepository::class,
                 UserRepositoryInterface::class => UserRepository::class,
+                DeviceCodeRepositoryInterface::class => DeviceCodeRepository::class,
                 // factroy
                 ConfigInterface::class => ConfigFactory::class,
                 AuthorizationServer::class => AuthorizationServerFactory::class,

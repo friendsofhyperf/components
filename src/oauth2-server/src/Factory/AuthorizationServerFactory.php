@@ -25,6 +25,8 @@ use League\OAuth2\Server\Grant\RefreshTokenGrant;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
+use League\OAuth2\Server\RequestEvent;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use RuntimeException;
 
 class AuthorizationServerFactory
@@ -34,7 +36,8 @@ class AuthorizationServerFactory
         private readonly ConfigInterface $config,
         private readonly ClientRepositoryInterface $clientRepository,
         private readonly AccessTokenRepositoryInterface $accessTokenRepository,
-        private readonly ScopeRepositoryInterface $scopeRepository
+        private readonly ScopeRepositoryInterface $scopeRepository,
+        private readonly EventDispatcherInterface $eventDispatcher
     ) {
     }
 
@@ -110,6 +113,7 @@ class AuthorizationServerFactory
             );
         }
         $this->configureGrants();
+        $this->configureListener($authorizationServer);
         return $authorizationServer;
     }
 
@@ -128,6 +132,23 @@ class AuthorizationServerFactory
         if ($this->config->get('authorization_server.enable_implicit_grant')) {
             $this->container->get(ImplicitGrant::class)
                 ->setRefreshTokenTTL($refreshTokenTTL);
+        }
+    }
+
+    private function configureListener(AuthorizationServer $authorizationServer): void
+    {
+        $events = [
+            RequestEvent::ACCESS_TOKEN_ISSUED,
+            RequestEvent::CLIENT_AUTHENTICATION_FAILED,
+            RequestEvent::REFRESH_TOKEN_ISSUED,
+            RequestEvent::REFRESH_TOKEN_CLIENT_FAILED,
+            RequestEvent::USER_AUTHENTICATION_FAILED,
+        ];
+        foreach ($events as $event) {
+            $authorizationServer->getEmitter()
+                ->addListener($event, function ($event) {
+                    $this->eventDispatcher->dispatch($event);
+                });
         }
     }
 }

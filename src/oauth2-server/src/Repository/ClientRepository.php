@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Oauth2\Server\Repository;
 
-use FriendsOfHyperf\Oauth2\Server\Entity\Client as ClientEntity;
+use FriendsOfHyperf\Oauth2\Server\Converter\ClientConverterInterface;
 use FriendsOfHyperf\Oauth2\Server\Manager\ClientManagerInterface;
 use FriendsOfHyperf\Oauth2\Server\Model\ClientInterface;
 use FriendsOfHyperf\Oauth2\Server\ValueObject\Grant;
@@ -23,7 +23,8 @@ use function in_array;
 final class ClientRepository implements ClientRepositoryInterface
 {
     public function __construct(
-        private readonly ClientManagerInterface $clientManager
+        private readonly ClientManagerInterface $clientManager,
+        private readonly ClientConverterInterface $clientConverter
     ) {
     }
 
@@ -34,8 +35,7 @@ final class ClientRepository implements ClientRepositoryInterface
         if ($client === null) {
             return null;
         }
-
-        return $this->buildClientEntity($client);
+        return $this->clientConverter->toEntity($client);
     }
 
     public function validateClient(string $clientIdentifier, ?string $clientSecret, ?string $grantType): bool
@@ -59,18 +59,6 @@ final class ClientRepository implements ClientRepositoryInterface
         }
 
         return false;
-    }
-
-    private function buildClientEntity(ClientInterface $client): ClientEntity
-    {
-        $clientEntity = new ClientEntity();
-        $clientEntity->setName($client->getName());
-        $clientEntity->setIdentifier($client->getIdentifier());
-        $clientEntity->setRedirectUri(array_map('strval', $client->getRedirectUris()));
-        $clientEntity->setConfidential($client->isConfidential());
-        $clientEntity->setAllowPlainTextPkce($client->isPlainTextPkceAllowed());
-
-        return $clientEntity;
     }
 
     private function isGrantSupported(ClientInterface $client, ?string $grant): bool

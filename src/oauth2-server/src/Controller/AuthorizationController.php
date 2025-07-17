@@ -52,6 +52,7 @@ final class AuthorizationController
 
             return $this->authorizationServer->completeAuthorizationRequest($authRequest, $response);
         } catch (OAuthServerException $e) {
+            var_dump($e);
             return $e->generateHttpResponse($response);
         }
     }
