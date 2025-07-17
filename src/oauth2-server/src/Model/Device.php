@@ -81,7 +81,7 @@ class Device extends Model implements DeviceCodeInterface
         return $this->device_code;
     }
 
-    public function getUserIdentifier(): ?string
+    public function getUserIdentifier(): string
     {
         return $this->user_id;
     }
@@ -108,7 +108,7 @@ class Device extends Model implements DeviceCodeInterface
 
     public function getLastPoll(): ?DateTimeImmutable
     {
-        return $this->last_poll_at->toDateTimeImmutable();
+        return $this->last_poll_at?->toDateTimeImmutable();
     }
 
     public function getUserCode(): string
@@ -172,12 +172,6 @@ class Device extends Model implements DeviceCodeInterface
     public function setStatus(DeviceCodeStatus $status): DeviceCodeInterface
     {
         $this->status = $status;
-        return $this;
-    }
-
-    public function setDeiceCode(string $deviceCode): DeviceCodeInterface
-    {
-        $this->device_code = $deviceCode;
         return $this;
     }
 

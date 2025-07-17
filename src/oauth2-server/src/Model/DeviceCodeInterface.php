@@ -19,7 +19,7 @@ interface DeviceCodeInterface
 {
     public function getDeviceCode(): string;
 
-    public function getUserIdentifier(): ?string;
+    public function getUserIdentifier(): string;
 
     public function getClientIdentifier(): string;
 
@@ -54,8 +54,6 @@ interface DeviceCodeInterface
     public function setLastPoll(DateTimeImmutable $lastPoll): self;
 
     public function setStatus(DeviceCodeStatus $status): self;
-
-    public function setDeiceCode(string $deviceCode): self;
 
     public function isRevoked(): bool;
 

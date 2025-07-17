@@ -20,6 +20,7 @@ use FriendsOfHyperf\Oauth2\Server\Model\Device as DeviceCodeModel;
 use FriendsOfHyperf\Oauth2\Server\Model\DeviceCodeInterface;
 use League\OAuth2\Server\Entities\DeviceCodeEntityInterface;
 use League\OAuth2\Server\Repositories\DeviceCodeRepositoryInterface;
+use RuntimeException;
 
 use function Hyperf\Tappable\tap;
 
@@ -97,6 +98,9 @@ final class DeviceCodeRepository implements DeviceCodeRepositoryInterface
     private function buildDeviceCodeModel(DeviceCodeEntityInterface $deviceCodeEntity): DeviceCodeInterface
     {
         $client = $this->clientManager->find($deviceCodeEntity->getClient()->getIdentifier());
+        if ($client === null) {
+            throw new RuntimeException(sprintf('Client with identifier %s not found', $deviceCodeEntity->getClient()->getIdentifier()));
+        }
         return tap(new DeviceCodeModel(), function (DeviceCodeModel $model) use ($deviceCodeEntity, $client) {
             $model->device_code = $deviceCodeEntity->getIdentifier();
             $model->setDeviceCode($deviceCodeEntity->getIdentifier());

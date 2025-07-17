@@ -22,12 +22,12 @@ final class ClientConverter implements ClientConverterInterface
     {
         $clientModel = new ClientModel();
         $clientModel->name = $client->getName();
-        $clientModel->id = $clientModel->getIdentifier();
+        $clientModel->id = $client->getIdentifier();
         $clientModel->redirects = array_map(
             fn ($redirect) => new RedirectUri($redirect),
             $client->getRedirectUri()
         );
-        $client->setAllowPlainTextPkce($client->isPlainTextPkceAllowed());
+        $clientModel->setAllowPlainTextPkce($client->isPlainTextPkceAllowed());
         return $clientModel;
     }
 
