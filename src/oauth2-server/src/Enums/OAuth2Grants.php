@@ -37,4 +37,9 @@ enum OAuth2Grants: string
      * @see https://tools.ietf.org/html/rfc6749#section-6
      */
     case RefreshToken = 'refresh_token';
+
+    /**
+     * @see https://tools.ietf.org/html/rfc8628#section-3.1
+     */
+    case DeviceCode = 'device_code';
 }
