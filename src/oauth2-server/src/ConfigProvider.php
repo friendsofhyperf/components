@@ -16,6 +16,7 @@ use FriendsOfHyperf\Oauth2\Server\Command\CreateClientCommand;
 use FriendsOfHyperf\Oauth2\Server\Command\DeleteClientCommand;
 use FriendsOfHyperf\Oauth2\Server\Command\GenerateKeyPairCommand;
 use FriendsOfHyperf\Oauth2\Server\Command\ListClientsCommand;
+use FriendsOfHyperf\Oauth2\Server\Command\UpdateClientCommand;
 use FriendsOfHyperf\Oauth2\Server\Converter\ClientConverter;
 use FriendsOfHyperf\Oauth2\Server\Converter\ClientConverterInterface;
 use FriendsOfHyperf\Oauth2\Server\Converter\ScopeConverter;
@@ -70,6 +71,7 @@ class ConfigProvider
                 DeleteClientCommand::class,
                 GenerateKeyPairCommand::class,
                 ListClientsCommand::class,
+                UpdateClientCommand::class
             ],
             'dependencies' => [
                 // models

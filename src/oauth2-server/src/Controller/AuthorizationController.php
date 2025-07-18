@@ -20,7 +20,7 @@ use League\OAuth2\Server\Exception\OAuthServerException;
 use Psr\EventDispatcher\EventDispatcherInterface;
 use Psr\Http\Message\ResponseInterface;
 
-final class AuthorizationController
+class AuthorizationController
 {
     public function __construct(
         private readonly EventDispatcherInterface $eventDispatcher,
@@ -52,7 +52,6 @@ final class AuthorizationController
 
             return $this->authorizationServer->completeAuthorizationRequest($authRequest, $response);
         } catch (OAuthServerException $e) {
-            var_dump($e);
             return $e->generateHttpResponse($response);
         }
     }
