@@ -155,6 +155,10 @@ const sidebar:DefaultTheme.Sidebar = {
                     link: '/zh-tw/components/notification-mail.md'
                 },
                 {
+                    text: 'OAuth2 伺服器',
+                    link: '/zh-tw/components/oauth2-server.md'
+                },
+                {
                     text: 'OpenAI Client',
                     link: '/zh-tw/components/openai-client.md'
                 },

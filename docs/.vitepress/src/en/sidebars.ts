@@ -142,6 +142,10 @@ const sidebar:DefaultTheme.Sidebar = {
                     link: '/en/components/notification-mail.md'
                 },
                 {
+                    text: 'OAuth2 Server',
+                    link: '/en/components/oauth2-server.md'
+                },
+                {
                     text: 'OpenAI Client',
                     link: '/en/components/openai-client.md'
                 },
