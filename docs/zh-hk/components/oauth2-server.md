@@ -1,15 +1,15 @@
-# OAuth2 伺服器
+# OAuth2 服務器
 
-基於 [league/oauth2-server](https://oauth2.thephpleague.com/) 的 Hyperf 框架完整 OAuth2 伺服器實現。
+基於 [league/oauth2-server](https://oauth2.thephpleague.com/) 的 Hyperf 框架完整 OAuth2 服務器實現。
 
 ## 功能特性
 
-- 完整的 OAuth2 伺服器實現，支援：
-  - 客戶端憑證授權 (Client Credentials Grant)
+- 完整的 OAuth2 服務器實現，支持：
+  - 客户端憑證授權 (Client Credentials Grant)
   - 密碼授權 (Password Grant)
   - 刷新令牌授權 (Refresh Token Grant)
-  - 授權碼授權 (Authorization Code Grant，支援 PKCE)
-- 內置客戶端管理命令
+  - 授權碼授權 (Authorization Code Grant，支持 PKCE)
+- 內置客户端管理命令
 - 多種存儲後端 (Eloquent ORM)
 - 可自定義的令牌生命週期
 - 作用域管理
@@ -23,7 +23,7 @@
 composer require friendsofhyperf/oauth2-server
 ```
 
-### 2. 發布配置
+### 2. 發佈配置
 
 ```bash
 php bin/hyperf.php vendor:publish friendsofhyperf/oauth2-server
@@ -48,7 +48,7 @@ php bin/hyperf.php migrate
 
 ## 配置
 
-在 `config/autoload/oauth2-server.php` 中配置 OAuth2 伺服器：
+在 `config/autoload/oauth2-server.php` 中配置 OAuth2 服務器：
 
 ```php
 <?php
@@ -103,15 +103,15 @@ OAUTH2_ENCRYPTION_KEY_TYPE=plain
 | 命令 | 描述 |
 |---------|-------------|
 | `oauth2:clear-expired-tokens` | 清除過期的訪問/刷新令牌 |
-| `oauth2:create-client` | 創建新的 OAuth2 客戶端 |
-| `oauth2:delete-client` | 刪除 OAuth2 客戶端 |
+| `oauth2:create-client` | 創建新的 OAuth2 客户端 |
+| `oauth2:delete-client` | 刪除 OAuth2 客户端 |
 | `oauth2:generate-keypair` | 生成私鑰/公鑰對 |
-| `oauth2:list-clients` | 列出所有 OAuth2 客戶端 |
-| `oauth2:update-client` | 更新 OAuth2 客戶端 |
+| `oauth2:list-clients` | 列出所有 OAuth2 客户端 |
+| `oauth2:update-client` | 更新 OAuth2 客户端 |
 
-### 創建客戶端
+### 創建客户端
 
-創建授權碼授權的客戶端：
+創建授權碼授權的客户端：
 
 ```bash
 php bin/hyperf.php oauth2:create-client \
@@ -121,7 +121,7 @@ php bin/hyperf.php oauth2:create-client \
     --grant-type="refresh_token"
 ```
 
-創建密碼授權的客戶端：
+創建密碼授權的客户端：
 
 ```bash
 php bin/hyperf.php oauth2:create-client \
@@ -130,7 +130,7 @@ php bin/hyperf.php oauth2:create-client \
     --grant-type="refresh_token"
 ```
 
-創建客戶端憑證授權的客戶端：
+創建客户端憑證授權的客户端：
 
 ```bash
 php bin/hyperf.php oauth2:create-client \
@@ -146,7 +146,7 @@ php bin/hyperf.php oauth2:create-client \
 
 用於授權碼授權流程。參數：
 - `response_type`: 必須是 `code`
-- `client_id`: 客戶端 ID
+- `client_id`: 客户端 ID
 - `redirect_uri`: 必須與註冊的回調 URI 匹配
 - `scope`: 空格分隔的作用域列表
 - `state`: CSRF 保護令牌
@@ -174,9 +174,9 @@ Router::addGroup('/api', function () {
 
 ## 授權類型
 
-### 1. 客戶端憑證授權
+### 1. 客户端憑證授權
 
-用於伺服器到伺服器認證：
+用於服務器到服務器認證：
 
 ```bash
 curl -X POST http://your-server/oauth/token \
@@ -208,9 +208,9 @@ curl -X POST http://your-server/oauth/token \
 
 ### 3. 授權碼授權
 
-用於需要用戶交互的網頁應用：
+用於需要用户交互的網頁應用：
 
-**步驟1：重定向用戶到授權端點**
+**步驟1：重定向用户到授權端點**
 
 ```
 https://your-server/oauth/authorize?response_type=code&client_id=your-client-id&redirect_uri=https://myapp.com/callback&scope=read&state=random-state&code_challenge=challenge&code_challenge_method=S256
@@ -260,8 +260,8 @@ curl -X GET http://your-server/api/user \
 
 組件會分發以下事件，您可以監聽：
 
-- `AuthorizationRequestResolveEvent`: 當授權請求需要用戶批准時
-- `UserResolveEvent`: 當為密碼授權解析用戶時
+- `AuthorizationRequestResolveEvent`: 當授權請求需要用户批准時
+- `UserResolveEvent`: 當為密碼授權解析用户時
 - `ScopeResolveEvent`: 當解析作用域時
 - `TokenRequestResolveEvent`: 當處理令牌請求時
 
@@ -287,7 +287,7 @@ class UserResolveListener
 
     public function process(object $event): void
     {
-        // 驗證用戶憑據並返回用戶ID
+        // 驗證用户憑據並返回用户ID
         if ($event->getUsername() === 'admin' && $event->getPassword() === 'secret') {
             $event->setUserId('1');
         }
@@ -299,17 +299,17 @@ class UserResolveListener
 
 該包創建以下表：
 
-- `oauth_clients`: OAuth2 客戶端
+- `oauth_clients`: OAuth2 客户端
 - `oauth_access_tokens`: 訪問令牌
 - `oauth_refresh_tokens`: 刷新令牌
 - `oauth_auth_codes`: 授權碼
-- `oauth_personal_access_clients`: 個人訪問客戶端
+- `oauth_personal_access_clients`: 個人訪問客户端
 
 ## 自定義
 
-### 自定義用戶提供程序
+### 自定義用户提供程序
 
-通過監聽 `UserResolveEvent` 實現您自己的用戶解析邏輯。
+通過監聽 `UserResolveEvent` 實現您自己的用户解析邏輯。
 
 ### 自定義作用域管理
 
@@ -335,15 +335,15 @@ class UserResolveListener
 在開發過程中，您可以使用內置命令測試 OAuth2 流程：
 
 ```bash
-# 創建測試客戶端
+# 創建測試客户端
 php bin/hyperf.php oauth2:create-client \
-    --name="測試客戶端" \
+    --name="測試客户端" \
     --redirect-uri="http://localhost:3000/callback" \
     --grant-type="authorization_code" \
     --grant-type="password" \
     --grant-type="refresh_token"
 
-# 列出所有客戶端
+# 列出所有客户端
 php bin/hyperf.php oauth2:list-clients
 
 # 清除過期令牌
@@ -354,12 +354,12 @@ php bin/hyperf.php oauth2:clear-expired-tokens
 
 常見錯誤響應：
 
-- `invalid_client`: 客戶端認證失敗
+- `invalid_client`: 客户端認證失敗
 - `invalid_grant`: 無效的授權許可
 - `invalid_request`: 缺少必需參數
 - `invalid_scope`: 請求的作用域無效
 - `unsupported_grant_type`: 不支持的授權類型
-- `server_error`: 內部伺服器錯誤
+- `server_error`: 內部服務器錯誤
 
 ## 許可證
 

@@ -7,29 +7,29 @@
 - 完整的 OAuth2 伺服器實現，支援：
   - 客戶端憑證授權 (Client Credentials Grant)
   - 密碼授權 (Password Grant)
-  - 刷新令牌授權 (Refresh Token Grant)
+  - 重新整理令牌授權 (Refresh Token Grant)
   - 授權碼授權 (Authorization Code Grant，支援 PKCE)
-- 內置客戶端管理命令
-- 多種存儲後端 (Eloquent ORM)
+- 內建客戶端管理命令
+- 多種儲存後端 (Eloquent ORM)
 - 可自定義的令牌生命週期
 - 作用域管理
 - 事件驅動架構
 
 ## 安裝
 
-### 1. 通過 Composer 安裝
+### 1. 透過 Composer 安裝
 
 ```bash
 composer require friendsofhyperf/oauth2-server
 ```
 
-### 2. 發布配置
+### 2. 釋出配置
 
 ```bash
 php bin/hyperf.php vendor:publish friendsofhyperf/oauth2-server
 ```
 
-### 3. 生成加密密鑰
+### 3. 生成加密金鑰
 
 ```bash
 # 生成私鑰/公鑰對
@@ -40,7 +40,7 @@ php bin/hyperf.php oauth2:generate-keypair
 - `storage/oauth2/private.key` - 用於簽名令牌的私鑰
 - `storage/oauth2/public.key` - 用於驗證令牌的公鑰
 
-### 4. 運行數據庫遷移
+### 4. 執行資料庫遷移
 
 ```bash
 php bin/hyperf.php migrate
@@ -83,12 +83,12 @@ return [
 ];
 ```
 
-## 環境變量
+## 環境變數
 
-在 `.env` 文件中設置以下環境變量：
+在 `.env` 檔案中設定以下環境變數：
 
 ```bash
-# OAuth2 密鑰
+# OAuth2 金鑰
 OAUTH2_PRIVATE_KEY=storage/oauth2/private.key
 OAUTH2_PUBLIC_KEY=storage/oauth2/public.key
 OAUTH2_PRIVATE_KEY_PASSPHRASE=
@@ -102,16 +102,16 @@ OAUTH2_ENCRYPTION_KEY_TYPE=plain
 
 | 命令 | 描述 |
 |---------|-------------|
-| `oauth2:clear-expired-tokens` | 清除過期的訪問/刷新令牌 |
-| `oauth2:create-client` | 創建新的 OAuth2 客戶端 |
+| `oauth2:clear-expired-tokens` | 清除過期的訪問/重新整理令牌 |
+| `oauth2:create-client` | 建立新的 OAuth2 客戶端 |
 | `oauth2:delete-client` | 刪除 OAuth2 客戶端 |
 | `oauth2:generate-keypair` | 生成私鑰/公鑰對 |
 | `oauth2:list-clients` | 列出所有 OAuth2 客戶端 |
 | `oauth2:update-client` | 更新 OAuth2 客戶端 |
 
-### 創建客戶端
+### 建立客戶端
 
-創建授權碼授權的客戶端：
+建立授權碼授權的客戶端：
 
 ```bash
 php bin/hyperf.php oauth2:create-client \
@@ -121,7 +121,7 @@ php bin/hyperf.php oauth2:create-client \
     --grant-type="refresh_token"
 ```
 
-創建密碼授權的客戶端：
+建立密碼授權的客戶端：
 
 ```bash
 php bin/hyperf.php oauth2:create-client \
@@ -130,7 +130,7 @@ php bin/hyperf.php oauth2:create-client \
     --grant-type="refresh_token"
 ```
 
-創建客戶端憑證授權的客戶端：
+建立客戶端憑證授權的客戶端：
 
 ```bash
 php bin/hyperf.php oauth2:create-client \
@@ -144,20 +144,20 @@ php bin/hyperf.php oauth2:create-client \
 
 `GET /oauth/authorize`
 
-用於授權碼授權流程。參數：
+用於授權碼授權流程。引數：
 - `response_type`: 必須是 `code`
 - `client_id`: 客戶端 ID
-- `redirect_uri`: 必須與註冊的回調 URI 匹配
+- `redirect_uri`: 必須與註冊的回撥 URI 匹配
 - `scope`: 空格分隔的作用域列表
 - `state`: CSRF 保護令牌
-- `code_challenge`: PKCE 代碼挑戰
+- `code_challenge`: PKCE 程式碼挑戰
 - `code_challenge_method`: PKCE 方法（通常是 `S256`）
 
 ### 令牌端點
 
 `POST /oauth/token`
 
-用於交換授權碼獲取訪問令牌或使用其他授權類型。
+用於交換授權碼獲取訪問令牌或使用其他授權型別。
 
 ### 受保護資源
 
@@ -172,7 +172,7 @@ Router::addGroup('/api', function () {
 })->add(ResourceServerMiddleware::class);
 ```
 
-## 授權類型
+## 授權型別
 
 ### 1. 客戶端憑證授權
 
@@ -208,9 +208,9 @@ curl -X POST http://your-server/oauth/token \
 
 ### 3. 授權碼授權
 
-用於需要用戶交互的網頁應用：
+用於需要使用者互動的網頁應用：
 
-**步驟1：重定向用戶到授權端點**
+**步驟1：重定向使用者到授權端點**
 
 ```
 https://your-server/oauth/authorize?response_type=code&client_id=your-client-id&redirect_uri=https://myapp.com/callback&scope=read&state=random-state&code_challenge=challenge&code_challenge_method=S256
@@ -231,7 +231,7 @@ curl -X POST http://your-server/oauth/token \
     }'
 ```
 
-### 4. 刷新令牌授權
+### 4. 重新整理令牌授權
 
 獲取新的訪問令牌：
 
@@ -258,10 +258,10 @@ curl -X GET http://your-server/api/user \
 
 ## 事件系統
 
-組件會分發以下事件，您可以監聽：
+元件會分發以下事件，您可以監聽：
 
-- `AuthorizationRequestResolveEvent`: 當授權請求需要用戶批准時
-- `UserResolveEvent`: 當為密碼授權解析用戶時
+- `AuthorizationRequestResolveEvent`: 當授權請求需要使用者批准時
+- `UserResolveEvent`: 當為密碼授權解析使用者時
 - `ScopeResolveEvent`: 當解析作用域時
 - `TokenRequestResolveEvent`: 當處理令牌請求時
 
@@ -287,7 +287,7 @@ class UserResolveListener
 
     public function process(object $event): void
     {
-        // 驗證用戶憑據並返回用戶ID
+        // 驗證使用者憑據並返回使用者ID
         if ($event->getUsername() === 'admin' && $event->getPassword() === 'secret') {
             $event->setUserId('1');
         }
@@ -295,47 +295,47 @@ class UserResolveListener
 }
 ```
 
-## 數據庫表
+## 資料庫表
 
-該包創建以下表：
+該包建立以下表：
 
 - `oauth_clients`: OAuth2 客戶端
 - `oauth_access_tokens`: 訪問令牌
-- `oauth_refresh_tokens`: 刷新令牌
+- `oauth_refresh_tokens`: 重新整理令牌
 - `oauth_auth_codes`: 授權碼
 - `oauth_personal_access_clients`: 個人訪問客戶端
 
 ## 自定義
 
-### 自定義用戶提供程序
+### 自定義使用者提供程式
 
-通過監聽 `UserResolveEvent` 實現您自己的用戶解析邏輯。
+透過監聽 `UserResolveEvent` 實現您自己的使用者解析邏輯。
 
 ### 自定義作用域管理
 
 監聽 `ScopeResolveEvent` 以實現自定義作用域邏輯。
 
-### 自定義令牌存儲
+### 自定義令牌儲存
 
-擴展存儲庫類以實現自定義存儲後端。
+擴充套件儲存庫類以實現自定義儲存後端。
 
 ## 安全最佳實踐
 
 1. 在生產環境中始終使用 HTTPS
-2. 使用適當的文件權限安全存儲私鑰
-3. 使用強加密密鑰
+2. 使用適當的檔案許可權安全儲存私鑰
+3. 使用強加密金鑰
 4. 為授權流程實施適當的 CSRF 保護
-5. 嚴格驗證回調 URI
-6. 使用短生命週期的訪問令牌和刷新令牌
+5. 嚴格驗證回撥 URI
+6. 使用短生命週期的訪問令牌和重新整理令牌
 7. 在令牌端點上實施速率限制
 8. 記錄和監控令牌使用情況
 
 ## 測試
 
-在開發過程中，您可以使用內置命令測試 OAuth2 流程：
+在開發過程中，您可以使用內建命令測試 OAuth2 流程：
 
 ```bash
-# 創建測試客戶端
+# 建立測試客戶端
 php bin/hyperf.php oauth2:create-client \
     --name="測試客戶端" \
     --redirect-uri="http://localhost:3000/callback" \
@@ -356,9 +356,9 @@ php bin/hyperf.php oauth2:clear-expired-tokens
 
 - `invalid_client`: 客戶端認證失敗
 - `invalid_grant`: 無效的授權許可
-- `invalid_request`: 缺少必需參數
+- `invalid_request`: 缺少必需引數
 - `invalid_scope`: 請求的作用域無效
-- `unsupported_grant_type`: 不支持的授權類型
+- `unsupported_grant_type`: 不支援的授權型別
 - `server_error`: 內部伺服器錯誤
 
 ## 許可證

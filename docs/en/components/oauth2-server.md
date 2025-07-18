@@ -1,6 +1,6 @@
 # OAuth2 Server
 
-A complete OAuth2 server implementation for Hyperf framework, based on [league/oauth2-server](https://oauth2.thephpleague.com/).
+A complete OAuth2 server implementation for the Hyperf framework based on [league/oauth2-server](https://oauth2.thephpleague.com/).
 
 ## Features
 
@@ -9,7 +9,7 @@ A complete OAuth2 server implementation for Hyperf framework, based on [league/o
   - Password Grant
   - Refresh Token Grant
   - Authorization Code Grant (with PKCE support)
-- Built-in commands for client management
+- Built-in client management commands
 - Multiple storage backends (Eloquent ORM)
 - Customizable token lifetimes
 - Scope management
@@ -40,7 +40,7 @@ This will generate:
 - `storage/oauth2/private.key` - Private key for signing tokens
 - `storage/oauth2/public.key` - Public key for verifying tokens
 
-### 4. Run Migrations
+### 4. Run Database Migrations
 
 ```bash
 php bin/hyperf.php migrate
@@ -48,7 +48,7 @@ php bin/hyperf.php migrate
 
 ## Configuration
 
-Configure your OAuth2 server in `config/autoload/oauth2-server.php`:
+Configure the OAuth2 server in `config/autoload/oauth2-server.php`:
 
 ```php
 <?php
@@ -102,16 +102,16 @@ OAUTH2_ENCRYPTION_KEY_TYPE=plain
 
 | Command | Description |
 |---------|-------------|
-| `oauth2:clear-expired-tokens` | Remove expired access/refresh tokens |
-| `oauth2:create-client` | Create a new OAuth2 client |
-| `oauth2:delete-client` | Delete an OAuth2 client |
+| `oauth2:clear-expired-tokens` | Clear expired access/refresh tokens |
+| `oauth2:create-client` | Create new OAuth2 client |
+| `oauth2:delete-client` | Delete OAuth2 client |
 | `oauth2:generate-keypair` | Generate private/public key pair |
 | `oauth2:list-clients` | List all OAuth2 clients |
-| `oauth2:update-client` | Update an OAuth2 client |
+| `oauth2:update-client` | Update OAuth2 client |
 
-### Creating Clients
+### Create Client
 
-Create a client for Authorization Code Grant:
+Create client for authorization code grant:
 
 ```bash
 php bin/hyperf.php oauth2:create-client \
@@ -121,7 +121,7 @@ php bin/hyperf.php oauth2:create-client \
     --grant-type="refresh_token"
 ```
 
-Create a client for Password Grant:
+Create client for password grant:
 
 ```bash
 php bin/hyperf.php oauth2:create-client \
@@ -130,7 +130,7 @@ php bin/hyperf.php oauth2:create-client \
     --grant-type="refresh_token"
 ```
 
-Create a client for Client Credentials Grant:
+Create client for client credentials grant:
 
 ```bash
 php bin/hyperf.php oauth2:create-client \
@@ -144,11 +144,11 @@ php bin/hyperf.php oauth2:create-client \
 
 `GET /oauth/authorize`
 
-Used for Authorization Code Grant flow. Parameters:
+For authorization code flow. Parameters:
 - `response_type`: Must be `code`
-- `client_id`: Your client ID
-- `redirect_uri`: Must match registered redirect URI
-- `scope`: Space-separated list of scopes
+- `client_id`: Client ID
+- `redirect_uri`: Must match registered callback URI
+- `scope`: Space-separated scope list
 - `state`: CSRF protection token
 - `code_challenge`: PKCE code challenge
 - `code_challenge_method`: PKCE method (usually `S256`)
@@ -157,14 +157,14 @@ Used for Authorization Code Grant flow. Parameters:
 
 `POST /oauth/token`
 
-Used to exchange authorization code for access token or use other grant types.
+For exchanging authorization codes for access tokens or using other grant types.
 
 ### Protected Resources
 
-Use `ResourceServerMiddleware` to protect your routes:
+Protect routes with `ResourceServerMiddleware`:
 
 ```php
-use FriendsOfHyperf/oauth2/server/Middleware//ResourceServerMiddleware;
+use FriendsOfHyperf\Oauth2\Server\Middleware\ResourceServerMiddleware;
 
 Router::addGroup('/api', function () {
     Router::get('user', [UserController::class, 'index']);
@@ -208,7 +208,7 @@ curl -X POST http://your-server/oauth/token \
 
 ### 3. Authorization Code Grant
 
-For web applications with user interaction:
+For web applications requiring user interaction:
 
 **Step 1: Redirect user to authorization endpoint**
 
@@ -216,7 +216,7 @@ For web applications with user interaction:
 https://your-server/oauth/authorize?response_type=code&client_id=your-client-id&redirect_uri=https://myapp.com/callback&scope=read&state=random-state&code_challenge=challenge&code_challenge_method=S256
 ```
 
-**Step 2: Exchange code for token**
+**Step 2: Exchange authorization code for token**
 
 ```bash
 curl -X POST http://your-server/oauth/token \
@@ -233,7 +233,7 @@ curl -X POST http://your-server/oauth/token \
 
 ### 4. Refresh Token Grant
 
-To get new access tokens:
+Obtain new access token:
 
 ```bash
 curl -X POST http://your-server/oauth/token \
@@ -249,16 +249,16 @@ curl -X POST http://your-server/oauth/token \
 
 ## Making Authenticated Requests
 
-Include the access token in the Authorization header:
+Include access token in Authorization header:
 
 ```bash
 curl -X GET http://your-server/api/user \
     -H "Authorization: Bearer your-access-token"
 ```
 
-## Events
+## Event System
 
-The component dispatches several events you can listen to:
+The component dispatches these events you can listen for:
 
 - `AuthorizationRequestResolveEvent`: When authorization request needs user approval
 - `UserResolveEvent`: When resolving user for password grant
@@ -297,7 +297,7 @@ class UserResolveListener
 
 ## Database Tables
 
-The package creates the following tables:
+The package creates these tables:
 
 - `oauth_clients`: OAuth2 clients
 - `oauth_access_tokens`: Access tokens
@@ -317,25 +317,25 @@ Listen to `ScopeResolveEvent` to implement custom scope logic.
 
 ### Custom Token Storage
 
-Extend the repository classes to implement custom storage backends.
+Extend repository classes to implement custom storage backends.
 
 ## Security Best Practices
 
 1. Always use HTTPS in production
 2. Store private keys securely with proper file permissions
 3. Use strong encryption keys
-4. Implement proper CSRF protection for authorization flows
-5. Validate redirect URIs strictly
-6. Use short-lived access tokens and refresh tokens
-7. Implement rate limiting on token endpoints
+4. Implement proper CSRF protection for authorization flow
+5. Strictly validate callback URIs
+6. Use short-lived access tokens with refresh tokens
+7. Implement rate limiting on token endpoint
 8. Log and monitor token usage
 
 ## Testing
 
-During development, you can test the OAuth2 flow with the built-in commands:
+During development, you can test OAuth2 flows using built-in commands:
 
 ```bash
-# Create a test client
+# Create test client
 php bin/hyperf.php oauth2:create-client \
     --name="Test Client" \
     --redirect-uri="http://localhost:3000/callback" \
@@ -355,10 +355,10 @@ php bin/hyperf.php oauth2:clear-expired-tokens
 Common error responses:
 
 - `invalid_client`: Client authentication failed
-- `invalid_grant`: Invalid authorization grant
+- `invalid_grant`: Invalid grant
 - `invalid_request`: Missing required parameters
 - `invalid_scope`: Requested scope is invalid
-- `unsupported_grant_type`: Grant type not supported
+- `unsupported_grant_type`: Unsupported grant type
 - `server_error`: Internal server error
 
 ## License
