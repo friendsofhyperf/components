@@ -71,7 +71,7 @@ class ConfigProvider
                 DeleteClientCommand::class,
                 GenerateKeyPairCommand::class,
                 ListClientsCommand::class,
-                UpdateClientCommand::class
+                UpdateClientCommand::class,
             ],
             'dependencies' => [
                 // models
