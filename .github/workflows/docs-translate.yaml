@@ -6,6 +6,9 @@ on:
       - 'docs/**'
     branches-ignore:
       - "main"
+      - "2.0"
+      - "3.0"
+      - "3.2"
 
 jobs:
   translate:
