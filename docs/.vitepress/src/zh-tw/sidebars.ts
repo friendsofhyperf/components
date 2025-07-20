@@ -155,7 +155,7 @@ const sidebar:DefaultTheme.Sidebar = {
                     link: '/zh-tw/components/notification-mail.md'
                 },
                 {
-                    text: 'OAuth2 伺服器',
+                    text: 'OAuth2 Server',
                     link: '/zh-tw/components/oauth2-server.md'
                 },
                 {
