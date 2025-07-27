@@ -20,16 +20,16 @@ return [
     // When left empty or `null` the environment will be used (usually discovered from `APP_ENV` in your `.env`)
     'environment' => env('APP_ENV', 'production'),
 
-    // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#sample-rate
+    // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#sample_rate
     'sample_rate' => env('SENTRY_SAMPLE_RATE') === null ? 1.0 : (float) env('SENTRY_SAMPLE_RATE'),
 
     // Switch tracing on/off
     'enable_tracing' => env('SENTRY_ENABLE_TRACING', true),
 
-    // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#traces-sample-rate
+    // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#traces_sample_rate
     'traces_sample_rate' => env('SENTRY_TRACES_SAMPLE_RATE') === null ? 1.0 : (float) env('SENTRY_TRACES_SAMPLE_RATE'),
 
-    // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#traces-sampler
+    // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#traces_sampler
     // 'traces_sampler' => function (Sentry\Tracing\SamplingContext $context): float {
     //     if (str_contains($context->getTransactionContext()->getDescription(), '/health')) {
     //         return 0;
@@ -37,13 +37,13 @@ return [
     //     return env('SENTRY_TRACES_SAMPLE_RATE') === null ? 1.0 : (float) env('SENTRY_TRACES_SAMPLE_RATE');
     // },
 
-    // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#profiles-sample-rate
+    // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#profiles_sample_rate
     'profiles_sample_rate' => env('SENTRY_PROFILES_SAMPLE_RATE') === null ? null : (float) env('SENTRY_PROFILES_SAMPLE_RATE'),
 
-    // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#enable-logs
+    // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#enable_logs
     'enable_logs' => env('SENTRY_ENABLE_LOGS', false),
 
-    // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#send-default-pii
+    // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#send_default_pii
     'send_default_pii' => env('SENTRY_SEND_DEFAULT_PII', false),
 
     // Must instanceof Psr\Log\LoggerInterface
