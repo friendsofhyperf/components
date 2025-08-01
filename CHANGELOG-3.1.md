@@ -1,5 +1,21 @@
 # Changelog
 
+## v3.1.65 - 2025-08-01
+
+### What's Changed
+
+* Add doesntEndWith and doesntStartWith macros to Str and Stringable by @huangdijia in https://github.com/friendsofhyperf/components/pull/874
+* fix the error "Class "FriendsOfHyperf\Support\RedisCommand" not found " by @rookiexxk in https://github.com/friendsofhyperf/components/pull/876
+* Add initial implementation of OAuth2 server components by @zds-s in https://github.com/friendsofhyperf/components/pull/875
+* Add comprehensive OAuth2 server documentation by @huangdijia in https://github.com/friendsofhyperf/components/pull/877
+* Fix Sentry documentation URL anchors in configuration by @huangdijia in https://github.com/friendsofhyperf/components/pull/878
+
+### New Contributors
+
+* @rookiexxk made their first contribution in https://github.com/friendsofhyperf/components/pull/876
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.64...v3.1.65
+
 ## v3.1.64 - 2025-06-20
 
 ### What's Changed
