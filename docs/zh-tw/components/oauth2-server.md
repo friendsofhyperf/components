@@ -9,11 +9,16 @@
   - 密碼授權 (Password Grant)
   - 重新整理令牌授權 (Refresh Token Grant)
   - 授權碼授權 (Authorization Code Grant，支援 PKCE)
+  - 裝置碼授權 (Device Code Grant)
+  - 隱式授權 (Implicit Grant)
 - 內建客戶端管理命令
 - 多種儲存後端 (Eloquent ORM)
 - 可自定義的令牌生命週期
 - 作用域管理
 - 事件驅動架構
+- 工廠模式實現
+- 型別安全的值物件和列舉
+- 完整的錯誤處理和日誌記錄
 
 ## 安裝
 
@@ -174,7 +179,7 @@ Router::addGroup('/api', function () {
 
 ## 授權型別
 
-### 1. 客戶端憑證授權
+### 1. 客戶端憑證授權 (Client Credentials Grant)
 
 用於伺服器到伺服器認證：
 
@@ -189,7 +194,12 @@ curl -X POST http://your-server/oauth/token \
     }'
 ```
 
-### 2. 密碼授權
+**適用場景：**
+- 微服務間通訊
+- API 金鑰認證
+- 系統整合
+
+### 2. 密碼授權 (Password Grant)
 
 用於可信應用（移動應用、SPA）：
 
@@ -206,7 +216,14 @@ curl -X POST http://your-server/oauth/token \
     }'
 ```
 
-### 3. 授權碼授權
+**適用場景：**
+- 移動應用
+- 單頁應用 (SPA)
+- 可信的第三方應用
+
+**注意：** 此授權方式需要高度信任客戶端，謹慎使用。
+
+### 3. 授權碼授權 (Authorization Code Grant)
 
 用於需要使用者互動的網頁應用：
 
@@ -231,7 +248,17 @@ curl -X POST http://your-server/oauth/token \
     }'
 ```
 
-### 4. 重新整理令牌授權
+**PKCE 支援：**
+- `code_challenge`: 生成的程式碼挑戰
+- `code_challenge_method`: S256 或 plain
+- `code_verifier`: 用於驗證的原始程式碼
+
+**適用場景：**
+- 網頁應用
+- 需要使用者授權的應用
+- 安全要求高的場景
+
+### 4. 重新整理令牌授權 (Refresh Token Grant)
 
 獲取新的訪問令牌：
 
@@ -247,6 +274,138 @@ curl -X POST http://your-server/oauth/token \
     }'
 ```
 
+**適用場景：**
+- 延長使用者會話
+- 避免頻繁重新登入
+- 移動應用後臺服務
+
+### 5. 裝置碼授權 (Device Code Grant)
+
+用於無輸入裝置（如智慧電視、IoT裝置）：
+
+**步驟1：請求裝置碼**
+
+```bash
+curl -X POST http://your-server/oauth/token \
+    -H "Content-Type: application/json" \
+    -d '{
+        "grant_type": "device_code",
+        "client_id": "your-client-id",
+        "scope": "read"
+    }'
+```
+
+**步驟2：使用者在其他裝置上授權**
+
+使用者需要在手機或電腦上訪問顯示的授權URL完成授權。
+
+**步驟3：輪詢令牌**
+
+```bash
+curl -X POST http://your-server/oauth/token \
+    -H "Content-Type: application/json" \
+    -d '{
+        "grant_type": "device_code",
+        "client_id": "your-client-id",
+        "device_code": "device-code-from-step1"
+    }'
+```
+
+**適用場景：**
+- 智慧電視應用
+- IoT 裝置
+- 無輸入裝置的應用
+
+### 6. 隱式授權 (Implicit Grant)
+
+已不推薦使用，但在某些舊系統中仍可能遇到：
+
+```
+https://your-server/oauth/authorize?response_type=token&client_id=your-client-id&redirect_uri=https://myapp.com/callback&scope=read&state=random-state
+```
+
+**注意：** 此授權方式已被 OAuth 2.1 棄用，建議使用授權碼授權 + PKCE。
+
+## 工廠模式實現
+
+元件使用工廠模式建立伺服器例項，提供了更好的靈活性和可測試性：
+
+### 授權伺服器工廠
+
+```php
+use FriendsOfHyperf\Oauth2\Server\Factory\AuthorizationServerFactory;
+use Hyperf\Di\Annotation\Inject;
+
+class YourController
+{
+    #[Inject]
+    private AuthorizationServerFactory $authorizationServerFactory;
+
+    public function handleAuthorization()
+    {
+        // 構建授權伺服器
+        $authorizationServer = $this->authorizationServerFactory->build();
+        
+        // 使用授權伺服器處理請求
+        // ...
+    }
+}
+```
+
+### 資源伺服器工廠
+
+```php
+use FriendsOfHyperf\Oauth2\Server\Factory\ResourceServerFactory;
+use Hyperf\Di\Annotation\Inject;
+
+class YourController
+{
+    #[Inject]
+    private ResourceServerFactory $resourceServerFactory;
+
+    public function getProtectedData()
+    {
+        // 構建資源伺服器
+        $resourceServer = $this->resourceServerFactory->build();
+        
+        // 驗證訪問令牌
+        $accessToken = $resourceServer->validateAuthenticatedRequest($request);
+        
+        // 獲取令牌資訊
+        $tokenId = $accessToken->getAttribute('oauth_access_token_id');
+        $userId = $accessToken->getAttribute('oauth_user_id');
+        
+        // 返回受保護的資料
+        return ['user_id' => $userId];
+    }
+}
+```
+
+### 配置工廠
+
+```php
+use FriendsOfHyperf\Oauth2\Server\Factory\ConfigFactory;
+use Hyperf\Di\Annotation\Inject;
+
+class YourController
+{
+    #[Inject]
+    private ConfigFactory $configFactory;
+
+    public function getConfig()
+    {
+        // 獲取 OAuth2 配置
+        $config = $this->configFactory->create();
+        
+        // 訪問配置項
+        $accessTokenTtl = $config->get('authorization_server.access_token_ttl');
+        $encryptionKey = $config->get('authorization_server.encryption_key');
+        
+        return $config;
+    }
+}
+```
+
 ## 發起認證請求
 
 在 Authorization 頭中包含訪問令牌：
@@ -258,14 +417,21 @@ curl -X GET http://your-server/api/user \
 
 ## 事件系統
 
-元件會分發以下事件，您可以監聽：
+元件提供了完整的事件系統，允許您自定義 OAuth2 流程的各個方面：
 
-- `AuthorizationRequestResolveEvent`: 當授權請求需要使用者批准時
-- `UserResolveEvent`: 當為密碼授權解析使用者時
-- `ScopeResolveEvent`: 當解析作用域時
-- `TokenRequestResolveEvent`: 當處理令牌請求時
+### 可用事件
+
+| 事件類 | 描述 | 使用場景 |
+|--------|------|----------|
+| `AuthorizationRequestResolveEvent` | 當授權請求需要使用者批准時觸發 | 實現自定義授權邏輯、顯示授權頁面 |
+| `UserResolveEvent` | 當為密碼授權解析使用者時觸發 | 實現自定義使用者認證邏輯 |
+| `ScopeResolveEvent` | 當解析作用域時觸發 | 實現自定義作用域驗證和過濾 |
+| `TokenRequestResolveEvent` | 當處理令牌請求時觸發 | 記錄令牌發放、新增自定義響應頭 |
+| `PreSaveClientEvent` | 在儲存客戶端之前觸發 | 驗證客戶端資料、新增預設值 |
 
 ### 事件監聽器示例
+
+#### 1. 自定義使用者認證
 
 ```php
 <?php
@@ -273,11 +439,17 @@ curl -X GET http://your-server/api/user \
 namespace App\Listener;
 
 use FriendsOfHyperf\Oauth2\Server\Event\UserResolveEvent;
+use FriendsOfHyperf\Oauth2\Server\Model\UserInterface;
 use Hyperf\Event\Annotation\Listener;
+use Hyperf\Di\Annotation\Inject;
+use App\Service\UserService;
 
 #[Listener]
 class UserResolveListener
 {
+    #[Inject]
+    private UserService $userService;
+
     public function listen(): array
     {
         return [
@@ -287,9 +459,171 @@ class UserResolveListener
 
     public function process(object $event): void
     {
-        // 驗證使用者憑據並返回使用者ID
-        if ($event->getUsername() === 'admin' && $event->getPassword() === 'secret') {
-            $event->setUserId('1');
+        if (!$event instanceof UserResolveEvent) {
+            return;
+        }
+
+        // 驗證使用者憑據
+        $user = $this->userService->authenticate($event->getUsername(), $event->getPassword());
+        
+        if ($user) {
+            // 設定使用者實體
+            $userEntity = new UserInterface();
+            $userEntity->setIdentifier($user->id);
+            $event->setUser($userEntity);
+        }
+    }
+}
+```
+
+#### 2. 自定義授權處理
+
+```php
+<?php
+
+namespace App\Listener;
+
+use FriendsOfHyperf\Oauth2\Server\Event\AuthorizationRequestResolveEvent;
+use FriendsOfHyperf\Oauth2\Server\Model\ClientInterface;
+use Hyperf\Event\Annotation\Listener;
+use Hyperf\HttpServer\Contract\ResponseInterface;
+
+#[Listener]
+class AuthorizationRequestResolveListener
+{
+    public function listen(): array
+    {
+        return [
+            AuthorizationRequestResolveEvent::class,
+        ];
+    }
+
+    public function process(object $event): void
+    {
+        if (!$event instanceof AuthorizationRequestResolveEvent) {
+            return;
+        }
+
+        // 檢查客戶端是否被允許訪問請求的作用域
+        if (!$this->isScopeAllowed($event->getClient(), $event->getScopes())) {
+            // 返回自定義錯誤響應
+            $response = $this->createErrorResponse('invalid_scope', 'Requested scope is not allowed');
+            $event->setResponse($response);
+            return;
+        }
+
+        // 自動批准可信客戶端的請求
+        if ($this->isTrustedClient($event->getClient())) {
+            $event->resolveAuthorization(AuthorizationRequestResolveEvent::AUTHORIZATION_APPROVED);
+        }
+    }
+
+    private function isScopeAllowed(ClientInterface $client, array $scopes): bool
+    {
+        // 實現作用域驗證邏輯
+        return true;
+    }
+
+    private function isTrustedClient(ClientInterface $client): bool
+    {
+        // 實現可信客戶端檢查邏輯
+        return $client->getName() === 'Trusted App';
+    }
+}
+```
+
+#### 3. 自定義作用域解析
+
+```php
+<?php
+
+namespace App\Listener;
+
+use FriendsOfHyperf\Oauth2\Server\Event\ScopeResolveEvent;
+use FriendsOfHyperf\Oauth2\Server\ValueObject\Scope;
+use Hyperf\Event\Annotation\Listener;
+
+#[Listener]
+class ScopeResolveListener
+{
+    public function listen(): array
+    {
+        return [
+            ScopeResolveEvent::class,
+        ];
+    }
+
+    public function process(object $event): void
+    {
+        if (!$event instanceof ScopeResolveEvent) {
+            return;
+        }
+
+        // 根據使用者角色動態調整作用域
+        $userScopes = $this->getUserScopes($event->getUserId());
+        $filteredScopes = [];
+
+        foreach ($event->getRequestedScopes() as $scope) {
+            if (in_array((string) $scope, $userScopes)) {
+                $filteredScopes[] = $scope;
+            }
+        }
+
+        $event->setResolvedScopes($filteredScopes);
+    }
+
+    private function getUserScopes(string $userId): array
+    {
+        // 實現使用者作用域獲取邏輯
+        return ['read', 'write'];
+    }
+}
+```
+
+#### 4. 令牌請求記錄
+
+```php
+<?php
+
+namespace App\Listener;
+
+use FriendsOfHyperf\Oauth2\Server\Event\TokenRequestResolveEvent;
+use Hyperf\Event\Annotation\Listener;
+use Hyperf\Di\Annotation\Inject;
+use App\Service\AuditService;
+
+#[Listener]
+class TokenRequestResolveListener
+{
+    #[Inject]
+    private AuditService $auditService;
+
+    public function listen(): array
+    {
+        return [
+            TokenRequestResolveEvent::class,
+        ];
+    }
+
+    public function process(object $event): void
+    {
+        if (!$event instanceof TokenRequestResolveEvent) {
+            return;
+        }
+
+        // 記錄令牌發放
+        $response = $event->getResponse();
+        $responseData = json_decode((string) $response->getBody(), true);
+        
+        if (isset($responseData['access_token'])) {
+            $this->auditService->logTokenIssued([
+                'access_token' => $responseData['access_token'],
+                'token_type' => $responseData['token_type'] ?? 'Bearer',
+                'expires_in' => $responseData['expires_in'] ?? null,
+                'scope' => $responseData['scope'] ?? null,
+                'client_id' => $responseData['client_id'] ?? null,
+                'user_id' => $responseData['user_id'] ?? null,
+            ]);
         }
     }
 }
@@ -318,6 +652,213 @@ class UserResolveListener
 ### 自定義令牌儲存
 
 擴充套件儲存庫類以實現自定義儲存後端。
+
+### 自定義客戶端驗證
+
+透過監聽 `PreSaveClientEvent` 實現客戶端資料驗證和預設值設定：
+
+```php
+<?php
+
+namespace App\Listener;
+
+use FriendsOfHyperf\Oauth2\Server\Event\PreSaveClientEvent;
+use FriendsOfHyperf\Oauth2\Server\ValueObject\Grant;
+use FriendsOfHyperf\Oauth2\Server\ValueObject\RedirectUri;
+use FriendsOfHyperf\Oauth2\Server\ValueObject\Scope;
+use Hyperf\Event\Annotation\Listener;
+
+#[Listener]
+class PreSaveClientListener
+{
+    public function listen(): array
+    {
+        return [
+            PreSaveClientEvent::class,
+        ];
+    }
+
+    public function process(object $event): void
+    {
+        if (!$event instanceof PreSaveClientEvent) {
+            return;
+        }
+
+        $client = $event->getClient();
+        
+        // 設定預設作用域
+        if (empty($client->getScopes())) {
+            $client->setScopes(new Scope('read'));
+        }
+        
+        // 驗證重定向URI
+        foreach ($client->getRedirectUris() as $uri) {
+            if (!$this->isValidRedirectUri($uri)) {
+                throw new \InvalidArgumentException('Invalid redirect URI');
+            }
+        }
+        
+        // 設定預設授權型別
+        if (empty($client->getGrants())) {
+            $client->setGrants(new Grant('client_credentials'));
+        }
+    }
+
+    private function isValidRedirectUri(RedirectUri $uri): bool
+    {
+        // 實現URI驗證邏輯
+        return str_starts_with((string) $uri, 'https://');
+    }
+}
+```
+
+### 自定義錯誤處理
+
+```php
+<?php
+
+namespace App\Listener;
+
+use FriendsOfHyperf\Oauth2\Server\Event\TokenRequestResolveEvent;
+use League\OAuth2\Server\Exception\OAuthServerException;
+use Hyperf\Event\Annotation\Listener;
+use Hyperf\HttpMessage\Stream\SwooleStream;
+
+#[Listener]
+class CustomErrorHandler
+{
+    public function listen(): array
+    {
+        return [
+            TokenRequestResolveEvent::class,
+        ];
+    }
+
+    public function process(object $event): void
+    {
+        if (!$event instanceof TokenRequestResolveEvent) {
+            return;
+        }
+
+        $response = $event->getResponse();
+        $statusCode = $response->getStatusCode();
+        
+        // 自定義錯誤響應格式
+        if ($statusCode >= 400) {
+            $body = json_decode((string) $response->getBody(), true);
+            
+            $customError = [
+                'error' => $body['error'] ?? 'server_error',
+                'error_description' => $body['error_description'] ?? 'An error occurred',
+                'error_code' => $this->getErrorCode($body['error'] ?? 'server_error'),
+                'timestamp' => time(),
+                'request_id' => $this->generateRequestId(),
+            ];
+            
+            $newResponse = $response->withBody(new SwooleStream(json_encode($customError)));
+            $event->setResponse($newResponse);
+        }
+    }
+
+    private function getErrorCode(string $error): string
+    {
+        // 實現錯誤程式碼對映
+        return match($error) {
+            'invalid_client' => 'AUTH_001',
+            'invalid_grant' => 'AUTH_002',
+            'invalid_scope' => 'AUTH_003',
+            default => 'AUTH_999',
+        };
+    }
+
+    private function generateRequestId(): string
+    {
+        // 生成請求ID
+        return uniqid('oauth_', true);
+    }
+}
+```
+
+### 自定義令牌響應
+
+```php
+<?php
+
+namespace App\Listener;
+
+use FriendsOfHyperf\Oauth2\Server\Event\TokenRequestResolveEvent;
+use Hyperf\Event\Annotation\Listener;
+use Hyperf\HttpMessage\Stream\SwooleStream;
+
+#[Listener]
+class CustomTokenResponseListener
+{
+    public function listen(): array
+    {
+        return [
+            TokenRequestResolveEvent::class,
+        ];
+    }
+
+    public function process(object $event): void
+    {
+        if (!$event instanceof TokenRequestResolveEvent) {
+            return;
+        }
+
+        $response = $event->getResponse();
+        $body = json_decode((string) $response->getBody(), true);
+        
+        if (isset($body['access_token'])) {
+            // 新增自定義欄位
+            $customResponse = array_merge($body, [
+                'token_type' => 'Bearer',
+                'expires_in' => $body['expires_in'] ?? 3600,
+                'issued_at' => time(),
+                'user_info' => $this->getUserInfo($body),
+                'permissions' => $this->getPermissions($body['scope'] ?? ''),
+            ]);
+            
+            $newResponse = $response->withBody(new SwooleStream(json_encode($customResponse)));
+            $event->setResponse($newResponse);
+        }
+    }
+
+    private function getUserInfo(array $tokenData): array
+    {
+        // 獲取使用者資訊
+        return [
+            'id' => $tokenData['user_id'] ?? null,
+            'name' => 'John Doe',
+            'email' => 'john@example.com',
+        ];
+    }
+
+    private function getPermissions(string $scope): array
+    {
+        // 根據作用域獲取許可權
+        $permissions = [];
+        $scopes = explode(' ', $scope);
+        
+        foreach ($scopes as $scope) {
+            $permissions = array_merge($permissions, $this->scopeToPermissions($scope));
+        }
+        
+        return array_unique($permissions);
+    }
+
+    private function scopeToPermissions(string $scope): array
+    {
+        // 作用域到許可權的對映
+        return match($scope) {
+            'read' => ['user:read', 'post:read'],
+            'write' => ['user:write', 'post:write'],
+            'admin' => ['*'],
+            default => [],
+        };
+    }
+}
+```
 
 ## 安全最佳實踐
 
