@@ -84,7 +84,11 @@ class TriggerSubscriber extends AbstractSubscriber
                         }
 
                         try {
-                            $this->concurrent->create($closure);
+                            if (is_callable($closure)) {
+                                $this->concurrent->create($closure);
+                            } else {
+                                $this->consumer->logger?->warning('[{connection}] Received non-callable from channel', $context);
+                            }
                         } catch (Throwable $e) {
                             $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
                             break;
