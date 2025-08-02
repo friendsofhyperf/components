@@ -97,9 +97,7 @@ class ConfigProvider
                 UserRepositoryInterface::class => UserRepository::class,
                 DeviceCodeRepositoryInterface::class => DeviceCodeRepository::class,
                 // factroy
-                ConfigInterface::class => ConfigFactory::class,
-                AuthorizationServer::class => AuthorizationServerFactory::class,
-                ResourceServer::class => ResourceServerFactory::class,
+                ConfigInterface::class => ConfigFactory::class
             ],
             'publish' => [
                 [

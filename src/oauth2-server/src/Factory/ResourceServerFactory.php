@@ -26,7 +26,7 @@ class ResourceServerFactory
     ) {
     }
 
-    public function __invoke(): ResourceServer
+    public function build(): ResourceServer
     {
         $publicKey = $this->config->get('resource_server.public_key');
         $bearerTokenValidator = $this->container->make(

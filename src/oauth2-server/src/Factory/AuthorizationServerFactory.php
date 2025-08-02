@@ -41,7 +41,7 @@ class AuthorizationServerFactory
     ) {
     }
 
-    public function __invoke(): AuthorizationServer
+    public function build(): AuthorizationServer
     {
         $privateKey = $this->config->get('authorization_server.private_key');
         $privateKeyPassphrase = $this->config->get('authorization_server.private_key_passphrase');
