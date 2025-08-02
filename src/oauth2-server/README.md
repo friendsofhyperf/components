@@ -141,6 +141,8 @@ return [
 `POST /oauth/token`
 
 ### Protected Resource
+
+#### Using Middleware
 Use `ResourceServerMiddleware` to protect your routes:
 
 ```php
@@ -149,7 +151,71 @@ Router::addGroup('/api', function () {
 });
 ```
 
+#### Using ResourceServer Directly
+If you need to use the ResourceServer directly in your code:
+
+```php
+<?php
+
+use FriendsOfHyperf\Oauth2\Server\Factory\ResourceServerFactory;
+use FriendsOfHyperf\Oauth2\Server\Model\AccessToken;
+use Hyperf\Di\Annotation\Inject;
+use Psr\Http\Message\ServerRequestInterface;
+
+class YourController
+{
+    #[Inject]
+    private ResourceServerFactory $resourceServerFactory;
+
+    public function getUserData(ServerRequestInterface $request)
+    {
+        // Build the resource server
+        $resourceServer = $this->resourceServerFactory->build();
+        
+        // Validate the access token
+        $accessToken = $resourceServer->validateAuthenticatedRequest($request);
+        
+        // Get the token ID
+        $tokenId = $accessToken->getAttribute('oauth_access_token_id');
+        
+        // You can now use the token ID to fetch more information from your database
+        // $accessTokenModel = AccessToken::find($tokenId);
+        
+        // Return protected data
+        return ['user_id' => $accessToken->getAttribute('oauth_user_id')];
+    }
+}
+```
+
 ## Usage Example
+
+### In Your Code
+
+Instead of directly injecting the OAuth2 server, you now need to use the factory to build it:
+
+```php
+<?php
+
+use FriendsOfHyperf\Oauth2\Server\Factory\AuthorizationServerFactory;
+use Hyperf\Di\Annotation\Inject;
+
+class YourController
+{
+    #[Inject]
+    private AuthorizationServerFactory $authorizationServerFactory;
+
+    public function handleTokenRequest()
+    {
+        // Build the authorization server
+        $authorizationServer = $this->authorizationServerFactory->build();
+        
+        // Use the authorization server for token validation, etc.
+        // ...
+    }
+}
+```
+
+### Client Management
 
 1. Create a client:
 

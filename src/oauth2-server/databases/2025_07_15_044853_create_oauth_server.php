@@ -59,6 +59,24 @@ return new class extends Migration {
             $table->datetimes();
             $table->dateTime('expires_at')->nullable()->default(null);
         });
+        Schema::create('oauth_device_grant', function (Blueprint $table) {
+            $table->string('device_code', 100)->primary();
+            $table->string('user_id', 100)->nullable()->default(null);
+            $table->string('client_id', 100)->nullable()->default(null);
+            $table->json('scopes')->nullable()->default(null);
+            $table->string('user_code', 100)->nullable()->default(null);
+            $table->string('verification_uri', 255)->nullable()->default(null);
+            $table->string('ip_address', 45)->nullable()->default(null);
+            $table->string('status', 20)->default('pending');
+            $table->dateTime('last_poll_at')->nullable()->default(null);
+            $table->dateTime('expires_at')->nullable()->default(null);
+            $table->boolean('revoke')->default(false);
+            $table->datetimes();
+            $table->index('user_id');
+            $table->index('client_id');
+            $table->index('user_code');
+            $table->index('status');
+        });
     }
 
     /**
@@ -70,5 +88,7 @@ return new class extends Migration {
         Schema::dropIfExists('oauth_client');
         Schema::dropIfExists('oauth_authorization_code');
         Schema::dropIfExists('oauth_access_token');
+        Schema::dropIfExists('oauth_scope');
+        Schema::dropIfExists('oauth_device_grant');
     }
 };
