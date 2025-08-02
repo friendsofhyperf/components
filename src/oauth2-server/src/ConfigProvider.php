@@ -21,9 +21,7 @@ use FriendsOfHyperf\Oauth2\Server\Converter\ClientConverter;
 use FriendsOfHyperf\Oauth2\Server\Converter\ClientConverterInterface;
 use FriendsOfHyperf\Oauth2\Server\Converter\ScopeConverter;
 use FriendsOfHyperf\Oauth2\Server\Converter\ScopeConverterInterface;
-use FriendsOfHyperf\Oauth2\Server\Factory\AuthorizationServerFactory;
 use FriendsOfHyperf\Oauth2\Server\Factory\ConfigFactory;
-use FriendsOfHyperf\Oauth2\Server\Factory\ResourceServerFactory;
 use FriendsOfHyperf\Oauth2\Server\Interfaces\ConfigInterface;
 use FriendsOfHyperf\Oauth2\Server\Manager\AccessTokenManagerInterface;
 use FriendsOfHyperf\Oauth2\Server\Manager\AuthorizationCodeManagerInterface;
@@ -50,7 +48,6 @@ use FriendsOfHyperf\Oauth2\Server\Repository\DeviceCodeRepository;
 use FriendsOfHyperf\Oauth2\Server\Repository\RefreshTokenRepository;
 use FriendsOfHyperf\Oauth2\Server\Repository\ScopeRepository;
 use FriendsOfHyperf\Oauth2\Server\Repository\UserRepository;
-use League\OAuth2\Server\AuthorizationServer;
 use League\OAuth2\Server\Repositories\AccessTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 use League\OAuth2\Server\Repositories\ClientRepositoryInterface;
@@ -58,7 +55,6 @@ use League\OAuth2\Server\Repositories\DeviceCodeRepositoryInterface;
 use League\OAuth2\Server\Repositories\RefreshTokenRepositoryInterface;
 use League\OAuth2\Server\Repositories\ScopeRepositoryInterface;
 use League\OAuth2\Server\Repositories\UserRepositoryInterface;
-use League\OAuth2\Server\ResourceServer;
 
 class ConfigProvider
 {
@@ -97,7 +93,7 @@ class ConfigProvider
                 UserRepositoryInterface::class => UserRepository::class,
                 DeviceCodeRepositoryInterface::class => DeviceCodeRepository::class,
                 // factroy
-                ConfigInterface::class => ConfigFactory::class
+                ConfigInterface::class => ConfigFactory::class,
             ],
             'publish' => [
                 [
