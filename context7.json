@@ -2,7 +2,7 @@
     "settings": {
         "title": "Friends of Hyperf Components",
         "project": "/friendsofhyperf/components",
-        "description": "🚀 The most popular components for Hyperf. https://hyperf.fans/",
+        "description": "🚀 The most popular components for Hyperf. A collection of 40+ reusable packages including cache, encryption, HTTP client, notification, OAuth2 server, and more. Built for Hyperf 3.2+ with PHP 8.2+. https://hyperf.fans/",
         "docsRepoUrl": "https://github.com/friendsofhyperf/components",
         "folders": [
             "src",
@@ -14,17 +14,31 @@
             ".github",
             ".travis",
             ".vscode",
-            "tests"
+            "tests",
+            "vendor",
+            "node_modules"
         ],
         "excludeFiles": [
-            "CHANGELOG*\\.md",
+            "CHANGELOG*.md",
             "LICENSE",
+            "README.md",
             "bootstrap.php",
             "licenses.md",
-            "rector.php"
+            "rector.php",
+            "*.lock",
+            "*.neon",
+            "*.xml.dist",
+            "*.js",
+            "*.css",
+            "*.png",
+            "*.jpg"
         ],
         "rules": [
-            "Use Hyperf components as reusable packages."
+            "Use Hyperf components as reusable packages for enterprise applications.",
+            "Each component follows PSR standards and includes comprehensive tests.",
+            "Components are designed for Hyperf 3.2+ with PHP 8.2+ compatibility.",
+            "All components include ConfigProvider for easy integration.",
+            "Follow semantic versioning and maintain backward compatibility."
         ]
     }
 }
