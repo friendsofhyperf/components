@@ -68,6 +68,19 @@ class ArrMixin
         };
     }
 
+    public static function every()
+    {
+        return function ($array, callable $callback) {
+            foreach ($array as $key => $value) {
+                if (! $callback($value, $key)) {
+                    return false;
+                }
+            }
+
+            return true;
+        };
+    }
+
     /**
      * Get a float item from an array using "dot" notation.
      */
@@ -153,6 +166,19 @@ class ArrMixin
             }
 
             return $value;
+        };
+    }
+
+    public static function some()
+    {
+        return function ($array, callable $callback) {
+            foreach ($array as $key => $value) {
+                if ($callback($value, $key)) {
+                    return true;
+                }
+            }
+
+            return false;
         };
     }
 

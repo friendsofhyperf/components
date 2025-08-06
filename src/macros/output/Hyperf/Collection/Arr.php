@@ -45,6 +45,17 @@ class Arr
     }
 
     /**
+     * Determine if all items pass the given truth test.
+     *
+     * @param iterable $array
+     * @param (callable(mixed, array-key): bool) $callback
+     * @return bool
+     */
+    public static function every($array, callable $callback)
+    {
+    }
+
+    /**
      * Get a float item from an array using "dot" notation.
      * @return float
      * @throws InvalidArgumentException
@@ -105,6 +116,17 @@ class Arr
      * @return array
      */
     public static function sortByMany($array, $comparisons = [])
+    {
+    }
+
+    /**
+     * Determine if some items pass the given truth test.
+     *
+     * @param iterable $array
+     * @param (callable(mixed, array-key): bool) $callback
+     * @return bool
+     */
+    public static function some($array, callable $callback)
     {
     }
 }
