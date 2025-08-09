@@ -26,7 +26,7 @@ php bin/hyperf.php tinker
 
 ## Commands
 
-* run command
+* Run command
 
 ````shell
 Psy Shell v0.10.4 (PHP 7.3.11 — cli)
@@ -70,7 +70,7 @@ Psy Shell v0.10.4 (PHP 7.3.11 — cli)
   inspire          Display an inspiring quote
 ```
 
-* get hyperf env
+* Get the ENV
 
 ```shell
 Psy Shell v0.10.4 (PHP 7.2.34 — cli)
@@ -79,7 +79,7 @@ Psy Shell v0.10.4 (PHP 7.2.34 — cli)
 >>>
 ```
 
-* query db
+* Query the database
 
 ```shell
 ➜  t.hyperf.com git:(master) ✗ php bin/hyperf.php tinker
@@ -149,7 +149,7 @@ object(App\Model\User)#81816 (28) {
 => null
 ```
 
-* show doc
+* Show doc
 
 ```shell
 >>> doc md5
@@ -161,7 +161,7 @@ PHP manual not found
 >>>
 ```
 
-* show class
+* Show class
 
 ```shell
 >>> show App\Model\User
@@ -194,8 +194,8 @@ PHP manual not found
 
 ## Contact
 
-- [Twitter](https://twitter.com/huangdijia)
-- [Gmail](mailto:huangdijia@gmail.com)
+* [Twitter](https://twitter.com/huangdijia)
+* [Gmail](mailto:huangdijia@gmail.com)
 
 ## License
 
