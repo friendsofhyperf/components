@@ -24,7 +24,7 @@ php bin/hyperf.php vendor:publish friendsofhyperf/tinker
 php bin/hyperf.php tinker
 ```
 
-## Commnads
+## Commands
 
 * run command
 
