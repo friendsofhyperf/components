@@ -103,7 +103,7 @@ class Arr
      * Push an item into an array using "dot" notation.
      * @return array
      */
-    public static function push(ArrayAccess|array &$array, string|int|null $key, mixed ...$values)
+    public static function push(array $array, string|int|null $key, mixed ...$values)
     {
     }
 

@@ -220,12 +220,28 @@ class ArrMixin
 
     public function push()
     {
-        return function (ArrayAccess|array &$array, string|int|null $key, mixed ...$values) {
-            $target = Arr::array($array, $key, []); // @phpstan-ignore staticMethod.notFound
+        return function (array $array, string|int|null $key, mixed ...$values) {
+            if ($key === null) {
+                foreach ($values as $value) {
+                    $array[] = $value;
+                }
+                return $array;
+            }
 
-            array_push($target, ...$values);
-
-            return Arr::set($array, $key, $target); // @phpstan-ignore staticMethod.notFound
+            $current = Arr::get($array, $key, []);
+            
+            if (!is_array($current)) {
+                throw new InvalidArgumentException(
+                    sprintf('Array value for key [%s] must be an array, %s found.', $key, gettype($current))
+                );
+            }
+            
+            $merged = array_merge($current, $values);
+            
+            $result = $array;
+            Arr::set($result, $key, $merged);
+            
+            return $result;
         };
     }
 }

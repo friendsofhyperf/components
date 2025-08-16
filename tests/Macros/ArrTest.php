@@ -8,7 +8,11 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+use FriendsOfHyperf\Macros\ArrMixin;
 use Hyperf\Collection\Arr;
+
+// Register the mixin for tests
+Arr::mixin(new ArrMixin());
 
 require_once __DIR__ . '/Stubs/Common.php';
 
@@ -246,18 +250,18 @@ test('test some', function () {
 test('test push', function () {
     $array = [];
 
-    Arr::push($array, 'office.furniture', 'Desk');
+    $array = Arr::push($array, 'office.furniture', 'Desk');
     $this->assertEquals(['Desk'], $array['office']['furniture']);
 
-    Arr::push($array, 'office.furniture', 'Chair', 'Lamp');
+    $array = Arr::push($array, 'office.furniture', 'Chair', 'Lamp');
     $this->assertEquals(['Desk', 'Chair', 'Lamp'], $array['office']['furniture']);
 
     $array = [];
 
-    Arr::push($array, null, 'Chris', 'Nuno');
+    $array = Arr::push($array, null, 'Chris', 'Nuno');
     $this->assertEquals(['Chris', 'Nuno'], $array);
 
-    Arr::push($array, null, 'Taylor');
+    $array = Arr::push($array, null, 'Taylor');
     $this->assertEquals(['Chris', 'Nuno', 'Taylor'], $array);
 
     $this->expectException(InvalidArgumentException::class);
