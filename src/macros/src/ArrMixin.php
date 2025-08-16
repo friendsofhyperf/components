@@ -217,4 +217,31 @@ class ArrMixin
             return $array;
         };
     }
+
+    public function push()
+    {
+        return function (array $array, string|int|null $key, mixed ...$values) {
+            if ($key === null) {
+                foreach ($values as $value) {
+                    $array[] = $value;
+                }
+                return $array;
+            }
+
+            $current = Arr::get($array, $key, []);
+            
+            if (!is_array($current)) {
+                throw new InvalidArgumentException(
+                    sprintf('Array value for key [%s] must be an array, %s found.', $key, gettype($current))
+                );
+            }
+            
+            $merged = array_merge($current, $values);
+            
+            $result = $array;
+            Arr::set($result, $key, $merged);
+            
+            return $result;
+        };
+    }
 }

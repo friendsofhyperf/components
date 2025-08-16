@@ -8,7 +8,11 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+use FriendsOfHyperf\Macros\ArrMixin;
 use Hyperf\Collection\Arr;
+
+// Register the mixin for tests
+Arr::mixin(new ArrMixin());
 
 require_once __DIR__ . '/Stubs/Common.php';
 
@@ -241,4 +245,28 @@ test('test some', function () {
     $this->assertFalse(Arr::some([1, 2], fn ($value, $key) => is_string($value)));
     $this->assertTrue(Arr::some(['foo', 2], fn ($value, $key) => is_string($value)));
     $this->assertTrue(Arr::some(['foo', 'bar'], fn ($value, $key) => is_string($value)));
+});
+
+test('test push', function () {
+    $array = [];
+
+    $array = Arr::push($array, 'office.furniture', 'Desk');
+    $this->assertEquals(['Desk'], $array['office']['furniture']);
+
+    $array = Arr::push($array, 'office.furniture', 'Chair', 'Lamp');
+    $this->assertEquals(['Desk', 'Chair', 'Lamp'], $array['office']['furniture']);
+
+    $array = [];
+
+    $array = Arr::push($array, null, 'Chris', 'Nuno');
+    $this->assertEquals(['Chris', 'Nuno'], $array);
+
+    $array = Arr::push($array, null, 'Taylor');
+    $this->assertEquals(['Chris', 'Nuno', 'Taylor'], $array);
+
+    $this->expectException(InvalidArgumentException::class);
+    $this->expectExceptionMessage('Array value for key [foo.bar] must be an array, boolean found.');
+
+    $array = ['foo' => ['bar' => false]];
+    Arr::push($array, 'foo.bar', 'baz');
 });
