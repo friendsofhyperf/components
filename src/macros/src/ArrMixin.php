@@ -217,4 +217,15 @@ class ArrMixin
             return $array;
         };
     }
+
+    public function push()
+    {
+        return function (ArrayAccess|array &$array, string|int|null $key, mixed ...$values) {
+            $target = Arr::array($array, $key, []); // @phpstan-ignore staticMethod.notFound
+
+            array_push($target, ...$values);
+
+            return Arr::set($array, $key, $target); // @phpstan-ignore staticMethod.notFound
+        };
+    }
 }

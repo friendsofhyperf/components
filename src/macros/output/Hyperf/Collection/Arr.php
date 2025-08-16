@@ -100,6 +100,14 @@ class Arr
     }
 
     /**
+     * Push an item into an array using "dot" notation.
+     * @return array
+     */
+    public static function push(ArrayAccess|array &$array, string|int|null $key, mixed ...$values)
+    {
+    }
+
+    /**
      * Get a string item from an array using "dot" notation.
      * @return string
      * @throws InvalidArgumentException
