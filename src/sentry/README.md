@@ -30,9 +30,9 @@ return [
     // ...
     'sentry' => [
         'handler' => [
-            'class' => FriendsOfHyperf\Sentry\SentryHandler::class,
+            'class' => \Sentry\Monolog\LogsHandler::class,
             'constructor' => [
-                'level' => \Monolog\Level::Debug,
+                'level' => \Sentry\Logs\LogLevel::debug(),
             ],
         ],
         'formatter' => [
