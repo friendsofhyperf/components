@@ -26,6 +26,9 @@ use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Throwable;
 
+/**
+ * @deprecated since v3.1, use `Sentry\Monolog\LogsHandler` instead, will remove in v3.2
+ */
 class SentryHandler extends AbstractProcessingHandler
 {
     use CompatibilityProcessingHandlerTrait;
