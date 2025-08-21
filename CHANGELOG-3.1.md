@@ -1,5 +1,16 @@
 # Changelog
 
+## v3.1.66 - 2025-08-21
+
+### What's Changed
+
+* Update OAuth2 server implementation to use factory pattern by @zds-s in https://github.com/friendsofhyperf/components/pull/879
+* Add Arr::every() and Arr::some() methods by @huangdijia in https://github.com/friendsofhyperf/components/pull/882
+* Upgrade sentry/sentry from 4.4.0 to 4.15.0 by @huangdijia in https://github.com/friendsofhyperf/components/pull/886
+* Fix StringableMixin formatting and improve function definitions by @huangdijia in https://github.com/friendsofhyperf/components/pull/887
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.65...v3.1.66
+
 ## v3.1.65 - 2025-08-01
 
 ### What's Changed
