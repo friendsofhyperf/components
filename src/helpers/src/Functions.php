@@ -84,31 +84,15 @@ function base_path(string $path = ''): string
  */
 function blank($value): bool
 {
-    if (is_null($value)) {
-        return true;
-    }
-
-    if (is_string($value)) {
-        return trim($value) === '';
-    }
-
-    if (is_numeric($value) || is_bool($value)) {
-        return false;
-    }
-
-    if ($value instanceof Model) {
-        return false;
-    }
-
-    if ($value instanceof Countable) {
-        return count($value) === 0;
-    }
-
-    if ($value instanceof Stringable) {
-        return trim((string) $value) === '';
-    }
-
-    return empty($value);
+    return match (true) {
+        is_null($value) => true,
+        is_string($value) => trim($value) === '',
+        is_numeric($value) || is_bool($value) => false,
+        $value instanceof Model => false,
+        $value instanceof Countable => count($value) === 0,
+        $value instanceof Stringable => trim((string) $value) === '',
+        default => empty($value)
+    };
 }
 
 /**
