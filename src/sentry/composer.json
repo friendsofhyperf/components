@@ -33,7 +33,8 @@
         "hyperf/http-server": "~3.1.0",
         "hyperf/support": "~3.1.0",
         "hyperf/tappable": "~3.1.0",
-        "sentry/sentry": "^4.15.0"
+        "sentry/sentry": "^4.15.0",
+        "symfony/polyfill-php85": "^1.33"
     },
     "suggest": {
         "elasticsearch/elasticsearch": "Required to use the elasticsearch client (^7.0|^8.0).",
