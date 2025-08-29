@@ -274,7 +274,7 @@ class Number
             case $number < 0:
                 return sprintf('-%s', static::summarize(abs($number), $precision, $maxPrecision, $units));
             case $number >= 1e15:
-                return sprintf('%s' . end($units), static::summarize($number / 1e15, $precision, $maxPrecision, $units));
+                return sprintf('%s%s', static::summarize($number / 1e15, $precision, $maxPrecision, $units), array_last($units));
         }
 
         $numberExponent = floor(log10($number));

@@ -25,7 +25,8 @@
         "hyperf/macroable": "~3.2.0",
         "hyperf/stringable": "~3.2.0",
         "hyperf/support": "~3.2.0",
-        "nesbot/carbon": "^2.0 || ^3.0"
+        "nesbot/carbon": "^2.0 || ^3.0",
+        "symfony/polyfill-php84": "^1.33"
     },
     "suggest": {
         "friendsofhyperf/encryption": "Required to use (~3.2.0)",

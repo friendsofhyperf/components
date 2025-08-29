@@ -134,7 +134,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
 
         if (is_array($data)) {
             if (array_is_list($data)) {
-                $carrier = end($data);
+                $carrier = array_last($data);
             } elseif (isset($data['job'])) {
                 $carrier = $data[Constants::TRACE_CARRIER] ?? '';
             }
