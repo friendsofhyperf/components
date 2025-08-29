@@ -70,15 +70,7 @@ class ArrMixin
 
     public static function every()
     {
-        return function ($array, callable $callback) {
-            foreach ($array as $key => $value) {
-                if (! $callback($value, $key)) {
-                    return false;
-                }
-            }
-
-            return true;
-        };
+        return fn ($array, callable $callback) => array_all($array, $callback);
     }
 
     /**
@@ -172,13 +164,7 @@ class ArrMixin
     public static function some()
     {
         return function ($array, callable $callback) {
-            foreach ($array as $key => $value) {
-                if ($callback($value, $key)) {
-                    return true;
-                }
-            }
-
-            return false;
+            return array_any($array, $callback);
         };
     }
 
