@@ -38,7 +38,7 @@ trait HasOneOrMany
 
                 foreach ($this->foreignKey as $index => $key) {
                     $tmp = explode('.', $key);
-                    $key = end($tmp);
+                    $key = array_last($tmp);
                     $fullKey = $this->getRelated()
                         ->getTable() . '.' . $key;
                     $this->query->where($fullKey, '=', $parentKeyValue[$index]);
