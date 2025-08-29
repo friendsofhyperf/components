@@ -163,9 +163,7 @@ class ArrMixin
 
     public static function some()
     {
-        return function ($array, callable $callback) {
-            return array_any($array, $callback);
-        };
+        return fn ($array, callable $callback) => array_any($array, $callback);
     }
 
     public function sortByMany()
