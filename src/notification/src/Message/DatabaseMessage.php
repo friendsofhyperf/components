@@ -27,7 +27,7 @@ class_alias(DatabaseMessage::class, DatabaseMessages::class);
 
 if (false) { // @phpstan-ignore-line
     /**
-     * @deprecated Use DatabaseMessage instead. Will be removed in v3.2.
+     * @deprecated since v3.1, use `DatabaseMessage` instead. Will be removed in v3.2.
      */
     class DatabaseMessages extends DatabaseMessage
     {
