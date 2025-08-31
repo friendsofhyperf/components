@@ -11,9 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification\Message;
 
-/**
- * @deprecated since v3.1, use `DatabaseMessage` instead. Will be removed in v3.2.
- */
-class DatabaseMessages extends DatabaseMessage
+class DatabaseMessage
 {
+    /**
+     * Create a new message instance.
+     * @param array $data the data that should be stored with the notification
+     */
+    public function __construct(
+        public array $data
+    ) {
+    }
 }

@@ -215,14 +215,14 @@ function dispatch($job, ...$arguments)
             ->getProducer((string) ($arguments[0] ?? 'default'))
             ->sendBatch([$job]),
         class_exists(AsyncTask::class) && interface_exists(AsyncTaskInterface::class) && $job instanceof AsyncTaskInterface => AsyncTask::deliver($job, ...$arguments), // @deprecated since v3.1, will be removed in v3.2
-        default => throw new InvalidArgumentException('Not Support job type.')
+        default => throw new InvalidArgumentException('Unsupported job type.')
     };
 }
 
 /**
  * @param mixed $environments
  * @return bool|Environment
- * @deprecated since 3.1, use `Str::is($patterns, env('APP_ENV'))` instead, will removed in 3.2.
+ * @deprecated since 3.1, use `Str::is($patterns, env('APP_ENV'))` instead, will be removed in 3.2.
  */
 function environment(...$environments)
 {

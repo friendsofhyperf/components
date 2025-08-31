@@ -15,7 +15,7 @@ use Countable;
 use WeakMap;
 
 /**
- * @deprecated since v3.1, use FriendsOfHyperf\Support\Once instead, will removed in v3.2
+ * @deprecated since v3.1, use FriendsOfHyperf\Support\Once instead, will be removed in v3.2
  */
 class Cache implements Countable
 {

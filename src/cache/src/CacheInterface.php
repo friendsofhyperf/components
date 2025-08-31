@@ -15,7 +15,7 @@ class_alias(Contract\Repository::class, CacheInterface::class);
 
 if (false) { // @phpstan-ignore-line
     /**
-     * @deprecated since v3.1, use `\FriendsOfHyperf\Cache\Contract\Repository` instead, will removed in v3.2
+     * @deprecated since v3.1, use `\FriendsOfHyperf\Cache\Contract\Repository` instead, will be removed in v3.2
      */
     interface CacheInterface extends Contract\Repository
     {

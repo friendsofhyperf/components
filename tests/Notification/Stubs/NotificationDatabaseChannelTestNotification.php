@@ -11,14 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tests\Notification\Stubs;
 
-use FriendsOfHyperf\Notification\Message\DatabaseMessages;
+use FriendsOfHyperf\Notification\Message\DatabaseMessage;
 use FriendsOfHyperf\Notification\Notification;
 
 class NotificationDatabaseChannelTestNotification extends Notification
 {
-    public function toDatabase($notifiable): DatabaseMessages
+    public function toDatabase($notifiable): DatabaseMessage
     {
-        return new DatabaseMessages([
+        return new DatabaseMessage([
             'message' => 'Hello World',
         ]);
     }
