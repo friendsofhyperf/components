@@ -379,8 +379,7 @@ class RequestMixin
             try {
                 $this->validate($rules, ...$params);
             } catch (ValidationException $e) {
-                $e->errorBag = $errorBag;
-                throw new $e();
+                throw $e->errorBag($errorBag);
             }
         };
     }
