@@ -97,7 +97,7 @@ class Telescope
 
     public static function recordSchedule(IncomingEntry $entry): void
     {
-        static::record(EntryType::SCHEDULE, $entry);
+        static::record(EntryType::SCHEDULED_TASK, $entry);
     }
 
     public static function recordException(IncomingEntry $entry): void

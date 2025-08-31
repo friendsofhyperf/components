@@ -17,6 +17,9 @@ class EntryType
 
     public const COMMAND = 'command';
 
+    /**
+     * @deprecated since v3.1, use `\FriendsOfHyperf\Telescope\EntryType::SCHEDULED_TASK` instead, will be removed in v3.2
+     */
     public const SCHEDULE = 'schedule';
 
     public const DUMP = 'dump';
@@ -41,10 +44,6 @@ class EntryType
 
     public const REQUEST = 'request';
 
-    /**
-     * Alias for SCHEDULE; kept for backward compatibility.
-     * @deprecated Use EntryType::SCHEDULE instead. Will be removed in v3.2.
-     */
     public const SCHEDULED_TASK = 'schedule';
 
     public const GATE = 'gate';
