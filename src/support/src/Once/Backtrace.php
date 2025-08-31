@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Support\Once;
 
 /**
- * @deprecated since v3.1, use FriendsOfHyperf\Support\Onceable instead, will removed in v3.2
+ * @deprecated since v3.1, use FriendsOfHyperf\Support\Onceable instead, will be removed in v3.2
  */
 class Backtrace
 {

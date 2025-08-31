@@ -19,8 +19,8 @@ class ConfigProvider
             'dependencies' => [
                 Contract\Factory::class => fn ($container) => $container->get(CacheManager::class),
                 Contract\Repository::class => RepositoryFactory::class,
-                Contract\CacheInterface::class => fn ($container) => $container->get(Contract\Repository::class), // Will removed in v3.2
-                CacheInterface::class => fn ($container) => $container->get(Contract\Repository::class), // Will removed in v3.2
+                Contract\CacheInterface::class => fn ($container) => $container->get(Contract\Repository::class), // Will be removed in v3.2
+                CacheInterface::class => fn ($container) => $container->get(Contract\Repository::class), // Will be removed in v3.2
             ],
         ];
     }
