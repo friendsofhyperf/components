@@ -17,13 +17,15 @@ use function Hyperf\Collection\collect;
 
 class RedisCommand implements Stringable
 {
+    private ?string $formatted = null;
+
     public function __construct(public string $command, public array $parameters = [])
     {
     }
 
     public function __toString(): string
     {
-        return $this->formatCommand($this->command, $this->parameters);
+        return $this->formatted ??= $this->formatCommand($this->command, $this->parameters);
     }
 
     protected function formatCommand(string $command, array $parameters): string
