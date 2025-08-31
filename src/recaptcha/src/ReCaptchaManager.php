@@ -40,7 +40,7 @@ class ReCaptchaManager
         }
 
         if (! $this->config->has('recaptcha')) {
-            throw new RuntimeException('Not publish yet, please run \'php bin/hyperf.php vendor:publish friendsofhyperf/recaptcha\'');
+            throw new RuntimeException('Configuration not published yet, please run \'php bin/hyperf.php vendor:publish friendsofhyperf/recaptcha\'.');
         }
 
         $version ??= (string) $this->config->get('recaptcha.default', 'v3');

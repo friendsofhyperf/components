@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Notification\Message;
 
-class DatabaseMessages
+class DatabaseMessage
 {
     /**
      * Create a new message instance.

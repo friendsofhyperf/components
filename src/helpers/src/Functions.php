@@ -210,7 +210,7 @@ function dispatch($job, ...$arguments)
         $job instanceof ProduceMessage => di(ProducerManager::class)
             ->getProducer((string) ($arguments[0] ?? 'default'))
             ->sendBatch([$job]),
-        default => throw new InvalidArgumentException('Not Support job type.')
+        default => throw new InvalidArgumentException('Unsupported job type.')
     };
 }
 
