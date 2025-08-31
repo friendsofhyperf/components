@@ -17,8 +17,6 @@ class EntryType
 
     public const COMMAND = 'command';
 
-    public const SCHEDULE = 'schedule';
-
     public const DUMP = 'dump';
 
     public const EVENT = 'event';
@@ -41,10 +39,6 @@ class EntryType
 
     public const REQUEST = 'request';
 
-    /**
-     * Alias for SCHEDULE; kept for backward compatibility.
-     * @deprecated Use EntryType::SCHEDULE instead. Will be removed in v3.2.
-     */
     public const SCHEDULED_TASK = 'schedule';
 
     public const GATE = 'gate';
