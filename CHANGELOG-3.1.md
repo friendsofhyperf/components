@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.1.67 - 2025-09-01
+
+### What's Changed
+
+* Refactor blank() function to use match expression by @huangdijia in https://github.com/friendsofhyperf/components/pull/888
+* Use PHP 8.4 array functions and add polyfill support by @huangdijia in https://github.com/friendsofhyperf/components/pull/889
+* Optimize RedisCommand formatting with caching by @huangdijia in https://github.com/friendsofhyperf/components/pull/890
+* fix(macros): throw original ValidationException with error bag in RequestMixin by @huangdijia in https://github.com/friendsofhyperf/components/pull/891
+* chore: fix naming/spelling; rename DatabaseMessages→DatabaseMessage (BC alias) by @huangdijia in https://github.com/friendsofhyperf/components/pull/892
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.66...v3.1.67
+
 ## v3.1.66 - 2025-08-21
 
 ### What's Changed
