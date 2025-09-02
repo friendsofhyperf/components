@@ -88,7 +88,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         } catch (Throwable) {
         } finally {
-            $span->finish();
+            $span->setOrigin('auto.queue')->finish();
         }
     }
 
