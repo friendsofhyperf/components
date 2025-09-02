@@ -52,12 +52,9 @@ class CacheAspect extends AbstractAspect
         try {
             $method = $proceedingJoinPoint->methodName;
             $op = match ($method) {
-                'set' => 'cache.put',
-                'get', 'fetch' => 'cache.get',
-                'delete' => 'cache.remove',
-                'setMultiple' => 'cache.put',
-                'getMultiple' => 'cache.get',
-                'deleteMultiple' => 'cache.remove',
+                'set', 'setMultiple' => 'cache.put',
+                'get', 'fetch', 'getMultiple' => 'cache.get',
+                'delete', 'deleteMultiple' => 'cache.remove',
                 'clear' => 'cache.flush',
                 default => 'cache',
             };
@@ -83,13 +80,10 @@ class CacheAspect extends AbstractAspect
 
             return tap($proceedingJoinPoint->process(), function ($result) use ($span, $method, $key, $ttl) {
                 $data = match ($method) {
-                    'set', => ['cache.key' => $key, 'cache.ttl' => $ttl],
+                    'set', 'setMultiple' => ['cache.key' => $key, 'cache.ttl' => $ttl],
+                    'delete', 'deleteMultiple' => ['cache.key' => $key],
                     'get', 'fetch' => ['cache.key' => $key, 'cache.hit' => ! is_null($result)],
-                    'delete' => ['cache.key' => $key],
-                    'setMultiple' => ['cache.key' => $key, 'cache.ttl' => $ttl],
                     'getMultiple' => ['cache.key' => $key, 'cache.hit' => ! empty($result)],
-                    'deleteMultiple' => ['cache.key' => $key],
-                    'clear' => [],
                     default => [],
                 };
                 $span->setOrigin('auto.cache')->setData($data)->finish();
