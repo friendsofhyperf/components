@@ -65,11 +65,16 @@ class CacheAspect extends AbstractAspect
 
             /** @var string|string[] $key */
             $key = match ($method) {
-                'set', 'get', 'delete', 'setMultiple', 'getMultiple', 'deleteMultiple' => $proceedingJoinPoint->arguments['order'][0] ?? 'unknown',
+                'set', 'get', 'delete' => array_first($proceedingJoinPoint->arguments['keys']) ?? 'unknown',
+                'setMultiple', 'getMultiple', 'deleteMultiple' => array_first($proceedingJoinPoint->arguments['keys']) ?? [],
                 default => '',
             };
 
-            $span = $this->startSpan(op: $op, description: $key);
+            $span = $this->startSpan(
+                op: $op,
+                description: implode(',', (array) $key),
+                asParent: true,
+            );
 
             return tap($proceedingJoinPoint->process(), function ($value) use ($span, $method, $key) {
                 match ($method) {
