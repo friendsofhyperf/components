@@ -110,8 +110,7 @@ class RedisAspect extends AbstractAspect
 
             throw $exception;
         } finally {
-            $span->setData($data);
-            $span->finish();
+            $span->setOrigin('auto.cache.redis')->setData($data)->finish();
         }
 
         return $result;
