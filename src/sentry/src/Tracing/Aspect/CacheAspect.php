@@ -16,7 +16,6 @@ use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\SentrySdk;
-use Sentry\Tracing\Span;
 
 use function Hyperf\Tappable\tap;
 
@@ -53,99 +52,50 @@ class CacheAspect extends AbstractAspect
         try {
             $method = $proceedingJoinPoint->methodName;
             $op = match ($method) {
-                'set' => 'cache.put',
-                'get', 'fetch' => 'cache.get',
-                'delete' => 'cache.remove',
-                'setMultiple' => 'cache.put',
-                'getMultiple' => 'cache.get',
-                'deleteMultiple' => 'cache.remove',
+                'set', 'setMultiple' => 'cache.put',
+                'get', 'fetch', 'getMultiple' => 'cache.get',
+                'delete', 'deleteMultiple' => 'cache.remove',
                 'clear' => 'cache.flush',
                 default => 'cache',
             };
 
+            $arguments = $proceedingJoinPoint->arguments['keys'] ?? [];
+
             /** @var string|string[] $key */
-            $key = match ($method) {
-                'set', 'get', 'delete', 'setMultiple', 'getMultiple', 'deleteMultiple' => $proceedingJoinPoint->arguments['order'][0] ?? 'unknown',
-                default => '',
+            [$key, $ttl] = match ($method) {
+                'set', 'get', 'delete' => [
+                    $arguments['key'] ?? 'unknown',
+                    $arguments['ttl'] ?? null,
+                ],
+                'setMultiple' => [
+                    array_keys($arguments['values'] ?? []),
+                    $arguments['ttl'] ?? null,
+                ],
+                'getMultiple', 'deleteMultiple' => [
+                    $arguments['keys'] ?? [],
+                    $arguments['ttl'] ?? null,
+                ],
+                default => ['', null],
             };
 
-            $span = $this->startSpan(op: $op, description: $key);
+            $span = $this->startSpan(
+                op: $op,
+                description: implode(', ', (array) $key),
+                asParent: true
+            );
 
-            return tap($proceedingJoinPoint->process(), function ($value) use ($span, $method, $key) {
-                match ($method) {
-                    'set', => $this->handleSet($span, $key, $value),
-                    'get', 'fetch' => $this->handleGet($span, $key, $value),
-                    'delete' => $this->handleDelete($span, $key, $value),
-                    'setMultiple' => $this->handleSetMultiple($span, $key, $value),
-                    'getMultiple' => $this->handleGetMultiple($span, $key, $value),
-                    'deleteMultiple' => $this->handleDeleteMultiple($span, $key, $value),
-                    'clear' => $this->handleClear($span),
-                    default => null,
+            return tap($proceedingJoinPoint->process(), function ($result) use ($span, $method, $key, $ttl) {
+                $data = match ($method) {
+                    'set', 'setMultiple' => ['cache.key' => $key, 'cache.ttl' => $ttl],
+                    'delete', 'deleteMultiple' => ['cache.key' => $key],
+                    'get', 'fetch' => ['cache.key' => $key, 'cache.hit' => ! is_null($result)],
+                    'getMultiple' => ['cache.key' => $key, 'cache.hit' => ! empty($result)],
+                    default => [],
                 };
+                $span->setOrigin('auto.cache')->setData($data)->finish();
             });
         } finally {
             SentrySdk::getCurrentHub()->setSpan($parent);
         }
-    }
-
-    private function handleSet(Span $span, string $key, mixed $value)
-    {
-        $span
-            ->setData([
-                'cache.key' => $key,
-            ])
-            ->finish();
-    }
-
-    private function handleGet(Span $span, string $key, mixed $value)
-    {
-        $span
-            ->setData([
-                'cache.key' => $key,
-                'cache.hit' => ! is_null($value),
-            ])
-            ->finish();
-    }
-
-    private function handleDelete(Span $span, string $key, mixed $value)
-    {
-        $span
-            ->setData([
-                'cache.key' => $key,
-            ])
-            ->finish();
-    }
-
-    private function handleSetMultiple(Span $span, array $keys, array $values)
-    {
-        $span
-            ->setData([
-                'cache.key' => $keys,
-            ])
-            ->finish();
-    }
-
-    private function handleGetMultiple(Span $span, array $keys, array $values)
-    {
-        $span
-            ->setData([
-                'cache.key' => $keys,
-                'cache.hit' => ! empty($values),
-            ])
-            ->finish();
-    }
-
-    private function handleDeleteMultiple(Span $span, array $keys, array $values)
-    {
-        $span
-            ->setData([
-                'cache.key' => $keys,
-            ])
-            ->finish();
-    }
-
-    private function handleClear(Span $span)
-    {
-        $span->finish();
     }
 }

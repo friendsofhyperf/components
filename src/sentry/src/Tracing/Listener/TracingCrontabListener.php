@@ -97,10 +97,12 @@ class TracingCrontabListener implements ListenerInterface
             }
         }
 
-        $transaction->setData($data);
-        $transaction->setTags($tags);
+        $transaction->setOrigin('auto.crontab')
+            ->setData($data)
+            ->setTags($tags);
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
+
         $transaction->finish(microtime(true));
     }
 }

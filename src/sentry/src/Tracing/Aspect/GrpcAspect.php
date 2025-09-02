@@ -76,21 +76,20 @@ class GrpcAspect extends AbstractAspect
                 }
             }
         } catch (Throwable $exception) {
-            $span->setStatus(SpanStatus::internalError());
-            $span->setTags([
-                'error' => true,
-                'exception.class' => $exception::class,
-                'exception.message' => $exception->getMessage(),
-                'exception.code' => $exception->getCode(),
-            ]);
+            $span?->setStatus(SpanStatus::internalError())
+                ->setTags([
+                    'error' => true,
+                    'exception.class' => $exception::class,
+                    'exception.message' => $exception->getMessage(),
+                    'exception.code' => $exception->getCode(),
+                ]);
             if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
 
             throw $exception;
         } finally {
-            $span->setData($data);
-            $span->finish();
+            $span?->setOrigin('auto.grpc')->setData($data)->finish();
         }
         return $result;
     }

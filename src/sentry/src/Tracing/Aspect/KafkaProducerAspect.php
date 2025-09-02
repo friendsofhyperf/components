@@ -70,7 +70,7 @@ class KafkaProducerAspect extends AbstractAspect
             ->setValue($carrier);
         $proceedingJoinPoint->arguments['keys']['headers'] = $headers;
 
-        return tap($proceedingJoinPoint->process(), fn () => $span->finish());
+        return tap($proceedingJoinPoint->process(), fn () => $span->setOrigin('auto.kafka')->finish());
     }
 
     protected function sendBatchAsync(ProceedingJoinPoint $proceedingJoinPoint)
@@ -96,6 +96,6 @@ class KafkaProducerAspect extends AbstractAspect
             )->call($message);
         }
 
-        return tap($proceedingJoinPoint->process(), fn () => $span->finish());
+        return tap($proceedingJoinPoint->process(), fn () => $span->setOrigin('auto.kafka')->finish());
     }
 }
