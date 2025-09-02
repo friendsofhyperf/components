@@ -122,8 +122,7 @@ class DbAspect extends AbstractAspect
 
             throw $exception;
         } finally {
-            $span->setData($data);
-            $span->finish();
+            $span->setOrigin('auto.db')->setData($data)->finish();
         }
 
         return $result;

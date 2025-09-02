@@ -61,8 +61,7 @@ class CoordinatorAspect extends AbstractAspect
             }
             throw $exception;
         } finally {
-            $span?->setData($data);
-            $span?->finish(microtime(true));
+            $span?->setOrigin('auto.coordinator')->setData($data)->finish(microtime(true));
         }
     }
 }

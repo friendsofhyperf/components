@@ -82,19 +82,20 @@ class TracingRedisListener implements ListenerInterface
         }
 
         if ($exception = $event->throwable) {
-            $span->setStatus(SpanStatus::internalError());
-            $span->setTags([
-                'error' => true,
-                'exception.class' => $exception::class,
-                'exception.message' => $exception->getMessage(),
-                'exception.code' => $exception->getCode(),
-            ]);
+            $span->setStatus(SpanStatus::internalError())
+                ->setTags([
+                    'error' => true,
+                    'exception.class' => $exception::class,
+                    'exception.message' => $exception->getMessage(),
+                    'exception.code' => $exception->getCode(),
+                ]);
             if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
         }
 
-        $span->setData($data);
-        $span->finish();
+        $span->setOrigin('auto.redis')
+            ->setData($data)
+            ->finish();
     }
 }

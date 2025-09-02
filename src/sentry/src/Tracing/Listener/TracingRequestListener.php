@@ -126,14 +126,16 @@ class TracingRequestListener implements ListenerInterface
             $data['rpc.context'] = $this->container->get(RpcContext::class)->getData();
         }
 
-        $transaction->setData($data);
+        $transaction->setOrigin('auto.request')->setData($data);
 
         $span = $this->startSpan('request.received', 'request.received', true);
 
         defer(function () use ($transaction, $span) {
-            $span->finish();
+            $span?->setOrigin('auto.request')
+                ->finish();
 
             SentrySdk::getCurrentHub()->setSpan($transaction);
+
             $transaction->finish();
         });
     }
@@ -160,16 +162,16 @@ class TracingRequestListener implements ListenerInterface
         $transaction->setHttpStatus($event->response->getStatusCode());
 
         if ($exception = $event->getThrowable()) {
-            $transaction->setStatus(SpanStatus::internalError());
-            $transaction->setTags([
-                'error' => true,
-                'exception.class' => $exception::class,
-                'exception.code' => $exception->getCode(),
-                'exception.message' => $exception->getMessage(),
-            ]);
-            $transaction->setData([
-                'exception.stack_trace' => (string) $exception,
-            ]);
+            $transaction->setStatus(SpanStatus::internalError())
+                ->setTags([
+                    'error' => true,
+                    'exception.class' => $exception::class,
+                    'exception.code' => $exception->getCode(),
+                    'exception.message' => $exception->getMessage(),
+                ])
+                ->setData([
+                    'exception.stack_trace' => (string) $exception,
+                ]);
         }
     }
 
