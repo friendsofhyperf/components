@@ -59,15 +59,21 @@ class CacheAspect extends AbstractAspect
                 default => 'cache',
             };
 
+            $arguments = $proceedingJoinPoint->arguments['keys'] ?? [];
+
             /** @var string|string[] $key */
             [$key, $ttl] = match ($method) {
                 'set', 'get', 'delete' => [
-                    $proceedingJoinPoint->arguments['keys']['key'] ?? 'unknown',
-                    $proceedingJoinPoint->arguments['keys']['ttl'] ?? null,
+                    $arguments['key'] ?? 'unknown',
+                    $arguments['ttl'] ?? null,
                 ],
-                'setMultiple', 'getMultiple', 'deleteMultiple' => [
-                    $proceedingJoinPoint->arguments['keys']['keys'] ?? [],
-                    $proceedingJoinPoint->arguments['keys']['ttl'] ?? null,
+                'setMultiple' => [
+                    array_keys($arguments['values'] ?? []),
+                    $arguments['ttl'] ?? null,
+                ],
+                'getMultiple', 'deleteMultiple' => [
+                    $arguments['keys'] ?? [],
+                    $arguments['ttl'] ?? null,
                 ],
                 default => ['', null],
             };
