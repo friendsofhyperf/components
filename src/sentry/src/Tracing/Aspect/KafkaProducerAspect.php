@@ -96,6 +96,6 @@ class KafkaProducerAspect extends AbstractAspect
             )->call($message);
         }
 
-        return tap($proceedingJoinPoint->process(), fn () => $span->finish());
+        return tap($proceedingJoinPoint->process(), fn () => $span->setOrigin('auto.kafka')->finish());
     }
 }

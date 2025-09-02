@@ -114,11 +114,14 @@ class TracingCommandListener implements ListenerInterface
             }
         }
 
-        $transaction->setStatus($exitCode == SymfonyCommand::SUCCESS ? SpanStatus::ok() : SpanStatus::internalError());
-        $transaction->setData($data);
-        $transaction->setTags($tags);
+        $transaction
+            ->setOrigin('auto.command')
+            ->setStatus($exitCode == SymfonyCommand::SUCCESS ? SpanStatus::ok() : SpanStatus::internalError())
+            ->setData($data)
+            ->setTags($tags);
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
+
         $transaction->finish(microtime(true));
     }
 }

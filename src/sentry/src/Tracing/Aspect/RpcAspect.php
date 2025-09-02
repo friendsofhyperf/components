@@ -145,8 +145,7 @@ class RpcAspect extends AbstractAspect
 
             throw $exception;
         } finally {
-            $span->setData($data);
-            $span->finish();
+            $span->setOrigin('auto.rpc')->setData($data)->finish();
 
             Context::destroy(static::SPAN);
             Context::destroy(static::DATA);

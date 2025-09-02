@@ -110,10 +110,10 @@ class TracingAsyncQueueListener implements ListenerInterface
             }
         }
 
-        $transaction->setData($data);
-        $transaction->setTags($tags);
+        $transaction->setOrigin('auto.queue')->setData($data)->setTags($tags);
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
+
         $transaction->finish(microtime(true));
     }
 }

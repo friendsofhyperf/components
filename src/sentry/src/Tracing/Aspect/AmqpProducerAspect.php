@@ -75,6 +75,6 @@ class AmqpProducerAspect extends AbstractAspect
             $this->properties['application_headers']->set(Constants::TRACE_CARRIER, $carrier);
         })->call($producerMessage);
 
-        return tap($proceedingJoinPoint->process(), fn () => $span->finish());
+        return tap($proceedingJoinPoint->process(), fn () => $span->setOrigin('auto.amqp')->finish());
     }
 }

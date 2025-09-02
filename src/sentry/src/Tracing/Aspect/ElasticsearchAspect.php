@@ -102,8 +102,7 @@ class ElasticsearchAspect extends AbstractAspect
 
             throw $exception;
         } finally {
-            $span->setData($data);
-            $span->finish();
+            $span->setOrigin('auto.elasticsearch')->setData($data)->finish();
         }
 
         return $result;

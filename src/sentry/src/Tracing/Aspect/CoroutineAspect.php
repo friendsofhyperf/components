@@ -93,11 +93,11 @@ class CoroutineAspect extends AbstractAspect
 
                 throw $exception;
             } finally {
-                $transaction->setData($data);
+                $transaction->setOrigin('auto.coroutine')->setData($data);
             }
         };
 
-        $parent->finish();
+        $parent->setOrigin('auto.coroutine')->finish();
 
         return $proceedingJoinPoint->process();
     }

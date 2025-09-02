@@ -116,10 +116,12 @@ class TracingKafkaListener implements ListenerInterface
             }
         }
 
-        $transaction->setData($data);
-        $transaction->setTags($tags);
+        $transaction->setOrigin('auto.kafka')
+            ->setData($data)
+            ->setTags($tags);
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
+
         $transaction->finish(microtime(true));
     }
 }

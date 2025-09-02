@@ -89,8 +89,7 @@ class GrpcAspect extends AbstractAspect
 
             throw $exception;
         } finally {
-            $span->setData($data);
-            $span->finish();
+            $span->setOrigin('auto.grpc')->setData($data)->finish();
         }
         return $result;
     }

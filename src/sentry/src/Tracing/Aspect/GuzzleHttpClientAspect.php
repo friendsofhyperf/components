@@ -144,8 +144,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 }
             }
 
-            $span->setData($data);
-            $span->finish();
+            $span->setOrigin('auto.http.client')->setData($data)->finish();
 
             if (is_callable($onStats)) {
                 ($onStats)($stats);
