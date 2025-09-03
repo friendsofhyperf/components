@@ -80,18 +80,17 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
         }
 
         try {
+            /** @var \Hyperf\AsyncQueue\Driver\Driver $driver */
+            $driver = $proceedingJoinPoint->getInstance();
             $messageId = method_exists($job, 'getId') ? $job->getId() : uniqid('async_queue_', true);
             $queueName = Context::get('sentry.async_queue.name', 'default');
-            $bodySize = (fn ($job) => strlen($this->packer->pack($job)))->call($proceedingJoinPoint->getInstance(), $job);
+            $bodySize = (fn ($job) => strlen($this->packer->pack($job)))->call($driver, $job);
             $data = [
                 'messaging.system' => 'async_queue',
                 'messaging.message.id' => $messageId,
                 'messaging.destination.name' => $queueName,
                 'messaging.message.body.size' => $bodySize,
             ];
-
-            /** @var \Hyperf\AsyncQueue\Driver\Driver $driver */
-            $driver = $proceedingJoinPoint->getInstance();
             $data += match (true) {
                 $driver instanceof RedisDriver => $this->buildSpanDataOfRedisDriver($driver),
                 default => []
