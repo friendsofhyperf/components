@@ -41,7 +41,7 @@ class AmqpProducerAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('async_queue')) {
+        if (! $this->switcher->isTracingEnable('amqp')) {
             return $proceedingJoinPoint->process();
         }
 
