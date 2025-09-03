@@ -23,6 +23,7 @@ use function Hyperf\Tappable\tap;
 
 /**
  * @property array $headers
+ * @property string $name
  */
 class KafkaProducerAspect extends AbstractAspect
 {
@@ -57,13 +58,25 @@ class KafkaProducerAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
+        $messageId = uniqid('kafka_', true);
+        $poolName = (fn () => $this->name)->call($proceedingJoinPoint->getInstance());
+        $bodySize = strlen($proceedingJoinPoint->arguments['keys']['value'] ?? '');
+
         $span->setData([
             'messaging.system' => 'kafka',
+            'messaging.message.id' => $messageId,
+            // 'messaging.destination.name' => $poolName,
+            'messaging.message.body.size' => $bodySize,
             'messaging.operation' => 'publish',
             'messaging.destination.name' => $proceedingJoinPoint->arguments['keys']['topic'] ?? 'unknown',
         ]);
 
-        $carrier = $this->packer->pack($span);
+        $carrier = $this->packer->pack($span, [
+            'publish_time' => microtime(true),
+            'message_id' => $messageId,
+            'queue_name' => $poolName,
+            'body_size' => $bodySize,
+        ]);
         $headers = $proceedingJoinPoint->arguments['keys']['headers'] ?? [];
         $headers[] = (new RecordHeader())
             ->setHeaderKey(Constants::TRACE_CARRIER)
