@@ -35,5 +35,5 @@ test('test is tracing tag enable', function ($key, $expected) {
     ['foo.bar', true],
     ['foo.baz', true],
     ['foo.bar.baz', false],
-    ['foo.bay', true],
+    ['foo.bay', false],
 ]);

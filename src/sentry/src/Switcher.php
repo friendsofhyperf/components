@@ -52,7 +52,7 @@ class Switcher
 
     public function isTracingExtraTagEnable(string $key): bool
     {
-        return (bool) ($this->config->get('sentry.tracing.extra_tags', [])[$key] ?? true);
+        return (bool) ($this->config->get('sentry.tracing.extra_tags', [])[$key] ?? false);
     }
 
     public function isExceptionIgnored(string|Throwable $exception): bool
