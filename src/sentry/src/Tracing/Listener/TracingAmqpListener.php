@@ -82,7 +82,7 @@ class TracingAmqpListener implements ListenerInterface
             sentryTrace: $sentryTrace,
             baggage: $baggage,
             name: $message::class,
-            op: 'topic.process',
+            op: 'queue.process',
             description: $message::class,
             source: TransactionSource::custom()
         )->setStartTimestamp(microtime(true));

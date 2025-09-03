@@ -80,7 +80,7 @@ class TracingKafkaListener implements ListenerInterface
             sentryTrace: $sentryTrace,
             baggage: $baggage,
             name: $consumer->getTopic() . ' process',
-            op: $consumer->getTopic() . ' process',
+            op: 'queue.process',
             description: $consumer::class,
             source: TransactionSource::custom()
         )->setStartTimestamp(microtime(true));

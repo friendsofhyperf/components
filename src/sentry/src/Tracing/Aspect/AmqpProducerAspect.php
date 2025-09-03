@@ -61,7 +61,7 @@ class AmqpProducerAspect extends AbstractAspect
         }
 
         $span = $this->startSpan(
-            'topic.send',
+            'queue.publish',
             sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
         );
 
