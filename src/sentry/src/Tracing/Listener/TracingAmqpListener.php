@@ -106,12 +106,12 @@ class TracingAmqpListener implements ListenerInterface
         $message = $event->getMessage();
         $data = [
             'messaging.system' => 'amqp',
+            'messaging.operation' => 'process',
             'messaging.message.id' => $payload['message_id'] ?? null,
-            'messaging.destination.name' => $payload['queue_name'] ?? null,
             'messaging.message.body.size' => $payload['body_size'] ?? null,
             'messaging.message.receive.latency' => microtime(true) - ($payload['publish_time'] ?? 0),
             'messaging.message.retry.count' => 0,
-            'messaging.operation' => 'process',
+            'messaging.destination.name' => $payload['queue_name'] ?? null,
             // for amqp
             'messaging.amqp.message.type' => $message->getTypeString(),
             'messaging.amqp.message.routing_key' => $message->getRoutingKey(),

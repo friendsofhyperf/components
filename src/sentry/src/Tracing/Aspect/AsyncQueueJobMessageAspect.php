@@ -87,9 +87,10 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
             $bodySize = (fn ($job) => strlen($this->packer->pack($job)))->call($driver, $job);
             $data = [
                 'messaging.system' => 'async_queue',
+                'messaging.operation' => 'publish',
                 'messaging.message.id' => $messageId,
-                'messaging.destination.name' => $queueName,
                 'messaging.message.body.size' => $bodySize,
+                'messaging.destination.name' => $queueName,
             ];
             $data += match (true) {
                 $driver instanceof RedisDriver => $this->buildSpanDataOfRedisDriver($driver),

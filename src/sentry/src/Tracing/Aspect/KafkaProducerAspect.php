@@ -64,11 +64,11 @@ class KafkaProducerAspect extends AbstractAspect
 
         $span->setData([
             'messaging.system' => 'kafka',
-            'messaging.message.id' => $messageId,
-            // 'messaging.destination.name' => $poolName,
-            'messaging.message.body.size' => $bodySize,
             'messaging.operation' => 'publish',
+            'messaging.message.id' => $messageId,
+            'messaging.message.body.size' => $bodySize,
             'messaging.destination.name' => $proceedingJoinPoint->arguments['keys']['topic'] ?? 'unknown',
+            // 'messaging.destination.name' => $poolName,
         ]);
 
         $carrier = $this->packer->pack($span, [

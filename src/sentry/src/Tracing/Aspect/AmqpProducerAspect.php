@@ -67,10 +67,10 @@ class AmqpProducerAspect extends AbstractAspect
         $bodySize = strlen($producerMessage->payload());
         $span->setData([
             'messaging.system' => 'amqp',
-            'messaging.message.id' => $messageId,
-            'messaging.destination.name' => $poolName,
-            'messaging.message.body.size' => $bodySize,
             'messaging.operation' => 'publish',
+            'messaging.message.id' => $messageId,
+            'messaging.message.body.size' => $bodySize,
+            'messaging.destination.name' => $poolName,
             // for amqp
             'messaging.amqp.message.type' => $producerMessage->getTypeString(),
             'messaging.amqp.message.routing_key' => $producerMessage->getRoutingKey(),
