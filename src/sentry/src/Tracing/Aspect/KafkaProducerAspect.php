@@ -44,7 +44,7 @@ class KafkaProducerAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('async_queue')) {
+        if (! $this->switcher->isTracingEnable('kafka')) {
             return $proceedingJoinPoint->process();
         }
 
