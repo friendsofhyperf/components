@@ -19,6 +19,7 @@ use Hyperf\Amqp\Event\AfterConsume;
 use Hyperf\Amqp\Event\BeforeConsume;
 use Hyperf\Amqp\Event\FailToConsume;
 use Hyperf\Amqp\Message\ConsumerMessage;
+use Hyperf\Context\Context;
 use Hyperf\Event\Contract\ListenerInterface;
 use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
@@ -73,6 +74,7 @@ class TracingAmqpListener implements ListenerInterface
             $applicationHeaders = $amqpMessage->has('application_headers') ? $amqpMessage->get('application_headers') : null;
             if ($applicationHeaders && isset($applicationHeaders[Constants::TRACE_CARRIER])) {
                 [$sentryTrace, $baggage] = $this->packer->unpack($applicationHeaders[Constants::TRACE_CARRIER]);
+                Context::set(Constants::TRACE_CARRIER, $applicationHeaders[Constants::TRACE_CARRIER]);
             }
         }
 
@@ -83,7 +85,7 @@ class TracingAmqpListener implements ListenerInterface
             op: 'topic.process',
             description: $message::class,
             source: TransactionSource::custom()
-        );
+        )->setStartTimestamp(microtime(true));
     }
 
     protected function finishTransaction(AfterConsume|FailToConsume $event): void
@@ -95,11 +97,22 @@ class TracingAmqpListener implements ListenerInterface
             return;
         }
 
+        $payload = [];
+        if ($carrier = Context::get(Constants::TRACE_CARRIER)) {
+            $payload = json_decode((string) $carrier, true);
+        }
+
         /** @var ConsumerMessage $message */
         $message = $event->getMessage();
         $data = [
             'messaging.system' => 'amqp',
             'messaging.operation' => 'process',
+            'messaging.message.id' => $payload['message_id'] ?? null,
+            'messaging.message.body.size' => $payload['body_size'] ?? null,
+            'messaging.message.receive.latency' => isset($payload['publish_time']) ? (microtime(true) - $payload['publish_time']) : null,
+            'messaging.message.retry.count' => 0,
+            'messaging.destination.name' => $payload['destination_name'] ?? null,
+            // for amqp
             'messaging.amqp.message.type' => $message->getTypeString(),
             'messaging.amqp.message.routing_key' => $message->getRoutingKey(),
             'messaging.amqp.message.exchange' => $message->getExchange(),

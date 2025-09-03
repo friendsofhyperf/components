@@ -57,19 +57,34 @@ class AmqpProducerAspect extends AbstractAspect
             'topic.send',
             sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
         );
+
         if (! $span) {
             return $proceedingJoinPoint->process();
         }
+
+        $messageId = uniqid('amqp_', true);
+        $destinationName = $producerMessage->getExchange();
+        $bodySize = strlen($producerMessage->payload());
         $span->setData([
             'messaging.system' => 'amqp',
             'messaging.operation' => 'publish',
+            'messaging.message.id' => $messageId,
+            'messaging.message.body.size' => $bodySize,
+            'messaging.destination.name' => $destinationName,
+            // for amqp
             'messaging.amqp.message.type' => $producerMessage->getTypeString(),
             'messaging.amqp.message.routing_key' => $producerMessage->getRoutingKey(),
             'messaging.amqp.message.exchange' => $producerMessage->getExchange(),
             'messaging.amqp.message.pool_name' => $producerMessage->getPoolName(),
         ]);
 
-        $carrier = $this->packer->pack($span);
+        $carrier = $this->packer->pack($span, [
+            'publish_time' => microtime(true),
+            'message_id' => $messageId,
+            'destination_name' => $destinationName,
+            'body_size' => $bodySize,
+        ]);
+
         (function () use ($carrier) {
             $this->properties['application_headers'] ??= new AMQPTable();
             $this->properties['application_headers']->set(Constants::TRACE_CARRIER, $carrier);

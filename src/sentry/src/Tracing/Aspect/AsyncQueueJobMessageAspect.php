@@ -61,8 +61,8 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
 
     public function handleGet(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $queue = $proceedingJoinPoint->arguments['keys']['name'] ?? 'default';
-        Context::set('sentry.async_queue.name', $queue);
+        $destinationName = $proceedingJoinPoint->arguments['keys']['name'] ?? 'default';
+        Context::set('sentry.messaging.destination.name', $destinationName);
 
         return $proceedingJoinPoint->process();
     }
@@ -83,13 +83,14 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
             /** @var \Hyperf\AsyncQueue\Driver\Driver $driver */
             $driver = $proceedingJoinPoint->getInstance();
             $messageId = method_exists($job, 'getId') ? $job->getId() : uniqid('async_queue_', true);
-            $queueName = Context::get('sentry.async_queue.name', 'default');
+            $destinationName = Context::get('sentry.messaging.destination.name', 'default');
             $bodySize = (fn ($job) => strlen($this->packer->pack($job)))->call($driver, $job);
             $data = [
                 'messaging.system' => 'async_queue',
+                'messaging.operation' => 'publish',
                 'messaging.message.id' => $messageId,
-                'messaging.destination.name' => $queueName,
                 'messaging.message.body.size' => $bodySize,
+                'messaging.destination.name' => $destinationName,
             ];
             $data += match (true) {
                 $driver instanceof RedisDriver => $this->buildSpanDataOfRedisDriver($driver),
@@ -100,7 +101,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
             $carrier = $this->packer->pack($span, [
                 'publish_time' => microtime(true),
                 'message_id' => $messageId,
-                'queue_name' => $queueName,
+                'destination_name' => $destinationName,
                 'body_size' => $bodySize,
             ]);
 
