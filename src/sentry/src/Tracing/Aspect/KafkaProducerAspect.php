@@ -102,17 +102,15 @@ class KafkaProducerAspect extends AbstractAspect
         $packer = $this->packer;
 
         foreach ($messages as $message) {
-            (
-                function () use ($span, $packer) {
-                    $carrier = $packer->pack($span, [
-                        'publish_time' => microtime(true),
-                        'message_id' => uniqid('kafka_', true),
-                        'destination_name' => $this->getTopic(),
-                        'body_size' => strlen((string) $this->getValue()),
-                    ]);
-                    $this->headers[] = (new RecordHeader())->setHeaderKey(Constants::TRACE_CARRIER)->setValue($carrier);
-                }
-            )->call($message);
+            (function () use ($span, $packer) {
+                $carrier = $packer->pack($span, [
+                    'publish_time' => microtime(true),
+                    'message_id' => uniqid('kafka_', true),
+                    'destination_name' => $this->getTopic(),
+                    'body_size' => strlen((string) $this->getValue()),
+                ]);
+                $this->headers[] = (new RecordHeader())->setHeaderKey(Constants::TRACE_CARRIER)->setValue($carrier);
+            })->call($message);
         }
 
         return tap($proceedingJoinPoint->process(), fn () => $span->setOrigin('auto.kafka')->finish());
