@@ -14,6 +14,9 @@ namespace FriendsOfHyperf\Sentry\Util;
 use Sentry\Tracing\Span;
 use Throwable;
 
+/**
+ * @deprecated since v3.1, use FriendsOfHyperf\Sentry\Util\Carrier instead, will be removed in v3.2
+ */
 class CarrierPacker
 {
     /**

@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Util\CarrierPacker;
+use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Amqp\Event\AfterConsume;
 use Hyperf\Amqp\Event\BeforeConsume;
 use Hyperf\Amqp\Event\FailToConsume;
@@ -32,8 +32,7 @@ class TracingAmqpListener implements ListenerInterface
     use SpanStarter;
 
     public function __construct(
-        protected Switcher $switcher,
-        protected CarrierPacker $packer
+        protected Switcher $switcher
     ) {
     }
 
@@ -73,7 +72,7 @@ class TracingAmqpListener implements ListenerInterface
             /** @var AMQPTable|null $applicationHeaders */
             $applicationHeaders = $amqpMessage->has('application_headers') ? $amqpMessage->get('application_headers') : null;
             if ($applicationHeaders && isset($applicationHeaders[Constants::TRACE_CARRIER])) {
-                [$sentryTrace, $baggage] = $this->packer->unpack($applicationHeaders[Constants::TRACE_CARRIER]);
+                [$sentryTrace, $baggage] = Carrier::fromJson($applicationHeaders[Constants::TRACE_CARRIER])->extract();
                 Context::set(Constants::TRACE_CARRIER, $applicationHeaders[Constants::TRACE_CARRIER]);
             }
         }
@@ -97,10 +96,8 @@ class TracingAmqpListener implements ListenerInterface
             return;
         }
 
-        $payload = [];
-        if ($carrier = Context::get(Constants::TRACE_CARRIER)) {
-            $payload = json_decode((string) $carrier, true);
-        }
+        $carrier = Carrier::fromJson((string) Context::get(Constants::TRACE_CARRIER));
+        $payload = $carrier->toArray();
 
         /** @var ConsumerMessage $message */
         $message = $event->getMessage();
