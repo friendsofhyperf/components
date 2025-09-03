@@ -82,7 +82,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
         try {
             $messageId = method_exists($job, 'getId') ? $job->getId() : uniqid('async_queue_', true);
             $queueName = Context::get('sentry.async_queue.name', 'default');
-            $bodySize = (fn ($job) => strlen($this->packer->pack($job)))->call($this, $job);
+            $bodySize = (fn ($job) => strlen($this->packer->pack($job)))->call($proceedingJoinPoint->getInstance(), $job);
             $data = [
                 'messaging.system' => 'async_queue',
                 'messaging.message.id' => $messageId,
