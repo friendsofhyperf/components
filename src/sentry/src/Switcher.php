@@ -24,12 +24,12 @@ class Switcher
 
     public function isEnable(string $key): bool
     {
-        return (bool) $this->config->get('sentry.enable.' . $key, false);
+        return (bool) $this->config->get('sentry.enable.' . $key, true);
     }
 
     public function isBreadcrumbEnable(string $key): bool
     {
-        return (bool) $this->config->get('sentry.breadcrumbs.' . $key, false);
+        return (bool) $this->config->get('sentry.breadcrumbs.' . $key, true);
     }
 
     public function isTracingEnable(string $key): bool
@@ -38,7 +38,7 @@ class Switcher
             return false;
         }
 
-        return (bool) $this->config->get('sentry.tracing.enable.' . $key, false);
+        return (bool) $this->config->get('sentry.tracing.enable.' . $key, true);
     }
 
     public function isTracingSpanEnable(string $key): bool
@@ -47,12 +47,12 @@ class Switcher
             return false;
         }
 
-        return (bool) $this->config->get('sentry.tracing.spans.' . $key, false);
+        return (bool) $this->config->get('sentry.tracing.spans.' . $key, true);
     }
 
     public function isTracingExtraTagEnable(string $key): bool
     {
-        return (bool) ($this->config->get('sentry.tracing.extra_tags', [])[$key] ?? false);
+        return (bool) ($this->config->get('sentry.tracing.extra_tags', [])[$key] ?? true);
     }
 
     public function isExceptionIgnored(string|Throwable $exception): bool

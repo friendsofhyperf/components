@@ -21,7 +21,7 @@ beforeEach(function () {
                 'extra_tags' => [
                     'foo.bar' => true,
                     'foo.baz' => true,
-                    'foo.bar.baz' => true,
+                    'foo.bar.baz' => false,
                 ],
             ],
         ],
@@ -34,6 +34,6 @@ test('test is tracing tag enable', function ($key, $expected) {
 })->with([
     ['foo.bar', true],
     ['foo.baz', true],
-    ['foo.bar.baz', true],
-    ['foo.bay', false],
+    ['foo.bar.baz', false],
+    ['foo.bay', true],
 ]);
