@@ -82,7 +82,7 @@ class TracingAsyncQueueListener implements ListenerInterface
             op: 'queue.process',
             description: 'async_queue: ' . $job::class,
             source: TransactionSource::custom()
-        );
+        )->setStartTimestamp(microtime(true));
     }
 
     protected function finishTransaction(AfterHandle|RetryHandle|FailedHandle $event): void
@@ -94,7 +94,17 @@ class TracingAsyncQueueListener implements ListenerInterface
             return;
         }
 
-        $data = [];
+        /** @var string|null $carrier */
+        $carrier = Context::get(Constants::TRACE_CARRIER, null, Coroutine::parentId());
+        $payload = json_decode((string) $carrier, true);
+        $data = [
+            'messaging.system' => 'async_queue',
+            'messaging.message.id' => $payload['message_id'] ?? null,
+            'messaging.destination.name' => $payload['queue_name'] ?? null,
+            'messaging.message.body.size' => $payload['body_size'] ?? null,
+            'messaging.message.receive.latency' => microtime(true) - ($payload['publish_time'] ?? 0),
+            'messaging.message.retry.count' => 0,
+        ];
         $tags = [];
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {

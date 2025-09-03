@@ -19,7 +19,6 @@ use Hyperf\AsyncQueue\Driver\RedisDriver;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Throwable;
 
 use function Hyperf\Support\with;
 
@@ -33,6 +32,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     use SpanStarter;
 
     public array $classes = [
+        'Hyperf\AsyncQueue\Driver\DriverFactory::get',
         'Hyperf\AsyncQueue\Driver\*Driver::push',
         'Hyperf\AsyncQueue\JobMessage::__serialize',
         'Hyperf\AsyncQueue\JobMessage::__unserialize',
@@ -51,6 +51,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
         }
 
         return match ($proceedingJoinPoint->methodName) {
+            'get' => $this->handleGet($proceedingJoinPoint),
             'push' => $this->handlePush($proceedingJoinPoint),
             '__serialize' => $this->handleSerialize($proceedingJoinPoint),
             '__unserialize' => $this->handleUnserialize($proceedingJoinPoint),
@@ -58,11 +59,18 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
         };
     }
 
+    public function handleGet(ProceedingJoinPoint $proceedingJoinPoint)
+    {
+        $queue = $proceedingJoinPoint->arguments['keys']['name'] ?? 'default';
+        Context::set('sentry.async_queue.name', $queue);
+    }
+
     public function handlePush(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        $job = $proceedingJoinPoint->arguments['keys']['job'] ?? null;
         $span = $this->startSpan(
             'queue.publish',
-            $proceedingJoinPoint->arguments['keys']['job']::class
+            $job::class
         );
 
         if (! $span) {
@@ -70,8 +78,14 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
         }
 
         try {
+            $messageId = method_exists($job, 'getId') ? $job->getId() : uniqid('async_queue_', true);
+            $queueName = Context::get('sentry.async_queue.name', 'default');
+            $bodySize = (fn ($job) => strlen($this->packer->pack($job)))->call($this, $job);
             $data = [
                 'messaging.system' => 'async_queue',
+                'messaging.message.id' => $messageId,
+                'messaging.destination.name' => $queueName,
+                'messaging.message.body.size' => $bodySize,
             ];
 
             /** @var \Hyperf\AsyncQueue\Driver\Driver $driver */
@@ -82,11 +96,16 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
             };
 
             $span->setData($data);
-            $carrier = $this->packer->pack($span);
+            $carrier = $this->packer->pack($span, [
+                'publish_time' => microtime(true),
+                'message_id' => $messageId,
+                'queue_name' => $queueName,
+                'body_size' => $bodySize,
+            ]);
+
             Context::set(Constants::TRACE_CARRIER, $carrier);
 
             return $proceedingJoinPoint->process();
-        } catch (Throwable) {
         } finally {
             $span->setOrigin('auto.queue')->finish();
         }
