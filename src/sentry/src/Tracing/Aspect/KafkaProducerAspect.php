@@ -58,7 +58,7 @@ class KafkaProducerAspect extends AbstractAspect
     protected function sendAsync(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $span = $this->startSpan(
-            'topic.send',
+            'queue.publish',
             sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
         );
 
