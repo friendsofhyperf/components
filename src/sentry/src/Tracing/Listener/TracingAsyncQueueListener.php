@@ -98,6 +98,7 @@ class TracingAsyncQueueListener implements ListenerInterface
         $carrier = Context::get(Constants::TRACE_CARRIER, null, Coroutine::parentId());
         $payload = json_decode((string) $carrier, true);
         $data = [
+            'messaging.system' => 'async_queue',
             'messaging.message.id' => $payload['message_id'] ?? null,
             'messaging.destination.name' => $payload['queue_name'] ?? null,
             'messaging.message.body.size' => $payload['body_size'] ?? null,
