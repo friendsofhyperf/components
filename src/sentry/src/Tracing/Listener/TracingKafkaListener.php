@@ -15,6 +15,7 @@ use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\CarrierPacker;
+use Hyperf\Context\Context;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Kafka\Event\AfterConsume;
 use Hyperf\Kafka\Event\BeforeConsume;
@@ -69,6 +70,7 @@ class TracingKafkaListener implements ListenerInterface
             foreach ($message->getHeaders() as $header) {
                 if ($header->getHeaderKey() === Constants::TRACE_CARRIER) {
                     [$sentryTrace, $baggage] = $this->packer->unpack($header->getValue());
+                    Context::set(Constants::TRACE_CARRIER, $header->getValue());
                     break;
                 }
             }
@@ -81,7 +83,7 @@ class TracingKafkaListener implements ListenerInterface
             op: $consumer->getTopic() . ' process',
             description: $consumer::class,
             source: TransactionSource::custom()
-        );
+        )->setStartTimestamp(microtime(true));
     }
 
     protected function finishTransaction(AfterConsume|FailToConsume $event): void
@@ -93,12 +95,22 @@ class TracingKafkaListener implements ListenerInterface
             return;
         }
 
+        $payload = [];
+        if ($carrier = (string) Context::get(Constants::TRACE_CARRIER)) {
+            $payload = json_decode($carrier, true);
+        }
+
         $consumer = $event->getConsumer();
         $tags = [];
         $data = [
             'messaging.system' => 'kafka',
             'messaging.operation' => 'process',
+            'messaging.message.id' => $payload['message_id'] ?? null,
+            'messaging.message.body.size' => $payload['body_size'] ?? null,
+            'messaging.message.receive.latency' => isset($payload['publish_time']) ? (microtime(true) - $payload['publish_time']) : null,
+            'messaging.message.retry.count' => 0,
             'messaging.destination.name' => $consumer->getTopic(),
+            // for kafka
             'messaging.kafka.consumer.group' => $consumer->getGroupId(),
             'messaging.kafka.consumer.pool' => $consumer->getPool(),
         ];

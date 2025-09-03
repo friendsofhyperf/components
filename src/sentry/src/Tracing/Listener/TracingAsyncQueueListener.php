@@ -99,11 +99,12 @@ class TracingAsyncQueueListener implements ListenerInterface
         $payload = json_decode((string) $carrier, true);
         $data = [
             'messaging.system' => 'async_queue',
+            'messaging.operation' => 'process',
             'messaging.message.id' => $payload['message_id'] ?? null,
-            'messaging.destination.name' => $payload['queue_name'] ?? null,
             'messaging.message.body.size' => $payload['body_size'] ?? null,
-            'messaging.message.receive.latency' => microtime(true) - ($payload['publish_time'] ?? 0),
+            'messaging.message.receive.latency' => isset($payload['publish_time']) ? (microtime(true) - $payload['publish_time']) : null,
             'messaging.message.retry.count' => $event->getMessage()->getAttempts(),
+            'messaging.destination.name' => $payload['destination_name'] ?? null,
         ];
         $tags = [];
 

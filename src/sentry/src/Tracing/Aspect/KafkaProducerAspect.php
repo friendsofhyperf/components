@@ -23,6 +23,8 @@ use function Hyperf\Tappable\tap;
 
 /**
  * @property array $headers
+ * @property string $name
+ * @mixin ProduceMessage
  */
 class KafkaProducerAspect extends AbstractAspect
 {
@@ -57,13 +59,24 @@ class KafkaProducerAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
+        $messageId = uniqid('kafka_', true);
+        $destinationName = $proceedingJoinPoint->arguments['keys']['topic'] ?? 'unknown';
+        $bodySize = strlen($proceedingJoinPoint->arguments['keys']['value'] ?? '');
+
         $span->setData([
             'messaging.system' => 'kafka',
             'messaging.operation' => 'publish',
-            'messaging.destination.name' => $proceedingJoinPoint->arguments['keys']['topic'] ?? 'unknown',
+            'messaging.message.id' => $messageId,
+            'messaging.message.body.size' => $bodySize,
+            'messaging.destination.name' => $destinationName,
         ]);
 
-        $carrier = $this->packer->pack($span);
+        $carrier = $this->packer->pack($span, [
+            'publish_time' => microtime(true),
+            'message_id' => $messageId,
+            'destination_name' => $destinationName,
+            'body_size' => $bodySize,
+        ]);
         $headers = $proceedingJoinPoint->arguments['keys']['headers'] ?? [];
         $headers[] = (new RecordHeader())
             ->setHeaderKey(Constants::TRACE_CARRIER)
@@ -86,14 +99,18 @@ class KafkaProducerAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $carrier = $this->packer->pack($span);
+        $packer = $this->packer;
 
         foreach ($messages as $message) {
-            (
-                fn () => $this->headers[] = (new RecordHeader())
-                    ->setHeaderKey(Constants::TRACE_CARRIER)
-                    ->setValue($carrier)
-            )->call($message);
+            (function () use ($span, $packer) {
+                $carrier = $packer->pack($span, [
+                    'publish_time' => microtime(true),
+                    'message_id' => uniqid('kafka_', true),
+                    'destination_name' => $this->getTopic(),
+                    'body_size' => strlen((string) $this->getValue()),
+                ]);
+                $this->headers[] = (new RecordHeader())->setHeaderKey(Constants::TRACE_CARRIER)->setValue($carrier);
+            })->call($message);
         }
 
         return tap($proceedingJoinPoint->process(), fn () => $span->setOrigin('auto.kafka')->finish());
