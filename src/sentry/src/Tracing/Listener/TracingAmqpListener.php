@@ -111,7 +111,7 @@ class TracingAmqpListener implements ListenerInterface
             'messaging.message.body.size' => $payload['body_size'] ?? null,
             'messaging.message.receive.latency' => isset($payload['publish_time']) ? (microtime(true) - $payload['publish_time']) : null,
             'messaging.message.retry.count' => 0,
-            'messaging.destination.name' => $payload['destination_name'] ?? null,
+            'messaging.destination.name' => $payload['destination_name'] ?? $message->getExchange(),
             // for amqp
             'messaging.amqp.message.type' => $message->getTypeString(),
             'messaging.amqp.message.routing_key' => $message->getRoutingKey(),
