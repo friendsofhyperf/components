@@ -34,12 +34,13 @@ class CarrierPacker
         }
     }
 
-    public function pack(Span $span): string
+    public function pack(Span $span, array $extra = []): string
     {
         return json_encode([
             'sentry-trace' => $span->toTraceparent(),
             'baggage' => $span->toBaggage(),
             'traceparent' => $span->toW3CTraceparent(),
+            ...$extra,
         ]);
     }
 }
