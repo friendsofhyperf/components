@@ -59,7 +59,7 @@ class KafkaProducerAspect extends AbstractAspect
         }
 
         $messageId = uniqid('kafka_', true);
-        $poolName = (fn () => $this->name)->call($proceedingJoinPoint->getInstance());
+        $destinationName = $proceedingJoinPoint->arguments['keys']['topic'] ?? 'unknown';
         $bodySize = strlen($proceedingJoinPoint->arguments['keys']['value'] ?? '');
 
         $span->setData([
@@ -67,14 +67,13 @@ class KafkaProducerAspect extends AbstractAspect
             'messaging.operation' => 'publish',
             'messaging.message.id' => $messageId,
             'messaging.message.body.size' => $bodySize,
-            'messaging.destination.name' => $proceedingJoinPoint->arguments['keys']['topic'] ?? 'unknown',
-            // 'messaging.destination.name' => $poolName,
+            'messaging.destination.name' => $destinationName,
         ]);
 
         $carrier = $this->packer->pack($span, [
             'publish_time' => microtime(true),
             'message_id' => $messageId,
-            'queue_name' => $poolName,
+            'destination_name' => $destinationName,
             'body_size' => $bodySize,
         ]);
         $headers = $proceedingJoinPoint->arguments['keys']['headers'] ?? [];

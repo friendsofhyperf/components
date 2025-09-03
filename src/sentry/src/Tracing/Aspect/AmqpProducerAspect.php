@@ -63,24 +63,24 @@ class AmqpProducerAspect extends AbstractAspect
         }
 
         $messageId = uniqid('amqp_', true);
-        $poolName = $producerMessage->getPoolName() ?: 'default';
+        $destinationName = $producerMessage->getExchange();
         $bodySize = strlen($producerMessage->payload());
         $span->setData([
             'messaging.system' => 'amqp',
             'messaging.operation' => 'publish',
             'messaging.message.id' => $messageId,
             'messaging.message.body.size' => $bodySize,
-            'messaging.destination.name' => $poolName,
+            'messaging.destination.name' => $destinationName,
             // for amqp
             'messaging.amqp.message.type' => $producerMessage->getTypeString(),
             'messaging.amqp.message.routing_key' => $producerMessage->getRoutingKey(),
             'messaging.amqp.message.exchange' => $producerMessage->getExchange(),
-            'messaging.amqp.message.pool_name' => $poolName,
+            'messaging.amqp.message.pool_name' => $producerMessage->getPoolName(),
         ]);
 
         $carrier = $this->packer->pack($span, ['publish_time' => microtime(true),
             'message_id' => $messageId,
-            'queue_name' => $poolName,
+            'destination_name' => $destinationName,
             'body_size' => $bodySize,
         ]);
 
