@@ -109,7 +109,7 @@ class TracingKafkaListener implements ListenerInterface
             'messaging.message.body.size' => $payload['body_size'] ?? null,
             'messaging.message.receive.latency' => isset($payload['publish_time']) ? (microtime(true) - $payload['publish_time']) : null,
             'messaging.message.retry.count' => 0,
-            'messaging.destination.name' => $consumer->getTopic(),
+            'messaging.destination.name' => $payload['destination_name'] ?? 'unknown',
             // for kafka
             'messaging.kafka.consumer.group' => $consumer->getGroupId(),
             'messaging.kafka.consumer.pool' => $consumer->getPool(),
