@@ -92,7 +92,6 @@ return [
         'enable' => [
             'amqp' => env('SENTRY_TRACING_ENABLE_AMQP', true),
             'async_queue' => env('SENTRY_TRACING_ENABLE_ASYNC_QUEUE', true),
-            'cache' => env('SENTRY_TRACING_ENABLE_CACHE', true),
             'command' => env('SENTRY_TRACING_ENABLE_COMMAND', true),
             'crontab' => env('SENTRY_TRACING_ENABLE_CRONTAB', true),
             'kafka' => env('SENTRY_TRACING_ENABLE_KAFKA', true),
@@ -100,6 +99,7 @@ return [
             'request' => env('SENTRY_TRACING_ENABLE_REQUEST', true),
         ],
         'spans' => [
+            'cache' => env('SENTRY_TRACING_SPANS_CACHE', true),
             'coroutine' => env('SENTRY_TRACING_SPANS_COROUTINE', true),
             'db' => env('SENTRY_TRACING_SPANS_DB', true),
             'elasticsearch' => env('SENTRY_TRACING_SPANS_ELASTICSEARCH', true),
