@@ -78,7 +78,8 @@ class AmqpProducerAspect extends AbstractAspect
             'messaging.amqp.message.pool_name' => $producerMessage->getPoolName(),
         ]);
 
-        $carrier = $this->packer->pack($span, ['publish_time' => microtime(true),
+        $carrier = $this->packer->pack($span, [
+            'publish_time' => microtime(true),
             'message_id' => $messageId,
             'destination_name' => $destinationName,
             'body_size' => $bodySize,
