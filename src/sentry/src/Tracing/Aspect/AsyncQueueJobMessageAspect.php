@@ -61,8 +61,8 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
 
     public function handleGet(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $queue = $proceedingJoinPoint->arguments['keys']['name'] ?? 'default';
-        Context::set('sentry.messaging.destination.name', $queue);
+        $destinationName = $proceedingJoinPoint->arguments['keys']['name'] ?? 'default';
+        Context::set('sentry.messaging.destination.name', $destinationName);
 
         return $proceedingJoinPoint->process();
     }
