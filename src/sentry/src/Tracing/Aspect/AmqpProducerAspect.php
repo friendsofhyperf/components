@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
+use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\Amqp\Message\ProducerMessage;
@@ -32,19 +33,25 @@ class AmqpProducerAspect extends AbstractAspect
         'Hyperf\Amqp\Producer::produceMessage',
     ];
 
-    public function __construct(protected CarrierPacker $packer)
-    {
+    public function __construct(
+        protected Switcher $switcher,
+        protected CarrierPacker $packer
+    ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        if (! $this->switcher->isTracingEnable('async_queue')) {
+            return $proceedingJoinPoint->process();
+        }
+
         return match ($proceedingJoinPoint->methodName) {
-            'produceMessage' => $this->produceMessage($proceedingJoinPoint),
+            'produceMessage' => $this->handleProduceMessage($proceedingJoinPoint),
             default => $proceedingJoinPoint->process(),
         };
     }
 
-    protected function produceMessage(ProceedingJoinPoint $proceedingJoinPoint)
+    protected function handleProduceMessage(ProceedingJoinPoint $proceedingJoinPoint)
     {
         /** @var ProducerMessage|null $producerMessage */
         $producerMessage = $proceedingJoinPoint->arguments['keys']['producerMessage'] ?? null;
