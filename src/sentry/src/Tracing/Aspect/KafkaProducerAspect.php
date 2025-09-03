@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
+use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\CarrierPacker;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -35,12 +36,18 @@ class KafkaProducerAspect extends AbstractAspect
         'Hyperf\Kafka\Producer::sendBatchAsync',
     ];
 
-    public function __construct(protected CarrierPacker $packer)
-    {
+    public function __construct(
+        protected Switcher $switcher,
+        protected CarrierPacker $packer
+    ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        if (! $this->switcher->isTracingEnable('async_queue')) {
+            return $proceedingJoinPoint->process();
+        }
+
         return match ($proceedingJoinPoint->methodName) {
             'sendAsync' => $this->sendAsync($proceedingJoinPoint),
             'sendBatchAsync' => $this->sendBatchAsync($proceedingJoinPoint),
