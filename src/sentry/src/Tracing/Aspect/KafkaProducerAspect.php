@@ -24,6 +24,7 @@ use function Hyperf\Tappable\tap;
 /**
  * @property array $headers
  * @property string $name
+ * @mixin ProduceMessage
  */
 class KafkaProducerAspect extends AbstractAspect
 {
@@ -98,13 +99,19 @@ class KafkaProducerAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $carrier = $this->packer->pack($span);
+        $packer = $this->packer;
 
         foreach ($messages as $message) {
             (
-                fn () => $this->headers[] = (new RecordHeader())
-                    ->setHeaderKey(Constants::TRACE_CARRIER)
-                    ->setValue($carrier)
+                function () use ($span, $packer) {
+                    $carrier = $packer->pack($span, [
+                        'publish_time' => microtime(true),
+                        'message_id' => uniqid('kafka_', true),
+                        'destination_name' => $this->getTopic(),
+                        'body_size' => strlen((string) $this->getValue()),
+                    ]);
+                    $this->headers[] = (new RecordHeader())->setHeaderKey(Constants::TRACE_CARRIER)->setValue($carrier);
+                }
             )->call($message);
         }
 
