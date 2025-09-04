@@ -51,22 +51,21 @@ class TracingRedisListener implements ListenerInterface
 
         $pool = $this->container->get(PoolFactory::class)->getPool($event->connectionName);
         $config = $this->config->get('redis.' . $event->connectionName, []);
-
         $redisStatement = (string) new RedisCommand($event->command, $event->parameters);
 
         $data = [
             'coroutine.id' => Coroutine::id(),
-            'duration' => $event->time * 1000,
             'db.system' => 'redis',
+            'db.statement' => $redisStatement,
             'db.redis.connection' => $event->connectionName,
             'db.redis.database_index' => $config['db'] ?? 0,
             'db.redis.parameters' => $event->parameters,
-            'db.statement' => $redisStatement,
             'db.redis.pool.name' => $event->connectionName,
             'db.redis.pool.max' => $pool->getOption()->getMaxConnections(),
             'db.redis.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
             'db.redis.pool.idle' => $pool->getConnectionsInChannel(),
             'db.redis.pool.using' => $pool->getCurrentConnections(),
+            'duration' => $event->time * 1000,
         ];
 
         // rule: operation db.table
@@ -94,7 +93,7 @@ class TracingRedisListener implements ListenerInterface
             }
         }
 
-        $span->setOrigin('auto.redis')
+        $span->setOrigin('auto.cache.redis')
             ->setData($data)
             ->finish();
     }
