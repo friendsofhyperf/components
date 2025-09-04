@@ -15,7 +15,9 @@ use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\Carrier;
+use Hyperf\Amqp\Annotation\Producer;
 use Hyperf\Amqp\Message\ProducerMessage;
+use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use PhpAmqpLib\Wire\AMQPTable;
@@ -67,8 +69,22 @@ class AmqpProducerAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
+        $routingKey = $producerMessage->getRoutingKey();
+        $exchange = $producerMessage->getExchange();
+        $poolName = $producerMessage->getPoolName();
+
+        if (class_exists(AnnotationCollector::class)) {
+            /** @var Producer|null $annotation */
+            $annotation = AnnotationCollector::getClassAnnotation(get_class($producerMessage), Producer::class);
+            if ($annotation) {
+                $annotation->routingKey && $routingKey = $annotation->routingKey;
+                $annotation->exchange && $exchange = $annotation->exchange;
+                $annotation->pool && $poolName = $annotation->pool;
+            }
+        }
+
         $messageId = uniqid('amqp_', true);
-        $destinationName = $producerMessage->getExchange();
+        $destinationName = $exchange ?: 'default';
         $bodySize = strlen($producerMessage->payload());
         $span->setData([
             'messaging.system' => 'amqp',
@@ -78,9 +94,9 @@ class AmqpProducerAspect extends AbstractAspect
             'messaging.destination.name' => $destinationName,
             // for amqp
             'messaging.amqp.message.type' => $producerMessage->getTypeString(),
-            'messaging.amqp.message.routing_key' => $producerMessage->getRoutingKey(),
-            'messaging.amqp.message.exchange' => $producerMessage->getExchange(),
-            'messaging.amqp.message.pool_name' => $producerMessage->getPoolName(),
+            'messaging.amqp.message.routing_key' => $routingKey,
+            'messaging.amqp.message.exchange' => $exchange,
+            'messaging.amqp.message.pool_name' => $poolName,
         ]);
         $carrier = Carrier::fromSpan($span)->with([
             'publish_time' => microtime(true),
