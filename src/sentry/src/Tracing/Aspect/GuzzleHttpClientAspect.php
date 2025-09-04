@@ -81,6 +81,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
             'baggage' => $span->toBaggage(),
             'traceparent' => $span->toW3CTraceparent(),
         ]);
+        // Override the headers
         $proceedingJoinPoint->arguments['keys']['options']['headers'] = $options['headers'];
 
         if (! $span) {
@@ -115,22 +116,25 @@ class GuzzleHttpClientAspect extends AbstractAspect
             ];
 
             if ($response = $stats->getResponse()) {
-                $data['response.status'] = $response->getStatusCode();
-                $data['response.reason'] = $response->getReasonPhrase();
-                $data['response.headers'] = $response->getHeaders();
-                $data['response.body.size'] = $response->getBody()->getSize() ?? 0;
+                $data = array_merge($data, [
+                    'http.response.status_code' => $response->getStatusCode(),
+                    'http.response.reason' => $response->getReasonPhrase(),
+                    'http.response.headers' => $response->getHeaders(),
+                    'http.response.body.size' => $response->getBody()->getSize() ?? 0,
+                ]);
 
-                if ($this->switcher->isTracingExtraTagEnable('response.body')) {
-                    $data['response.body'] = $response->getBody()->getContents();
+                if ($this->switcher->isTracingExtraTagEnable('http.response.body.contents')) {
+                    $data['http.response.body.contents'] = $response->getBody()->getContents();
                     $response->getBody()->isSeekable() && $response->getBody()->rewind();
                 }
 
+                $span->setStatus(SpanStatus::createFromHttpStatusCode($response->getStatusCode()));
+
                 if ($response->getStatusCode() >= 400 && $response->getStatusCode() < 600) {
-                    $span->setStatus(SpanStatus::internalError())
-                        ->setTags([
-                            'error' => true,
-                            'response.reason' => $response->getReasonPhrase(),
-                        ]);
+                    $span->setTags([
+                        'error' => true,
+                        'http.response.reason' => $response->getReasonPhrase(),
+                    ]);
                 }
             }
 
@@ -143,8 +147,10 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     'exception.code' => $exception->getCode(),
                 ]);
                 if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
-                    $data['exception.message'] = $exception->getMessage();
-                    $data['exception.stack_trace'] = (string) $exception;
+                    $data = array_merge($data, [
+                        'exception.message' => $exception->getMessage(),
+                        'exception.stack_trace' => (string) $exception,
+                    ]);
                 }
             }
 
