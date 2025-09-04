@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Util\CarrierPacker;
+use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\AsyncQueue\Event\AfterHandle;
 use Hyperf\AsyncQueue\Event\BeforeHandle;
 use Hyperf\AsyncQueue\Event\FailedHandle;
@@ -31,8 +31,7 @@ class TracingAsyncQueueListener implements ListenerInterface
     use SpanStarter;
 
     public function __construct(
-        protected Switcher $switcher,
-        protected CarrierPacker $packer
+        protected Switcher $switcher
     ) {
     }
 
@@ -64,20 +63,14 @@ class TracingAsyncQueueListener implements ListenerInterface
 
     protected function startTransaction(BeforeHandle $event): void
     {
-        $sentryTrace = $baggage = '';
-
-        /** @var string|null $carrier */
+        /** @var Carrier|null $carrier */
         $carrier = Context::get(Constants::TRACE_CARRIER, null, Coroutine::parentId());
-
-        if ($carrier) {
-            [$sentryTrace, $baggage] = $this->packer->unpack($carrier);
-        }
 
         $job = $event->getMessage()->job();
 
         $this->continueTrace(
-            sentryTrace: $sentryTrace,
-            baggage: $baggage,
+            sentryTrace: $carrier?->getSentryTrace(),
+            baggage: $carrier?->getBaggage(),
             name: $job::class,
             op: 'queue.process',
             description: 'async_queue: ' . $job::class,
@@ -94,17 +87,16 @@ class TracingAsyncQueueListener implements ListenerInterface
             return;
         }
 
-        /** @var string|null $carrier */
+        /** @var Carrier|null $carrier */
         $carrier = Context::get(Constants::TRACE_CARRIER, null, Coroutine::parentId());
-        $payload = json_decode((string) $carrier, true);
         $data = [
             'messaging.system' => 'async_queue',
             'messaging.operation' => 'process',
-            'messaging.message.id' => $payload['message_id'] ?? null,
-            'messaging.message.body.size' => $payload['body_size'] ?? null,
-            'messaging.message.receive.latency' => isset($payload['publish_time']) ? (microtime(true) - $payload['publish_time']) : null,
+            'messaging.message.id' => $carrier?->get('message_id'),
+            'messaging.message.body.size' => $carrier?->get('body_size'),
+            'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
             'messaging.message.retry.count' => $event->getMessage()->getAttempts(),
-            'messaging.destination.name' => $payload['destination_name'] ?? null,
+            'messaging.destination.name' => $carrier?->get('destination_name'),
         ];
         $tags = [];
 

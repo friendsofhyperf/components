@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Util\CarrierPacker;
+use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Context\Context;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Kafka\Event\AfterConsume;
@@ -30,8 +30,7 @@ class TracingKafkaListener implements ListenerInterface
     use SpanStarter;
 
     public function __construct(
-        protected Switcher $switcher,
-        protected CarrierPacker $packer
+        protected Switcher $switcher
     ) {
     }
 
@@ -64,21 +63,21 @@ class TracingKafkaListener implements ListenerInterface
     {
         $consumer = $event->getConsumer();
         $message = $event->getData();
-        $sentryTrace = $baggage = '';
+        $carrier = null;
 
         if ($message instanceof ConsumeMessage) {
             foreach ($message->getHeaders() as $header) {
                 if ($header->getHeaderKey() === Constants::TRACE_CARRIER) {
-                    [$sentryTrace, $baggage] = $this->packer->unpack($header->getValue());
-                    Context::set(Constants::TRACE_CARRIER, $header->getValue());
+                    $carrier = Carrier::fromJson($header->getValue());
+                    Context::set(Constants::TRACE_CARRIER, $carrier);
                     break;
                 }
             }
         }
 
         $this->continueTrace(
-            sentryTrace: $sentryTrace,
-            baggage: $baggage,
+            sentryTrace: $carrier?->getSentryTrace() ?? '',
+            baggage: $carrier?->getBaggage() ?? '',
             name: $consumer->getTopic() . ' process',
             op: 'queue.process',
             description: $consumer::class,
@@ -95,21 +94,18 @@ class TracingKafkaListener implements ListenerInterface
             return;
         }
 
-        $payload = [];
-        if ($carrier = (string) Context::get(Constants::TRACE_CARRIER)) {
-            $payload = json_decode($carrier, true);
-        }
-
+        /** @var Carrier|null $carrier */
+        $carrier = Context::get(Constants::TRACE_CARRIER);
         $consumer = $event->getConsumer();
         $tags = [];
         $data = [
             'messaging.system' => 'kafka',
             'messaging.operation' => 'process',
-            'messaging.message.id' => $payload['message_id'] ?? null,
-            'messaging.message.body.size' => $payload['body_size'] ?? null,
-            'messaging.message.receive.latency' => isset($payload['publish_time']) ? (microtime(true) - $payload['publish_time']) : null,
+            'messaging.message.id' => $carrier?->get('message_id'),
+            'messaging.message.body.size' => $carrier?->get('body_size'),
+            'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
             'messaging.message.retry.count' => 0,
-            'messaging.destination.name' => $payload['destination_name'] ?? 'unknown',
+            'messaging.destination.name' => $carrier?->get('destination_name'),
             // for kafka
             'messaging.kafka.consumer.group' => $consumer->getGroupId(),
             'messaging.kafka.consumer.pool' => $consumer->getPool(),

@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Util\CarrierPacker;
+use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Amqp\Event\AfterConsume;
 use Hyperf\Amqp\Event\BeforeConsume;
 use Hyperf\Amqp\Event\FailToConsume;
@@ -32,8 +32,7 @@ class TracingAmqpListener implements ListenerInterface
     use SpanStarter;
 
     public function __construct(
-        protected Switcher $switcher,
-        protected CarrierPacker $packer
+        protected Switcher $switcher
     ) {
     }
 
@@ -65,7 +64,7 @@ class TracingAmqpListener implements ListenerInterface
     protected function startTransaction(BeforeConsume $event): void
     {
         $message = $event->getMessage();
-        $sentryTrace = $baggage = '';
+        $carrier = null;
 
         if (method_exists($event, 'getAMQPMessage')) {
             /** @var AMQPMessage $amqpMessage */
@@ -73,14 +72,14 @@ class TracingAmqpListener implements ListenerInterface
             /** @var AMQPTable|null $applicationHeaders */
             $applicationHeaders = $amqpMessage->has('application_headers') ? $amqpMessage->get('application_headers') : null;
             if ($applicationHeaders && isset($applicationHeaders[Constants::TRACE_CARRIER])) {
-                [$sentryTrace, $baggage] = $this->packer->unpack($applicationHeaders[Constants::TRACE_CARRIER]);
-                Context::set(Constants::TRACE_CARRIER, $applicationHeaders[Constants::TRACE_CARRIER]);
+                $carrier = Carrier::fromJson($applicationHeaders[Constants::TRACE_CARRIER]);
+                Context::set(Constants::TRACE_CARRIER, $carrier);
             }
         }
 
         $this->continueTrace(
-            sentryTrace: $sentryTrace,
-            baggage: $baggage,
+            sentryTrace: $carrier?->getSentryTrace(),
+            baggage: $carrier?->getBaggage(),
             name: $message::class,
             op: 'queue.process',
             description: $message::class,
@@ -97,21 +96,19 @@ class TracingAmqpListener implements ListenerInterface
             return;
         }
 
-        $payload = [];
-        if ($carrier = Context::get(Constants::TRACE_CARRIER)) {
-            $payload = json_decode((string) $carrier, true);
-        }
+        /** @var Carrier|null $carrier */
+        $carrier = Context::get(Constants::TRACE_CARRIER);
 
         /** @var ConsumerMessage $message */
         $message = $event->getMessage();
         $data = [
             'messaging.system' => 'amqp',
             'messaging.operation' => 'process',
-            'messaging.message.id' => $payload['message_id'] ?? null,
-            'messaging.message.body.size' => $payload['body_size'] ?? null,
-            'messaging.message.receive.latency' => isset($payload['publish_time']) ? (microtime(true) - $payload['publish_time']) : null,
+            'messaging.message.id' => $carrier?->get('message_id'),
+            'messaging.message.body.size' => $carrier?->get('body_size'),
+            'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
             'messaging.message.retry.count' => 0,
-            'messaging.destination.name' => $payload['destination_name'] ?? $message->getExchange(),
+            'messaging.destination.name' => $carrier?->get('destination_name') ?? $message->getExchange(),
             // for amqp
             'messaging.amqp.message.type' => $message->getTypeString(),
             'messaging.amqp.message.routing_key' => $message->getRoutingKey(),

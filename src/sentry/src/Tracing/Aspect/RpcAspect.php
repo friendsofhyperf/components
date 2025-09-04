@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Util\CarrierPacker;
+use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coroutine\Coroutine;
@@ -46,8 +46,7 @@ class RpcAspect extends AbstractAspect
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher,
-        protected CarrierPacker $packer
+        protected Switcher $switcher
     ) {
     }
 
@@ -99,7 +98,7 @@ class RpcAspect extends AbstractAspect
         Context::set(static::SPAN, $span->setData($data));
 
         if ($this->container->has(Rpc\Context::class)) {
-            $this->container->get(Rpc\Context::class)->set(Constants::TRACE_CARRIER, $this->packer->pack($span));
+            $this->container->get(Rpc\Context::class)->set(Constants::TRACE_CARRIER, Carrier::fromSpan($span)->toJson());
         }
 
         return $path;

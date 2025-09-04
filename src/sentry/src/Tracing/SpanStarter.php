@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing;
 
 use FriendsOfHyperf\Sentry\Constants;
-use FriendsOfHyperf\Sentry\Util\CarrierPacker;
+use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Rpc\Context as RpcContext;
 use Psr\Http\Message\ServerRequestInterface;
@@ -59,12 +59,14 @@ trait SpanStarter
         $baggage = $request->getHeaderLine('baggage');
         $container = $this->container ?? ApplicationContext::getContainer();
 
+        // Rpc Context
         if ($container->has(RpcContext::class)) {
             $rpcContext = $container->get(RpcContext::class);
-            $carrier = $rpcContext->get(Constants::TRACE_CARRIER);
-            if ($carrier) {
-                $packer = $container->get(CarrierPacker::class);
-                [$sentryTrace, $baggage] = $packer->unpack($carrier);
+            /** @var string|null $payload */
+            $payload = $rpcContext->get(Constants::TRACE_CARRIER);
+            if ($payload) {
+                $carrier = Carrier::fromJson($payload);
+                [$sentryTrace, $baggage] = [$carrier->getSentryTrace(), $carrier->getBaggage()];
             }
         }
 
