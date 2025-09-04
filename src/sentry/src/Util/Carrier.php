@@ -65,15 +65,6 @@ class Carrier implements JsonSerializable, Arrayable, Stringable, Jsonable
         return $new;
     }
 
-    public function withSpan(Span $span): static
-    {
-        return $this->with([
-            'sentry-trace' => $span->toTraceparent(),
-            'baggage' => $span->toBaggage(),
-            'traceparent' => $span->toW3CTraceparent(),
-        ]);
-    }
-
     public function getSentryTrace(): string
     {
         return $this->data['sentry-trace'] ?? '';

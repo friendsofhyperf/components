@@ -95,19 +95,6 @@ describe('Data Manipulation', function () {
             'key3' => 'new',
         ]);
     });
-
-    test('can add span data using withSpan method', function () {
-        $spanContext = new SpanContext();
-        $span = new Span($spanContext);
-
-        $carrier = new Carrier(['existing' => 'data']);
-        $newCarrier = $carrier->withSpan($span);
-
-        $data = $newCarrier->toArray();
-        expect($data)->toHaveKey('existing');
-        expect($data)->toHaveKeys(['sentry-trace', 'baggage', 'traceparent']);
-        expect($data['existing'])->toBe('data');
-    });
 });
 
 describe('Data Access', function () {
