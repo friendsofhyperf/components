@@ -121,11 +121,25 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     'http.response.reason' => $response->getReasonPhrase(),
                     'http.response.headers' => $response->getHeaders(),
                     'http.response.body.size' => $response->getBody()->getSize() ?? 0,
+                    'http.response_content_length' => $response->getHeaderLine('Content-Length'),
+                    'http.decoded_response_content_length' => $response->getHeaderLine('X-Decoded-Content-Length'),
+                    'http.response_transfer_size' => $response->getHeaderLine('Content-Length'),
                 ]);
 
                 if ($this->switcher->isTracingExtraTagEnable('http.response.body.contents')) {
-                    $data['http.response.body.contents'] = $response->getBody()->getContents();
-                    $response->getBody()->isSeekable() && $response->getBody()->rewind();
+                    $isTextual = \preg_match(
+                        '/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i',
+                        $response->getHeaderLine('Content-Type')
+                    ) === 1;
+                    $body = $response->getBody();
+
+                    if ($isTextual && $body->isSeekable()) {
+                        $pos = $body->tell();
+                        $data['http.response.body.contents'] = \GuzzleHttp\Psr7\Utils::copyToString($body, 8192); // 8KB 上限
+                        $body->seek($pos);
+                    } else {
+                        $data['http.response.body.contents'] = '[binary omitted]';
+                    }
                 }
 
                 $span->setStatus(SpanStatus::createFromHttpStatusCode($response->getStatusCode()));
