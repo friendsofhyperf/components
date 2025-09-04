@@ -84,12 +84,31 @@ class CacheAspect extends AbstractAspect
                 asParent: true
             );
 
-            return tap($proceedingJoinPoint->process(), function ($result) use ($span, $method, $key, $ttl) {
+            return tap($proceedingJoinPoint->process(), function ($result) use ($span, $method, $key, $ttl, $arguments) {
                 $data = match ($method) {
-                    'set', 'setMultiple' => ['cache.key' => $key, 'cache.ttl' => $ttl],
-                    'delete', 'deleteMultiple' => ['cache.key' => $key],
-                    'get', 'fetch' => ['cache.key' => $key, 'cache.hit' => ! is_null($result)],
-                    'getMultiple' => ['cache.key' => $key, 'cache.hit' => ! empty($result)],
+                    'set' => [
+                        'cache.key' => $key,
+                        'cache.ttl' => $ttl,
+                        'item_size' => strlen((string) ($arguments['value'] ?? '')),
+                    ],
+                    'setMultiple' => [
+                        'cache.key' => $key,
+                        'cache.ttl' => $ttl,
+                        'item_size' => strlen((string) json_encode(array_values($arguments['values'] ?? []))),
+                    ],
+                    'delete', 'deleteMultiple' => [
+                        'cache.key' => $key,
+                    ],
+                    'get', 'fetch' => [
+                        'cache.key' => $key,
+                        'cache.hit' => ! is_null($result),
+                        'cache.item_size' => strlen((string) $result),
+                    ],
+                    'getMultiple' => [
+                        'cache.key' => $key,
+                        'cache.hit' => ! empty($result),
+                        'cache.item_size' => strlen((string) json_encode(array_values((array) $result))),
+                    ],
                     default => [],
                 };
                 $span->setOrigin('auto.cache')->setData($data)->finish();
