@@ -54,28 +54,30 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
         $onStats = $options['on_stats'] ?? null;
 
+        // Override the on_stats option to record the request.
         $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($onStats, $guzzleConfig, $options) {
             $request = $stats->getRequest();
             $response = $stats->getResponse();
-
             $uri = $request->getUri()->__toString();
-            $data = [];
-            $data['config'] = $guzzleConfig;
-            // request
-            $data['request.method'] = $request->getMethod();
-            $data['request.body.size'] = strlen($options['body'] ?? '');
-            $data['request.full_url'] = (string) $request->getUri();
-            $data['request.path'] = $request->getUri()->getPath();
-            $data['request.scheme'] = $request->getUri()->getScheme();
-            $data['request.host'] = $request->getUri()->getHost();
-            $data['request.port'] = $request->getUri()->getPort();
-            $data['request.user_agent'] = $request->getHeaderLine('User-Agent'); // updated key for consistency
-            $data['request.headers'] = $request->getHeaders();
-            // response
-            $data['response.status'] = $response?->getStatusCode();
-            $data['response.reason'] = $response?->getReasonPhrase();
-            $data['response.headers'] = $response?->getHeaders();
-            $data['duration'] = $stats->getTransferTime() * 1000;
+            $data = [
+                'config' => $guzzleConfig,
+                // request
+                'http.request.method' => $request->getMethod(),
+                'http.request.body.size' => strlen($options['body'] ?? ''),
+                'http.request.full_url' => (string) $request->getUri(),
+                'http.request.path' => $request->getUri()->getPath(),
+                'http.request.scheme' => $request->getUri()->getScheme(),
+                'http.request.host' => $request->getUri()->getHost(),
+                'http.request.port' => $request->getUri()->getPort(),
+                'http.request.user_agent' => $request->getHeaderLine('User-Agent'), // updated key for consistency
+                'http.request.headers' => $request->getHeaders(),
+                // response
+                'http.response.status_code' => $response?->getStatusCode(),
+                'http.response.body.size' => $response?->getBody()->getSize() ?? 0,
+                'http.response.reason' => $response?->getReasonPhrase(),
+                'http.response.headers' => $response?->getHeaders(),
+                'duration' => $stats->getTransferTime() * 1000,
+            ];
 
             Integration::addBreadcrumb(new Breadcrumb(
                 Breadcrumb::LEVEL_INFO,
