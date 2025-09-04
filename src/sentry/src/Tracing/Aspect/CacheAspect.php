@@ -61,30 +61,21 @@ class CacheAspect extends AbstractAspect
 
             $arguments = $proceedingJoinPoint->arguments['keys'] ?? [];
 
-            /** @var string|string[] $key */
-            [$key, $ttl] = match ($method) {
-                'set', 'get', 'delete' => [
-                    $arguments['key'] ?? 'unknown',
-                    $arguments['ttl'] ?? null,
-                ],
-                'setMultiple' => [
-                    array_keys($arguments['values'] ?? []),
-                    $arguments['ttl'] ?? null,
-                ],
-                'getMultiple', 'deleteMultiple' => [
-                    $arguments['keys'] ?? [],
-                    $arguments['ttl'] ?? null,
-                ],
-                default => ['', null],
+            /** @var string[] $keys */
+            $keys = match ($method) {
+                'set', 'get', 'delete' => [$arguments['key'] ?? 'unknown'],
+                'setMultiple' => array_keys($arguments['values'] ?? []),
+                'getMultiple', 'deleteMultiple' => $arguments['keys'] ?? [],
+                default => [],
             };
 
             $span = $this->startSpan(
                 op: $op,
-                description: implode(', ', (array) $key),
+                description: implode(', ', $keys),
                 asParent: true
             )->setData([
-                'cache.key' => $key,
-                'cache.ttl' => $ttl,
+                'cache.key' => $keys,
+                'cache.ttl' => $arguments['ttl'] ?? null,
                 'item_size' => match (true) {
                     isset($arguments['value']) => strlen(json_encode($arguments['value'])),
                     isset($arguments['values']) && is_array($arguments['values']) => strlen(json_encode(array_values($arguments['values']))),
