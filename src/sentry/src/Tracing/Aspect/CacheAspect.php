@@ -82,30 +82,23 @@ class CacheAspect extends AbstractAspect
                 op: $op,
                 description: implode(', ', (array) $key),
                 asParent: true
-            );
+            )->setData([
+                'cache.key' => $key,
+                'cache.ttl' => $ttl,
+                'item_size' => match (true) {
+                    isset($arguments['value']) => strlen(json_encode($arguments['value'])),
+                    isset($arguments['values']) && is_array($arguments['values']) => strlen(json_encode(array_values($arguments['values']))),
+                    default => 0,
+                },
+            ]);
 
-            return tap($proceedingJoinPoint->process(), function ($result) use ($span, $method, $key, $ttl, $arguments) {
+            return tap($proceedingJoinPoint->process(), function ($result) use ($span, $method) {
                 $data = match ($method) {
-                    'set' => [
-                        'cache.key' => $key,
-                        'cache.ttl' => $ttl,
-                        'item_size' => strlen(json_encode($arguments['value'] ?? '')),
-                    ],
-                    'setMultiple' => [
-                        'cache.key' => $key,
-                        'cache.ttl' => $ttl,
-                        'item_size' => strlen(json_encode(array_values($arguments['values'] ?? []))),
-                    ],
-                    'delete', 'deleteMultiple' => [
-                        'cache.key' => $key,
-                    ],
                     'get', 'fetch' => [
-                        'cache.key' => $key,
                         'cache.hit' => ! is_null($result),
                         'cache.item_size' => strlen((string) json_encode($result)),
                     ],
                     'getMultiple' => [
-                        'cache.key' => $key,
                         'cache.hit' => ! empty($result),
                         'cache.item_size' => strlen((string) json_encode(array_values((array) $result))),
                     ],
