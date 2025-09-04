@@ -104,7 +104,7 @@ class RedisAspect extends AbstractAspect
             if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
                 $span->setData(['exception.stack_trace' => (string) $exception]);
             }
-            $span->setStatus(SpanStatus::internalError())
+            $span?->setStatus(SpanStatus::internalError())
                 ->setTags([
                     'error' => true,
                     'exception.class' => $exception::class,
@@ -114,7 +114,7 @@ class RedisAspect extends AbstractAspect
 
             throw $exception;
         } finally {
-            $span->finish();
+            $span?->finish();
         }
 
         return $result;
