@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Util;
 
-use Hyperf\Collection\Arr;
 use Hyperf\Contract\Arrayable;
 use Hyperf\Contract\Jsonable;
 use JsonException;
@@ -98,20 +97,6 @@ class Carrier implements JsonSerializable, Arrayable, Stringable, Jsonable
     public function get(string $key, mixed $default = null): mixed
     {
         return $this->data[$key] ?? $default;
-    }
-
-    public function extract(): array
-    {
-        return [
-            $this->data['sentry-trace'] ?? $this->data['traceparent'] ?? '',
-            $this->data['baggage'] ?? '',
-            $this->data['traceparent'] ?? '',
-        ];
-    }
-
-    public function only(array $keys): array
-    {
-        return Arr::only($this->data, $keys);
     }
 
     public function jsonSerialize(): mixed
