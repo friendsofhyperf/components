@@ -127,13 +127,15 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 ]);
 
                 if ($this->switcher->isTracingExtraTagEnable('http.response.body.contents')) {
-                    $contentType = $response->getHeaderLine('Content-Type');
-                    $isTextual = \preg_match('/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i', $contentType) === 1;
+                    $isTextual = \preg_match(
+                        '/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i',
+                        $response->getHeaderLine('Content-Type')
+                    ) === 1;
+                    $body = $response->getBody();
 
-                    if ($isTextual) {
-                        $body = $response->getBody();
+                    if ($isTextual && $body->isSeekable()) {
                         $data['http.response.body.contents'] = \GuzzleHttp\Psr7\Utils::copyToString($body, 8192); // 8KB 上限
-                        $body->isSeekable() && $body->rewind();
+                        $body->rewind();
                     } else {
                         $data['http.response.body.contents'] = '[binary omitted]';
                     }
