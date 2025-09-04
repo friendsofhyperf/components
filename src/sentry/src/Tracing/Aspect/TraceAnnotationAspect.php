@@ -56,13 +56,13 @@ class TraceAnnotationAspect extends AbstractAspect
         }
 
         $span = $this->startSpan(
-            $annotation->op ?? 'method',
-            $annotation->description ?? sprintf(
+            op: $annotation->op ?? 'method',
+            description: $annotation->description ?? sprintf(
                 '%s::%s()',
                 $proceedingJoinPoint->className,
                 $methodName
             ),
-            true
+            asParent: true
         );
 
         try {
@@ -76,20 +76,19 @@ class TraceAnnotationAspect extends AbstractAspect
                 $data['annotation.result'] = $result;
             }
         } catch (Throwable $exception) {
-            $span->setStatus(SpanStatus::internalError());
-            $span->setTags([
-                'error' => true,
-                'exception.class' => $exception::class,
-                'exception.message' => $exception->getMessage(),
-                'exception.code' => $exception->getCode(),
-            ]);
+            $span->setStatus(SpanStatus::internalError())
+                ->setTags([
+                    'error' => true,
+                    'exception.class' => $exception::class,
+                    'exception.message' => $exception->getMessage(),
+                    'exception.code' => $exception->getCode(),
+                ]);
             if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
                 $data['exception.stack_trace'] = (string) $exception;
             }
             throw $exception;
         } finally {
-            $span->setData($data);
-            $span->finish(microtime(true));
+            $span->setData($data)->finish(microtime(true));
 
             // Reset root span
             SentrySdk::getCurrentHub()->setSpan($parent);

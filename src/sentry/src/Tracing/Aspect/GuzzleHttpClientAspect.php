@@ -71,7 +71,11 @@ class GuzzleHttpClientAspect extends AbstractAspect
         }
 
         // Inject trace context && Start span
-        $span = $this->startSpan('http.client', $request->getMethod() . ' ' . (string) $request->getUri());
+        $span = $this->startSpan(
+            op: 'http.client',
+            description: $request->getMethod() . ' ' . (string) $request->getUri(),
+            origin: 'auto.http.client',
+        );
         $options['headers'] = array_replace($options['headers'] ?? [], [
             'sentry-trace' => $span->toTraceparent(),
             'baggage' => $span->toBaggage(),
@@ -122,11 +126,11 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 }
 
                 if ($response->getStatusCode() >= 400 && $response->getStatusCode() < 600) {
-                    $span->setStatus(SpanStatus::internalError());
-                    $span->setTags([
-                        'error' => true,
-                        'response.reason' => $response->getReasonPhrase(),
-                    ]);
+                    $span->setStatus(SpanStatus::internalError())
+                        ->setTags([
+                            'error' => true,
+                            'response.reason' => $response->getReasonPhrase(),
+                        ]);
                 }
             }
 
@@ -144,7 +148,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 }
             }
 
-            $span->setOrigin('auto.http.client')->setData($data)->finish();
+            $span->setData($data)->finish();
 
             if (is_callable($onStats)) {
                 ($onStats)($stats);

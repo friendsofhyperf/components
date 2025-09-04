@@ -100,10 +100,11 @@ class TracingRequestListener implements ListenerInterface
 
         // Get sentry-trace and baggage
         $transaction = $this->startRequestTransaction(
-            $request,
+            request: $request,
             name: $name,
             op: sprintf('%s.server', $serverName),
             description: sprintf('%s %s', $method, $path),
+            origin: 'auto.request',
             source: $source,
         );
 
@@ -126,13 +127,17 @@ class TracingRequestListener implements ListenerInterface
             $data['rpc.context'] = $this->container->get(RpcContext::class)->getData();
         }
 
-        $transaction->setOrigin('auto.request')->setData($data);
+        $transaction->setData($data);
 
-        $span = $this->startSpan('request.received', 'request.received', true);
+        $span = $this->startSpan(
+            op: 'request.received',
+            description: 'request.received',
+            origin: 'auto.request.received',
+            asParent: true
+        );
 
         defer(function () use ($transaction, $span) {
-            $span?->setOrigin('auto.request')
-                ->finish();
+            $span?->finish();
 
             SentrySdk::getCurrentHub()->setSpan($transaction);
 

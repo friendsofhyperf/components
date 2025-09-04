@@ -72,8 +72,9 @@ class CacheAspect extends AbstractAspect
             $span = $this->startSpan(
                 op: $op,
                 description: implode(', ', $keys),
+                origin: 'auto.cache',
                 asParent: true
-            )->setData([
+            )?->setData([
                 'cache.key' => $keys,
                 'cache.ttl' => $arguments['ttl'] ?? null,
                 'item_size' => match (true) {
@@ -95,7 +96,7 @@ class CacheAspect extends AbstractAspect
                     ],
                     default => [],
                 };
-                $span->setOrigin('auto.cache')->setData($data)->finish();
+                $span?->setData($data)->finish();
             });
         } finally {
             SentrySdk::getCurrentHub()->setSpan($parent);
