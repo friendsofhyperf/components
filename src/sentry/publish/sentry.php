@@ -115,7 +115,7 @@ return [
             'annotation.result' => false,
             'db.result' => false,
             'elasticsearch.result' => false,
-            'response.body' => false,
+            'http.response.body.contents' => false,
             'redis.result' => false,
             'rpc.result' => false,
         ],
