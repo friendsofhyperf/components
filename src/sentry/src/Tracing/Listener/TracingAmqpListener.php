@@ -64,6 +64,7 @@ class TracingAmqpListener implements ListenerInterface
     protected function startTransaction(BeforeConsume $event): void
     {
         $message = $event->getMessage();
+        $carrier = null;
 
         if (method_exists($event, 'getAMQPMessage')) {
             /** @var AMQPMessage $amqpMessage */

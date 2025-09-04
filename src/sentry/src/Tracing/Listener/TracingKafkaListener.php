@@ -63,6 +63,7 @@ class TracingKafkaListener implements ListenerInterface
     {
         $consumer = $event->getConsumer();
         $message = $event->getData();
+        $carrier = null;
 
         if ($message instanceof ConsumeMessage) {
             foreach ($message->getHeaders() as $header) {
@@ -75,8 +76,8 @@ class TracingKafkaListener implements ListenerInterface
         }
 
         $this->continueTrace(
-            sentryTrace: $carrier->getSentryTrace(),
-            baggage: $carrier->getBaggage(),
+            sentryTrace: (string) $carrier?->getSentryTrace(),
+            baggage: (string) $carrier?->getBaggage(),
             name: $consumer->getTopic() . ' process',
             op: 'queue.process',
             description: $consumer::class,
@@ -100,11 +101,11 @@ class TracingKafkaListener implements ListenerInterface
         $data = [
             'messaging.system' => 'kafka',
             'messaging.operation' => 'process',
-            'messaging.message.id' => $carrier->get('message_id'),
-            'messaging.message.body.size' => $carrier->get('body_size'),
-            'messaging.message.receive.latency' => $carrier->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
+            'messaging.message.id' => $carrier?->get('message_id'),
+            'messaging.message.body.size' => $carrier?->get('body_size'),
+            'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
             'messaging.message.retry.count' => 0,
-            'messaging.destination.name' => $carrier->get('destination_name'),
+            'messaging.destination.name' => $carrier?->get('destination_name'),
             // for kafka
             'messaging.kafka.consumer.group' => $consumer->getGroupId(),
             'messaging.kafka.consumer.pool' => $consumer->getPool(),
