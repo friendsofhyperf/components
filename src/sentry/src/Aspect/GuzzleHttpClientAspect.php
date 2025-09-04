@@ -72,6 +72,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 'http.request.headers' => $request->getHeaders(),
                 // response
                 'http.response.status_code' => $response?->getStatusCode(),
+                'http.response.body.size' => $response?->getBody()->getSize() ?? 0,
                 'http.response.reason' => $response?->getReasonPhrase(),
                 'http.response.headers' => $response?->getHeaders(),
                 'duration' => $stats->getTransferTime() * 1000,
