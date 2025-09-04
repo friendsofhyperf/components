@@ -69,8 +69,8 @@ class TracingAsyncQueueListener implements ListenerInterface
         $job = $event->getMessage()->job();
 
         $this->continueTrace(
-            sentryTrace: $carrier?->getSentryTrace(),
-            baggage: $carrier?->getBaggage(),
+            sentryTrace: $carrier?->getSentryTrace() ?? '',
+            baggage: $carrier?->getBaggage() ?? '',
             name: $job::class,
             op: 'queue.process',
             description: 'async_queue: ' . $job::class,

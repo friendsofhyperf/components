@@ -78,8 +78,8 @@ class TracingAmqpListener implements ListenerInterface
         }
 
         $this->continueTrace(
-            sentryTrace: $carrier?->getSentryTrace(),
-            baggage: $carrier?->getBaggage(),
+            sentryTrace: $carrier?->getSentryTrace() ?? '',
+            baggage: $carrier?->getBaggage() ?? '',
             name: $message::class,
             op: 'queue.process',
             description: $message::class,
