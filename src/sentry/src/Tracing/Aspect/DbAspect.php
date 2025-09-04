@@ -76,12 +76,11 @@ class DbAspect extends AbstractAspect
         //     $operation ? $operation . ' ' : '',
         //     implode('.', array_filter([$database, $table]))
         // );
-        $op = 'db.sql.query';
-        $description = $sql;
-
-        // Already check in the previous context
-        /** @var \Sentry\Tracing\Span $span */
-        $span = $this->startSpan($op, $description);
+        $span = $this->startSpan(
+            op: 'db.sql.query',
+            description: $sql,
+            origin: 'auto.db',
+        );
 
         $data = [
             'coroutine.id' => Coroutine::id(),
@@ -103,26 +102,32 @@ class DbAspect extends AbstractAspect
             $data['db.parameter.' . $key] = $value;
         }
 
+        $span?->setData($data);
+
         try {
             $result = $proceedingJoinPoint->process();
             if ($this->switcher->isTracingExtraTagEnable('db.result')) {
-                $data['db.result'] = json_encode($result, JSON_UNESCAPED_UNICODE);
+                $span?->setData([
+                    'db.result' => json_encode($result, JSON_UNESCAPED_UNICODE),
+                ]);
             }
         } catch (Throwable $exception) {
-            $span->setStatus(SpanStatus::internalError());
-            $span->setTags([
-                'error' => true,
-                'exception.class' => $exception::class,
-                'exception.message' => $exception->getMessage(),
-                'exception.code' => $exception->getCode(),
-            ]);
+            $span?->setStatus(SpanStatus::internalError())
+                ->setTags([
+                    'error' => true,
+                    'exception.class' => $exception::class,
+                    'exception.message' => $exception->getMessage(),
+                    'exception.code' => $exception->getCode(),
+                ]);
             if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
-                $data['exception.stack_trace'] = (string) $exception;
+                $span?->setData([
+                    'exception.stack_trace' => (string) $exception,
+                ]);
             }
 
             throw $exception;
         } finally {
-            $span->setOrigin('auto.db')->setData($data)->finish();
+            $span?->finish();
         }
 
         return $result;

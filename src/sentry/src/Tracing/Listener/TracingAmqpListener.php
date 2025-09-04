@@ -83,6 +83,7 @@ class TracingAmqpListener implements ListenerInterface
             name: $message::class,
             op: 'queue.process',
             description: $message::class,
+            origin: 'auto.amqp',
             source: TransactionSource::custom()
         )->setStartTimestamp(microtime(true));
     }
@@ -132,7 +133,7 @@ class TracingAmqpListener implements ListenerInterface
             }
         }
 
-        $transaction->setOrigin('auto.amqp')->setData($data)->setTags($tags);
+        $transaction->setData($data)->setTags($tags);
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
 

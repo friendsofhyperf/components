@@ -74,6 +74,7 @@ class TracingAsyncQueueListener implements ListenerInterface
             name: $job::class,
             op: 'queue.process',
             description: 'async_queue: ' . $job::class,
+            origin: 'auto.async_queue',
             source: TransactionSource::custom()
         )->setStartTimestamp(microtime(true));
     }
@@ -113,7 +114,7 @@ class TracingAsyncQueueListener implements ListenerInterface
             }
         }
 
-        $transaction->setOrigin('auto.queue')->setData($data)->setTags($tags);
+        $transaction->setData($data)->setTags($tags);
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
 

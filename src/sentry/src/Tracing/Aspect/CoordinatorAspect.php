@@ -42,26 +42,29 @@ class CoordinatorAspect extends AbstractAspect
         ];
 
         $span = $this->startSpan(
-            sprintf('%s.%s', strtolower(class_basename($proceedingJoinPoint->className)), $proceedingJoinPoint->methodName),
-            sprintf('%s::%s(%s)', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName, $timeout),
-        );
+            op: sprintf('%s.%s', strtolower(class_basename($proceedingJoinPoint->className)), $proceedingJoinPoint->methodName),
+            description: sprintf('%s::%s(%s)', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName, $timeout),
+            origin: 'auto.coordinator',
+        )?->setData($data);
 
         try {
             return $proceedingJoinPoint->process();
         } catch (Throwable $exception) {
-            $span?->setStatus(SpanStatus::internalError());
-            $span?->setTags([
-                'error' => true,
-                'exception.class' => $exception::class,
-                'exception.message' => $exception->getMessage(),
-                'exception.code' => $exception->getCode(),
-            ]);
+            $span?->setStatus(SpanStatus::internalError())
+                ->setTags([
+                    'error' => true,
+                    'exception.class' => $exception::class,
+                    'exception.message' => $exception->getMessage(),
+                    'exception.code' => $exception->getCode(),
+                ]);
             if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
-                $data['exception.stack_trace'] = (string) $exception;
+                $span?->setData([
+                    'exception.stack_trace' => (string) $exception,
+                ]);
             }
             throw $exception;
         } finally {
-            $span?->setOrigin('auto.coordinator')->setData($data)->finish(microtime(true));
+            $span?->finish(microtime(true));
         }
     }
 }

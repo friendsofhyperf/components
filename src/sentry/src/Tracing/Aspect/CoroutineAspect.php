@@ -50,7 +50,11 @@ class CoroutineAspect extends AbstractAspect
         }
 
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
-        $parent = $this->startSpan('coroutine.create', $callingOnFunction);
+        $parent = $this->startSpan(
+            op: 'coroutine.create',
+            description: $callingOnFunction,
+            origin: 'auto.coroutine',
+        )?->setOrigin('auto.coroutine');
 
         if (! $parent) {
             return $proceedingJoinPoint->process();
@@ -62,42 +66,43 @@ class CoroutineAspect extends AbstractAspect
 
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent, $callingOnFunction) {
             $transaction = $this->startCoroutineTransaction(
-                $parent,
+                parent: $parent,
                 name: 'coroutine',
                 op: 'coroutine.execute',
                 description: $callingOnFunction,
-            );
+                origin: 'auto.coroutine',
+            )->setData([
+                'coroutine.id' => Co::id(),
+            ]);
 
             defer(function () use ($transaction) {
                 SentrySdk::getCurrentHub()->setSpan($transaction);
                 $transaction->finish();
             });
 
-            $data = [
-                'coroutine.id' => Co::id(),
-            ];
-
             try {
                 $callable();
             } catch (Throwable $exception) {
-                $transaction->setStatus(SpanStatus::internalError());
-                $transaction->setTags([
-                    'error' => true,
-                    'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
-                    'exception.code' => $exception->getCode(),
-                ]);
+                $transaction->setStatus(SpanStatus::internalError())
+                    ->setTags([
+                        'error' => true,
+                        'exception.class' => $exception::class,
+                        'exception.message' => $exception->getMessage(),
+                        'exception.code' => $exception->getCode(),
+                    ]);
                 if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
-                    $data['exception.stack_trace'] = (string) $exception;
+                    $transaction->setData([
+                        'exception.stack_trace' => (string) $exception,
+                    ]);
                 }
 
                 throw $exception;
             } finally {
-                $transaction->setOrigin('auto.coroutine')->setData($data);
+                // ...
             }
         };
 
-        $parent->setOrigin('auto.coroutine')->finish();
+        $parent->finish();
 
         return $proceedingJoinPoint->process();
     }

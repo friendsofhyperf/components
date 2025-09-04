@@ -71,8 +71,9 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     {
         $job = $proceedingJoinPoint->arguments['keys']['job'] ?? null;
         $span = $this->startSpan(
-            'queue.publish',
-            $job::class
+            op: 'queue.publish',
+            description: $job::class,
+            origin: 'auto.queue'
         );
 
         if (! $span) {
@@ -109,7 +110,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
 
             return $proceedingJoinPoint->process();
         } finally {
-            $span->setOrigin('auto.queue')->finish();
+            $span->finish();
         }
     }
 

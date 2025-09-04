@@ -62,6 +62,7 @@ class TracingCrontabListener implements ListenerInterface
             name: $crontab->getName() ?: '<unnamed crontab>',
             op: 'crontab.run',
             description: $crontab->getMemo(),
+            origin: 'auto.crontab',
             source: TransactionSource::task()
         );
     }
@@ -97,9 +98,7 @@ class TracingCrontabListener implements ListenerInterface
             }
         }
 
-        $transaction->setOrigin('auto.crontab')
-            ->setData($data)
-            ->setTags($tags);
+        $transaction->setData($data)->setTags($tags);
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
 

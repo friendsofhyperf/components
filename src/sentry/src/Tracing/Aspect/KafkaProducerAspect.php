@@ -58,7 +58,8 @@ class KafkaProducerAspect extends AbstractAspect
     {
         $span = $this->startSpan(
             'queue.publish',
-            sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
+            sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
+            origin: 'auto.kafka'
         );
 
         if (! $span) {
@@ -90,7 +91,7 @@ class KafkaProducerAspect extends AbstractAspect
             ->setValue($carrier->toJson());
         $proceedingJoinPoint->arguments['keys']['headers'] = $headers;
 
-        return tap($proceedingJoinPoint->process(), fn () => $span->setOrigin('auto.kafka')->finish());
+        return tap($proceedingJoinPoint->process(), fn () => $span->finish());
     }
 
     protected function sendBatchAsync(ProceedingJoinPoint $proceedingJoinPoint)
@@ -99,7 +100,8 @@ class KafkaProducerAspect extends AbstractAspect
         $messages = $proceedingJoinPoint->arguments['keys']['messages'] ?? [];
         $span = $this->startSpan(
             'kafka.send_batch',
-            sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
+            sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
+            origin: 'auto.kafka'
         );
 
         if (! $span) {
@@ -119,6 +121,6 @@ class KafkaProducerAspect extends AbstractAspect
             })->call($message);
         }
 
-        return tap($proceedingJoinPoint->process(), fn () => $span->setOrigin('auto.kafka')->finish());
+        return tap($proceedingJoinPoint->process(), fn () => $span->finish());
     }
 }

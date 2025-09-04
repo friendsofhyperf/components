@@ -62,10 +62,11 @@ class ElasticsearchAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        // TODO 规则: opeate dbName.tableName
+        // TODO 规则: operate dbName.tableName
         $span = $this->startSpan(
-            'db.elasticserach',
-            sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
+            op: 'db.elasticsearch',
+            description: sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
+            origin: 'auto.elasticsearch',
         );
 
         if (! $span) {
@@ -83,26 +84,32 @@ class ElasticsearchAspect extends AbstractAspect
             'arguments' => json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE),
         ];
 
+        $span->setData($data);
+
         try {
             $result = $proceedingJoinPoint->process();
             if ($this->switcher->isTracingExtraTagEnable('elasticsearch.result')) {
-                $data['elasticsearch.result'] = json_encode($result, JSON_UNESCAPED_UNICODE);
+                $span->setData([
+                    'elasticsearch.result' => json_encode($result, JSON_UNESCAPED_UNICODE),
+                ]);
             }
         } catch (Throwable $exception) {
-            $span->setStatus(SpanStatus::internalError());
-            $span->setTags([
-                'error' => true,
-                'exception.class' => $exception::class,
-                'exception.message' => $exception->getMessage(),
-                'exception.code' => $exception->getCode(),
-            ]);
+            $span->setStatus(SpanStatus::internalError())
+                ->setTags([
+                    'error' => true,
+                    'exception.class' => $exception::class,
+                    'exception.message' => $exception->getMessage(),
+                    'exception.code' => $exception->getCode(),
+                ]);
             if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
-                $data['exception.stack_trace'] = (string) $exception;
+                $span->setData([
+                    'exception.stack_trace' => (string) $exception,
+                ]);
             }
 
             throw $exception;
         } finally {
-            $span->setOrigin('auto.elasticsearch')->setData($data)->finish();
+            $span->finish();
         }
 
         return $result;
