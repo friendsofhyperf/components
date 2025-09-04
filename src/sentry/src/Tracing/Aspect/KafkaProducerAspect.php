@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Util\CarrierPacker;
+use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use longlang\phpkafka\Producer\ProduceMessage;
@@ -37,8 +37,7 @@ class KafkaProducerAspect extends AbstractAspect
     ];
 
     public function __construct(
-        protected Switcher $switcher,
-        protected CarrierPacker $packer
+        protected Switcher $switcher
     ) {
     }
 
@@ -78,16 +77,17 @@ class KafkaProducerAspect extends AbstractAspect
             'messaging.destination.name' => $destinationName,
         ]);
 
-        $carrier = $this->packer->pack($span, [
-            'publish_time' => microtime(true),
-            'message_id' => $messageId,
-            'destination_name' => $destinationName,
-            'body_size' => $bodySize,
-        ]);
+        $carrier = Carrier::fromSpan($span)
+            ->with([
+                'publish_time' => microtime(true),
+                'message_id' => $messageId,
+                'destination_name' => $destinationName,
+                'body_size' => $bodySize,
+            ]);
         $headers = $proceedingJoinPoint->arguments['keys']['headers'] ?? [];
         $headers[] = (new RecordHeader())
             ->setHeaderKey(Constants::TRACE_CARRIER)
-            ->setValue($carrier);
+            ->setValue($carrier->toJson());
         $proceedingJoinPoint->arguments['keys']['headers'] = $headers;
 
         return tap($proceedingJoinPoint->process(), fn () => $span->setOrigin('auto.kafka')->finish());
@@ -106,17 +106,16 @@ class KafkaProducerAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $packer = $this->packer;
-
         foreach ($messages as $message) {
-            (function () use ($span, $packer) {
-                $carrier = $packer->pack($span, [
-                    'publish_time' => microtime(true),
-                    'message_id' => uniqid('kafka_', true),
-                    'destination_name' => $this->getTopic(),
-                    'body_size' => strlen((string) $this->getValue()),
-                ]);
-                $this->headers[] = (new RecordHeader())->setHeaderKey(Constants::TRACE_CARRIER)->setValue($carrier);
+            (function () use ($span) {
+                $carrier = Carrier::fromSpan($span)
+                    ->with([
+                        'publish_time' => microtime(true),
+                        'message_id' => uniqid('kafka_', true),
+                        'destination_name' => $this->getTopic(),
+                        'body_size' => strlen((string) $this->getValue()),
+                    ]);
+                $this->headers[] = (new RecordHeader())->setHeaderKey(Constants::TRACE_CARRIER)->setValue($carrier->toJson());
             })->call($message);
         }
 
