@@ -124,13 +124,16 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 ]);
 
                 if ($this->switcher->isTracingExtraTagEnable('http.response.body.contents')) {
-                    $body = $response->getBody();
                     $contentType = $response->getHeaderLine('Content-Type');
                     $isTextual = \preg_match('/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i', $contentType) === 1;
-                    $data['http.response.body.contents'] = $isTextual
-                        ? \GuzzleHttp\Psr7\Utils::copyToString($body, 8192) // 8KB 上限
-                        : '[binary omitted]';
-                    $body->isSeekable() && $body->rewind();
+
+                    if ($isTextual) {
+                        $body = $response->getBody();
+                        $data['http.response.body.contents'] = \GuzzleHttp\Psr7\Utils::copyToString($body, 8192); // 8KB 上限
+                        $body->isSeekable() && $body->rewind();
+                    } else {
+                        $data['http.response.body.contents'] = '[binary omitted]';
+                    }
                 }
 
                 $span->setStatus(SpanStatus::createFromHttpStatusCode($response->getStatusCode()));
