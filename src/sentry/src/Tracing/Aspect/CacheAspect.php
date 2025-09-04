@@ -89,12 +89,12 @@ class CacheAspect extends AbstractAspect
                     'set' => [
                         'cache.key' => $key,
                         'cache.ttl' => $ttl,
-                        'item_size' => strlen((string) ($arguments['value'] ?? '')),
+                        'item_size' => strlen(json_encode($arguments['value'] ?? '')),
                     ],
                     'setMultiple' => [
                         'cache.key' => $key,
                         'cache.ttl' => $ttl,
-                        'item_size' => strlen((string) json_encode(array_values($arguments['values'] ?? []))),
+                        'item_size' => strlen(json_encode(array_values($arguments['values'] ?? []))),
                     ],
                     'delete', 'deleteMultiple' => [
                         'cache.key' => $key,
@@ -102,7 +102,7 @@ class CacheAspect extends AbstractAspect
                     'get', 'fetch' => [
                         'cache.key' => $key,
                         'cache.hit' => ! is_null($result),
-                        'cache.item_size' => strlen((string) $result),
+                        'cache.item_size' => strlen((string) json_encode($result)),
                     ],
                     'getMultiple' => [
                         'cache.key' => $key,
