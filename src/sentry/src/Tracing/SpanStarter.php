@@ -62,6 +62,7 @@ trait SpanStarter
         // Rpc Context
         if ($container->has(RpcContext::class)) {
             $rpcContext = $container->get(RpcContext::class);
+            /** @var string|null $payload */
             $payload = $rpcContext->get(Constants::TRACE_CARRIER);
             if ($payload) {
                 $carrier = Carrier::fromJson($payload);
