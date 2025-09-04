@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Util\CarrierPacker;
+use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Amqp\Message\ProducerMessage;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -33,10 +33,8 @@ class AmqpProducerAspect extends AbstractAspect
         'Hyperf\Amqp\Producer::produceMessage',
     ];
 
-    public function __construct(
-        protected Switcher $switcher,
-        protected CarrierPacker $packer
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -84,8 +82,7 @@ class AmqpProducerAspect extends AbstractAspect
             'messaging.amqp.message.exchange' => $producerMessage->getExchange(),
             'messaging.amqp.message.pool_name' => $producerMessage->getPoolName(),
         ]);
-
-        $carrier = $this->packer->pack($span, [
+        $carrier = Carrier::fromSpan($span)->with([
             'publish_time' => microtime(true),
             'message_id' => $messageId,
             'destination_name' => $destinationName,
@@ -94,7 +91,7 @@ class AmqpProducerAspect extends AbstractAspect
 
         (function () use ($carrier) {
             $this->properties['application_headers'] ??= new AMQPTable();
-            $this->properties['application_headers']->set(Constants::TRACE_CARRIER, $carrier);
+            $this->properties['application_headers']->set(Constants::TRACE_CARRIER, $carrier->toJson());
         })->call($producerMessage);
 
         return tap($proceedingJoinPoint->process(), fn () => $span->setOrigin('auto.amqp')->finish());

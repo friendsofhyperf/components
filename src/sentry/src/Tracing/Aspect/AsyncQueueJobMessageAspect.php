@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
-use FriendsOfHyperf\Sentry\Util\CarrierPacker;
+use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\AsyncQueue\Driver\RedisDriver;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -25,6 +25,7 @@ use function Hyperf\Support\with;
 /**
  * @property \Hyperf\AsyncQueue\Driver\ChannelConfig $channel
  * @property \Hyperf\Redis\RedisProxy $redis
+ * @property \Hyperf\Contract\PackerInterface $packer
  * @property string $poolName
  */
 class AsyncQueueJobMessageAspect extends AbstractAspect
@@ -39,8 +40,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     ];
 
     public function __construct(
-        protected Switcher $switcher,
-        protected CarrierPacker $packer
+        protected Switcher $switcher
     ) {
     }
 
@@ -98,7 +98,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
             };
 
             $span->setData($data);
-            $carrier = $this->packer->pack($span, [
+            $carrier = Carrier::fromSpan($span)->with([
                 'publish_time' => microtime(true),
                 'message_id' => $messageId,
                 'destination_name' => $destinationName,
@@ -137,9 +137,9 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
         return with($proceedingJoinPoint->process(), function ($result) {
             if (is_array($result) && $carrier = Context::get(Constants::TRACE_CARRIER)) {
                 if (array_is_list($result)) {
-                    $result[] = $carrier;
+                    $result[] = $carrier->toJson();
                 } elseif (isset($result['job'])) {
-                    $result[Constants::TRACE_CARRIER] = $carrier;
+                    $result[Constants::TRACE_CARRIER] = $carrier->toJson();
                 }
             }
 
@@ -151,19 +151,15 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     {
         /** @var array $data */
         $data = $proceedingJoinPoint->arguments['keys']['data'] ?? [];
-        $carrier = null;
-
-        if (is_array($data)) {
-            if (array_is_list($data)) {
-                $carrier = array_last($data);
-            } elseif (isset($data['job'])) {
-                $carrier = $data[Constants::TRACE_CARRIER] ?? '';
-            }
-        }
+        $carrier = match (true) {
+            is_array($data) && array_is_list($data) => array_last($data),
+            isset($data['job']) => $data[Constants::TRACE_CARRIER] ?? '',
+            default => null,
+        };
 
         /** @var string|null $carrier */
         if ($carrier) {
-            Context::set(Constants::TRACE_CARRIER, $carrier);
+            Context::set(Constants::TRACE_CARRIER, Carrier::fromJson($carrier));
         }
 
         return $proceedingJoinPoint->process();
