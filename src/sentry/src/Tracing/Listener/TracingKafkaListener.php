@@ -76,8 +76,8 @@ class TracingKafkaListener implements ListenerInterface
         }
 
         $this->continueTrace(
-            sentryTrace: (string) $carrier?->getSentryTrace(),
-            baggage: (string) $carrier?->getBaggage(),
+            sentryTrace: $carrier?->getSentryTrace() ?? '',
+            baggage: $carrier?->getBaggage() ?? '',
             name: $consumer->getTopic() . ' process',
             op: 'queue.process',
             description: $consumer::class,

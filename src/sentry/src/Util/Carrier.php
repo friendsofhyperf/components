@@ -38,7 +38,14 @@ class Carrier implements JsonSerializable, Arrayable, Stringable, Jsonable
 
     public static function fromJson(string $json): static
     {
-        $data = (array) json_decode($json, true);
+        try {
+            $data = json_decode($json, true, 512, JSON_THROW_ON_ERROR);
+            if (! is_array($data)) {
+                $data = [];
+            }
+        } catch (JsonException $e) {
+            $data = [];
+        }
 
         return new static($data);
     }

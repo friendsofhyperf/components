@@ -104,11 +104,11 @@ class TracingAmqpListener implements ListenerInterface
         $data = [
             'messaging.system' => 'amqp',
             'messaging.operation' => 'process',
-            'messaging.message.id' => $carrier->get('message_id'),
-            'messaging.message.body.size' => $carrier->get('body_size'),
-            'messaging.message.receive.latency' => $carrier->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
+            'messaging.message.id' => $carrier?->get('message_id'),
+            'messaging.message.body.size' => $carrier?->get('body_size'),
+            'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
             'messaging.message.retry.count' => 0,
-            'messaging.destination.name' => $carrier->get('destination_name') ?? $message->getExchange(),
+            'messaging.destination.name' => $carrier?->get('destination_name') ?? $message->getExchange(),
             // for amqp
             'messaging.amqp.message.type' => $message->getTypeString(),
             'messaging.amqp.message.routing_key' => $message->getRoutingKey(),
