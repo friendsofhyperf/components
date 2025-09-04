@@ -121,6 +121,9 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     'http.response.reason' => $response->getReasonPhrase(),
                     'http.response.headers' => $response->getHeaders(),
                     'http.response.body.size' => $response->getBody()->getSize() ?? 0,
+                    'http.response_content_length' => $response->getHeaderLine('Content-Length'),
+                    'http.decoded_response_content_length' => $response->getHeaderLine('X-Decoded-Content-Length'),
+                    'http.response_transfer_size' => $response->getHeaderLine('Content-Length'),
                 ]);
 
                 if ($this->switcher->isTracingExtraTagEnable('http.response.body.contents')) {
