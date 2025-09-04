@@ -54,6 +54,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
         $onStats = $options['on_stats'] ?? null;
 
+        // Override the on_stats option to record the request.
         $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($onStats, $guzzleConfig, $options) {
             $request = $stats->getRequest();
             $response = $stats->getResponse();
