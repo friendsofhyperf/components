@@ -134,8 +134,9 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     $body = $response->getBody();
 
                     if ($isTextual && $body->isSeekable()) {
+                        $pos = $body->tell();
                         $data['http.response.body.contents'] = \GuzzleHttp\Psr7\Utils::copyToString($body, 8192); // 8KB 上限
-                        $body->rewind();
+                        $body->seek($pos);
                     } else {
                         $data['http.response.body.contents'] = '[binary omitted]';
                     }
