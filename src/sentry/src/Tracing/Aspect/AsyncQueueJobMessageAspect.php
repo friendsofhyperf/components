@@ -151,15 +151,11 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     {
         /** @var array $data */
         $data = $proceedingJoinPoint->arguments['keys']['data'] ?? [];
-        $carrier = null;
-
-        if (is_array($data)) {
-            if (array_is_list($data)) {
-                $carrier = array_last($data);
-            } elseif (isset($data['job'])) {
-                $carrier = $data[Constants::TRACE_CARRIER] ?? '';
-            }
-        }
+        $carrier = match (true) {
+            is_array($data) && array_is_list($data) => array_last($data),
+            isset($data['job']) => $data[Constants::TRACE_CARRIER] ?? '',
+            default => null,
+        };
 
         /** @var string|null $carrier */
         if ($carrier) {
