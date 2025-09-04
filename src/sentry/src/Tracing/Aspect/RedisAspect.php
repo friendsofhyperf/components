@@ -63,10 +63,10 @@ class RedisAspect extends AbstractAspect
         $data = [
             'coroutine.id' => Coroutine::id(),
             'db.system' => 'redis',
+            'db.statement' => (new RedisCommand($arguments['name'], $arguments['arguments']))->__toString(),
             'db.redis.connection' => $poolName,
             'db.redis.database_index' => $config['db'] ?? 0,
             'db.redis.parameters' => $arguments['arguments'],
-            'db.statement' => (new RedisCommand($arguments['name'], $arguments['arguments']))->__toString(),
             'db.redis.pool.name' => $poolName,
             'db.redis.pool.max' => $pool->getOption()->getMaxConnections(),
             'db.redis.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
