@@ -84,7 +84,11 @@ class RedisAspect extends AbstractAspect
             strtoupper($arguments['name'] ?? ''),
             is_array($key) ? implode(',', $key) : $key
         );
-        $span = $this->startSpan($op, $description);
+        $span = $this->startSpan(
+            op: $op,
+            description: $description,
+            origin: 'auto.cache.redis',
+        )?->setData($data);
 
         try {
             $result = $proceedingJoinPoint->process();
@@ -94,23 +98,23 @@ class RedisAspect extends AbstractAspect
             }
 
             if ($this->switcher->isTracingExtraTagEnable('redis.result')) {
-                $data['redis.result'] = $result;
+                $span->setData(['redis.result' => $result]);
             }
         } catch (Throwable $exception) {
-            $span->setStatus(SpanStatus::internalError());
-            $span->setTags([
-                'error' => true,
-                'exception.class' => $exception::class,
-                'exception.message' => $exception->getMessage(),
-                'exception.code' => $exception->getCode(),
-            ]);
             if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
-                $data['exception.stack_trace'] = (string) $exception;
+                $span->setData(['exception.stack_trace' => (string) $exception]);
             }
+            $span?->setStatus(SpanStatus::internalError())
+                ->setTags([
+                    'error' => true,
+                    'exception.class' => $exception::class,
+                    'exception.message' => $exception->getMessage(),
+                    'exception.code' => $exception->getCode(),
+                ]);
 
             throw $exception;
         } finally {
-            $span->setOrigin('auto.cache.redis')->setData($data)->finish();
+            $span?->finish();
         }
 
         return $result;

@@ -70,7 +70,11 @@ class TracingRedisListener implements ListenerInterface
 
         // rule: operation db.table
         $op = 'db.redis';
-        $span = $this->startSpan($op, $redisStatement);
+        $span = $this->startSpan(
+            op: $op,
+            description: $redisStatement,
+            origin: 'auto.cache.redis',
+        );
 
         if (! $span) {
             return;
@@ -93,8 +97,7 @@ class TracingRedisListener implements ListenerInterface
             }
         }
 
-        $span->setOrigin('auto.cache.redis')
-            ->setData($data)
+        $span->setData($data)
             ->finish();
     }
 }

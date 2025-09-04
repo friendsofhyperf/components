@@ -81,6 +81,7 @@ class TracingKafkaListener implements ListenerInterface
             name: $consumer->getTopic() . ' process',
             op: 'queue.process',
             description: $consumer::class,
+            origin: 'auto.kafka',
             source: TransactionSource::custom()
         )->setStartTimestamp(microtime(true));
     }
@@ -124,9 +125,7 @@ class TracingKafkaListener implements ListenerInterface
             }
         }
 
-        $transaction->setOrigin('auto.kafka')
-            ->setData($data)
-            ->setTags($tags);
+        $transaction->setData($data)->setTags($tags);
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
 

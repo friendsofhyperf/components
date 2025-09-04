@@ -29,23 +29,25 @@ use function Sentry\continueTrace;
 
 trait SpanStarter
 {
-    protected function startSpan(?string $op = null, ?string $description = null, bool $asParent = false): ?Span
-    {
+    protected function startSpan(
+        ?string $op = null,
+        ?string $description = null,
+        ?string $origin = null,
+        bool $asParent = false
+    ): ?Span {
         if (! $parent = SentrySdk::getCurrentHub()->getSpan()) {
             return null;
         }
 
-        $span = $parent->startChild(new SpanContext());
-        $span->setOp($op);
-        $span->setDescription($description);
-        $span->setStatus(SpanStatus::ok());
-        $span->setStartTimestamp(microtime(true));
-
-        if ($asParent) {
-            SentrySdk::getCurrentHub()->setSpan($span);
-        }
-
-        return $span;
+        return tap(
+            $parent->startChild(new SpanContext())
+                ->setOp($op)
+                ->setDescription($description)
+                ->setOrigin($origin)
+                ->setStatus(SpanStatus::ok())
+                ->setStartTimestamp(microtime(true)),
+            fn (Span $span) => $asParent && SentrySdk::getCurrentHub()->setSpan($span)
+        );
     }
 
     protected function startRequestTransaction(ServerRequestInterface $request, ...$options): Transaction
@@ -85,14 +87,17 @@ trait SpanStarter
         );
 
         $context = continueTrace($sentryTrace, $baggage);
-        if (isset($options['name'])) {
+        if (isset($options['name']) && is_string($options['name'])) {
             $context->setName($options['name']);
         }
-        if (isset($options['op'])) {
+        if (isset($options['op']) && is_string($options['op'])) {
             $context->setOp($options['op']);
         }
-        if (isset($options['description'])) {
+        if (isset($options['description']) && is_string($options['description'])) {
             $context->setDescription($options['description']);
+        }
+        if (isset($options['origin']) && is_string($options['origin'])) {
+            $context->setOrigin($options['origin']);
         }
         if (isset($options['source']) && $options['source'] instanceof TransactionSource) {
             $context->setSource($options['source']);
@@ -100,9 +105,9 @@ trait SpanStarter
             $context->setSource(TransactionSource::custom());
         }
 
-        $transaction = $hub->startTransaction($context);
-        $transaction->setStartTimestamp(microtime(true));
-        $transaction->setStatus(SpanStatus::ok());
+        $transaction = $hub->startTransaction($context)
+            ->setStartTimestamp(microtime(true))
+            ->setStatus(SpanStatus::ok());
 
         $hub->setSpan($transaction);
 

@@ -56,7 +56,11 @@ class GrpcAspect extends AbstractAspect
         ];
         $proceedingJoinPoint->arguments['keys']['options'] = $options;
 
-        $span = $this->startSpan('grpc.client', $method);
+        $span = $this->startSpan(
+            op: 'grpc.client',
+            description: $method,
+            origin: 'auto.grpc',
+        )?->setData($data);
 
         try {
             $result = $proceedingJoinPoint->process();
@@ -64,16 +68,18 @@ class GrpcAspect extends AbstractAspect
             if (! $span) {
                 return $result;
             }
+
             [$message, $code, $response] = $result;
+
             if ($response instanceof Http2Response) {
-                $data += [
+                $span->setData([
                     'response.status' => $code,
                     'response.reason' => $message,
                     'response.headers' => $response->headers,
-                ];
-                if ($this->switcher->isTracingExtraTagEnable('response.body')) {
-                    $data['response.body'] = $response->data;
-                }
+                ]);
+                $this->switcher->isTracingExtraTagEnable('response.body') && $span->setData([
+                    'response.body' => $response->data,
+                ]);
             }
         } catch (Throwable $exception) {
             $span?->setStatus(SpanStatus::internalError())
@@ -83,14 +89,15 @@ class GrpcAspect extends AbstractAspect
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => $exception->getCode(),
                 ]);
-            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
-                $data['exception.stack_trace'] = (string) $exception;
-            }
+            $this->switcher->isTracingExtraTagEnable('exception.stack_trace') && $span?->setData([
+                'exception.stack_trace' => (string) $exception,
+            ]);
 
             throw $exception;
         } finally {
-            $span?->setOrigin('auto.grpc')->setData($data)->finish();
+            $span?->finish();
         }
+
         return $result;
     }
 }

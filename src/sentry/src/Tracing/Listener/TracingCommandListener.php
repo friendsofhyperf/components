@@ -78,6 +78,7 @@ class TracingCommandListener implements ListenerInterface
             name: $command->getName() ?: '<unnamed command>',
             op: 'console.command',
             description: $command->getDescription(),
+            origin: 'auto.command',
             source: TransactionSource::custom()
         );
     }
@@ -114,9 +115,7 @@ class TracingCommandListener implements ListenerInterface
             }
         }
 
-        $transaction
-            ->setOrigin('auto.command')
-            ->setStatus($exitCode == SymfonyCommand::SUCCESS ? SpanStatus::ok() : SpanStatus::internalError())
+        $transaction->setStatus($exitCode == SymfonyCommand::SUCCESS ? SpanStatus::ok() : SpanStatus::internalError())
             ->setData($data)
             ->setTags($tags);
 

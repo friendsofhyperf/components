@@ -61,8 +61,9 @@ class AmqpProducerAspect extends AbstractAspect
         }
 
         $span = $this->startSpan(
-            'queue.publish',
-            sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName)
+            op: 'queue.publish',
+            description: sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
+            origin: 'auto.amqp'
         );
 
         if (! $span) {
@@ -110,6 +111,6 @@ class AmqpProducerAspect extends AbstractAspect
             $this->properties['application_headers']->set(Constants::TRACE_CARRIER, $carrier->toJson());
         })->call($producerMessage);
 
-        return tap($proceedingJoinPoint->process(), fn () => $span->setOrigin('auto.amqp')->finish());
+        return tap($proceedingJoinPoint->process(), fn () => $span->finish());
     }
 }

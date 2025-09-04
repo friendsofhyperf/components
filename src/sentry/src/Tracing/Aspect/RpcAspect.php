@@ -81,7 +81,11 @@ class RpcAspect extends AbstractAspect
 
         // $package.$service/$path
         $op = sprintf('%s.%s/%s', $package, $service, $path);
-        $span = $this->startSpan($op, $path);
+        $span = $this->startSpan(
+            op: $op,
+            description: $path,
+            origin: 'auto.rpc',
+        );
 
         if (! $span) {
             return $path;
@@ -94,11 +98,14 @@ class RpcAspect extends AbstractAspect
             'rpc.service' => $service,
         ];
 
+        $span->setData($data);
+
         Context::set(static::DATA, $data); // @deprecated since v3.1, will be removed in v3.2
-        Context::set(static::SPAN, $span->setData($data));
+        Context::set(static::SPAN, $span);
 
         if ($this->container->has(Rpc\Context::class)) {
-            $this->container->get(Rpc\Context::class)->set(Constants::TRACE_CARRIER, Carrier::fromSpan($span)->toJson());
+            $this->container->get(Rpc\Context::class)
+                ->set(Constants::TRACE_CARRIER, Carrier::fromSpan($span)->toJson());
         }
 
         return $path;
@@ -140,7 +147,7 @@ class RpcAspect extends AbstractAspect
 
             throw $exception;
         } finally {
-            $span?->setOrigin('auto.rpc')->setData($data)->finish();
+            $span?->setData($data)->finish();
 
             Context::destroy(static::SPAN);
             Context::destroy(static::DATA);

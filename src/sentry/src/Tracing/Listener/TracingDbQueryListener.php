@@ -105,9 +105,11 @@ class TracingDbQueryListener implements ListenerInterface
         $description = $event->sql;
 
         // Already check in the previous context
-        $this->startSpan($op, $description)
-            ->setOrigin('auto.db')
-            ->setData($data)
+        $this->startSpan(
+            op: $op,
+            description: $description,
+            origin: 'auto.db'
+        )?->setData($data)
             ->setStartTimestamp($startTimestamp)
             ->finish($startTimestamp + $event->time / 1000);
     }
