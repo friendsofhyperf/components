@@ -96,7 +96,7 @@ class TracingAsyncQueueListener implements ListenerInterface
             'messaging.message.body.size' => $carrier?->get('body_size'),
             'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
             'messaging.message.retry.count' => $event->getMessage()->getAttempts(),
-            'messaging.destination.name' => $carrier?->get('destination_name') ?? 'unknown queue',
+            'messaging.destination.name' => $carrier?->get('destination_name') ?: 'unknown queue',
         ];
         $tags = [];
 
