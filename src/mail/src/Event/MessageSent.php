@@ -19,8 +19,8 @@ use function Hyperf\Collection\collect;
 class MessageSent
 {
     public function __construct(
-        public SentMessage $message,
-        public array $data = []
+        public readonly SentMessage $message,
+        public readonly array $data = []
     ) {
     }
 

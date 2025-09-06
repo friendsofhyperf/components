@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Cache\Event;
 
 class CacheFlushing
 {
-    public function __construct(public ?string $storeName)
+    public function __construct(public readonly ?string $storeName)
     {
     }
 }

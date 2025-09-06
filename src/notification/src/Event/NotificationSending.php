@@ -18,9 +18,9 @@ class NotificationSending
     public bool $shouldSend = true;
 
     public function __construct(
-        public mixed $notifiable,
-        public Notification $notification,
-        public string $channel
+        public readonly mixed $notifiable,
+        public readonly Notification $notification,
+        public readonly string $channel
     ) {
     }
 

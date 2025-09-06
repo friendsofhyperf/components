@@ -15,7 +15,7 @@ class RetrievingManyKeys extends CacheEvent
 {
     public function __construct(
         string $storeName,
-        public array $keys
+        public readonly array $keys
     ) {
         parent::__construct($storeName, (string) ($keys[0] ?? ''));
     }

@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Confd\Event;
 
 class WatchDispatched
 {
-    public function __construct(public array $changes)
+    public function __construct(public readonly array $changes)
     {
     }
 }

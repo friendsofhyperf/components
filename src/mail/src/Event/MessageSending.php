@@ -18,8 +18,8 @@ class MessageSending
     public bool $shouldSend = true;
 
     public function __construct(
-        public Email $message,
-        public array $data = []
+        public readonly Email $message,
+        public readonly array $data = []
     ) {
     }
 

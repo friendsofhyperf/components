@@ -20,8 +20,8 @@ class ResponseReceived
      * Create a new event instance.
      */
     public function __construct(
-        public Request $request,
-        public Response $response
+        public readonly Request $request,
+        public readonly Response $response
     ) {
     }
 }

@@ -16,10 +16,10 @@ use FriendsOfHyperf\Notification\Notification;
 class NotificationFailed
 {
     public function __construct(
-        public mixed $notifiable,
-        public Notification $notification,
-        public string $channel,
-        public array $data
+        public readonly mixed $notifiable,
+        public readonly Notification $notification,
+        public readonly string $channel,
+        public readonly array $data
     ) {
     }
 }
