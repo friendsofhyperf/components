@@ -16,8 +16,8 @@ class KeyWriteFailed extends CacheEvent
     public function __construct(
         string $storeName,
         string $key,
-        public readonly mixed $value,
-        public readonly ?int $seconds = null
+        public mixed $value,
+        public ?int $seconds = null
     ) {
         parent::__construct($storeName, $key);
     }

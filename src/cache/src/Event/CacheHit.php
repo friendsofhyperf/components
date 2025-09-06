@@ -16,7 +16,7 @@ class CacheHit extends CacheEvent
     public function __construct(
         string $storeName,
         string $key,
-        public readonly mixed $value
+        public mixed $value
     ) {
         parent::__construct($storeName, $key);
     }

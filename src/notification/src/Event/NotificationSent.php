@@ -16,10 +16,10 @@ use FriendsOfHyperf\Notification\Notification;
 class NotificationSent
 {
     public function __construct(
-        public readonly mixed $notifiable,
-        public readonly Notification $notification,
-        public readonly string $channel,
-        public readonly mixed $response
+        public mixed $notifiable,
+        public Notification $notification,
+        public string $channel,
+        public mixed $response
     ) {
     }
 }
