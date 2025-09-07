@@ -22,6 +22,7 @@ use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\Transaction;
+use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 
 use function Hyperf\Tappable\tap;
@@ -86,26 +87,25 @@ trait SpanStarter
             tap(clone SentrySdk::getCurrentHub(), fn (HubInterface $hub) => $hub->pushScope())
         );
 
-        $context = continueTrace($sentryTrace, $baggage);
-        if (isset($options['name']) && is_string($options['name'])) {
-            $context->setName($options['name']);
-        }
-        if (isset($options['op']) && is_string($options['op'])) {
-            $context->setOp($options['op']);
-        }
-        if (isset($options['description']) && is_string($options['description'])) {
-            $context->setDescription($options['description']);
-        }
-        if (isset($options['origin']) && is_string($options['origin'])) {
-            $context->setOrigin($options['origin']);
-        }
-        if (isset($options['source']) && $options['source'] instanceof TransactionSource) {
-            $context->setSource($options['source']);
-        } else {
-            $context->setSource(TransactionSource::custom());
-        }
-
-        $transaction = $hub->startTransaction($context)
+        $transaction = $hub->startTransaction(
+            tap(
+                continueTrace($sentryTrace, $baggage),
+                function (TransactionContext $context) use ($options) {
+                    array_walk($options, function ($value, $key) use ($context) {
+                        match ($key) {
+                            'name' => is_string($value) && $context->setName($value),
+                            'op' => is_string($value) && $context->setOp($value),
+                            'description' => is_string($value) && $context->setDescription($value),
+                            'origin' => is_string($value) && $context->setOrigin($value),
+                            'source' => $context->setSource(
+                                $value instanceof TransactionSource ? $value : TransactionSource::custom()
+                            ),
+                            default => null,
+                        };
+                    });
+                }
+            )
+        )
             ->setStartTimestamp(microtime(true))
             ->setStatus(SpanStatus::ok());
 
