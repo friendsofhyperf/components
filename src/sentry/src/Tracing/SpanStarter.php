@@ -97,7 +97,9 @@ trait SpanStarter
                             'op' => is_string($value) && $context->setOp($value),
                             'description' => is_string($value) && $context->setDescription($value),
                             'origin' => is_string($value) && $context->setOrigin($value),
-                            'source' => $value instanceof TransactionSource ? $context->setSource($value) : $context->setSource(TransactionSource::custom()),
+                            'source' => $context->setSource(
+                                $value instanceof TransactionSource ? $value : TransactionSource::custom()
+                            ),
                             default => null,
                         };
                     });
