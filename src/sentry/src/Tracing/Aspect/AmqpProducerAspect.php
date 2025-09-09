@@ -85,7 +85,7 @@ class AmqpProducerAspect extends AbstractAspect
         }
 
         $messageId = uniqid('amqp_', true);
-        $destinationName = $exchange ?: 'default';
+        $destinationName = implode(', ', (array) $routingKey);
         $bodySize = strlen($producerMessage->payload());
         $span->setData([
             'messaging.system' => 'amqp',
