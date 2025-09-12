@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\HttpClient;
 
-use Closure;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Concurrent;
@@ -47,53 +46,57 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
 
     public function sendRequest(Request $request, Options $options): Response
     {
+        // Start the loop if not started yet
         $this->loop();
 
-        $chan = $this->chan;
-        $chan->push(fn () => parent::sendRequest($request, $options));
+        // Push the request to the channel
+        $this->chan?->push([$request, $options]);
 
         return new Response(202, ['X-Sentry-Request-Status' => ['Queued']], '');
     }
 
     public function close(): void
     {
-        $chan = $this->chan;
+        $this->chan?->close();
         $this->chan = null;
-
-        $chan?->close();
     }
 
     protected function loop(): void
     {
+        // The loop already started
         if ($this->chan != null) {
             return;
         }
 
+        // The worker already exited
         if ($this->workerExited) {
             return;
         }
 
+        // Initialize the channel and start the loop
         $this->chan = new Channel($this->channelSize);
 
+        // Start the loop
         Coroutine::create(function () {
             try {
                 while (true) {
                     while (true) {
-                        /** @var Closure|null $closure */
-                        $closure = $this->chan?->pop();
-                        if (! $closure) {
+                        /** @var array{0:Request,1:Options}|null $params */
+                        $params = $this->chan?->pop();
+                        if (! $params) {
                             break 2;
                         }
                         try {
+                            $callable = fn () => parent::sendRequest(...$params);
                             if ($this->concurrent) {
-                                $this->concurrent->create($closure);
+                                $this->concurrent->create($callable);
                             } else {
-                                Coroutine::create($closure);
+                                Coroutine::create($callable);
                             }
                         } catch (Throwable) {
                             break;
                         } finally {
-                            $closure = null;
+                            $params = null;
                         }
                     }
                 }
@@ -103,6 +106,7 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
             }
         });
 
+        // Wait for the worker exit event
         $this->waitingWorkerExit ??= Coroutine::create(function () {
             try {
                 CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
