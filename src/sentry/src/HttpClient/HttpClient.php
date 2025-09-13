@@ -37,7 +37,7 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
         string $sdkIdentifier,
         string $sdkVersion,
         protected int $channelSize = 65535,
-        int $concurrentLimit = 1000,
+        int $concurrentLimit = 100,
     ) {
         parent::__construct($sdkIdentifier, $sdkVersion);
 
