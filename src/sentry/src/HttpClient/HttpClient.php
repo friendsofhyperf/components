@@ -86,6 +86,7 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
                 try {
                     while (true) {
                         while (true) {
+                            // If the channel is closing or pop failed, exit the loop
                             if ($chan->isClosing() || ! $params = $chan->pop()) {
                                 break 2;
                             }
