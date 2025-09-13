@@ -52,7 +52,7 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
         $this->loop();
 
         // Push the request to the channel
-        $this->chan?->push([$request, $options]);
+        $this->chan?->push(func_get_args());
 
         return new Response(202, ['X-Sentry-Request-Status' => ['Queued']], '');
     }
@@ -87,11 +87,11 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
                     while (true) {
                         while (true) {
                             // If the channel is closing or pop failed, exit the loop
-                            if ($chan->isClosing() || ! $params = $chan->pop()) {
+                            if ($chan->isClosing() || ! $args = $chan->pop()) {
                                 break 2;
                             }
                             try {
-                                $closure = fn () => parent::sendRequest(...$params);
+                                $closure = fn () => parent::sendRequest(...$args);
                                 if ($this->concurrent) {
                                     $this->concurrent->create($closure);
                                 } else {
