@@ -99,7 +99,7 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
                             } catch (Throwable) {
                                 break;
                             } finally {
-                                $params = null;
+                                $closure = null;
                             }
                         }
                     }
