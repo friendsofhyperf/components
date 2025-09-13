@@ -73,13 +73,13 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
         // Initialize the channel and start the loop
         $this->chan ??= tap(new Channel($this->channelSize), function (Channel $chan) {
             // Dump memory usage and channel size
-            Coroutine::create(function () use ($chan) {
-                while (! $chan->isClosing()) {
-                    dump('Memory Usage(MB): ' . memory_get_usage(true) / 1024 / 1024);
-                    dump('Channel Size: ' . $chan->getLength());
-                    sleep(1);
-                }
-            });
+            // Coroutine::create(function () use ($chan) {
+            //     while (! $chan->isClosing()) {
+            //         dump('Memory Usage(MB): ' . memory_get_usage(true) / 1024 / 1024);
+            //         dump('Channel Size: ' . $chan->getLength());
+            //         sleep(1);
+            //     }
+            // });
 
             // Start the loop
             Coroutine::create(function () use ($chan) {
