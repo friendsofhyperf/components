@@ -65,11 +65,6 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
 
     protected function loop(): void
     {
-        // The loop already started
-        if ($this->chan != null) {
-            return;
-        }
-
         // The worker already exited
         if ($this->workerExited) {
             return;
