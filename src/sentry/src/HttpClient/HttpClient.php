@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\HttpClient;
 
-use Closure;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Concurrent;
@@ -21,6 +20,8 @@ use Sentry\HttpClient\Request;
 use Sentry\HttpClient\Response;
 use Sentry\Options;
 use Throwable;
+
+use function Hyperf\Tappable\tap;
 
 class HttpClient extends \Sentry\HttpClient\HttpClient
 {
@@ -47,62 +48,70 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
 
     public function sendRequest(Request $request, Options $options): Response
     {
+        // Start the loop if not started yet
         $this->loop();
 
-        $chan = $this->chan;
-        $chan->push(fn () => parent::sendRequest($request, $options));
+        // Push the request to the channel
+        $this->chan?->push(func_get_args());
 
         return new Response(202, ['X-Sentry-Request-Status' => ['Queued']], '');
     }
 
     public function close(): void
     {
-        $chan = $this->chan;
+        $this->chan?->close();
         $this->chan = null;
-
-        $chan?->close();
     }
 
     protected function loop(): void
     {
-        if ($this->chan != null) {
-            return;
-        }
-
+        // The worker already exited
         if ($this->workerExited) {
             return;
         }
 
-        $this->chan = new Channel($this->channelSize);
+        // Initialize the channel and start the loop
+        $this->chan ??= tap(new Channel($this->channelSize), function (Channel $chan) {
+            // Dump memory usage and channel size
+            // Coroutine::create(function () use ($chan) {
+            //     while (! $chan->isClosing()) {
+            //         dump('Memory Usage(MB): ' . memory_get_usage(true) / 1024 / 1024);
+            //         dump('Channel Size: ' . $chan->getLength());
+            //         sleep(1);
+            //     }
+            // });
 
-        Coroutine::create(function () {
-            try {
-                while (true) {
+            // Start the loop
+            Coroutine::create(function () use ($chan) {
+                try {
                     while (true) {
-                        /** @var Closure|null $closure */
-                        $closure = $this->chan?->pop();
-                        if (! $closure) {
-                            break 2;
-                        }
-                        try {
-                            if ($this->concurrent) {
-                                $this->concurrent->create($closure);
-                            } else {
-                                Coroutine::create($closure);
+                        while (true) {
+                            // If the channel is closing or pop failed, exit the loop
+                            if ($chan->isClosing() || ! $args = $chan->pop()) {
+                                break 2;
                             }
-                        } catch (Throwable) {
-                            break;
-                        } finally {
-                            $closure = null;
+                            try {
+                                $closure = fn () => parent::sendRequest(...$args);
+                                if ($this->concurrent) {
+                                    $this->concurrent->create($closure);
+                                } else {
+                                    Coroutine::create($closure);
+                                }
+                            } catch (Throwable) {
+                                break;
+                            } finally {
+                                $closure = null;
+                            }
                         }
                     }
+                } catch (Throwable $e) {
+                } finally {
+                    $this->close();
                 }
-            } catch (Throwable $e) {
-            } finally {
-                $this->close();
-            }
+            });
         });
 
+        // Wait for the worker exit event
         $this->waitingWorkerExit ??= Coroutine::create(function () {
             try {
                 CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
