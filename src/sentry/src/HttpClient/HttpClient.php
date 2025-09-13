@@ -21,6 +21,8 @@ use Sentry\HttpClient\Response;
 use Sentry\Options;
 use Throwable;
 
+use function Hyperf\Tappable\tap;
+
 class HttpClient extends \Sentry\HttpClient\HttpClient
 {
     protected ?Channel $chan = null;
@@ -74,36 +76,34 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
         }
 
         // Initialize the channel and start the loop
-        $this->chan = new Channel($this->channelSize);
-
-        // Start the loop
-        Coroutine::create(function () {
-            try {
-                while (true) {
+        $this->chan ??= tap(new Channel($this->channelSize), function (Channel $chan) {
+            // Start the loop
+            Coroutine::create(function () use ($chan) {
+                try {
                     while (true) {
-                        /** @var array{0:Request,1:Options}|null $params */
-                        $params = $this->chan?->pop();
-                        if (! $params) {
-                            break 2;
-                        }
-                        try {
-                            $callable = fn () => parent::sendRequest(...$params);
-                            if ($this->concurrent) {
-                                $this->concurrent->create($callable);
-                            } else {
-                                Coroutine::create($callable);
+                        while (true) {
+                            if ($chan->isClosing() || ! $params = $chan->pop()) {
+                                break 2;
                             }
-                        } catch (Throwable) {
-                            break;
-                        } finally {
-                            $params = null;
+                            try {
+                                $callable = fn () => parent::sendRequest(...$params);
+                                if ($this->concurrent) {
+                                    $this->concurrent->create($callable);
+                                } else {
+                                    Coroutine::create($callable);
+                                }
+                            } catch (Throwable) {
+                                break;
+                            } finally {
+                                $params = null;
+                            }
                         }
                     }
+                } catch (Throwable $e) {
+                } finally {
+                    $this->close();
                 }
-            } catch (Throwable $e) {
-            } finally {
-                $this->close();
-            }
+            });
         });
 
         // Wait for the worker exit event
