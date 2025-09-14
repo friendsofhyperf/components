@@ -103,9 +103,10 @@ class TriggerSubscriber extends AbstractSubscriber
                 property_exists($event, 'values') => $event->values, // @phpstan-ignore property.private
                 default => [],
             };
-            foreach ($values as $value) {
-                [$class, $method] = $callable;
 
+            [$class, $method] = $callable;
+
+            foreach ($values as $value) {
                 $args = match ($eventType) {
                     ConstEventsNames::WRITE->value => [$value],
                     ConstEventsNames::UPDATE->value => [$value['before'], $value['after']],
