@@ -134,12 +134,12 @@ class TriggerSubscriber extends AbstractSubscriber
             $context = ['connection' => $this->consumer->connection];
 
             // Start coroutine to consume events from channel.
-            Coroutine::create(function () use ($context) {
+            Coroutine::create(function () use ($context, $chan) {
                 try {
                     while (true) {
                         while (true) {
                             /** @var array{0:class-string,1:string,2:array}|false|null $payload */
-                            $payload = $this->chan?->pop();
+                            $payload = $chan->pop();
 
                             if (! is_array($payload)) {
                                 break 2;
