@@ -117,7 +117,7 @@ class TriggerSubscriber extends AbstractSubscriber
 
                 // No arguments, skip.
                 if (! $args) {
-                    return;
+                    continue;
                 }
 
                 $this->chan->push([$class, $method, $args]);
