@@ -97,6 +97,7 @@ class TriggerSubscriber extends AbstractSubscriber
         ]);
 
         $eventType = $event->getType();
+        $chan = $this->chan;
 
         foreach ($this->triggerManager->get($key) as $callable) {
             $values = match (true) {
@@ -128,7 +129,7 @@ class TriggerSubscriber extends AbstractSubscriber
                     continue;
                 }
 
-                $this->chan->push([$class, $method, $args]);
+                $chan?->push([$class, $method, $args]);
             }
         }
     }
