@@ -159,31 +159,31 @@ class TriggerSubscriber extends AbstractSubscriber
                 default => [],
             };
             foreach ($values as $value) {
-                $this->chan->push(function () use ($callable, $value, $eventType, $context) {
-                    [$class, $method] = $callable;
+                [$class, $method] = $callable;
 
-                    if (! $this->container->has($class)) {
-                        $this->consumer->logger?->warning(sprintf('[{connection}] Entry "%s" cannot be resolved.', $class), $context);
-                        return;
-                    }
+                // Class cannot be resolved, skip.
+                if (! $this->container->has($class)) {
+                    $this->consumer->logger?->warning(sprintf('[{connection}] Entry "%s" cannot be resolved.', $class), $context);
+                    return;
+                }
 
-                    $args = match ($eventType) {
-                        ConstEventsNames::WRITE->value => [$value],
-                        ConstEventsNames::UPDATE->value => [$value['before'], $value['after']],
-                        ConstEventsNames::DELETE->value => [$value],
-                        default => null,
-                    };
+                $args = match ($eventType) {
+                    ConstEventsNames::WRITE->value => [$value],
+                    ConstEventsNames::UPDATE->value => [$value['before'], $value['after']],
+                    ConstEventsNames::DELETE->value => [$value],
+                    default => null,
+                };
 
-                    if (! $args) {
-                        return;
-                    }
+                // No arguments, skip.
+                if (! $args) {
+                    return;
+                }
 
-                    try {
-                        call([$this->container->get($class), $method], $args);
-                    } catch (Throwable $e) {
-                        $this->consumer->logger?->warning('[{connection}] ' . (string) $e, $context);
-                    }
-                });
+                try {
+                    call([$this->container->get($class), $method], $args);
+                } catch (Throwable $e) {
+                    $this->consumer->logger?->warning('[{connection}] ' . (string) $e, $context);
+                }
             }
         }
     }
