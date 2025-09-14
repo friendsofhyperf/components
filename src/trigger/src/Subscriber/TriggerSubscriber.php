@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Trigger\Subscriber;
 
-use Closure;
 use FriendsOfHyperf\Trigger\ConstEventsNames;
 use FriendsOfHyperf\Trigger\Consumer;
 use FriendsOfHyperf\Trigger\TriggerManager;
@@ -26,6 +25,7 @@ use Psr\Container\ContainerInterface;
 use Throwable;
 
 use function Hyperf\Support\call;
+use function Hyperf\Tappable\tap;
 
 class TriggerSubscriber extends AbstractSubscriber
 {
@@ -57,6 +57,17 @@ class TriggerSubscriber extends AbstractSubscriber
         ];
     }
 
+    protected function allEvents(EventDTO $event): void
+    {
+        if (! $event instanceof RowsDTO) {
+            return;
+        }
+
+        $this->loop();
+
+        $this->chan?->push($event);
+    }
+
     protected function close(): void
     {
         $this->chan?->close();
@@ -65,57 +76,50 @@ class TriggerSubscriber extends AbstractSubscriber
 
     protected function loop(): void
     {
-        if ($this->chan) {
-            return;
-        }
+        $this->chan ??= tap(new Channel($this->channelSize), function (Channel $chan) {
+            $context = ['connection' => $this->consumer->connection];
 
-        $context = ['connection' => $this->consumer->connection];
-        $this->chan = new Channel($this->channelSize);
-
-        Coroutine::create(function () use ($context) {
-            try {
-                while (true) {
+            Coroutine::create(function () use ($context) {
+                try {
                     while (true) {
-                        /** @var Closure|false|null $closure */
-                        $closure = $this->chan?->pop();
+                        while (true) {
+                            /** @var RowsDTO|false|null $event */
+                            $event = $this->chan?->pop();
 
-                        if ($closure === null || $closure === false) {
-                            break 2;
-                        }
+                            if (! $event instanceof RowsDTO) {
+                                break 2;
+                            }
 
-                        try {
-                            $this->concurrent->create($closure);
-                        } catch (Throwable $e) {
-                            $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
-                            break;
-                        } finally {
-                            $closure = null;
+                            try {
+                                $closure = fn () => $this->resolveEvent($event);
+                                $this->concurrent->create($closure);
+                            } catch (Throwable $e) {
+                                $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
+                                break;
+                            } finally {
+                                $event = null;
+                                $closure = null;
+                            }
                         }
                     }
+                } catch (Throwable $e) {
+                    $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
+                } finally {
+                    $this->close();
                 }
-            } catch (Throwable $e) {
-                $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
-            } finally {
-                $this->close();
-            }
-        });
+            });
 
-        Coroutine::create(function () {
-            if (CoordinatorManager::until(Constants::WORKER_EXIT)->yield()) {
-                $this->close();
-            }
+            Coroutine::create(function () {
+                if (CoordinatorManager::until(Constants::WORKER_EXIT)->yield()) {
+                    $this->close();
+                }
+            });
         });
     }
 
-    protected function allEvents(EventDTO $event): void
+    protected function resolveEvent(EventDTO $event): void
     {
-        if (! $event instanceof RowsDTO) {
-            return;
-        }
-
         $context = ['connection' => $this->consumer->connection];
-        $this->loop();
-
         $database = match (true) {
             method_exists($event, 'getTableMap') => $event->getTableMap()->getDatabase(), // v7.x, @deprecated, will be removed in v3.2
             property_exists($event, 'tableMap') => $event->tableMap->database, // @phpstan-ignore property.private
