@@ -91,16 +91,16 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
                                 break 2;
                             }
                             try {
-                                $closure = fn () => parent::sendRequest(...$args);
+                                $callable = fn () => parent::sendRequest(...$args);
                                 if ($this->concurrent) {
-                                    $this->concurrent->create($closure);
+                                    $this->concurrent->create($callable);
                                 } else {
-                                    Coroutine::create($closure);
+                                    Coroutine::create($callable);
                                 }
                             } catch (Throwable) {
                                 break;
                             } finally {
-                                $closure = null;
+                                $callable = null;
                             }
                         }
                     }
