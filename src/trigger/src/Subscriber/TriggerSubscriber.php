@@ -29,7 +29,7 @@ use function Hyperf\Tappable\tap;
 
 class TriggerSubscriber extends AbstractSubscriber
 {
-    protected Concurrent $concurrent;
+    protected ?Concurrent $concurrent = null;
 
     protected ?Channel $chan = null;
 
@@ -40,9 +40,10 @@ class TriggerSubscriber extends AbstractSubscriber
         protected TriggerManager $triggerManager,
         protected Consumer $consumer
     ) {
-        $this->concurrent = new Concurrent(
-            (int) ($consumer->config->get('concurrent.limit') ?? 1)
-        );
+        $concurrentLimit = (int) ($consumer->config->get('concurrent.limit') ?? 1);
+        if ($concurrentLimit > 0) {
+            $this->concurrent = new Concurrent($concurrentLimit);
+        }
         if ($consumer->config->has('channel.size')) {
             $this->channelSize = (int) $consumer->config->get('channel.size');
         }
@@ -158,7 +159,11 @@ class TriggerSubscriber extends AbstractSubscriber
                                 };
 
                                 // Execute in concurrent.
-                                $this->concurrent->create($closure);
+                                if ($this->concurrent) {
+                                    $this->concurrent->create($closure);
+                                } else {
+                                    Coroutine::create($closure);
+                                }
                             } catch (Throwable $e) {
                                 $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
                                 break;
