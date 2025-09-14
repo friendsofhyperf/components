@@ -206,7 +206,12 @@ class TriggerSubscriber extends AbstractSubscriber
 
     protected function close(): void
     {
-        $this->chan?->close();
-        $this->chan = null;
+        $chan = $this->chan;
+        $chan?->close();
+
+        // Based on local snapshots and identity checks to avoid race conditions.
+        if ($this->chan === $chan) {
+            $this->chan = null;
+        }
     }
 }
