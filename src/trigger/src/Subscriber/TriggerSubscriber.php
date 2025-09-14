@@ -156,6 +156,10 @@ class TriggerSubscriber extends AbstractSubscriber
                                 $closure = static function () use ($payload, $context, $container, $consumer) {
                                     try {
                                         [$class, $method, $args] = $payload;
+                                        if (! $container->has($class)) {
+                                            $consumer->logger?->warning("[{connection}] Class {$class} not found in container", $context);
+                                            return;
+                                        }
                                         // Call the method with arguments.
                                         $container->get($class)->{$method}(...$args);
                                     } catch (Throwable $e) {
