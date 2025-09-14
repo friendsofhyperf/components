@@ -52,15 +52,10 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
         $this->loop();
 
         // Push the request to the channel
-        $this->chan?->push(func_get_args());
+        $chan = $this->chan;
+        $chan?->push(func_get_args());
 
         return new Response(202, ['X-Sentry-Request-Status' => ['Queued']], '');
-    }
-
-    public function close(): void
-    {
-        $this->chan?->close();
-        $this->chan = null;
     }
 
     protected function loop(): void
@@ -120,5 +115,15 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
             } catch (Throwable) {
             }
         });
+    }
+
+    protected function close(): void
+    {
+        $chan = $this->chan;
+        $chan?->close();
+
+        if ($this->chan === $chan) {
+            $this->chan = null;
+        }
     }
 }
