@@ -149,14 +149,8 @@ class TriggerSubscriber extends AbstractSubscriber
 
                                 $closure = function () use ($class, $method, $args, $context) {
                                     try {
-                                        // Resolve class from container.
-                                        if (! $this->container->has($class)) {
-                                            $this->consumer->logger?->warning(sprintf('[{connection}] Entry "%s" cannot be resolved.', $class), $context);
-                                            return;
-                                        }
-
                                         // Call the method with arguments.
-                                        return call([$this->container->get($class), $method], $args);
+                                        $this->container->get($class)->{$method}(...$args);
                                     } catch (Throwable $e) {
                                         $this->consumer->logger?->warning('[{connection}] ' . (string) $e, $context);
                                     } finally {
