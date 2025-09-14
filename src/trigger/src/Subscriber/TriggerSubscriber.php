@@ -59,12 +59,15 @@ class TriggerSubscriber extends AbstractSubscriber
 
     protected function allEvents(EventDTO $event): void
     {
+        // Only process RowsDTO events.
         if (! $event instanceof RowsDTO) {
             return;
         }
 
+        // Start loop if not started.
         $this->loop();
 
+        // Push event to channel.
         $this->chan?->push($event);
     }
 
@@ -74,11 +77,15 @@ class TriggerSubscriber extends AbstractSubscriber
         $this->chan = null;
     }
 
+    /**
+     * Start loop to process events.
+     */
     protected function loop(): void
     {
         $this->chan ??= tap(new Channel($this->channelSize), function (Channel $chan) {
             $context = ['connection' => $this->consumer->connection];
 
+            // Start coroutine to consume events from channel.
             Coroutine::create(function () use ($context) {
                 try {
                     while (true) {
@@ -91,7 +98,7 @@ class TriggerSubscriber extends AbstractSubscriber
                             }
 
                             try {
-                                $closure = fn () => $this->resolveEvent($event);
+                                $closure = fn () => $this->process($event);
                                 $this->concurrent->create($closure);
                             } catch (Throwable $e) {
                                 $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
@@ -109,6 +116,7 @@ class TriggerSubscriber extends AbstractSubscriber
                 }
             });
 
+            // Start coroutine to listen for worker exit signal.
             Coroutine::create(function () {
                 if (CoordinatorManager::until(Constants::WORKER_EXIT)->yield()) {
                     $this->close();
@@ -117,7 +125,10 @@ class TriggerSubscriber extends AbstractSubscriber
         });
     }
 
-    protected function resolveEvent(EventDTO $event): void
+    /**
+     * Process event.
+     */
+    protected function process(RowsDTO $event): void
     {
         $context = ['connection' => $this->consumer->connection];
         $database = match (true) {
