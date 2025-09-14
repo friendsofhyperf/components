@@ -145,10 +145,9 @@ class TriggerSubscriber extends AbstractSubscriber
                             }
 
                             try {
-                                [$class, $method, $args] = $payload;
-
-                                $closure = function () use ($class, $method, $args, $context) {
+                                $closure = function () use ($payload, $context) {
                                     try {
+                                        [$class, $method, $args] = $payload;
                                         // Call the method with arguments.
                                         $this->container->get($class)->{$method}(...$args);
                                     } catch (Throwable $e) {
