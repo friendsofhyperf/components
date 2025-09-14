@@ -110,7 +110,7 @@ class TriggerSubscriber extends AbstractSubscriber
 
             if (
                 ! $this->container->has($class)
-                || ! method_exists($this->container->get($class), $method)
+                || ! method_exists($class, $method)
             ) {
                 $this->consumer->logger?->warning("[{$this->consumer->connection}] Class {$class} or method {$method} not found in container", ['connection' => $this->consumer->connection]);
                 continue;
