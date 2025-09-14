@@ -67,62 +67,8 @@ class TriggerSubscriber extends AbstractSubscriber
         // Start loop if not started.
         $this->loop();
 
-        // Push event to channel.
-        $this->chan?->push($event);
-    }
-
-    protected function close(): void
-    {
-        $this->chan?->close();
-        $this->chan = null;
-    }
-
-    /**
-     * Start loop to process events.
-     */
-    protected function loop(): void
-    {
-        $this->chan ??= tap(new Channel($this->channelSize), function (Channel $chan) {
-            $context = ['connection' => $this->consumer->connection];
-
-            // Start coroutine to consume events from channel.
-            Coroutine::create(function () use ($context) {
-                try {
-                    while (true) {
-                        while (true) {
-                            /** @var RowsDTO|false|null $event */
-                            $event = $this->chan?->pop();
-
-                            if (! $event instanceof RowsDTO) {
-                                break 2;
-                            }
-
-                            try {
-                                $closure = fn () => $this->process($event);
-                                $this->concurrent->create($closure);
-                            } catch (Throwable $e) {
-                                $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
-                                break;
-                            } finally {
-                                $event = null;
-                                $closure = null;
-                            }
-                        }
-                    }
-                } catch (Throwable $e) {
-                    $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
-                } finally {
-                    $this->close();
-                }
-            });
-
-            // Start coroutine to listen for worker exit signal.
-            Coroutine::create(function () {
-                if (CoordinatorManager::until(Constants::WORKER_EXIT)->yield()) {
-                    $this->close();
-                }
-            });
-        });
+        // Process event.
+        $this->process($event);
     }
 
     /**
@@ -161,12 +107,6 @@ class TriggerSubscriber extends AbstractSubscriber
             foreach ($values as $value) {
                 [$class, $method] = $callable;
 
-                // Class cannot be resolved, skip.
-                if (! $this->container->has($class)) {
-                    $this->consumer->logger?->warning(sprintf('[{connection}] Entry "%s" cannot be resolved.', $class), $context);
-                    return;
-                }
-
                 $args = match ($eventType) {
                     ConstEventsNames::WRITE->value => [$value],
                     ConstEventsNames::UPDATE->value => [$value['before'], $value['after']],
@@ -179,12 +119,81 @@ class TriggerSubscriber extends AbstractSubscriber
                     return;
                 }
 
-                try {
-                    call([$this->container->get($class), $method], $args);
-                } catch (Throwable $e) {
-                    $this->consumer->logger?->warning('[{connection}] ' . (string) $e, $context);
-                }
+                $this->chan->push([$class, $method, $args]);
             }
         }
+    }
+
+    /**
+     * Start loop to process events.
+     */
+    protected function loop(): void
+    {
+        $this->chan ??= tap(new Channel($this->channelSize), function (Channel $chan) {
+            $context = ['connection' => $this->consumer->connection];
+
+            // Start coroutine to consume events from channel.
+            Coroutine::create(function () use ($context) {
+                try {
+                    while (true) {
+                        while (true) {
+                            /** @var array{0:class-string,1:string,2:array}|false|null $payload */
+                            $payload = $this->chan?->pop();
+
+                            if (! is_array($payload)) {
+                                break 2;
+                            }
+
+                            try {
+                                [$class, $method, $args] = $payload;
+
+                                $closure = function () use ($class, $method, $args, $context) {
+                                    try {
+                                        // Resolve class from container.
+                                        if (! $this->container->has($class)) {
+                                            $this->consumer->logger?->warning(sprintf('[{connection}] Entry "%s" cannot be resolved.', $class), $context);
+                                            return;
+                                        }
+
+                                        // Call the method with arguments.
+                                        return call([$this->container->get($class), $method], $args);
+                                    } catch (Throwable $e) {
+                                        $this->consumer->logger?->warning('[{connection}] ' . (string) $e, $context);
+                                    } finally {
+                                        $args = [];
+                                    }
+                                };
+
+                                // Execute in concurrent.
+                                $this->concurrent->create($closure);
+                            } catch (Throwable $e) {
+                                $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
+                                break;
+                            } finally {
+                                $payload = null;
+                                $closure = null;
+                            }
+                        }
+                    }
+                } catch (Throwable $e) {
+                    $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
+                } finally {
+                    $this->close();
+                }
+            });
+
+            // Start coroutine to listen for worker exit signal.
+            Coroutine::create(function () {
+                if (CoordinatorManager::until(Constants::WORKER_EXIT)->yield()) {
+                    $this->close();
+                }
+            });
+        });
+    }
+
+    protected function close(): void
+    {
+        $this->chan?->close();
+        $this->chan = null;
     }
 }
