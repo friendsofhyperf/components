@@ -107,6 +107,14 @@ class TriggerSubscriber extends AbstractSubscriber
 
             [$class, $method] = $callable;
 
+            if (
+                ! $this->container->has($class)
+                || ! method_exists($this->container->get($class), $method)
+            ) {
+                $this->consumer->logger?->warning("[{$this->consumer->connection}] Class {$class} or method {$method} not found in container", ['connection' => $this->consumer->connection]);
+                continue;
+            }
+
             foreach ($values as $value) {
                 $args = match ($eventType) {
                     ConstEventsNames::WRITE->value => [$value],
@@ -156,10 +164,6 @@ class TriggerSubscriber extends AbstractSubscriber
                                 $closure = static function () use ($payload, $context, $container, $consumer) {
                                     try {
                                         [$class, $method, $args] = $payload;
-                                        if (! $container->has($class)) {
-                                            $consumer->logger?->warning("[{connection}] Class {$class} not found in container", $context);
-                                            return;
-                                        }
                                         // Call the method with arguments.
                                         $container->get($class)->{$method}(...$args);
                                     } catch (Throwable $e) {
