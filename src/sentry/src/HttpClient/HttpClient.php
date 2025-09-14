@@ -96,6 +96,7 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
                                 break;
                             } finally {
                                 $callable = null;
+                                $args = null;
                             }
                         }
                     }
