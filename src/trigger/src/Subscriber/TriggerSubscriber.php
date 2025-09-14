@@ -191,14 +191,22 @@ class TriggerSubscriber extends AbstractSubscriber
                 } catch (Throwable $e) {
                     $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
                 } finally {
-                    $this->close();
+                    $chan->close();
+
+                    if ($this->chan === $chan) {
+                        $this->chan = null;
+                    }
                 }
             });
 
             // Start coroutine to listen for worker exit signal.
-            Coroutine::create(function () {
+            Coroutine::create(function () use ($chan) {
                 if (CoordinatorManager::until(Constants::WORKER_EXIT)->yield()) {
-                    $this->close();
+                    $chan->close();
+
+                    if ($this->chan === $chan) {
+                        $this->chan = null;
+                    }
                 }
             });
         });
