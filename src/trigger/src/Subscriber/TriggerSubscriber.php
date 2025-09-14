@@ -138,6 +138,11 @@ class TriggerSubscriber extends AbstractSubscriber
                 try {
                     while (true) {
                         while (true) {
+                            // Check if channel is closing.
+                            if ($chan->isClosing()) {
+                                break 2;
+                            }
+
                             /** @var array{0:class-string,1:string,2:array}|false|null $payload */
                             $payload = $chan->pop();
 
