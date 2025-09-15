@@ -100,13 +100,13 @@ class TriggerSubscriber extends AbstractSubscriber
         $eventType = $event->getType();
         $chan = $this->chan;
 
-        foreach ($this->triggerManager->get($key) as $callable) {
-            $values = match (true) {
-                method_exists($event, 'getValues') => $event->getValues(), // v7.x, @deprecated since v3.1, will be removed in v3.2
-                property_exists($event, 'values') => $event->values, // @phpstan-ignore property.private
-                default => [],
-            };
+        $values = match (true) {
+            method_exists($event, 'getValues') => $event->getValues(), // v7.x, @deprecated since v3.1, will be removed in v3.2
+            property_exists($event, 'values') => $event->values, // @phpstan-ignore property.private
+            default => [],
+        };
 
+        foreach ($this->triggerManager->get($key) as $callable) {
             [$class, $method] = $callable;
 
             if (
