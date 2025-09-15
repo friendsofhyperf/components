@@ -102,6 +102,7 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
                     }
                 } catch (Throwable $e) {
                 } finally {
+                    $chan->close();
                     $this->close();
                 }
             });
