@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Trigger\Subscriber;
 
-use FriendsOfHyperf\Trigger\ConstEventsNames;
 use FriendsOfHyperf\Trigger\Consumer;
 use FriendsOfHyperf\Trigger\TriggerManager;
 use Hyperf\Coordinator\Constants;
@@ -19,6 +18,7 @@ use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Concurrent;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Engine\Channel;
+use MySQLReplication\Definitions\ConstEventsNames;
 use MySQLReplication\Event\DTO\EventDTO;
 use MySQLReplication\Event\DTO\RowsDTO;
 use Psr\Container\ContainerInterface;
