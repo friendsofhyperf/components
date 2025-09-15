@@ -98,13 +98,8 @@ class TriggerSubscriber extends AbstractSubscriber
         ]);
 
         $eventType = $event->getType();
-        $values = match (true) {
-            method_exists($event, 'getValues') => $event->getValues(), // v7.x, @deprecated since v3.1, will be removed in v3.2
-            property_exists($event, 'values') => $event->values, // @phpstan-ignore property.private
-            default => [],
-        };
         $arguments = [];
-        foreach ($values as $value) {
+        foreach ($event->values as $value) {
             $arguments[] = match ($eventType) {
                 ConstEventsNames::WRITE->value => [$value],
                 ConstEventsNames::UPDATE->value => [$value['before'], $value['after']],
