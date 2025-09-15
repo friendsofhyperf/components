@@ -108,7 +108,9 @@ class TriggerSubscriber extends AbstractSubscriber
             };
         }
 
-        $chan = $this->chan;
+        if (! ($chan = $this->chan) || count($arguments) === 0) {
+            return;
+        }
 
         foreach ($this->triggerManager->get($key) as $callable) {
             [$class, $method] = $callable;
@@ -126,7 +128,7 @@ class TriggerSubscriber extends AbstractSubscriber
                     continue;
                 }
 
-                $chan?->push([$class, $method, $args]);
+                $chan->push([$class, $method, $args]);
             }
         }
     }
