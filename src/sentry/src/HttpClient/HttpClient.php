@@ -53,7 +53,7 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
 
         // Push the request to the channel
         $chan = $this->chan;
-        $chan?->push(func_get_args());
+        $chan?->push([$request, $options]);
 
         return new Response(202, ['X-Sentry-Request-Status' => ['Queued']], '');
     }
