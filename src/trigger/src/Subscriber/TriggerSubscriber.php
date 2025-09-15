@@ -159,7 +159,7 @@ class TriggerSubscriber extends AbstractSubscriber
                             try {
                                 $container = $this->container;
                                 $consumer = $this->consumer;
-                                $closure = static function () use ($payload, $context, $container, $consumer) {
+                                $callable = static function () use ($payload, $context, $container, $consumer) {
                                     try {
                                         [$class, $method, $args] = $payload;
                                         // Call the method with arguments.
@@ -173,16 +173,16 @@ class TriggerSubscriber extends AbstractSubscriber
 
                                 // Execute in concurrent.
                                 if ($this->concurrent) {
-                                    $this->concurrent->create($closure);
+                                    $this->concurrent->create($callable);
                                 } else {
-                                    Coroutine::create($closure);
+                                    Coroutine::create($callable);
                                 }
                             } catch (Throwable $e) {
                                 $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
                                 break;
                             } finally {
                                 $payload = null;
-                                $closure = null;
+                                $callable = null;
                             }
                         }
                     }
