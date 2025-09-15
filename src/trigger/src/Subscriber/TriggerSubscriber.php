@@ -11,25 +11,26 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Trigger\Subscriber;
 
-use Closure;
+use FriendsOfHyperf\Trigger\ConstEventsNames;
 use FriendsOfHyperf\Trigger\Consumer;
 use FriendsOfHyperf\Trigger\TriggerManager;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Concurrent;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Engine\Channel;
-use Hyperf\Engine\Coroutine;
-use MySQLReplication\Definitions\ConstEventsNames;
 use MySQLReplication\Event\DTO\EventDTO;
 use MySQLReplication\Event\DTO\RowsDTO;
 use Psr\Container\ContainerInterface;
 use Throwable;
 
 use function Hyperf\Support\call;
+use function Hyperf\Support\msleep;
+use function Hyperf\Tappable\tap;
 
 class TriggerSubscriber extends AbstractSubscriber
 {
-    protected Concurrent $concurrent;
+    protected ?Concurrent $concurrent = null;
 
     protected ?Channel $chan = null;
 
@@ -40,9 +41,10 @@ class TriggerSubscriber extends AbstractSubscriber
         protected TriggerManager $triggerManager,
         protected Consumer $consumer
     ) {
-        $this->concurrent = new Concurrent(
-            (int) ($consumer->config->get('concurrent.limit') ?? 1)
-        );
+        $concurrentLimit = (int) ($consumer->config->get('concurrent.limit') ?? 1);
+        if ($concurrentLimit > 0) {
+            $this->concurrent = new Concurrent($concurrentLimit);
+        }
         if ($consumer->config->has('channel.size')) {
             $this->channelSize = (int) $consumer->config->get('channel.size');
         }
@@ -57,67 +59,36 @@ class TriggerSubscriber extends AbstractSubscriber
         ];
     }
 
-    protected function close(): void
-    {
-        $this->chan?->close();
-        $this->chan = null;
-    }
-
-    protected function loop(): void
-    {
-        if ($this->chan) {
-            return;
-        }
-
-        $context = ['connection' => $this->consumer->connection];
-        $this->chan = new Channel($this->channelSize);
-
-        Coroutine::create(function () use ($context) {
-            try {
-                while (true) {
-                    while (true) {
-                        /** @var Closure|false|null $closure */
-                        $closure = $this->chan?->pop();
-
-                        if ($closure === null || $closure === false) {
-                            break 2;
-                        }
-
-                        try {
-                            $this->concurrent->create($closure);
-                        } catch (Throwable $e) {
-                            $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
-                            break;
-                        } finally {
-                            $closure = null;
-                        }
-                    }
-                }
-            } catch (Throwable $e) {
-                $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
-            } finally {
-                $this->close();
-            }
-        });
-
-        Coroutine::create(function () {
-            if (CoordinatorManager::until(Constants::WORKER_EXIT)->yield()) {
-                $this->close();
-            }
-        });
-    }
-
     protected function allEvents(EventDTO $event): void
     {
+        // Only process RowsDTO events.
         if (! $event instanceof RowsDTO) {
             return;
         }
 
-        $context = ['connection' => $this->consumer->connection];
+        // Start loop if not started.
         $this->loop();
 
-        $database = $event->tableMap->database;
-        $table = $event->tableMap->table;
+        // Process event.
+        $this->process($event);
+    }
+
+    /**
+     * Process event.
+     */
+    protected function process(RowsDTO $event): void
+    {
+        $database = match (true) {
+            method_exists($event, 'getTableMap') => $event->getTableMap()->getDatabase(), // v7.x, @deprecated, will be removed in v3.2
+            property_exists($event, 'tableMap') => $event->tableMap->database, // @phpstan-ignore property.private
+            default => null,
+        };
+
+        $table = match (true) {
+            method_exists($event, 'getTableMap') => $event->getTableMap()->getTable(), // v7.x, @deprecated, will be removed in v3.2
+            property_exists($event, 'tableMap') => $event->tableMap->table, // @phpstan-ignore property.private
+            default => null,
+        };
 
         $key = join('.', [
             $this->consumer->connection,
@@ -127,36 +98,122 @@ class TriggerSubscriber extends AbstractSubscriber
         ]);
 
         $eventType = $event->getType();
+        $values = match (true) {
+            method_exists($event, 'getValues') => $event->getValues(), // v7.x, @deprecated since v3.1, will be removed in v3.2
+            property_exists($event, 'values') => $event->values, // @phpstan-ignore property.private
+            default => [],
+        };
+        $arguments = [];
+        foreach ($values as $value) {
+            $arguments[] = match ($eventType) {
+                ConstEventsNames::WRITE->value => [$value],
+                ConstEventsNames::UPDATE->value => [$value['before'], $value['after']],
+                ConstEventsNames::DELETE->value => [$value],
+                default => [],
+            };
+        }
+
+        $chan = $this->chan;
 
         foreach ($this->triggerManager->get($key) as $callable) {
-            $values = $event->values;
-            foreach ($values as $value) {
-                $this->chan->push(function () use ($callable, $value, $eventType, $context) {
-                    [$class, $method] = $callable;
+            [$class, $method] = $callable;
 
-                    if (! $this->container->has($class)) {
-                        $this->consumer->logger?->warning(sprintf('[{connection}] Entry "%s" cannot be resolved.', $class), $context);
-                        return;
-                    }
-
-                    $args = match ($eventType) {
-                        ConstEventsNames::WRITE->value => [$value],
-                        ConstEventsNames::UPDATE->value => [$value['before'], $value['after']],
-                        ConstEventsNames::DELETE->value => [$value],
-                        default => null,
-                    };
-
-                    if (! $args) {
-                        return;
-                    }
-
-                    try {
-                        call([$this->container->get($class), $method], $args);
-                    } catch (Throwable $e) {
-                        $this->consumer->logger?->warning('[{connection}] ' . (string) $e, $context);
-                    }
-                });
+            if (
+                ! $this->container->has($class)
+                || ! method_exists($class, $method)
+            ) {
+                $this->consumer->logger?->warning("[{$this->consumer->connection}] Class {$class} or method {$method} not found in container", ['connection' => $this->consumer->connection]);
+                continue;
             }
+
+            foreach ($arguments as $args) {
+                if (! $args) {
+                    continue;
+                }
+
+                $chan?->push([$class, $method, $args]);
+            }
+        }
+    }
+
+    /**
+     * Start loop to process events.
+     */
+    protected function loop(): void
+    {
+        $this->chan ??= tap(new Channel($this->channelSize), function () {
+            $context = ['connection' => $this->consumer->connection];
+
+            // Start coroutine to consume events from channel.
+            Coroutine::create(function () use ($context) {
+                try {
+                    while (true) {
+                        while (true) {
+                            /** @var array{0:class-string,1:string,2:array}|false|null $payload */
+                            $payload = $this->chan?->pop();
+
+                            if (! is_array($payload)) {
+                                break 2;
+                            }
+
+                            try {
+                                $container = $this->container;
+                                $consumer = $this->consumer;
+                                $callable = static function () use ($payload, $context, $container, $consumer) {
+                                    try {
+                                        [$class, $method, $args] = $payload;
+                                        // Call the method with arguments.
+                                        $container->get($class)->{$method}(...$args);
+                                    } catch (Throwable $e) {
+                                        $consumer->logger?->warning('[{connection}] ' . (string) $e, $context);
+                                    } finally {
+                                        $args = [];
+                                    }
+                                };
+
+                                // Execute in concurrent.
+                                if ($this->concurrent) {
+                                    $this->concurrent->create($callable);
+                                } else {
+                                    Coroutine::create($callable);
+                                }
+                            } catch (Throwable $e) {
+                                $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
+                                break;
+                            } finally {
+                                $payload = null;
+                                $callable = null;
+                            }
+                        }
+                    }
+                } catch (Throwable $e) {
+                    $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
+                } finally {
+                    $this->close();
+                }
+            });
+
+            // Start coroutine to listen for worker exit signal.
+            Coroutine::create(function () {
+                if (CoordinatorManager::until(Constants::WORKER_EXIT)->yield()) {
+                    while (! $this->chan?->isEmpty()) {
+                        msleep(100);
+                    }
+
+                    $this->close();
+                }
+            });
+        });
+    }
+
+    protected function close(): void
+    {
+        $chan = $this->chan;
+        $chan?->close();
+
+        // Based on local snapshots and identity checks to avoid race conditions.
+        if ($this->chan === $chan) {
+            $this->chan = null;
         }
     }
 }
