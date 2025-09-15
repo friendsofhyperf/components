@@ -139,21 +139,16 @@ class TriggerSubscriber extends AbstractSubscriber
      */
     protected function loop(): void
     {
-        $this->chan ??= tap(new Channel($this->channelSize), function (Channel $chan) {
+        $this->chan ??= tap(new Channel($this->channelSize), function () {
             $context = ['connection' => $this->consumer->connection];
 
             // Start coroutine to consume events from channel.
-            Coroutine::create(function () use ($context, $chan) {
+            Coroutine::create(function () use ($context) {
                 try {
                     while (true) {
                         while (true) {
-                            // Check if channel is closing.
-                            if ($chan->isClosing()) {
-                                break 2;
-                            }
-
                             /** @var array{0:class-string,1:string,2:array}|false|null $payload */
-                            $payload = $chan->pop();
+                            $payload = $this->chan?->pop();
 
                             if (! is_array($payload)) {
                                 break 2;
@@ -192,22 +187,18 @@ class TriggerSubscriber extends AbstractSubscriber
                 } catch (Throwable $e) {
                     $this->consumer->logger?->error('[{connection}] ' . (string) $e, $context);
                 } finally {
-                    $chan->close();
-
-                    if ($this->chan === $chan) {
-                        $this->chan = null;
-                    }
+                    $this->close();
                 }
             });
 
             // Start coroutine to listen for worker exit signal.
-            Coroutine::create(function () use ($chan) {
+            Coroutine::create(function () {
                 if (CoordinatorManager::until(Constants::WORKER_EXIT)->yield()) {
-                    $chan->close();
-
-                    if ($this->chan === $chan) {
-                        $this->chan = null;
+                    while (! $this->chan?->isEmpty()) {
+                        msleep(100);
                     }
+
+                    $this->close();
                 }
             });
         });
