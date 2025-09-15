@@ -25,6 +25,7 @@ use Psr\Container\ContainerInterface;
 use Throwable;
 
 use function Hyperf\Support\call;
+use function Hyperf\Support\msleep;
 use function Hyperf\Tappable\tap;
 
 class TriggerSubscriber extends AbstractSubscriber
