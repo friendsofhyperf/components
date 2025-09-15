@@ -21,8 +21,6 @@ use Sentry\HttpClient\Response;
 use Sentry\Options;
 use Throwable;
 
-use function Hyperf\Tappable\tap;
-
 class HttpClient extends \Sentry\HttpClient\HttpClient
 {
     protected ?Channel $chan = null;
@@ -65,47 +63,40 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
             return;
         }
 
-        // Initialize the channel and start the loop
-        $this->chan ??= tap(new Channel($this->channelSize), function (Channel $chan) {
-            // Dump memory usage and channel size
-            // Coroutine::create(function () use ($chan) {
-            //     while (! $chan->isClosing()) {
-            //         dump('Memory Usage(MB): ' . memory_get_usage(true) / 1024 / 1024);
-            //         dump('Channel Size: ' . $chan->getLength());
-            //         sleep(1);
-            //     }
-            // });
+        if ($this->chan !== null) {
+            return;
+        }
 
-            // Start the loop
-            Coroutine::create(function () use ($chan) {
-                try {
+        $this->chan = new Channel($this->channelSize);
+
+        // Start the loop
+        Coroutine::create(function () {
+            try {
+                while (true) {
                     while (true) {
-                        while (true) {
-                            // If the channel is closing or pop failed, exit the loop
-                            if ($chan->isClosing() || ! $args = $chan->pop()) {
-                                break 2;
+                        // If the channel is closing or pop failed, exit the loop
+                        if (! $args = $this->chan?->pop()) {
+                            break 2;
+                        }
+                        try {
+                            $callable = fn () => parent::sendRequest(...$args);
+                            if ($this->concurrent) {
+                                $this->concurrent->create($callable);
+                            } else {
+                                Coroutine::create($callable);
                             }
-                            try {
-                                $callable = fn () => parent::sendRequest(...$args);
-                                if ($this->concurrent) {
-                                    $this->concurrent->create($callable);
-                                } else {
-                                    Coroutine::create($callable);
-                                }
-                            } catch (Throwable) {
-                                break;
-                            } finally {
-                                $callable = null;
-                                $args = null;
-                            }
+                        } catch (Throwable) {
+                            break;
+                        } finally {
+                            $callable = null;
+                            $args = null;
                         }
                     }
-                } catch (Throwable $e) {
-                } finally {
-                    $chan->close();
-                    $this->close();
                 }
-            });
+            } catch (Throwable $e) {
+            } finally {
+                $this->close();
+            }
         });
 
         // Wait for the worker exit event
