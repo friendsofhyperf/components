@@ -66,7 +66,7 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
         }
 
         // Initialize the channel and start the loop
-        $this->chan ??= tap(new Channel($this->channelSize), function (Channel $chan) {
+        $this->chan ??= tap(new Channel($this->channelSize), function () {
             // Dump memory usage and channel size
             // Coroutine::create(function () use ($chan) {
             //     while (! $chan->isClosing()) {
@@ -77,12 +77,12 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
             // });
 
             // Start the loop
-            Coroutine::create(function () use ($chan) {
+            Coroutine::create(function () {
                 try {
                     while (true) {
                         while (true) {
                             // If the channel is closing or pop failed, exit the loop
-                            if ($chan->isClosing() || ! $args = $chan->pop()) {
+                            if (! $args = $this->chan->pop()) {
                                 break 2;
                             }
                             try {
@@ -102,7 +102,6 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
                     }
                 } catch (Throwable $e) {
                 } finally {
-                    $chan->close();
                     $this->close();
                 }
             });
