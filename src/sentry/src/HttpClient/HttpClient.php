@@ -21,6 +21,7 @@ use Sentry\HttpClient\Response;
 use Sentry\Options;
 use Throwable;
 
+use function Hyperf\Support\msleep;
 use function Hyperf\Tappable\tap;
 
 class HttpClient extends \Sentry\HttpClient\HttpClient
@@ -109,11 +110,12 @@ class HttpClient extends \Sentry\HttpClient\HttpClient
 
         // Wait for the worker exit event
         $this->waitingWorkerExit ??= Coroutine::create(function () {
-            try {
-                CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
+            if (CoordinatorManager::until(Constants::WORKER_EXIT)->yield()) {
+                while (! $this->chan?->isEmpty()) {
+                    msleep(100);
+                }
                 $this->close();
                 $this->workerExited = true;
-            } catch (Throwable) {
             }
         });
     }
