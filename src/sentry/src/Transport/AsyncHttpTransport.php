@@ -35,8 +35,10 @@ class AsyncHttpTransport implements TransportInterface
 
     protected ?Coroutine $workerWatcher = null;
 
-    public function __construct(protected ClientBuilder $clientBuilder)
-    {
+    public function __construct(
+        protected ClientBuilder $clientBuilder,
+        protected int $channelSize = 65535,
+    ) {
         $this->transport = new \Sentry\Transport\HttpTransport(
             $this->clientBuilder->getOptions(),
             $this->clientBuilder->getHttpClient(),
@@ -70,7 +72,7 @@ class AsyncHttpTransport implements TransportInterface
             return;
         }
 
-        $this->chan = new Channel(65535); // TODO: make it configurable
+        $this->chan = new Channel($this->channelSize);
 
         go(function () {
             while (true) {
