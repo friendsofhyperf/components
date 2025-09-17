@@ -70,7 +70,7 @@ class AsyncHttpTransport implements TransportInterface
             return;
         }
 
-        $this->chan = new Channel(65535);
+        $this->chan = new Channel(65535); // TODO: make it configurable
 
         go(function () {
             while (true) {
@@ -85,6 +85,9 @@ class AsyncHttpTransport implements TransportInterface
                     $this->transport->send($event);
                 } catch (Throwable $e) {
                     break;
+                } finally {
+                    // Prevent memory leak
+                    $event = null;
                 }
             }
 
