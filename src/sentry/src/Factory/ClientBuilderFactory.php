@@ -29,8 +29,6 @@ class ClientBuilderFactory
         'enable',
         'ignore_commands',
         'integrations',
-        // 'http_chanel_size',
-        // 'http_concurrent_limit',
         'transport_channel_size',
         'transport_concurrent_limit',
         'tracing',
