@@ -17,7 +17,6 @@ use Hyperf\Coroutine\Concurrent;
 use Hyperf\Engine\Channel;
 use Hyperf\Engine\Coroutine;
 use Psr\Container\ContainerInterface;
-use RuntimeException;
 use Sentry\ClientBuilder;
 use Sentry\Event;
 use Sentry\Serializer\PayloadSerializer;
@@ -74,7 +73,7 @@ class AsyncHttpTransport implements TransportInterface
     protected function loop(): void
     {
         if ($this->workerExited) {
-            throw new RuntimeException('The transport is already closed (the worker exited)');
+            return;
         }
 
         if ($this->chan !== null) {
@@ -86,7 +85,7 @@ class AsyncHttpTransport implements TransportInterface
         Coroutine::create(function () {
             while (true) {
                 $transport = $this->makeTransport();
-                $logger = $this->clientBuilder->getLogger();
+                $logger = $this->clientBuilder?->getLogger();
 
                 while (true) {
                     /** @var Event|false|null $event */
@@ -133,6 +132,8 @@ class AsyncHttpTransport implements TransportInterface
 
     protected function makeTransport(): TransportInterface
     {
+        $this->clientBuilder ??= $this->container->get(ClientBuilder::class);
+
         return new \Sentry\Transport\HttpTransport(
             $this->clientBuilder->getOptions(),
             $this->clientBuilder->getHttpClient(),
