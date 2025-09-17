@@ -98,6 +98,7 @@ class AsyncHttpTransport implements TransportInterface
                 try {
                     $this->transport->send($event);
                 } catch (Throwable $e) {
+                    $this->clientBuilder->getLogger()?->error('Failed to send event to Sentry: ' . $e->getMessage(), ['exception' => $e]);
                     break;
                 } finally {
                     // Prevent memory leak
