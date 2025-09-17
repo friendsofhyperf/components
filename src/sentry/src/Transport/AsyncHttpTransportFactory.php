@@ -18,9 +18,11 @@ class AsyncHttpTransportFactory
     public function __invoke(ContainerInterface $container)
     {
         $config = $container->get(\Hyperf\Contract\ConfigInterface::class);
-        $clientBuilder = $container->get(\Sentry\ClientBuilder::class);
-        $channelSize = $config->get('sentry.transport_channel_size', 65535);
 
-        return new AsyncHttpTransport($clientBuilder, $channelSize);
+        return new AsyncHttpTransport(
+            $container->get(\Sentry\ClientBuilder::class),
+            (int) $config->get('sentry.transport_channel_size', 65535),
+            (int) $config->get('sentry.transport_concurrent_limit', 1000)
+        );
     }
 }
