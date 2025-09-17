@@ -15,7 +15,6 @@ use FriendsOfHyperf\Sentry\Version;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
-use Sentry\HttpClient\HttpClientInterface;
 use Sentry\Transport\TransportInterface;
 
 use function Hyperf\Support\env;
@@ -66,13 +65,6 @@ class ClientBuilderFactory
         if (empty($options['environment'])) {
             $options['environment'] = env('APP_ENV', 'production');
         }
-
-        // if (
-        //     ! ($options['http_client'] ?? null) instanceof HttpClientInterface
-        //     && $container->has(HttpClientInterface::class)
-        // ) {
-        //     $options['http_client'] = $container->get(HttpClientInterface::class);
-        // }
 
         if (
             ! ($options['transport'] ?? null) instanceof TransportInterface
