@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Transport;
 
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
+use Hyperf\Coroutine\Concurrent;
 use Hyperf\Engine\Channel;
 use Hyperf\Engine\Coroutine;
 use RuntimeException;
@@ -24,7 +25,6 @@ use Sentry\Transport\ResultStatus;
 use Sentry\Transport\TransportInterface;
 use Throwable;
 
-use function Hyperf\Coroutine\go;
 use function Hyperf\Support\msleep;
 
 class AsyncHttpTransport implements TransportInterface
@@ -37,9 +37,12 @@ class AsyncHttpTransport implements TransportInterface
 
     protected ?Coroutine $workerWatcher = null;
 
+    protected ?Concurrent $concurrent = null;
+
     public function __construct(
         protected ClientBuilder $clientBuilder,
         protected int $channelSize = 65535,
+        protected int $concurrentLimit = 1000,
     ) {
         $this->transport = new \Sentry\Transport\HttpTransport(
             $this->clientBuilder->getOptions(),
@@ -47,6 +50,9 @@ class AsyncHttpTransport implements TransportInterface
             new PayloadSerializer($this->clientBuilder->getOptions()),
             $this->clientBuilder->getLogger()
         );
+        if ($concurrentLimit > 0) {
+            $this->concurrent = new Concurrent($concurrentLimit);
+        }
     }
 
     public function send(Event $event): Result
@@ -86,7 +92,7 @@ class AsyncHttpTransport implements TransportInterface
 
         $this->chan = new Channel($this->channelSize);
 
-        go(function () {
+        Coroutine::create(function () {
             while (true) {
                 /** @var Event|false|null $event */
                 $event = $this->chan->pop();
@@ -96,7 +102,13 @@ class AsyncHttpTransport implements TransportInterface
                 }
 
                 try {
-                    $this->transport->send($event);
+                    $transport = $this->transport;
+                    $callable = static fn () => $transport->send($event);
+                    if ($this->concurrent !== null) {
+                        $this->concurrent->create($callable);
+                    } else {
+                        Coroutine::create($callable);
+                    }
                 } catch (Throwable $e) {
                     $this->clientBuilder->getLogger()?->error('Failed to send event to Sentry: ' . $e->getMessage(), ['exception' => $e]);
                     break;
