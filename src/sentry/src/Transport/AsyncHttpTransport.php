@@ -15,6 +15,7 @@ use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Engine\Channel;
 use Hyperf\Engine\Coroutine;
+use RuntimeException;
 use Sentry\ClientBuilder;
 use Sentry\Event;
 use Sentry\Serializer\PayloadSerializer;
@@ -76,7 +77,7 @@ class AsyncHttpTransport implements TransportInterface
     protected function loop(): void
     {
         if ($this->workerExited) {
-            return;
+            throw new RuntimeException('The transport is already closed (the worker exited)');
         }
 
         if ($this->chan !== null) {
