@@ -84,7 +84,7 @@ class AsyncHttpTransport implements TransportInterface
 
         Coroutine::create(function () {
             while (true) {
-                $transport = $this->makeTransport();
+                $transport = $this->makeHttpTransport();
                 $logger = $this->clientBuilder?->getLogger();
 
                 while (true) {
@@ -130,7 +130,7 @@ class AsyncHttpTransport implements TransportInterface
         });
     }
 
-    protected function makeTransport(): TransportInterface
+    protected function makeHttpTransport(): TransportInterface
     {
         $this->clientBuilder ??= $this->container->get(ClientBuilder::class);
 

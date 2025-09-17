@@ -15,6 +15,9 @@ use FriendsOfHyperf\Sentry\Version;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 
+/**
+ * @deprecated since v3.1, will be removed in v3.2
+ */
 class HttpClientFactory
 {
     public function __invoke(ContainerInterface $container)
