@@ -95,7 +95,7 @@ class AsyncHttpTransport implements TransportInterface
         Coroutine::create(function () {
             while (true) {
                 /** @var Event|false|null $event */
-                $event = $this->chan->pop();
+                $event = $this->chan?->pop();
 
                 if (! $event) {
                     break;
