@@ -128,7 +128,8 @@ return [
         'timezone' => env('SENTRY_CRONS_TIMEZONE', date_default_timezone_get()),
     ],
 
+    'transport_channel_size' => (int) env('SENTRY_TRANSPORT_CHANNEL_SIZE', 65535),
+    'transport_concurrent_limit' => (int) env('SENTRY_TRANSPORT_CONCURRENT_LIMIT', 1000),
+
     'http_timeout' => (float) env('SENTRY_HTTP_TIMEOUT', 2.0),
-    'http_chanel_size' => (int) env('SENTRY_HTTP_CHANEL_SIZE', 65535),
-    'http_concurrent_limit' => (int) env('SENTRY_HTTP_CONCURRENT_LIMIT', 100),
 ];

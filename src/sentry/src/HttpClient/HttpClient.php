@@ -24,6 +24,9 @@ use Throwable;
 use function Hyperf\Support\msleep;
 use function Hyperf\Tappable\tap;
 
+/**
+ * @deprecated since v3.1, will be removed in v3.2
+ */
 class HttpClient extends \Sentry\HttpClient\HttpClient
 {
     protected ?Channel $chan = null;
