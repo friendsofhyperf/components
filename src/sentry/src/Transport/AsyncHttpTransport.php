@@ -60,6 +60,9 @@ class AsyncHttpTransport implements TransportInterface
 
     public function close(?int $timeout = null): Result
     {
+        $this->chan?->close();
+        $this->chan = null;
+
         return new Result(ResultStatus::success());
     }
 
@@ -94,8 +97,7 @@ class AsyncHttpTransport implements TransportInterface
                 }
             }
 
-            $this->chan?->close();
-            $this->chan = null;
+            $this->close();
         });
 
         $this->workerWatcher ??= Coroutine::create(function () {
@@ -106,8 +108,7 @@ class AsyncHttpTransport implements TransportInterface
                     msleep(100);
                 }
 
-                $this->chan?->close();
-                $this->chan = null;
+                $this->close();
             }
         });
     }
