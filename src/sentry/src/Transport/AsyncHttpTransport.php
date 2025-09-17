@@ -29,8 +29,6 @@ use function Hyperf\Support\msleep;
 
 class AsyncHttpTransport implements TransportInterface
 {
-    protected TransportInterface $transport;
-
     protected ?Channel $chan = null;
 
     protected bool $workerExited = false;
@@ -44,12 +42,6 @@ class AsyncHttpTransport implements TransportInterface
         protected int $channelSize = 65535,
         protected int $concurrentLimit = 1000,
     ) {
-        $this->transport = new \Sentry\Transport\HttpTransport(
-            $this->clientBuilder->getOptions(),
-            $this->clientBuilder->getHttpClient(),
-            new PayloadSerializer($this->clientBuilder->getOptions()),
-            $this->clientBuilder->getLogger()
-        );
         if ($concurrentLimit > 0) {
             $this->concurrent = new Concurrent($concurrentLimit);
         }
@@ -70,16 +62,6 @@ class AsyncHttpTransport implements TransportInterface
         return new Result(ResultStatus::success());
     }
 
-    protected function closeChannel(): void
-    {
-        $chan = $this->chan;
-        $chan?->close();
-
-        if ($this->chan === $chan) {
-            $this->chan = null;
-        }
-    }
-
     protected function loop(): void
     {
         if ($this->workerExited) {
@@ -94,27 +76,33 @@ class AsyncHttpTransport implements TransportInterface
 
         Coroutine::create(function () {
             while (true) {
-                /** @var Event|false|null $event */
-                $event = $this->chan?->pop();
+                $transport = $this->makeTransport();
+                $logger = $this->clientBuilder->getLogger();
 
-                if (! $event) {
-                    break;
-                }
+                while (true) {
+                    /** @var Event|false|null $event */
+                    $event = $this->chan?->pop();
 
-                try {
-                    $transport = $this->transport;
-                    $callable = static fn () => $transport->send($event);
-                    if ($this->concurrent !== null) {
-                        $this->concurrent->create($callable);
-                    } else {
-                        Coroutine::create($callable);
+                    if (! $event) {
+                        break 2;
                     }
-                } catch (Throwable $e) {
-                    $this->clientBuilder->getLogger()?->error('Failed to send event to Sentry: ' . $e->getMessage(), ['exception' => $e]);
-                    break;
-                } finally {
-                    // Prevent memory leak
-                    $event = null;
+
+                    try {
+                        $callable = static fn () => $transport->send($event);
+                        if ($this->concurrent !== null) {
+                            $this->concurrent->create($callable);
+                        } else {
+                            Coroutine::create($callable);
+                        }
+                    } catch (Throwable $e) {
+                        $logger?->error('Failed to send event to Sentry: ' . $e->getMessage(), ['exception' => $e]);
+                        $transport->close();
+
+                        break;
+                    } finally {
+                        // Prevent memory leak
+                        $event = null;
+                    }
                 }
             }
 
@@ -132,5 +120,25 @@ class AsyncHttpTransport implements TransportInterface
                 $this->closeChannel();
             }
         });
+    }
+
+    protected function makeTransport(): TransportInterface
+    {
+        return new \Sentry\Transport\HttpTransport(
+            $this->clientBuilder->getOptions(),
+            $this->clientBuilder->getHttpClient(),
+            new PayloadSerializer($this->clientBuilder->getOptions()),
+            $this->clientBuilder->getLogger()
+        );
+    }
+
+    protected function closeChannel(): void
+    {
+        $chan = $this->chan;
+        $chan?->close();
+
+        if ($this->chan === $chan) {
+            $this->chan = null;
+        }
     }
 }
