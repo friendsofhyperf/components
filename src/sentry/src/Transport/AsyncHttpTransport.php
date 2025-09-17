@@ -60,8 +60,12 @@ class AsyncHttpTransport implements TransportInterface
 
     public function close(?int $timeout = null): Result
     {
-        $this->chan?->close();
-        $this->chan = null;
+        $chan = $this->chan;
+        $chan?->close();
+
+        if ($this->chan === $chan) {
+            $this->chan = null;
+        }
 
         return new Result(ResultStatus::success());
     }
