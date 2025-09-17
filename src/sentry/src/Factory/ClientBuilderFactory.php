@@ -15,7 +15,7 @@ use FriendsOfHyperf\Sentry\Version;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
-use Sentry\HttpClient\HttpClientInterface;
+use Sentry\Transport\TransportInterface;
 
 use function Hyperf\Support\env;
 use function Hyperf\Tappable\tap;
@@ -28,8 +28,8 @@ class ClientBuilderFactory
         'enable',
         'ignore_commands',
         'integrations',
-        'http_chanel_size',
-        'http_concurrent_limit',
+        'transport_channel_size',
+        'transport_concurrent_limit',
         'tracing',
     ];
 
@@ -66,11 +66,14 @@ class ClientBuilderFactory
             $options['environment'] = env('APP_ENV', 'production');
         }
 
+        // If the user has not set a transport we check if one is bound in the container
+        // and use that one. This allows us to use the CoHttpTransport as the default
+        // transport instead of the default Guzzle one.
         if (
-            ! ($options['http_client'] ?? null) instanceof HttpClientInterface
-            && $container->has(HttpClientInterface::class)
+            ! ($options['transport'] ?? null) instanceof TransportInterface
+            && $container->has(TransportInterface::class)
         ) {
-            $options['http_client'] = $container->get(HttpClientInterface::class);
+            $options['transport'] = $container->get(TransportInterface::class);
         }
 
         return tap(
