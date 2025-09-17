@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Transport;
 
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Concurrent;
 use Hyperf\Engine\Channel;
 use Hyperf\Engine\Coroutine;
-use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
 use Sentry\Event;
 use Sentry\Serializer\PayloadSerializer;
@@ -37,14 +37,12 @@ class CoHttpTransport implements TransportInterface
 
     protected ?Concurrent $concurrent = null;
 
-    protected ?ClientBuilder $clientBuilder = null;
-
     protected int $channelSize = 65535;
 
     public function __construct(
-        protected ContainerInterface $container,
+        protected ClientBuilder $clientBuilder,
+        protected ConfigInterface $config,
     ) {
-        $config = $this->container->get('config');
         $channelSize = (int) $config->get('sentry.transport_channel_size', 65535);
         if ($channelSize > 0) {
             $this->channelSize = $channelSize;
@@ -85,7 +83,7 @@ class CoHttpTransport implements TransportInterface
         Coroutine::create(function () {
             while (true) {
                 $transport = $this->makeHttpTransport();
-                $logger = $this->clientBuilder?->getLogger();
+                $logger = $this->clientBuilder->getLogger();
 
                 while (true) {
                     /** @var Event|false|null $event */
@@ -132,8 +130,6 @@ class CoHttpTransport implements TransportInterface
 
     protected function makeHttpTransport(): TransportInterface
     {
-        $this->clientBuilder ??= $this->container->get(ClientBuilder::class);
-
         return new \Sentry\Transport\HttpTransport(
             $this->clientBuilder->getOptions(),
             $this->clientBuilder->getHttpClient(),

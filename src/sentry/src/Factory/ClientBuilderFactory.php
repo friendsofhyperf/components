@@ -68,19 +68,22 @@ class ClientBuilderFactory
             $options['environment'] = env('APP_ENV', 'production');
         }
 
-        // If the user has not set a transport we check if one is bound in the container
-        // and use that one. This allows us to use the CoHttpTransport as the default
-        // transport instead of the default Guzzle one.
-        if (
-            ! ($options['transport'] ?? null) instanceof TransportInterface
-            && $container->has(TransportInterface::class)
-        ) {
-            $options['transport'] = $container->get(TransportInterface::class);
-        }
-
         return tap(
             ClientBuilder::create($options),
-            fn (ClientBuilder $clientBuilder) => $clientBuilder->setSdkIdentifier(Version::getSdkIdentifier())->setSdkVersion(Version::getSdkVersion())
+            function (ClientBuilder $clientBuilder) use ($options, $container) {
+                // If the user has not set a transport we check if one is bound in the container
+                // and use that one. This allows us to use the CoHttpTransport as the default
+                // transport instead of the default Guzzle one.
+                if (
+                    ! ($options['transport'] ?? null) instanceof TransportInterface
+                    && $container->has(TransportInterface::class)
+                ) {
+                    $clientBuilder->setTransport($container->get(TransportInterface::class));
+                }
+
+                $clientBuilder->setSdkIdentifier(Version::getSdkIdentifier())
+                    ->setSdkVersion(Version::getSdkVersion());
+            }
         );
     }
 }
