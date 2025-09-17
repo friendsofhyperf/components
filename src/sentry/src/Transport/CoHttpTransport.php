@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Transport;
 
+use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Concurrent;
@@ -44,7 +45,7 @@ class CoHttpTransport implements TransportInterface
     public function __construct(
         protected ContainerInterface $container,
     ) {
-        $config = $this->container->get('config');
+        $config = $this->container->get(ConfigInterface::class);
         $channelSize = (int) $config->get('sentry.transport_channel_size', 65535);
         if ($channelSize > 0) {
             $this->channelSize = $channelSize;
