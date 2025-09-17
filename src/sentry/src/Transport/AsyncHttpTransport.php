@@ -16,6 +16,7 @@ use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Concurrent;
 use Hyperf\Engine\Channel;
 use Hyperf\Engine\Coroutine;
+use Psr\Container\ContainerInterface;
 use RuntimeException;
 use Sentry\ClientBuilder;
 use Sentry\Event;
@@ -37,11 +38,19 @@ class AsyncHttpTransport implements TransportInterface
 
     protected ?Concurrent $concurrent = null;
 
+    protected ?ClientBuilder $clientBuilder = null;
+
+    protected int $channelSize = 65535;
+
     public function __construct(
-        protected ClientBuilder $clientBuilder,
-        protected int $channelSize = 65535,
-        protected int $concurrentLimit = 1000,
+        protected ContainerInterface $container,
     ) {
+        $config = $this->container->get('config');
+        $channelSize = (int) $config->get('sentry.transport_channel_size', 65535);
+        if ($channelSize > 0) {
+            $this->channelSize = $channelSize;
+        }
+        $concurrentLimit = (int) $config->get('sentry.transport_concurrent_limit', 1000);
         if ($concurrentLimit > 0) {
             $this->concurrent = new Concurrent($concurrentLimit);
         }
