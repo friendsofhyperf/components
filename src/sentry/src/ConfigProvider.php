@@ -48,7 +48,7 @@ class ConfigProvider
                 \Sentry\ClientBuilder::class => Factory\ClientBuilderFactory::class,
                 \Sentry\State\HubInterface::class => Factory\HubFactory::class,
                 // \Sentry\HttpClient\HttpClientInterface::class => HttpClient\HttpClientFactory::class,
-                \Sentry\Transport\TransportInterface::class => Transport\AsyncHttpTransport::class,
+                \Sentry\Transport\TransportInterface::class => Transport\CoHttpTransport::class,
             ],
             'listeners' => [
                 Listener\AmqpExceptionListener::class,

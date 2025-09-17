@@ -27,7 +27,7 @@ use Throwable;
 
 use function Hyperf\Support\msleep;
 
-class AsyncHttpTransport implements TransportInterface
+class CoHttpTransport implements TransportInterface
 {
     protected ?Channel $chan = null;
 
