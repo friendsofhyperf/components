@@ -24,6 +24,7 @@ use Sentry\Transport\TransportInterface;
 use Throwable;
 
 use function Hyperf\Coroutine\go;
+use function Hyperf\Support\msleep;
 
 class AsyncHttpTransport implements TransportInterface
 {

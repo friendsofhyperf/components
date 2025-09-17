@@ -47,7 +47,8 @@ class ConfigProvider
             'dependencies' => [
                 \Sentry\ClientBuilder::class => Factory\ClientBuilderFactory::class,
                 \Sentry\State\HubInterface::class => Factory\HubFactory::class,
-                \Sentry\HttpClient\HttpClientInterface::class => HttpClient\HttpClientFactory::class,
+                // \Sentry\HttpClient\HttpClientInterface::class => HttpClient\HttpClientFactory::class,
+                \Sentry\Transport\TransportInterface::class => Transport\AsyncHttpTransportFactory::class,
             ],
             'listeners' => [
                 Listener\AmqpExceptionListener::class,

@@ -16,6 +16,7 @@ use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
 use Sentry\HttpClient\HttpClientInterface;
+use Sentry\Transport\TransportInterface;
 
 use function Hyperf\Support\env;
 use function Hyperf\Tappable\tap;
@@ -66,11 +67,18 @@ class ClientBuilderFactory
             $options['environment'] = env('APP_ENV', 'production');
         }
 
+        // if (
+        //     ! ($options['http_client'] ?? null) instanceof HttpClientInterface
+        //     && $container->has(HttpClientInterface::class)
+        // ) {
+        //     $options['http_client'] = $container->get(HttpClientInterface::class);
+        // }
+
         if (
-            ! ($options['http_client'] ?? null) instanceof HttpClientInterface
-            && $container->has(HttpClientInterface::class)
+            ! ($options['transport'] ?? null) instanceof TransportInterface
+            && $container->has(TransportInterface::class)
         ) {
-            $options['http_client'] = $container->get(HttpClientInterface::class);
+            $options['transport'] = $container->get(TransportInterface::class);
         }
 
         return tap(
