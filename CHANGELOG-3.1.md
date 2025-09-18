@@ -1,5 +1,26 @@
 # Changelog
 
+## v3.1.68 - 2025-09-18
+
+### What's Changed
+
+* fix: improve cache key handling in CacheAspect by @huangdijia in https://github.com/friendsofhyperf/components/pull/893
+* fix: change default values to true in Sentry Switcher by @huangdijia in https://github.com/friendsofhyperf/components/pull/894
+* Improve async queue tracing by @huangdijia in https://github.com/friendsofhyperf/components/pull/895
+* feat(tracing): enhance AMQP and Kafka messaging tracing with detailed metadata by @huangdijia in https://github.com/friendsofhyperf/components/pull/896
+* refactor(sentry): replace CarrierPacker with new Carrier utility class by @huangdijia in https://github.com/friendsofhyperf/components/pull/897
+* feat(tracing): comprehensive improvements to tracing aspects and listeners by @huangdijia in https://github.com/friendsofhyperf/components/pull/898
+* fix(tracing): standardize HTTP response field names in GuzzleHttpClientAspect by @huangdijia in https://github.com/friendsofhyperf/components/pull/899
+* fix(tracing): optimize HTTP response body content reading in GuzzleHttpClientAspect by @huangdijia in https://github.com/friendsofhyperf/components/pull/900
+* refactor(tracing): streamline transaction context configuration in SpanStarter by @huangdijia in https://github.com/friendsofhyperf/components/pull/902
+* fix(tracing): use routing key for AMQP destination name instead of exchange by @huangdijia in https://github.com/friendsofhyperf/components/pull/903
+* fix(sentry): optimize HttpClient memory usage and error handling by @huangdijia in https://github.com/friendsofhyperf/components/pull/905
+* refactor(trigger): improve TriggerSubscriber event handling architecture by @huangdijia in https://github.com/friendsofhyperf/components/pull/906
+* feat(sentry): add AsyncHttpTransport for non-blocking error reporting by @huangdijia in https://github.com/friendsofhyperf/components/pull/907
+* feat(sentry): improve event flushing and expand listener coverage by @huangdijia in https://github.com/friendsofhyperf/components/pull/908
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.67...v3.1.68
+
 ## v3.1.67 - 2025-09-01
 
 ### What's Changed
