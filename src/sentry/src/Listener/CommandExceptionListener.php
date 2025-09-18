@@ -20,11 +20,12 @@ class CommandExceptionListener extends CaptureExceptionListener
         return [
             Event\BeforeHandle::class,
             Event\FailToHandle::class,
+            Event\AfterExecute::class,
         ];
     }
 
     /**
-     * @param Event\FailToHandle $event
+     * @param Event\FailToHandle|Event\BeforeHandle|Event\AfterExecute|object $event
      */
     public function process(object $event): void
     {
@@ -34,6 +35,7 @@ class CommandExceptionListener extends CaptureExceptionListener
 
         match ($event::class) {
             Event\FailToHandle::class => $this->captureException($event->getThrowable()),
+            Event\AfterExecute::class => $this->flushEvents(),
             default => $this->setupSentrySdk(),
         };
     }

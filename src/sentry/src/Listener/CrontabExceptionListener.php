@@ -24,12 +24,13 @@ class CrontabExceptionListener extends CaptureExceptionListener
     {
         return [
             Event\BeforeExecute::class,
+            Event\AfterExecute::class,
             Event\FailToExecute::class,
         ];
     }
 
     /**
-     * @param Event\FailToExecute $event
+     * @param Event\FailToExecute|Event\AfterExecute|Event\BeforeExecute|object $event
      */
     public function process(object $event): void
     {
@@ -40,6 +41,12 @@ class CrontabExceptionListener extends CaptureExceptionListener
         match ($event::class) {
             Event\FailToExecute::class => $this->captureException($event->throwable),
             default => $this->setupSentrySdk(),
+        };
+
+        match ($event::class) {
+            Event\AfterExecute::class,
+            Event\FailToExecute::class => $this->flushEvents(),
+            default => null,
         };
     }
 }

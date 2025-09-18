@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Sentry;
 use Sentry\Breadcrumb;
 use Sentry\Event;
 use Sentry\Integration\IntegrationInterface;
+use Sentry\Logs\Logs;
 use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Sentry\Tracing\Span;
@@ -108,6 +109,8 @@ class Integration implements IntegrationInterface
 
         if ($client !== null) {
             $client->flush();
+
+            Logs::getInstance()->flush();
         }
     }
 

@@ -29,7 +29,7 @@ class RequestExceptionListener extends CaptureExceptionListener
     }
 
     /**
-     * @param RequestTerminated|object $event
+     * @param RequestTerminated|RpcRequestTerminated|object $event
      */
     public function process(object $event): void
     {
@@ -40,6 +40,12 @@ class RequestExceptionListener extends CaptureExceptionListener
         match ($event::class) {
             RequestTerminated::class, RpcRequestTerminated::class => $this->captureException($event->exception),
             default => $this->setupSentrySdk(),
+        };
+
+        match ($event::class) {
+            RequestTerminated::class,
+            RpcRequestTerminated::class => $this->flushEvents(),
+            default => null,
         };
     }
 }

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Listener;
 
+use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Context\Context;
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -59,5 +60,10 @@ abstract class CaptureExceptionListener implements ListenerInterface
 
         SentrySdk::init();
         Context::set(static::SETUP, true);
+    }
+
+    protected function flushEvents(): void
+    {
+        Integration::flushEvents();
     }
 }
