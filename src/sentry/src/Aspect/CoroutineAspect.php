@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Aspect;
 
+use FriendsOfHyperf\Sentry\Integration;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Engine\Coroutine as Co;
@@ -49,6 +50,8 @@ class CoroutineAspect extends AbstractAspect
             } catch (Throwable $throwable) {
                 SentrySdk::getCurrentHub()->captureException($throwable);
                 throw $throwable;
+            } finally {
+                Integration::flushEvents();
             }
         };
 

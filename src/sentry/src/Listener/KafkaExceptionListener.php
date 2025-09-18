@@ -20,11 +20,12 @@ class KafkaExceptionListener extends CaptureExceptionListener
         return [
             Event\BeforeConsume::class,
             Event\FailToConsume::class,
+            Event\AfterConsume::class,
         ];
     }
 
     /**
-     * @param Event\FailToConsume $event
+     * @param Event\FailToConsume|Event\AfterConsume|Event\BeforeConsume|object $event
      */
     public function process(object $event): void
     {
@@ -35,6 +36,12 @@ class KafkaExceptionListener extends CaptureExceptionListener
         match ($event::class) {
             Event\FailToConsume::class => $this->captureException($event->getThrowable()),
             default => $this->setupSentrySdk(),
+        };
+
+        match ($event::class) {
+            Event\AfterConsume::class,
+            Event\FailToConsume::class => $this->flushEvents(),
+            default => null,
         };
     }
 }
