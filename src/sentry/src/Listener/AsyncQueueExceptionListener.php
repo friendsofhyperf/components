@@ -19,12 +19,14 @@ class AsyncQueueExceptionListener extends CaptureExceptionListener
     {
         return [
             Event\BeforeHandle::class,
+            Event\AfterHandle::class,
+            Event\RetryHandle::class,
             Event\FailedHandle::class,
         ];
     }
 
     /**
-     * @param Event\FailedHandle $event
+     * @param Event\FailedHandle|Event\AfterHandle|Event\BeforeHandle|object $event
      */
     public function process(object $event): void
     {
@@ -33,8 +35,16 @@ class AsyncQueueExceptionListener extends CaptureExceptionListener
         }
 
         match ($event::class) {
+            Event\RetryHandle::class,
             Event\FailedHandle::class => $this->captureException($event->getThrowable()),
             default => $this->setupSentrySdk(),
+        };
+
+        match ($event::class) {
+            Event\AfterHandle::class,
+            Event\RetryHandle::class,
+            Event\FailedHandle::class => $this->flushEvents(),
+            default => null,
         };
     }
 }
