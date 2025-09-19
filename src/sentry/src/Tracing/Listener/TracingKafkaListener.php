@@ -95,7 +95,7 @@ class TracingKafkaListener implements ListenerInterface
             return;
         }
 
-        /** @var Carrier|null $carrier */
+        /** @var null|Carrier $carrier */
         $carrier = Context::get(Constants::TRACE_CARRIER);
         $consumer = $event->getConsumer();
         $tags = [];

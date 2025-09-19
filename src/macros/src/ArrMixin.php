@@ -37,7 +37,7 @@ class ArrMixin
 
     public function array()
     {
-        return function (ArrayAccess|array $array, string|int|null $key, ?array $default = null) {
+        return function (ArrayAccess|array $array, null|string|int $key, ?array $default = null) {
             $value = Arr::get($array, $key, $default);
 
             if (! is_array($value)) {
@@ -55,7 +55,7 @@ class ArrMixin
      */
     public function boolean()
     {
-        return function (ArrayAccess|array $array, string|int|null $key, ?bool $default = null) {
+        return function (ArrayAccess|array $array, null|string|int $key, ?bool $default = null) {
             $value = Arr::get($array, $key, $default);
 
             if (! is_bool($value)) {
@@ -78,7 +78,7 @@ class ArrMixin
      */
     public function float()
     {
-        return function (ArrayAccess|array $array, string|int|null $key, ?float $default = null) {
+        return function (ArrayAccess|array $array, null|string|int $key, ?float $default = null) {
             $value = Arr::get($array, $key, $default);
 
             if (! is_float($value)) {
@@ -130,7 +130,7 @@ class ArrMixin
      */
     public function integer()
     {
-        return function (ArrayAccess|array $array, string|int|null $key, ?int $default = null) {
+        return function (ArrayAccess|array $array, null|string|int $key, ?int $default = null) {
             $value = Arr::get($array, $key, $default);
 
             if (! is_integer($value)) {
@@ -148,7 +148,7 @@ class ArrMixin
      */
     public function string()
     {
-        return function (ArrayAccess|array $array, string|int|null $key, ?string $default = null) {
+        return function (ArrayAccess|array $array, null|string|int $key, ?string $default = null) {
             $value = Arr::get($array, $key, $default);
 
             if (! is_string($value)) {

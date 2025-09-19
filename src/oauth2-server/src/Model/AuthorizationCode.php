@@ -93,7 +93,7 @@ class AuthorizationCode extends Model implements AuthorizationCodeInterface
     public function getClient(): ClientInterface
     {
         /**
-         * @var ClientInterface|null $client
+         * @var null|ClientInterface $client
          */
         $client = $this->client()->first();
         if ($client === null) {

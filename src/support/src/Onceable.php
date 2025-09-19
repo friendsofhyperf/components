@@ -32,7 +32,7 @@ class Onceable
      * Tries to create a new onceable instance from the given trace.
      *
      * @param array<int, array<string, mixed>> $trace
-     * @return static|null
+     * @return null|static
      */
     public static function tryFromTrace(array $trace, callable $callable)
     {
@@ -49,7 +49,7 @@ class Onceable
      * Computes the object of the onceable from the given trace, if any.
      *
      * @param array<int, array<string, mixed>> $trace
-     * @return object|null
+     * @return null|object
      */
     protected static function objectFromTrace(array $trace)
     {
@@ -60,7 +60,7 @@ class Onceable
      * Computes the hash of the onceable from the given trace.
      *
      * @param array<int, array<string, mixed>> $trace
-     * @return string|null
+     * @return null|string
      */
     protected static function hashFromTrace(array $trace, callable $callable)
     {

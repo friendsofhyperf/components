@@ -72,7 +72,7 @@ class Number
      * Parse a string into a float according to the specified locale.
      *
      * @param string $string The string to parse
-     * @param string|null $locale The locale to use
+     * @param null|string $locale The locale to use
      */
     public static function parseFloat(string $string, ?string $locale = null): float
     {

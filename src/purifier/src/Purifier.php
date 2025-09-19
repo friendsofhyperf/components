@@ -59,7 +59,7 @@ class Purifier
      * @param T $dirty
      * @return ($dirty is string ? string : ($dirty is array ? array : T))
      */
-    public function clean(mixed $dirty, array|string|null $config = null, ?Closure $postCreateConfigHook = null): mixed
+    public function clean(mixed $dirty, null|array|string $config = null, ?Closure $postCreateConfigHook = null): mixed
     {
         if (is_array($dirty)) {
             return array_map(function ($item) use ($config) {
@@ -94,7 +94,7 @@ class Purifier
         return $this->purifier;
     }
 
-    protected function getConfig(array|string|null $config = null): HTMLPurifier_Config
+    protected function getConfig(null|array|string $config = null): HTMLPurifier_Config
     {
         // Create a new configuration object
         $configObject = HTMLPurifier_Config::createDefault();
@@ -153,7 +153,7 @@ class Purifier
      *
      * @see http://htmlpurifier.org/docs/enduser-customize.html
      *
-     * @param HTMLPurifier_Config|null $configObject Defaults to using default config
+     * @param null|HTMLPurifier_Config $configObject Defaults to using default config
      */
     private function addCustomDefinition(array $definitionConfig, ?HTMLPurifier_Config $configObject = null): void
     {

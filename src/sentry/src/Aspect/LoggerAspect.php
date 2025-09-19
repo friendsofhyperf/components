@@ -47,7 +47,7 @@ class LoggerAspect extends AbstractAspect
             $level = $level instanceof BackedEnum ? (int) $level->value : (int) $level;
             $message = $proceedingJoinPoint->arguments['keys']['message'];
             $context = $proceedingJoinPoint->arguments['keys']['context'];
-            /** @var DateTimeImmutable|null $datetime */
+            /** @var null|DateTimeImmutable $datetime */
             $datetime = $proceedingJoinPoint->arguments['keys']['datetime'];
 
             if (isset($context['no_sentry_aspect']) && $context['no_sentry_aspect'] === true) {

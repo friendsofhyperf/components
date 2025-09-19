@@ -23,7 +23,7 @@ class Cache implements Countable
 
     /**
      * The cache instance.
-     * @var static|null
+     * @var null|static
      */
     protected static $cache;
 

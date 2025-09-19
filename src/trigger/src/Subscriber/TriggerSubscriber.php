@@ -151,7 +151,7 @@ class TriggerSubscriber extends AbstractSubscriber
                 try {
                     while (true) {
                         while (true) {
-                            /** @var array{0:class-string,1:string,2:array}|false|null $payload */
+                            /** @var null|array{0:class-string,1:string,2:array}|false $payload */
                             $payload = $this->chan?->pop();
 
                             if (! is_array($payload)) {

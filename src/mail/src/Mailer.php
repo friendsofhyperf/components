@@ -176,7 +176,7 @@ class Mailer implements MailerContract
     /**
      * Send a new message using a view.
      */
-    public function send(Mailable|string|array $view, array $data = [], Closure|string|null $callback = null): ?SentMessage
+    public function send(Mailable|string|array $view, array $data = [], null|Closure|string $callback = null): ?SentMessage
     {
         if ($view instanceof MailableContract) {
             return $this->sendMailable($view);
@@ -285,7 +285,7 @@ class Mailer implements MailerContract
     /**
      * Parse the given view name or array.
      */
-    protected function parseView(Closure|array|string|null $view): array
+    protected function parseView(null|Closure|array|string $view): array
     {
         if (is_string($view) || $view instanceof Closure) {
             return [$view, null, null];
@@ -315,7 +315,7 @@ class Mailer implements MailerContract
     /**
      * Add the content to a given message.
      */
-    protected function addContent(Message $message, Closure|string|null $view, Closure|string|null $plain, ?string $raw, array $data = []): void
+    protected function addContent(Message $message, null|Closure|string $view, null|Closure|string $plain, ?string $raw, array $data = []): void
     {
         if (isset($view)) {
             $message->html($this->renderView($view, $data) ?: ' ');

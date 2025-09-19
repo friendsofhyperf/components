@@ -21,7 +21,7 @@ interface Repository extends \Psr\SimpleCache\CacheInterface
     /**
      * @param string $key
      * @param mixed $value
-     * @param DateInterval|DateTimeInterface|int|null $ttl
+     * @param null|DateInterval|DateTimeInterface|int $ttl
      */
     public function add($key, $value, $ttl = null): bool;
 
@@ -33,7 +33,7 @@ interface Repository extends \Psr\SimpleCache\CacheInterface
      * @param string $key
      * @param array{ 0: DateTimeInterface|DateInterval|int, 1: DateTimeInterface|DateInterval|int } $ttl
      * @param (callable(): TCacheValue) $callback
-     * @param array{ seconds?: int, owner?: string }|null $lock
+     * @param null|array{ seconds?: int, owner?: string } $lock
      * @return TCacheValue
      */
     public function flexible($key, $ttl, $callback, $lock = null);
@@ -71,7 +71,7 @@ interface Repository extends \Psr\SimpleCache\CacheInterface
     /**
      * @param array|string $key
      * @param mixed $value
-     * @param DateInterval|DateTimeInterface|int|null $ttl
+     * @param null|DateInterval|DateTimeInterface|int $ttl
      */
     public function put($key, $value, $ttl = null): bool;
 
@@ -113,7 +113,7 @@ interface Repository extends \Psr\SimpleCache\CacheInterface
      * @template TCacheValue
      *
      * @param string $key
-     * @param DateInterval|DateTimeInterface|int|null $ttl
+     * @param null|DateInterval|DateTimeInterface|int $ttl
      * @param Closure(): TCacheValue $callback
      * @return TCacheValue
      */

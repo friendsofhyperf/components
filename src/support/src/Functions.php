@@ -23,7 +23,7 @@ use function Hyperf\Support\value;
  * @param array|int $times
  * @param callable(int):TReturn $callback
  * @param Closure|int $sleepMilliseconds
- * @param callable|null $when
+ * @param null|callable $when
  * @return TReturn|void
  * @throws Exception
  */

@@ -60,8 +60,8 @@ class Str
      * Transliterate a string to its closest ASCII representation.
      *
      * @param string $string
-     * @param string|null $unknown
-     * @param bool|null $strict
+     * @param null|string $unknown
+     * @param null|bool $strict
      * @return string
      */
     public static function transliterate($string, $unknown = '?', $strict = false)

@@ -28,7 +28,7 @@ class SafeCaller
      *
      * @param Closure(): TReturn $closure
      * @param TDefault $default
-     * @param Closure(Throwable $e):bool|null $exceptionHandler
+     * @param null|Closure(Throwable $e):bool $exceptionHandler
      * @return TReturn|TDefault
      */
     public function call(Closure $closure, mixed $default = null, ?Closure $exceptionHandler = null): mixed

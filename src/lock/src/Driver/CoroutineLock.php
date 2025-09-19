@@ -25,14 +25,14 @@ class CoroutineLock extends AbstractLock
     protected static array $channels = [];
 
     /**
-     * @var WeakMap<Channel, string>|null
+     * @var null|WeakMap<Channel, string>
      */
     protected static ?WeakMap $owners = null;
 
     protected static ?Timer $timer = null;
 
     /**
-     * @var WeakMap<Channel, int>|null
+     * @var null|WeakMap<Channel, int>
      */
     protected static ?WeakMap $timers = null;
 

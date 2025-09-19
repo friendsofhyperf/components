@@ -64,7 +64,7 @@ class TelescopeContext
      */
     public static function getCachePacker(): ?PackerInterface
     {
-        /** @var PackerInterface|null $packer */
+        /** @var null|PackerInterface $packer */
         $packer = Context::get(self::CACHE_PACKER);
         return $packer instanceof PackerInterface ? $packer : null;
     }

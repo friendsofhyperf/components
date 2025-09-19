@@ -24,7 +24,7 @@ use function Hyperf\Tappable\tap;
 class SentrySdk
 {
     /**
-     * @var HubInterface|null The current hub
+     * @var null|HubInterface The current hub
      */
     private static $currentHub; /** @phpstan-ignore-line */
 

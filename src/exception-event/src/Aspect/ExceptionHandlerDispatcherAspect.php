@@ -36,7 +36,7 @@ class ExceptionHandlerDispatcherAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($responseHandled) use ($proceedingJoinPoint) {
-            /** @var Throwable|null $exception */
+            /** @var null|Throwable $exception */
             $exception = isset($proceedingJoinPoint->arguments['variadic'])
                 ? ($proceedingJoinPoint->getArguments()[0] ?? null)
                 : ($proceedingJoinPoint->getArguments()[0][0] ?? null);

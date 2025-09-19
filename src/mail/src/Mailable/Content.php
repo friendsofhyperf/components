@@ -20,7 +20,7 @@ class Content
     /**
      * The Blade view that should be rendered for the mailable.
      *
-     * @var string|null
+     * @var null|string
      */
     public $view;
 
@@ -29,28 +29,28 @@ class Content
      *
      * Alternative syntax for "view".
      *
-     * @var string|null
+     * @var null|string
      */
     public $html;
 
     /**
      * The Blade view that represents the text version of the message.
      *
-     * @var string|null
+     * @var null|string
      */
     public $text;
 
     /**
      * The Blade view that represents the Markdown version of the message.
      *
-     * @var string|null
+     * @var null|string
      */
     public $markdown;
 
     /**
      * The pre-rendered HTML of the message.
      *
-     * @var string|null
+     * @var null|string
      */
     public $htmlString;
 
@@ -64,7 +64,7 @@ class Content
     /**
      * Create a new content definition.
      *
-     * @param string|null $markdown
+     * @param null|string $markdown
      *
      * @named-arguments-supported
      */
@@ -140,7 +140,7 @@ class Content
      * Add a piece of view data to the message.
      *
      * @param array|string $key
-     * @param mixed|null $value
+     * @param null|mixed $value
      * @return $this
      */
     public function with($key, $value = null)
