@@ -124,7 +124,7 @@ abstract class AbstractLock implements LockInterface
     /**
      * Determine whether this lock is owned by the given identifier.
      *
-     * @param string|null $owner
+     * @param null|string $owner
      */
     public function isOwnedBy($owner): bool
     {

@@ -37,7 +37,7 @@ final class UserRepository implements UserRepositoryInterface
         string $grantType,
         ClientEntityInterface $clientEntity,
     ): ?UserEntityInterface {
-        /** @var ClientInterface|null $client */
+        /** @var null|ClientInterface $client */
         $client = $this->clientManager->find($clientEntity->getIdentifier());
 
         if ($client === null) {

@@ -159,7 +159,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
             default => null,
         };
 
-        /** @var string|null $carrier */
+        /** @var null|string $carrier */
         if ($carrier) {
             Context::set(Constants::TRACE_CARRIER, Carrier::fromJson($carrier));
         }

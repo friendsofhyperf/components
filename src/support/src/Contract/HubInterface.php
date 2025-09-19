@@ -17,7 +17,7 @@ interface HubInterface
      * Send an object through one of the available pipelines.
      *
      * @param mixed $object
-     * @param string|null $pipeline
+     * @param null|string $pipeline
      * @return mixed
      */
     public function pipe($object, $pipeline = null);

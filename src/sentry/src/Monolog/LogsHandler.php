@@ -23,7 +23,7 @@ class LogsHandler extends \Sentry\Monolog\LogsHandler
 
     public function __construct(
         protected string $group = 'default',
-        int|LogLevel|null $logLevel = null,
+        null|int|LogLevel $logLevel = null,
         protected bool $bubble = true
     ) {
         if (is_int($logLevel)) {

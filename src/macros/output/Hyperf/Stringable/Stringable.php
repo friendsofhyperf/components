@@ -80,7 +80,7 @@ class Stringable
      * Execute the given callback if the string is 7 bit ASCII.
      *
      * @param callable $callback
-     * @param callable|null $default
+     * @param null|callable $default
      * @return static
      */
     public function whenIsAscii($callback, $default = null)

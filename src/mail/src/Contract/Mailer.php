@@ -36,5 +36,5 @@ interface Mailer
     /**
      * Send a new message using a view.
      */
-    public function send(Mailable|string|array $view, array $data = [], Closure|string|null $callback = null): ?SentMessage;
+    public function send(Mailable|string|array $view, array $data = [], null|Closure|string $callback = null): ?SentMessage;
 }

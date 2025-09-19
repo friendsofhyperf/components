@@ -42,7 +42,7 @@ class PipeMessage extends IpcMessage
     /**
      * @template T
      * @param class-string<T> $class
-     * @return T|null
+     * @return null|T
      */
     private function get(string $class)
     {

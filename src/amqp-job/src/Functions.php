@@ -18,14 +18,14 @@ use Hyperf\Context\ApplicationContext;
 /**
  * Dispatch a job to a queue.
  *
- * @param string|null $exchange deprecated since v3.1, will be removed in v3.2
- * @param string|array|null $routingKey deprecated since v3.1, will be removed in v3.2
- * @param string|null $pool deprecated since v3.1, will be removed in v3.2
+ * @param null|string $exchange deprecated since v3.1, will be removed in v3.2
+ * @param null|string|array $routingKey deprecated since v3.1, will be removed in v3.2
+ * @param null|string $pool deprecated since v3.1, will be removed in v3.2
  */
 function dispatch(
     JobInterface $payload,
     ?string $exchange = null,
-    string|array|null $routingKey = null,
+    null|string|array $routingKey = null,
     ?string $pool = null,
     ?bool $confirm = null,
     ?int $timeout = null

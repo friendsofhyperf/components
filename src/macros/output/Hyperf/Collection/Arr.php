@@ -31,7 +31,7 @@ class Arr
      * @return array
      * @throws InvalidArgumentException
      */
-    public static function array(ArrayAccess|array $array, string|int|null $key, ?array $default = null)
+    public static function array(ArrayAccess|array $array, null|string|int $key, ?array $default = null)
     {
     }
 
@@ -40,7 +40,7 @@ class Arr
      * @return bool
      * @throws InvalidArgumentException
      */
-    public static function boolean(ArrayAccess|array $array, string|int|null $key, ?bool $default = null)
+    public static function boolean(ArrayAccess|array $array, null|string|int $key, ?bool $default = null)
     {
     }
 
@@ -60,7 +60,7 @@ class Arr
      * @return float
      * @throws InvalidArgumentException
      */
-    public static function float(ArrayAccess|array $array, string|int|null $key, ?float $default = null)
+    public static function float(ArrayAccess|array $array, null|string|int $key, ?float $default = null)
     {
     }
 
@@ -95,7 +95,7 @@ class Arr
      * @return int
      * @throws InvalidArgumentException
      */
-    public static function integer(ArrayAccess|array $array, string|int|null $key, ?int $default = null)
+    public static function integer(ArrayAccess|array $array, null|string|int $key, ?int $default = null)
     {
     }
 
@@ -104,7 +104,7 @@ class Arr
      * @return string
      * @throws InvalidArgumentException
      */
-    public static function string(ArrayAccess|array $array, string|int|null $key, ?string $default = null)
+    public static function string(ArrayAccess|array $array, null|string|int $key, ?string $default = null)
     {
     }
 

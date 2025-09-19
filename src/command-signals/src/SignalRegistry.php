@@ -49,9 +49,9 @@ class SignalRegistry
     }
 
     /**
-     * @param int|int[]|null $signo
+     * @param null|int|int[] $signo
      */
-    public function unregister(int|array|null $signo = null): void
+    public function unregister(null|int|array $signo = null): void
     {
         match (true) {
             // Unregister all signals

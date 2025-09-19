@@ -23,7 +23,7 @@ use Sentry\State\Hub;
 use function Hyperf\Support\make;
 
 /**
- * @property \Sentry\Transport\TransportInterface|null $transport
+ * @property null|\Sentry\Transport\TransportInterface $transport
  * @method \Sentry\ClientInterface getClient()
  */
 class HubFactory

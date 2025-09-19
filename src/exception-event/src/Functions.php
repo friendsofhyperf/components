@@ -36,9 +36,9 @@ function report(string|Throwable $exception = 'RuntimeException', ...$parameters
         return;
     }
 
-    /** @var ServerRequestInterface|null $request */
+    /** @var null|ServerRequestInterface $request */
     $request = Context::get(ServerRequestInterface::class);
-    /** @var ResponseInterface|null $response */
+    /** @var null|ResponseInterface $response */
     $response = Context::get(ResponseInterface::class);
     $container->get(EventDispatcherInterface::class)->dispatch(new ExceptionDispatched($exception, $request, $response));
 }

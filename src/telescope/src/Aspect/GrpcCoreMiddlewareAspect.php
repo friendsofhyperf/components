@@ -51,7 +51,7 @@ class GrpcCoreMiddlewareAspect extends AbstractAspect
     }
 
     /**
-     * @param Message|null $message
+     * @param null|Message $message
      */
     protected function setRequestPayload($message)
     {
@@ -69,7 +69,7 @@ class GrpcCoreMiddlewareAspect extends AbstractAspect
     }
 
     /**
-     * @param Message|null $message
+     * @param null|Message $message
      */
     protected function setResponsePayload($message)
     {

@@ -21,7 +21,7 @@ final class ScopeResolveEvent extends Event
         private array $scopes,
         private readonly Grant $grant,
         private readonly ClientInterface $client,
-        private readonly string|int|null $userIdentifier
+        private readonly null|string|int $userIdentifier
     ) {
     }
 
@@ -45,7 +45,7 @@ final class ScopeResolveEvent extends Event
         return $this->client;
     }
 
-    public function getUserIdentifier(): int|string|null
+    public function getUserIdentifier(): null|int|string
     {
         return $this->userIdentifier;
     }

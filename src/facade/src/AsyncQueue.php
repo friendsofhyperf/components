@@ -17,7 +17,7 @@ use Override;
 
 /**
  * @mixin DriverFactory
- * @property string|null $queue
+ * @property null|string $queue
  */
 class AsyncQueue extends Facade
 {

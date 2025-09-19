@@ -30,7 +30,7 @@ class Env
     /**
      * The environment repository instance.
      *
-     * @var \Dotenv\Repository\RepositoryInterface|null
+     * @var null|\Dotenv\Repository\RepositoryInterface
      */
     protected static $repository;
 

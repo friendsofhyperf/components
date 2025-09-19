@@ -15,7 +15,7 @@ class Address
 {
     /**
      * @param string $address the recipient's email address
-     * @param string|null $name the recipient's name
+     * @param null|string $name the recipient's name
      */
     public function __construct(
         public string $address,

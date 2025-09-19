@@ -17,7 +17,7 @@ use Override;
 
 /**
  * @mixin ProducerManager
- * @property string|null $queue
+ * @property null|string $queue
  */
 class Kafka extends Facade
 {

@@ -72,7 +72,7 @@ class ResponseSequence
     /**
      * Push a response to the sequence.
      *
-     * @param array|string|null $body
+     * @param null|array|string $body
      * @return $this
      */
     public function push($body = null, int $status = 200, array $headers = [])

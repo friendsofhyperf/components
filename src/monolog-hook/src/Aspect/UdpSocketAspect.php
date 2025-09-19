@@ -19,7 +19,7 @@ use Socket;
 use WeakMap;
 
 /**
- * @property Socket|null $socket
+ * @property null|Socket $socket
  */
 class UdpSocketAspect extends AbstractAspect
 {

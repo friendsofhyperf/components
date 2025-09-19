@@ -21,7 +21,7 @@ use Psr\Container\ContainerInterface;
 trait InteractsWithContainer
 {
     /**
-     * @var Container|null
+     * @var null|Container
      */
     protected ?ContainerInterface $container = null;
 

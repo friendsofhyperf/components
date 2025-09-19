@@ -19,14 +19,14 @@ class EntryQueryOptions
     /**
      * The batch ID that entries should belong to.
      *
-     * @var string|null
+     * @var null|string
      */
     public $batchId;
 
     /**
      * The tag that must belong to retrieved entries.
      *
-     * @var string|null
+     * @var null|string
      */
     public $tag;
 

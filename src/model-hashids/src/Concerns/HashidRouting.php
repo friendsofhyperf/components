@@ -19,7 +19,7 @@ trait HashidRouting
      * @see parent
      * @param mixed $query
      * @param mixed $value
-     * @param mixed|null $field
+     * @param null|mixed $field
      */
     public function resolveRouteBindingQuery($query, $value, $field = null)
     {

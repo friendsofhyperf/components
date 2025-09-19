@@ -53,7 +53,7 @@ class AmqpProducerAspect extends AbstractAspect
 
     protected function handleProduceMessage(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        /** @var ProducerMessage|null $producerMessage */
+        /** @var null|ProducerMessage $producerMessage */
         $producerMessage = $proceedingJoinPoint->arguments['keys']['producerMessage'] ?? null;
 
         if (! $producerMessage) {
@@ -75,7 +75,7 @@ class AmqpProducerAspect extends AbstractAspect
         $poolName = $producerMessage->getPoolName();
 
         if (class_exists(AnnotationCollector::class)) {
-            /** @var Producer|null $annotation */
+            /** @var null|Producer $annotation */
             $annotation = AnnotationCollector::getClassAnnotation(get_class($producerMessage), Producer::class);
             if ($annotation) {
                 $annotation->routingKey && $routingKey = $annotation->routingKey;

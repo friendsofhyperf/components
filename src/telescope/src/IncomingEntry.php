@@ -49,7 +49,7 @@ class IncomingEntry
     /**
      * The entry's family hash.
      *
-     * @var string|null
+     * @var null|string
      */
     public $familyHash;
 

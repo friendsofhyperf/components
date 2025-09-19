@@ -61,7 +61,7 @@ class ValidationAspect extends AbstractAspect
     protected function getValidationRules(ProceedingJoinPoint $proceedingJoinPoint): array
     {
         $metadata = $proceedingJoinPoint->getAnnotationMetadata();
-        /** @var Validation|null $annotation */
+        /** @var null|Validation $annotation */
         $annotation = $metadata->method[Validation::class] ?? null;
 
         if (! $annotation) {

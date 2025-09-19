@@ -18,7 +18,7 @@ class Once
     /**
      * The current globally used instance.
      *
-     * @var static|null
+     * @var null|static
      */
     protected static ?self $instance = null;
 

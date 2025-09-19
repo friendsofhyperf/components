@@ -36,7 +36,7 @@ trait HasHashid
      * Decode the hashid to the id.
      *
      * @param string $hashid
-     * @return int|null
+     * @return null|int
      */
     public function hashidToId($hashid)
     {
@@ -47,7 +47,7 @@ trait HasHashid
      * Encode an id to its equivalent hashid.
      *
      * @param string $id
-     * @return string|null
+     * @return null|string
      */
     public function idToHashid($id)
     {
@@ -77,7 +77,7 @@ trait HasHashid
     }
 
     /**
-     * @return string|null
+     * @return null|string
      */
     protected function getHashidAttribute()
     {

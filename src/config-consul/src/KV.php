@@ -15,13 +15,13 @@ use Hyperf\Stringable\Str;
 
 class KV
 {
-    public int|string|null $lockIndex = null;
+    public null|int|string $lockIndex = null;
 
     public ?string $key = null;
 
     public ?string $value = null;
 
-    public int|string|null $flags = null;
+    public null|int|string $flags = null;
 
     public ?int $createIndex = null;
 

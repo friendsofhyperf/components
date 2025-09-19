@@ -19,7 +19,7 @@ use Psr\Container\NotFoundExceptionInterface;
 use TypeError;
 
 /**
- * @return FactoryBuilder|null
+ * @return null|FactoryBuilder
  * @throws TypeError
  * @throws NotFoundExceptionInterface
  * @throws ContainerExceptionInterface

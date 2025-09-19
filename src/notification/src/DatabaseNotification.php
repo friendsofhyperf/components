@@ -17,7 +17,7 @@ use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\MorphTo;
 
 /**
- * @property Carbon|null $read_at
+ * @property null|Carbon $read_at
  */
 class DatabaseNotification extends Model
 {
