@@ -90,7 +90,7 @@ class HasOne extends BaseHasOne
     /**
      * Get the default value for this relation.
      *
-     * @return Model|null
+     * @return null|Model
      */
     protected function getDefaultFor(Model $model)
     {

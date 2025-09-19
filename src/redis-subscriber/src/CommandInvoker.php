@@ -39,7 +39,7 @@ class CommandInvoker
     }
 
     /**
-     * @param int|string|array<mixed>|null $command
+     * @param null|int|string|array<mixed> $command
      */
     public function invoke(mixed $command, int $number): array
     {
@@ -84,7 +84,7 @@ class CommandInvoker
      */
     protected function receive(Connection $connection): void
     {
-        /** @var array|null $buffer */
+        /** @var null|array $buffer */
         $buffer = null;
 
         while (true) {

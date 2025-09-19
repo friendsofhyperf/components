@@ -23,7 +23,7 @@ use function strlen;
 class CommandBuilder
 {
     /**
-     * @param int|string|array<mixed>|mixed|null $args
+     * @param null|int|string|array<mixed>|mixed $args
      */
     public static function build(mixed $args): string
     {

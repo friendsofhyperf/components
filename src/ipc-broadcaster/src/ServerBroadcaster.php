@@ -26,7 +26,7 @@ class ServerBroadcaster implements BroadcasterInterface
     protected $server;
 
     /**
-     * @param int|null $id WorkerId
+     * @param null|int $id WorkerId
      */
     public function __construct(
         private ContainerInterface $container,

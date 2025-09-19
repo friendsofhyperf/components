@@ -19,14 +19,14 @@ class Avatar
     /**
      * The callback that should be used to get the Telescope user avatar.
      *
-     * @var Closure|null
+     * @var null|Closure
      */
     protected static $callback;
 
     /**
      * Get an avatar URL for an entry user.
      *
-     * @return string|null
+     * @return null|string
      */
     public static function url(array $user)
     {
@@ -53,7 +53,7 @@ class Avatar
      * Find the custom avatar for a user.
      *
      * @param array $user
-     * @return string|null
+     * @return null|string
      */
     protected static function resolve($user)
     {

@@ -97,7 +97,7 @@ class Message
      */
     public function forgetTo(): static
     {
-        /** @var MailboxListHeader|null $header */
+        /** @var null|MailboxListHeader $header */
         $header = $this->message->getHeaders()->get('To');
         if ($header) {
             $this->addAddressDebugHeader('X-To', $this->message->getTo());
@@ -129,7 +129,7 @@ class Message
      */
     public function forgetCc(): static
     {
-        /** @var MailboxListHeader|null $header */
+        /** @var null|MailboxListHeader $header */
         $header = $this->message->getHeaders()->get('Cc');
         if ($header) {
             $this->addAddressDebugHeader('X-Cc', $this->message->getCC());
@@ -161,7 +161,7 @@ class Message
      */
     public function forgetBcc(): static
     {
-        /** @var MailboxListHeader|null $header */
+        /** @var null|MailboxListHeader $header */
         $header = $this->message->getHeaders()->get('Bcc');
         if ($header) {
             $this->addAddressDebugHeader('X-Bcc', $this->message->getBcc());

@@ -18,7 +18,7 @@ use Hyperf\ViewEngine\Contract\Htmlable;
 /**
  * Encode HTML special characters in a string.
  *
- * @param Htmlable|BackedEnum|string|int|float|null $value
+ * @param null|Htmlable|BackedEnum|string|int|float $value
  * @param bool $doubleEncode
  * @return string
  */

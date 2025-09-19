@@ -51,8 +51,8 @@ trait HasRelationships
      * Define a one-to-one relationship.
      *
      * @param string $related
-     * @param array|string|null $foreignKey
-     * @param array|string|null $localKey
+     * @param null|array|string $foreignKey
+     * @param null|array|string $localKey
      *
      * @return HasOne
      */
@@ -85,8 +85,8 @@ trait HasRelationships
      * Define a one-to-many relationship.
      *
      * @param string $related
-     * @param array|string|null $foreignKey
-     * @param array|string|null $localKey
+     * @param null|array|string $foreignKey
+     * @param null|array|string $localKey
      *
      * @return HasMany
      */
@@ -119,8 +119,8 @@ trait HasRelationships
      * Define an inverse one-to-one or many relationship.
      *
      * @param string $related
-     * @param array|string|null $foreignKey
-     * @param array|string|null $ownerKey
+     * @param null|array|string $foreignKey
+     * @param null|array|string $ownerKey
      * @param string $relation
      *
      * @return BelongsTo

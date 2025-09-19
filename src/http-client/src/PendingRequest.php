@@ -53,14 +53,14 @@ class PendingRequest
     /**
      * The factory instance.
      *
-     * @var Factory|null
+     * @var null|Factory
      */
     protected $factory;
 
     /**
      * The Guzzle client instance.
      *
-     * @var Client|null
+     * @var null|Client
      */
     protected $client;
 
@@ -116,7 +116,7 @@ class PendingRequest
     /**
      * The transfer stats for the request.
      *
-     * @var \GuzzleHttp\TransferStats|null
+     * @var null|\GuzzleHttp\TransferStats
      */
     protected $transferStats;
 
@@ -130,7 +130,7 @@ class PendingRequest
     /**
      * A callback to run when throwing if a server or client error occurs.
      *
-     * @var Closure|null
+     * @var null|Closure
      */
     protected $throwCallback;
 
@@ -149,14 +149,14 @@ class PendingRequest
     protected $tries = 1;
 
     /**
-     * @var int[]|null
+     * @var null|int[]
      */
     protected $backoff;
 
     /**
      * The number of milliseconds to wait between retries.
      *
-     * @var Closure|int|null
+     * @var null|Closure|int
      */
     protected $retryDelay = 100;
 
@@ -170,7 +170,7 @@ class PendingRequest
     /**
      * The callback that will determine if the request should be retried.
      *
-     * @var callable|null
+     * @var null|callable
      */
     protected $retryWhenCallback;
 
@@ -184,7 +184,7 @@ class PendingRequest
     /**
      * The stub callables that will handle requests.
      *
-     * @var Collection|null
+     * @var null|Collection
      */
     protected $stubCallbacks;
 
@@ -219,7 +219,7 @@ class PendingRequest
     /**
      * The sent request object, if a request has been made.
      *
-     * @var Request|null
+     * @var null|Request
      */
     protected $request;
 
@@ -317,7 +317,7 @@ class PendingRequest
      *
      * @param array|string $name
      * @param resource|string $contents
-     * @param string|null $filename
+     * @param null|string $filename
      * @return $this
      */
     public function attach($name, $contents = '', $filename = null, array $headers = [])
@@ -758,7 +758,7 @@ class PendingRequest
     /**
      * Issue a GET request to the given URL.
      *
-     * @param array|string|null $query
+     * @param null|array|string $query
      * @return Response
      */
     public function get(string $url, $query = null)
@@ -771,7 +771,7 @@ class PendingRequest
     /**
      * Issue a HEAD request to the given URL.
      *
-     * @param array|string|null $query
+     * @param null|array|string $query
      * @return Response
      */
     public function head(string $url, $query = null)
@@ -1144,7 +1144,7 @@ class PendingRequest
     /**
      * Retrieve the pending request promise.
      *
-     * @return \GuzzleHttp\Promise\PromiseInterface|null
+     * @return null|\GuzzleHttp\Promise\PromiseInterface
      */
     public function getPromise()
     {

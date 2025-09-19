@@ -31,7 +31,7 @@ class BreadcrumbAspect extends AbstractAspect
 
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint, $startTime) {
             $metadata = $proceedingJoinPoint->getAnnotationMetadata();
-            /** @var BreadcrumbAnnotation|null $annotation */
+            /** @var null|BreadcrumbAnnotation $annotation */
             $annotation = $metadata->method[BreadcrumbAnnotation::class] ?? null;
 
             if (! $annotation) {

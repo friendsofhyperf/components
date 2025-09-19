@@ -30,7 +30,7 @@ class BlockableAspect extends AbstractAspect
     {
         $arguments = $proceedingJoinPoint->arguments['keys'] ?? [];
         $annotationMetadata = $proceedingJoinPoint->getAnnotationMetadata();
-        /** @var Blockable|null $annotation */
+        /** @var null|Blockable $annotation */
         $annotation = $annotationMetadata->method[Blockable::class] ?? null;
 
         if (! $annotation || $annotation->seconds <= 0) {

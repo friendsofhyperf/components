@@ -34,7 +34,7 @@ interface RequestInterface
      *
      * Returns true when value is "1", "true", "on", and "yes". Otherwise, returns false.
      *
-     * @param string|null $key
+     * @param null|string $key
      * @param bool $default
      */
     public function boolean($key = null, $default = false): bool;
@@ -42,7 +42,7 @@ interface RequestInterface
     /**
      * Retrieve input from the request as a collection.
      */
-    public function collect(array|string|null $key = null): \Hyperf\Collection\Collection;
+    public function collect(null|array|string $key = null): \Hyperf\Collection\Collection;
 
     /**
      * Retrieve input from the request as a Carbon instance.
@@ -57,7 +57,7 @@ interface RequestInterface
     public function except($keys): array;
 
     /**
-     * @param Closure(ServerRequestInterface):ServerRequestInterface|null $closure
+     * @param null|Closure(ServerRequestInterface):ServerRequestInterface $closure
      */
     public static function fake(?Closure $closure = null): ServerRequestInterface;
 
@@ -71,7 +71,7 @@ interface RequestInterface
     /**
      * Retrieve input from the request as a Fluent object instance.
      */
-    public function fluent(array|string|null $key = null): Fluent;
+    public function fluent(null|array|string $key = null): Fluent;
 
     /**
      * Determine if the request contains any of the given inputs.
@@ -181,7 +181,7 @@ interface RequestInterface
      *
      * @param string $key
      * @param class-string<TEnum> $enumClass
-     * @return TEnum|null
+     * @return null|TEnum
      */
     public function enum($key, $enumClass);
 

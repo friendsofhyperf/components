@@ -124,7 +124,7 @@ class Sender
     }
 
     /**
-     * @return Response|ServerConnection|null
+     * @return null|Response|ServerConnection
      */
     public function getResponse(int $fd): mixed
     {

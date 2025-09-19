@@ -19,7 +19,7 @@ class TwoColumnDetail extends Component
      * Renders the component using the given arguments.
      *
      * @param string $first
-     * @param string|null $second
+     * @param null|string $second
      * @param int $verbosity
      */
     public function render($first, $second = null, $verbosity = OutputInterface::VERBOSITY_NORMAL)

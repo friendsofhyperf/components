@@ -69,7 +69,7 @@ class TracingAmqpListener implements ListenerInterface
         if (method_exists($event, 'getAMQPMessage')) {
             /** @var AMQPMessage $amqpMessage */
             $amqpMessage = $event->getAMQPMessage();
-            /** @var AMQPTable|null $applicationHeaders */
+            /** @var null|AMQPTable $applicationHeaders */
             $applicationHeaders = $amqpMessage->has('application_headers') ? $amqpMessage->get('application_headers') : null;
             if ($applicationHeaders && isset($applicationHeaders[Constants::TRACE_CARRIER])) {
                 $carrier = Carrier::fromJson($applicationHeaders[Constants::TRACE_CARRIER]);
@@ -97,7 +97,7 @@ class TracingAmqpListener implements ListenerInterface
             return;
         }
 
-        /** @var Carrier|null $carrier */
+        /** @var null|Carrier $carrier */
         $carrier = Context::get(Constants::TRACE_CARRIER);
 
         /** @var ConsumerMessage $message */

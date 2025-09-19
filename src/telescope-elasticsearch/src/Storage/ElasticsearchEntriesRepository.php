@@ -76,7 +76,7 @@ class ElasticsearchEntriesRepository implements EntriesRepository, ClearableRepo
     /**
      * Return all the entries of a given type.
      *
-     * @param string|null $type
+     * @param null|string $type
      *
      * @return Collection<array-key,EntryResult>
      */

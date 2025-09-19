@@ -31,7 +31,7 @@ use Hyperf\DbConnection\Model\Model;
  * @property ClientInterface $client
  * @property string $ip_address
  * @property DeviceCodeStatus $status
- * @property Carbon|null $last_poll_at
+ * @property null|Carbon $last_poll_at
  * @property bool $revoke
  */
 class Device extends Model implements DeviceCodeInterface

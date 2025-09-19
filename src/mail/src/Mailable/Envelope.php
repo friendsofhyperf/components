@@ -24,7 +24,7 @@ class Envelope
     /**
      * The address sending the message.
      *
-     * @var Address|string|null
+     * @var null|Address|string
      */
     public $from;
 
@@ -59,7 +59,7 @@ class Envelope
     /**
      * The subject of the message.
      *
-     * @var string|null
+     * @var null|string
      */
     public $subject;
 
@@ -94,7 +94,7 @@ class Envelope
      *
      * @named-arguments-supported
      */
-    public function __construct(Address|string|null $from = null, $to = [], $cc = [], $bcc = [], $replyTo = [], ?string $subject = null, array $tags = [], array $metadata = [], Closure|array $using = [])
+    public function __construct(null|Address|string $from = null, $to = [], $cc = [], $bcc = [], $replyTo = [], ?string $subject = null, array $tags = [], array $metadata = [], Closure|array $using = [])
     {
         $this->from = is_string($from) ? new Address($from) : $from;
         $this->to = $this->normalizeAddresses($to);
@@ -110,7 +110,7 @@ class Envelope
     /**
      * Specify who the message will be "from".
      *
-     * @param string|null $name
+     * @param null|string $name
      * @return $this
      */
     public function from(Address|string $address, $name = null)
@@ -124,7 +124,7 @@ class Envelope
      * Add a "to" recipient to the message envelope.
      *
      * @param Address|array<int, Address|string>|string $address
-     * @param string|null $name
+     * @param null|string $name
      * @return $this
      */
     public function to(Address|array|string $address, $name = null)
@@ -142,7 +142,7 @@ class Envelope
      * Add a "cc" recipient to the message envelope.
      *
      * @param Address|array<int, Address|string>|string $address
-     * @param string|null $name
+     * @param null|string $name
      * @return $this
      */
     public function cc(Address|array|string $address, $name = null)
@@ -158,7 +158,7 @@ class Envelope
      * Add a "bcc" recipient to the message envelope.
      *
      * @param Address|array<int, Address|string>|string $address
-     * @param string|null $name
+     * @param null|string $name
      * @return $this
      */
     public function bcc(Address|array|string $address, $name = null)
@@ -174,7 +174,7 @@ class Envelope
      * Add a "reply to" recipient to the message envelope.
      *
      * @param Address|array<int, Address|string>|string $address
-     * @param string|null $name
+     * @param null|string $name
      * @return $this
      */
     public function replyTo(Address|array|string $address, $name = null)

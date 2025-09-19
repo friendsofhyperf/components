@@ -87,7 +87,7 @@ class AccessToken extends Model implements AccessTokenInterface
     public function getClient(): ClientInterface
     {
         /**
-         * @var ClientInterface|null $client
+         * @var null|ClientInterface $client
          */
         $client = $this->client()->first();
         if ($client === null) {

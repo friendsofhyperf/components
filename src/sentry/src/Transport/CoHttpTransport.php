@@ -89,7 +89,7 @@ class CoHttpTransport implements TransportInterface
                 $logger = $this->clientBuilder?->getLogger();
 
                 while (true) {
-                    /** @var Event|false|null $event */
+                    /** @var null|Event|false $event */
                     $event = $this->chan?->pop();
 
                     if (! $event) {

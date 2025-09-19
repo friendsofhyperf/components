@@ -69,7 +69,7 @@ class Repository implements Contract\Repository
     /**
      * @param string $key
      * @param mixed $value
-     * @param int|DateInterval|null $ttl
+     * @param null|int|DateInterval $ttl
      */
     public function set($key, $value, $ttl = null): bool
     {

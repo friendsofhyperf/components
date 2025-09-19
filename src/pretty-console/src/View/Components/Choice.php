@@ -21,7 +21,7 @@ class Choice extends Component
      * @param string $question
      * @param array<array-key, string> $choices
      * @param mixed $default
-     * @param mixed|null $attempts
+     * @param null|mixed $attempts
      * @param mixed $multiple
      * @return mixed
      */

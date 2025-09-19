@@ -123,7 +123,7 @@ class RpcAspect extends AbstractAspect
         // 'server.address' => '',
         // 'server.port' => '',
 
-        /** @var Span|null $span */
+        /** @var null|Span $span */
         $span = Context::get(static::SPAN);
 
         try {

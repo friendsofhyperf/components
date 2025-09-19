@@ -63,7 +63,7 @@ class TracingAsyncQueueListener implements ListenerInterface
 
     protected function startTransaction(BeforeHandle $event): void
     {
-        /** @var Carrier|null $carrier */
+        /** @var null|Carrier $carrier */
         $carrier = Context::get(Constants::TRACE_CARRIER, null, Coroutine::parentId());
 
         $job = $event->getMessage()->job();
@@ -88,7 +88,7 @@ class TracingAsyncQueueListener implements ListenerInterface
             return;
         }
 
-        /** @var Carrier|null $carrier */
+        /** @var null|Carrier $carrier */
         $carrier = Context::get(Constants::TRACE_CARRIER, null, Coroutine::parentId());
         $data = [
             'messaging.system' => 'async_queue',

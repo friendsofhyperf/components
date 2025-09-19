@@ -60,7 +60,7 @@ use function Hyperf\Tappable\tap;
  *
  * @return ($abstract is callable ? Closure : ($abstract is class-string<TClass> ? TClass : mixed))
  */
-function app(string|callable|null $abstract = null, array $parameters = [])
+function app(null|string|callable $abstract = null, array $parameters = [])
 {
     if (is_callable($abstract)) {
         return Closure::fromCallable($abstract);
@@ -157,7 +157,7 @@ function class_namespace($class): string
  *
  * @template TClass
  *
- * @param class-string<TClass>|string|null $abstract
+ * @param null|class-string<TClass>|string $abstract
  *
  * @return ($abstract is null ? ContainerInterface : ($abstract is class-string<TClass> ? TClass : mixed))
  */
@@ -302,7 +302,7 @@ function literal(...$arguments)
 }
 
 /**
- * @param string|Stringable|null $message
+ * @param null|string|Stringable $message
  * @return ($message is null ? LoggerInterface : mixed)
  */
 function logger($message = null, array $context = [], bool $backtrace = false)
@@ -330,7 +330,7 @@ function logs(string $name = 'hyperf', string $group = 'default'): LoggerInterfa
  * @template TValue of object
  *
  * @param TValue $object
- * @param string|null $key
+ * @param null|string $key
  * @param mixed $default
  * @return ($key is empty ? TValue : mixed)
  */
@@ -383,7 +383,7 @@ function resolve(string|callable $abstract, array $parameters = [])
 
 /**
  * Get an instance of the current request or an input item from the request.
- * @param array|string|null $key
+ * @param null|array|string $key
  * @param mixed $default
  * @return ($key is null ? RequestInterface : ($key is array ? array : mixed))
  */
@@ -405,7 +405,7 @@ function request($key = null, $default = null)
 /**
  * Return a new response from the application.
  *
- * @param array|string|null $content
+ * @param null|array|string $content
  * @param int $status
  * @return PsrResponseInterface|ResponseInterface
  */
@@ -442,7 +442,7 @@ function response($content = '', $status = 200, array $headers = [])
  *
  * @param callable(): TValue $callback
  * @param (callable(Throwable): TFallback)|TFallback $rescue
- * @param Closure(Throwable): void|null $exceptionHandler
+ * @param null|Closure(Throwable): void $exceptionHandler
  * @return TValue|TFallback
  */
 function rescue(callable $callback, mixed $rescue = null, ?Closure $exceptionHandler = null)
@@ -463,7 +463,7 @@ function rescue(callable $callback, mixed $rescue = null, ?Closure $exceptionHan
  *
  * If an array is passed as the key, we will assume you want to set an array of values.
  *
- * @param array|string|null $key
+ * @param null|array|string $key
  * @param mixed $default
  * @return ($key is null ? SessionInterface : ($key is array ? void : mixed))
  */

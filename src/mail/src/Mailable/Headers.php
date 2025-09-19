@@ -23,7 +23,7 @@ class Headers
     /**
      * The message's message ID.
      *
-     * @var string|null
+     * @var null|string
      */
     public $messageId;
 

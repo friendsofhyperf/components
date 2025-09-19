@@ -18,7 +18,7 @@ interface LockInterface
     /**
      * Attempt to acquire the lock.
      * @template T
-     * @param (callable(): T)|null $callback
+     * @param null|(callable(): T) $callback
      * @return ($callback is null ? bool : T)
      */
     public function get(?callable $callback = null);
@@ -27,7 +27,7 @@ interface LockInterface
      * Attempt to acquire the lock for the given number of seconds.
      *
      * @template T
-     * @param (callable(): T)|null $callback
+     * @param null|(callable(): T) $callback
      * @return ($callback is null ? bool : T)
      * @throws LockTimeoutException
      */

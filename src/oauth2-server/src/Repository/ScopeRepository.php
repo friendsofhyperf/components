@@ -56,7 +56,7 @@ final class ScopeRepository implements ScopeRepositoryInterface
         array $scopes,
         string $grantType,
         ClientEntityInterface $clientEntity,
-        string|int|null $userIdentifier = null,
+        null|string|int $userIdentifier = null,
         ?string $authCodeId = null,
     ): array {
         /** @var ClientInterface $client */

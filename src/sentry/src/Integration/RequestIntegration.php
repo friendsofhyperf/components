@@ -47,7 +47,7 @@ class RequestIntegration implements IntegrationInterface
 
     protected function getClientIp(): ?string
     {
-        /** @var ServerRequestInterface|null $request */
+        /** @var null|ServerRequestInterface $request */
         $request = Context::get(ServerRequestInterface::class);
 
         if (! $request) {

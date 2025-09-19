@@ -80,7 +80,7 @@ class Factory
     /**
      * The event dispatcher implementation.
      *
-     * @var EventDispatcherInterface|null
+     * @var null|EventDispatcherInterface
      */
     protected $dispatcher;
 
@@ -203,7 +203,7 @@ class Factory
     /**
      * Create a new response instance for use during stubbing.
      *
-     * @param array|string|null $body
+     * @param null|array|string $body
      * @param int $status
      * @param array $headers
      * @return PromiseInterface
@@ -234,7 +234,7 @@ class Factory
     /**
      * Register a stub callable that will intercept requests and be able to return stub responses.
      *
-     * @param array|callable|null $callback
+     * @param null|array|callable $callback
      * @return $this
      */
     public function fake($callback = null)
@@ -461,7 +461,7 @@ class Factory
     /**
      * Get the current event dispatcher implementation.
      *
-     * @return EventDispatcherInterface|null
+     * @return null|EventDispatcherInterface
      */
     public function getDispatcher()
     {
