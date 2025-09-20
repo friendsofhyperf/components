@@ -147,9 +147,9 @@ class EventHandleListener implements ListenerInterface
         };
     }
 
-    protected function captureException($throwable): void
+    protected function captureException(?Throwable $throwable): void
     {
-        if (! $throwable instanceof Throwable) {
+        if (! $throwable) {
             return;
         }
 
