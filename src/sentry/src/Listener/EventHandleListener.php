@@ -389,14 +389,19 @@ class EventHandleListener implements ListenerInterface
         });
 
         if ($this->switcher->isBreadcrumbEnable('command')) {
+            $data = [];
+            if ($this->switcher->isBreadcrumbEnable('command_input')) {
+                /** @var InputInterface $input */
+                $input = (fn () => $this->input)->call($event->getCommand());
+                $data['input'] = $this->extractConsoleCommandInput($input);
+            }
+
             Integration::addBreadcrumb(new Breadcrumb(
                 Breadcrumb::LEVEL_INFO,
                 Breadcrumb::TYPE_DEFAULT,
                 'command',
                 'Starting command: ' . $event->getCommand()->getName(),
-                [
-                    'input' => $this->extractConsoleCommandInput((fn () => $this->input)->call($event->getCommand())),
-                ]
+                $data
             ));
         }
     }
@@ -411,15 +416,26 @@ class EventHandleListener implements ListenerInterface
         }
 
         if ($this->switcher->isBreadcrumbEnable('command')) {
+            /** @var InputInterface $input */
+            /** @var int $exitCode */
+            [$input, $exitCode] = (function () {
+                return [
+                    $this->input,
+                    $this->exitCode,
+                ];
+            })->call($event->getCommand());
+            $data = ['exit' => $exitCode];
+
+            if ($this->switcher->isBreadcrumbEnable('command_input')) {
+                $data['input'] = $this->extractConsoleCommandInput($input);
+            }
+
             Integration::addBreadcrumb(new Breadcrumb(
                 Breadcrumb::LEVEL_INFO,
                 Breadcrumb::TYPE_DEFAULT,
                 'command',
                 'Finished command: ' . $event->getCommand()->getName(),
-                [
-                    'exit' => (fn () => $this->exitCode)->call($event->getCommand()),
-                    'input' => $this->extractConsoleCommandInput((fn () => $this->input)->call($event->getCommand())),
-                ]
+                $data
             ));
         }
 
