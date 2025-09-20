@@ -352,7 +352,7 @@ class EventHandleListener implements ListenerInterface
             'command.arguments' => (fn () => $this->input->getArguments())->call($command),
             'command.options' => (fn () => $this->input->getOptions())->call($command),
         ])->setTags([
-            'command.exit_code' => $exitCode,
+            'command.exit_code' => (string) $exitCode,
         ]);
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
