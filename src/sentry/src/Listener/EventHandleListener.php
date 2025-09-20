@@ -122,30 +122,30 @@ class EventHandleListener implements ListenerInterface
             RpcRequestTerminated::class => $this->handleRequestTerminated($event),
 
             // Command events
-            CommandEvent\BeforeHandle::class => $this->handleCommandBefore($event),
-            CommandEvent\FailToHandle::class => $this->handleCommandFail($event),
-            CommandEvent\AfterExecute::class => $this->handleCommandAfter($event),
+            CommandEvent\BeforeHandle::class => $this->handleCommandStarting($event),
+            CommandEvent\FailToHandle::class => $this->handleCommandFailed($event),
+            CommandEvent\AfterExecute::class => $this->handleCommandFinished($event),
 
             // Async Queue events
-            AsyncQueueEvent\BeforeHandle::class => $this->handleAsyncQueueBefore($event),
-            AsyncQueueEvent\AfterHandle::class => $this->handleAsyncQueueAfter($event),
+            AsyncQueueEvent\BeforeHandle::class => $this->handleAsyncQueueJobProcessing($event),
+            AsyncQueueEvent\AfterHandle::class => $this->handleAsyncQueueJobProcessed($event),
             AsyncQueueEvent\RetryHandle::class,
-            AsyncQueueEvent\FailedHandle::class => $this->handleAsyncQueueRetryOrFailed($event),
+            AsyncQueueEvent\FailedHandle::class => $this->handleAsyncQueueJobRetryOrFailed($event),
 
             // Crontab events
-            CrontabEvent\BeforeExecute::class => $this->handleCrontabBefore($event),
-            CrontabEvent\AfterExecute::class => $this->handleCrontabAfter($event),
-            CrontabEvent\FailToExecute::class => $this->handleCrontabFail($event),
+            CrontabEvent\BeforeExecute::class => $this->handleCrontabTaskStarting($event),
+            CrontabEvent\AfterExecute::class => $this->handleCrontabTaskFinished($event),
+            CrontabEvent\FailToExecute::class => $this->handleCrontabTaskFailed($event),
 
             // AMQP events
-            AmqpEvent\BeforeConsume::class => $this->handleAmqpBefore($event),
-            AmqpEvent\AfterConsume::class => $this->handleAmqpAfter($event),
-            AmqpEvent\FailToConsume::class => $this->handleAmqpFail($event),
+            AmqpEvent\BeforeConsume::class => $this->handleAmqpMessageProcessing($event),
+            AmqpEvent\AfterConsume::class => $this->handleAmqpMessageProcessed($event),
+            AmqpEvent\FailToConsume::class => $this->handleAmqpMessageFailed($event),
 
             // Kafka events
-            KafkaEvent\BeforeConsume::class => $this->handleKafkaBefore($event),
-            KafkaEvent\AfterConsume::class => $this->handleKafkaAfter($event),
-            KafkaEvent\FailToConsume::class => $this->handleKafkaFail($event),
+            KafkaEvent\BeforeConsume::class => $this->handleKafkaMessageProcessing($event),
+            KafkaEvent\AfterConsume::class => $this->handleKafkaMessageProcessed($event),
+            KafkaEvent\FailToConsume::class => $this->handleKafkaMessageFailed($event),
 
             default => null,
         };
@@ -369,7 +369,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param CommandEvent\BeforeHandle $event
      */
-    protected function handleCommandBefore(object $event): void
+    protected function handleCommandStarting(object $event): void
     {
         if (! $this->switcher->isEnable('command')) {
             return;
@@ -381,7 +381,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param CommandEvent\FailToHandle $event
      */
-    protected function handleCommandFail(object $event): void
+    protected function handleCommandFailed(object $event): void
     {
         if (! $this->switcher->isEnable('command')) {
             return;
@@ -394,7 +394,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param CommandEvent\AfterExecute $event
      */
-    protected function handleCommandAfter(object $event): void
+    protected function handleCommandFinished(object $event): void
     {
         if (! $this->switcher->isEnable('command')) {
             return;
@@ -406,7 +406,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param AsyncQueueEvent\BeforeHandle $event
      */
-    protected function handleAsyncQueueBefore(object $event): void
+    protected function handleAsyncQueueJobProcessing(object $event): void
     {
         if (! $this->switcher->isEnable('async_queue')) {
             return;
@@ -418,7 +418,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param AsyncQueueEvent\AfterHandle $event
      */
-    protected function handleAsyncQueueAfter(object $event): void
+    protected function handleAsyncQueueJobProcessed(object $event): void
     {
         if (! $this->switcher->isEnable('async_queue')) {
             return;
@@ -430,7 +430,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param AsyncQueueEvent\RetryHandle|AsyncQueueEvent\FailedHandle $event
      */
-    protected function handleAsyncQueueRetryOrFailed(object $event): void
+    protected function handleAsyncQueueJobRetryOrFailed(object $event): void
     {
         if (! $this->switcher->isEnable('async_queue')) {
             return;
@@ -443,7 +443,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param CrontabEvent\BeforeExecute $event
      */
-    protected function handleCrontabBefore(object $event): void
+    protected function handleCrontabTaskStarting(object $event): void
     {
         if (! $this->switcher->isEnable('crontab')) {
             return;
@@ -455,7 +455,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param CrontabEvent\AfterExecute $event
      */
-    protected function handleCrontabAfter(object $event): void
+    protected function handleCrontabTaskFinished(object $event): void
     {
         if (! $this->switcher->isEnable('crontab')) {
             return;
@@ -467,7 +467,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param CrontabEvent\FailToExecute $event
      */
-    protected function handleCrontabFail(object $event): void
+    protected function handleCrontabTaskFailed(object $event): void
     {
         if (! $this->switcher->isEnable('crontab')) {
             return;
@@ -480,7 +480,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param AmqpEvent\BeforeConsume $event
      */
-    protected function handleAmqpBefore(object $event): void
+    protected function handleAmqpMessageProcessing(object $event): void
     {
         if (! $this->switcher->isEnable('amqp')) {
             return;
@@ -492,7 +492,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param AmqpEvent\AfterConsume $event
      */
-    protected function handleAmqpAfter(object $event): void
+    protected function handleAmqpMessageProcessed(object $event): void
     {
         if (! $this->switcher->isEnable('amqp')) {
             return;
@@ -504,7 +504,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param AmqpEvent\FailToConsume $event
      */
-    protected function handleAmqpFail(object $event): void
+    protected function handleAmqpMessageFailed(object $event): void
     {
         if (! $this->switcher->isEnable('amqp')) {
             return;
@@ -517,7 +517,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param KafkaEvent\BeforeConsume $event
      */
-    protected function handleKafkaBefore(object $event): void
+    protected function handleKafkaMessageProcessing(object $event): void
     {
         if (! $this->switcher->isEnable('kafka')) {
             return;
@@ -529,7 +529,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param KafkaEvent\AfterConsume $event
      */
-    protected function handleKafkaAfter(object $event): void
+    protected function handleKafkaMessageProcessed(object $event): void
     {
         if (! $this->switcher->isEnable('kafka')) {
             return;
@@ -541,7 +541,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param KafkaEvent\FailToConsume $event
      */
-    protected function handleKafkaFail(object $event): void
+    protected function handleKafkaMessageFailed(object $event): void
     {
         if (! $this->switcher->isEnable('kafka')) {
             return;

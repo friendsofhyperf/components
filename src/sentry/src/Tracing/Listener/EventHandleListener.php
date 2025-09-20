@@ -134,27 +134,27 @@ class EventHandleListener implements ListenerInterface
             RequestHandled::class, RpcRequestHandled::class => $this->handleRequestHandled($event),
 
             // Command
-            CommandBeforeHandle::class => $this->handleCommandStart($event),
-            AfterExecute::class => $this->handleCommandFinish($event),
+            CommandBeforeHandle::class => $this->handleCommandStarting($event),
+            AfterExecute::class => $this->handleCommandFinished($event),
 
             // Redis
-            CommandExecuted::class => $this->handleRedisCommand($event),
+            CommandExecuted::class => $this->handleRedisCommandExecuted($event),
 
             // Crontab
-            BeforeExecute::class => $this->handleCrontabStart($event),
-            FailToExecute::class, CrontabAfterExecute::class => $this->handleCrontabFinish($event),
+            BeforeExecute::class => $this->handleCrontabTaskStarting($event),
+            FailToExecute::class, CrontabAfterExecute::class => $this->handleCrontabTaskFinished($event),
 
             // AMQP
-            AmqpBeforeConsume::class => $this->handleAmqpStart($event),
-            AmqpAfterConsume::class, AmqpFailToConsume::class => $this->handleAmqpFinish($event),
+            AmqpBeforeConsume::class => $this->handleAmqpMessageProcessing($event),
+            AmqpAfterConsume::class, AmqpFailToConsume::class => $this->handleAmqpMessageProcessed($event),
 
             // Kafka
-            KafkaBeforeConsume::class => $this->handleKafkaStart($event),
-            KafkaAfterConsume::class, KafkaFailToConsume::class => $this->handleKafkaFinish($event),
+            KafkaBeforeConsume::class => $this->handleKafkaMessageProcessing($event),
+            KafkaAfterConsume::class, KafkaFailToConsume::class => $this->handleKafkaMessageProcessed($event),
 
             // AsyncQueue
-            AsyncQueueBeforeHandle::class => $this->handleAsyncQueueStart($event),
-            RetryHandle::class, FailedHandle::class, AfterHandle::class => $this->handleAsyncQueueFinish($event),
+            AsyncQueueBeforeHandle::class => $this->handleAsyncQueueJobProcessing($event),
+            RetryHandle::class, FailedHandle::class, AfterHandle::class => $this->handleAsyncQueueJobProcessed($event),
 
             default => null,
         };
@@ -317,7 +317,7 @@ class EventHandleListener implements ListenerInterface
         }
     }
 
-    private function handleCommandStart(CommandBeforeHandle $event): void
+    private function handleCommandStarting(CommandBeforeHandle $event): void
     {
         if (
             ! $this->switcher->isTracingEnable('command')
@@ -337,7 +337,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleCommandFinish(AfterExecute $event): void
+    private function handleCommandFinished(AfterExecute $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
@@ -379,7 +379,7 @@ class EventHandleListener implements ListenerInterface
         $transaction->finish(microtime(true));
     }
 
-    private function handleRedisCommand(CommandExecuted $event): void
+    private function handleRedisCommandExecuted(CommandExecuted $event): void
     {
         if (! $this->switcher->isTracingSpanEnable('redis')) {
             return;
@@ -434,7 +434,7 @@ class EventHandleListener implements ListenerInterface
         $span->finish();
     }
 
-    private function handleCrontabStart(BeforeExecute $event): void
+    private function handleCrontabTaskStarting(BeforeExecute $event): void
     {
         if (! $this->switcher->isTracingEnable('crontab')) {
             return;
@@ -451,7 +451,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleCrontabFinish(FailToExecute|CrontabAfterExecute $event): void
+    private function handleCrontabTaskFinished(FailToExecute|CrontabAfterExecute $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
@@ -485,7 +485,7 @@ class EventHandleListener implements ListenerInterface
         $transaction->finish(microtime(true));
     }
 
-    private function handleAmqpStart(AmqpBeforeConsume $event): void
+    private function handleAmqpMessageProcessing(AmqpBeforeConsume $event): void
     {
         if (! $this->switcher->isTracingEnable('amqp')) {
             return;
@@ -516,7 +516,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleAmqpFinish(AmqpAfterConsume|AmqpFailToConsume $event): void
+    private function handleAmqpMessageProcessed(AmqpAfterConsume|AmqpFailToConsume $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
@@ -563,7 +563,7 @@ class EventHandleListener implements ListenerInterface
         $transaction->finish(microtime(true));
     }
 
-    private function handleKafkaStart(KafkaBeforeConsume $event): void
+    private function handleKafkaMessageProcessing(KafkaBeforeConsume $event): void
     {
         if (! $this->switcher->isTracingEnable('kafka')) {
             return;
@@ -594,7 +594,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleKafkaFinish(KafkaAfterConsume|KafkaFailToConsume $event): void
+    private function handleKafkaMessageProcessed(KafkaAfterConsume|KafkaFailToConsume $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
@@ -635,7 +635,7 @@ class EventHandleListener implements ListenerInterface
         $transaction->finish(microtime(true));
     }
 
-    private function handleAsyncQueueStart(AsyncQueueBeforeHandle $event): void
+    private function handleAsyncQueueJobProcessing(AsyncQueueBeforeHandle $event): void
     {
         if (! $this->switcher->isTracingEnable('async_queue')) {
             return;
@@ -656,7 +656,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleAsyncQueueFinish(AfterHandle|RetryHandle|FailedHandle $event): void
+    private function handleAsyncQueueJobProcessed(AfterHandle|RetryHandle|FailedHandle $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
