@@ -41,7 +41,6 @@ class GrpcAspect extends AbstractAspect
         }
 
         $options = $proceedingJoinPoint->arguments['keys']['options'];
-
         $data = [
             'grpc.method' => $method = $proceedingJoinPoint->arguments['keys']['method'],
             'grpc.options' => $options,
@@ -84,14 +83,16 @@ class GrpcAspect extends AbstractAspect
         } catch (Throwable $exception) {
             $span?->setStatus(SpanStatus::internalError())
                 ->setTags([
-                    'error' => true,
+                    'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
-                    'exception.code' => $exception->getCode(),
+                    'exception.code' => (string) $exception->getCode(),
                 ]);
-            $this->switcher->isTracingExtraTagEnable('exception.stack_trace') && $span?->setData([
-                'exception.stack_trace' => (string) $exception,
-            ]);
+            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
+                $span?->setData([
+                    'exception.stack_trace' => (string) $exception,
+                ]);
+            }
 
             throw $exception;
         } finally {

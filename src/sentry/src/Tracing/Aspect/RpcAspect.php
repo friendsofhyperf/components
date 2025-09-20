@@ -112,13 +112,6 @@ class RpcAspect extends AbstractAspect
 
     private function handleSend(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $data = (array) Context::get(static::DATA, []);
-        $data['rpc.arguments'] = $proceedingJoinPoint->arguments['keys'];
-
-        if ($this->container->has(Rpc\Context::class)) {
-            $data['rpc.context'] = $this->container->get(Rpc\Context::class)->getData();
-        }
-
         // TODO
         // 'server.address' => '',
         // 'server.port' => '',
@@ -126,27 +119,33 @@ class RpcAspect extends AbstractAspect
         /** @var null|Span $span */
         $span = Context::get(static::SPAN);
 
+        $span?->setData((array) Context::get(static::DATA, []));
+
+        if ($this->container->has(Rpc\Context::class)) {
+            $span?->setData(['rpc.context' => $this->container->get(Rpc\Context::class)->getData()]);
+        }
+
         try {
             $result = $proceedingJoinPoint->process();
 
             if ($this->switcher->isTracingExtraTagEnable('rpc.result')) {
-                $data['rpc.result'] = $result;
+                $span?->setData(['rpc.result' => $result]);
             }
         } catch (Throwable $exception) {
             $span?->setStatus(SpanStatus::internalError())
                 ->setTags([
-                    'error' => true,
+                    'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
-                    'exception.code' => $exception->getCode(),
+                    'exception.code' => (string) $exception->getCode(),
                 ]);
             if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
-                $data['exception.stack_trace'] = (string) $exception;
+                $span?->setData(['exception.stack_trace' => (string) $exception]);
             }
 
             throw $exception;
         } finally {
-            $span?->setData($data)->finish();
+            $span?->finish();
 
             Context::destroy(static::SPAN);
             Context::destroy(static::DATA);

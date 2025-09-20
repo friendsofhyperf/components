@@ -43,9 +43,7 @@ class TraceAnnotationAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $data = [
-            'coroutine.id' => Coroutine::id(),
-        ];
+        $data = ['coroutine.id' => Coroutine::id()];
 
         $methodName = $proceedingJoinPoint->methodName;
         if (in_array($methodName, ['__call', '__callStatic'])) {
@@ -63,32 +61,28 @@ class TraceAnnotationAspect extends AbstractAspect
                 $methodName
             ),
             asParent: true
-        );
+        )?->setData($data);
 
         try {
             $result = $proceedingJoinPoint->process();
 
-            if (! $span) {
-                return $result;
-            }
-
             if ($this->switcher->isTracingExtraTagEnable('annotation.result')) {
-                $data['annotation.result'] = $result;
+                $span?->setData(['annotation.result' => $result]);
             }
         } catch (Throwable $exception) {
-            $span->setStatus(SpanStatus::internalError())
+            $span?->setStatus(SpanStatus::internalError())
                 ->setTags([
-                    'error' => true,
+                    'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
-                    'exception.code' => $exception->getCode(),
+                    'exception.code' => (string) $exception->getCode(),
                 ]);
             if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
-                $data['exception.stack_trace'] = (string) $exception;
+                $span?->setData(['exception.stack_trace' => (string) $exception]);
             }
             throw $exception;
         } finally {
-            $span->setData($data)->finish(microtime(true));
+            $span?->finish(microtime(true));
 
             // Reset root span
             SentrySdk::getCurrentHub()->setSpan($parent);

@@ -36,9 +36,8 @@ class KafkaProducerAspect extends AbstractAspect
         'Hyperf\Kafka\Producer::sendBatchAsync',
     ];
 
-    public function __construct(
-        protected Switcher $switcher
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -57,8 +56,8 @@ class KafkaProducerAspect extends AbstractAspect
     protected function sendAsync(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $span = $this->startSpan(
-            'queue.publish',
-            sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
+            op: 'queue.publish',
+            description: sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
             origin: 'auto.kafka'
         );
 
