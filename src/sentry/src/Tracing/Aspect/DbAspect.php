@@ -89,8 +89,11 @@ class DbAspect extends AbstractAspect
             'db.pool.using' => $pool->getCurrentConnections(),
             // 'server.host' => '',
             // 'server.port' => '',
-            'db.sql.bindings' => $arguments['arguments']['bindings'] ?? [],
         ];
+
+        if ($this->switcher->isTracingExtraTagEnable('db.sql.bindings', true)) {
+            $data['db.sql.bindings'] = $arguments['arguments']['bindings'] ?? [];
+        }
 
         foreach ($arguments['arguments']['bindings'] as $key => $value) {
             $data['db.parameter.' . $key] = $value;
