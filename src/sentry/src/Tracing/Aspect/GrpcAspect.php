@@ -84,7 +84,7 @@ class GrpcAspect extends AbstractAspect
         } catch (Throwable $exception) {
             $span?->setStatus(SpanStatus::internalError())
                 ->setTags([
-                    'error' => true,
+                    'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => $exception->getCode(),

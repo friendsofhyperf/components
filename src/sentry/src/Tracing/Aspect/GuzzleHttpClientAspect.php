@@ -146,7 +146,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
                 if ($response->getStatusCode() >= 400 && $response->getStatusCode() < 600) {
                     $span->setTags([
-                        'error' => true,
+                        'error' => 'true',
                         'http.response.reason' => $response->getReasonPhrase(),
                     ]);
                 }
@@ -156,7 +156,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 $span->setStatus(SpanStatus::internalError());
                 $exception = $stats->getHandlerErrorData() instanceof Throwable ? $stats->getHandlerErrorData() : new Error();
                 $span->setTags([
-                    'error' => true,
+                    'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.code' => $exception->getCode(),
                 ]);

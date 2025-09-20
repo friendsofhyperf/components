@@ -106,7 +106,7 @@ class RedisAspect extends AbstractAspect
             }
             $span?->setStatus(SpanStatus::internalError())
                 ->setTags([
-                    'error' => true,
+                    'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => $exception->getCode(),

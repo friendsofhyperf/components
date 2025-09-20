@@ -304,7 +304,7 @@ class EventHandleListener implements ListenerInterface
         if ($exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError())
                 ->setTags([
-                    'error' => true,
+                    'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.code' => $exception->getCode(),
                     'exception.message' => $exception->getMessage(),
@@ -358,7 +358,7 @@ class EventHandleListener implements ListenerInterface
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError())
                 ->setTags([
-                    'error' => true,
+                    'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => $exception->getCode(),
@@ -421,7 +421,7 @@ class EventHandleListener implements ListenerInterface
         if ($exception = $event->throwable) {
             $span->setStatus(SpanStatus::internalError())
                 ->setTags([
-                    'error' => true,
+                    'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => $exception->getCode(),
@@ -470,7 +470,7 @@ class EventHandleListener implements ListenerInterface
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError())
                 ->setTags([
-                    'error' => true,
+                    'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => $exception->getCode(),
@@ -548,7 +548,7 @@ class EventHandleListener implements ListenerInterface
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError())
                 ->setTags([
-                    'error' => true,
+                    'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => $exception->getCode(),
@@ -620,7 +620,7 @@ class EventHandleListener implements ListenerInterface
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError())
                 ->setTags([
-                    'error' => true,
+                    'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => $exception->getCode(),
@@ -679,7 +679,7 @@ class EventHandleListener implements ListenerInterface
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError())
                 ->setTags([
-                    'error' => true,
+                    'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => $exception->getCode(),
