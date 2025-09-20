@@ -22,37 +22,37 @@ class Switcher
     {
     }
 
-    public function isEnable(string $key): bool
+    public function isEnable(string $key, bool $default = true): bool
     {
-        return (bool) $this->config->get('sentry.enable.' . $key, true);
+        return (bool) $this->config->get('sentry.enable.' . $key, $default);
     }
 
-    public function isBreadcrumbEnable(string $key): bool
+    public function isBreadcrumbEnable(string $key, bool $default = true): bool
     {
-        return (bool) $this->config->get('sentry.breadcrumbs.' . $key, true);
+        return (bool) $this->config->get('sentry.breadcrumbs.' . $key, $default);
     }
 
-    public function isTracingEnable(string $key): bool
+    public function isTracingEnable(string $key, bool $default = true): bool
     {
         if (! $this->config->get('sentry.enable_tracing', true)) {
             return false;
         }
 
-        return (bool) $this->config->get('sentry.tracing.enable.' . $key, true);
+        return (bool) $this->config->get('sentry.tracing.enable.' . $key, $default);
     }
 
-    public function isTracingSpanEnable(string $key): bool
+    public function isTracingSpanEnable(string $key, bool $default = true): bool
     {
         if (! SentrySdk::getCurrentHub()->getSpan()) {
             return false;
         }
 
-        return (bool) $this->config->get('sentry.tracing.spans.' . $key, true);
+        return (bool) $this->config->get('sentry.tracing.spans.' . $key, $default);
     }
 
-    public function isTracingExtraTagEnable(string $key): bool
+    public function isTracingExtraTagEnable(string $key, bool $default = false): bool
     {
-        return (bool) ($this->config->get('sentry.tracing.extra_tags', [])[$key] ?? false);
+        return (bool) ($this->config->get('sentry.tracing.extra_tags', [])[$key] ?? $default);
     }
 
     public function isExceptionIgnored(string|Throwable $exception): bool

@@ -113,6 +113,7 @@ return [
             'exception.stack_trace' => true,
             'amqp.result' => false,
             'annotation.result' => false,
+            'db.sql.bindings' => true,
             'db.result' => false,
             'elasticsearch.result' => false,
             'http.response.body.contents' => false,

@@ -26,7 +26,7 @@ use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Crontab\Event as CrontabEvent;
-use Hyperf\Database\Events\QueryExecuted;
+use Hyperf\Database\Events as DbEvent;
 use Hyperf\DbConnection\Pool\PoolFactory;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Event as HttpEvent;
@@ -73,7 +73,10 @@ class EventHandleListener implements ListenerInterface
     {
         return [
             // Database events
-            QueryExecuted::class,
+            DbEvent\QueryExecuted::class,
+            DbEvent\TransactionBeginning::class,
+            DbEvent\TransactionCommitted::class,
+            DbEvent\TransactionRolledBack::class,
 
             // Request events
             HttpEvent\RequestReceived::class,
@@ -115,7 +118,10 @@ class EventHandleListener implements ListenerInterface
     {
         match ($event::class) {
             // Database
-            QueryExecuted::class => $this->handleDbQueryExecuted($event),
+            DbEvent\QueryExecuted::class => $this->handleDbQueryExecuted($event),
+            DbEvent\TransactionBeginning::class => $this->handleDbTransactionBeginning($event),
+            DbEvent\TransactionCommitted::class => $this->handleDbTransactionCommitted($event),
+            DbEvent\TransactionRolledBack::class => $this->handleDbTransactionRolledBack($event),
 
             // Request
             HttpEvent\RequestReceived::class,
@@ -155,7 +161,7 @@ class EventHandleListener implements ListenerInterface
         };
     }
 
-    private function handleDbQueryExecuted(QueryExecuted $event): void
+    private function handleDbQueryExecuted(DbEvent\QueryExecuted $event): void
     {
         if (! $this->switcher->isTracingSpanEnable('sql_queries')) {
             return;
@@ -188,21 +194,70 @@ class EventHandleListener implements ListenerInterface
             'db.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
             'db.pool.idle' => $pool->getConnectionsInChannel(),
             'db.pool.using' => $pool->getCurrentConnections(),
-            'db.sql.bindings' => $event->bindings,
         ];
+
+        if ($this->switcher->isTracingExtraTagEnable('db.sql.bindings', true)) {
+            $data += ['db.sql.bindings' => $event->bindings];
+        }
 
         $startTimestamp = microtime(true) - $event->time / 1000;
 
-        $op = 'db.sql.query';
-        $description = $event->sql;
-
         $this->startSpan(
-            op: $op,
-            description: $description,
+            op: 'db.sql.query',
+            description: $event->sql,
             origin: 'auto.db'
         )?->setData($data)
             ->setStartTimestamp($startTimestamp)
             ->finish($startTimestamp + $event->time / 1000);
+    }
+
+    private function handleDbTransactionBeginning(DbEvent\TransactionBeginning $event): void
+    {
+        if (! $this->switcher->isTracingSpanEnable('sql_transactions')) {
+            return;
+        }
+        if (! SentrySdk::getCurrentHub()->getSpan()) {
+            return;
+        }
+
+        $this->startSpan(
+            op: 'db.transaction',
+            description: 'BEGIN',
+            origin: 'auto.db'
+        )->setData([
+            'coroutine.id' => Coroutine::id(),
+            'db.system' => $event->connection->getDriverName(),
+            'db.name' => $event->connection->getDatabaseName(),
+            'db.pool.name' => $event->connectionName,
+        ]);
+    }
+
+    private function handleDbTransactionCommitted(DbEvent\TransactionCommitted $event): void
+    {
+        if (! $this->switcher->isTracingSpanEnable('sql_transactions')) {
+            return;
+        }
+        if (! $span = SentrySdk::getCurrentHub()->getSpan()) {
+            return;
+        }
+
+        $span->setStatus(SpanStatus::ok())
+            ->setDescription('COMMIT')
+            ->finish();
+    }
+
+    private function handleDbTransactionRolledBack(DbEvent\TransactionRolledBack $event): void
+    {
+        if (! $this->switcher->isTracingSpanEnable('sql_transactions')) {
+            return;
+        }
+        if (! $span = SentrySdk::getCurrentHub()->getSpan()) {
+            return;
+        }
+
+        $span->setStatus(SpanStatus::internalError())
+            ->setDescription('ROLLBACK')
+            ->finish();
     }
 
     private function handleRequestReceived(HttpEvent\RequestReceived|RpcEvent\RequestReceived $event): void
