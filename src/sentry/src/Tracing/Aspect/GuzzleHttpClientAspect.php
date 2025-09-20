@@ -94,7 +94,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
         $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($options, $guzzleConfig, $onStats, $span) {
             $request = $stats->getRequest();
             $uri = $request->getUri();
-            $data = [
+            $span->setData([
                 // See: https://develop.sentry.dev/sdk/performance/span-data-conventions/#http
                 'http.query' => $uri->getQuery(),
                 'http.fragment' => $uri->getFragment(),
@@ -113,10 +113,10 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 'http.guzzle.config' => $guzzleConfig,
                 'http.guzzle.options' => $options ?? [],
                 'duration' => $stats->getTransferTime() * 1000, // in milliseconds
-            ];
+            ]);
 
             if ($response = $stats->getResponse()) {
-                $data = array_merge($data, [
+                $span->setData([
                     'http.response.status_code' => $response->getStatusCode(),
                     'http.response.reason' => $response->getReasonPhrase(),
                     'http.response.headers' => $response->getHeaders(),
@@ -135,10 +135,12 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
                     if ($isTextual && $body->isSeekable()) {
                         $pos = $body->tell();
-                        $data['http.response.body.contents'] = \GuzzleHttp\Psr7\Utils::copyToString($body, 8192); // 8KB 上限
+                        $span->setData([
+                            'http.response.body.contents' => \GuzzleHttp\Psr7\Utils::copyToString($body, 8192), // 8KB 上限
+                        ]);
                         $body->seek($pos);
                     } else {
-                        $data['http.response.body.contents'] = '[binary omitted]';
+                        $span->setData(['http.response.body.contents' => '[binary omitted]']);
                     }
                 }
 
@@ -146,29 +148,31 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
                 if ($response->getStatusCode() >= 400 && $response->getStatusCode() < 600) {
                     $span->setTags([
-                        'error' => true,
+                        'error' => 'true',
                         'http.response.reason' => $response->getReasonPhrase(),
                     ]);
                 }
             }
 
             if ($stats->getHandlerErrorData()) {
-                $span->setStatus(SpanStatus::internalError());
-                $exception = $stats->getHandlerErrorData() instanceof Throwable ? $stats->getHandlerErrorData() : new Error();
-                $span->setTags([
-                    'error' => true,
-                    'exception.class' => $exception::class,
-                    'exception.code' => $exception->getCode(),
-                ]);
+                $exception = $stats->getHandlerErrorData() instanceof Throwable
+                    ? $stats->getHandlerErrorData()
+                    : new Error();
+                $span->setStatus(SpanStatus::internalError())
+                    ->setTags([
+                        'error' => 'true',
+                        'exception.class' => $exception::class,
+                        'exception.code' => (string) $exception->getCode(),
+                    ]);
                 if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
-                    $data = array_merge($data, [
+                    $span->setData([
                         'exception.message' => $exception->getMessage(),
                         'exception.stack_trace' => (string) $exception,
                     ]);
                 }
             }
 
-            $span->setData($data)->finish();
+            $span->finish();
 
             if (is_callable($onStats)) {
                 ($onStats)($stats);

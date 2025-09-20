@@ -85,10 +85,10 @@ class CoroutineAspect extends AbstractAspect
             } catch (Throwable $exception) {
                 $transaction->setStatus(SpanStatus::internalError())
                     ->setTags([
-                        'error' => true,
+                        'error' => 'true',
                         'exception.class' => $exception::class,
                         'exception.message' => $exception->getMessage(),
-                        'exception.code' => $exception->getCode(),
+                        'exception.code' => (string) $exception->getCode(),
                     ]);
                 if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
                     $transaction->setData([

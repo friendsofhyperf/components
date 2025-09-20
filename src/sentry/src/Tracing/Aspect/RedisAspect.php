@@ -55,11 +55,9 @@ class RedisAspect extends AbstractAspect
         }
 
         $arguments = $proceedingJoinPoint->arguments['keys'];
-
         $poolName = (fn () => $this->poolName ?? null)->call($proceedingJoinPoint->getInstance());
         $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
         $config = (fn () => $this->config ?? [])->call($pool);
-
         $data = [
             'coroutine.id' => Coroutine::id(),
             'db.system' => 'redis',
@@ -78,14 +76,13 @@ class RedisAspect extends AbstractAspect
         // $op = sprintf('%s %s', $arguments['name'], $arguments['arguments']['key'] ?? '');
         // $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
         $key = $arguments['arguments'][0] ?? '';
-        $op = 'db.redis';
         $description = sprintf(
             '%s %s',
             strtoupper($arguments['name'] ?? ''),
             is_array($key) ? implode(',', $key) : $key
         );
         $span = $this->startSpan(
-            op: $op,
+            op: 'db.redis',
             description: $description,
             origin: 'auto.cache.redis',
         )?->setData($data);
@@ -100,19 +97,19 @@ class RedisAspect extends AbstractAspect
             if ($this->switcher->isTracingExtraTagEnable('redis.result')) {
                 $span->setData(['redis.result' => $result]);
             }
-        } catch (Throwable $exception) {
-            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
-                $span->setData(['exception.stack_trace' => (string) $exception]);
-            }
+        } catch (Throwable $e) {
             $span?->setStatus(SpanStatus::internalError())
                 ->setTags([
-                    'error' => true,
-                    'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
-                    'exception.code' => $exception->getCode(),
+                    'error' => 'true',
+                    'exception.class' => $e::class,
+                    'exception.message' => $e->getMessage(),
+                    'exception.code' => (string) $e->getCode(),
                 ]);
+            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
+                $span->setData(['exception.stack_trace' => (string) $e]);
+            }
 
-            throw $exception;
+            throw $e;
         } finally {
             $span?->finish();
         }
