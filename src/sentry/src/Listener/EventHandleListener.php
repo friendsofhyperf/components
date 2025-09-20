@@ -40,7 +40,7 @@ use Sentry\Breadcrumb;
 use Sentry\SentrySdk;
 use Throwable;
 
-class EventListener implements ListenerInterface
+class EventHandleListener implements ListenerInterface
 {
     public const SETUP = 'sentry.context.setup';
 

@@ -51,7 +51,7 @@ class ConfigProvider
                 \Sentry\Transport\TransportInterface::class => Transport\CoHttpTransport::class,
             ],
             'listeners' => [
-                Listener\EventListener::class,
+                Listener\EventHandleListener::class,
                 Crons\Listener\CronEventListener::class,
                 Tracing\Listener\TracingAmqpListener::class,
                 Tracing\Listener\TracingAsyncQueueListener::class,
