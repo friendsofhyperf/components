@@ -95,6 +95,10 @@ class Switcher
         return $this->isTracingExtraTagEnabled($key, $default);
     }
 
+    /**
+     * @deprecated since v3.1, use isExceptionIgnored instead, will be removed in v3.2
+     * @see https://docs.sentry.io/platforms/php/configuration/options/#ignore_exceptions
+     */
     public function isExceptionIgnored(string|Throwable $exception): bool
     {
         $ignoreExceptions = (array) $this->config->get('sentry.ignore_exceptions', []);
