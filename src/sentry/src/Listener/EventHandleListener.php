@@ -113,7 +113,7 @@ class EventHandleListener implements ListenerInterface
             TransactionRolledBack::class => $this->handleDbTransaction($event),
 
             // Redis events
-            CommandExecuted::class => $this->handleRedisCommand($event),
+            CommandExecuted::class => $this->handleRedisCommandExecuted($event),
 
             // Request events
             RequestReceived::class,
@@ -322,7 +322,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param CommandExecuted $event
      */
-    protected function handleRedisCommand(object $event): void
+    protected function handleRedisCommandExecuted(object $event): void
     {
         if (! $this->switcher->isBreadcrumbEnable('redis')) {
             return;
