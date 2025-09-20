@@ -93,10 +93,10 @@ class DbAspect extends AbstractAspect
 
         if ($this->switcher->isTracingExtraTagEnable('db.sql.bindings', true)) {
             $data['db.sql.bindings'] = $arguments['arguments']['bindings'] ?? [];
-        }
 
-        foreach ($arguments['arguments']['bindings'] as $key => $value) {
-            $data['db.parameter.' . $key] = $value;
+            foreach ($arguments['arguments']['bindings'] as $key => $value) {
+                $data['db.parameter.' . $key] = $value;
+            }
         }
 
         $span?->setData($data);
