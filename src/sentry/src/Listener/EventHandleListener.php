@@ -212,6 +212,7 @@ class EventHandleListener implements ListenerInterface
             'sentry.tracing.enable.crontab',
             'sentry.tracing.enable.kafka',
             'sentry.tracing.enable.request',
+            'sentry.tracing.spans.cache',
             'sentry.tracing.spans.coroutine',
             'sentry.tracing.spans.db',
             'sentry.tracing.spans.elasticsearch',
