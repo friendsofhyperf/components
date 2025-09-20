@@ -132,6 +132,8 @@ class RpcAspect extends AbstractAspect
             if ($this->switcher->isTracingExtraTagEnable('rpc.result')) {
                 $span?->setData(['rpc.result' => $result]);
             }
+
+            return $result;
         } catch (Throwable $exception) {
             $span?->setStatus(SpanStatus::internalError())
                 ->setTags([
@@ -151,7 +153,5 @@ class RpcAspect extends AbstractAspect
             Context::destroy(static::SPAN);
             Context::destroy(static::DATA);
         }
-
-        return $result;
     }
 }
