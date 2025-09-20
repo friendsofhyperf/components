@@ -127,7 +127,7 @@ class EventHandleListener implements ListenerInterface
     {
         match ($event::class) {
             // Database
-            QueryExecuted::class => $this->handleDatabaseQuery($event),
+            QueryExecuted::class => $this->handleDbQueryExecuted($event),
 
             // Request
             RequestReceived::class, RpcRequestReceived::class => $this->handleRequestReceived($event),
@@ -160,7 +160,7 @@ class EventHandleListener implements ListenerInterface
         };
     }
 
-    private function handleDatabaseQuery(QueryExecuted $event): void
+    private function handleDbQueryExecuted(QueryExecuted $event): void
     {
         if (! $this->switcher->isTracingSpanEnable('sql_queries')) {
             return;

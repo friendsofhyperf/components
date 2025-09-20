@@ -107,7 +107,7 @@ class EventHandleListener implements ListenerInterface
             BootApplication::class => $this->handleBootApplication($event),
 
             // Database events
-            QueryExecuted::class => $this->handleDbQuery($event),
+            QueryExecuted::class => $this->handleDbQueryExecuted($event),
             TransactionBeginning::class,
             TransactionCommitted::class,
             TransactionRolledBack::class => $this->handleDbTransaction($event),
@@ -274,7 +274,7 @@ class EventHandleListener implements ListenerInterface
     /**
      * @param QueryExecuted $event
      */
-    protected function handleDbQuery(object $event): void
+    protected function handleDbQueryExecuted(object $event): void
     {
         if (! $this->switcher->isBreadcrumbEnable('sql_queries')) {
             return;
