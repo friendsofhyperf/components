@@ -42,7 +42,7 @@ use Throwable;
 
 class EventHandleListener implements ListenerInterface
 {
-    public const SETUP = 'sentry.context.setup';
+    public const HUB = 'sentry.context.hub';
 
     public function __construct(
         protected ContainerInterface $container,
@@ -170,7 +170,7 @@ class EventHandleListener implements ListenerInterface
 
     protected function setupSentrySdk(): void
     {
-        Context::getOrSet(static::SETUP, fn () => SentrySdk::init());
+        Context::getOrSet(static::HUB, fn () => SentrySdk::init());
     }
 
     protected function flushEvents(): void
