@@ -388,6 +388,7 @@ class EventHandleListener implements ListenerInterface
         }
 
         $this->captureException($event->getThrowable());
+        $this->flushEvents();
     }
 
     /**
