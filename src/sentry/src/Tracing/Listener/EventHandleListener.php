@@ -308,10 +308,12 @@ class EventHandleListener implements ListenerInterface
                     'exception.class' => $exception::class,
                     'exception.code' => $exception->getCode(),
                     'exception.message' => $exception->getMessage(),
-                ])
-                ->setData([
+                ]);
+            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
+                $transaction->setData([
                     'exception.stack_trace' => (string) $exception,
                 ]);
+            }
         }
     }
 
