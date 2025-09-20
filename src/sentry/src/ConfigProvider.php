@@ -52,7 +52,7 @@ class ConfigProvider
             ],
             'listeners' => [
                 Listener\EventHandleListener::class,
-                Crons\Listener\CronEventListener::class,
+                Crons\Listener\EventHandleListener::class,
                 Tracing\Listener\TracingAmqpListener::class,
                 Tracing\Listener\TracingAsyncQueueListener::class,
                 Tracing\Listener\TracingCommandListener::class,

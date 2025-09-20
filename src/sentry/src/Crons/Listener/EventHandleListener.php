@@ -21,7 +21,7 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\CheckInStatus;
 use Sentry\SentrySdk;
 
-class CronEventListener implements ListenerInterface
+class EventHandleListener implements ListenerInterface
 {
     public function __construct(
         protected ConfigInterface $config,
