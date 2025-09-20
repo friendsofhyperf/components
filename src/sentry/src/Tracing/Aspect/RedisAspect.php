@@ -49,7 +49,7 @@ class RedisAspect extends AbstractAspect
     {
         if (
             class_exists(CommandExecuted::class)
-            || ! $this->switcher->isTracingSpanEnable('redis')
+            || ! $this->switcher->isTracingSpanEnabled('redis')
         ) {
             return $proceedingJoinPoint->process();
         }
@@ -90,13 +90,11 @@ class RedisAspect extends AbstractAspect
         try {
             $result = $proceedingJoinPoint->process();
 
-            if (! $span) {
-                return $result;
+            if ($this->switcher->isTracingExtraTagEnabled('redis.result')) {
+                $span?->setData(['redis.result' => $result]);
             }
 
-            if ($this->switcher->isTracingExtraTagEnable('redis.result')) {
-                $span->setData(['redis.result' => $result]);
-            }
+            return $result;
         } catch (Throwable $e) {
             $span?->setStatus(SpanStatus::internalError())
                 ->setTags([
@@ -105,15 +103,13 @@ class RedisAspect extends AbstractAspect
                     'exception.message' => $e->getMessage(),
                     'exception.code' => (string) $e->getCode(),
                 ]);
-            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
-                $span->setData(['exception.stack_trace' => (string) $e]);
+            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+                $span?->setData(['exception.stack_trace' => (string) $e]);
             }
 
             throw $e;
         } finally {
             $span?->finish();
         }
-
-        return $result;
     }
 }

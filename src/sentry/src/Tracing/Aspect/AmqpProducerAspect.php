@@ -41,7 +41,7 @@ class AmqpProducerAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('amqp')) {
+        if (! $this->switcher->isTracingEnabled('amqp')) {
             return $proceedingJoinPoint->process();
         }
 

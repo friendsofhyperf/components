@@ -43,7 +43,7 @@ class DbAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnable('db')) {
+        if (! $this->switcher->isTracingSpanEnabled('db')) {
             return $proceedingJoinPoint->process();
         }
 
@@ -70,12 +70,6 @@ class DbAspect extends AbstractAspect
         $table = $sqlParse['table'];
         $operation = $sqlParse['operation'];
 
-        // rule: operation db.table
-        // $op = sprintf(
-        //     '%s%s',
-        //     $operation ? $operation . ' ' : '',
-        //     implode('.', array_filter([$database, $table]))
-        // );
         $span = $this->startSpan(
             op: 'db.sql.query',
             description: $sql,
@@ -95,18 +89,20 @@ class DbAspect extends AbstractAspect
             'db.pool.using' => $pool->getCurrentConnections(),
             // 'server.host' => '',
             // 'server.port' => '',
-            'db.sql.bindings' => $arguments['arguments']['bindings'] ?? [],
         ];
 
-        foreach ($arguments['arguments']['bindings'] as $key => $value) {
-            $data['db.parameter.' . $key] = $value;
+        if ($this->switcher->isTracingExtraTagEnabled('db.sql.bindings', true)) {
+            $data['db.sql.bindings'] = $arguments['arguments']['bindings'] ?? [];
+            foreach ($arguments['arguments']['bindings'] as $key => $value) {
+                $data['db.parameter.' . $key] = $value;
+            }
         }
 
         $span?->setData($data);
 
         try {
             $result = $proceedingJoinPoint->process();
-            if ($this->switcher->isTracingExtraTagEnable('db.result')) {
+            if ($this->switcher->isTracingExtraTagEnabled('db.result')) {
                 $span?->setData([
                     'db.result' => json_encode($result, JSON_UNESCAPED_UNICODE),
                 ]);
@@ -119,7 +115,7 @@ class DbAspect extends AbstractAspect
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => (string) $exception->getCode(),
                 ]);
-            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $span?->setData([
                     'exception.stack_trace' => (string) $exception,
                 ]);

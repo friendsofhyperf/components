@@ -42,7 +42,7 @@ class RedisAspect extends AbstractAspect
         return tap($proceedingJoinPoint->process(), function ($result) use ($arguments, $startTime) {
             if (
                 class_exists(CommandExecuted::class)
-                || ! $this->switcher->isBreadcrumbEnable('redis')
+                || ! $this->switcher->isBreadcrumbEnabled('redis')
             ) {
                 return;
             }

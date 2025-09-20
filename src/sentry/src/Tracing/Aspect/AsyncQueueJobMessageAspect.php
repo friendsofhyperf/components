@@ -46,7 +46,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('async_queue')) {
+        if (! $this->switcher->isTracingEnabled('async_queue')) {
             return $proceedingJoinPoint->process();
         }
 

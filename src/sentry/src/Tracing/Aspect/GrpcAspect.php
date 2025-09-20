@@ -36,25 +36,36 @@ class GrpcAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnable('grpc')) {
+        if (! $this->switcher->isTracingSpanEnabled('grpc')) {
             return $proceedingJoinPoint->process();
         }
 
+        $method = $proceedingJoinPoint->arguments['keys']['method'];
         $options = $proceedingJoinPoint->arguments['keys']['options'];
         $data = [
-            'grpc.method' => $method = $proceedingJoinPoint->arguments['keys']['method'],
+            'grpc.method' => $method,
             'grpc.options' => $options,
             'coroutine.id' => Coroutine::id(),
         ];
 
         $parent = SentrySdk::getCurrentHub()->getSpan();
-        $options['headers'] = $options['headers'] ?? [] + [
+
+        // No parent span or not sampled, skip tracing
+        if (! $parent || ! $parent->getSampled()) {
+            return $proceedingJoinPoint->process();
+        }
+
+        // Inject sentry-trace header for distributed tracing
+        $options['headers'] = ($options['headers'] ?? []) + [
             'sentry-trace' => $parent->toTraceparent(),
             'baggage' => $parent->toBaggage(),
             'traceparent' => $parent->toW3CTraceparent(),
         ];
+
+        // Inject tracing headers
         $proceedingJoinPoint->arguments['keys']['options'] = $options;
 
+        // Start gRPC client span
         $span = $this->startSpan(
             op: 'grpc.client',
             description: $method,
@@ -64,22 +75,22 @@ class GrpcAspect extends AbstractAspect
         try {
             $result = $proceedingJoinPoint->process();
 
-            if (! $span) {
-                return $result;
-            }
-
             [$message, $code, $response] = $result;
 
             if ($response instanceof Http2Response) {
-                $span->setData([
+                $span?->setData([
                     'response.status' => $code,
                     'response.reason' => $message,
                     'response.headers' => $response->headers,
                 ]);
-                $this->switcher->isTracingExtraTagEnable('response.body') && $span->setData([
-                    'response.body' => $response->data,
-                ]);
+                if ($this->switcher->isTracingExtraTagEnabled('response.body')) {
+                    $span?->setData([
+                        'response.body' => $response->data,
+                    ]);
+                }
             }
+
+            return $result;
         } catch (Throwable $exception) {
             $span?->setStatus(SpanStatus::internalError())
                 ->setTags([
@@ -88,7 +99,7 @@ class GrpcAspect extends AbstractAspect
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => (string) $exception->getCode(),
                 ]);
-            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $span?->setData([
                     'exception.stack_trace' => (string) $exception,
                 ]);
@@ -98,7 +109,5 @@ class GrpcAspect extends AbstractAspect
         } finally {
             $span?->finish();
         }
-
-        return $result;
     }
 }
