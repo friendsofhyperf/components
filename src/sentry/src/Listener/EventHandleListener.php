@@ -20,19 +20,14 @@ use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Crontab\Event as CrontabEvent;
-use Hyperf\Database\Events\QueryExecuted;
-use Hyperf\Database\Events\TransactionBeginning;
-use Hyperf\Database\Events\TransactionCommitted;
-use Hyperf\Database\Events\TransactionRolledBack;
+use Hyperf\Database\Events as DbEvent;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
-use Hyperf\HttpServer\Event\RequestReceived;
-use Hyperf\HttpServer\Event\RequestTerminated;
+use Hyperf\HttpServer\Event as HttpEvent;
 use Hyperf\HttpServer\Server as HttpServer;
 use Hyperf\Kafka\Event as KafkaEvent;
 use Hyperf\Redis\Event\CommandExecuted;
-use Hyperf\RpcServer\Event\RequestReceived as RpcRequestReceived;
-use Hyperf\RpcServer\Event\RequestTerminated as RpcRequestTerminated;
+use Hyperf\RpcServer\Event as RpcEvent;
 use Hyperf\RpcServer\Server as RpcServer;
 use Hyperf\Server\Event;
 use Psr\Container\ContainerInterface;
@@ -58,19 +53,19 @@ class EventHandleListener implements ListenerInterface
             BootApplication::class,
 
             // Database events
-            QueryExecuted::class,
-            TransactionBeginning::class,
-            TransactionCommitted::class,
-            TransactionRolledBack::class,
+            DbEvent\QueryExecuted::class,
+            DbEvent\TransactionBeginning::class,
+            DbEvent\TransactionCommitted::class,
+            DbEvent\TransactionRolledBack::class,
 
             // Redis events
             CommandExecuted::class,
 
             // Request events
-            RequestReceived::class,
-            RequestTerminated::class,
-            RpcRequestReceived::class,
-            RpcRequestTerminated::class,
+            HttpEvent\RequestReceived::class,
+            HttpEvent\RequestTerminated::class,
+            RpcEvent\RequestReceived::class,
+            RpcEvent\RequestTerminated::class,
 
             // Command events
             CommandEvent\BeforeHandle::class,
@@ -107,19 +102,19 @@ class EventHandleListener implements ListenerInterface
             BootApplication::class => $this->handleBootApplication($event),
 
             // Database events
-            QueryExecuted::class => $this->handleDbQueryExecuted($event),
-            TransactionBeginning::class,
-            TransactionCommitted::class,
-            TransactionRolledBack::class => $this->handleDbTransaction($event),
+            DbEvent\QueryExecuted::class => $this->handleDbQueryExecuted($event),
+            DbEvent\TransactionBeginning::class,
+            DbEvent\TransactionCommitted::class,
+            DbEvent\TransactionRolledBack::class => $this->handleDbTransaction($event),
 
             // Redis events
             CommandExecuted::class => $this->handleRedisCommandExecuted($event),
 
             // Request events
-            RequestReceived::class,
-            RpcRequestReceived::class => $this->handleRequestReceived($event),
-            RequestTerminated::class,
-            RpcRequestTerminated::class => $this->handleRequestTerminated($event),
+            HttpEvent\RequestReceived::class,
+            RpcEvent\RequestReceived::class => $this->handleRequestReceived($event),
+            HttpEvent\RequestTerminated::class,
+            RpcEvent\RequestTerminated::class => $this->handleRequestTerminated($event),
 
             // Command events
             CommandEvent\BeforeHandle::class => $this->handleCommandStarting($event),
@@ -272,7 +267,7 @@ class EventHandleListener implements ListenerInterface
     }
 
     /**
-     * @param QueryExecuted $event
+     * @param DbEvent\QueryExecuted $event
      */
     protected function handleDbQueryExecuted(object $event): void
     {
@@ -300,7 +295,7 @@ class EventHandleListener implements ListenerInterface
     }
 
     /**
-     * @param TransactionBeginning|TransactionCommitted|TransactionRolledBack $event
+     * @param DbEvent\TransactionBeginning|DbEvent\TransactionCommitted|DbEvent\TransactionRolledBack $event
      */
     protected function handleDbTransaction(object $event): void
     {
@@ -342,7 +337,7 @@ class EventHandleListener implements ListenerInterface
     }
 
     /**
-     * @param RequestReceived|RpcRequestReceived $event
+     * @param HttpEvent\RequestReceived|RpcEvent\RequestReceived $event
      */
     protected function handleRequestReceived(object $event): void
     {
@@ -354,7 +349,7 @@ class EventHandleListener implements ListenerInterface
     }
 
     /**
-     * @param RequestTerminated|RpcRequestTerminated $event
+     * @param HttpEvent\RequestTerminated|RpcEvent\RequestTerminated $event
      */
     protected function handleRequestTerminated(object $event): void
     {

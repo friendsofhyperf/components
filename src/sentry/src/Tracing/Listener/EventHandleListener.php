@@ -18,36 +18,24 @@ use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
 use FriendsOfHyperf\Support\RedisCommand;
-use Hyperf\Amqp\Event\AfterConsume as AmqpAfterConsume;
-use Hyperf\Amqp\Event\BeforeConsume as AmqpBeforeConsume;
-use Hyperf\Amqp\Event\FailToConsume as AmqpFailToConsume;
+use Hyperf\Amqp\Event as AmqpEvent;
 use Hyperf\Amqp\Message\ConsumerMessage;
-use Hyperf\AsyncQueue\Event\AfterHandle;
-use Hyperf\AsyncQueue\Event\BeforeHandle as AsyncQueueBeforeHandle;
-use Hyperf\AsyncQueue\Event\FailedHandle;
-use Hyperf\AsyncQueue\Event\RetryHandle;
-use Hyperf\Command\Event\AfterExecute;
-use Hyperf\Command\Event\BeforeHandle as CommandBeforeHandle;
+use Hyperf\AsyncQueue\Event as AsyncQueueEvent;
+use Hyperf\Command\Event as CommandEvent;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coroutine\Coroutine;
-use Hyperf\Crontab\Event\AfterExecute as CrontabAfterExecute;
-use Hyperf\Crontab\Event\BeforeExecute;
-use Hyperf\Crontab\Event\FailToExecute;
+use Hyperf\Crontab\Event as CrontabEvent;
 use Hyperf\Database\Events\QueryExecuted;
 use Hyperf\DbConnection\Pool\PoolFactory;
 use Hyperf\Event\Contract\ListenerInterface;
-use Hyperf\HttpServer\Event\RequestHandled;
-use Hyperf\HttpServer\Event\RequestReceived;
+use Hyperf\HttpServer\Event as HttpEvent;
 use Hyperf\HttpServer\Router\Dispatched;
-use Hyperf\Kafka\Event\AfterConsume as KafkaAfterConsume;
-use Hyperf\Kafka\Event\BeforeConsume as KafkaBeforeConsume;
-use Hyperf\Kafka\Event\FailToConsume as KafkaFailToConsume;
-use Hyperf\Redis\Event\CommandExecuted;
+use Hyperf\Kafka\Event as KafkaEvent;
+use Hyperf\Redis\Event as RedisEvent;
 use Hyperf\Redis\Pool\PoolFactory as RedisPoolFactory;
 use Hyperf\Rpc\Context as RpcContext;
-use Hyperf\RpcServer\Event\RequestHandled as RpcRequestHandled;
-use Hyperf\RpcServer\Event\RequestReceived as RpcRequestReceived;
+use Hyperf\RpcServer\Event as RpcEvent;
 use Hyperf\Stringable\Str;
 use longlang\phpkafka\Consumer\ConsumeMessage;
 use PhpAmqpLib\Message\AMQPMessage;
@@ -88,38 +76,38 @@ class EventHandleListener implements ListenerInterface
             QueryExecuted::class,
 
             // Request events
-            RequestReceived::class,
-            RequestHandled::class,
-            RpcRequestReceived::class,
-            RpcRequestHandled::class,
+            HttpEvent\RequestReceived::class,
+            HttpEvent\RequestHandled::class,
+            RpcEvent\RequestReceived::class,
+            RpcEvent\RequestHandled::class,
 
             // Command events
-            CommandBeforeHandle::class,
-            AfterExecute::class,
+            CommandEvent\BeforeHandle::class,
+            CommandEvent\AfterExecute::class,
 
             // Redis events
-            CommandExecuted::class,
+            RedisEvent\CommandExecuted::class,
 
             // Crontab events
-            BeforeExecute::class,
-            FailToExecute::class,
-            CrontabAfterExecute::class,
+            CrontabEvent\BeforeExecute::class,
+            CrontabEvent\FailToExecute::class,
+            CrontabEvent\AfterExecute::class,
 
             // AMQP events
-            AmqpBeforeConsume::class,
-            AmqpAfterConsume::class,
-            AmqpFailToConsume::class,
+            AmqpEvent\BeforeConsume::class,
+            AmqpEvent\AfterConsume::class,
+            AmqpEvent\FailToConsume::class,
 
             // Kafka events
-            KafkaBeforeConsume::class,
-            KafkaAfterConsume::class,
-            KafkaFailToConsume::class,
+            KafkaEvent\BeforeConsume::class,
+            KafkaEvent\AfterConsume::class,
+            KafkaEvent\FailToConsume::class,
 
             // AsyncQueue events
-            AsyncQueueBeforeHandle::class,
-            AfterHandle::class,
-            RetryHandle::class,
-            FailedHandle::class,
+            AsyncQueueEvent\BeforeHandle::class,
+            AsyncQueueEvent\AfterHandle::class,
+            AsyncQueueEvent\RetryHandle::class,
+            AsyncQueueEvent\FailedHandle::class,
         ];
     }
 
@@ -130,31 +118,37 @@ class EventHandleListener implements ListenerInterface
             QueryExecuted::class => $this->handleDbQueryExecuted($event),
 
             // Request
-            RequestReceived::class, RpcRequestReceived::class => $this->handleRequestReceived($event),
-            RequestHandled::class, RpcRequestHandled::class => $this->handleRequestHandled($event),
+            HttpEvent\RequestReceived::class,
+            RpcEvent\RequestReceived::class => $this->handleRequestReceived($event),
+            HttpEvent\RequestHandled::class,
+            RpcEvent\RequestHandled::class => $this->handleRequestHandled($event),
 
             // Command
-            CommandBeforeHandle::class => $this->handleCommandStarting($event),
-            AfterExecute::class => $this->handleCommandFinished($event),
+            CommandEvent\BeforeHandle::class => $this->handleCommandStarting($event),
+            CommandEvent\AfterExecute::class => $this->handleCommandFinished($event),
 
             // Redis
-            CommandExecuted::class => $this->handleRedisCommandExecuted($event),
+            RedisEvent\CommandExecuted::class => $this->handleRedisCommandExecuted($event),
 
             // Crontab
-            BeforeExecute::class => $this->handleCrontabTaskStarting($event),
-            FailToExecute::class, CrontabAfterExecute::class => $this->handleCrontabTaskFinished($event),
+            CrontabEvent\BeforeExecute::class => $this->handleCrontabTaskStarting($event),
+            CrontabEvent\FailToExecute::class,
+            CrontabEvent\AfterExecute::class => $this->handleCrontabTaskFinished($event),
 
             // AMQP
-            AmqpBeforeConsume::class => $this->handleAmqpMessageProcessing($event),
-            AmqpAfterConsume::class, AmqpFailToConsume::class => $this->handleAmqpMessageProcessed($event),
+            AmqpEvent\BeforeConsume::class => $this->handleAmqpMessageProcessing($event),
+            AmqpEvent\AfterConsume::class, AmqpEvent\FailToConsume::class => $this->handleAmqpMessageProcessed($event),
 
             // Kafka
-            KafkaBeforeConsume::class => $this->handleKafkaMessageProcessing($event),
-            KafkaAfterConsume::class, KafkaFailToConsume::class => $this->handleKafkaMessageProcessed($event),
+            KafkaEvent\BeforeConsume::class => $this->handleKafkaMessageProcessing($event),
+            KafkaEvent\AfterConsume::class,
+            KafkaEvent\FailToConsume::class => $this->handleKafkaMessageProcessed($event),
 
             // AsyncQueue
-            AsyncQueueBeforeHandle::class => $this->handleAsyncQueueJobProcessing($event),
-            RetryHandle::class, FailedHandle::class, AfterHandle::class => $this->handleAsyncQueueJobProcessed($event),
+            AsyncQueueEvent\BeforeHandle::class => $this->handleAsyncQueueJobProcessing($event),
+            AsyncQueueEvent\RetryHandle::class,
+            AsyncQueueEvent\FailedHandle::class,
+            AsyncQueueEvent\AfterHandle::class => $this->handleAsyncQueueJobProcessed($event),
 
             default => null,
         };
@@ -210,7 +204,7 @@ class EventHandleListener implements ListenerInterface
             ->finish($startTimestamp + $event->time / 1000);
     }
 
-    private function handleRequestReceived(RequestReceived|RpcRequestReceived $event): void
+    private function handleRequestReceived(HttpEvent\RequestReceived|RpcEvent\RequestReceived $event): void
     {
         if (! $this->switcher->isTracingEnable('request')) {
             return;
@@ -281,7 +275,7 @@ class EventHandleListener implements ListenerInterface
         });
     }
 
-    private function handleRequestHandled(RequestHandled|RpcRequestHandled $event): void
+    private function handleRequestHandled(HttpEvent\RequestHandled|RpcEvent\RequestHandled $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
@@ -293,8 +287,10 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        if ($event instanceof RpcRequestHandled) {
-            $this->container->has(RpcContext::class) && $this->container->get(RpcContext::class)->set('sentry-trace-id', $traceId);
+        if ($event instanceof RpcEvent\RequestHandled) {
+            if ($this->container->has(RpcContext::class)) {
+                $this->container->get(RpcContext::class)->set('sentry-trace-id', $traceId);
+            }
         } elseif ($event->response instanceof ResponsePlusInterface) {
             $event->response->setHeader('sentry-trace-id', $traceId);
         }
@@ -317,7 +313,7 @@ class EventHandleListener implements ListenerInterface
         }
     }
 
-    private function handleCommandStarting(CommandBeforeHandle $event): void
+    private function handleCommandStarting(CommandEvent\BeforeHandle $event): void
     {
         if (
             ! $this->switcher->isTracingEnable('command')
@@ -337,7 +333,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleCommandFinished(AfterExecute $event): void
+    private function handleCommandFinished(CommandEvent\AfterExecute $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
@@ -379,7 +375,7 @@ class EventHandleListener implements ListenerInterface
         $transaction->finish(microtime(true));
     }
 
-    private function handleRedisCommandExecuted(CommandExecuted $event): void
+    private function handleRedisCommandExecuted(RedisEvent\CommandExecuted $event): void
     {
         if (! $this->switcher->isTracingSpanEnable('redis')) {
             return;
@@ -434,7 +430,7 @@ class EventHandleListener implements ListenerInterface
         $span->finish();
     }
 
-    private function handleCrontabTaskStarting(BeforeExecute $event): void
+    private function handleCrontabTaskStarting(CrontabEvent\BeforeExecute $event): void
     {
         if (! $this->switcher->isTracingEnable('crontab')) {
             return;
@@ -451,7 +447,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleCrontabTaskFinished(FailToExecute|CrontabAfterExecute $event): void
+    private function handleCrontabTaskFinished(CrontabEvent\FailToExecute|CrontabEvent\AfterExecute $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
@@ -485,7 +481,7 @@ class EventHandleListener implements ListenerInterface
         $transaction->finish(microtime(true));
     }
 
-    private function handleAmqpMessageProcessing(AmqpBeforeConsume $event): void
+    private function handleAmqpMessageProcessing(AmqpEvent\BeforeConsume $event): void
     {
         if (! $this->switcher->isTracingEnable('amqp')) {
             return;
@@ -516,7 +512,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleAmqpMessageProcessed(AmqpAfterConsume|AmqpFailToConsume $event): void
+    private function handleAmqpMessageProcessed(AmqpEvent\AfterConsume|AmqpEvent\FailToConsume $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
@@ -542,7 +538,7 @@ class EventHandleListener implements ListenerInterface
             'messaging.amqp.message.exchange' => $message->getExchange(),
             'messaging.amqp.message.queue' => $message->getQueue(),
             'messaging.amqp.message.pool_name' => $message->getPoolName(),
-            'messaging.amqp.message.result' => $event instanceof AmqpAfterConsume ? $event->getResult()->value : 'fail',
+            'messaging.amqp.message.result' => $event instanceof AmqpEvent\AfterConsume ? $event->getResult()->value : 'fail',
         ]);
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
@@ -563,7 +559,7 @@ class EventHandleListener implements ListenerInterface
         $transaction->finish(microtime(true));
     }
 
-    private function handleKafkaMessageProcessing(KafkaBeforeConsume $event): void
+    private function handleKafkaMessageProcessing(KafkaEvent\BeforeConsume $event): void
     {
         if (! $this->switcher->isTracingEnable('kafka')) {
             return;
@@ -594,7 +590,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleKafkaMessageProcessed(KafkaAfterConsume|KafkaFailToConsume $event): void
+    private function handleKafkaMessageProcessed(KafkaEvent\AfterConsume|KafkaEvent\FailToConsume $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
@@ -635,7 +631,7 @@ class EventHandleListener implements ListenerInterface
         $transaction->finish(microtime(true));
     }
 
-    private function handleAsyncQueueJobProcessing(AsyncQueueBeforeHandle $event): void
+    private function handleAsyncQueueJobProcessing(AsyncQueueEvent\BeforeHandle $event): void
     {
         if (! $this->switcher->isTracingEnable('async_queue')) {
             return;
@@ -656,7 +652,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleAsyncQueueJobProcessed(AfterHandle|RetryHandle|FailedHandle $event): void
+    private function handleAsyncQueueJobProcessed(AsyncQueueEvent\AfterHandle|AsyncQueueEvent\RetryHandle|AsyncQueueEvent\FailedHandle $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
