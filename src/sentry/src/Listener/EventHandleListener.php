@@ -31,7 +31,6 @@ use Hyperf\RpcServer\Event as RpcEvent;
 use Hyperf\RpcServer\Server as RpcServer;
 use Hyperf\Server\Event;
 use Psr\Container\ContainerInterface;
-use Redis;
 use Sentry\Breadcrumb;
 use Sentry\SentrySdk;
 use Throwable;
