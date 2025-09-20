@@ -38,8 +38,9 @@ class TraceAnnotationAspect extends AbstractAspect
         $metadata = $proceedingJoinPoint->getAnnotationMetadata();
         /** @var null|Trace $annotation */
         $annotation = $metadata->method[Trace::class] ?? null;
+        $parent = SentrySdk::getCurrentHub()->getSpan();
 
-        if (! $annotation || ! $parent = SentrySdk::getCurrentHub()->getSpan()) {
+        if (! $annotation || ! $parent || ! $parent->getSampled()) {
             return $proceedingJoinPoint->process();
         }
 

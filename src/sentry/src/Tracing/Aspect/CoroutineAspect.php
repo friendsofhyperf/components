@@ -39,7 +39,10 @@ class CoroutineAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnable('coroutine') || Switcher::isDisableCoroutineTracing()) {
+        if (
+            ! $this->switcher->isTracingSpanEnable('coroutine')
+            || Switcher::isDisableCoroutineTracing()
+        ) {
             return $proceedingJoinPoint->process();
         }
 
@@ -60,9 +63,7 @@ class CoroutineAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $parent->setData([
-            'coroutine.id' => Co::id(),
-        ]);
+        $parent->setData(['coroutine.id' => Co::id()]);
 
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent, $callingOnFunction) {
             $transaction = $this->startCoroutineTransaction(
@@ -71,9 +72,7 @@ class CoroutineAspect extends AbstractAspect
                 op: 'coroutine.execute',
                 description: $callingOnFunction,
                 origin: 'auto.coroutine',
-            )->setData([
-                'coroutine.id' => Co::id(),
-            ]);
+            )->setData(['coroutine.id' => Co::id()]);
 
             defer(function () use ($transaction) {
                 SentrySdk::getCurrentHub()->setSpan($transaction);

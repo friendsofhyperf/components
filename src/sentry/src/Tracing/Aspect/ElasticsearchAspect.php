@@ -62,7 +62,6 @@ class ElasticsearchAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        // TODO 规则: operate dbName.tableName
         $span = $this->startSpan(
             op: 'db.elasticsearch',
             description: sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
