@@ -351,8 +351,7 @@ class EventHandleListener implements ListenerInterface
         $transaction->setData([
             'command.arguments' => (fn () => $this->input->getArguments())->call($command),
             'command.options' => (fn () => $this->input->getOptions())->call($command),
-        ]);
-        $transaction->setTags([
+        ])->setTags([
             'command.exit_code' => $exitCode,
         ]);
 
