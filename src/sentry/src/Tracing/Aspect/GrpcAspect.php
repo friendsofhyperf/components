@@ -56,7 +56,7 @@ class GrpcAspect extends AbstractAspect
         }
 
         // Inject sentry-trace header for distributed tracing
-        $options['headers'] = $options['headers'] ?? [] + [
+        $options['headers'] = ($options['headers'] ?? []) + [
             'sentry-trace' => $parent->toTraceparent(),
             'baggage' => $parent->toBaggage(),
             'traceparent' => $parent->toW3CTraceparent(),

@@ -224,7 +224,7 @@ class EventHandleListener implements ListenerInterface
             op: 'db.transaction',
             description: 'BEGIN',
             origin: 'auto.db'
-        )->setData([
+        )?->setData([
             'coroutine.id' => Coroutine::id(),
             'db.system' => $event->connection->getDriverName(),
             'db.name' => $event->connection->getDatabaseName(),
