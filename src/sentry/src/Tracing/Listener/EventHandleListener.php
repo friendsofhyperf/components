@@ -268,10 +268,13 @@ class EventHandleListener implements ListenerInterface
         );
 
         defer(function () use ($transaction, $span) {
+            // Make sure the span is finished after the request is handled
             $span?->finish();
 
+            // Make sure the transaction is finished after the request is handled
             SentrySdk::getCurrentHub()->setSpan($transaction);
 
+            // Finish transaction
             $transaction->finish();
         });
     }
@@ -373,7 +376,7 @@ class EventHandleListener implements ListenerInterface
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
 
-        $transaction->finish(microtime(true));
+        $transaction->finish();
     }
 
     private function handleRedisCommandExecuted(RedisEvent\CommandExecuted $event): void
@@ -479,7 +482,7 @@ class EventHandleListener implements ListenerInterface
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
 
-        $transaction->finish(microtime(true));
+        $transaction->finish();
     }
 
     private function handleAmqpMessageProcessing(AmqpEvent\BeforeConsume $event): void
@@ -557,7 +560,7 @@ class EventHandleListener implements ListenerInterface
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
 
-        $transaction->finish(microtime(true));
+        $transaction->finish();
     }
 
     private function handleKafkaMessageProcessing(KafkaEvent\BeforeConsume $event): void
@@ -629,7 +632,7 @@ class EventHandleListener implements ListenerInterface
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
 
-        $transaction->finish(microtime(true));
+        $transaction->finish();
     }
 
     private function handleAsyncQueueJobProcessing(AsyncQueueEvent\BeforeHandle $event): void
@@ -688,7 +691,7 @@ class EventHandleListener implements ListenerInterface
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
 
-        $transaction->finish(microtime(true));
+        $transaction->finish();
     }
 
     private function parseRoute(Dispatched $dispatched): array

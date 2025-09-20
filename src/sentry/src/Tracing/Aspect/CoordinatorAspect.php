@@ -64,7 +64,7 @@ class CoordinatorAspect extends AbstractAspect
             }
             throw $exception;
         } finally {
-            $span?->finish(microtime(true));
+            $span?->finish();
         }
     }
 }

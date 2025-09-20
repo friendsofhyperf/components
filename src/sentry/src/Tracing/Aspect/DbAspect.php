@@ -70,12 +70,6 @@ class DbAspect extends AbstractAspect
         $table = $sqlParse['table'];
         $operation = $sqlParse['operation'];
 
-        // rule: operation db.table
-        // $op = sprintf(
-        //     '%s%s',
-        //     $operation ? $operation . ' ' : '',
-        //     implode('.', array_filter([$database, $table]))
-        // );
         $span = $this->startSpan(
             op: 'db.sql.query',
             description: $sql,

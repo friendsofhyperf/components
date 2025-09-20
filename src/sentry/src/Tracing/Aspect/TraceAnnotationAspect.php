@@ -69,6 +69,8 @@ class TraceAnnotationAspect extends AbstractAspect
             if ($this->switcher->isTracingExtraTagEnable('annotation.result')) {
                 $span?->setData(['annotation.result' => $result]);
             }
+
+            return $result;
         } catch (Throwable $exception) {
             $span?->setStatus(SpanStatus::internalError())
                 ->setTags([
@@ -82,12 +84,10 @@ class TraceAnnotationAspect extends AbstractAspect
             }
             throw $exception;
         } finally {
-            $span?->finish(microtime(true));
+            $span?->finish();
 
-            // Reset root span
+            // Restore parent span
             SentrySdk::getCurrentHub()->setSpan($parent);
         }
-
-        return $result;
     }
 }
