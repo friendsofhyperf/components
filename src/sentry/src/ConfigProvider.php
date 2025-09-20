@@ -53,14 +53,7 @@ class ConfigProvider
             'listeners' => [
                 Listener\EventHandleListener::class,
                 Crons\Listener\EventHandleListener::class,
-                Tracing\Listener\TracingAmqpListener::class,
-                Tracing\Listener\TracingAsyncQueueListener::class,
-                Tracing\Listener\TracingCommandListener::class,
-                Tracing\Listener\TracingCrontabListener::class,
-                Tracing\Listener\TracingDbQueryListener::class,
-                Tracing\Listener\TracingKafkaListener::class,
-                Tracing\Listener\TracingRedisListener::class,
-                Tracing\Listener\TracingRequestListener::class,
+                Tracing\Listener\EventHandleListener::class,
             ],
             'annotations' => [
                 'scan' => [
