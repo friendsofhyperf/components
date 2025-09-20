@@ -88,7 +88,7 @@ class CoroutineAspect extends AbstractAspect
                         'error' => 'true',
                         'exception.class' => $exception::class,
                         'exception.message' => $exception->getMessage(),
-                        'exception.code' => $exception->getCode(),
+                        'exception.code' => (string) $exception->getCode(),
                     ]);
                 if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
                     $transaction->setData([

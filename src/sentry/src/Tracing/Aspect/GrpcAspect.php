@@ -87,7 +87,7 @@ class GrpcAspect extends AbstractAspect
                     'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
-                    'exception.code' => $exception->getCode(),
+                    'exception.code' => (string) $exception->getCode(),
                 ]);
             $this->switcher->isTracingExtraTagEnable('exception.stack_trace') && $span?->setData([
                 'exception.stack_trace' => (string) $exception,

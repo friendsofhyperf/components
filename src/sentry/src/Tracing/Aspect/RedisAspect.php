@@ -109,7 +109,7 @@ class RedisAspect extends AbstractAspect
                     'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.message' => $exception->getMessage(),
-                    'exception.code' => $exception->getCode(),
+                    'exception.code' => (string) $exception->getCode(),
                 ]);
 
             throw $exception;
