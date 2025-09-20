@@ -43,7 +43,8 @@ class EventHandleListener implements ListenerInterface
     public function __construct(
         protected ContainerInterface $container,
         protected Switcher $switcher,
-        protected ConfigInterface $config
+        protected ConfigInterface $config,
+        protected StdoutLoggerInterface $logger
     ) {
     }
 
@@ -158,7 +159,7 @@ class EventHandleListener implements ListenerInterface
         try {
             $hub->captureException($throwable);
         } catch (Throwable $e) {
-            $this->container->get(StdoutLoggerInterface::class)->error((string) $e);
+            $this->logger->error((string) $e);
         } finally {
             $hub->getClient()?->flush();
         }
@@ -174,7 +175,7 @@ class EventHandleListener implements ListenerInterface
         try {
             Integration::flushEvents();
         } catch (Throwable $e) {
-            $this->container->get(StdoutLoggerInterface::class)->error((string) $e);
+            $this->logger->error((string) $e);
         }
     }
 
