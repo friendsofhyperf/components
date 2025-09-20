@@ -26,11 +26,12 @@ use Hyperf\Framework\Event\BootApplication;
 use Hyperf\HttpServer\Event as HttpEvent;
 use Hyperf\HttpServer\Server as HttpServer;
 use Hyperf\Kafka\Event as KafkaEvent;
-use Hyperf\Redis\Event\CommandExecuted;
+use Hyperf\Redis\Event as RedisEvent;
 use Hyperf\RpcServer\Event as RpcEvent;
 use Hyperf\RpcServer\Server as RpcServer;
 use Hyperf\Server\Event;
 use Psr\Container\ContainerInterface;
+use Redis;
 use Sentry\Breadcrumb;
 use Sentry\SentrySdk;
 use Throwable;
@@ -59,7 +60,7 @@ class EventHandleListener implements ListenerInterface
             DbEvent\TransactionRolledBack::class,
 
             // Redis events
-            CommandExecuted::class,
+            RedisEvent\CommandExecuted::class,
 
             // Request events
             HttpEvent\RequestReceived::class,
@@ -108,7 +109,7 @@ class EventHandleListener implements ListenerInterface
             DbEvent\TransactionRolledBack::class => $this->handleDbTransaction($event),
 
             // Redis events
-            CommandExecuted::class => $this->handleRedisCommandExecuted($event),
+            RedisEvent\CommandExecuted::class => $this->handleRedisCommandExecuted($event),
 
             // Request events
             HttpEvent\RequestReceived::class,
@@ -315,7 +316,7 @@ class EventHandleListener implements ListenerInterface
     }
 
     /**
-     * @param CommandExecuted $event
+     * @param RedisEvent\CommandExecuted $event
      */
     protected function handleRedisCommandExecuted(object $event): void
     {

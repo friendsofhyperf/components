@@ -137,7 +137,8 @@ class EventHandleListener implements ListenerInterface
 
             // AMQP
             AmqpEvent\BeforeConsume::class => $this->handleAmqpMessageProcessing($event),
-            AmqpEvent\AfterConsume::class, AmqpEvent\FailToConsume::class => $this->handleAmqpMessageProcessed($event),
+            AmqpEvent\AfterConsume::class,
+            AmqpEvent\FailToConsume::class => $this->handleAmqpMessageProcessed($event),
 
             // Kafka
             KafkaEvent\BeforeConsume::class => $this->handleKafkaMessageProcessing($event),
