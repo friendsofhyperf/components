@@ -348,30 +348,32 @@ class EventHandleListener implements ListenerInterface
         $command = $event->getCommand();
 
         $exitCode = (fn () => $this->exitCode ?? SymfonyCommand::SUCCESS)->call($command);
-        $data = [
+        $transaction->setData([
             'command.arguments' => (fn () => $this->input->getArguments())->call($command),
             'command.options' => (fn () => $this->input->getOptions())->call($command),
-        ];
-        $tags = [
+        ]);
+        $transaction->setTags([
             'command.exit_code' => $exitCode,
-        ];
+        ]);
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
-            $transaction->setStatus(SpanStatus::internalError());
-            $tags = array_merge($tags, [
-                'error' => true,
-                'exception.class' => $exception::class,
-                'exception.message' => $exception->getMessage(),
-                'exception.code' => $exception->getCode(),
-            ]);
+            $transaction->setStatus(SpanStatus::internalError())
+                ->setTags([
+                    'error' => true,
+                    'exception.class' => $exception::class,
+                    'exception.message' => $exception->getMessage(),
+                    'exception.code' => $exception->getCode(),
+                ]);
             if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
-                $data['exception.stack_trace'] = (string) $exception;
+                $transaction->setData([
+                    'exception.stack_trace' => (string) $exception,
+                ]);
             }
         }
 
-        $transaction->setStatus($exitCode == SymfonyCommand::SUCCESS ? SpanStatus::ok() : SpanStatus::internalError())
-            ->setData($data)
-            ->setTags($tags);
+        $transaction->setStatus(
+            $exitCode == SymfonyCommand::SUCCESS ? SpanStatus::ok() : SpanStatus::internalError()
+        );
 
         SentrySdk::getCurrentHub()->setSpan($transaction);
 
