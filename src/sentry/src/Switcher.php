@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Sentry\SentrySdk;
-use Throwable;
 
 class Switcher
 {
@@ -22,53 +21,40 @@ class Switcher
     {
     }
 
-    public function isEnable(string $key): bool
+    public function isEnabled(string $key, bool $default = true): bool
     {
-        return (bool) $this->config->get('sentry.enable.' . $key, true);
+        return (bool) $this->config->get('sentry.enable.' . $key, $default);
     }
 
-    public function isBreadcrumbEnable(string $key): bool
+    public function isBreadcrumbEnabled(string $key, bool $default = true): bool
     {
-        return (bool) $this->config->get('sentry.breadcrumbs.' . $key, true);
+        return (bool) $this->config->get('sentry.breadcrumbs.' . $key, $default);
     }
 
-    public function isTracingEnable(string $key): bool
+    public function isTracingEnabled(string $key, bool $default = true): bool
     {
         if (! $this->config->get('sentry.enable_tracing', true)) {
             return false;
         }
 
-        return (bool) $this->config->get('sentry.tracing.enable.' . $key, true);
+        return (bool) $this->config->get('sentry.tracing.enable.' . $key, $default);
     }
 
-    public function isTracingSpanEnable(string $key): bool
+    public function isTracingSpanEnabled(string $key, bool $default = true): bool
     {
         if (! SentrySdk::getCurrentHub()->getSpan()) {
             return false;
         }
 
-        return (bool) $this->config->get('sentry.tracing.spans.' . $key, true);
+        return (bool) $this->config->get('sentry.tracing.spans.' . $key, $default);
     }
 
-    public function isTracingExtraTagEnable(string $key): bool
+    public function isTracingExtraTagEnabled(string $key, bool $default = false): bool
     {
-        return (bool) ($this->config->get('sentry.tracing.extra_tags', [])[$key] ?? false);
+        return (bool) ($this->config->get('sentry.tracing.extra_tags', [])[$key] ?? $default);
     }
 
-    public function isExceptionIgnored(string|Throwable $exception): bool
-    {
-        $ignoreExceptions = (array) $this->config->get('sentry.ignore_exceptions', []);
-
-        foreach ($ignoreExceptions as $ignoreException) {
-            if (is_a($exception, $ignoreException, true)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    public function isCronsEnable(): bool
+    public function isCronsEnabled(): bool
     {
         return (bool) $this->config->get('sentry.crons.enable', true);
     }

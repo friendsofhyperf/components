@@ -22,7 +22,6 @@ use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\Transaction;
-use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 
 use function Hyperf\Tappable\tap;
@@ -40,13 +39,14 @@ trait SpanStarter
             return null;
         }
 
+        $spanContext = SpanContext::make()->setOp($op)
+            ->setDescription($description)
+            ->setOrigin($origin)
+            ->setStatus(SpanStatus::ok())
+            ->setStartTimestamp(microtime(true));
+
         return tap(
-            $parent->startChild(new SpanContext())
-                ->setOp($op)
-                ->setDescription($description)
-                ->setOrigin($origin)
-                ->setStatus(SpanStatus::ok())
-                ->setStartTimestamp(microtime(true)),
+            $parent->startChild($spanContext),
             fn (Span $span) => $asParent && SentrySdk::getCurrentHub()->setSpan($span)
         );
     }
@@ -87,30 +87,28 @@ trait SpanStarter
             tap(clone SentrySdk::getCurrentHub(), fn (HubInterface $hub) => $hub->pushScope())
         );
 
-        $transaction = $hub->startTransaction(
-            tap(
-                continueTrace($sentryTrace, $baggage),
-                function (TransactionContext $context) use ($options) {
-                    array_walk($options, function ($value, $key) use ($context) {
-                        match ($key) {
-                            'name' => is_string($value) && $context->setName($value),
-                            'op' => is_string($value) && $context->setOp($value),
-                            'description' => is_string($value) && $context->setDescription($value),
-                            'origin' => is_string($value) && $context->setOrigin($value),
-                            'source' => $context->setSource(
-                                $value instanceof TransactionSource ? $value : TransactionSource::custom()
-                            ),
-                            default => null,
-                        };
-                    });
-                }
-            )
-        )
+        // Build transaction context
+        $transactionContext = continueTrace($sentryTrace, $baggage)
             ->setStartTimestamp(microtime(true))
             ->setStatus(SpanStatus::ok());
 
-        $hub->setSpan($transaction);
+        // Set additional options
+        array_walk($options, function ($value, $key) use ($transactionContext) {
+            match ($key) {
+                'name' => is_string($value) && $transactionContext->setName($value),
+                'op' => is_string($value) && $transactionContext->setOp($value),
+                'description' => is_string($value) && $transactionContext->setDescription($value),
+                'origin' => is_string($value) && $transactionContext->setOrigin($value),
+                'source' => $transactionContext->setSource(
+                    $value instanceof TransactionSource ? $value : TransactionSource::custom()
+                ),
+                default => null,
+            };
+        });
 
-        return $transaction;
+        return tap(
+            $hub->startTransaction($transactionContext),
+            fn ($transaction) => $hub->setSpan($transaction)
+        );
     }
 }

@@ -46,7 +46,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         if (
-            ! $this->switcher->isTracingSpanEnable('guzzle')
+            ! $this->switcher->isTracingSpanEnabled('guzzle')
             || Context::get(RpcAspect::SPAN) // If the parent span is not exists or the parent span is belongs to rpc, then skip.
         ) {
             return $proceedingJoinPoint->process();
@@ -76,18 +76,20 @@ class GuzzleHttpClientAspect extends AbstractAspect
             description: $request->getMethod() . ' ' . (string) $request->getUri(),
             origin: 'auto.http.client',
         );
-        $options['headers'] = array_replace($options['headers'] ?? [], [
-            'sentry-trace' => $span->toTraceparent(),
-            'baggage' => $span->toBaggage(),
-            'traceparent' => $span->toW3CTraceparent(),
-        ]);
-        // Override the headers
-        $proceedingJoinPoint->arguments['keys']['options']['headers'] = $options['headers'];
 
         if (! $span) {
             return $proceedingJoinPoint->process();
         }
 
+        // Inject trace context
+        $options['headers'] = array_replace($options['headers'] ?? [], [
+            'sentry-trace' => $span->toTraceparent(),
+            'baggage' => $span->toBaggage(),
+            'traceparent' => $span->toW3CTraceparent(),
+        ]);
+
+        // Override the headers
+        $proceedingJoinPoint->arguments['keys']['options']['headers'] = $options['headers'];
         $onStats = $options['on_stats'] ?? null;
 
         // Add or override the on_stats option to record the request duration.
@@ -126,7 +128,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     'http.response_transfer_size' => $response->getHeaderLine('Content-Length'),
                 ]);
 
-                if ($this->switcher->isTracingExtraTagEnable('http.response.body.contents')) {
+                if ($this->switcher->isTracingExtraTagEnabled('http.response.body.contents')) {
                     $isTextual = \preg_match(
                         '/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i',
                         $response->getHeaderLine('Content-Type')
@@ -164,7 +166,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                         'exception.class' => $exception::class,
                         'exception.code' => (string) $exception->getCode(),
                     ]);
-                if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
+                if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
                     $span->setData([
                         'exception.message' => $exception->getMessage(),
                         'exception.stack_trace' => (string) $exception,

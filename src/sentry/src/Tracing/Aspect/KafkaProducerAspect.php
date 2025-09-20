@@ -42,7 +42,7 @@ class KafkaProducerAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnable('kafka')) {
+        if (! $this->switcher->isTracingEnabled('kafka')) {
             return $proceedingJoinPoint->process();
         }
 
@@ -98,7 +98,7 @@ class KafkaProducerAspect extends AbstractAspect
         /** @var ProduceMessage[] $messages */
         $messages = $proceedingJoinPoint->arguments['keys']['messages'] ?? [];
         $span = $this->startSpan(
-            'kafka.send_batch',
+            'queue.publish',
             sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
             origin: 'auto.kafka'
         );

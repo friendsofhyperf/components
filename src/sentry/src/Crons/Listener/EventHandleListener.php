@@ -44,7 +44,7 @@ class EventHandleListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if (! $this->switcher->isCronsEnable()) {
+        if (! $this->switcher->isCronsEnabled()) {
             return;
         }
 

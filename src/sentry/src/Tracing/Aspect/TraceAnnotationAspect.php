@@ -38,8 +38,9 @@ class TraceAnnotationAspect extends AbstractAspect
         $metadata = $proceedingJoinPoint->getAnnotationMetadata();
         /** @var null|Trace $annotation */
         $annotation = $metadata->method[Trace::class] ?? null;
+        $parent = SentrySdk::getCurrentHub()->getSpan();
 
-        if (! $annotation || ! $parent = SentrySdk::getCurrentHub()->getSpan()) {
+        if (! $annotation || ! $parent || ! $parent->getSampled()) {
             return $proceedingJoinPoint->process();
         }
 
@@ -66,9 +67,11 @@ class TraceAnnotationAspect extends AbstractAspect
         try {
             $result = $proceedingJoinPoint->process();
 
-            if ($this->switcher->isTracingExtraTagEnable('annotation.result')) {
+            if ($this->switcher->isTracingExtraTagEnabled('annotation.result')) {
                 $span?->setData(['annotation.result' => $result]);
             }
+
+            return $result;
         } catch (Throwable $exception) {
             $span?->setStatus(SpanStatus::internalError())
                 ->setTags([
@@ -77,17 +80,15 @@ class TraceAnnotationAspect extends AbstractAspect
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => (string) $exception->getCode(),
                 ]);
-            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $span?->setData(['exception.stack_trace' => (string) $exception]);
             }
             throw $exception;
         } finally {
-            $span?->finish(microtime(true));
+            $span?->finish();
 
-            // Reset root span
+            // Restore parent span
             SentrySdk::getCurrentHub()->setSpan($parent);
         }
-
-        return $result;
     }
 }

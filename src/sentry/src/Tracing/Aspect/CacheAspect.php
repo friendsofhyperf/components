@@ -43,7 +43,7 @@ class CacheAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnable('cache') || Switcher::isDisableCoroutineTracing()) {
+        if (! $this->switcher->isTracingSpanEnabled('cache') || Switcher::isDisableCoroutineTracing()) {
             return $proceedingJoinPoint->process();
         }
 

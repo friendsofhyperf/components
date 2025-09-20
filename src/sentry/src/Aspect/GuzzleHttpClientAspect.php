@@ -36,7 +36,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         // If the guzzle aspect is disabled, we will not record the request.
-        if (! $this->switcher->isBreadcrumbEnable('guzzle')) {
+        if (! $this->switcher->isBreadcrumbEnabled('guzzle')) {
             return $proceedingJoinPoint->process();
         }
 

@@ -59,7 +59,10 @@ return [
     ],
 
     'breadcrumbs' => [
+        'async_queue' => env('SENTRY_BREADCRUMBS_ASYNC_QUEUE', true),
         'cache' => env('SENTRY_BREADCRUMBS_CACHE', true),
+        'command' => env('SENTRY_BREADCRUMBS_COMMAND', true),
+        'command_input' => env('SENTRY_BREADCRUMBS_COMMAND_INPUT', true),
         'sql_queries' => env('SENTRY_BREADCRUMBS_SQL_QUERIES', true),
         'sql_bindings' => env('SENTRY_BREADCRUMBS_SQL_BINDINGS', true),
         'sql_transaction' => env('SENTRY_BREADCRUMBS_SQL_TRANSACTION', true),
@@ -113,6 +116,7 @@ return [
             'exception.stack_trace' => true,
             'amqp.result' => false,
             'annotation.result' => false,
+            'db.sql.bindings' => true,
             'db.result' => false,
             'elasticsearch.result' => false,
             'http.response.body.contents' => false,
