@@ -76,16 +76,17 @@ class GuzzleHttpClientAspect extends AbstractAspect
             description: $request->getMethod() . ' ' . (string) $request->getUri(),
             origin: 'auto.http.client',
         );
+
+        if (! $span) {
+            return $proceedingJoinPoint->process();
+        }
+
         // Inject trace context
         $options['headers'] = array_replace($options['headers'] ?? [], [
             'sentry-trace' => $span->toTraceparent(),
             'baggage' => $span->toBaggage(),
             'traceparent' => $span->toW3CTraceparent(),
         ]);
-
-        if (! $span) {
-            return $proceedingJoinPoint->process();
-        }
 
         // Override the headers
         $proceedingJoinPoint->arguments['keys']['options']['headers'] = $options['headers'];
