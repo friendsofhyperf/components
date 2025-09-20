@@ -33,8 +33,15 @@ use Hyperf\Server\Event;
 use Psr\Container\ContainerInterface;
 use Sentry\Breadcrumb;
 use Sentry\SentrySdk;
+use Sentry\State\Scope;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Input\InputInterface;
 use Throwable;
 
+/**
+ * @property InputInterface $input
+ * @property int $exitCode
+ */
 class EventHandleListener implements ListenerInterface
 {
     public const HUB = 'sentry.context.hub';
@@ -156,7 +163,6 @@ class EventHandleListener implements ListenerInterface
 
             // Command events
             CommandEvent\BeforeHandle::class => $this->handleCommandStarting($event),
-            CommandEvent\FailToHandle::class => $this->handleCommandFailed($event),
             CommandEvent\AfterExecute::class => $this->handleCommandFinished($event),
 
             // Async Queue events
@@ -377,19 +383,32 @@ class EventHandleListener implements ListenerInterface
         }
 
         $this->setupSentrySdk();
+
+        Integration::addBreadcrumb(new Breadcrumb(
+            Breadcrumb::LEVEL_INFO,
+            Breadcrumb::TYPE_DEFAULT,
+            'command',
+            'Starting command: ' . $event->getCommand()->getName(),
+            [
+                'input' => $this->extractConsoleCommandInput((fn () => $this->input)->call($event->getCommand())),
+            ]
+        ));
+
+        Integration::configureScope(static function (Scope $scope) use ($event): void {
+            $scope->setTag('command', $event->getCommand()->getName());
+        });
     }
 
     /**
-     * @param CommandEvent\FailToHandle $event
+     * Extract the command input arguments if possible.
      */
-    protected function handleCommandFailed(object $event): void
+    protected function extractConsoleCommandInput(?InputInterface $input): ?string
     {
-        if (! $this->switcher->isEnable('command')) {
-            return;
+        if ($input instanceof ArgvInput) {
+            return (string) $input;
         }
 
-        $this->captureException($event->getThrowable());
-        $this->flushEvents();
+        return null;
     }
 
     /**
@@ -401,7 +420,23 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
+        $this->captureException($event->getThrowable());
         $this->flushEvents();
+
+        Integration::addBreadcrumb(new Breadcrumb(
+            Breadcrumb::LEVEL_INFO,
+            Breadcrumb::TYPE_DEFAULT,
+            'command',
+            'Finished command: ' . $event->getCommand()->getName(),
+            [
+                'exit' => (fn () => $this->exitCode)->call($event->getCommand()),
+                'input' => $this->extractConsoleCommandInput((fn () => $this->input)->call($event->getCommand())),
+            ]
+        ));
+
+        Integration::configureScope(static function (Scope $scope): void {
+            $scope->removeTag('command');
+        });
     }
 
     /**
