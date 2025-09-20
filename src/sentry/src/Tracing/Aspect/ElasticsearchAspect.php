@@ -73,7 +73,7 @@ class ElasticsearchAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $data = [
+        $span->setData([
             'coroutine.id' => Coroutine::id(),
             'db.system' => 'elasticsearch',
             'db.operation.name' => $proceedingJoinPoint->methodName,
@@ -82,9 +82,7 @@ class ElasticsearchAspect extends AbstractAspect
             'server.host' => '', // TODO
             'server.port' => '', // TODO
             'arguments' => json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE),
-        ];
-
-        $span->setData($data);
+        ]);
 
         try {
             $result = $proceedingJoinPoint->process();
