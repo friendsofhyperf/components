@@ -129,8 +129,8 @@ class EventHandleListener implements ListenerInterface
             // Async Queue events
             AsyncQueueEvent\BeforeHandle::class => $this->handleAsyncQueueBefore($event),
             AsyncQueueEvent\AfterHandle::class => $this->handleAsyncQueueAfter($event),
-            AsyncQueueEvent\RetryHandle::class => $this->handleAsyncQueueRetry($event),
-            AsyncQueueEvent\FailedHandle::class => $this->handleAsyncQueueFailed($event),
+            AsyncQueueEvent\RetryHandle::class,
+            AsyncQueueEvent\FailedHandle::class => $this->handleAsyncQueueRetryOrFailed($event),
 
             // Crontab events
             CrontabEvent\BeforeExecute::class => $this->handleCrontabBefore($event),
@@ -182,6 +182,9 @@ class EventHandleListener implements ListenerInterface
         }
     }
 
+    /**
+     * @param BootApplication $event
+     */
     protected function handleBootApplication(object $event): void
     {
         $this->setupRequestLifecycle();
@@ -268,6 +271,9 @@ class EventHandleListener implements ListenerInterface
         }
     }
 
+    /**
+     * @param QueryExecuted $event
+     */
     protected function handleDbQuery(object $event): void
     {
         if (! $this->switcher->isBreadcrumbEnable('sql_queries')) {
@@ -293,6 +299,9 @@ class EventHandleListener implements ListenerInterface
         ));
     }
 
+    /**
+     * @param TransactionBeginning|TransactionCommitted|TransactionRolledBack $event
+     */
     protected function handleDbTransaction(object $event): void
     {
         if (! $this->switcher->isBreadcrumbEnable('sql_transaction')) {
@@ -310,12 +319,12 @@ class EventHandleListener implements ListenerInterface
         ));
     }
 
+    /**
+     * @param CommandExecuted $event
+     */
     protected function handleRedisCommand(object $event): void
     {
-        if (
-            ! $this->switcher->isBreadcrumbEnable('redis')
-            || ! $event instanceof CommandExecuted
-        ) {
+        if (! $this->switcher->isBreadcrumbEnable('redis')) {
             return;
         }
 
@@ -332,6 +341,9 @@ class EventHandleListener implements ListenerInterface
         ));
     }
 
+    /**
+     * @param RequestReceived|RpcRequestReceived $event
+     */
     protected function handleRequestReceived(object $event): void
     {
         if (! $this->switcher->isEnable('request')) {
@@ -341,6 +353,9 @@ class EventHandleListener implements ListenerInterface
         $this->setupSentrySdk();
     }
 
+    /**
+     * @param RequestTerminated|RpcRequestTerminated $event
+     */
     protected function handleRequestTerminated(object $event): void
     {
         if (! $this->switcher->isEnable('request')) {
@@ -351,6 +366,9 @@ class EventHandleListener implements ListenerInterface
         $this->flushEvents();
     }
 
+    /**
+     * @param CommandEvent\BeforeHandle $event
+     */
     protected function handleCommandBefore(object $event): void
     {
         if (! $this->switcher->isEnable('command')) {
@@ -360,6 +378,9 @@ class EventHandleListener implements ListenerInterface
         $this->setupSentrySdk();
     }
 
+    /**
+     * @param CommandEvent\FailToHandle $event
+     */
     protected function handleCommandFail(object $event): void
     {
         if (! $this->switcher->isEnable('command')) {
@@ -369,6 +390,9 @@ class EventHandleListener implements ListenerInterface
         $this->captureException($event->getThrowable());
     }
 
+    /**
+     * @param CommandEvent\AfterExecute $event
+     */
     protected function handleCommandAfter(object $event): void
     {
         if (! $this->switcher->isEnable('command')) {
@@ -378,6 +402,9 @@ class EventHandleListener implements ListenerInterface
         $this->flushEvents();
     }
 
+    /**
+     * @param AsyncQueueEvent\BeforeHandle $event
+     */
     protected function handleAsyncQueueBefore(object $event): void
     {
         if (! $this->switcher->isEnable('async_queue')) {
@@ -387,6 +414,9 @@ class EventHandleListener implements ListenerInterface
         $this->setupSentrySdk();
     }
 
+    /**
+     * @param AsyncQueueEvent\AfterHandle $event
+     */
     protected function handleAsyncQueueAfter(object $event): void
     {
         if (! $this->switcher->isEnable('async_queue')) {
@@ -396,7 +426,10 @@ class EventHandleListener implements ListenerInterface
         $this->flushEvents();
     }
 
-    protected function handleAsyncQueueRetry(object $event): void
+    /**
+     * @param AsyncQueueEvent\RetryHandle|AsyncQueueEvent\FailedHandle $event
+     */
+    protected function handleAsyncQueueRetryOrFailed(object $event): void
     {
         if (! $this->switcher->isEnable('async_queue')) {
             return;
@@ -406,16 +439,9 @@ class EventHandleListener implements ListenerInterface
         $this->flushEvents();
     }
 
-    protected function handleAsyncQueueFailed(object $event): void
-    {
-        if (! $this->switcher->isEnable('async_queue')) {
-            return;
-        }
-
-        $this->captureException($event->getThrowable());
-        $this->flushEvents();
-    }
-
+    /**
+     * @param CrontabEvent\BeforeExecute $event
+     */
     protected function handleCrontabBefore(object $event): void
     {
         if (! $this->switcher->isEnable('crontab')) {
@@ -425,6 +451,9 @@ class EventHandleListener implements ListenerInterface
         $this->setupSentrySdk();
     }
 
+    /**
+     * @param CrontabEvent\AfterExecute $event
+     */
     protected function handleCrontabAfter(object $event): void
     {
         if (! $this->switcher->isEnable('crontab')) {
@@ -434,6 +463,9 @@ class EventHandleListener implements ListenerInterface
         $this->flushEvents();
     }
 
+    /**
+     * @param CrontabEvent\FailToExecute $event
+     */
     protected function handleCrontabFail(object $event): void
     {
         if (! $this->switcher->isEnable('crontab')) {
@@ -444,6 +476,9 @@ class EventHandleListener implements ListenerInterface
         $this->flushEvents();
     }
 
+    /**
+     * @param AmqpEvent\BeforeConsume $event
+     */
     protected function handleAmqpBefore(object $event): void
     {
         if (! $this->switcher->isEnable('amqp')) {
@@ -453,6 +488,9 @@ class EventHandleListener implements ListenerInterface
         $this->setupSentrySdk();
     }
 
+    /**
+     * @param AmqpEvent\AfterConsume $event
+     */
     protected function handleAmqpAfter(object $event): void
     {
         if (! $this->switcher->isEnable('amqp')) {
@@ -462,6 +500,9 @@ class EventHandleListener implements ListenerInterface
         $this->flushEvents();
     }
 
+    /**
+     * @param AmqpEvent\FailToConsume $event
+     */
     protected function handleAmqpFail(object $event): void
     {
         if (! $this->switcher->isEnable('amqp')) {
@@ -472,6 +513,9 @@ class EventHandleListener implements ListenerInterface
         $this->flushEvents();
     }
 
+    /**
+     * @param KafkaEvent\BeforeConsume $event
+     */
     protected function handleKafkaBefore(object $event): void
     {
         if (! $this->switcher->isEnable('kafka')) {
@@ -481,6 +525,9 @@ class EventHandleListener implements ListenerInterface
         $this->setupSentrySdk();
     }
 
+    /**
+     * @param KafkaEvent\AfterConsume $event
+     */
     protected function handleKafkaAfter(object $event): void
     {
         if (! $this->switcher->isEnable('kafka')) {
@@ -490,6 +537,9 @@ class EventHandleListener implements ListenerInterface
         $this->flushEvents();
     }
 
+    /**
+     * @param KafkaEvent\FailToConsume $event
+     */
     protected function handleKafkaFail(object $event): void
     {
         if (! $this->switcher->isEnable('kafka')) {
