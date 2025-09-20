@@ -48,10 +48,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        $hub = SentrySdk::getCurrentHub();
-        $slug = $event->crontab->getName();
         $options = [];
-
         if (method_exists($event->crontab, 'getOptions')) {
             $options = $event->crontab->getOptions();
         }
@@ -60,76 +57,100 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        // Notify Sentry your job is running
-        if ($event instanceof Event\BeforeExecute) {
-            $rule = $event->crontab->getRule();
-            $rules = explode(' ', $rule);
+        match ($event::class) {
+            Event\BeforeExecute::class => $this->handleCrontabTaskStarting($event, $options),
+            Event\AfterExecute::class => $this->handleCrontabTaskFinished($event),
+            Event\FailToExecute::class => $this->handleCrontabTaskFailed($event),
+            default => null,
+        };
+    }
 
-            if (count($rules) > 5) {
-                $this->logger->warning(sprintf('Crontab rule %s is not supported by sentry', $rule));
-                return;
-            }
+    protected function handleCrontabTaskStarting(Event\BeforeExecute $event, array $options): void
+    {
+        $hub = SentrySdk::getCurrentHub();
+        $slug = $event->crontab->getName();
+        $rule = $event->crontab->getRule();
+        $rules = explode(' ', $rule);
 
-            $updateMonitorConfig = (bool) ($options['update_monitor_config'] ?? true);
-            $monitorConfig = null;
-
-            if ($updateMonitorConfig) {
-                $monitorSchedule = \Sentry\MonitorSchedule::crontab($rule);
-                $checkinMargin = (int) ($options['checkin_margin'] ?? $this->config->get('sentry.crons.checkin_margin', 5));
-                $maxRuntime = (int) ($options['max_runtime'] ?? $this->config->get('sentry.crons.max_runtime', 15));
-                $timezone = null;
-                if (method_exists($event->crontab, 'getTimezone')) {
-                    $timezone = $event->crontab->getTimezone();
-                }
-                $timezone ??= $this->config->get('sentry.crons.timezone', date_default_timezone_get());
-                $failureIssueThreshold = isset($options['failure_issue_threshold']) ? (int) $options['failure_issue_threshold'] : null;
-                $recoveryThreshold = isset($options['recovery_threshold']) ? (int) $options['recovery_threshold'] : null;
-
-                $monitorConfig = new \Sentry\MonitorConfig(
-                    schedule: $monitorSchedule,
-                    checkinMargin: $checkinMargin,
-                    maxRuntime: $maxRuntime,
-                    timezone: $timezone,
-                    failureIssueThreshold: $failureIssueThreshold,
-                    recoveryThreshold: $recoveryThreshold,
-                );
-            }
-
-            $checkInId = $hub->captureCheckIn(
-                slug: $slug,
-                status: CheckInStatus::inProgress(),
-                monitorConfig: $monitorConfig,
-            );
-
-            Context::set(Constants::CRON_CHECKIN_ID, $checkInId);
+        if (count($rules) > 5) {
+            $this->logger->warning(sprintf('Crontab rule %s is not supported by sentry', $rule));
+            return;
         }
 
-        // Notify Sentry your job has completed successfully
-        if ($event instanceof Event\AfterExecute) {
-            /** @var string $checkInId */
-            $checkInId = Context::get(Constants::CRON_CHECKIN_ID);
-            if (! $checkInId) {
-                return;
-            }
-            $hub->captureCheckIn(
-                slug: $slug,
-                status: CheckInStatus::ok(),
-                checkInId: $checkInId,
-            );
+        $updateMonitorConfig = (bool) ($options['update_monitor_config'] ?? true);
+        $monitorConfig = null;
+
+        if ($updateMonitorConfig) {
+            $monitorConfig = $this->createMonitorConfig($event, $options, $rule);
         }
 
-        // Notify Sentry your job has failed
-        if ($event instanceof Event\FailToExecute) {
-            /** @var string $checkInId */
-            $checkInId = Context::get(Constants::CRON_CHECKIN_ID);
-            if (! $checkInId) {
-                return;
-            }
-            $hub->captureCheckIn(
-                slug: $slug,
-                status: CheckInStatus::error(),
-                checkInId: $checkInId,
-            );
+        $checkInId = $hub->captureCheckIn(
+            slug: $slug,
+            status: CheckInStatus::inProgress(),
+            monitorConfig: $monitorConfig,
+        );
+
+        Context::set(Constants::CRON_CHECKIN_ID, $checkInId);
+    }
+
+    protected function handleCrontabTaskFinished(Event\AfterExecute $event): void
+    {
+        /** @var string $checkInId */
+        $checkInId = Context::get(Constants::CRON_CHECKIN_ID);
+        if (! $checkInId) {
+            return;
         }
+
+        $hub = SentrySdk::getCurrentHub();
+        $slug = $event->crontab->getName();
+
+        $hub->captureCheckIn(
+            slug: $slug,
+            status: CheckInStatus::ok(),
+            checkInId: $checkInId,
+        );
+    }
+
+    protected function handleCrontabTaskFailed(Event\FailToExecute $event): void
+    {
+        /** @var string $checkInId */
+        $checkInId = Context::get(Constants::CRON_CHECKIN_ID);
+        if (! $checkInId) {
+            return;
+        }
+
+        $hub = SentrySdk::getCurrentHub();
+        $slug = $event->crontab->getName();
+
+        $hub->captureCheckIn(
+            slug: $slug,
+            status: CheckInStatus::error(),
+            checkInId: $checkInId,
+        );
+    }
+
+    protected function createMonitorConfig(Event\BeforeExecute $event, array $options, string $rule): \Sentry\MonitorConfig
+    {
+        $monitorSchedule = \Sentry\MonitorSchedule::crontab($rule);
+        $checkinMargin = (int) ($options['checkin_margin'] ?? $this->config->get('sentry.crons.checkin_margin', 5));
+        $maxRuntime = (int) ($options['max_runtime'] ?? $this->config->get('sentry.crons.max_runtime', 15));
+
+        $timezone = null;
+        if (method_exists($event->crontab, 'getTimezone')) {
+            $timezone = $event->crontab->getTimezone();
+        }
+        $timezone ??= $this->config->get('sentry.crons.timezone', date_default_timezone_get());
+
+        $failureIssueThreshold = isset($options['failure_issue_threshold']) ? (int) $options['failure_issue_threshold'] : null;
+        $recoveryThreshold = isset($options['recovery_threshold']) ? (int) $options['recovery_threshold'] : null;
+
+        return new \Sentry\MonitorConfig(
+            schedule: $monitorSchedule,
+            checkinMargin: $checkinMargin,
+            maxRuntime: $maxRuntime,
+            timezone: $timezone,
+            failureIssueThreshold: $failureIssueThreshold,
+            recoveryThreshold: $recoveryThreshold,
+        );
     }
 }
