@@ -39,6 +39,43 @@ class EventHandleListener implements ListenerInterface
 {
     public const HUB = 'sentry.context.hub';
 
+    protected array $missingKeys = [
+        // Enable
+        'sentry.enable.amqp',
+        'sentry.enable.async_queue',
+        'sentry.enable.command',
+        'sentry.enable.crontab',
+        'sentry.enable.kafka',
+        'sentry.enable.request',
+        // Breadcrumbs
+        'sentry.breadcrumbs.cache',
+        'sentry.breadcrumbs.sql_queries',
+        'sentry.breadcrumbs.sql_bindings',
+        'sentry.breadcrumbs.sql_transaction',
+        'sentry.breadcrumbs.redis',
+        'sentry.breadcrumbs.guzzle',
+        'sentry.breadcrumbs.logs',
+        // Tracing
+        'sentry.enable_tracing',
+        // Enable for tracing integrations
+        'sentry.tracing.enable.amqp',
+        'sentry.tracing.enable.async_queue',
+        'sentry.tracing.enable.cache',
+        'sentry.tracing.enable.command',
+        'sentry.tracing.enable.crontab',
+        'sentry.tracing.enable.kafka',
+        'sentry.tracing.enable.request',
+        // Enable for tracing Spans
+        'sentry.tracing.spans.cache',
+        'sentry.tracing.spans.coroutine',
+        'sentry.tracing.spans.db',
+        'sentry.tracing.spans.elasticsearch',
+        'sentry.tracing.spans.guzzle',
+        'sentry.tracing.spans.rpc',
+        'sentry.tracing.spans.redis',
+        'sentry.tracing.spans.sql_queries',
+    ];
+
     public function __construct(
         protected ContainerInterface $container,
         protected Switcher $switcher,
@@ -189,39 +226,7 @@ class EventHandleListener implements ListenerInterface
 
     protected function setupRequestLifecycle(): void
     {
-        $keys = [
-            'sentry.enable.amqp',
-            'sentry.enable.async_queue',
-            'sentry.enable.command',
-            'sentry.enable.crontab',
-            'sentry.enable.kafka',
-            'sentry.enable.request',
-            'sentry.breadcrumbs.cache',
-            'sentry.breadcrumbs.sql_queries',
-            'sentry.breadcrumbs.sql_bindings',
-            'sentry.breadcrumbs.sql_transaction',
-            'sentry.breadcrumbs.redis',
-            'sentry.breadcrumbs.guzzle',
-            'sentry.breadcrumbs.logs',
-            'sentry.enable_tracing',
-            'sentry.tracing.enable.amqp',
-            'sentry.tracing.enable.async_queue',
-            'sentry.tracing.enable.cache',
-            'sentry.tracing.enable.command',
-            'sentry.tracing.enable.crontab',
-            'sentry.tracing.enable.kafka',
-            'sentry.tracing.enable.request',
-            'sentry.tracing.spans.cache',
-            'sentry.tracing.spans.coroutine',
-            'sentry.tracing.spans.db',
-            'sentry.tracing.spans.elasticsearch',
-            'sentry.tracing.spans.guzzle',
-            'sentry.tracing.spans.rpc',
-            'sentry.tracing.spans.redis',
-            'sentry.tracing.spans.sql_queries',
-        ];
-
-        foreach ($keys as $key) {
+        foreach ($this->missingKeys as $key) {
             if (! $this->config->has($key)) {
                 $this->config->set($key, true);
             }
