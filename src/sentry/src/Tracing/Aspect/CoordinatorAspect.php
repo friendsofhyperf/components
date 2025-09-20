@@ -57,7 +57,7 @@ class CoordinatorAspect extends AbstractAspect
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => (string) $exception->getCode(),
                 ]);
-            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $span?->setData([
                     'exception.stack_trace' => (string) $exception,
                 ]);

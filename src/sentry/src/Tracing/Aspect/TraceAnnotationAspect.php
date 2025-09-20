@@ -67,7 +67,7 @@ class TraceAnnotationAspect extends AbstractAspect
         try {
             $result = $proceedingJoinPoint->process();
 
-            if ($this->switcher->isTracingExtraTagEnable('annotation.result')) {
+            if ($this->switcher->isTracingExtraTagEnabled('annotation.result')) {
                 $span?->setData(['annotation.result' => $result]);
             }
 
@@ -80,7 +80,7 @@ class TraceAnnotationAspect extends AbstractAspect
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => (string) $exception->getCode(),
                 ]);
-            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $span?->setData(['exception.stack_trace' => (string) $exception]);
             }
             throw $exception;

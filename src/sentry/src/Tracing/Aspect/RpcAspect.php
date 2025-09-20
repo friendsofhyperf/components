@@ -52,7 +52,7 @@ class RpcAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnable('rpc')) {
+        if (! $this->switcher->isTracingSpanEnabled('rpc')) {
             return $proceedingJoinPoint->process();
         }
 
@@ -129,7 +129,7 @@ class RpcAspect extends AbstractAspect
         try {
             $result = $proceedingJoinPoint->process();
 
-            if ($this->switcher->isTracingExtraTagEnable('rpc.result')) {
+            if ($this->switcher->isTracingExtraTagEnabled('rpc.result')) {
                 $span?->setData(['rpc.result' => $result]);
             }
 
@@ -142,7 +142,7 @@ class RpcAspect extends AbstractAspect
                     'exception.message' => $exception->getMessage(),
                     'exception.code' => (string) $exception->getCode(),
                 ]);
-            if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
+            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $span?->setData(['exception.stack_trace' => (string) $exception]);
             }
 

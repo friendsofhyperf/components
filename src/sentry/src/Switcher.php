@@ -22,17 +22,33 @@ class Switcher
     {
     }
 
-    public function isEnable(string $key, bool $default = true): bool
+    public function isEnabled(string $key, bool $default = true): bool
     {
         return (bool) $this->config->get('sentry.enable.' . $key, $default);
     }
 
-    public function isBreadcrumbEnable(string $key, bool $default = true): bool
+    /**
+     * @deprecated since v3.1, use isEnabled instead, will be removed in v3.2
+     */
+    public function isEnable(string $key, bool $default = true): bool
+    {
+        return $this->isEnabled($key, $default);
+    }
+
+    public function isBreadcrumbEnabled(string $key, bool $default = true): bool
     {
         return (bool) $this->config->get('sentry.breadcrumbs.' . $key, $default);
     }
 
-    public function isTracingEnable(string $key, bool $default = true): bool
+    /**
+     * @deprecated since v3.1, use isBreadcrumbEnabled instead, will be removed in v3.2
+     */
+    public function isBreadcrumbEnable(string $key, bool $default = true): bool
+    {
+        return $this->isBreadcrumbEnabled($key, $default);
+    }
+
+    public function isTracingEnabled(string $key, bool $default = true): bool
     {
         if (! $this->config->get('sentry.enable_tracing', true)) {
             return false;
@@ -41,7 +57,15 @@ class Switcher
         return (bool) $this->config->get('sentry.tracing.enable.' . $key, $default);
     }
 
-    public function isTracingSpanEnable(string $key, bool $default = true): bool
+    /**
+     * @deprecated since v3.1, use isTracingEnabled instead, will be removed in v3.2
+     */
+    public function isTracingEnable(string $key, bool $default = true): bool
+    {
+        return $this->isTracingEnabled($key, $default);
+    }
+
+    public function isTracingSpanEnabled(string $key, bool $default = true): bool
     {
         if (! SentrySdk::getCurrentHub()->getSpan()) {
             return false;
@@ -50,9 +74,25 @@ class Switcher
         return (bool) $this->config->get('sentry.tracing.spans.' . $key, $default);
     }
 
-    public function isTracingExtraTagEnable(string $key, bool $default = false): bool
+    /**
+     * @deprecated since v3.1, use isTracingSpanEnabled instead, will be removed in v3.2
+     */
+    public function isTracingSpanEnable(string $key, bool $default = true): bool
+    {
+        return $this->isTracingSpanEnabled($key, $default);
+    }
+
+    public function isTracingExtraTagEnabled(string $key, bool $default = false): bool
     {
         return (bool) ($this->config->get('sentry.tracing.extra_tags', [])[$key] ?? $default);
+    }
+
+    /**
+     * @deprecated since v3.1, use isTracingExtraTagEnabled instead, will be removed in v3.2
+     */
+    public function isTracingExtraTagEnable(string $key, bool $default = false): bool
+    {
+        return $this->isTracingExtraTagEnabled($key, $default);
     }
 
     public function isExceptionIgnored(string|Throwable $exception): bool
@@ -68,9 +108,17 @@ class Switcher
         return false;
     }
 
-    public function isCronsEnable(): bool
+    public function isCronsEnabled(): bool
     {
         return (bool) $this->config->get('sentry.crons.enable', true);
+    }
+
+    /**
+     * @deprecated since v3.1, use isCronsEnabled instead, will be removed in v3.2
+     */
+    public function isCronsEnable(): bool
+    {
+        return $this->isCronsEnabled();
     }
 
     public static function disableCoroutineTracing(): void

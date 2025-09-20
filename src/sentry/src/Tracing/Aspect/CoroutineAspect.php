@@ -40,7 +40,7 @@ class CoroutineAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         if (
-            ! $this->switcher->isTracingSpanEnable('coroutine')
+            ! $this->switcher->isTracingSpanEnabled('coroutine')
             || Switcher::isDisableCoroutineTracing()
         ) {
             return $proceedingJoinPoint->process();
@@ -89,7 +89,7 @@ class CoroutineAspect extends AbstractAspect
                         'exception.message' => $exception->getMessage(),
                         'exception.code' => (string) $exception->getCode(),
                     ]);
-                if ($this->switcher->isTracingExtraTagEnable('exception.stack_trace')) {
+                if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
                     $transaction->setData([
                         'exception.stack_trace' => (string) $exception,
                     ]);

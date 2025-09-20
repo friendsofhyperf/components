@@ -40,7 +40,7 @@ class CacheAspect extends AbstractAspect
         $startTime = microtime(true);
 
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint, $startTime) {
-            if (! $this->switcher->isBreadcrumbEnable('cache')) {
+            if (! $this->switcher->isBreadcrumbEnabled('cache')) {
                 return;
             }
             $arguments = $proceedingJoinPoint->arguments['keys'];
