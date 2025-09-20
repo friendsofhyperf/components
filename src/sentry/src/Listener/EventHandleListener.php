@@ -384,31 +384,21 @@ class EventHandleListener implements ListenerInterface
 
         $this->setupSentrySdk();
 
-        Integration::addBreadcrumb(new Breadcrumb(
-            Breadcrumb::LEVEL_INFO,
-            Breadcrumb::TYPE_DEFAULT,
-            'command',
-            'Starting command: ' . $event->getCommand()->getName(),
-            [
-                'input' => $this->extractConsoleCommandInput((fn () => $this->input)->call($event->getCommand())),
-            ]
-        ));
-
         Integration::configureScope(static function (Scope $scope) use ($event): void {
             $scope->setTag('command', $event->getCommand()->getName());
         });
-    }
 
-    /**
-     * Extract the command input arguments if possible.
-     */
-    protected function extractConsoleCommandInput(?InputInterface $input): ?string
-    {
-        if ($input instanceof ArgvInput) {
-            return (string) $input;
+        if ($this->switcher->isBreadcrumbEnable('command')) {
+            Integration::addBreadcrumb(new Breadcrumb(
+                Breadcrumb::LEVEL_INFO,
+                Breadcrumb::TYPE_DEFAULT,
+                'command',
+                'Starting command: ' . $event->getCommand()->getName(),
+                [
+                    'input' => $this->extractConsoleCommandInput((fn () => $this->input)->call($event->getCommand())),
+                ]
+            ));
         }
-
-        return null;
     }
 
     /**
@@ -420,19 +410,21 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
+        if ($this->switcher->isBreadcrumbEnable('command')) {
+            Integration::addBreadcrumb(new Breadcrumb(
+                Breadcrumb::LEVEL_INFO,
+                Breadcrumb::TYPE_DEFAULT,
+                'command',
+                'Finished command: ' . $event->getCommand()->getName(),
+                [
+                    'exit' => (fn () => $this->exitCode)->call($event->getCommand()),
+                    'input' => $this->extractConsoleCommandInput((fn () => $this->input)->call($event->getCommand())),
+                ]
+            ));
+        }
+
         $this->captureException($event->getThrowable());
         $this->flushEvents();
-
-        Integration::addBreadcrumb(new Breadcrumb(
-            Breadcrumb::LEVEL_INFO,
-            Breadcrumb::TYPE_DEFAULT,
-            'command',
-            'Finished command: ' . $event->getCommand()->getName(),
-            [
-                'exit' => (fn () => $this->exitCode)->call($event->getCommand()),
-                'input' => $this->extractConsoleCommandInput((fn () => $this->input)->call($event->getCommand())),
-            ]
-        ));
 
         Integration::configureScope(static function (Scope $scope): void {
             $scope->removeTag('command');
@@ -449,6 +441,21 @@ class EventHandleListener implements ListenerInterface
         }
 
         $this->setupSentrySdk();
+
+        if ($this->switcher->isBreadcrumbEnable('async_queue')) {
+            $job = [
+                'job' => $event->getMessage()->job()::class,
+                'attempts' => $event->getMessage()->getAttempts(),
+            ];
+
+            Integration::addBreadcrumb(new Breadcrumb(
+                Breadcrumb::LEVEL_INFO,
+                Breadcrumb::TYPE_DEFAULT,
+                'queue.job',
+                'Processing async_queue job',
+                $job
+            ));
+        }
     }
 
     /**
@@ -585,5 +592,17 @@ class EventHandleListener implements ListenerInterface
 
         $this->captureException($event->getThrowable());
         $this->flushEvents();
+    }
+
+    /**
+     * Extract the command input arguments if possible.
+     */
+    private function extractConsoleCommandInput(?InputInterface $input): ?string
+    {
+        if ($input instanceof ArgvInput) {
+            return (string) $input;
+        }
+
+        return null;
     }
 }
