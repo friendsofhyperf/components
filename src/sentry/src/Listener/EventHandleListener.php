@@ -175,7 +175,11 @@ class EventHandleListener implements ListenerInterface
 
     protected function flushEvents(): void
     {
-        Integration::flushEvents();
+        try {
+            Integration::flushEvents();
+        } catch (Throwable $e) {
+            $this->container->get(StdoutLoggerInterface::class)->error((string) $e);
+        }
     }
 
     protected function handleBootApplication(object $event): void
