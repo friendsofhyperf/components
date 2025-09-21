@@ -36,6 +36,8 @@ class FilesystemAspect extends AbstractAspect
         'League\Flysystem\*\*Adapter::listContents',
         'League\Flysystem\*\*Adapter::move',
         'League\Flysystem\*\*Adapter::copy',
+
+        // More adapter methods can be added here
     ];
 
     public function __construct(
