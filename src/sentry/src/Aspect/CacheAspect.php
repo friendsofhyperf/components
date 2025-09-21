@@ -18,6 +18,7 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\Breadcrumb;
 
+use function Hyperf\Support\with;
 use function Hyperf\Tappable\tap;
 
 class CacheAspect extends AbstractAspect
@@ -56,6 +57,13 @@ class CacheAspect extends AbstractAspect
                 'deleteMultiple' => 'Forgotten: ' . implode(', ', (array) ($arguments['keys'] ?? [])),
                 default => 'Operation',
             };
+            $formattedResult = with(
+                match ($proceedingJoinPoint->methodName) {
+                    'fetch' => $result[1] ?? '',
+                    default => $result,
+                },
+                fn ($result) => self::displayResult($result)
+            );
 
             Integration::addBreadcrumb(new Breadcrumb(
                 Breadcrumb::LEVEL_INFO,
@@ -63,12 +71,26 @@ class CacheAspect extends AbstractAspect
                 'cache',
                 $message,
                 [
-                    'result' => is_scalar($result) ? $result : '[' . (is_object($result) ? get_class($result) : gettype($result)) . ']',
+                    'result' => $formattedResult,
                     'arguments' => self::sanitizeArgs($arguments),
                     'timeMs' => round((microtime(true) - $startTime) * 1000, 2),
                 ]
             ));
         });
+    }
+
+    private static function displayResult(mixed $result): string
+    {
+        if (is_bool($result)) {
+            return $result ? 'true' : 'false';
+        }
+        if (is_null($result)) {
+            return 'null';
+        }
+        if (is_scalar($result)) {
+            return (string) $result;
+        }
+        return '[' . (is_object($result) ? get_class($result) : gettype($result)) . ']';
     }
 
     private static function sanitizeArgs(array $args): array
