@@ -51,6 +51,24 @@ class FilesystemAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
+        [$op, $description, $data] = $this->getSentryMetadata($proceedingJoinPoint);
+
+        Integration::addBreadcrumb(new Breadcrumb(
+            Breadcrumb::LEVEL_INFO,
+            Breadcrumb::TYPE_DEFAULT,
+            $op,
+            $description,
+            $data
+        ));
+
+        return $proceedingJoinPoint->process();
+    }
+
+    /**
+     * @return array{0: string, 1: string, 2: array} [op, description, data]
+     */
+    protected function getSentryMetadata(ProceedingJoinPoint $proceedingJoinPoint): array
+    {
         $method = $proceedingJoinPoint->methodName;
         $arguments = $proceedingJoinPoint->arguments['keys'] ?? [];
         // See https://develop.sentry.dev/sdk/performance/span-operations/#web-server
@@ -106,14 +124,6 @@ class FilesystemAspect extends AbstractAspect
             default => [],
         };
 
-        Integration::addBreadcrumb(new Breadcrumb(
-            Breadcrumb::LEVEL_INFO,
-            Breadcrumb::TYPE_DEFAULT,
-            $op,
-            $description,
-            $data
-        ));
-
-        return $proceedingJoinPoint->process();
+        return [$op, $description, $data];
     }
 }
