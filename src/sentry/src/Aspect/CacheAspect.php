@@ -52,7 +52,7 @@ class CacheAspect extends AbstractAspect
                 'set' => 'Written: ' . ($arguments['key'] ?? ''),
                 'setMultiple' => 'Written: ' . implode(', ', array_keys($arguments['keys'] ?? [])),
                 'delete' => 'Forgotten: ' . ($arguments['key'] ?? ''),
-                'deleteMultiple' => 'Forgotten: ' . implode(', ', array_keys($arguments['keys'] ?? [])),
+                'deleteMultiple' => 'Forgotten: ' . implode(', ', (array) ($arguments['keys'] ?? [])),
                 default => 'Operation',
             };
 
