@@ -90,36 +90,39 @@ class FilesystemAspect extends AbstractAspect
             'mimeType', => $arguments['path'] ?? '',
             default => '',
         };
+
+        $config = null;
+
+        if (isset($arguments['config'])) {
+            if (is_object($arguments['config']) && method_exists($arguments['config'], 'toArray')) {
+                $config = $arguments['config']->toArray();
+            } else {
+                $config = $arguments['config'];
+            }
+        }
+
         $data = match ($method) {
             'move', 'copy' => [
                 'from' => $arguments['source'] ?? '',
                 'to' => $arguments['destination'] ?? '',
-                'config' => $arguments['config'] ?? null,
+                'config' => $config,
             ],
-            'write', 'writeStream' => [
+            'write', 'writeStream', 'createDirectory' => [
                 'path' => $arguments['path'] ?? '',
-                'config' => $arguments['config'] ?? null,
-            ],
-            'read', 'readStream' => [
-                'path' => $arguments['path'] ?? '',
+                'config' => $config,
             ],
             'setVisibility' => [
                 'path' => $arguments['path'] ?? '',
                 'visibility' => $arguments['visibility'] ?? '',
             ],
-            'visibility',
-            'delete', 'deleteDirectory' => [
+            'listContents' => [
                 'path' => $arguments['path'] ?? '',
+                'deep' => $arguments['deep'] ?? false,
             ],
-            'createDirectory' => [
-                'path' => $arguments['path'] ?? '',
-                'config' => $arguments['config'] ?? null,
-            ],
+            'read', 'readStream',
+            'visibility', 'delete', 'deleteDirectory',
             'fileExists', 'directoryExists',
-            'listContents',
-            'lastModified',
-            'fileSize',
-            'mimeType' => [
+            'lastModified', 'fileSize', 'mimeType' => [
                 'path' => $arguments['path'] ?? '',
             ],
             default => [],
