@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Aspect;
 
+use Closure;
 use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -62,11 +63,34 @@ class CacheAspect extends AbstractAspect
                 'cache',
                 $message,
                 [
-                    'result' => $result,
-                    'arguments' => $arguments,
-                    'timeMs' => (microtime(true) - $startTime) * 1000,
+                    'result' => is_scalar($result) ? $result : '[' . (is_object($result) ? get_class($result) : gettype($result)) . ']',
+                    'arguments' => self::sanitizeArgs($arguments),
+                    'timeMs' => round((microtime(true) - $startTime) * 1000, 2),
                 ]
             ));
         });
+    }
+
+    private static function sanitizeArgs(array $args): array
+    {
+        if (isset($args['callback']) && $args['callback'] instanceof Closure) {
+            $args['callback'] = 'Closure';
+        }
+        if (isset($args['value']) && ! is_scalar($args['value'])) {
+            $args['value'] = '[' . (is_object($args['value']) ? get_class($args['value']) : gettype($args['value'])) . ']';
+        }
+        foreach (['keys', 'values'] as $k) {
+            if (isset($args[$k]) && is_array($args[$k])) {
+                $max = 20;
+                $count = count($args[$k]);
+                if ($count > $max) {
+                    $args[$k] = array_slice($args[$k], 0, $max, true) + ['...' => sprintf('(+%d more)', $count - $max)];
+                }
+            } elseif (isset($args[$k]) && is_iterable($args[$k])) {
+                // 将可迭代对象折叠为“类型/数量”以避免巨大 payload
+                $args[$k] = '[iterable]';
+            }
+        }
+        return $args;
     }
 }
