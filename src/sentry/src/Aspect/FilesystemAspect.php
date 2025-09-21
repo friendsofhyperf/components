@@ -19,7 +19,7 @@ use Sentry\Breadcrumb;
 
 class FilesystemAspect extends AbstractAspect
 {
-    public $classes = [
+    public array $classes = [
         'League\Flysystem\*\*Adapter::directoryExists',
         'League\Flysystem\*\*Adapter::write',
         'League\Flysystem\*\*Adapter::writeStream',
@@ -40,9 +40,8 @@ class FilesystemAspect extends AbstractAspect
         // More adapter methods can be added here
     ];
 
-    public function __construct(
-        protected Switcher $switcher
-    ) {
+    public function __construct(protected Switcher $switcher)
+    {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
