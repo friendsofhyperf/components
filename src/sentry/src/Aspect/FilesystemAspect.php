@@ -94,6 +94,7 @@ class FilesystemAspect extends AbstractAspect
             'move', 'copy' => [
                 'from' => $arguments['source'] ?? '',
                 'to' => $arguments['destination'] ?? '',
+                'config' => $arguments['config'] ?? null,
             ],
             'write', 'writeStream' => [
                 'path' => $arguments['path'] ?? '',
