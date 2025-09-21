@@ -20,6 +20,7 @@ use Sentry\Breadcrumb;
 class FilesystemAspect extends AbstractAspect
 {
     public array $classes = [
+        'League\Flysystem\*\*Adapter::fileExists',
         'League\Flysystem\*\*Adapter::directoryExists',
         'League\Flysystem\*\*Adapter::write',
         'League\Flysystem\*\*Adapter::writeStream',
