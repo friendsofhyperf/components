@@ -43,19 +43,28 @@ class CacheAspect extends AbstractAspect
             if (! $this->switcher->isBreadcrumbEnabled('cache')) {
                 return;
             }
-            $arguments = $proceedingJoinPoint->arguments['keys'];
-            $method = sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName);
 
-            $data['result'] = $result;
-            $data['arguments'] = $arguments;
-            $data['timeMs'] = (microtime(true) - $startTime) * 1000;
+            $arguments = $proceedingJoinPoint->arguments['keys'];
+            $message = match ($proceedingJoinPoint->methodName) {
+                'fetch', 'get' => 'Read: ' . ($arguments['key'] ?? ''),
+                'getMultiple' => 'Read: ' . implode(', ', (array) ($arguments['keys'] ?? [])),
+                'set' => 'Written: ' . ($arguments['key'] ?? ''),
+                'setMultiple' => 'Written: ' . implode(', ', array_keys($arguments['keys'] ?? [])),
+                'delete' => 'Forgotten: ' . ($arguments['key'] ?? ''),
+                'deleteMultiple' => 'Forgotten: ' . implode(', ', array_keys($arguments['keys'] ?? [])),
+                default => 'Operation',
+            };
 
             Integration::addBreadcrumb(new Breadcrumb(
                 Breadcrumb::LEVEL_INFO,
                 Breadcrumb::TYPE_DEFAULT,
                 'cache',
-                $method,
-                $data
+                $message,
+                [
+                    'result' => $result,
+                    'arguments' => $arguments,
+                    'timeMs' => (microtime(true) - $startTime) * 1000,
+                ]
             ));
         });
     }
