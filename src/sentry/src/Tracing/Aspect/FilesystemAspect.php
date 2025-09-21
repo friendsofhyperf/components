@@ -13,12 +13,14 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Aspect\FilesystemAspect as BaseFilesystemAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Override;
 use Sentry\Tracing\SpanContext;
 
 use function Sentry\trace;
 
 class FilesystemAspect extends BaseFilesystemAspect
 {
+    #[Override]
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         if (! $this->switcher->isTracingEnabled('filesystem')) {
