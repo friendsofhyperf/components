@@ -18,7 +18,6 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\Breadcrumb;
 
-use function Hyperf\Support\with;
 use function Hyperf\Tappable\tap;
 
 class CacheAspect extends AbstractAspect
@@ -47,7 +46,8 @@ class CacheAspect extends AbstractAspect
             }
 
             $arguments = $proceedingJoinPoint->arguments['keys'];
-            $message = match ($proceedingJoinPoint->methodName) {
+            $method = $proceedingJoinPoint->methodName;
+            $message = match ($method) {
                 'fetch' => (($result[0] ?? false) ? 'Read: ' : 'Missed: ') . ($arguments['key'] ?? ''),
                 'get' => (! is_null($result) ? 'Read: ' : 'Missed: ') . ($arguments['key'] ?? ''),
                 'getMultiple' => (! empty($result) ? 'Read: ' : 'Missed: ') . implode(', ', (array) ($arguments['keys'] ?? [])),
@@ -57,13 +57,6 @@ class CacheAspect extends AbstractAspect
                 'deleteMultiple' => 'Forgotten: ' . implode(', ', (array) ($arguments['keys'] ?? [])),
                 default => 'Operation',
             };
-            $formattedResult = with(
-                match ($proceedingJoinPoint->methodName) {
-                    'fetch' => $result[1] ?? '',
-                    default => $result,
-                },
-                fn ($result) => self::displayResult($result)
-            );
 
             Integration::addBreadcrumb(new Breadcrumb(
                 Breadcrumb::LEVEL_INFO,
@@ -71,7 +64,9 @@ class CacheAspect extends AbstractAspect
                 'cache',
                 $message,
                 [
-                    'result' => $formattedResult,
+                    'result' => self::displayResult(
+                        $method == 'fetch' ? ($result[1] ?? null) : $result
+                    ),
                     'arguments' => self::sanitizeArgs($arguments),
                     'timeMs' => round((microtime(true) - $startTime) * 1000, 2),
                 ]
