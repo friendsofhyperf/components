@@ -30,7 +30,7 @@ beforeEach(function () {
 });
 
 test('test is tracing tag enable', function ($key, $expected) {
-    expect($this->switcher->isTracingExtraTagEnable($key))->toBe($expected);
+    expect($this->switcher->isTracingExtraTagEnabled($key))->toBe($expected);
 })->with([
     ['foo.bar', true],
     ['foo.baz', true],
