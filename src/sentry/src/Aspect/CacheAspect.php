@@ -46,7 +46,8 @@ class CacheAspect extends AbstractAspect
 
             $arguments = $proceedingJoinPoint->arguments['keys'];
             $message = match ($proceedingJoinPoint->methodName) {
-                'fetch', 'get' => 'Read: ' . ($arguments['key'] ?? ''),
+                'fetch' => (($result[0] ?? false) ? 'Read: ' : 'Missed: ') . ($arguments['key'] ?? ''),
+                'get' => (! is_null($result) ? 'Read: ' : 'Missed: ') . ($arguments['key'] ?? ''),
                 'getMultiple' => 'Read: ' . implode(', ', (array) ($arguments['keys'] ?? [])),
                 'set' => 'Written: ' . ($arguments['key'] ?? ''),
                 'setMultiple' => 'Written: ' . implode(', ', array_keys($arguments['keys'] ?? [])),
