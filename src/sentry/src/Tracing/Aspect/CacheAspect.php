@@ -43,7 +43,7 @@ class CacheAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnabled('cache') || Switcher::isDisableCoroutineTracing()) {
+        if (! $this->switcher->isTracingSpanEnabled('cache')) {
             return $proceedingJoinPoint->process();
         }
 
@@ -86,9 +86,13 @@ class CacheAspect extends AbstractAspect
 
             return tap($proceedingJoinPoint->process(), function ($result) use ($span, $method) {
                 $data = match ($method) {
-                    'get', 'fetch' => [
+                    'get' => [
                         'cache.hit' => ! is_null($result),
                         'cache.item_size' => strlen((string) json_encode($result)),
+                    ],
+                    'fetch' => [
+                        'cache.hit' => ($result[0] ?? false) !== false,
+                        'cache.item_size' => strlen((string) json_encode($result[1] ?? '')),
                     ],
                     'getMultiple' => [
                         'cache.hit' => ! empty($result),
