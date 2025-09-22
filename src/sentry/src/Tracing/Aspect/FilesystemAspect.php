@@ -38,9 +38,7 @@ class FilesystemAspect extends BaseFilesystemAspect
         )?->setData($data);
 
         try {
-            $result = $proceedingJoinPoint->process();
-            $span?->setStatus(SpanStatus::ok());
-            return $result;
+            return $proceedingJoinPoint->process();
         } catch (Throwable $exception) {
             $span?->setStatus(SpanStatus::internalError())
                 ->setTags([
