@@ -18,6 +18,7 @@ use Hyperf\Rpc\Context as RpcContext;
 use Psr\Http\Message\ServerRequestInterface;
 use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
+use Sentry\State\Scope;
 use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
@@ -34,39 +35,44 @@ trait SpanStarter
     /**
      * @template T
      *
-     * @param callable(null|Span):T $callback
+     * @param callable(Scope):T $trace
      * @return T
      */
-    protected function trace(callable $callback, SpanContext $spanContext): mixed
+    protected function trace(callable $trace, SpanContext $context)
     {
-        $parent = SentrySdk::getCurrentHub()->getSpan();
-        $span = null;
+        return SentrySdk::getCurrentHub()->withScope(function (Scope $scope) use ($trace, $context) {
+            $parentSpan = $scope->getSpan();
 
-        if ($parent !== null && $parent->getSampled()) {
-            $span = $parent->startChild($spanContext);
-        }
-
-        try {
-            return $callback($span);
-        } catch (Throwable $exception) {
-            $span?->setStatus(SpanStatus::internalError())
-                ->setTags([
-                    'error' => 'true',
-                    'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
-                    'exception.code' => (string) $exception->getCode(),
-                ]);
-            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                $span?->setData([
-                    'exception.stack_trace' => (string) $exception,
-                ]);
+            if ($parentSpan !== null && $parentSpan->getSampled()) {
+                $span = $parentSpan->startChild($context);
             }
-            throw $exception;
-        } finally {
-            $span?->finish();
 
-            SentrySdk::getCurrentHub()->setSpan($parent);
-        }
+            try {
+                return $trace($scope);
+            } catch (Throwable $exception) {
+                if (isset($span)) {
+                    $span->setStatus(SpanStatus::internalError())
+                        ->setTags([
+                            'error' => 'true',
+                            'exception.class' => $exception::class,
+                            'exception.message' => $exception->getMessage(),
+                            'exception.code' => (string) $exception->getCode(),
+                        ]);
+                    if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+                        $span->setData([
+                            'exception.stack_trace' => (string) $exception,
+                        ]);
+                    }
+                }
+                throw $exception;
+            } finally {
+                if (isset($span)) {
+                    $span->finish();
+
+                    $scope->setSpan($parentSpan);
+                }
+            }
+        });
     }
 
     protected function startSpan(
