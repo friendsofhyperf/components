@@ -66,13 +66,7 @@ class ElasticsearchAspect extends AbstractAspect
             op: 'db.elasticsearch',
             description: sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
             origin: 'auto.elasticsearch',
-        );
-
-        if (! $span) {
-            return $proceedingJoinPoint->process();
-        }
-
-        $span->setData([
+        )?->setData([
             'coroutine.id' => Coroutine::id(),
             'db.system' => 'elasticsearch',
             'db.operation.name' => $proceedingJoinPoint->methodName,
@@ -86,12 +80,12 @@ class ElasticsearchAspect extends AbstractAspect
         try {
             $result = $proceedingJoinPoint->process();
             if ($this->switcher->isTracingExtraTagEnabled('elasticsearch.result')) {
-                $span->setData([
+                $span?->setData([
                     'elasticsearch.result' => json_encode($result, JSON_UNESCAPED_UNICODE),
                 ]);
             }
         } catch (Throwable $exception) {
-            $span->setStatus(SpanStatus::internalError())
+            $span?->setStatus(SpanStatus::internalError())
                 ->setTags([
                     'error' => 'true',
                     'exception.class' => $exception::class,
@@ -99,14 +93,14 @@ class ElasticsearchAspect extends AbstractAspect
                     'exception.code' => (string) $exception->getCode(),
                 ]);
             if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                $span->setData([
+                $span?->setData([
                     'exception.stack_trace' => (string) $exception,
                 ]);
             }
 
             throw $exception;
         } finally {
-            $span->finish();
+            $span?->finish();
         }
 
         return $result;
