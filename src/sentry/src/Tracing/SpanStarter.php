@@ -23,12 +23,49 @@ use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\Transaction;
 use Sentry\Tracing\TransactionSource;
+use Throwable;
 
 use function Hyperf\Tappable\tap;
 use function Sentry\continueTrace;
+use function Sentry\trace;
 
 trait SpanStarter
 {
+    /**
+     * @param callable(null|Span):mixed $callback
+     */
+    protected function trace(callable $callback, SpanContext $spanContext): mixed
+    {
+        $parent = SentrySdk::getCurrentHub()->getSpan();
+        $span = null;
+
+        if ($parent !== null && $parent->getSampled()) {
+            $span = $parent->startChild($spanContext);
+        }
+
+        try {
+            return $callback($span);
+        } catch (Throwable $exception) {
+            $span?->setStatus(SpanStatus::internalError())
+                ->setTags([
+                    'error' => 'true',
+                    'exception.class' => $exception::class,
+                    'exception.message' => $exception->getMessage(),
+                    'exception.code' => (string) $exception->getCode(),
+                ]);
+            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+                $span?->setData([
+                    'exception.stack_trace' => (string) $exception,
+                ]);
+            }
+            throw $exception;
+        } finally {
+            $span?->finish();
+
+            SentrySdk::getCurrentHub()->setSpan($parent);
+        }
+    }
+
     protected function startSpan(
         ?string $op = null,
         ?string $description = null,
@@ -36,6 +73,10 @@ trait SpanStarter
         bool $asParent = false
     ): ?Span {
         if (! $parent = SentrySdk::getCurrentHub()->getSpan()) {
+            return null;
+        }
+
+        if ($parent instanceof Transaction && ! $parent->getSampled()) {
             return null;
         }
 

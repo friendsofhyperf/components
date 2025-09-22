@@ -25,7 +25,6 @@ class CoroutineAspect extends AbstractAspect
     ];
 
     protected array $keys = [
-        SentrySdk::class,
         \Psr\Http\Message\ServerRequestInterface::class,
     ];
 
@@ -40,7 +39,7 @@ class CoroutineAspect extends AbstractAspect
             $current = Co::getContextFor();
 
             foreach ($keys as $key) {
-                if (isset($from[$key])) {
+                if (isset($from[$key]) && ! isset($current[$key])) {
                     $current[$key] = $from[$key];
                 }
             }

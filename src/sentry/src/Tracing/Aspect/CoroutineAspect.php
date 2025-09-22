@@ -14,9 +14,9 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\CoroutineBacktraceHelper;
-use Hyperf\Coroutine\Coroutine as Co;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Hyperf\Engine\Coroutine as Co;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
@@ -27,10 +27,12 @@ class CoroutineAspect extends AbstractAspect
 {
     use SpanStarter;
 
-    public ?int $priority = PHP_INT_MAX;
-
     public array $classes = [
         'Hyperf\Coroutine\Coroutine::create',
+    ];
+
+    protected array $keys = [
+        \Psr\Http\Message\ServerRequestInterface::class,
     ];
 
     public function __construct(protected Switcher $switcher)
@@ -52,6 +54,7 @@ class CoroutineAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
+        $keys = $this->keys;
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
         $parent = $this->startSpan(
             op: 'coroutine.create',
@@ -63,9 +66,18 @@ class CoroutineAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $parent->setData(['coroutine.id' => Co::id()]);
+        $parent->setData(['coroutine.id' => $cid = Co::id()]);
 
-        $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent, $callingOnFunction) {
+        $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent, $callingOnFunction, $cid, $keys) {
+            $from = Co::getContextFor($cid);
+            $current = Co::getContextFor();
+
+            foreach ($keys as $key) {
+                if (isset($from[$key]) && ! isset($current[$key])) {
+                    $current[$key] = $from[$key];
+                }
+            }
+
             $transaction = $this->startCoroutineTransaction(
                 parent: $parent,
                 name: 'coroutine',
@@ -74,7 +86,16 @@ class CoroutineAspect extends AbstractAspect
                 origin: 'auto.coroutine',
             )->setData(['coroutine.id' => Co::id()]);
 
-            defer(function () use ($transaction) {
+            $span = $this->startSpan(
+                op: 'coroutine.execute.inner',
+                description: $callingOnFunction,
+                origin: 'auto.coroutine',
+                asParent: true
+            )?->setData(['coroutine.id' => Co::id()]);
+
+            defer(function () use ($transaction, $span) {
+                $span?->finish();
+
                 SentrySdk::getCurrentHub()->setSpan($transaction);
                 $transaction->finish();
             });
@@ -82,7 +103,7 @@ class CoroutineAspect extends AbstractAspect
             try {
                 $callable();
             } catch (Throwable $exception) {
-                $transaction->setStatus(SpanStatus::internalError())
+                $span?->setStatus(SpanStatus::internalError())
                     ->setTags([
                         'error' => 'true',
                         'exception.class' => $exception::class,
@@ -90,14 +111,12 @@ class CoroutineAspect extends AbstractAspect
                         'exception.code' => (string) $exception->getCode(),
                     ]);
                 if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                    $transaction->setData([
+                    $span?->setData([
                         'exception.stack_trace' => (string) $exception,
                     ]);
                 }
 
                 throw $exception;
-            } finally {
-                // ...
             }
         };
 
