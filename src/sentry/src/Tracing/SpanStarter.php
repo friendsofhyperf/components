@@ -32,7 +32,10 @@ use function Sentry\trace;
 trait SpanStarter
 {
     /**
-     * @param callable(null|Span):mixed $callback
+     * @template T
+     *
+     * @param callable(null|Span):T $callback
+     * @return T
      */
     protected function trace(callable $callback, SpanContext $spanContext): mixed
     {
