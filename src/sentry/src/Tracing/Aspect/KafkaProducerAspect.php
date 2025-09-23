@@ -84,13 +84,11 @@ class KafkaProducerAspect extends AbstractAspect
                 ->setDescription(sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName))
                 ->setOrigin('auto.kafka')
                 ->setData([
-                    [
-                        'messaging.system' => 'kafka',
-                        'messaging.operation' => 'publish',
-                        'messaging.message.id' => $messageId,
-                        'messaging.message.body.size' => $bodySize,
-                        'messaging.destination.name' => $destinationName,
-                    ],
+                    'messaging.system' => 'kafka',
+                    'messaging.operation' => 'publish',
+                    'messaging.message.id' => $messageId,
+                    'messaging.message.body.size' => $bodySize,
+                    'messaging.destination.name' => $destinationName,
                 ])
         );
     }
