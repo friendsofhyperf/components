@@ -47,10 +47,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (
-            ! $this->switcher->isTracingSpanEnabled('guzzle')
-            || Context::get(RpcAspect::SPAN_CONTEXT) // If the parent span is not exists or the parent span is belongs to rpc, then skip.
-        ) {
+        if (! $this->switcher->isTracingSpanEnabled('guzzle')) {
             return $proceedingJoinPoint->process();
         }
 
