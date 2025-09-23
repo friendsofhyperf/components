@@ -168,9 +168,6 @@ class EventHandleListener implements ListenerInterface
         if (! $this->switcher->isTracingSpanEnabled('sql_queries')) {
             return;
         }
-        if (! SentrySdk::getCurrentHub()->getSpan()) {
-            return;
-        }
 
         $data = [
             'coroutine.id' => Coroutine::id(),
@@ -204,13 +201,16 @@ class EventHandleListener implements ListenerInterface
 
         $startTimestamp = microtime(true) - $event->time / 1000;
 
-        $this->startSpan(
-            op: 'db.sql.query',
-            description: $event->sql,
-            origin: 'auto.db'
-        )?->setData($data)
-            ->setStartTimestamp($startTimestamp)
-            ->finish($startTimestamp + $event->time / 1000);
+        $this->trace(
+            fn () => null,
+            SpanContext::make()
+                ->setOp('db.sql.query')
+                ->setDescription($event->sql)
+                ->setOrigin('auto.db')
+                ->setStartTimestamp($startTimestamp)
+                ->setData($data)
+                ->setEndTimestamp($startTimestamp + $event->time / 1000)
+        );
     }
 
     private function handleDbTransactionBeginning(DbEvent\TransactionBeginning $event): void
@@ -218,20 +218,21 @@ class EventHandleListener implements ListenerInterface
         if (! $this->switcher->isTracingSpanEnabled('sql_transactions')) {
             return;
         }
-        if (! SentrySdk::getCurrentHub()->getSpan()) {
-            return;
-        }
 
-        $this->startSpan(
-            op: 'db.transaction',
-            description: 'BEGIN',
-            origin: 'auto.db'
-        )?->setData([
-            'coroutine.id' => Coroutine::id(),
-            'db.system' => $event->connection->getDriverName(),
-            'db.name' => $event->connection->getDatabaseName(),
-            'db.pool.name' => $event->connectionName,
-        ]);
+        $this->trace(
+            fn () => null,
+            SpanContext::make()
+                ->setOp('db.transaction')
+                ->setDescription('BEGIN')
+                ->setOrigin('auto.db')
+                ->setStartTimestamp(microtime(true))
+                ->setData([
+                    'coroutine.id' => Coroutine::id(),
+                    'db.system' => $event->connection->getDriverName(),
+                    'db.name' => $event->connection->getDatabaseName(),
+                    'db.pool.name' => $event->connectionName,
+                ])
+        );
     }
 
     private function handleDbTransactionCommitted(DbEvent\TransactionCommitted $event): void
@@ -317,12 +318,18 @@ class EventHandleListener implements ListenerInterface
 
         $transaction->setData($data);
 
-        $span = $this->startSpan(
-            op: 'request.received',
-            description: 'request.received',
-            origin: 'auto.request.received',
-            asParent: true
-        );
+        $spanContext = SpanContext::make()
+            ->setOp('request.received')
+            ->setDescription('request.received')
+            ->setData([
+                'coroutine.id' => Coroutine::id(),
+            ])
+            ->setStatus(SpanStatus::ok())
+            ->setStartTimestamp(microtime(true));
+
+        $span = $transaction->startChild($spanContext);
+
+        SentrySdk::getCurrentHub()->setSpan($span);
 
         defer(function () use ($transaction, $span) {
             // Make sure the span is finished after the request is handled
@@ -338,12 +345,12 @@ class EventHandleListener implements ListenerInterface
 
     private function handleRequestHandled(HttpEvent\RequestHandled|RpcEvent\RequestHandled $event): void
     {
-        $transaction = SentrySdk::getCurrentHub()->getTransaction();
+        $span = SentrySdk::getCurrentHub()->getSpan();
 
         if (
-            ! $transaction
-            || ! $transaction->getSampled()
-            || ! $traceId = (string) $transaction->getTraceId()
+            ! $span
+            || ! $span->getSampled()
+            || ! $traceId = (string) $span->getTraceId()
         ) {
             return;
         }
@@ -356,10 +363,10 @@ class EventHandleListener implements ListenerInterface
             $event->response->setHeader('sentry-trace-id', $traceId);
         }
 
-        $transaction->setHttpStatus($event->response->getStatusCode());
+        $span->setHttpStatus($event->response->getStatusCode());
 
         if ($exception = $event->getThrowable()) {
-            $transaction->setStatus(SpanStatus::internalError())
+            $span->setStatus(SpanStatus::internalError())
                 ->setTags([
                     'error' => 'true',
                     'exception.class' => $exception::class,
@@ -367,7 +374,7 @@ class EventHandleListener implements ListenerInterface
                     'exception.message' => $exception->getMessage(),
                 ]);
             if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                $transaction->setData([
+                $span->setData([
                     'exception.stack_trace' => (string) $exception,
                 ]);
             }
