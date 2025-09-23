@@ -47,7 +47,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
     {
         if (
             ! $this->switcher->isTracingSpanEnabled('guzzle')
-            || Context::get(RpcAspect::SPAN) // If the parent span is not exists or the parent span is belongs to rpc, then skip.
+            || Context::get(RpcAspect::SPAN_CONTEXT) // If the parent span is not exists or the parent span is belongs to rpc, then skip.
         ) {
             return $proceedingJoinPoint->process();
         }

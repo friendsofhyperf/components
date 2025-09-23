@@ -25,7 +25,6 @@ use Hyperf\RpcClient;
 use Hyperf\Stringable\Str;
 use Psr\Container\ContainerInterface;
 use Sentry\State\Scope;
-use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanContext;
 
 use function Hyperf\Tappable\tap;
@@ -37,11 +36,7 @@ class RpcAspect extends AbstractAspect
 {
     use SpanStarter;
 
-    // public const SPAN = 'sentry.tracing.rpc.span';
-
-    // protected const DATA = 'sentry.tracing.rpc.data';
-
-    protected const SPAN_CONTEXT = 'sentry.tracing.rpc.span_context';
+    public const SPAN_CONTEXT = 'sentry.tracing.rpc.span_context';
 
     public array $classes = [
         RpcClient\AbstractServiceClient::class . '::__generateRpcPath',
