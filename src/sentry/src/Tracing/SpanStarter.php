@@ -45,6 +45,7 @@ trait SpanStarter
 
             if ($parentSpan !== null && $parentSpan->getSampled()) {
                 $span = $parentSpan->startChild($context);
+                $scope->setSpan($span);
             }
 
             try {
