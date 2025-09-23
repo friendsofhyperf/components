@@ -432,9 +432,6 @@ class EventHandleListener implements ListenerInterface
         SentrySdk::getCurrentHub()->setSpan($transaction);
 
         $transaction->finish();
-
-        // Make sure all spans are flushed before the command exits
-        msleep(100);
     }
 
     private function handleRedisCommandExecuted(RedisEvent\CommandExecuted $event): void
