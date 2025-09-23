@@ -17,8 +17,6 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Override;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
-use Sentry\Tracing\SpanStatus;
-use Throwable;
 
 class FilesystemAspect extends BaseFilesystemAspect
 {
@@ -34,26 +32,7 @@ class FilesystemAspect extends BaseFilesystemAspect
         [$op, $description, $data] = $this->getSentryMetadata($proceedingJoinPoint);
 
         return $this->trace(
-            function (Scope $scope) use ($proceedingJoinPoint) {
-                $span = $scope->getSpan();
-                try {
-                    return $proceedingJoinPoint->process();
-                } catch (Throwable $exception) {
-                    $span->setStatus(SpanStatus::internalError())
-                        ->setTags([
-                            'error' => 'true',
-                            'exception.class' => $exception::class,
-                            'exception.message' => $exception->getMessage(),
-                            'exception.code' => (string) $exception->getCode(),
-                        ]);
-                    if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                        $span->setData([
-                            'exception.stack_trace' => (string) $exception,
-                        ]);
-                    }
-                    throw $exception;
-                }
-            },
+            fn (Scope $scope) => $proceedingJoinPoint->process(),
             SpanContext::make()
                 ->setOp($op)
                 ->setDescription($description)

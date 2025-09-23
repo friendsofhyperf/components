@@ -20,8 +20,6 @@ use Hyperf\GrpcClient\BaseClient;
 use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
-use Sentry\Tracing\SpanStatus;
-use Throwable;
 
 class GrpcAspect extends AbstractAspect
 {
@@ -67,26 +65,7 @@ class GrpcAspect extends AbstractAspect
         $proceedingJoinPoint->arguments['keys']['options'] = $options;
 
         return $this->trace(
-            function (Scope $scope) use ($proceedingJoinPoint) {
-                $span = $scope->getSpan();
-                try {
-                    return $proceedingJoinPoint->process();
-                } catch (Throwable $exception) {
-                    $span->setStatus(SpanStatus::internalError())
-                        ->setTags([
-                            'error' => 'true',
-                            'exception.class' => $exception::class,
-                            'exception.message' => $exception->getMessage(),
-                            'exception.code' => (string) $exception->getCode(),
-                        ]);
-                    if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                        $span->setData([
-                            'exception.stack_trace' => (string) $exception,
-                        ]);
-                    }
-                    throw $exception;
-                }
-            },
+            fn (Scope $scope) => $proceedingJoinPoint->process(),
             SpanContext::make()
                 ->setOp('grpc.client')
                 ->setDescription($method)

@@ -17,8 +17,6 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
-use Sentry\Tracing\SpanStatus;
-use Throwable;
 
 use function Hyperf\Tappable\tap;
 
@@ -71,42 +69,24 @@ class CacheAspect extends AbstractAspect
 
         return $this->trace(
             function (Scope $scope) use ($proceedingJoinPoint, $method) {
-                $span = $scope->getSpan();
-
-                try {
-                    return tap($proceedingJoinPoint->process(), function ($result) use ($span, $method) {
-                        $data = match ($method) {
-                            'get' => [
-                                'cache.hit' => ! is_null($result),
-                                'cache.item_size' => strlen((string) json_encode($result)),
-                            ],
-                            'fetch' => [
-                                'cache.hit' => ($result[0] ?? false) !== false,
-                                'cache.item_size' => strlen((string) json_encode($result[1] ?? '')),
-                            ],
-                            'getMultiple' => [
-                                'cache.hit' => ! empty($result),
-                                'cache.item_size' => strlen((string) json_encode(array_values((array) $result))),
-                            ],
-                            default => [],
-                        };
-                        $span?->setData($data);
-                    });
-                } catch (Throwable $exception) {
-                    $span?->setStatus(SpanStatus::internalError())
-                        ->setTags([
-                            'error' => 'true',
-                            'exception.class' => $exception::class,
-                            'exception.message' => $exception->getMessage(),
-                            'exception.code' => (string) $exception->getCode(),
-                        ]);
-                    if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                        $span?->setData([
-                            'exception.stack_trace' => (string) $exception,
-                        ]);
-                    }
-                    throw $exception;
-                }
+                return tap($proceedingJoinPoint->process(), function ($result) use ($method, $scope) {
+                    $data = match ($method) {
+                        'get' => [
+                            'cache.hit' => ! is_null($result),
+                            'cache.item_size' => strlen((string) json_encode($result)),
+                        ],
+                        'fetch' => [
+                            'cache.hit' => ($result[0] ?? false) !== false,
+                            'cache.item_size' => strlen((string) json_encode($result[1] ?? '')),
+                        ],
+                        'getMultiple' => [
+                            'cache.hit' => ! empty($result),
+                            'cache.item_size' => strlen((string) json_encode(array_values((array) $result))),
+                        ],
+                        default => [],
+                    };
+                    $scope->getSpan()?->setData($data);
+                });
             },
             SpanContext::make()
                 ->setOp($op)

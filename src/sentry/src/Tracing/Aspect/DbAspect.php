@@ -22,8 +22,6 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Container\ContainerInterface;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
-use Sentry\Tracing\SpanStatus;
-use Throwable;
 
 /**
  * @property string $poolName
@@ -90,31 +88,13 @@ class DbAspect extends AbstractAspect
 
         return $this->trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
-                $span = $scope->getSpan();
-                try {
-                    $result = $proceedingJoinPoint->process();
-                    if ($this->switcher->isTracingExtraTagEnabled('db.result')) {
-                        $span?->setData([
-                            'db.result' => json_encode($result, JSON_UNESCAPED_UNICODE),
-                        ]);
-                    }
-                    return $result;
-                } catch (Throwable $exception) {
-                    $span?->setStatus(SpanStatus::internalError())
-                        ->setTags([
-                            'error' => 'true',
-                            'exception.class' => $exception::class,
-                            'exception.message' => $exception->getMessage(),
-                            'exception.code' => (string) $exception->getCode(),
-                        ]);
-                    if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                        $span?->setData([
-                            'exception.stack_trace' => (string) $exception,
-                        ]);
-                    }
-
-                    throw $exception;
+                $result = $proceedingJoinPoint->process();
+                if ($this->switcher->isTracingExtraTagEnabled('db.result')) {
+                    $scope->getSpan()?->setData([
+                        'db.result' => json_encode($result, JSON_UNESCAPED_UNICODE),
+                    ]);
                 }
+                return $result;
             },
             SpanContext::make()
                 ->setOp('db.sql.query')
