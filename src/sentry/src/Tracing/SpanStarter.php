@@ -33,6 +33,9 @@ use function Sentry\trace;
 trait SpanStarter
 {
     /**
+     * Execute the given callable while wrapping it in a span added as a child to the current transaction and active span.
+     * If there is no transaction active this is a no-op and the scope passed to the trace callable will be unused.
+     *
      * @template T
      *
      * @param callable(Scope):T $trace
