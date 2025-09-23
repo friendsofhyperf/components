@@ -15,6 +15,7 @@ use FriendsOfHyperf\Sentry\Integration;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Engine\Coroutine as Co;
+use Sentry\SentrySdk;
 use Throwable;
 
 class CoroutineAspect extends AbstractAspect
