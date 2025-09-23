@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing;
 
 use FriendsOfHyperf\Sentry\Constants;
+use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Rpc\Context as RpcContext;
@@ -43,42 +44,45 @@ trait SpanStarter
      */
     protected function trace(callable $trace, SpanContext $context)
     {
-        return SentrySdk::getCurrentHub()->withScope(function (Scope $scope) use ($context, $trace) {
-            $parentSpan = $scope->getSpan();
+        static $isTracingExtraTagEnabled = null;
 
-            if ($parentSpan !== null && $parentSpan->getSampled()) {
-                $span = $parentSpan->startChild($context);
-                $scope->setSpan($span);
-            }
+        if ($isTracingExtraTagEnabled !== null) {
+            $isTracingExtraTagEnabled = isset($this->switcher)
+            && $this->switcher instanceof Switcher
+            && $this->switcher->isTracingExtraTagEnabled('exception.stack_trace');
+        }
 
-            try {
-                return $trace($scope);
-            } catch (Throwable $exception) {
-                if (isset($span)) {
-                    $span->setStatus(SpanStatus::internalError())
-                        ->setTags([
-                            'error' => 'true',
-                            'exception.class' => $exception::class,
-                            'exception.code' => (string) $exception->getCode(),
-                        ])
-                        ->setData([
-                            'exception.message' => $exception->getMessage(),
-                        ]);
-                    if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                        $span->setData([
-                            'exception.stack_trace' => (string) $exception,
-                        ]);
+        if ($context->getStatus() === null) {
+            $context->setStatus(SpanStatus::ok());
+        }
+
+        return trace(
+            function (Scope $scope) use ($trace, $isTracingExtraTagEnabled) {
+                try {
+                    return $trace($scope);
+                } catch (Throwable $exception) {
+                    $span = $scope->getSpan();
+                    if ($span !== null) {
+                        $span->setStatus(SpanStatus::internalError())
+                            ->setTags([
+                                'error' => 'true',
+                                'exception.class' => $exception::class,
+                                'exception.code' => (string) $exception->getCode(),
+                            ])
+                            ->setData([
+                                'exception.message' => $exception->getMessage(),
+                            ]);
+                        if ($isTracingExtraTagEnabled) {
+                            $span->setData([
+                                'exception.stack_trace' => (string) $exception,
+                            ]);
+                        }
                     }
+                    throw $exception;
                 }
-                throw $exception;
-            } finally {
-                if (isset($span)) {
-                    $span->finish();
-
-                    $scope->setSpan($parentSpan);
-                }
-            }
-        });
+            },
+            $context
+        );
     }
 
     /**
