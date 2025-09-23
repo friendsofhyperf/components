@@ -46,7 +46,7 @@ trait SpanStarter
     {
         static $isTracingExtraTagEnabled = null;
 
-        if ($isTracingExtraTagEnabled !== null) {
+        if ($isTracingExtraTagEnabled === null) {
             $isTracingExtraTagEnabled = isset($this->switcher)
             && $this->switcher instanceof Switcher
             && $this->switcher->isTracingExtraTagEnabled('exception.stack_trace');
