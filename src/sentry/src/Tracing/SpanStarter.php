@@ -76,6 +76,9 @@ trait SpanStarter
         });
     }
 
+    /**
+     * @deprecated since v3.1, will be removed in v3.2, use trace() instead.
+     */
     protected function startSpan(
         ?string $op = null,
         ?string $description = null,

@@ -18,6 +18,7 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Engine\Coroutine as Co;
 use Sentry\SentrySdk;
+use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
@@ -56,19 +57,24 @@ class CoroutineAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $keys = $this->keys;
-        $callable = $proceedingJoinPoint->arguments['keys']['callable'];
-        $parent = $this->startSpan(
-            op: 'coroutine.create',
-            description: $callingOnFunction,
-            origin: 'auto.coroutine',
-        )?->setOrigin('auto.coroutine');
+        $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
-        if (! $parent) {
+        if (! $transaction || ! $transaction->getSampled()) {
             return $proceedingJoinPoint->process();
         }
 
-        $parent->setData(['coroutine.id' => $cid = Co::id()]);
+        $parent = $transaction->startChild(
+            SpanContext::make()
+                ->setOp('coroutine.create')
+                ->setDescription($callingOnFunction)
+                ->setOrigin('auto.coroutine')
+                ->setData(['coroutine.id' => Co::id()])
+        );
+        SentrySdk::getCurrentHub()->setSpan($parent);
+
+        $cid = Co::id();
+        $keys = $this->keys;
+        $callable = $proceedingJoinPoint->arguments['keys']['callable'];
 
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent, $callingOnFunction, $cid, $keys) {
             $from = Co::getContextFor($cid);
@@ -113,8 +119,11 @@ class CoroutineAspect extends AbstractAspect
             }
         };
 
-        $parent->finish();
-
-        return $proceedingJoinPoint->process();
+        try {
+            return $proceedingJoinPoint->process();
+        } finally {
+            $parent->finish();
+            SentrySdk::getCurrentHub()->setSpan($transaction);
+        }
     }
 }
