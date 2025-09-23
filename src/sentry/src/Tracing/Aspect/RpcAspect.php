@@ -106,6 +106,11 @@ class RpcAspect extends AbstractAspect
                 function (Scope $scope) use ($proceedingJoinPoint) {
                     $span = $scope->getSpan();
                     if ($span && $this->container->has(Rpc\Context::class)) {
+                        // Inject the RPC context data into span.
+                        $span->setData([
+                            'rpc.context' => $this->container->get(Rpc\Context::class)->getData(),
+                        ]);
+                        // Inject the tracing carrier into RPC context.
                         $this->container->get(Rpc\Context::class)
                             ->set(Constants::TRACE_CARRIER, Carrier::fromSpan($span)->toJson());
                     }
