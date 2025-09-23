@@ -67,7 +67,7 @@ class ElasticsearchAspect extends AbstractAspect
                 $result = $proceedingJoinPoint->process();
                 if ($this->switcher->isTracingExtraTagEnabled('elasticsearch.result')) {
                     $scope->getSpan()?->setData([
-                        'elasticsearch.result' => json_encode($result, JSON_UNESCAPED_UNICODE),
+                        'elasticsearch.result' => (string) json_encode($result, JSON_UNESCAPED_UNICODE),
                     ]);
                 }
                 return $result;
