@@ -115,8 +115,8 @@ class RpcAspect extends AbstractAspect
                             ->set(Constants::TRACE_CARRIER, Carrier::fromSpan($span)->toJson());
                     }
                     return tap($proceedingJoinPoint->process(), function ($result) use ($span) {
-                        if ($this->switcher->isTracingExtraTagEnabled('rpc.result')) {
-                            $span?->setData(['rpc.result' => $result]);
+                        if ($span && $this->switcher->isTracingExtraTagEnabled('rpc.result')) {
+                            $span->setData(['rpc.result' => $result]);
                         }
                     });
                 },
