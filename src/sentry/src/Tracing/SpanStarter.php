@@ -40,7 +40,7 @@ trait SpanStarter
      */
     protected function trace(callable $trace, SpanContext $context)
     {
-        return SentrySdk::getCurrentHub()->withScope(function (Scope $scope) use ($trace, $context) {
+        return SentrySdk::getCurrentHub()->withScope(function (Scope $scope) use ($context, $trace) {
             $parentSpan = $scope->getSpan();
 
             if ($parentSpan !== null && $parentSpan->getSampled()) {
