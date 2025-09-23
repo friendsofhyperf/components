@@ -88,16 +88,7 @@ class CoroutineAspect extends AbstractAspect
                 origin: 'auto.coroutine',
             )->setData(['coroutine.id' => Co::id()]);
 
-            $span = $this->startSpan(
-                op: 'coroutine.execute.inner',
-                description: $callingOnFunction,
-                origin: 'auto.coroutine',
-                asParent: true
-            )?->setData(['coroutine.id' => Co::id()]);
-
-            defer(function () use ($transaction, $span) {
-                $span?->finish();
-
+            defer(function () use ($transaction) {
                 SentrySdk::getCurrentHub()->setSpan($transaction);
                 $transaction->finish();
             });
@@ -105,7 +96,7 @@ class CoroutineAspect extends AbstractAspect
             try {
                 $callable();
             } catch (Throwable $exception) {
-                $span?->setStatus(SpanStatus::internalError())
+                $transaction->setStatus(SpanStatus::internalError())
                     ->setTags([
                         'error' => 'true',
                         'exception.class' => $exception::class,
@@ -113,7 +104,7 @@ class CoroutineAspect extends AbstractAspect
                         'exception.code' => (string) $exception->getCode(),
                     ]);
                 if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                    $span?->setData([
+                    $transaction->setData([
                         'exception.stack_trace' => (string) $exception,
                     ]);
                 }
