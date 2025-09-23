@@ -53,16 +53,20 @@ class CoroutineAspect extends AbstractAspect
 
         $callingOnFunction = CoroutineBacktraceHelper::foundCallingOnFunction();
 
+        // Only trace the top-level coroutine creation.
         if (! $callingOnFunction) {
             return $proceedingJoinPoint->process();
         }
 
+        // If there's no active transaction, skip tracing.
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
+        // If there's no active transaction, skip tracing.
         if (! $transaction || ! $transaction->getSampled()) {
             return $proceedingJoinPoint->process();
         }
 
+        // Start a span for the coroutine creation.
         $parent = $transaction->startChild(
             SpanContext::make()
                 ->setOp('coroutine.create')
@@ -76,6 +80,7 @@ class CoroutineAspect extends AbstractAspect
         $keys = $this->keys;
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
 
+        // Transfer the Sentry context to the new coroutine.
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent, $callingOnFunction, $cid, $keys) {
             $from = Co::getContextFor($cid);
             $current = Co::getContextFor();
