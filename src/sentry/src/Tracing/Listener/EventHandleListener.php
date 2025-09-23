@@ -363,7 +363,10 @@ class EventHandleListener implements ListenerInterface
             $event->response->setHeader('sentry-trace-id', $traceId);
         }
 
-        $span->setHttpStatus($event->response->getStatusCode());
+        // $span->setHttpStatus($event->response->getStatusCode());
+        $span->setStatus(
+            SpanStatus::createFromHttpStatusCode($event->response->getStatusCode())
+        );
 
         if ($exception = $event->getThrowable()) {
             $span->setStatus(SpanStatus::internalError())

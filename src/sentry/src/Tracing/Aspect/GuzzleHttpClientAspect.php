@@ -142,7 +142,9 @@ class GuzzleHttpClientAspect extends AbstractAspect
                             }
                         }
 
-                        $span->setStatus(SpanStatus::createFromHttpStatusCode($response->getStatusCode()));
+                        $span->setStatus(
+                            SpanStatus::createFromHttpStatusCode($response->getStatusCode())
+                        );
 
                         if ($response->getStatusCode() >= 400 && $response->getStatusCode() < 600) {
                             $span->setTags([
