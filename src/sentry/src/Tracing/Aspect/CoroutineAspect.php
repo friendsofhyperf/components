@@ -91,7 +91,7 @@ class CoroutineAspect extends AbstractAspect
                 }
             }
 
-            $transaction = $this->startCoroutineTransaction(
+            $coTransaction = $this->startCoroutineTransaction(
                 parent: $parent,
                 name: 'coroutine',
                 op: 'coroutine.execute',
@@ -99,15 +99,15 @@ class CoroutineAspect extends AbstractAspect
                 origin: 'auto.coroutine',
             )->setData(['coroutine.id' => Co::id()]);
 
-            defer(function () use ($transaction) {
-                SentrySdk::getCurrentHub()->setSpan($transaction);
-                $transaction->finish();
+            defer(function () use ($coTransaction) {
+                SentrySdk::getCurrentHub()->setSpan($coTransaction);
+                $coTransaction->finish();
             });
 
             try {
                 $callable();
             } catch (Throwable $exception) {
-                $transaction->setStatus(SpanStatus::internalError())
+                $coTransaction->setStatus(SpanStatus::internalError())
                     ->setTags([
                         'error' => 'true',
                         'exception.class' => $exception::class,
@@ -117,7 +117,7 @@ class CoroutineAspect extends AbstractAspect
                         'exception.message' => $exception->getMessage(),
                     ]);
                 if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                    $transaction->setData([
+                    $coTransaction->setData([
                         'exception.stack_trace' => (string) $exception,
                     ]);
                 }
