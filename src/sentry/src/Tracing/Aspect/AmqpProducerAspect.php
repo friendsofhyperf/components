@@ -81,16 +81,18 @@ class AmqpProducerAspect extends AbstractAspect
         return $this->trace(
             function (Scope $scope) use ($proceedingJoinPoint, $producerMessage, $messageId, $destinationName, $bodySize) {
                 $span = $scope->getSpan();
-                $carrier = Carrier::fromSpan($span)->with([
-                    'publish_time' => microtime(true),
-                    'message_id' => $messageId,
-                    'destination_name' => $destinationName,
-                    'body_size' => $bodySize,
-                ]);
-                (function () use ($carrier) {
-                    $this->properties['application_headers'] ??= new AMQPTable();
-                    $this->properties['application_headers']->set(Constants::TRACE_CARRIER, $carrier->toJson());
-                })->call($producerMessage);
+                if ($span) {
+                    $carrier = Carrier::fromSpan($span)->with([
+                        'publish_time' => microtime(true),
+                        'message_id' => $messageId,
+                        'destination_name' => $destinationName,
+                        'body_size' => $bodySize,
+                    ]);
+                    (function () use ($carrier) {
+                        $this->properties['application_headers'] ??= new AMQPTable();
+                        $this->properties['application_headers']->set(Constants::TRACE_CARRIER, $carrier->toJson());
+                    })->call($producerMessage);
+                }
 
                 return $proceedingJoinPoint->process();
             },
