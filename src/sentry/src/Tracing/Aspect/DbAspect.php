@@ -20,7 +20,6 @@ use Hyperf\DB\Pool\PoolFactory;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Container\ContainerInterface;
-use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
@@ -46,10 +45,6 @@ class DbAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         if (! $this->switcher->isTracingSpanEnabled('db')) {
-            return $proceedingJoinPoint->process();
-        }
-
-        if (! SentrySdk::getCurrentHub()->getSpan()) {
             return $proceedingJoinPoint->process();
         }
 
