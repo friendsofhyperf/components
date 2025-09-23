@@ -333,7 +333,7 @@ class EventHandleListener implements ListenerInterface
 
         defer(function () use ($transaction, $span) {
             // Make sure the span is finished after the request is handled
-            $span?->finish();
+            $span->finish();
 
             // Make sure the transaction is finished after the request is handled
             SentrySdk::getCurrentHub()->setSpan($transaction);
