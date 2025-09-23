@@ -42,6 +42,8 @@ use PhpAmqpLib\Message\AMQPMessage;
 use PhpAmqpLib\Wire\AMQPTable;
 use Psr\Container\ContainerInterface;
 use Sentry\SentrySdk;
+use Sentry\State\Scope;
+use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionSource;
 use Swow\Psr7\Message\ResponsePlusInterface;
@@ -444,49 +446,46 @@ class EventHandleListener implements ListenerInterface
         $config = $this->config->get('redis.' . $event->connectionName, []);
         $redisStatement = (string) new RedisCommand($event->command, $event->parameters);
 
-        $span = $this->startSpan(
-            op: 'db.redis',
-            description: $redisStatement,
-            origin: 'auto.cache.redis',
+        $this->trace(
+            function (Scope $scope) use ($event) {
+                $span = $scope->getSpan();
+
+                if ($this->switcher->isTracingExtraTagEnabled('redis.result')) {
+                    $span?->setData(['db.redis.result' => $event->result]);
+                }
+
+                if ($exception = $event->throwable) {
+                    $span?->setStatus(SpanStatus::internalError())
+                        ->setTags([
+                            'error' => 'true',
+                            'exception.class' => $exception::class,
+                            'exception.message' => $exception->getMessage(),
+                            'exception.code' => (string) $exception->getCode(),
+                        ]);
+                    if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+                        $span?->setData(['exception.stack_trace' => (string) $exception]);
+                    }
+                }
+            },
+            SpanContext::make()
+                ->setOp('db.redis')
+                ->setDescription($redisStatement)
+                ->setData([
+                    'coroutine.id' => Coroutine::id(),
+                    'db.system' => 'redis',
+                    'db.statement' => $redisStatement,
+                    'db.redis.connection' => $event->connectionName,
+                    'db.redis.database_index' => $config['db'] ?? 0,
+                    'db.redis.parameters' => $event->parameters,
+                    'db.redis.pool.name' => $event->connectionName,
+                    'db.redis.pool.max' => $pool->getOption()->getMaxConnections(),
+                    'db.redis.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
+                    'db.redis.pool.idle' => $pool->getConnectionsInChannel(),
+                    'db.redis.pool.using' => $pool->getCurrentConnections(),
+                    'duration' => $event->time * 1000,
+                ])
+                ->setStartTimestamp(microtime(true) - $event->time / 1000)
         );
-
-        if (! $span) {
-            return;
-        }
-
-        $span->setData([
-            'coroutine.id' => Coroutine::id(),
-            'db.system' => 'redis',
-            'db.statement' => $redisStatement,
-            'db.redis.connection' => $event->connectionName,
-            'db.redis.database_index' => $config['db'] ?? 0,
-            'db.redis.parameters' => $event->parameters,
-            'db.redis.pool.name' => $event->connectionName,
-            'db.redis.pool.max' => $pool->getOption()->getMaxConnections(),
-            'db.redis.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
-            'db.redis.pool.idle' => $pool->getConnectionsInChannel(),
-            'db.redis.pool.using' => $pool->getCurrentConnections(),
-            'duration' => $event->time * 1000,
-        ]);
-
-        if ($this->switcher->isTracingExtraTagEnabled('redis.result')) {
-            $span->setData(['db.redis.result' => $event->result]);
-        }
-
-        if ($exception = $event->throwable) {
-            $span->setStatus(SpanStatus::internalError())
-                ->setTags([
-                    'error' => 'true',
-                    'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
-                    'exception.code' => (string) $exception->getCode(),
-                ]);
-            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                $span->setData(['exception.stack_trace' => (string) $exception]);
-            }
-        }
-
-        $span->finish();
     }
 
     private function handleCrontabTaskStarting(CrontabEvent\BeforeExecute $event): void
