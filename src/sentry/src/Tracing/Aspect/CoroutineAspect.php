@@ -37,6 +37,7 @@ class CoroutineAspect extends AbstractAspect
 
     public function __construct(protected Switcher $switcher)
     {
+        $this->priority = PHP_INT_MAX;
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
