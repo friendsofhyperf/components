@@ -21,6 +21,8 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Container\ContainerInterface;
 use Sentry\SentrySdk;
+use Sentry\State\Scope;
+use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
@@ -70,12 +72,6 @@ class DbAspect extends AbstractAspect
         $table = $sqlParse['table'];
         $operation = $sqlParse['operation'];
 
-        $span = $this->startSpan(
-            op: 'db.sql.query',
-            description: $sql,
-            origin: 'auto.db',
-        );
-
         $data = [
             'coroutine.id' => Coroutine::id(),
             'db.system' => $driver,
@@ -98,34 +94,39 @@ class DbAspect extends AbstractAspect
             }
         }
 
-        $span?->setData($data);
+        return $this->trace(
+            function (Scope $scope) use ($proceedingJoinPoint) {
+                $span = $scope->getSpan();
+                try {
+                    $result = $proceedingJoinPoint->process();
+                    if ($this->switcher->isTracingExtraTagEnabled('db.result')) {
+                        $span?->setData([
+                            'db.result' => json_encode($result, JSON_UNESCAPED_UNICODE),
+                        ]);
+                    }
+                    return $result;
+                } catch (Throwable $exception) {
+                    $span?->setStatus(SpanStatus::internalError())
+                        ->setTags([
+                            'error' => 'true',
+                            'exception.class' => $exception::class,
+                            'exception.message' => $exception->getMessage(),
+                            'exception.code' => (string) $exception->getCode(),
+                        ]);
+                    if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+                        $span?->setData([
+                            'exception.stack_trace' => (string) $exception,
+                        ]);
+                    }
 
-        try {
-            $result = $proceedingJoinPoint->process();
-            if ($this->switcher->isTracingExtraTagEnabled('db.result')) {
-                $span?->setData([
-                    'db.result' => json_encode($result, JSON_UNESCAPED_UNICODE),
-                ]);
-            }
-        } catch (Throwable $exception) {
-            $span?->setStatus(SpanStatus::internalError())
-                ->setTags([
-                    'error' => 'true',
-                    'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
-                    'exception.code' => (string) $exception->getCode(),
-                ]);
-            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                $span?->setData([
-                    'exception.stack_trace' => (string) $exception,
-                ]);
-            }
-
-            throw $exception;
-        } finally {
-            $span?->finish();
-        }
-
-        return $result;
+                    throw $exception;
+                }
+            },
+            SpanContext::make()
+                ->setOp('db.sql.query')
+                ->setDescription($sql)
+                ->setOrigin('auto.db')
+                ->setData($data)
+        );
     }
 }
