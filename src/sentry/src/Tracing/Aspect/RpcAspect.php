@@ -101,20 +101,24 @@ class RpcAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        return $this->trace(
-            function (Scope $scope) use ($proceedingJoinPoint) {
-                $span = $scope->getSpan();
-                if ($span && $this->container->has(Rpc\Context::class)) {
-                    $this->container->get(Rpc\Context::class)
-                        ->set(Constants::TRACE_CARRIER, Carrier::fromSpan($span)->toJson());
-                }
-                return tap($proceedingJoinPoint->process(), function ($result) use ($span) {
-                    if ($this->switcher->isTracingExtraTagEnabled('rpc.result')) {
-                        $span?->setData(['rpc.result' => $result]);
+        try {
+            return $this->trace(
+                function (Scope $scope) use ($proceedingJoinPoint) {
+                    $span = $scope->getSpan();
+                    if ($span && $this->container->has(Rpc\Context::class)) {
+                        $this->container->get(Rpc\Context::class)
+                            ->set(Constants::TRACE_CARRIER, Carrier::fromSpan($span)->toJson());
                     }
-                });
-            },
-            $spanContext
-        );
+                    return tap($proceedingJoinPoint->process(), function ($result) use ($span) {
+                        if ($this->switcher->isTracingExtraTagEnabled('rpc.result')) {
+                            $span?->setData(['rpc.result' => $result]);
+                        }
+                    });
+                },
+                $spanContext
+            );
+        } finally {
+            Context::destroy(static::SPAN_CONTEXT);
+        }
     }
 }
