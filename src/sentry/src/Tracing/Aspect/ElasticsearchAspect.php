@@ -80,7 +80,7 @@ class ElasticsearchAspect extends AbstractAspect
                     'coroutine.id' => Coroutine::id(),
                     'db.system' => 'elasticsearch',
                     'db.operation.name' => $proceedingJoinPoint->methodName,
-                    'arguments' => json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE),
+                    'arguments' => (string) json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE),
                     // TODO
                     // 'http.request.method' => '',
                     // 'url.full' => '',
