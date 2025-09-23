@@ -56,6 +56,10 @@ trait SpanStarter
             $context->setStatus(SpanStatus::ok());
         }
 
+        if ($context->getStartTimestamp() === null) {
+            $context->setStartTimestamp(microtime(true));
+        }
+
         return trace(
             function (Scope $scope) use ($trace, $isTracingExtraTagEnabled) {
                 try {
