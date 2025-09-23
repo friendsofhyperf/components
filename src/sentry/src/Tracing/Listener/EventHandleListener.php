@@ -374,6 +374,8 @@ class EventHandleListener implements ListenerInterface
                     'error' => 'true',
                     'exception.class' => $exception::class,
                     'exception.code' => (string) $exception->getCode(),
+                ])
+                ->setData([
                     'exception.message' => $exception->getMessage(),
                 ]);
             if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
@@ -427,8 +429,10 @@ class EventHandleListener implements ListenerInterface
                 ->setTags([
                     'error' => 'true',
                     'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
                     'exception.code' => (string) $exception->getCode(),
+                ])
+                ->setData([
+                    'exception.message' => $exception->getMessage(),
                 ]);
             if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $transaction->setData([
@@ -469,8 +473,10 @@ class EventHandleListener implements ListenerInterface
                         ->setTags([
                             'error' => 'true',
                             'exception.class' => $exception::class,
-                            'exception.message' => $exception->getMessage(),
                             'exception.code' => (string) $exception->getCode(),
+                        ])
+                        ->setData([
+                            'exception.message' => $exception->getMessage(),
                         ]);
                     if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
                         $span?->setData(['exception.stack_trace' => (string) $exception]);
@@ -536,8 +542,10 @@ class EventHandleListener implements ListenerInterface
                 ->setTags([
                     'error' => 'true',
                     'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
                     'exception.code' => (string) $exception->getCode(),
+                ])
+                ->setData([
+                    'exception.message' => $exception->getMessage(),
                 ]);
             if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $transaction->setData(['exception.stack_trace' => (string) $exception]);
@@ -614,8 +622,10 @@ class EventHandleListener implements ListenerInterface
                 ->setTags([
                     'error' => 'true',
                     'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
                     'exception.code' => (string) $exception->getCode(),
+                ])
+                ->setData([
+                    'exception.message' => $exception->getMessage(),
                 ]);
             if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $transaction->setData(['exception.stack_trace' => (string) $exception]);
@@ -686,8 +696,10 @@ class EventHandleListener implements ListenerInterface
                 ->setTags([
                     'error' => 'true',
                     'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
                     'exception.code' => (string) $exception->getCode(),
+                ])
+                ->setData([
+                    'exception.message' => $exception->getMessage(),
                 ]);
             if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $transaction->setData(['exception.stack_trace' => (string) $exception]);
@@ -745,8 +757,10 @@ class EventHandleListener implements ListenerInterface
                 ->setTags([
                     'error' => 'true',
                     'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
                     'exception.code' => (string) $exception->getCode(),
+                ])
+                ->setData([
+                    'exception.message' => $exception->getMessage(),
                 ]);
             if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $transaction->setData(['exception.stack_trace' => (string) $exception]);
