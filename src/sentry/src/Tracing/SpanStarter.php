@@ -44,13 +44,9 @@ trait SpanStarter
      */
     protected function trace(callable $trace, SpanContext $context)
     {
-        static $isTracingExtraTagEnabled = null;
-
-        if ($isTracingExtraTagEnabled === null) {
-            $isTracingExtraTagEnabled = isset($this->switcher)
-            && $this->switcher instanceof Switcher
-            && $this->switcher->isTracingExtraTagEnabled('exception.stack_trace');
-        }
+        $isTracingExtraTagEnabled = isset($this->switcher)
+        && $this->switcher instanceof Switcher
+        && $this->switcher->isTracingExtraTagEnabled('exception.stack_trace');
 
         if ($context->getStatus() === null) {
             $context->setStatus(SpanStatus::ok());
