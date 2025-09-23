@@ -71,7 +71,6 @@ class DbAspect extends AbstractAspect
         $sqlParse = SqlParser::parse($sql);
         $table = $sqlParse['table'];
         $operation = $sqlParse['operation'];
-
         $data = [
             'coroutine.id' => Coroutine::id(),
             'db.system' => $driver,
