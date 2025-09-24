@@ -317,16 +317,16 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        $spanContext = SpanContext::make()
-            ->setOp('request.received')
-            ->setDescription('request.received')
-            ->setData([
-                'coroutine.id' => Coroutine::id(),
-            ])
-            ->setStatus(SpanStatus::ok())
-            ->setStartTimestamp(microtime(true));
-
-        $span = $transaction->startChild($spanContext);
+        $span = $transaction->startChild(
+            SpanContext::make()
+                ->setOp('request.received')
+                ->setDescription('request.received')
+                ->setData([
+                    'coroutine.id' => Coroutine::id(),
+                ])
+                ->setStatus(SpanStatus::ok())
+                ->setStartTimestamp(microtime(true))
+        );
 
         SentrySdk::getCurrentHub()->setSpan($span);
 
