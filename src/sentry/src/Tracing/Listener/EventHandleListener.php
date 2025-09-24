@@ -347,11 +347,7 @@ class EventHandleListener implements ListenerInterface
     {
         $span = SentrySdk::getCurrentHub()->getSpan();
 
-        if (
-            ! $span
-            || ! $span->getSampled()
-            || ! $traceId = (string) $span->getTraceId()
-        ) {
+        if (! $span || ! $traceId = (string) $span->getTraceId()) {
             return;
         }
 
@@ -363,7 +359,6 @@ class EventHandleListener implements ListenerInterface
             $event->response->setHeader('sentry-trace-id', $traceId);
         }
 
-        // $span->setHttpStatus($event->response->getStatusCode());
         $span->setStatus(
             SpanStatus::createFromHttpStatusCode($event->response->getStatusCode())
         );
