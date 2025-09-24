@@ -163,7 +163,7 @@ class EventHandleListener implements ListenerInterface
         };
     }
 
-    private function handleDbQueryExecuted(DbEvent\QueryExecuted $event): void
+    protected function handleDbQueryExecuted(DbEvent\QueryExecuted $event): void
     {
         if (! $this->switcher->isTracingSpanEnabled('sql_queries')) {
             return;
@@ -213,7 +213,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleDbTransactionBeginning(DbEvent\TransactionBeginning $event): void
+    protected function handleDbTransactionBeginning(DbEvent\TransactionBeginning $event): void
     {
         if (! $this->switcher->isTracingSpanEnabled('sql_transactions')) {
             return;
@@ -235,7 +235,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleDbTransactionCommitted(DbEvent\TransactionCommitted $event): void
+    protected function handleDbTransactionCommitted(DbEvent\TransactionCommitted $event): void
     {
         if (! $this->switcher->isTracingSpanEnabled('sql_transactions')) {
             return;
@@ -249,7 +249,7 @@ class EventHandleListener implements ListenerInterface
             ->finish();
     }
 
-    private function handleDbTransactionRolledBack(DbEvent\TransactionRolledBack $event): void
+    protected function handleDbTransactionRolledBack(DbEvent\TransactionRolledBack $event): void
     {
         if (! $this->switcher->isTracingSpanEnabled('sql_transactions')) {
             return;
@@ -263,7 +263,7 @@ class EventHandleListener implements ListenerInterface
             ->finish();
     }
 
-    private function handleRequestReceived(HttpEvent\RequestReceived|RpcEvent\RequestReceived $event): void
+    protected function handleRequestReceived(HttpEvent\RequestReceived|RpcEvent\RequestReceived $event): void
     {
         if (! $this->switcher->isTracingEnabled('request')) {
             return;
@@ -343,7 +343,7 @@ class EventHandleListener implements ListenerInterface
         });
     }
 
-    private function handleRequestHandled(HttpEvent\RequestHandled|RpcEvent\RequestHandled $event): void
+    protected function handleRequestHandled(HttpEvent\RequestHandled|RpcEvent\RequestHandled $event): void
     {
         $span = SentrySdk::getCurrentHub()->getSpan();
 
@@ -386,7 +386,7 @@ class EventHandleListener implements ListenerInterface
         }
     }
 
-    private function handleCommandStarting(CommandEvent\BeforeHandle $event): void
+    protected function handleCommandStarting(CommandEvent\BeforeHandle $event): void
     {
         if (
             ! $this->switcher->isTracingEnabled('command')
@@ -406,7 +406,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleCommandFinished(CommandEvent\AfterExecute $event): void
+    protected function handleCommandFinished(CommandEvent\AfterExecute $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
@@ -450,7 +450,7 @@ class EventHandleListener implements ListenerInterface
         $transaction->finish();
     }
 
-    private function handleRedisCommandExecuted(RedisEvent\CommandExecuted $event): void
+    protected function handleRedisCommandExecuted(RedisEvent\CommandExecuted $event): void
     {
         if (! $this->switcher->isTracingSpanEnabled('redis')) {
             return;
@@ -506,7 +506,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleCrontabTaskStarting(CrontabEvent\BeforeExecute $event): void
+    protected function handleCrontabTaskStarting(CrontabEvent\BeforeExecute $event): void
     {
         if (! $this->switcher->isTracingEnabled('crontab')) {
             return;
@@ -523,7 +523,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleCrontabTaskFinished(CrontabEvent\FailToExecute|CrontabEvent\AfterExecute $event): void
+    protected function handleCrontabTaskFinished(CrontabEvent\FailToExecute|CrontabEvent\AfterExecute $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
@@ -559,7 +559,7 @@ class EventHandleListener implements ListenerInterface
         $transaction->finish();
     }
 
-    private function handleAmqpMessageProcessing(AmqpEvent\BeforeConsume $event): void
+    protected function handleAmqpMessageProcessing(AmqpEvent\BeforeConsume $event): void
     {
         if (! $this->switcher->isTracingEnabled('amqp')) {
             return;
@@ -590,7 +590,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleAmqpMessageProcessed(AmqpEvent\AfterConsume|AmqpEvent\FailToConsume $event): void
+    protected function handleAmqpMessageProcessed(AmqpEvent\AfterConsume|AmqpEvent\FailToConsume $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
@@ -639,7 +639,7 @@ class EventHandleListener implements ListenerInterface
         $transaction->finish();
     }
 
-    private function handleKafkaMessageProcessing(KafkaEvent\BeforeConsume $event): void
+    protected function handleKafkaMessageProcessing(KafkaEvent\BeforeConsume $event): void
     {
         if (! $this->switcher->isTracingEnabled('kafka')) {
             return;
@@ -670,7 +670,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleKafkaMessageProcessed(KafkaEvent\AfterConsume|KafkaEvent\FailToConsume $event): void
+    protected function handleKafkaMessageProcessed(KafkaEvent\AfterConsume|KafkaEvent\FailToConsume $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
@@ -713,7 +713,7 @@ class EventHandleListener implements ListenerInterface
         $transaction->finish();
     }
 
-    private function handleAsyncQueueJobProcessing(AsyncQueueEvent\BeforeHandle $event): void
+    protected function handleAsyncQueueJobProcessing(AsyncQueueEvent\BeforeHandle $event): void
     {
         if (! $this->switcher->isTracingEnabled('async_queue')) {
             return;
@@ -734,7 +734,7 @@ class EventHandleListener implements ListenerInterface
         );
     }
 
-    private function handleAsyncQueueJobProcessed(AsyncQueueEvent\AfterHandle|AsyncQueueEvent\RetryHandle|AsyncQueueEvent\FailedHandle $event): void
+    protected function handleAsyncQueueJobProcessed(AsyncQueueEvent\AfterHandle|AsyncQueueEvent\RetryHandle|AsyncQueueEvent\FailedHandle $event): void
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
