@@ -777,6 +777,9 @@ class EventHandleListener implements ListenerInterface
         }
     }
 
+    /**
+     * @return array{0:string,1:array,2:string}
+     */
     private function parseRoute(Dispatched $dispatched): array
     {
         $route = '<missing route>';
