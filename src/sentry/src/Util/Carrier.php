@@ -11,10 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Util;
 
+use FriendsOfHyperf\Sentry\Constants;
+use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\Arrayable;
 use Hyperf\Contract\Jsonable;
+use Hyperf\Rpc\Context as RpcContext;
 use JsonException;
 use JsonSerializable;
+use Psr\Http\Message\ServerRequestInterface;
 use Sentry\Tracing\Span;
 use Stringable;
 
@@ -55,6 +59,34 @@ class Carrier implements JsonSerializable, Arrayable, Stringable, Jsonable
             'sentry-trace' => $span->toTraceparent(),
             'baggage' => $span->toBaggage(),
             'traceparent' => $span->toW3CTraceparent(),
+        ]);
+    }
+
+    public static function fromRequest(ServerRequestInterface $request): static
+    {
+        // Get sentry-trace and baggage
+        $sentryTrace = match (true) {
+            $request->hasHeader('sentry-trace') => $request->getHeaderLine('sentry-trace'),
+            $request->hasHeader('traceparent') => $request->getHeaderLine('traceparent'),
+            default => '',
+        };
+        $baggage = $request->getHeaderLine('baggage');
+        $container = ApplicationContext::getContainer();
+
+        // Rpc Context
+        if ($container->has(RpcContext::class)) {
+            $rpcContext = $container->get(RpcContext::class);
+            /** @var null|string $payload */
+            $payload = $rpcContext->get(Constants::TRACE_CARRIER);
+            if ($payload) {
+                $carrier = Carrier::fromJson($payload);
+                [$sentryTrace, $baggage] = [$carrier->getSentryTrace(), $carrier->getBaggage()];
+            }
+        }
+
+        return new static([
+            'sentry-trace' => $sentryTrace,
+            'baggage' => $baggage,
         ]);
     }
 

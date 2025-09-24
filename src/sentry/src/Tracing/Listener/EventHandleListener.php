@@ -282,26 +282,15 @@ class EventHandleListener implements ListenerInterface
         $serverName = $dispatched->serverName ?? 'http';
         $path = $request->getUri()->getPath();
         $method = strtoupper($request->getMethod());
-
         [$route, $routeParams, $routeCallback] = $this->parseRoute($dispatched);
-
         [$name, $source] = match (strtolower($this->source)) {
             'custom' => [$routeCallback, TransactionSource::custom()],
             'url' => [$path, TransactionSource::url()],
             default => [$route, TransactionSource::route()],
         };
-
-        // $transaction = $this->startRequestTransaction(
-        //     request: $request,
-        //     name: $name,
-        //     op: sprintf('%s.server', $serverName),
-        //     description: sprintf('%s %s', $method, $path),
-        //     origin: 'auto.request',
-        //     source: $source,
-        // );
-
+        $carrier = Carrier::fromRequest($request);
         $transaction = $this->startTransaction(
-            continueTrace(...$this->parseSentryTraceAndBaggage($request))
+            continueTrace($carrier->getSentryTrace(), $carrier->getBaggage())
                 ->setName($name)
                 ->setOp(sprintf('%s.server', $serverName))
                 ->setDescription(description: sprintf('%s %s', $method, $path))

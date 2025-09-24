@@ -11,11 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing;
 
-use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Util\Carrier;
-use Hyperf\Context\ApplicationContext;
-use Hyperf\Rpc\Context as RpcContext;
 use Psr\Http\Message\ServerRequestInterface;
 use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
@@ -120,9 +117,9 @@ trait SpanStarter
      */
     protected function startRequestTransaction(ServerRequestInterface $request, ...$options): Transaction
     {
-        [$sentryTrace, $baggage] = $this->parseSentryTraceAndBaggage($request);
+        $carrier = Carrier::fromRequest($request);
 
-        return $this->continueTrace($sentryTrace, $baggage, ...$options);
+        return $this->continueTrace($carrier->getSentryTrace(), $carrier->getBaggage(), ...$options);
     }
 
     /**
@@ -178,33 +175,5 @@ trait SpanStarter
         $hub->setSpan($transaction);
 
         return $transaction;
-    }
-
-    /**
-     * @return array{0: string, 1: string}
-     */
-    protected function parseSentryTraceAndBaggage(ServerRequestInterface $request): array
-    {
-        // Get sentry-trace and baggage
-        $sentryTrace = match (true) {
-            $request->hasHeader('sentry-trace') => $request->getHeaderLine('sentry-trace'),
-            $request->hasHeader('traceparent') => $request->getHeaderLine('traceparent'),
-            default => '',
-        };
-        $baggage = $request->getHeaderLine('baggage');
-        $container = $this->container ?? ApplicationContext::getContainer();
-
-        // Rpc Context
-        if ($container->has(RpcContext::class)) {
-            $rpcContext = $container->get(RpcContext::class);
-            /** @var null|string $payload */
-            $payload = $rpcContext->get(Constants::TRACE_CARRIER);
-            if ($payload) {
-                $carrier = Carrier::fromJson($payload);
-                [$sentryTrace, $baggage] = [$carrier->getSentryTrace(), $carrier->getBaggage()];
-            }
-        }
-
-        return [$sentryTrace, $baggage];
     }
 }
