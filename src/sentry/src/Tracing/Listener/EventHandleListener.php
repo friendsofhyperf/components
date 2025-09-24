@@ -462,14 +462,16 @@ class EventHandleListener implements ListenerInterface
 
         $this->trace(
             function (Scope $scope) use ($event) {
-                $span = $scope->getSpan();
+                if (! $span = $scope->getSpan()) {
+                    return;
+                }
 
                 if ($this->switcher->isTracingExtraTagEnabled('redis.result')) {
-                    $span?->setData(['db.redis.result' => $event->result]);
+                    $span->setData(['db.redis.result' => $event->result]);
                 }
 
                 if ($exception = $event->throwable) {
-                    $span?->setStatus(SpanStatus::internalError())
+                    $span->setStatus(SpanStatus::internalError())
                         ->setTags([
                             'error' => 'true',
                             'exception.class' => $exception::class,
@@ -479,7 +481,7 @@ class EventHandleListener implements ListenerInterface
                             'exception.message' => $exception->getMessage(),
                         ]);
                     if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                        $span?->setData(['exception.stack_trace' => (string) $exception]);
+                        $span->setData(['exception.stack_trace' => (string) $exception]);
                     }
                 }
             },
