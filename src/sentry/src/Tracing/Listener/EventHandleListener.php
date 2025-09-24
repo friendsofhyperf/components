@@ -301,6 +301,7 @@ class EventHandleListener implements ListenerInterface
         if ($this->container->has(RpcContext::class)) {
             $data['rpc.context'] = $this->container->get(RpcContext::class)->getData();
         }
+
         $carrier = Carrier::fromRequest($request);
         $transaction = $this->startTransaction(
             continueTrace($carrier->getSentryTrace(), $carrier->getBaggage())
