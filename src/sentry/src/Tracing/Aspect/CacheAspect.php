@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
@@ -93,6 +94,7 @@ class CacheAspect extends AbstractAspect
                 ->setDescription(implode(', ', $keys))
                 ->setOrigin('auto.cache')
                 ->setData([
+                    'coroutine.id' => Coroutine::id(),
                     'cache.key' => $keys,
                     'cache.ttl' => $arguments['ttl'] ?? null,
                     'item_size' => match (true) {

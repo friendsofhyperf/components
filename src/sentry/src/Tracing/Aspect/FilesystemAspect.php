@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Aspect\FilesystemAspect as BaseFilesystemAspect;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Override;
 use Sentry\State\Scope;
@@ -37,7 +38,7 @@ class FilesystemAspect extends BaseFilesystemAspect
                 ->setOp($op)
                 ->setDescription($description)
                 ->setOrigin('auto.filesystem')
-                ->setData($data)
+                ->setData(['coroutine.id' => Coroutine::id()] + $data)
         );
     }
 }

@@ -42,9 +42,9 @@ class GrpcAspect extends AbstractAspect
         $method = $proceedingJoinPoint->arguments['keys']['method'];
         $options = $proceedingJoinPoint->arguments['keys']['options'];
         $data = [
+            'coroutine.id' => Coroutine::id(),
             'grpc.method' => $method,
             'grpc.options' => $options,
-            'coroutine.id' => Coroutine::id(),
         ];
 
         $parent = SentrySdk::getCurrentHub()->getSpan();

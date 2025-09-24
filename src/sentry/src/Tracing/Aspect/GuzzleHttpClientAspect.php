@@ -185,6 +185,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 ->setOp('http.client')
                 ->setDescription($request->getMethod() . ' ' . (string) $request->getUri())
                 ->setOrigin('auto.http.client')
+                ->setData(['coroutine.id' => Coroutine::id()])
         );
     }
 }

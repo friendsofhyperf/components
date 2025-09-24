@@ -17,6 +17,7 @@ use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Amqp\Annotation\Producer;
 use Hyperf\Amqp\Message\ProducerMessage;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -101,6 +102,7 @@ class AmqpProducerAspect extends AbstractAspect
                 ->setDescription(sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName))
                 ->setOrigin('auto.amqp')
                 ->setData([
+                    'coroutine.id' => Coroutine::id(),
                     'messaging.system' => 'amqp',
                     'messaging.operation' => 'publish',
                     'messaging.message.id' => $messageId,
