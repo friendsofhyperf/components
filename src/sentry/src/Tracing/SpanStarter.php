@@ -31,6 +31,19 @@ use function Sentry\trace;
 
 trait SpanStarter
 {
+    protected function startTransaction(TransactionContext $transactionContext, array $customSamplingContext = []): Transaction
+    {
+        $hub = SentrySdk::setCurrentHub(
+            tap(clone SentrySdk::getCurrentHub(), fn (HubInterface $hub) => $hub->pushScope())
+        );
+
+        $transaction = $hub->startTransaction($transactionContext, $customSamplingContext);
+
+        $hub->setSpan($transaction);
+
+        return $transaction;
+    }
+
     /**
      * Execute the given callable while wrapping it in a span added as a child to the current transaction and active span.
      * If there is no transaction active this is a no-op and the scope passed to the trace callable will be unused.
@@ -162,18 +175,5 @@ trait SpanStarter
             $hub->startTransaction($transactionContext),
             fn ($transaction) => $hub->setSpan($transaction)
         );
-    }
-
-    protected function startTransaction(TransactionContext $transactionContext, array $customSamplingContext = []): Transaction
-    {
-        $hub = SentrySdk::setCurrentHub(
-            tap(clone SentrySdk::getCurrentHub(), fn (HubInterface $hub) => $hub->pushScope())
-        );
-
-        $transaction = $hub->startTransaction($transactionContext, $customSamplingContext);
-
-        $hub->setSpan($transaction);
-
-        return $transaction;
     }
 }
