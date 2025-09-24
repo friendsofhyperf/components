@@ -45,11 +45,13 @@ use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
+use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 use Swow\Psr7\Message\ResponsePlusInterface;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
 use function Hyperf\Coroutine\defer;
+use function Sentry\continueTrace;
 
 /**
  * @property int $exitCode
@@ -289,13 +291,22 @@ class EventHandleListener implements ListenerInterface
             default => [$route, TransactionSource::route()],
         };
 
-        $transaction = $this->startRequestTransaction(
-            request: $request,
-            name: $name,
-            op: sprintf('%s.server', $serverName),
-            description: sprintf('%s %s', $method, $path),
-            origin: 'auto.request',
-            source: $source,
+        // $transaction = $this->startRequestTransaction(
+        //     request: $request,
+        //     name: $name,
+        //     op: sprintf('%s.server', $serverName),
+        //     description: sprintf('%s %s', $method, $path),
+        //     origin: 'auto.request',
+        //     source: $source,
+        // );
+
+        $transaction = $this->startTransaction(
+            continueTrace(...$this->parseSentryTraceAndBaggage($request))
+                ->setName($name)
+                ->setOp(sprintf('%s.server', $serverName))
+                ->setDescription(description: sprintf('%s %s', $method, $path))
+                ->setOrigin('auto.request')
+                ->setSource($source)
         );
 
         if (! $transaction->getSampled()) {
@@ -397,12 +408,13 @@ class EventHandleListener implements ListenerInterface
 
         $command = $event->getCommand();
 
-        $this->continueTrace(
-            name: $command->getName() ?: '<unnamed command>',
-            op: 'console.command',
-            description: $command->getDescription(),
-            origin: 'auto.command',
-            source: TransactionSource::custom()
+        $this->startTransaction(
+            TransactionContext::make()
+                ->setName($command->getName() ?: '<unnamed command>')
+                ->setOp('console.command')
+                ->setDescription($command->getDescription())
+                ->setOrigin('auto.command')
+                ->setSource(TransactionSource::custom())
         );
     }
 
@@ -514,12 +526,13 @@ class EventHandleListener implements ListenerInterface
 
         $crontab = $event->crontab;
 
-        $this->continueTrace(
-            name: $crontab->getName() ?: '<unnamed crontab>',
-            op: 'crontab.run',
-            description: $crontab->getMemo(),
-            origin: 'auto.crontab',
-            source: TransactionSource::task()
+        $this->startTransaction(
+            TransactionContext::make()
+                ->setName($crontab->getName() ?: '<unnamed crontab>')
+                ->setOp('crontab.run')
+                ->setDescription($crontab->getMemo())
+                ->setOrigin('auto.crontab')
+                ->setSource(TransactionSource::task())
         );
     }
 
@@ -579,14 +592,13 @@ class EventHandleListener implements ListenerInterface
             }
         }
 
-        $this->continueTrace(
-            sentryTrace: $carrier?->getSentryTrace() ?? '',
-            baggage: $carrier?->getBaggage() ?? '',
-            name: $message::class,
-            op: 'queue.process',
-            description: $message::class,
-            origin: 'auto.amqp',
-            source: TransactionSource::custom()
+        $this->startTransaction(
+            continueTrace($carrier?->getSentryTrace() ?? '', $carrier?->getBaggage() ?? '')
+                ->setName($message::class)
+                ->setOp('queue.process')
+                ->setDescription($message::class)
+                ->setOrigin('auto.amqp')
+                ->setSource(TransactionSource::custom())
         );
     }
 
@@ -659,14 +671,13 @@ class EventHandleListener implements ListenerInterface
             }
         }
 
-        $this->continueTrace(
-            sentryTrace: $carrier?->getSentryTrace() ?? '',
-            baggage: $carrier?->getBaggage() ?? '',
-            name: $consumer->getTopic() . ' process',
-            op: 'queue.process',
-            description: $consumer::class,
-            origin: 'auto.kafka',
-            source: TransactionSource::custom()
+        $this->startTransaction(
+            continueTrace($carrier?->getSentryTrace() ?? '', $carrier?->getBaggage() ?? '')
+                ->setName($consumer->getTopic() . ' process')
+                ->setOp('queue.process')
+                ->setDescription($consumer::class)
+                ->setOrigin('auto.kafka')
+                ->setSource(TransactionSource::custom())
         );
     }
 
@@ -723,14 +734,13 @@ class EventHandleListener implements ListenerInterface
         $carrier = Context::get(Constants::TRACE_CARRIER, null, Coroutine::parentId());
         $job = $event->getMessage()->job();
 
-        $this->continueTrace(
-            sentryTrace: $carrier?->getSentryTrace() ?? '',
-            baggage: $carrier?->getBaggage() ?? '',
-            name: $job::class,
-            op: 'queue.process',
-            description: 'async_queue: ' . $job::class,
-            origin: 'auto.async_queue',
-            source: TransactionSource::custom()
+        $this->startTransaction(
+            continueTrace($carrier?->getSentryTrace() ?? '', $carrier?->getBaggage() ?? '')
+                ->setName($job::class)
+                ->setOp('queue.process')
+                ->setDescription('async_queue: ' . $job::class)
+                ->setOrigin('auto.async_queue')
+                ->setSource(TransactionSource::custom())
         );
     }
 

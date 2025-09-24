@@ -24,6 +24,7 @@ use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\Transaction;
+use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 use Throwable;
 
@@ -114,36 +115,27 @@ trait SpanStarter
         );
     }
 
+    /**
+     * @deprecated since v3.1, will be removed in v3.2, use startTransaction() instead.
+     */
     protected function startRequestTransaction(ServerRequestInterface $request, ...$options): Transaction
     {
-        // Get sentry-trace and baggage
-        $sentryTrace = match (true) {
-            $request->hasHeader('sentry-trace') => $request->getHeaderLine('sentry-trace'),
-            $request->hasHeader('traceparent') => $request->getHeaderLine('traceparent'),
-            default => '',
-        };
-        $baggage = $request->getHeaderLine('baggage');
-        $container = $this->container ?? ApplicationContext::getContainer();
-
-        // Rpc Context
-        if ($container->has(RpcContext::class)) {
-            $rpcContext = $container->get(RpcContext::class);
-            /** @var null|string $payload */
-            $payload = $rpcContext->get(Constants::TRACE_CARRIER);
-            if ($payload) {
-                $carrier = Carrier::fromJson($payload);
-                [$sentryTrace, $baggage] = [$carrier->getSentryTrace(), $carrier->getBaggage()];
-            }
-        }
+        [$sentryTrace, $baggage] = $this->parseSentryTraceAndBaggage($request);
 
         return $this->continueTrace($sentryTrace, $baggage, ...$options);
     }
 
+    /**
+     * @deprecated since v3.1, will be removed in v3.2, use startTransaction() instead.
+     */
     protected function startCoroutineTransaction(Span $parent, ...$options): Transaction
     {
         return $this->continueTrace($parent->toTraceparent(), $parent->toBaggage(), ...$options);
     }
 
+    /**
+     * @deprecated since v3.1, will be removed in v3.2, use startTransaction() instead.
+     */
     protected function continueTrace(string $sentryTrace = '', string $baggage = '', ...$options): Transaction
     {
         $hub = SentrySdk::setCurrentHub(
@@ -173,5 +165,46 @@ trait SpanStarter
             $hub->startTransaction($transactionContext),
             fn ($transaction) => $hub->setSpan($transaction)
         );
+    }
+
+    protected function startTransaction(TransactionContext $transactionContext, array $customSamplingContext = []): Transaction
+    {
+        $hub = SentrySdk::setCurrentHub(
+            tap(clone SentrySdk::getCurrentHub(), fn (HubInterface $hub) => $hub->pushScope())
+        );
+
+        $transaction = $hub->startTransaction($transactionContext, $customSamplingContext);
+
+        $hub->setSpan($transaction);
+
+        return $transaction;
+    }
+
+    /**
+     * @return array{0: string, 1: string}
+     */
+    protected function parseSentryTraceAndBaggage(ServerRequestInterface $request): array
+    {
+        // Get sentry-trace and baggage
+        $sentryTrace = match (true) {
+            $request->hasHeader('sentry-trace') => $request->getHeaderLine('sentry-trace'),
+            $request->hasHeader('traceparent') => $request->getHeaderLine('traceparent'),
+            default => '',
+        };
+        $baggage = $request->getHeaderLine('baggage');
+        $container = $this->container ?? ApplicationContext::getContainer();
+
+        // Rpc Context
+        if ($container->has(RpcContext::class)) {
+            $rpcContext = $container->get(RpcContext::class);
+            /** @var null|string $payload */
+            $payload = $rpcContext->get(Constants::TRACE_CARRIER);
+            if ($payload) {
+                $carrier = Carrier::fromJson($payload);
+                [$sentryTrace, $baggage] = [$carrier->getSentryTrace(), $carrier->getBaggage()];
+            }
+        }
+
+        return [$sentryTrace, $baggage];
     }
 }

@@ -23,6 +23,7 @@ use Sentry\Tracing\SpanStatus;
 use Throwable;
 
 use function Hyperf\Coroutine\defer;
+use function Sentry\continueTrace;
 
 class CoroutineAspect extends AbstractAspect
 {
@@ -91,13 +92,14 @@ class CoroutineAspect extends AbstractAspect
                 }
             }
 
-            $coTransaction = $this->startCoroutineTransaction(
-                parent: $parent,
-                name: 'coroutine',
-                op: 'coroutine.execute',
-                description: $callingOnFunction,
-                origin: 'auto.coroutine',
-            )->setData(['coroutine.id' => Co::id()]);
+            $coTransaction = $this->startTransaction(
+                continueTrace($parent->toTraceparent(), $parent->toBaggage())
+                    ->setName('coroutine')
+                    ->setOp('coroutine.execute')
+                    ->setDescription($callingOnFunction)
+                    ->setOrigin('auto.coroutine')
+                    ->setData(['coroutine.id' => Co::id()])
+            );
 
             defer(function () use ($coTransaction) {
                 SentrySdk::getCurrentHub()->setSpan($coTransaction);
