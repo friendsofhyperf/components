@@ -321,9 +321,7 @@ class EventHandleListener implements ListenerInterface
             SpanContext::make()
                 ->setOp('request.received')
                 ->setDescription('request.received')
-                ->setData([
-                    'coroutine.id' => Coroutine::id(),
-                ])
+                ->setData(['coroutine.id' => Coroutine::id()])
                 ->setStatus(SpanStatus::ok())
                 ->setStartTimestamp(microtime(true))
         );
@@ -346,16 +344,18 @@ class EventHandleListener implements ListenerInterface
     {
         $span = SentrySdk::getCurrentHub()->getSpan();
 
-        if (! $span || ! $traceId = (string) $span->getTraceId()) {
+        if (! $span) {
             return;
         }
 
-        if ($event instanceof RpcEvent\RequestHandled) {
-            if ($this->container->has(RpcContext::class)) {
-                $this->container->get(RpcContext::class)->set('sentry-trace-id', $traceId);
+        if ($traceId = $span->getTraceId()) {
+            if ($event instanceof RpcEvent\RequestHandled) {
+                if ($this->container->has(RpcContext::class)) {
+                    $this->container->get(RpcContext::class)->set('sentry-trace-id', $traceId);
+                }
+            } elseif ($event->response instanceof ResponsePlusInterface) {
+                $event->response->setHeader('sentry-trace-id', $traceId);
             }
-        } elseif ($event->response instanceof ResponsePlusInterface) {
-            $event->response->setHeader('sentry-trace-id', $traceId);
         }
 
         $span->setStatus(
