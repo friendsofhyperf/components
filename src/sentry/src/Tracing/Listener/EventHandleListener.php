@@ -349,10 +349,8 @@ class EventHandleListener implements ListenerInterface
         }
 
         $traceId = (string) $span->getTraceId();
-        if ($event instanceof RpcEvent\RequestHandled) {
-            if ($this->container->has(RpcContext::class)) {
-                $this->container->get(RpcContext::class)->set('sentry-trace-id', $traceId);
-            }
+        if ($event instanceof RpcEvent\RequestHandled && $this->container->has(RpcContext::class)) {
+            $this->container->get(RpcContext::class)->set('sentry-trace-id', $traceId);
         } elseif ($event->response instanceof ResponsePlusInterface) {
             $event->response->setHeader('sentry-trace-id', $traceId);
         }
