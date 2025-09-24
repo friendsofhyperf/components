@@ -288,20 +288,6 @@ class EventHandleListener implements ListenerInterface
             'url' => [$path, TransactionSource::url()],
             default => [$route, TransactionSource::route()],
         };
-        $carrier = Carrier::fromRequest($request);
-        $transaction = $this->startTransaction(
-            continueTrace($carrier->getSentryTrace(), $carrier->getBaggage())
-                ->setName($name)
-                ->setOp(sprintf('%s.server', $serverName))
-                ->setDescription(description: sprintf('%s %s', $method, $path))
-                ->setOrigin('auto.request')
-                ->setSource($source)
-        );
-
-        if (! $transaction->getSampled()) {
-            return;
-        }
-
         $data = [
             'url.scheme' => $request->getUri()->getScheme(),
             'url.path' => $path,
@@ -315,8 +301,20 @@ class EventHandleListener implements ListenerInterface
         if ($this->container->has(RpcContext::class)) {
             $data['rpc.context'] = $this->container->get(RpcContext::class)->getData();
         }
+        $carrier = Carrier::fromRequest($request);
+        $transaction = $this->startTransaction(
+            continueTrace($carrier->getSentryTrace(), $carrier->getBaggage())
+                ->setName($name)
+                ->setOp(sprintf('%s.server', $serverName))
+                ->setDescription(description: sprintf('%s %s', $method, $path))
+                ->setOrigin('auto.request')
+                ->setSource($source)
+                ->setData($data)
+        );
 
-        $transaction->setData($data);
+        if (! $transaction->getSampled()) {
+            return;
+        }
 
         $spanContext = SpanContext::make()
             ->setOp('request.received')
