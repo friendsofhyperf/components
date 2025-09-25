@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\CoroutineBacktraceHelper;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -22,13 +21,12 @@ use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
+use function FriendsOfHyperf\Sentry\startTransaction;
 use function Hyperf\Coroutine\defer;
 use function Sentry\continueTrace;
 
 class CoroutineAspect extends AbstractAspect
 {
-    use SpanStarter;
-
     public array $classes = [
         'Hyperf\Coroutine\Coroutine::create',
     ];
@@ -92,7 +90,7 @@ class CoroutineAspect extends AbstractAspect
                 }
             }
 
-            $coTransaction = $this->startTransaction(
+            $coTransaction = startTransaction(
                 continueTrace($parent->toTraceparent(), $parent->toBaggage())
                     ->setName('coroutine')
                     ->setOp('coroutine.execute')

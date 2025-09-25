@@ -12,17 +12,16 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
+use function FriendsOfHyperf\Sentry\trace;
+
 class ElasticsearchAspect extends AbstractAspect
 {
-    use SpanStarter;
-
     public array $classes = [
         // v7.x
         'Elasticsearch\Client::bulk',
@@ -62,7 +61,7 @@ class ElasticsearchAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        return $this->trace(
+        return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
                 $result = $proceedingJoinPoint->process();
                 if ($this->switcher->isTracingExtraTagEnabled('elasticsearch.result')) {

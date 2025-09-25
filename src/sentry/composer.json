@@ -47,7 +47,10 @@
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\Sentry\\": "src/"
-        }
+        },
+        "files": [
+            "src/Function.php"
+        ]
     },
     "config": {
         "sort-packages": true

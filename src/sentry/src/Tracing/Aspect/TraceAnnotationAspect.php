@@ -13,19 +13,17 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\Annotation\Trace;
-use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
+use function FriendsOfHyperf\Sentry\trace;
 use function Hyperf\Tappable\tap;
 
 class TraceAnnotationAspect extends AbstractAspect
 {
-    use SpanStarter;
-
     public array $annotations = [
         Trace::class,
     ];
@@ -54,7 +52,7 @@ class TraceAnnotationAspect extends AbstractAspect
             $data['annotation.arguments'] = $proceedingJoinPoint->arguments['keys'];
         }
 
-        return $this->trace(
+        return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
                 return tap($proceedingJoinPoint->process(), function ($result) use ($scope) {
                     if ($this->switcher->isTracingExtraTagEnabled('annotation.result')) {

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\DB\DB;
@@ -23,13 +22,13 @@ use Psr\Container\ContainerInterface;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
+use function FriendsOfHyperf\Sentry\trace;
+
 /**
  * @property string $poolName
  */
 class DbAspect extends AbstractAspect
 {
-    use SpanStarter;
-
     public array $classes = [
         DB::class . '::__call',
     ];
@@ -86,7 +85,7 @@ class DbAspect extends AbstractAspect
             }
         }
 
-        return $this->trace(
+        return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
                 $result = $proceedingJoinPoint->process();
                 if ($this->switcher->isTracingExtraTagEnabled('db.result')) {

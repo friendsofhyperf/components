@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -20,10 +19,10 @@ use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
+use function FriendsOfHyperf\Sentry\trace;
+
 class GrpcAspect extends AbstractAspect
 {
-    use SpanStarter;
-
     public array $classes = [
         'Hyperf\GrpcClient\BaseClient::_simpleRequest',
         'Grpc\BaseStub::_simpleRequest',
@@ -64,7 +63,7 @@ class GrpcAspect extends AbstractAspect
         // Inject tracing headers
         $proceedingJoinPoint->arguments['keys']['options'] = $options;
 
-        return $this->trace(
+        return trace(
             fn (Scope $scope) => $proceedingJoinPoint->process(),
             SpanContext::make()
                 ->setOp('grpc.client')

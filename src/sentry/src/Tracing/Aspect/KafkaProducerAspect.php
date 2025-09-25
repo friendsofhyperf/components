@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -23,6 +22,8 @@ use longlang\phpkafka\Protocol\RecordBatch\RecordHeader;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
+use function FriendsOfHyperf\Sentry\trace;
+
 /**
  * @property array $headers
  * @property string $name
@@ -30,8 +31,6 @@ use Sentry\Tracing\SpanContext;
  */
 class KafkaProducerAspect extends AbstractAspect
 {
-    use SpanStarter;
-
     public array $classes = [
         'Hyperf\Kafka\Producer::sendAsync',
         'Hyperf\Kafka\Producer::sendBatchAsync',
@@ -60,7 +59,7 @@ class KafkaProducerAspect extends AbstractAspect
         $destinationName = $proceedingJoinPoint->arguments['keys']['topic'] ?? 'unknown';
         $bodySize = strlen($proceedingJoinPoint->arguments['keys']['value'] ?? '');
 
-        return $this->trace(
+        return trace(
             function (Scope $scope) use ($proceedingJoinPoint, $messageId, $destinationName, $bodySize) {
                 $span = $scope->getSpan();
                 if ($span) {
@@ -100,7 +99,7 @@ class KafkaProducerAspect extends AbstractAspect
         /** @var ProduceMessage[] $messages */
         $messages = $proceedingJoinPoint->arguments['keys']['messages'] ?? [];
 
-        return $this->trace(
+        return trace(
             function (Scope $scope) use ($proceedingJoinPoint, $messages) {
                 $span = $scope->getSpan();
 

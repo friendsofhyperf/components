@@ -24,9 +24,16 @@ use Throwable;
 use function Hyperf\Tappable\tap;
 use function Sentry\trace;
 
-trait SpanStarter
+class Tracer
 {
-    protected function startTransaction(TransactionContext $transactionContext, array $customSamplingContext = []): Transaction
+    public function __construct(protected Switcher $switcher)
+    {
+    }
+
+    /**
+     * Starts a new Transaction and returns it. This is the entry point to manual tracing instrumentation.
+     */
+    public function startTransaction(TransactionContext $transactionContext, array $customSamplingContext = []): Transaction
     {
         $hub = SentrySdk::setCurrentHub(
             tap(clone SentrySdk::getCurrentHub(), fn (HubInterface $hub) => $hub->pushScope())
@@ -48,11 +55,9 @@ trait SpanStarter
      * @param callable(Scope):T $trace
      * @return T
      */
-    protected function trace(callable $trace, SpanContext $context)
+    public function trace(callable $trace, SpanContext $context)
     {
-        $isTracingExtraTagEnabled = isset($this->switcher)
-        && $this->switcher instanceof Switcher
-        && $this->switcher->isTracingExtraTagEnabled('exception.stack_trace');
+        $isTracingExtraTagEnabled = $this->switcher->isTracingExtraTagEnabled('exception.stack_trace');
 
         if ($context->getStatus() === null) {
             $context->setStatus(SpanStatus::ok());
