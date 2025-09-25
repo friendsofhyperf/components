@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\AsyncQueue\Driver\RedisDriver;
 use Hyperf\Context\Context;
@@ -23,6 +22,7 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
+use function FriendsOfHyperf\Sentry\trace;
 use function Hyperf\Support\with;
 
 /**
@@ -33,8 +33,6 @@ use function Hyperf\Support\with;
  */
 class AsyncQueueJobMessageAspect extends AbstractAspect
 {
-    use SpanStarter;
-
     public array $classes = [
         'Hyperf\AsyncQueue\Driver\DriverFactory::get',
         'Hyperf\AsyncQueue\Driver\*Driver::push',
@@ -95,7 +93,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
             $data = array_merge($data, $this->buildSpanDataOfRedisDriver($driver));
         }
 
-        return $this->trace(
+        return trace(
             function (Scope $scope) use ($proceedingJoinPoint, $messageId, $destinationName, $bodySize) {
                 $span = $scope->getSpan();
                 $carrier = Carrier::fromSpan($span)->with([

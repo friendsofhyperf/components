@@ -29,8 +29,14 @@ use function Hyperf\Tappable\tap;
 use function Sentry\continueTrace;
 use function Sentry\trace;
 
+/**
+ * @deprecated since v3.1, will be removed in v3.2
+ */
 trait SpanStarter
 {
+    /**
+     * @deprecated since v3.1, will be removed in v3.2, use `FriendsOfHyperf\Sentry\startTransaction()` instead.
+     */
     protected function startTransaction(TransactionContext $transactionContext, array $customSamplingContext = []): Transaction
     {
         $hub = SentrySdk::setCurrentHub(
@@ -47,6 +53,8 @@ trait SpanStarter
     /**
      * Execute the given callable while wrapping it in a span added as a child to the current transaction and active span.
      * If there is no transaction active this is a no-op and the scope passed to the trace callable will be unused.
+     *
+     * @deprecated since v3.1, will be removed in v3.2, use `FriendsOfHyperf\Sentry\trace()` instead.
      *
      * @template T
      *

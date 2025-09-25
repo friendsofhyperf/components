@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
@@ -27,6 +26,7 @@ use Psr\Container\ContainerInterface;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
+use function FriendsOfHyperf\Sentry\trace;
 use function Hyperf\Tappable\tap;
 
 /**
@@ -34,8 +34,6 @@ use function Hyperf\Tappable\tap;
  */
 class RpcAspect extends AbstractAspect
 {
-    use SpanStarter;
-
     public const SPAN_CONTEXT = 'sentry.tracing.rpc.span_context';
 
     public array $classes = [
@@ -102,7 +100,7 @@ class RpcAspect extends AbstractAspect
         }
 
         try {
-            return $this->trace(
+            return trace(
                 function (Scope $scope) use ($proceedingJoinPoint) {
                     $span = $scope->getSpan();
                     if ($span && $this->container->has(Rpc\Context::class)) {
