@@ -17,10 +17,8 @@ use Hyperf\Coordinator\Coordinator;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Sentry\Tracing\SpanStatus;
-use Throwable;
-
-use function Hyperf\Support\class_basename;
+use Sentry\State\Scope;
+use Sentry\Tracing\SpanContext;
 
 class CoordinatorAspect extends AbstractAspect
 {
@@ -36,35 +34,22 @@ class CoordinatorAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $data = [
-            'coroutine.id' => Coroutine::id(),
-            'timeout' => $timeout = $proceedingJoinPoint->arguments['keys']['timeout'] ?? -1,
-        ];
-
-        $span = $this->startSpan(
-            op: sprintf('%s.%s', strtolower(class_basename($proceedingJoinPoint->className)), $proceedingJoinPoint->methodName),
-            description: sprintf('%s::%s(%s)', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName, $timeout),
-            origin: 'auto.coordinator',
-        )?->setData($data);
-
-        try {
+        if (! $this->switcher->isTracingSpanEnabled('coordinator')) {
             return $proceedingJoinPoint->process();
-        } catch (Throwable $exception) {
-            $span?->setStatus(SpanStatus::internalError())
-                ->setTags([
-                    'error' => 'true',
-                    'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
-                    'exception.code' => (string) $exception->getCode(),
-                ]);
-            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                $span?->setData([
-                    'exception.stack_trace' => (string) $exception,
-                ]);
-            }
-            throw $exception;
-        } finally {
-            $span?->finish();
         }
+
+        $timeout = $proceedingJoinPoint->arguments['keys']['timeout'] ?? -1;
+
+        return $this->trace(
+            fn (Scope $scope) => $proceedingJoinPoint->process(),
+            SpanContext::make()
+                ->setOp('coordinator.yield')
+                ->setDescription(sprintf('%s::%s(%s)', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName, $timeout))
+                ->setOrigin('auto.coordinator')
+                ->setData([
+                    'coroutine.id' => Coroutine::id(),
+                    'timeout' => $timeout,
+                ])
+        );
     }
 }

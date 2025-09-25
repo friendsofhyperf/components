@@ -24,9 +24,10 @@ use Hyperf\Rpc;
 use Hyperf\RpcClient;
 use Hyperf\Stringable\Str;
 use Psr\Container\ContainerInterface;
-use Sentry\Tracing\Span;
-use Sentry\Tracing\SpanStatus;
-use Throwable;
+use Sentry\State\Scope;
+use Sentry\Tracing\SpanContext;
+
+use function Hyperf\Tappable\tap;
 
 /**
  * @property string $prototype
@@ -35,9 +36,7 @@ class RpcAspect extends AbstractAspect
 {
     use SpanStarter;
 
-    public const SPAN = 'sentry.tracing.rpc.span';
-
-    protected const DATA = 'sentry.tracing.rpc.data';
+    public const SPAN_CONTEXT = 'sentry.tracing.rpc.span_context';
 
     public array $classes = [
         RpcClient\AbstractServiceClient::class . '::__generateRpcPath',
@@ -79,78 +78,52 @@ class RpcAspect extends AbstractAspect
             default => 'rpc',
         };
 
-        // $package.$service/$path
-        $op = sprintf('%s.%s/%s', $package, $service, $path);
-        $span = $this->startSpan(
-            op: $op,
-            description: $path,
-            origin: 'auto.rpc',
-        );
-
-        if (! $span) {
-            return $path;
-        }
-
-        $data = [
-            'coroutine.id' => Coroutine::id(),
-            'rpc.system' => $system,
-            'rpc.method' => $proceedingJoinPoint->arguments['keys']['methodName'] ?? '',
-            'rpc.service' => $service,
-        ];
-
-        $span->setData($data);
-
-        Context::set(static::SPAN, $span);
-
-        if ($this->container->has(Rpc\Context::class)) {
-            $this->container->get(Rpc\Context::class)
-                ->set(Constants::TRACE_CARRIER, Carrier::fromSpan($span)->toJson());
-        }
+        Context::set(static::SPAN_CONTEXT, SpanContext::make()
+            ->setOp(sprintf('%s.%s/%s', $package, $service, $path))
+            ->setDescription($path)
+            ->setOrigin('auto.rpc')
+            ->setData([
+                'coroutine.id' => Coroutine::id(),
+                'rpc.system' => $system,
+                'rpc.service' => $service,
+                'rpc.method' => $proceedingJoinPoint->arguments['keys']['methodName'] ?? '',
+            ]));
 
         return $path;
     }
 
     private function handleSend(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        // TODO
-        // 'server.address' => '',
-        // 'server.port' => '',
+        /** @var null|SpanContext $spanContext */
+        $spanContext = Context::get(static::SPAN_CONTEXT);
 
-        /** @var null|Span $span */
-        $span = Context::get(static::SPAN);
-
-        $span?->setData((array) Context::get(static::DATA, []));
-
-        if ($this->container->has(Rpc\Context::class)) {
-            $span?->setData(['rpc.context' => $this->container->get(Rpc\Context::class)->getData()]);
+        if (! $spanContext) {
+            return $proceedingJoinPoint->process();
         }
 
         try {
-            $result = $proceedingJoinPoint->process();
-
-            if ($this->switcher->isTracingExtraTagEnabled('rpc.result')) {
-                $span?->setData(['rpc.result' => $result]);
-            }
-
-            return $result;
-        } catch (Throwable $exception) {
-            $span?->setStatus(SpanStatus::internalError())
-                ->setTags([
-                    'error' => 'true',
-                    'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
-                    'exception.code' => (string) $exception->getCode(),
-                ]);
-            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                $span?->setData(['exception.stack_trace' => (string) $exception]);
-            }
-
-            throw $exception;
+            return $this->trace(
+                function (Scope $scope) use ($proceedingJoinPoint) {
+                    $span = $scope->getSpan();
+                    if ($span && $this->container->has(Rpc\Context::class)) {
+                        // Inject the RPC context data into span.
+                        $span->setData([
+                            'rpc.context' => $this->container->get(Rpc\Context::class)->getData(),
+                        ]);
+                        // Inject the tracing carrier into RPC context.
+                        $this->container->get(Rpc\Context::class)
+                            ->set(Constants::TRACE_CARRIER, Carrier::fromSpan($span)->toJson());
+                    }
+                    return tap($proceedingJoinPoint->process(), function ($result) use ($span) {
+                        if ($span && $this->switcher->isTracingExtraTagEnabled('rpc.result')) {
+                            $span->setData(['rpc.result' => $result]);
+                        }
+                    });
+                },
+                $spanContext
+            );
         } finally {
-            $span?->finish();
-
-            Context::destroy(static::SPAN);
-            Context::destroy(static::DATA);
+            Context::destroy(static::SPAN_CONTEXT);
         }
     }
 }

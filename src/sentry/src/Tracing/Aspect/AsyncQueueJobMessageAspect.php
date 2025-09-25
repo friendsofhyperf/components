@@ -17,8 +17,11 @@ use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\AsyncQueue\Driver\RedisDriver;
 use Hyperf\Context\Context;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Sentry\State\Scope;
+use Sentry\Tracing\SpanContext;
 
 use function Hyperf\Support\with;
 
@@ -73,46 +76,45 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     {
         /** @var \Hyperf\AsyncQueue\JobInterface $job */
         $job = $proceedingJoinPoint->arguments['keys']['job'] ?? null;
-        $span = $this->startSpan(
-            op: 'queue.publish',
-            description: $job::class,
-            origin: 'auto.queue'
+
+        /** @var \Hyperf\AsyncQueue\Driver\Driver $driver */
+        $driver = $proceedingJoinPoint->getInstance();
+        $messageId = method_exists($job, 'getId') ? $job->getId() : uniqid('async_queue_', true);
+        $destinationName = Context::get('sentry.messaging.destination.name', 'default');
+        $bodySize = (fn ($job) => strlen($this->packer->pack($job)))->call($driver, $job);
+        $data = [
+            'coroutine.id' => Coroutine::id(),
+            'messaging.system' => 'async_queue',
+            'messaging.operation' => 'publish',
+            'messaging.message.id' => $messageId,
+            'messaging.message.body.size' => $bodySize,
+            'messaging.destination.name' => $destinationName,
+        ];
+
+        if ($driver instanceof RedisDriver) {
+            $data = array_merge($data, $this->buildSpanDataOfRedisDriver($driver));
+        }
+
+        return $this->trace(
+            function (Scope $scope) use ($proceedingJoinPoint, $messageId, $destinationName, $bodySize) {
+                $span = $scope->getSpan();
+                $carrier = Carrier::fromSpan($span)->with([
+                    'publish_time' => microtime(true),
+                    'message_id' => $messageId,
+                    'destination_name' => $destinationName,
+                    'body_size' => $bodySize,
+                ]);
+
+                Context::set(Constants::TRACE_CARRIER, $carrier);
+
+                return $proceedingJoinPoint->process();
+            },
+            SpanContext::make()
+                ->setOp('queue.publish')
+                ->setDescription($job::class)
+                ->setOrigin('auto.queue')
+                ->setData($data)
         );
-
-        if (! $span) {
-            return $proceedingJoinPoint->process();
-        }
-
-        try {
-            /** @var \Hyperf\AsyncQueue\Driver\Driver $driver */
-            $driver = $proceedingJoinPoint->getInstance();
-            $messageId = method_exists($job, 'getId') ? $job->getId() : uniqid('async_queue_', true);
-            $destinationName = Context::get('sentry.messaging.destination.name', 'default');
-            $bodySize = (fn ($job) => strlen($this->packer->pack($job)))->call($driver, $job);
-            $span->setData([
-                'messaging.system' => 'async_queue',
-                'messaging.operation' => 'publish',
-                'messaging.message.id' => $messageId,
-                'messaging.message.body.size' => $bodySize,
-                'messaging.destination.name' => $destinationName,
-            ]);
-            if ($driver instanceof RedisDriver) {
-                $span->setData($this->buildSpanDataOfRedisDriver($driver));
-            }
-
-            $carrier = Carrier::fromSpan($span)->with([
-                'publish_time' => microtime(true),
-                'message_id' => $messageId,
-                'destination_name' => $destinationName,
-                'body_size' => $bodySize,
-            ]);
-
-            Context::set(Constants::TRACE_CARRIER, $carrier);
-
-            return $proceedingJoinPoint->process();
-        } finally {
-            $span->finish();
-        }
     }
 
     protected function buildSpanDataOfRedisDriver(RedisDriver $driver): array

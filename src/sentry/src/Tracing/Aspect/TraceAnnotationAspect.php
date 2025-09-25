@@ -17,9 +17,10 @@ use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Sentry\SentrySdk;
-use Sentry\Tracing\SpanStatus;
-use Throwable;
+use Sentry\State\Scope;
+use Sentry\Tracing\SpanContext;
+
+use function Hyperf\Tappable\tap;
 
 class TraceAnnotationAspect extends AbstractAspect
 {
@@ -38,15 +39,14 @@ class TraceAnnotationAspect extends AbstractAspect
         $metadata = $proceedingJoinPoint->getAnnotationMetadata();
         /** @var null|Trace $annotation */
         $annotation = $metadata->method[Trace::class] ?? null;
-        $parent = SentrySdk::getCurrentHub()->getSpan();
 
-        if (! $annotation || ! $parent || ! $parent->getSampled()) {
+        if (! $annotation) {
             return $proceedingJoinPoint->process();
         }
 
         $data = ['coroutine.id' => Coroutine::id()];
-
         $methodName = $proceedingJoinPoint->methodName;
+
         if (in_array($methodName, ['__call', '__callStatic'])) {
             $methodName = $proceedingJoinPoint->arguments['keys']['name'] ?? $proceedingJoinPoint->methodName;
             $data['annotation.arguments'] = $proceedingJoinPoint->arguments['keys']['arguments'] ?? $proceedingJoinPoint->arguments['keys'];
@@ -54,41 +54,22 @@ class TraceAnnotationAspect extends AbstractAspect
             $data['annotation.arguments'] = $proceedingJoinPoint->arguments['keys'];
         }
 
-        $span = $this->startSpan(
-            op: $annotation->op ?? 'method',
-            description: $annotation->description ?? sprintf(
-                '%s::%s()',
-                $proceedingJoinPoint->className,
-                $methodName
-            ),
-            asParent: true
-        )?->setData($data);
-
-        try {
-            $result = $proceedingJoinPoint->process();
-
-            if ($this->switcher->isTracingExtraTagEnabled('annotation.result')) {
-                $span?->setData(['annotation.result' => $result]);
-            }
-
-            return $result;
-        } catch (Throwable $exception) {
-            $span?->setStatus(SpanStatus::internalError())
-                ->setTags([
-                    'error' => 'true',
-                    'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
-                    'exception.code' => (string) $exception->getCode(),
-                ]);
-            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                $span?->setData(['exception.stack_trace' => (string) $exception]);
-            }
-            throw $exception;
-        } finally {
-            $span?->finish();
-
-            // Restore parent span
-            SentrySdk::getCurrentHub()->setSpan($parent);
-        }
+        return $this->trace(
+            function (Scope $scope) use ($proceedingJoinPoint) {
+                return tap($proceedingJoinPoint->process(), function ($result) use ($scope) {
+                    if ($this->switcher->isTracingExtraTagEnabled('annotation.result')) {
+                        $scope->getSpan()?->setData(['annotation.result' => $result]);
+                    }
+                });
+            },
+            SpanContext::make()
+                ->setOp($annotation->op ?? 'method')
+                ->setDescription($annotation->description ?? sprintf(
+                    '%s::%s()',
+                    $proceedingJoinPoint->className,
+                    $methodName
+                ))
+                ->setData($data)
+        );
     }
 }

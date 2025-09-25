@@ -29,6 +29,11 @@ class CoroutineAspect extends AbstractAspect
         \Psr\Http\Message\ServerRequestInterface::class,
     ];
 
+    public function __construct()
+    {
+        $this->priority = PHP_INT_MAX - 1;
+    }
+
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
@@ -40,7 +45,7 @@ class CoroutineAspect extends AbstractAspect
             $current = Co::getContextFor();
 
             foreach ($keys as $key) {
-                if (isset($from[$key])) {
+                if (isset($from[$key]) && ! isset($current[$key])) {
                     $current[$key] = $from[$key];
                 }
             }
