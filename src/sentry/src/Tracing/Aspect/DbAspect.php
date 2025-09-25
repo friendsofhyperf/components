@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
-use Hyperf\Coroutine\Coroutine;
 use Hyperf\DB\DB;
 use Hyperf\DB\Pool\PoolFactory;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -64,7 +63,6 @@ class DbAspect extends AbstractAspect
         $table = $sqlParse['table'];
         $operation = $sqlParse['operation'];
         $data = [
-            'coroutine.id' => Coroutine::id(),
             'db.system' => $driver,
             'db.name' => $database,
             'db.collection.name' => $table,

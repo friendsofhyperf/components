@@ -16,7 +16,6 @@ use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Rpc;
@@ -81,7 +80,6 @@ class RpcAspect extends AbstractAspect
             ->setDescription($path)
             ->setOrigin('auto.rpc')
             ->setData([
-                'coroutine.id' => Coroutine::id(),
                 'rpc.system' => $system,
                 'rpc.service' => $service,
                 'rpc.method' => $proceedingJoinPoint->arguments['keys']['methodName'] ?? '',

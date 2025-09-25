@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Support\RedisCommand;
-use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Redis\Event\CommandExecuted;
@@ -59,7 +58,6 @@ class RedisAspect extends AbstractAspect
         $pool = $this->container->get(PoolFactory::class)->getPool($poolName);
         $config = (fn () => $this->config ?? [])->call($pool);
         $data = [
-            'coroutine.id' => Coroutine::id(),
             'db.system' => 'redis',
             'db.statement' => (new RedisCommand($arguments['name'], $arguments['arguments']))->__toString(),
             'db.redis.connection' => $poolName,

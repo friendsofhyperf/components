@@ -16,7 +16,6 @@ use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\AsyncQueue\Driver\RedisDriver;
 use Hyperf\Context\Context;
-use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
@@ -81,7 +80,6 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
         $destinationName = Context::get('sentry.messaging.destination.name', 'default');
         $bodySize = (fn ($job) => strlen($this->packer->pack($job)))->call($driver, $job);
         $data = [
-            'coroutine.id' => Coroutine::id(),
             'messaging.system' => 'async_queue',
             'messaging.operation' => 'publish',
             'messaging.message.id' => $messageId,

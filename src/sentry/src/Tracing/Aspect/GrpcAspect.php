@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\SentrySdk;
@@ -41,7 +40,6 @@ class GrpcAspect extends AbstractAspect
         $method = $proceedingJoinPoint->arguments['keys']['method'];
         $options = $proceedingJoinPoint->arguments['keys']['options'];
         $data = [
-            'coroutine.id' => Coroutine::id(),
             'grpc.method' => $method,
             'grpc.options' => $options,
         ];

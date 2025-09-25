@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Coordinator\Coordinator;
-use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
@@ -46,7 +45,6 @@ class CoordinatorAspect extends AbstractAspect
                 ->setDescription(sprintf('%s::%s(%s)', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName, $timeout))
                 ->setOrigin('auto.coordinator')
                 ->setData([
-                    'coroutine.id' => Coroutine::id(),
                     'timeout' => $timeout,
                 ])
         );
