@@ -24,7 +24,7 @@ use Throwable;
 use function Hyperf\Tappable\tap;
 use function Sentry\trace;
 
-class TracerProvider
+class Tracer
 {
     public function __construct(protected Switcher $switcher)
     {

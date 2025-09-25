@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry;
 
-use FriendsOfHyperf\Sentry\Tracing\TracerProvider;
+use FriendsOfHyperf\Sentry\Tracing\Tracer;
 use Hyperf\Context\ApplicationContext;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
@@ -24,7 +24,7 @@ use Sentry\Tracing\TransactionContext;
 function startTransaction(TransactionContext $transactionContext, array $customSamplingContext = []): Transaction
 {
     return ApplicationContext::getContainer()
-        ->get(TracerProvider::class)
+        ->get(Tracer::class)
         ->startTransaction($transactionContext, $customSamplingContext);
 }
 
@@ -40,6 +40,6 @@ function startTransaction(TransactionContext $transactionContext, array $customS
 function trace(callable $trace, SpanContext $context)
 {
     return ApplicationContext::getContainer()
-        ->get(TracerProvider::class)
+        ->get(Tracer::class)
         ->trace($trace, $context);
 }
