@@ -12,17 +12,16 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Aspect\FilesystemAspect as BaseFilesystemAspect;
-use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Override;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
+use function FriendsOfHyperf\Sentry\trace;
+
 class FilesystemAspect extends BaseFilesystemAspect
 {
-    use SpanStarter;
-
     #[Override]
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
@@ -32,7 +31,7 @@ class FilesystemAspect extends BaseFilesystemAspect
 
         [$op, $description, $data] = $this->getSentryMetadata($proceedingJoinPoint);
 
-        return $this->trace(
+        return trace(
             fn (Scope $scope) => $proceedingJoinPoint->process(),
             SpanContext::make()
                 ->setOp($op)

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Support\RedisCommand;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -24,6 +23,7 @@ use Psr\Container\ContainerInterface;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
+use function FriendsOfHyperf\Sentry\trace;
 use function Hyperf\Tappable\tap;
 
 /**
@@ -35,8 +35,6 @@ use function Hyperf\Tappable\tap;
  */
 class RedisAspect extends AbstractAspect
 {
-    use SpanStarter;
-
     public array $classes = [
         Redis::class . '::__call',
     ];
@@ -81,7 +79,7 @@ class RedisAspect extends AbstractAspect
             is_array($key) ? implode(',', $key) : $key
         );
 
-        return $this->trace(
+        return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
                 return tap($proceedingJoinPoint->process(), function ($result) use ($scope) {
                     if ($this->switcher->isTracingExtraTagEnabled('redis.result')) {

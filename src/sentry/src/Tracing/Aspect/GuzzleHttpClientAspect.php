@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use Error;
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use GuzzleHttp\Client;
 use GuzzleHttp\TransferStats;
 use Hyperf\Context\Context;
@@ -27,14 +26,14 @@ use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
+use function FriendsOfHyperf\Sentry\trace;
+
 /**
  * @method array getConfig()
  * @property array $config
  */
 class GuzzleHttpClientAspect extends AbstractAspect
 {
-    use SpanStarter;
-
     public array $classes = [
         Client::class . '::transfer',
     ];
@@ -69,7 +68,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        return $this->trace(
+        return trace(
             function (Scope $scope) use ($proceedingJoinPoint, $options, $guzzleConfig) {
                 $span = $scope->getSpan();
 

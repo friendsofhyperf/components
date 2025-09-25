@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Amqp\Annotation\Producer;
 use Hyperf\Amqp\Message\ProducerMessage;
@@ -25,13 +24,13 @@ use PhpAmqpLib\Wire\AMQPTable;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
+use function FriendsOfHyperf\Sentry\trace;
+
 /**
  * @property array{application_headers?:AMQPTable} $properties
  */
 class AmqpProducerAspect extends AbstractAspect
 {
-    use SpanStarter;
-
     public array $classes = [
         'Hyperf\Amqp\Producer::produceMessage',
     ];
@@ -79,7 +78,7 @@ class AmqpProducerAspect extends AbstractAspect
         $destinationName = implode(', ', (array) $routingKey);
         $bodySize = strlen($producerMessage->payload());
 
-        return $this->trace(
+        return trace(
             function (Scope $scope) use ($proceedingJoinPoint, $producerMessage, $messageId, $destinationName, $bodySize) {
                 $span = $scope->getSpan();
                 if ($span) {

@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use Hyperf\Coordinator\Coordinator;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -20,10 +19,10 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
+use function FriendsOfHyperf\Sentry\trace;
+
 class CoordinatorAspect extends AbstractAspect
 {
-    use SpanStarter;
-
     public array $classes = [
         Coordinator::class . '::yield',
     ];
@@ -40,7 +39,7 @@ class CoordinatorAspect extends AbstractAspect
 
         $timeout = $proceedingJoinPoint->arguments['keys']['timeout'] ?? -1;
 
-        return $this->trace(
+        return trace(
             fn (Scope $scope) => $proceedingJoinPoint->process(),
             SpanContext::make()
                 ->setOp('coordinator.yield')

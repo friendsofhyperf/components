@@ -12,13 +12,13 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
+use function FriendsOfHyperf\Sentry\trace;
 use function Hyperf\Tappable\tap;
 
 /**
@@ -26,8 +26,6 @@ use function Hyperf\Tappable\tap;
  */
 class CacheAspect extends AbstractAspect
 {
-    use SpanStarter;
-
     public array $classes = [
         'Hyperf\Cache\Driver\*Driver::set',
         'Hyperf\Cache\Driver\*Driver::setMultiple',
@@ -68,7 +66,7 @@ class CacheAspect extends AbstractAspect
             default => [],
         };
 
-        return $this->trace(
+        return trace(
             function (Scope $scope) use ($proceedingJoinPoint, $method) {
                 return tap($proceedingJoinPoint->process(), function ($result) use ($method, $scope) {
                     $data = match ($method) {

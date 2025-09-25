@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 use Closure;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
-use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
 use FriendsOfHyperf\Support\RedisCommand;
@@ -50,6 +49,8 @@ use Sentry\Tracing\TransactionSource;
 use Swow\Psr7\Message\ResponsePlusInterface;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
+use function FriendsOfHyperf\Sentry\startTransaction;
+use function FriendsOfHyperf\Sentry\trace;
 use function Hyperf\Coroutine\defer;
 use function Sentry\continueTrace;
 
@@ -59,8 +60,6 @@ use function Sentry\continueTrace;
  */
 class EventHandleListener implements ListenerInterface
 {
-    use SpanStarter;
-
     protected string $source = 'route';
 
     protected array $ignoreCommands = [];
@@ -203,7 +202,7 @@ class EventHandleListener implements ListenerInterface
 
         $startTimestamp = microtime(true) - $event->time / 1000;
 
-        $this->trace(
+        trace(
             fn () => null,
             SpanContext::make()
                 ->setOp('db.sql.query')
@@ -221,7 +220,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        $this->trace(
+        trace(
             fn () => null,
             SpanContext::make()
                 ->setOp('db.transaction')
@@ -304,7 +303,7 @@ class EventHandleListener implements ListenerInterface
         }
 
         $carrier = Carrier::fromRequest($request);
-        $transaction = $this->startTransaction(
+        $transaction = startTransaction(
             continueTrace($carrier->getSentryTrace(), $carrier->getBaggage())
                 ->setName($name)
                 ->setOp(sprintf('%s.server', $serverName))
@@ -389,7 +388,7 @@ class EventHandleListener implements ListenerInterface
 
         $command = $event->getCommand();
 
-        $this->startTransaction(
+        startTransaction(
             TransactionContext::make()
                 ->setName($command->getName() ?: '<unnamed command>')
                 ->setOp('console.command')
@@ -456,7 +455,7 @@ class EventHandleListener implements ListenerInterface
         $config = $this->config->get('redis.' . $event->connectionName, []);
         $redisStatement = (string) new RedisCommand($event->command, $event->parameters);
 
-        $this->trace(
+        trace(
             function (Scope $scope) use ($event) {
                 if (! $span = $scope->getSpan()) {
                     return;
@@ -510,7 +509,7 @@ class EventHandleListener implements ListenerInterface
 
         $crontab = $event->crontab;
 
-        $this->startTransaction(
+        startTransaction(
             TransactionContext::make()
                 ->setName($crontab->getName() ?: '<unnamed crontab>')
                 ->setOp('crontab.run')
@@ -579,7 +578,7 @@ class EventHandleListener implements ListenerInterface
             }
         }
 
-        $this->startTransaction(
+        startTransaction(
             continueTrace($carrier?->getSentryTrace() ?? '', $carrier?->getBaggage() ?? '')
                 ->setName($message::class)
                 ->setOp('queue.process')
@@ -661,7 +660,7 @@ class EventHandleListener implements ListenerInterface
             }
         }
 
-        $this->startTransaction(
+        startTransaction(
             continueTrace($carrier?->getSentryTrace() ?? '', $carrier?->getBaggage() ?? '')
                 ->setName($consumer->getTopic() . ' process')
                 ->setOp('queue.process')
@@ -727,7 +726,7 @@ class EventHandleListener implements ListenerInterface
         $carrier = Context::get(Constants::TRACE_CARRIER, null, Coroutine::parentId());
         $job = $event->getMessage()->job();
 
-        $this->startTransaction(
+        startTransaction(
             continueTrace($carrier?->getSentryTrace() ?? '', $carrier?->getBaggage() ?? '')
                 ->setName($job::class)
                 ->setOp('queue.process')
