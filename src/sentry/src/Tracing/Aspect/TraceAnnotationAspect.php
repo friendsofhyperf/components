@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\Annotation\Trace;
-use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
@@ -42,7 +41,7 @@ class TraceAnnotationAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $data = ['coroutine.id' => Coroutine::id()];
+        $data = [];
         $methodName = $proceedingJoinPoint->methodName;
 
         if (in_array($methodName, ['__call', '__callStatic'])) {

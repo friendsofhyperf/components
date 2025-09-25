@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Switcher;
-use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
@@ -76,7 +75,6 @@ class ElasticsearchAspect extends AbstractAspect
                 ->setDescription(sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName))
                 ->setOrigin('auto.elasticsearch')
                 ->setData([
-                    'coroutine.id' => Coroutine::id(),
                     'db.system' => 'elasticsearch',
                     'db.operation.name' => $proceedingJoinPoint->methodName,
                     'arguments' => (string) json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE),

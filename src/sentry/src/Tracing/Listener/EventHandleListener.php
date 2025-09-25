@@ -171,7 +171,6 @@ class EventHandleListener implements ListenerInterface
         }
 
         $data = [
-            'coroutine.id' => Coroutine::id(),
             'db.system' => $event->connection->getDriverName(),
             'db.name' => $event->connection->getDatabaseName(),
         ];
@@ -228,7 +227,6 @@ class EventHandleListener implements ListenerInterface
                 ->setOrigin('auto.db')
                 ->setStartTimestamp(microtime(true))
                 ->setData([
-                    'coroutine.id' => Coroutine::id(),
                     'db.system' => $event->connection->getDriverName(),
                     'db.name' => $event->connection->getDatabaseName(),
                     'db.pool.name' => $event->connectionName,
@@ -394,8 +392,6 @@ class EventHandleListener implements ListenerInterface
                 ->setOp('console.command')
                 ->setDescription($command->getDescription())
                 ->setOrigin('auto.command')
-                ->setSource(TransactionSource::custom())
-                ->setData(['coroutine.id' => Coroutine::id()])
         );
     }
 
@@ -484,7 +480,6 @@ class EventHandleListener implements ListenerInterface
                 ->setOp('db.redis')
                 ->setDescription($redisStatement)
                 ->setData([
-                    'coroutine.id' => Coroutine::id(),
                     'db.system' => 'redis',
                     'db.statement' => $redisStatement,
                     'db.redis.connection' => $event->connectionName,
@@ -516,7 +511,6 @@ class EventHandleListener implements ListenerInterface
                 ->setDescription($crontab->getMemo())
                 ->setOrigin('auto.crontab')
                 ->setSource(TransactionSource::task())
-                ->setData(['coroutine.id' => Coroutine::id()])
         );
     }
 
@@ -584,8 +578,6 @@ class EventHandleListener implements ListenerInterface
                 ->setOp('queue.process')
                 ->setDescription($message::class)
                 ->setOrigin('auto.amqp')
-                ->setSource(TransactionSource::custom())
-                ->setData(['coroutine.id' => Coroutine::id()])
         );
     }
 
@@ -666,8 +658,6 @@ class EventHandleListener implements ListenerInterface
                 ->setOp('queue.process')
                 ->setDescription($consumer::class)
                 ->setOrigin('auto.kafka')
-                ->setSource(TransactionSource::custom())
-                ->setData(['coroutine.id' => Coroutine::id()])
         );
     }
 
@@ -732,8 +722,6 @@ class EventHandleListener implements ListenerInterface
                 ->setOp('queue.process')
                 ->setDescription('async_queue: ' . $job::class)
                 ->setOrigin('auto.async_queue')
-                ->setSource(TransactionSource::custom())
-                ->setData(['coroutine.id' => Coroutine::id()])
         );
     }
 
