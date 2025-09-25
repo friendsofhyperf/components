@@ -16,7 +16,6 @@ use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Hyperf\GrpcClient\BaseClient;
 use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
@@ -26,7 +25,8 @@ class GrpcAspect extends AbstractAspect
     use SpanStarter;
 
     public array $classes = [
-        BaseClient::class . '::_simpleRequest',
+        'Hyperf\GrpcClient\BaseClient::_simpleRequest',
+        'Grpc\BaseStub::_simpleRequest',
     ];
 
     public function __construct(protected Switcher $switcher)
