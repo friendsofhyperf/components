@@ -96,7 +96,6 @@ class CoroutineAspect extends AbstractAspect
                     ->setOp('coroutine.execute')
                     ->setDescription($callingOnFunction)
                     ->setOrigin('auto.coroutine')
-                    ->setData(['coroutine.id' => Co::id()])
             );
 
             defer(function () use ($coTransaction) {

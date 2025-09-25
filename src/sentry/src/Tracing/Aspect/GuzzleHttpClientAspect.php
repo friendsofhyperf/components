@@ -105,7 +105,6 @@ class GuzzleHttpClientAspect extends AbstractAspect
                         'http.request.user_agent' => $request->getHeaderLine('User-Agent'), // updated key for consistency
                         'http.request.headers' => $request->getHeaders(),
                         // Other
-                        'coroutine.id' => Coroutine::id(),
                         'http.system' => 'guzzle',
                         'http.guzzle.config' => $guzzleConfig,
                         'http.guzzle.options' => $options ?? [],

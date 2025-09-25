@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Util\Carrier;
-use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use longlang\phpkafka\Producer\ProduceMessage;
@@ -84,7 +83,6 @@ class KafkaProducerAspect extends AbstractAspect
                 ->setDescription(sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName))
                 ->setOrigin('auto.kafka')
                 ->setData([
-                    'coroutine.id' => Coroutine::id(),
                     'messaging.system' => 'kafka',
                     'messaging.operation' => 'publish',
                     'messaging.message.id' => $messageId,
@@ -124,7 +122,7 @@ class KafkaProducerAspect extends AbstractAspect
                 ->setOp('queue.publish')
                 ->setDescription(sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName))
                 ->setOrigin('auto.kafka')
-                ->setData(['coroutine.id' => Coroutine::id()])
+                ->setData(['message.count' => count($messages)])
         );
     }
 }
