@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing;
 
-use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Util\Carrier;
+use Hyperf\Context\ApplicationContext;
 use Psr\Http\Message\ServerRequestInterface;
 use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
@@ -23,7 +23,6 @@ use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\Transaction;
 use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
-use Throwable;
 
 use function Hyperf\Tappable\tap;
 use function Sentry\continueTrace;
@@ -39,15 +38,9 @@ trait SpanStarter
      */
     protected function startTransaction(TransactionContext $transactionContext, array $customSamplingContext = []): Transaction
     {
-        $hub = SentrySdk::setCurrentHub(
-            tap(clone SentrySdk::getCurrentHub(), fn (HubInterface $hub) => $hub->pushScope())
-        );
-
-        $transaction = $hub->startTransaction($transactionContext, $customSamplingContext);
-
-        $hub->setSpan($transaction);
-
-        return $transaction;
+        return ApplicationContext::getContainer()
+            ->get(Tracer::class)
+            ->startTransaction($transactionContext, $customSamplingContext);
     }
 
     /**
@@ -63,45 +56,9 @@ trait SpanStarter
      */
     protected function trace(callable $trace, SpanContext $context)
     {
-        $isTracingExtraTagEnabled = isset($this->switcher)
-        && $this->switcher instanceof Switcher
-        && $this->switcher->isTracingExtraTagEnabled('exception.stack_trace');
-
-        if ($context->getStatus() === null) {
-            $context->setStatus(SpanStatus::ok());
-        }
-
-        if ($context->getStartTimestamp() === null) {
-            $context->setStartTimestamp(microtime(true));
-        }
-
-        return trace(
-            function (Scope $scope) use ($trace, $isTracingExtraTagEnabled) {
-                try {
-                    return $trace($scope);
-                } catch (Throwable $exception) {
-                    $span = $scope->getSpan();
-                    if ($span !== null) {
-                        $span->setStatus(SpanStatus::internalError())
-                            ->setTags([
-                                'error' => 'true',
-                                'exception.class' => $exception::class,
-                                'exception.code' => (string) $exception->getCode(),
-                            ])
-                            ->setData([
-                                'exception.message' => $exception->getMessage(),
-                            ]);
-                        if ($isTracingExtraTagEnabled) {
-                            $span->setData([
-                                'exception.stack_trace' => (string) $exception,
-                            ]);
-                        }
-                    }
-                    throw $exception;
-                }
-            },
-            $context
-        );
+        return ApplicationContext::getContainer()
+            ->get(Tracer::class)
+            ->trace($trace, $context);
     }
 
     /**
