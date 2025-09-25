@@ -54,10 +54,8 @@ function trace(callable $trace, SpanContext $context)
     $container = ApplicationContext::getContainer();
     $isTracingExtraTagEnabled = false;
 
-    if ($container->has(Switcher::class)) {
-        $switcher = $container->get(Switcher::class);
-        $isTracingExtraTagEnabled = $switcher instanceof Switcher && $switcher->isTracingExtraTagEnabled('exception.stack_trace');
-    }
+    $isTracingExtraTagEnabled = $container->has(Switcher::class)
+        && $container->get(Switcher::class)->isTracingExtraTagEnabled('exception.stack_trace');
 
     if ($context->getStatus() === null) {
         $context->setStatus(SpanStatus::ok());
