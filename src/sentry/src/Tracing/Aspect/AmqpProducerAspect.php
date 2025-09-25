@@ -17,12 +17,13 @@ use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Amqp\Annotation\Producer;
 use Hyperf\Amqp\Message\ProducerMessage;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use PhpAmqpLib\Wire\AMQPTable;
-
-use function Hyperf\Tappable\tap;
+use Sentry\State\Scope;
+use Sentry\Tracing\SpanContext;
 
 /**
  * @property array{application_headers?:AMQPTable} $properties
@@ -60,16 +61,6 @@ class AmqpProducerAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $span = $this->startSpan(
-            op: 'queue.publish',
-            description: sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
-            origin: 'auto.amqp'
-        );
-
-        if (! $span) {
-            return $proceedingJoinPoint->process();
-        }
-
         $routingKey = $producerMessage->getRoutingKey();
         $exchange = $producerMessage->getExchange();
         $poolName = $producerMessage->getPoolName();
@@ -87,30 +78,42 @@ class AmqpProducerAspect extends AbstractAspect
         $messageId = uniqid('amqp_', true);
         $destinationName = implode(', ', (array) $routingKey);
         $bodySize = strlen($producerMessage->payload());
-        $span->setData([
-            'messaging.system' => 'amqp',
-            'messaging.operation' => 'publish',
-            'messaging.message.id' => $messageId,
-            'messaging.message.body.size' => $bodySize,
-            'messaging.destination.name' => $destinationName,
-            // for amqp
-            'messaging.amqp.message.type' => $producerMessage->getTypeString(),
-            'messaging.amqp.message.routing_key' => $routingKey,
-            'messaging.amqp.message.exchange' => $exchange,
-            'messaging.amqp.message.pool_name' => $poolName,
-        ]);
-        $carrier = Carrier::fromSpan($span)->with([
-            'publish_time' => microtime(true),
-            'message_id' => $messageId,
-            'destination_name' => $destinationName,
-            'body_size' => $bodySize,
-        ]);
 
-        (function () use ($carrier) {
-            $this->properties['application_headers'] ??= new AMQPTable();
-            $this->properties['application_headers']->set(Constants::TRACE_CARRIER, $carrier->toJson());
-        })->call($producerMessage);
+        return $this->trace(
+            function (Scope $scope) use ($proceedingJoinPoint, $producerMessage, $messageId, $destinationName, $bodySize) {
+                $span = $scope->getSpan();
+                if ($span) {
+                    $carrier = Carrier::fromSpan($span)->with([
+                        'publish_time' => microtime(true),
+                        'message_id' => $messageId,
+                        'destination_name' => $destinationName,
+                        'body_size' => $bodySize,
+                    ]);
+                    (function () use ($carrier) {
+                        $this->properties['application_headers'] ??= new AMQPTable();
+                        $this->properties['application_headers']->set(Constants::TRACE_CARRIER, $carrier->toJson());
+                    })->call($producerMessage);
+                }
 
-        return tap($proceedingJoinPoint->process(), fn () => $span->finish());
+                return $proceedingJoinPoint->process();
+            },
+            SpanContext::make()
+                ->setOp('queue.publish')
+                ->setDescription(sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName))
+                ->setOrigin('auto.amqp')
+                ->setData([
+                    'coroutine.id' => Coroutine::id(),
+                    'messaging.system' => 'amqp',
+                    'messaging.operation' => 'publish',
+                    'messaging.message.id' => $messageId,
+                    'messaging.message.body.size' => $bodySize,
+                    'messaging.destination.name' => $destinationName,
+                    // for amqp
+                    'messaging.amqp.message.type' => $producerMessage->getTypeString(),
+                    'messaging.amqp.message.routing_key' => $routingKey,
+                    'messaging.amqp.message.exchange' => $exchange,
+                    'messaging.amqp.message.pool_name' => $poolName,
+                ])
+        );
     }
 }

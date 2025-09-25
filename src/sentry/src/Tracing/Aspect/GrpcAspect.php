@@ -18,9 +18,8 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\GrpcClient\BaseClient;
 use Sentry\SentrySdk;
-use Sentry\Tracing\SpanStatus;
-use Swoole\Http2\Response as Http2Response;
-use Throwable;
+use Sentry\State\Scope;
+use Sentry\Tracing\SpanContext;
 
 class GrpcAspect extends AbstractAspect
 {
@@ -43,9 +42,9 @@ class GrpcAspect extends AbstractAspect
         $method = $proceedingJoinPoint->arguments['keys']['method'];
         $options = $proceedingJoinPoint->arguments['keys']['options'];
         $data = [
+            'coroutine.id' => Coroutine::id(),
             'grpc.method' => $method,
             'grpc.options' => $options,
-            'coroutine.id' => Coroutine::id(),
         ];
 
         $parent = SentrySdk::getCurrentHub()->getSpan();
@@ -65,49 +64,13 @@ class GrpcAspect extends AbstractAspect
         // Inject tracing headers
         $proceedingJoinPoint->arguments['keys']['options'] = $options;
 
-        // Start gRPC client span
-        $span = $this->startSpan(
-            op: 'grpc.client',
-            description: $method,
-            origin: 'auto.grpc',
-        )?->setData($data);
-
-        try {
-            $result = $proceedingJoinPoint->process();
-
-            [$message, $code, $response] = $result;
-
-            if ($response instanceof Http2Response) {
-                $span?->setData([
-                    'response.status' => $code,
-                    'response.reason' => $message,
-                    'response.headers' => $response->headers,
-                ]);
-                if ($this->switcher->isTracingExtraTagEnabled('response.body')) {
-                    $span?->setData([
-                        'response.body' => $response->data,
-                    ]);
-                }
-            }
-
-            return $result;
-        } catch (Throwable $exception) {
-            $span?->setStatus(SpanStatus::internalError())
-                ->setTags([
-                    'error' => 'true',
-                    'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
-                    'exception.code' => (string) $exception->getCode(),
-                ]);
-            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                $span?->setData([
-                    'exception.stack_trace' => (string) $exception,
-                ]);
-            }
-
-            throw $exception;
-        } finally {
-            $span?->finish();
-        }
+        return $this->trace(
+            fn (Scope $scope) => $proceedingJoinPoint->process(),
+            SpanContext::make()
+                ->setOp('grpc.client')
+                ->setDescription($method)
+                ->setOrigin('auto.grpc')
+                ->setData($data)
+        );
     }
 }

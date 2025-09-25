@@ -13,10 +13,11 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Aspect\FilesystemAspect as BaseFilesystemAspect;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Override;
-use Sentry\Tracing\SpanStatus;
-use Throwable;
+use Sentry\State\Scope;
+use Sentry\Tracing\SpanContext;
 
 class FilesystemAspect extends BaseFilesystemAspect
 {
@@ -31,30 +32,13 @@ class FilesystemAspect extends BaseFilesystemAspect
 
         [$op, $description, $data] = $this->getSentryMetadata($proceedingJoinPoint);
 
-        $span = $this->startSpan(
-            op: $op,
-            description: $description,
-            origin: 'auto.filesystem',
-        )?->setData($data);
-
-        try {
-            return $proceedingJoinPoint->process();
-        } catch (Throwable $exception) {
-            $span?->setStatus(SpanStatus::internalError())
-                ->setTags([
-                    'error' => 'true',
-                    'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
-                    'exception.code' => (string) $exception->getCode(),
-                ]);
-            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                $span?->setData([
-                    'exception.stack_trace' => (string) $exception,
-                ]);
-            }
-            throw $exception;
-        } finally {
-            $span?->finish();
-        }
+        return $this->trace(
+            fn (Scope $scope) => $proceedingJoinPoint->process(),
+            SpanContext::make()
+                ->setOp($op)
+                ->setDescription($description)
+                ->setOrigin('auto.filesystem')
+                ->setData(['coroutine.id' => Coroutine::id()] + $data)
+        );
     }
 }

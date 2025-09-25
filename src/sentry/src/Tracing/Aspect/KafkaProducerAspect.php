@@ -15,12 +15,13 @@ use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Switcher;
 use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use FriendsOfHyperf\Sentry\Util\Carrier;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use longlang\phpkafka\Producer\ProduceMessage;
 use longlang\phpkafka\Protocol\RecordBatch\RecordHeader;
-
-use function Hyperf\Tappable\tap;
+use Sentry\State\Scope;
+use Sentry\Tracing\SpanContext;
 
 /**
  * @property array $headers
@@ -55,71 +56,76 @@ class KafkaProducerAspect extends AbstractAspect
 
     protected function sendAsync(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $span = $this->startSpan(
-            op: 'queue.publish',
-            description: sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
-            origin: 'auto.kafka'
-        );
-
-        if (! $span) {
-            return $proceedingJoinPoint->process();
-        }
-
         $messageId = uniqid('kafka_', true);
         $destinationName = $proceedingJoinPoint->arguments['keys']['topic'] ?? 'unknown';
         $bodySize = strlen($proceedingJoinPoint->arguments['keys']['value'] ?? '');
 
-        $span->setData([
-            'messaging.system' => 'kafka',
-            'messaging.operation' => 'publish',
-            'messaging.message.id' => $messageId,
-            'messaging.message.body.size' => $bodySize,
-            'messaging.destination.name' => $destinationName,
-        ]);
+        return $this->trace(
+            function (Scope $scope) use ($proceedingJoinPoint, $messageId, $destinationName, $bodySize) {
+                $span = $scope->getSpan();
+                if ($span) {
+                    $carrier = Carrier::fromSpan($span)
+                        ->with([
+                            'publish_time' => microtime(true),
+                            'message_id' => $messageId,
+                            'destination_name' => $destinationName,
+                            'body_size' => $bodySize,
+                        ]);
+                    $headers = $proceedingJoinPoint->arguments['keys']['headers'] ?? [];
+                    $headers[] = (new RecordHeader())
+                        ->setHeaderKey(Constants::TRACE_CARRIER)
+                        ->setValue($carrier->toJson());
+                    $proceedingJoinPoint->arguments['keys']['headers'] = $headers;
+                }
 
-        $carrier = Carrier::fromSpan($span)
-            ->with([
-                'publish_time' => microtime(true),
-                'message_id' => $messageId,
-                'destination_name' => $destinationName,
-                'body_size' => $bodySize,
-            ]);
-        $headers = $proceedingJoinPoint->arguments['keys']['headers'] ?? [];
-        $headers[] = (new RecordHeader())
-            ->setHeaderKey(Constants::TRACE_CARRIER)
-            ->setValue($carrier->toJson());
-        $proceedingJoinPoint->arguments['keys']['headers'] = $headers;
-
-        return tap($proceedingJoinPoint->process(), fn () => $span->finish());
+                return $proceedingJoinPoint->process();
+            },
+            SpanContext::make()
+                ->setOp('queue.publish')
+                ->setDescription(sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName))
+                ->setOrigin('auto.kafka')
+                ->setData([
+                    'coroutine.id' => Coroutine::id(),
+                    'messaging.system' => 'kafka',
+                    'messaging.operation' => 'publish',
+                    'messaging.message.id' => $messageId,
+                    'messaging.message.body.size' => $bodySize,
+                    'messaging.destination.name' => $destinationName,
+                ])
+        );
     }
 
     protected function sendBatchAsync(ProceedingJoinPoint $proceedingJoinPoint)
     {
         /** @var ProduceMessage[] $messages */
         $messages = $proceedingJoinPoint->arguments['keys']['messages'] ?? [];
-        $span = $this->startSpan(
-            'queue.publish',
-            sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
-            origin: 'auto.kafka'
+
+        return $this->trace(
+            function (Scope $scope) use ($proceedingJoinPoint, $messages) {
+                $span = $scope->getSpan();
+
+                if ($span) {
+                    foreach ($messages as $message) {
+                        (function () use ($span) {
+                            $carrier = Carrier::fromSpan($span)
+                                ->with([
+                                    'publish_time' => microtime(true),
+                                    'message_id' => uniqid('kafka_', true),
+                                    'destination_name' => $this->getTopic(),
+                                    'body_size' => strlen((string) $this->getValue()),
+                                ]);
+                            $this->headers[] = (new RecordHeader())->setHeaderKey(Constants::TRACE_CARRIER)->setValue($carrier->toJson());
+                        })->call($message);
+                    }
+                }
+
+                return $proceedingJoinPoint->process();
+            },
+            SpanContext::make()
+                ->setOp('queue.publish')
+                ->setDescription(sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName))
+                ->setOrigin('auto.kafka')
+                ->setData(['coroutine.id' => Coroutine::id()])
         );
-
-        if (! $span) {
-            return $proceedingJoinPoint->process();
-        }
-
-        foreach ($messages as $message) {
-            (function () use ($span) {
-                $carrier = Carrier::fromSpan($span)
-                    ->with([
-                        'publish_time' => microtime(true),
-                        'message_id' => uniqid('kafka_', true),
-                        'destination_name' => $this->getTopic(),
-                        'body_size' => strlen((string) $this->getValue()),
-                    ]);
-                $this->headers[] = (new RecordHeader())->setHeaderKey(Constants::TRACE_CARRIER)->setValue($carrier->toJson());
-            })->call($message);
-        }
-
-        return tap($proceedingJoinPoint->process(), fn () => $span->finish());
     }
 }

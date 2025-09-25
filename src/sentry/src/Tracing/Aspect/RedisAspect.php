@@ -21,8 +21,10 @@ use Hyperf\Redis\Event\CommandExecuted;
 use Hyperf\Redis\Pool\PoolFactory;
 use Hyperf\Redis\Redis;
 use Psr\Container\ContainerInterface;
-use Sentry\Tracing\SpanStatus;
-use Throwable;
+use Sentry\State\Scope;
+use Sentry\Tracing\SpanContext;
+
+use function Hyperf\Tappable\tap;
 
 /**
  * @deprecated since v3.1, will be removed in v3.2.
@@ -72,44 +74,26 @@ class RedisAspect extends AbstractAspect
             'db.redis.pool.using' => $pool->getCurrentConnections(),
         ];
 
-        // rule: operation db.table
-        // $op = sprintf('%s %s', $arguments['name'], $arguments['arguments']['key'] ?? '');
-        // $description = sprintf('%s::%s()', $proceedingJoinPoint->className, $arguments['name']);
         $key = $arguments['arguments'][0] ?? '';
         $description = sprintf(
             '%s %s',
             strtoupper($arguments['name'] ?? ''),
             is_array($key) ? implode(',', $key) : $key
         );
-        $span = $this->startSpan(
-            op: 'db.redis',
-            description: $description,
-            origin: 'auto.cache.redis',
-        )?->setData($data);
 
-        try {
-            $result = $proceedingJoinPoint->process();
-
-            if ($this->switcher->isTracingExtraTagEnabled('redis.result')) {
-                $span?->setData(['redis.result' => $result]);
-            }
-
-            return $result;
-        } catch (Throwable $e) {
-            $span?->setStatus(SpanStatus::internalError())
-                ->setTags([
-                    'error' => 'true',
-                    'exception.class' => $e::class,
-                    'exception.message' => $e->getMessage(),
-                    'exception.code' => (string) $e->getCode(),
-                ]);
-            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                $span?->setData(['exception.stack_trace' => (string) $e]);
-            }
-
-            throw $e;
-        } finally {
-            $span?->finish();
-        }
+        return $this->trace(
+            function (Scope $scope) use ($proceedingJoinPoint) {
+                return tap($proceedingJoinPoint->process(), function ($result) use ($scope) {
+                    if ($this->switcher->isTracingExtraTagEnabled('redis.result')) {
+                        $scope->getSpan()?->setData(['redis.result' => $result]);
+                    }
+                });
+            },
+            SpanContext::make()
+                ->setOp('db.redis')
+                ->setDescription($description)
+                ->setOrigin('auto.cache.redis')
+                ->setData($data)
+        );
     }
 }

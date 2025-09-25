@@ -22,6 +22,8 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
+use Sentry\State\Scope;
+use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
 use Throwable;
 
@@ -45,10 +47,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (
-            ! $this->switcher->isTracingSpanEnabled('guzzle')
-            || Context::get(RpcAspect::SPAN) // If the parent span is not exists or the parent span is belongs to rpc, then skip.
-        ) {
+        if (! $this->switcher->isTracingSpanEnabled('guzzle')) {
             return $proceedingJoinPoint->process();
         }
 
@@ -70,117 +69,123 @@ class GuzzleHttpClientAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        // Inject trace context && Start span
-        $span = $this->startSpan(
-            op: 'http.client',
-            description: $request->getMethod() . ' ' . (string) $request->getUri(),
-            origin: 'auto.http.client',
-        );
+        return $this->trace(
+            function (Scope $scope) use ($proceedingJoinPoint, $options, $guzzleConfig) {
+                $span = $scope->getSpan();
 
-        if (! $span) {
-            return $proceedingJoinPoint->process();
-        }
+                if (! $span) {
+                    return $proceedingJoinPoint->process();
+                }
 
-        // Inject trace context
-        $options['headers'] = array_replace($options['headers'] ?? [], [
-            'sentry-trace' => $span->toTraceparent(),
-            'baggage' => $span->toBaggage(),
-            'traceparent' => $span->toW3CTraceparent(),
-        ]);
-
-        // Override the headers
-        $proceedingJoinPoint->arguments['keys']['options']['headers'] = $options['headers'];
-        $onStats = $options['on_stats'] ?? null;
-
-        // Add or override the on_stats option to record the request duration.
-        $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($options, $guzzleConfig, $onStats, $span) {
-            $request = $stats->getRequest();
-            $uri = $request->getUri();
-            $span->setData([
-                // See: https://develop.sentry.dev/sdk/performance/span-data-conventions/#http
-                'http.query' => $uri->getQuery(),
-                'http.fragment' => $uri->getFragment(),
-                'http.request.method' => $request->getMethod(),
-                'http.request.body.size' => strlen($options['body'] ?? ''),
-                'http.request.full_url' => (string) $request->getUri(),
-                'http.request.path' => $request->getUri()->getPath(),
-                'http.request.scheme' => $request->getUri()->getScheme(),
-                'http.request.host' => $request->getUri()->getHost(),
-                'http.request.port' => $request->getUri()->getPort(),
-                'http.request.user_agent' => $request->getHeaderLine('User-Agent'), // updated key for consistency
-                'http.request.headers' => $request->getHeaders(),
-                // Other
-                'coroutine.id' => Coroutine::id(),
-                'http.system' => 'guzzle',
-                'http.guzzle.config' => $guzzleConfig,
-                'http.guzzle.options' => $options ?? [],
-                'duration' => $stats->getTransferTime() * 1000, // in milliseconds
-            ]);
-
-            if ($response = $stats->getResponse()) {
-                $span->setData([
-                    'http.response.status_code' => $response->getStatusCode(),
-                    'http.response.reason' => $response->getReasonPhrase(),
-                    'http.response.headers' => $response->getHeaders(),
-                    'http.response.body.size' => $response->getBody()->getSize() ?? 0,
-                    'http.response_content_length' => $response->getHeaderLine('Content-Length'),
-                    'http.decoded_response_content_length' => $response->getHeaderLine('X-Decoded-Content-Length'),
-                    'http.response_transfer_size' => $response->getHeaderLine('Content-Length'),
+                // Inject trace context
+                $options['headers'] = array_replace($options['headers'] ?? [], [
+                    'sentry-trace' => $span->toTraceparent(),
+                    'baggage' => $span->toBaggage(),
+                    'traceparent' => $span->toW3CTraceparent(),
                 ]);
 
-                if ($this->switcher->isTracingExtraTagEnabled('http.response.body.contents')) {
-                    $isTextual = \preg_match(
-                        '/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i',
-                        $response->getHeaderLine('Content-Type')
-                    ) === 1;
-                    $body = $response->getBody();
+                // Override the headers
+                $proceedingJoinPoint->arguments['keys']['options']['headers'] = $options['headers'];
+                $onStats = $options['on_stats'] ?? null;
 
-                    if ($isTextual && $body->isSeekable()) {
-                        $pos = $body->tell();
-                        $span->setData([
-                            'http.response.body.contents' => \GuzzleHttp\Psr7\Utils::copyToString($body, 8192), // 8KB 上限
-                        ]);
-                        $body->seek($pos);
-                    } else {
-                        $span->setData(['http.response.body.contents' => '[binary omitted]']);
-                    }
-                }
-
-                $span->setStatus(SpanStatus::createFromHttpStatusCode($response->getStatusCode()));
-
-                if ($response->getStatusCode() >= 400 && $response->getStatusCode() < 600) {
-                    $span->setTags([
-                        'error' => 'true',
-                        'http.response.reason' => $response->getReasonPhrase(),
-                    ]);
-                }
-            }
-
-            if ($stats->getHandlerErrorData()) {
-                $exception = $stats->getHandlerErrorData() instanceof Throwable
-                    ? $stats->getHandlerErrorData()
-                    : new Error();
-                $span->setStatus(SpanStatus::internalError())
-                    ->setTags([
-                        'error' => 'true',
-                        'exception.class' => $exception::class,
-                        'exception.code' => (string) $exception->getCode(),
-                    ]);
-                if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+                // Add or override the on_stats option to record the request duration.
+                $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($options, $guzzleConfig, $onStats, $span) {
+                    $request = $stats->getRequest();
+                    $uri = $request->getUri();
                     $span->setData([
-                        'exception.message' => $exception->getMessage(),
-                        'exception.stack_trace' => (string) $exception,
+                        // See: https://develop.sentry.dev/sdk/performance/span-data-conventions/#http
+                        'http.query' => $uri->getQuery(),
+                        'http.fragment' => $uri->getFragment(),
+                        'http.request.method' => $request->getMethod(),
+                        'http.request.body.size' => strlen($options['body'] ?? ''),
+                        'http.request.full_url' => (string) $request->getUri(),
+                        'http.request.path' => $request->getUri()->getPath(),
+                        'http.request.scheme' => $request->getUri()->getScheme(),
+                        'http.request.host' => $request->getUri()->getHost(),
+                        'http.request.port' => $request->getUri()->getPort(),
+                        'http.request.user_agent' => $request->getHeaderLine('User-Agent'), // updated key for consistency
+                        'http.request.headers' => $request->getHeaders(),
+                        // Other
+                        'coroutine.id' => Coroutine::id(),
+                        'http.system' => 'guzzle',
+                        'http.guzzle.config' => $guzzleConfig,
+                        'http.guzzle.options' => $options ?? [],
+                        'duration' => $stats->getTransferTime() * 1000, // in milliseconds
                     ]);
-                }
-            }
 
-            $span->finish();
+                    if ($response = $stats->getResponse()) {
+                        $span->setData([
+                            'http.response.status_code' => $response->getStatusCode(),
+                            'http.response.reason' => $response->getReasonPhrase(),
+                            'http.response.headers' => $response->getHeaders(),
+                            'http.response.body.size' => $response->getBody()->getSize() ?? 0,
+                            'http.response_content_length' => $response->getHeaderLine('Content-Length'),
+                            'http.decoded_response_content_length' => $response->getHeaderLine('X-Decoded-Content-Length'),
+                            'http.response_transfer_size' => $response->getHeaderLine('Content-Length'),
+                        ]);
 
-            if (is_callable($onStats)) {
-                ($onStats)($stats);
-            }
-        };
+                        if ($this->switcher->isTracingExtraTagEnabled('http.response.body.contents')) {
+                            $isTextual = \preg_match(
+                                '/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i',
+                                $response->getHeaderLine('Content-Type')
+                            ) === 1;
+                            $body = $response->getBody();
 
-        return $proceedingJoinPoint->process();
+                            if ($isTextual && $body->isSeekable()) {
+                                $pos = $body->tell();
+                                $span->setData([
+                                    'http.response.body.contents' => \GuzzleHttp\Psr7\Utils::copyToString($body, 8192), // 8KB 上限
+                                ]);
+                                $body->seek($pos);
+                            } else {
+                                $span->setData(['http.response.body.contents' => '[binary omitted]']);
+                            }
+                        }
+
+                        $span->setStatus(
+                            SpanStatus::createFromHttpStatusCode($response->getStatusCode())
+                        );
+
+                        if ($response->getStatusCode() >= 400 && $response->getStatusCode() < 600) {
+                            $span->setTags([
+                                'error' => 'true',
+                                'http.response.reason' => $response->getReasonPhrase(),
+                            ]);
+                        }
+                    }
+
+                    if ($stats->getHandlerErrorData()) {
+                        $exception = $stats->getHandlerErrorData() instanceof Throwable
+                            ? $stats->getHandlerErrorData()
+                            : new Error();
+                        $span->setStatus(SpanStatus::internalError())
+                            ->setTags([
+                                'error' => 'true',
+                                'exception.class' => $exception::class,
+                                'exception.code' => (string) $exception->getCode(),
+                            ])
+                            ->setData([
+                                'exception.message' => $exception->getMessage(),
+                            ]);
+                        if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+                            $span->setData([
+                                'exception.stack_trace' => (string) $exception,
+                            ]);
+                        }
+                    }
+
+                    if (is_callable($onStats)) {
+                        ($onStats)($stats);
+                    }
+                };
+
+                return $proceedingJoinPoint->process();
+            },
+            SpanContext::make()
+                ->setOp('http.client')
+                ->setDescription($request->getMethod() . ' ' . (string) $request->getUri())
+                ->setOrigin('auto.http.client')
+                ->setData(['coroutine.id' => Coroutine::id()])
+        );
     }
 }

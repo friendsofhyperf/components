@@ -16,8 +16,8 @@ use FriendsOfHyperf\Sentry\Tracing\SpanStarter;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Sentry\Tracing\SpanStatus;
-use Throwable;
+use Sentry\State\Scope;
+use Sentry\Tracing\SpanContext;
 
 class ElasticsearchAspect extends AbstractAspect
 {
@@ -62,47 +62,31 @@ class ElasticsearchAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        $span = $this->startSpan(
-            op: 'db.elasticsearch',
-            description: sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName),
-            origin: 'auto.elasticsearch',
-        )?->setData([
-            'coroutine.id' => Coroutine::id(),
-            'db.system' => 'elasticsearch',
-            'db.operation.name' => $proceedingJoinPoint->methodName,
-            'http.request.method' => '', // TODO
-            'url.full' => '', // TODO
-            'server.host' => '', // TODO
-            'server.port' => '', // TODO
-            'arguments' => json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE),
-        ]);
-
-        try {
-            $result = $proceedingJoinPoint->process();
-            if ($this->switcher->isTracingExtraTagEnabled('elasticsearch.result')) {
-                $span?->setData([
-                    'elasticsearch.result' => json_encode($result, JSON_UNESCAPED_UNICODE),
-                ]);
-            }
-        } catch (Throwable $exception) {
-            $span?->setStatus(SpanStatus::internalError())
-                ->setTags([
-                    'error' => 'true',
-                    'exception.class' => $exception::class,
-                    'exception.message' => $exception->getMessage(),
-                    'exception.code' => (string) $exception->getCode(),
-                ]);
-            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                $span?->setData([
-                    'exception.stack_trace' => (string) $exception,
-                ]);
-            }
-
-            throw $exception;
-        } finally {
-            $span?->finish();
-        }
-
-        return $result;
+        return $this->trace(
+            function (Scope $scope) use ($proceedingJoinPoint) {
+                $result = $proceedingJoinPoint->process();
+                if ($this->switcher->isTracingExtraTagEnabled('elasticsearch.result')) {
+                    $scope->getSpan()?->setData([
+                        'elasticsearch.result' => (string) json_encode($result, JSON_UNESCAPED_UNICODE),
+                    ]);
+                }
+                return $result;
+            },
+            SpanContext::make()
+                ->setOp('db.elasticsearch')
+                ->setDescription(sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName))
+                ->setOrigin('auto.elasticsearch')
+                ->setData([
+                    'coroutine.id' => Coroutine::id(),
+                    'db.system' => 'elasticsearch',
+                    'db.operation.name' => $proceedingJoinPoint->methodName,
+                    'arguments' => (string) json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE),
+                    // TODO
+                    // 'http.request.method' => '',
+                    // 'url.full' => '',
+                    // 'server.host' => '',
+                    // 'server.port' => '',
+                ])
+        );
     }
 }
