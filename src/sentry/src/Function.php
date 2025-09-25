@@ -52,8 +52,6 @@ function startTransaction(TransactionContext $transactionContext, array $customS
 function trace(callable $trace, SpanContext $context)
 {
     $container = ApplicationContext::getContainer();
-    $isTracingExtraTagEnabled = false;
-
     $isTracingExtraTagEnabled = $container->has(Switcher::class)
         && $container->get(Switcher::class)->isTracingExtraTagEnabled('exception.stack_trace');
 
