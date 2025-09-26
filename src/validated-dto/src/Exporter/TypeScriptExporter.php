@@ -28,6 +28,9 @@ use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionUnionType;
 
+/**
+ * @property string $dtoClass
+ */
 class TypeScriptExporter extends AbstractExporter
 {
     /**
@@ -121,19 +124,11 @@ class TypeScriptExporter extends AbstractExporter
     protected function extractDTOTypeName(DTOCast $cast): string
     {
         try {
-            $reflection = new ReflectionClass($cast);
-            if ($reflection->hasProperty('dtoClass')) {
-                $property = $reflection->getProperty('dtoClass');
-                if (! $property->isPublic()) {
-                    $property->setAccessible(true);
-                }
-                $dtoClass = $property->getValue($cast);
+            /** @var string $dtoClass */
+            $dtoClass = (fn () => $this->dtoClass)->call($cast);
 
-                if (is_string($dtoClass)) {
-                    $parts = explode('\\', $dtoClass);
-                    return end($parts);
-                }
-            }
+            $parts = explode('\\', $dtoClass);
+            return end($parts);
         } catch (Exception $e) {
             // Fall back to generic object
         }
