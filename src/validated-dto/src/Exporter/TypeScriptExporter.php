@@ -121,15 +121,20 @@ class TypeScriptExporter extends AbstractExporter
     protected function extractDTOTypeName(DTOCast $cast): string
     {
         try {
-            $reflection = new ReflectionClass($cast);
-            $property = $reflection->getProperty('dtoClass');
-            $dtoClass = $property->getValue($cast);
+            $reflection = new \ReflectionClass($cast);
+            if ($reflection->hasProperty('dtoClass')) {
+                $property = $reflection->getProperty('dtoClass');
+                if (!$property->isPublic()) {
+                    $property->setAccessible(true);
+                }
+                $dtoClass = $property->getValue($cast);
 
-            if (is_string($dtoClass)) {
-                $parts = explode('\\', $dtoClass);
-                return end($parts);
+                if (is_string($dtoClass)) {
+                    $parts = explode('\\', $dtoClass);
+                    return end($parts);
+                }
             }
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             // Fall back to generic object
         }
 
