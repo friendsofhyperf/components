@@ -386,13 +386,21 @@ class EventHandleListener implements ListenerInterface
 
         $command = $event->getCommand();
 
-        startTransaction(
+        $transaction = startTransaction(
             TransactionContext::make()
                 ->setName($command->getName() ?: '<unnamed command>')
                 ->setOp('console.command')
                 ->setDescription($command->getDescription())
                 ->setOrigin('auto.command')
         );
+
+        Coroutine::inCoroutine() && defer(function () use ($transaction) {
+            // Make sure the transaction is finished after the command is executed
+            SentrySdk::getCurrentHub()->setSpan($transaction);
+
+            // Finish transaction
+            $transaction->finish();
+        });
     }
 
     protected function handleCommandFinished(CommandEvent\AfterExecute $event): void
@@ -435,9 +443,11 @@ class EventHandleListener implements ListenerInterface
                 $exitCode == SymfonyCommand::SUCCESS ? SpanStatus::ok() : SpanStatus::internalError()
             );
         } finally {
-            SentrySdk::getCurrentHub()->setSpan($transaction);
+            if (! Coroutine::inCoroutine()) {
+                SentrySdk::getCurrentHub()->setSpan($transaction);
 
-            $transaction->finish();
+                $transaction->finish();
+            }
         }
     }
 
@@ -504,7 +514,7 @@ class EventHandleListener implements ListenerInterface
 
         $crontab = $event->crontab;
 
-        startTransaction(
+        $transaction = startTransaction(
             TransactionContext::make()
                 ->setName($crontab->getName() ?: '<unnamed crontab>')
                 ->setOp('crontab.run')
@@ -512,6 +522,14 @@ class EventHandleListener implements ListenerInterface
                 ->setOrigin('auto.crontab')
                 ->setSource(TransactionSource::task())
         );
+
+        defer(function () use ($transaction) {
+            // Make sure the transaction is finished after the task is executed
+            SentrySdk::getCurrentHub()->setSpan($transaction);
+
+            // Finish transaction
+            $transaction->finish();
+        });
     }
 
     protected function handleCrontabTaskFinished(CrontabEvent\FailToExecute|CrontabEvent\AfterExecute $event): void
@@ -522,33 +540,27 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        try {
-            $crontab = $event->crontab;
-            $transaction->setTags([
-                'crontab.rule' => $crontab->getRule(),
-                'crontab.type' => $crontab->getType(),
-                'crontab.options.is_single' => $crontab->isSingleton(),
-                'crontab.options.is_on_one_server' => $crontab->isOnOneServer(),
-            ]);
+        $crontab = $event->crontab;
+        $transaction->setTags([
+            'crontab.rule' => $crontab->getRule(),
+            'crontab.type' => $crontab->getType(),
+            'crontab.options.is_single' => $crontab->isSingleton(),
+            'crontab.options.is_on_one_server' => $crontab->isOnOneServer(),
+        ]);
 
-            if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
-                $transaction->setStatus(SpanStatus::internalError())
-                    ->setTags([
-                        'error' => 'true',
-                        'exception.class' => $exception::class,
-                        'exception.code' => (string) $exception->getCode(),
-                    ])
-                    ->setData([
-                        'exception.message' => $exception->getMessage(),
-                    ]);
-                if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                    $transaction->setData(['exception.stack_trace' => (string) $exception]);
-                }
+        if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
+            $transaction->setStatus(SpanStatus::internalError())
+                ->setTags([
+                    'error' => 'true',
+                    'exception.class' => $exception::class,
+                    'exception.code' => (string) $exception->getCode(),
+                ])
+                ->setData([
+                    'exception.message' => $exception->getMessage(),
+                ]);
+            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+                $transaction->setData(['exception.stack_trace' => (string) $exception]);
             }
-        } finally {
-            SentrySdk::getCurrentHub()->setSpan($transaction);
-
-            $transaction->finish();
         }
     }
 
@@ -572,13 +584,21 @@ class EventHandleListener implements ListenerInterface
             }
         }
 
-        startTransaction(
+        $transaction = startTransaction(
             continueTrace($carrier?->getSentryTrace() ?? '', $carrier?->getBaggage() ?? '')
                 ->setName($message::class)
                 ->setOp('queue.process')
                 ->setDescription($message::class)
                 ->setOrigin('auto.amqp')
         );
+
+        defer(function () use ($transaction) {
+            // Make sure the transaction is finished after the message is processed
+            SentrySdk::getCurrentHub()->setSpan($transaction);
+
+            // Finish transaction
+            $transaction->finish();
+        });
     }
 
     protected function handleAmqpMessageProcessed(AmqpEvent\AfterConsume|AmqpEvent\FailToConsume $event): void
@@ -589,46 +609,40 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        try {
-            /** @var null|Carrier $carrier */
-            $carrier = Context::get(Constants::TRACE_CARRIER);
+        /** @var null|Carrier $carrier */
+        $carrier = Context::get(Constants::TRACE_CARRIER);
 
-            /** @var ConsumerMessage $message */
-            $message = $event->getMessage();
-            $transaction->setData([
-                'messaging.system' => 'amqp',
-                'messaging.operation' => 'process',
-                'messaging.message.id' => $carrier?->get('message_id'),
-                'messaging.message.body.size' => $carrier?->get('body_size'),
-                'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
-                'messaging.message.retry.count' => 0,
-                'messaging.destination.name' => $carrier?->get('destination_name') ?: implode(', ', (array) $message->getRoutingKey()),
-                'messaging.amqp.message.type' => $message->getTypeString(),
-                'messaging.amqp.message.routing_key' => $message->getRoutingKey(),
-                'messaging.amqp.message.exchange' => $message->getExchange(),
-                'messaging.amqp.message.queue' => $message->getQueue(),
-                'messaging.amqp.message.pool_name' => $message->getPoolName(),
-                'messaging.amqp.message.result' => $event instanceof AmqpEvent\AfterConsume ? $event->getResult()->value : 'fail',
-            ]);
+        /** @var ConsumerMessage $message */
+        $message = $event->getMessage();
+        $transaction->setData([
+            'messaging.system' => 'amqp',
+            'messaging.operation' => 'process',
+            'messaging.message.id' => $carrier?->get('message_id'),
+            'messaging.message.body.size' => $carrier?->get('body_size'),
+            'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
+            'messaging.message.retry.count' => 0,
+            'messaging.destination.name' => $carrier?->get('destination_name') ?: implode(', ', (array) $message->getRoutingKey()),
+            'messaging.amqp.message.type' => $message->getTypeString(),
+            'messaging.amqp.message.routing_key' => $message->getRoutingKey(),
+            'messaging.amqp.message.exchange' => $message->getExchange(),
+            'messaging.amqp.message.queue' => $message->getQueue(),
+            'messaging.amqp.message.pool_name' => $message->getPoolName(),
+            'messaging.amqp.message.result' => $event instanceof AmqpEvent\AfterConsume ? $event->getResult()->value : 'fail',
+        ]);
 
-            if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
-                $transaction->setStatus(SpanStatus::internalError())
-                    ->setTags([
-                        'error' => 'true',
-                        'exception.class' => $exception::class,
-                        'exception.code' => (string) $exception->getCode(),
-                    ])
-                    ->setData([
-                        'exception.message' => $exception->getMessage(),
-                    ]);
-                if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                    $transaction->setData(['exception.stack_trace' => (string) $exception]);
-                }
+        if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
+            $transaction->setStatus(SpanStatus::internalError())
+                ->setTags([
+                    'error' => 'true',
+                    'exception.class' => $exception::class,
+                    'exception.code' => (string) $exception->getCode(),
+                ])
+                ->setData([
+                    'exception.message' => $exception->getMessage(),
+                ]);
+            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+                $transaction->setData(['exception.stack_trace' => (string) $exception]);
             }
-        } finally {
-            SentrySdk::getCurrentHub()->setSpan($transaction);
-
-            $transaction->finish();
         }
     }
 
@@ -652,13 +666,21 @@ class EventHandleListener implements ListenerInterface
             }
         }
 
-        startTransaction(
+        $transaction = startTransaction(
             continueTrace($carrier?->getSentryTrace() ?? '', $carrier?->getBaggage() ?? '')
                 ->setName($consumer->getTopic() . ' process')
                 ->setOp('queue.process')
                 ->setDescription($consumer::class)
                 ->setOrigin('auto.kafka')
         );
+
+        defer(function () use ($transaction) {
+            // Make sure the transaction is finished after the message is processed
+            SentrySdk::getCurrentHub()->setSpan($transaction);
+
+            // Finish transaction
+            $transaction->finish();
+        });
     }
 
     protected function handleKafkaMessageProcessed(KafkaEvent\AfterConsume|KafkaEvent\FailToConsume $event): void
@@ -669,40 +691,34 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        try {
-            /** @var null|Carrier $carrier */
-            $carrier = Context::get(Constants::TRACE_CARRIER);
-            $consumer = $event->getConsumer();
-            $transaction->setData([
-                'messaging.system' => 'kafka',
-                'messaging.operation' => 'process',
-                'messaging.message.id' => $carrier?->get('message_id'),
-                'messaging.message.body.size' => $carrier?->get('body_size'),
-                'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
-                'messaging.message.retry.count' => 0,
-                'messaging.destination.name' => $carrier?->get('destination_name') ?: (is_array($consumer->getTopic()) ? implode(',', $consumer->getTopic()) : $consumer->getTopic()),
-                'messaging.kafka.consumer.group' => $consumer->getGroupId(),
-                'messaging.kafka.consumer.pool' => $consumer->getPool(),
-            ]);
+        /** @var null|Carrier $carrier */
+        $carrier = Context::get(Constants::TRACE_CARRIER);
+        $consumer = $event->getConsumer();
+        $transaction->setData([
+            'messaging.system' => 'kafka',
+            'messaging.operation' => 'process',
+            'messaging.message.id' => $carrier?->get('message_id'),
+            'messaging.message.body.size' => $carrier?->get('body_size'),
+            'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
+            'messaging.message.retry.count' => 0,
+            'messaging.destination.name' => $carrier?->get('destination_name') ?: (is_array($consumer->getTopic()) ? implode(',', $consumer->getTopic()) : $consumer->getTopic()),
+            'messaging.kafka.consumer.group' => $consumer->getGroupId(),
+            'messaging.kafka.consumer.pool' => $consumer->getPool(),
+        ]);
 
-            if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
-                $transaction->setStatus(SpanStatus::internalError())
-                    ->setTags([
-                        'error' => 'true',
-                        'exception.class' => $exception::class,
-                        'exception.code' => (string) $exception->getCode(),
-                    ])
-                    ->setData([
-                        'exception.message' => $exception->getMessage(),
-                    ]);
-                if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                    $transaction->setData(['exception.stack_trace' => (string) $exception]);
-                }
+        if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
+            $transaction->setStatus(SpanStatus::internalError())
+                ->setTags([
+                    'error' => 'true',
+                    'exception.class' => $exception::class,
+                    'exception.code' => (string) $exception->getCode(),
+                ])
+                ->setData([
+                    'exception.message' => $exception->getMessage(),
+                ]);
+            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+                $transaction->setData(['exception.stack_trace' => (string) $exception]);
             }
-        } finally {
-            SentrySdk::getCurrentHub()->setSpan($transaction);
-
-            $transaction->finish();
         }
     }
 
@@ -716,13 +732,21 @@ class EventHandleListener implements ListenerInterface
         $carrier = Context::get(Constants::TRACE_CARRIER, null, Coroutine::parentId());
         $job = $event->getMessage()->job();
 
-        startTransaction(
+        $transaction = startTransaction(
             continueTrace($carrier?->getSentryTrace() ?? '', $carrier?->getBaggage() ?? '')
                 ->setName($job::class)
                 ->setOp('queue.process')
                 ->setDescription('async_queue: ' . $job::class)
                 ->setOrigin('auto.async_queue')
         );
+
+        defer(function () use ($transaction) {
+            // Make sure the transaction is finished after the job is processed
+            SentrySdk::getCurrentHub()->setSpan($transaction);
+
+            // Finish transaction
+            $transaction->finish();
+        });
     }
 
     protected function handleAsyncQueueJobProcessed(AsyncQueueEvent\AfterHandle|AsyncQueueEvent\RetryHandle|AsyncQueueEvent\FailedHandle $event): void
@@ -733,37 +757,31 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        try {
-            /** @var null|Carrier $carrier */
-            $carrier = Context::get(Constants::TRACE_CARRIER, null, Coroutine::parentId());
-            $transaction->setData([
-                'messaging.system' => 'async_queue',
-                'messaging.operation' => 'process',
-                'messaging.message.id' => $carrier?->get('message_id'),
-                'messaging.message.body.size' => $carrier?->get('body_size'),
-                'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
-                'messaging.message.retry.count' => $event->getMessage()->getAttempts(),
-                'messaging.destination.name' => $carrier?->get('destination_name') ?: 'unknown queue',
-            ]);
+        /** @var null|Carrier $carrier */
+        $carrier = Context::get(Constants::TRACE_CARRIER, null, Coroutine::parentId());
+        $transaction->setData([
+            'messaging.system' => 'async_queue',
+            'messaging.operation' => 'process',
+            'messaging.message.id' => $carrier?->get('message_id'),
+            'messaging.message.body.size' => $carrier?->get('body_size'),
+            'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
+            'messaging.message.retry.count' => $event->getMessage()->getAttempts(),
+            'messaging.destination.name' => $carrier?->get('destination_name') ?: 'unknown queue',
+        ]);
 
-            if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
-                $transaction->setStatus(SpanStatus::internalError())
-                    ->setTags([
-                        'error' => 'true',
-                        'exception.class' => $exception::class,
-                        'exception.code' => (string) $exception->getCode(),
-                    ])
-                    ->setData([
-                        'exception.message' => $exception->getMessage(),
-                    ]);
-                if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
-                    $transaction->setData(['exception.stack_trace' => (string) $exception]);
-                }
+        if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
+            $transaction->setStatus(SpanStatus::internalError())
+                ->setTags([
+                    'error' => 'true',
+                    'exception.class' => $exception::class,
+                    'exception.code' => (string) $exception->getCode(),
+                ])
+                ->setData([
+                    'exception.message' => $exception->getMessage(),
+                ]);
+            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+                $transaction->setData(['exception.stack_trace' => (string) $exception]);
             }
-        } finally {
-            SentrySdk::getCurrentHub()->setSpan($transaction);
-
-            $transaction->finish();
         }
     }
 
