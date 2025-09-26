@@ -24,7 +24,7 @@ class FilesystemAspect extends BaseFilesystemAspect
     #[Override]
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnabled('filesystem')) {
+        if (! $this->feature->isTracingEnabled('filesystem')) {
             return $proceedingJoinPoint->process();
         }
 

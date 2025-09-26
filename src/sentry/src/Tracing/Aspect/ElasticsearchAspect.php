@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
@@ -50,20 +50,20 @@ class ElasticsearchAspect extends AbstractAspect
         'Elastic\Elasticsearch\Traits\ClientEndpointsTrait::updateByQuery',
     ];
 
-    public function __construct(protected Switcher $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnabled('elasticsearch')) {
+        if (! $this->feature->isTracingSpanEnabled('elasticsearch')) {
             return $proceedingJoinPoint->process();
         }
 
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
                 $result = $proceedingJoinPoint->process();
-                if ($this->switcher->isTracingExtraTagEnabled('elasticsearch.result')) {
+                if ($this->feature->isTracingExtraTagEnabled('elasticsearch.result')) {
                     $scope->getSpan()?->setData([
                         'elasticsearch.result' => (string) json_encode($result, JSON_UNESCAPED_UNICODE),
                     ]);

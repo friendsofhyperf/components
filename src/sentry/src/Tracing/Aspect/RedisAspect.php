@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Support\RedisCommand;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -40,7 +40,7 @@ class RedisAspect extends AbstractAspect
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher
+        protected Feature $feature
     ) {
     }
 
@@ -48,7 +48,7 @@ class RedisAspect extends AbstractAspect
     {
         if (
             class_exists(CommandExecuted::class)
-            || ! $this->switcher->isTracingSpanEnabled('redis')
+            || ! $this->feature->isTracingSpanEnabled('redis')
         ) {
             return $proceedingJoinPoint->process();
         }
@@ -80,7 +80,7 @@ class RedisAspect extends AbstractAspect
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
                 return tap($proceedingJoinPoint->process(), function ($result) use ($scope) {
-                    if ($this->switcher->isTracingExtraTagEnabled('redis.result')) {
+                    if ($this->feature->isTracingExtraTagEnabled('redis.result')) {
                         $scope->getSpan()?->setData(['redis.result' => $result]);
                     }
                 });

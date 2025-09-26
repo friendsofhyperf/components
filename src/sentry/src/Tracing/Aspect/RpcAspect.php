@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
@@ -42,13 +42,13 @@ class RpcAspect extends AbstractAspect
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher
+        protected Feature $feature
     ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnabled('rpc')) {
+        if (! $this->feature->isTracingSpanEnabled('rpc')) {
             return $proceedingJoinPoint->process();
         }
 
@@ -111,7 +111,7 @@ class RpcAspect extends AbstractAspect
                             ->set(Constants::TRACE_CARRIER, Carrier::fromSpan($span)->toJson());
                     }
                     return tap($proceedingJoinPoint->process(), function ($result) use ($span) {
-                        if ($span && $this->switcher->isTracingExtraTagEnabled('rpc.result')) {
+                        if ($span && $this->feature->isTracingExtraTagEnabled('rpc.result')) {
                             $span->setData(['rpc.result' => $result]);
                         }
                     });

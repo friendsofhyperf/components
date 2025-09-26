@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Aspect;
 
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
-use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Redis\Event\CommandExecuted;
@@ -30,7 +30,7 @@ class RedisAspect extends AbstractAspect
         RedisConnection::class . '::__call',
     ];
 
-    public function __construct(protected Switcher $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
@@ -42,7 +42,7 @@ class RedisAspect extends AbstractAspect
         return tap($proceedingJoinPoint->process(), function ($result) use ($arguments, $startTime) {
             if (
                 class_exists(CommandExecuted::class)
-                || ! $this->switcher->isBreadcrumbEnabled('redis')
+                || ! $this->feature->isBreadcrumbEnabled('redis')
             ) {
                 return;
             }

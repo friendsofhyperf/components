@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Aspect;
 
 use BackedEnum;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
-use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Monolog\DateTimeImmutable;
@@ -32,14 +32,14 @@ class LoggerAspect extends AbstractAspect
         Logger::class . '::addRecord',
     ];
 
-    public function __construct(protected Switcher $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (! $this->switcher->isBreadcrumbEnabled('logs')) {
+            if (! $this->feature->isBreadcrumbEnabled('logs')) {
                 return;
             }
 

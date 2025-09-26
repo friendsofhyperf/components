@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Aspect;
 
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
-use FriendsOfHyperf\Sentry\Switcher;
 use GuzzleHttp\Client;
 use GuzzleHttp\TransferStats;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -29,14 +29,14 @@ class GuzzleHttpClientAspect extends AbstractAspect
         Client::class . '::transfer',
     ];
 
-    public function __construct(protected Switcher $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         // If the guzzle aspect is disabled, we will not record the request.
-        if (! $this->switcher->isBreadcrumbEnabled('guzzle')) {
+        if (! $this->feature->isBreadcrumbEnabled('guzzle')) {
             return $proceedingJoinPoint->process();
         }
 

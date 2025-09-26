@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Util\CoroutineBacktraceHelper;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -36,7 +36,7 @@ class CoroutineAspect extends AbstractAspect
         \Psr\Http\Message\ServerRequestInterface::class,
     ];
 
-    public function __construct(protected Switcher $switcher)
+    public function __construct(protected Feature $feature)
     {
         $this->priority = PHP_INT_MAX;
     }
@@ -44,8 +44,8 @@ class CoroutineAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         if (
-            ! $this->switcher->isTracingSpanEnabled('coroutine')
-            || Switcher::isDisableCoroutineTracing()
+            ! $this->feature->isTracingSpanEnabled('coroutine')
+            || Feature::isDisableCoroutineTracing()
         ) {
             return $proceedingJoinPoint->process();
         }
@@ -115,7 +115,7 @@ class CoroutineAspect extends AbstractAspect
                     ->setData([
                         'exception.message' => $exception->getMessage(),
                     ]);
-                if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+                if ($this->feature->isTracingExtraTagEnabled('exception.stack_trace')) {
                     $coTransaction->setData([
                         'exception.stack_trace' => (string) $exception,
                     ]);
