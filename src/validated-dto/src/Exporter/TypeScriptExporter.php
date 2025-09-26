@@ -104,9 +104,9 @@ class TypeScriptExporter extends AbstractExporter
         return match (true) {
             $cast instanceof StringCast => 'string',
             $cast instanceof IntegerCast => 'number',
-            $cast instanceof LongCast => 'number',
+            // $cast instanceof LongCast => 'number',
             $cast instanceof FloatCast => 'number',
-            $cast instanceof DoubleCast => 'number',
+            // $cast instanceof DoubleCast => 'number',
             $cast instanceof BooleanCast => 'boolean',
             $cast instanceof ArrayCast => 'any[]',
             $cast instanceof CollectionCast => 'any[]',
