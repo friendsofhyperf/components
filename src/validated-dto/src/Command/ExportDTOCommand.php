@@ -11,9 +11,11 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ValidatedDTO\Command;
 
+use Exception;
 use FriendsOfHyperf\ValidatedDTO\Exporter\ExporterInterface;
 use FriendsOfHyperf\ValidatedDTO\Exporter\TypeScriptExporter;
 use Hyperf\Contract\ConfigInterface;
+use InvalidArgumentException;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -60,7 +62,7 @@ class ExportDTOCommand extends SymfonyCommand
         try {
             $exporter = $this->getExporter($lang);
             $exported = $exporter->export($class);
-            
+
             if ($outputPath) {
                 $this->writeToFile($outputPath, $exported);
                 $output->writeln(sprintf('<info>DTO exported to %s</info>', $outputPath));
@@ -69,10 +71,10 @@ class ExportDTOCommand extends SymfonyCommand
             }
 
             return 0;
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $output->writeln(sprintf('<fg=red>%s</>', $e->getMessage()));
             return 1;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $output->writeln(sprintf('<error>Error: %s</error>', $e->getMessage()));
             return 1;
         }
@@ -82,18 +84,18 @@ class ExportDTOCommand extends SymfonyCommand
     {
         return match ($lang) {
             'typescript', 'ts' => $this->typeScriptExporter,
-            default => throw new \InvalidArgumentException("Unsupported language: {$lang}"),
+            default => throw new InvalidArgumentException("Unsupported language: {$lang}"),
         };
     }
 
     protected function writeToFile(string $path, string $content): void
     {
         $directory = dirname($path);
-        if (!is_dir($directory)) {
+        if (! is_dir($directory)) {
             mkdir($directory, 0777, true);
         }
 
-        if (file_exists($path) && !$this->input->getOption('force')) {
+        if (file_exists($path) && ! $this->input->getOption('force')) {
             $this->output->writeln(sprintf('<error>File %s already exists! Use --force to overwrite.</error>', $path));
             return;
         }

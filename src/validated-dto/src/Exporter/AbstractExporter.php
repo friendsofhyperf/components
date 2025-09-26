@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ValidatedDTO\Exporter;
 
+use Exception;
+use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -21,14 +23,14 @@ abstract class AbstractExporter implements ExporterInterface
      */
     public function export(string $className): string
     {
-        if (!class_exists($className)) {
-            throw new \InvalidArgumentException("Class {$className} does not exist.");
+        if (! class_exists($className)) {
+            throw new InvalidArgumentException("Class {$className} does not exist.");
         }
 
         $reflection = new ReflectionClass($className);
-        
-        if (!$this->isDTOClass($reflection)) {
-            throw new \InvalidArgumentException("Class {$className} is not a DTO class.");
+
+        if (! $this->isDTOClass($reflection)) {
+            throw new InvalidArgumentException("Class {$className} is not a DTO class.");
         }
 
         return $this->generate($reflection);
@@ -40,12 +42,12 @@ abstract class AbstractExporter implements ExporterInterface
     protected function isDTOClass(ReflectionClass $reflection): bool
     {
         $parentClass = $reflection->getParentClass();
-        if (!$parentClass) {
+        if (! $parentClass) {
             return false;
         }
 
         $parentName = $parentClass->getName();
-        return $parentName === 'FriendsOfHyperf\ValidatedDTO\ValidatedDTO' 
+        return $parentName === 'FriendsOfHyperf\ValidatedDTO\ValidatedDTO'
             || $parentName === 'FriendsOfHyperf\ValidatedDTO\SimpleDTO'
             || $this->isDTOClass($parentClass);
     }
@@ -57,7 +59,7 @@ abstract class AbstractExporter implements ExporterInterface
     {
         return array_filter(
             $reflection->getProperties(ReflectionProperty::IS_PUBLIC),
-            fn($property) => !$property->isStatic()
+            fn ($property) => ! $property->isStatic()
         );
     }
 
@@ -66,7 +68,7 @@ abstract class AbstractExporter implements ExporterInterface
      */
     protected function getCasts(ReflectionClass $reflection): array
     {
-        if (!$reflection->hasMethod('casts')) {
+        if (! $reflection->hasMethod('casts')) {
             return [];
         }
 
@@ -76,7 +78,7 @@ abstract class AbstractExporter implements ExporterInterface
             $castsMethod->setAccessible(true);
             $casts = $castsMethod->invoke($instance);
             return is_array($casts) ? $casts : [];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // If we can't get casts, continue without them
             return [];
         }

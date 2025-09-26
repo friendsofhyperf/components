@@ -11,13 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ValidatedDTO\Exporter;
 
+use Exception;
 use FriendsOfHyperf\ValidatedDTO\Casting\ArrayCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\BooleanCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\CarbonCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\CarbonImmutableCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\CollectionCast;
-use FriendsOfHyperf\ValidatedDTO\Casting\DTOCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\DoubleCast;
+use FriendsOfHyperf\ValidatedDTO\Casting\DTOCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\FloatCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\IntegerCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\LongCast;
@@ -25,7 +26,9 @@ use FriendsOfHyperf\ValidatedDTO\Casting\ModelCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\ObjectCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\StringCast;
 use ReflectionClass;
+use ReflectionNamedType;
 use ReflectionProperty;
+use ReflectionUnionType;
 
 class TypeScriptExporter extends AbstractExporter
 {
@@ -39,19 +42,19 @@ class TypeScriptExporter extends AbstractExporter
         $casts = $this->getCasts($reflection);
 
         $typescript = "export interface {$className} {\n";
-        
+
         if (empty($properties)) {
             $typescript .= "  // No public properties found\n";
         }
-        
+
         foreach ($properties as $property) {
             $propertyName = $property->getName();
             $tsType = $this->getTypescriptType($property, $casts[$propertyName] ?? null);
             $optional = $this->isOptionalProperty($property) ? '?' : '';
-            
+
             $typescript .= "  {$propertyName}{$optional}: {$tsType};\n";
         }
-        
+
         $typescript .= "}\n";
 
         return $typescript;
@@ -59,6 +62,7 @@ class TypeScriptExporter extends AbstractExporter
 
     /**
      * Get TypeScript type for property.
+     * @param null|mixed $cast
      */
     protected function getTypescriptType(ReflectionProperty $property, $cast = null): string
     {
@@ -73,7 +77,7 @@ class TypeScriptExporter extends AbstractExporter
             return 'any';
         }
 
-        if ($type instanceof \ReflectionUnionType) {
+        if ($type instanceof ReflectionUnionType) {
             $types = [];
             foreach ($type->getTypes() as $unionType) {
                 if ($unionType->getName() === 'null') {
@@ -84,7 +88,7 @@ class TypeScriptExporter extends AbstractExporter
             return empty($types) ? 'any' : implode(' | ', array_unique($types));
         }
 
-        if ($type instanceof \ReflectionNamedType) {
+        if ($type instanceof ReflectionNamedType) {
             return $this->mapPhpTypeToTypescript($type->getName());
         }
 
@@ -93,6 +97,7 @@ class TypeScriptExporter extends AbstractExporter
 
     /**
      * Map cast to TypeScript type.
+     * @param mixed $cast
      */
     protected function mapCastToTypescript($cast): string
     {
@@ -123,12 +128,12 @@ class TypeScriptExporter extends AbstractExporter
             $reflection = new ReflectionClass($cast);
             $property = $reflection->getProperty('dtoClass');
             $dtoClass = $property->getValue($cast);
-            
+
             if (is_string($dtoClass)) {
                 $parts = explode('\\', $dtoClass);
                 return end($parts);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Fall back to generic object
         }
 
@@ -189,7 +194,7 @@ class TypeScriptExporter extends AbstractExporter
     protected function isOptionalProperty(ReflectionProperty $property): bool
     {
         $type = $property->getType();
-        if (!$type) {
+        if (! $type) {
             return false;
         }
 
@@ -199,7 +204,7 @@ class TypeScriptExporter extends AbstractExporter
         }
 
         // Check union types for null
-        if ($type instanceof \ReflectionUnionType) {
+        if ($type instanceof ReflectionUnionType) {
             foreach ($type->getTypes() as $unionType) {
                 if ($unionType->getName() === 'null') {
                     return true;
