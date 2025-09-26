@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\NameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\SimpleNameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\UserDTO;
@@ -41,7 +40,7 @@ it('generates TypeScript interface for simple DTO', function () {
     $result = $this->command->execute($input, $output);
 
     expect($result)->toBe(0);
-    
+
     $outputContent = $output->fetch();
     expect($outputContent)->toContain('export interface SimpleNameDTO');
     expect($outputContent)->toContain('first_name: string;');
@@ -60,7 +59,7 @@ it('generates TypeScript interface for ValidatedDTO', function () {
     $result = $this->command->execute($input, $output);
 
     expect($result)->toBe(0);
-    
+
     $outputContent = $output->fetch();
     expect($outputContent)->toContain('export interface NameDTO');
     expect($outputContent)->toContain('first_name: string;');
@@ -79,7 +78,7 @@ it('generates TypeScript interface for nested DTO', function () {
     $result = $this->command->execute($input, $output);
 
     expect($result)->toBe(0);
-    
+
     $outputContent = $output->fetch();
     expect($outputContent)->toContain('export interface UserDTO');
     expect($outputContent)->toContain('name: NameDTO;');
@@ -88,7 +87,7 @@ it('generates TypeScript interface for nested DTO', function () {
 
 it('outputs to file when output option is provided', function () {
     $outputFile = '/tmp/test-dto.ts';
-    
+
     // Clean up any existing file
     if (file_exists($outputFile)) {
         unlink($outputFile);
@@ -101,7 +100,7 @@ it('outputs to file when output option is provided', function () {
 
     $input = new ArrayInput([
         'class' => SimpleNameDTO::class,
-        '--output' => $outputFile
+        '--output' => $outputFile,
     ]);
     $output = new BufferedOutput();
 
@@ -109,12 +108,12 @@ it('outputs to file when output option is provided', function () {
 
     expect($result)->toBe(0);
     expect(file_exists($outputFile))->toBeTrue();
-    
+
     $fileContent = file_get_contents($outputFile);
     expect($fileContent)->toContain('export interface SimpleNameDTO');
     expect($fileContent)->toContain('first_name: string;');
     expect($fileContent)->toContain('last_name: string;');
-    
+
     // Clean up
     unlink($outputFile);
 });
@@ -122,7 +121,7 @@ it('outputs to file when output option is provided', function () {
 it('creates directory when output path does not exist', function () {
     $outputDir = '/tmp/test-dto-dir';
     $outputFile = $outputDir . '/test-dto.ts';
-    
+
     // Clean up any existing directory
     if (is_dir($outputDir)) {
         if (file_exists($outputFile)) {
@@ -138,7 +137,7 @@ it('creates directory when output path does not exist', function () {
 
     $input = new ArrayInput([
         'class' => SimpleNameDTO::class,
-        '--output' => $outputFile
+        '--output' => $outputFile,
     ]);
     $output = new BufferedOutput();
 
@@ -147,7 +146,7 @@ it('creates directory when output path does not exist', function () {
     expect($result)->toBe(0);
     expect(is_dir($outputDir))->toBeTrue();
     expect(file_exists($outputFile))->toBeTrue();
-    
+
     // Clean up
     unlink($outputFile);
     rmdir($outputDir);
@@ -157,7 +156,7 @@ it('returns error for non-existent class', function () {
     $this->exporter->shouldReceive('export')
         ->with('NonExistentClass')
         ->once()
-        ->andThrow(new \InvalidArgumentException('Class NonExistentClass does not exist.'));
+        ->andThrow(new InvalidArgumentException('Class NonExistentClass does not exist.'));
 
     $input = new ArrayInput(['class' => 'NonExistentClass']);
     $output = new BufferedOutput();
@@ -170,11 +169,11 @@ it('returns error for non-existent class', function () {
 
 it('returns error for non-DTO class', function () {
     $this->exporter->shouldReceive('export')
-        ->with(\stdClass::class)
+        ->with(stdClass::class)
         ->once()
-        ->andThrow(new \InvalidArgumentException('Class stdClass is not a DTO class.'));
+        ->andThrow(new InvalidArgumentException('Class stdClass is not a DTO class.'));
 
-    $input = new ArrayInput(['class' => \stdClass::class]);
+    $input = new ArrayInput(['class' => stdClass::class]);
     $output = new BufferedOutput();
 
     $result = $this->command->execute($input, $output);
@@ -200,14 +199,14 @@ it('supports typescript language option', function () {
 
     $input = new ArrayInput([
         'class' => SimpleNameDTO::class,
-        '--lang' => 'typescript'
+        '--lang' => 'typescript',
     ]);
     $output = new BufferedOutput();
 
     $result = $this->command->execute($input, $output);
 
     expect($result)->toBe(0);
-    
+
     $outputContent = $output->fetch();
     expect($outputContent)->toContain('export interface SimpleNameDTO');
 });
@@ -229,7 +228,7 @@ it('defaults to typescript language', function () {
 it('returns error for unsupported language', function () {
     $input = new ArrayInput([
         'class' => SimpleNameDTO::class,
-        '--lang' => 'unsupported'
+        '--lang' => 'unsupported',
     ]);
     $output = new BufferedOutput();
 

@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\NameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\SimpleNameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\UserDTO;
@@ -43,12 +42,12 @@ it('exports nested DTO with proper type mapping', function () {
 });
 
 it('throws exception for non-existent class', function () {
-    expect(fn() => $this->exporter->export('NonExistentClass'))
+    expect(fn () => $this->exporter->export('NonExistentClass'))
         ->toThrow(InvalidArgumentException::class, 'Class NonExistentClass does not exist.');
 });
 
 it('throws exception for non-DTO class', function () {
-    expect(fn() => $this->exporter->export(\stdClass::class))
+    expect(fn () => $this->exporter->export(stdClass::class))
         ->toThrow(InvalidArgumentException::class, 'Class stdClass is not a DTO class.');
 });
 
