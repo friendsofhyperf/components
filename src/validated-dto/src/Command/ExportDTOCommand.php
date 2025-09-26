@@ -25,6 +25,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ExportDTOCommand extends SymfonyCommand
 {
+    public const DEFAULT_LANGUAGE = 'typescript';
+    public const SUPPORTED_LANGUAGES = ['typescript', 'ts'];
+    public const FILE_PERMISSIONS = 0755;
+
     protected InputInterface $input;
 
     protected OutputInterface $output;
@@ -91,9 +95,15 @@ class ExportDTOCommand extends SymfonyCommand
 
     protected function writeToFile(string $path, string $content): void
     {
+        // Validate path to prevent directory traversal attacks
+        $realPath = realpath(dirname($path));
+        if ($realPath === false || str_contains($path, '..')) {
+            throw new InvalidArgumentException('Invalid file path provided.');
+        }
+
         $directory = dirname($path);
         if (! is_dir($directory)) {
-            mkdir($directory, 0755, true);
+            mkdir($directory, self::FILE_PERMISSIONS, true);
         }
 
         if (file_exists($path) && ! $this->input->getOption('force')) {
@@ -121,7 +131,7 @@ class ExportDTOCommand extends SymfonyCommand
         return [
             ['output', 'o', InputOption::VALUE_OPTIONAL, 'Output file path', null],
             ['force', 'f', InputOption::VALUE_NONE, 'Overwrite existing files'],
-            ['lang', 'l', InputOption::VALUE_OPTIONAL, 'Export language (typescript|ts)', 'typescript'],
+            ['lang', 'l', InputOption::VALUE_OPTIONAL, 'Export language (typescript|ts)', self::DEFAULT_LANGUAGE],
         ];
     }
 }

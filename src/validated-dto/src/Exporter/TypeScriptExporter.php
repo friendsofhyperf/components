@@ -28,11 +28,17 @@ use ReflectionProperty;
 use ReflectionUnionType;
 use Throwable;
 
-/**
- * @property string $dtoClass
- */
 class TypeScriptExporter extends AbstractExporter
 {
+    public const TS_STRING = 'string';
+    public const TS_NUMBER = 'number';  
+    public const TS_BOOLEAN = 'boolean';
+    public const TS_ARRAY = 'any[]';
+    public const TS_RECORD = 'Record<string, any>';
+    public const TS_ANY = 'any';
+    public const INTERFACE_TEMPLATE = "export interface %s {\n%s}\n";
+    public const NO_PROPERTIES_COMMENT = "  // No public properties found\n";
+
     /**
      * Generate TypeScript interface from reflection.
      */
@@ -75,7 +81,7 @@ class TypeScriptExporter extends AbstractExporter
         $type = $property->getType();
 
         if ($type === null) {
-            return 'any';
+            return self::TS_ANY;
         }
 
         if ($type instanceof ReflectionUnionType) {
@@ -86,14 +92,14 @@ class TypeScriptExporter extends AbstractExporter
                 }
                 $types[] = $this->mapPhpTypeToTypescript($unionType->getName());
             }
-            return empty($types) ? 'any' : implode(' | ', array_unique($types));
+            return empty($types) ? self::TS_ANY : implode(' | ', array_unique($types));
         }
 
         if ($type instanceof ReflectionNamedType) {
             return $this->mapPhpTypeToTypescript($type->getName());
         }
 
-        return 'any';
+        return self::TS_ANY;
     }
 
     /**
@@ -103,18 +109,18 @@ class TypeScriptExporter extends AbstractExporter
     protected function mapCastToTypescript($cast): string
     {
         return match (true) {
-            $cast instanceof StringCast => 'string',
-            $cast instanceof IntegerCast => 'number',
-            $cast instanceof FloatCast => 'number',
-            $cast instanceof BooleanCast => 'boolean',
-            $cast instanceof ArrayCast => 'any[]',
-            $cast instanceof CollectionCast => 'any[]',
-            $cast instanceof CarbonCast => 'string', // ISO date string
-            $cast instanceof CarbonImmutableCast => 'string', // ISO date string
+            $cast instanceof StringCast => self::TS_STRING,
+            $cast instanceof IntegerCast => self::TS_NUMBER,
+            $cast instanceof FloatCast => self::TS_NUMBER,
+            $cast instanceof BooleanCast => self::TS_BOOLEAN,
+            $cast instanceof ArrayCast => self::TS_ARRAY,
+            $cast instanceof CollectionCast => self::TS_ARRAY,
+            $cast instanceof CarbonCast => self::TS_STRING, // ISO date string
+            $cast instanceof CarbonImmutableCast => self::TS_STRING, // ISO date string
             $cast instanceof DTOCast => $this->extractDTOTypeName($cast),
-            $cast instanceof ModelCast => 'Record<string, any>',
-            $cast instanceof ObjectCast => 'Record<string, any>',
-            default => 'any',
+            $cast instanceof ModelCast => self::TS_RECORD,
+            $cast instanceof ObjectCast => self::TS_RECORD,
+            default => self::TS_ANY,
         };
     }
 
@@ -133,7 +139,7 @@ class TypeScriptExporter extends AbstractExporter
             // Property doesn't exist or closure binding failed
         }
 
-        return 'Record<string, any>';
+        return self::TS_RECORD;
     }
 
     /**
@@ -142,13 +148,13 @@ class TypeScriptExporter extends AbstractExporter
     protected function mapPhpTypeToTypescript(string $phpType): string
     {
         return match ($phpType) {
-            'string' => 'string',
-            'int', 'integer', 'float', 'double' => 'number',
-            'bool', 'boolean' => 'boolean',
-            'array' => 'any[]',
-            'object' => 'Record<string, any>',
-            'mixed' => 'any',
-            default => $this->isClassType($phpType) ? $this->getClassTypeName($phpType) : 'any',
+            'string' => self::TS_STRING,
+            'int', 'integer', 'float', 'double' => self::TS_NUMBER,
+            'bool', 'boolean' => self::TS_BOOLEAN,
+            'array' => self::TS_ARRAY,
+            'object' => self::TS_RECORD,
+            'mixed' => self::TS_ANY,
+            default => $this->isClassType($phpType) ? $this->getClassTypeName($phpType) : self::TS_ANY,
         };
     }
 
@@ -170,10 +176,10 @@ class TypeScriptExporter extends AbstractExporter
 
         return match (true) {
             // For common framework classes, map to appropriate TS types
-            str_contains($type, '\Carbon\Carbon') => 'string', // ISO date string
-            str_contains($type, '\Hyperf\Collection\Collection') => 'any[]',
+            str_contains($type, '\Carbon\Carbon') => self::TS_STRING, // ISO date string
+            str_contains($type, '\Hyperf\Collection\Collection') => self::TS_ARRAY,
             str_contains($type, 'DTO') => $className,
-            default => 'Record<string, any>',
+            default => self::TS_RECORD,
         };
     }
 
