@@ -31,7 +31,7 @@ use Throwable;
 class TypeScriptExporter extends AbstractExporter
 {
     public const TS_STRING = 'string';
-    public const TS_NUMBER = 'number';  
+    public const TS_NUMBER = 'number';
     public const TS_BOOLEAN = 'boolean';
     public const TS_ARRAY = 'any[]';
     public const TS_RECORD = 'Record<string, any>';
@@ -47,30 +47,28 @@ class TypeScriptExporter extends AbstractExporter
         $className = $reflection->getShortName();
         $properties = $this->getPublicProperties($reflection);
         $casts = $this->getCasts($reflection);
-        $typescript = "export interface {$className} {\n";
+
+        $propertiesContent = '';
 
         if (empty($properties)) {
-            $typescript .= "  // No public properties found\n";
+            $propertiesContent = self::NO_PROPERTIES_COMMENT;
+        } else {
+            foreach ($properties as $property) {
+                $propertyName = $property->getName();
+                $tsType = $this->getTypescriptType($property, $casts[$propertyName] ?? null);
+                $optional = $this->isOptionalProperty($property) ? '?' : '';
+
+                $propertiesContent .= "  {$propertyName}{$optional}: {$tsType};\n";
+            }
         }
 
-        foreach ($properties as $property) {
-            $propertyName = $property->getName();
-            $tsType = $this->getTypescriptType($property, $casts[$propertyName] ?? null);
-            $optional = $this->isOptionalProperty($property) ? '?' : '';
-
-            $typescript .= "  {$propertyName}{$optional}: {$tsType};\n";
-        }
-
-        $typescript .= "}\n";
-
-        return $typescript;
+        return sprintf(self::INTERFACE_TEMPLATE, $className, $propertiesContent);
     }
 
     /**
      * Get TypeScript type for property.
-     * @param null|mixed $cast
      */
-    protected function getTypescriptType(ReflectionProperty $property, $cast = null): string
+    protected function getTypescriptType(ReflectionProperty $property, mixed $cast = null): string
     {
         // If there's a cast, use it to determine the type
         if ($cast !== null) {
@@ -104,9 +102,8 @@ class TypeScriptExporter extends AbstractExporter
 
     /**
      * Map cast to TypeScript type.
-     * @param mixed $cast
      */
-    protected function mapCastToTypescript($cast): string
+    protected function mapCastToTypescript(mixed $cast): string
     {
         return match (true) {
             $cast instanceof StringCast => self::TS_STRING,
