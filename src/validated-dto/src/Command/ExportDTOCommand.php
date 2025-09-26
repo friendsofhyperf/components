@@ -96,8 +96,7 @@ class ExportDTOCommand extends SymfonyCommand
         }
 
         if (file_exists($path) && ! $this->input->getOption('force')) {
-            $this->output->writeln(sprintf('<error>File %s already exists! Use --force to overwrite.</error>', $path));
-            return;
+            throw new \RuntimeException(sprintf('File %s already exists! Use --force to overwrite.', $path));
         }
 
         file_put_contents($path, $content);
