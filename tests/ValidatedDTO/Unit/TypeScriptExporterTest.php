@@ -121,20 +121,29 @@ it('maps different cast types to correct TypeScript types', function () {
 });
 
 it('handles nullable properties correctly', function () {
-    // Create a DTO with nullable properties
-    eval('
-        namespace FriendsOfHyperf\ValidatedDTO;
-        class NullableTestDTO extends ValidatedDTO {
-            public string $required;
-            public ?string $optional;
-            
-            protected function rules(): array { return []; }
-            protected function defaults(): array { return []; }
-            protected function casts(): array { return []; }
-        }
-    ');
+    // Create a DTO with nullable properties using an anonymous class
+    $dto = new class extends FriendsOfHyperf\ValidatedDTO\ValidatedDTO {
+        public string $required;
 
-    $result = $this->exporter->export('FriendsOfHyperf\ValidatedDTO\NullableTestDTO');
+        public ?string $optional;
+
+        protected function rules(): array
+        {
+            return [];
+        }
+
+        protected function defaults(): array
+        {
+            return [];
+        }
+
+        protected function casts(): array
+        {
+            return [];
+        }
+    };
+
+    $result = $this->exporter->export(get_class($dto));
 
     expect($result)->toContain('required: string;');
     expect($result)->toContain('optional?: string;');
