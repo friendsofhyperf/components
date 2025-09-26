@@ -33,20 +33,6 @@ class ExportDTOCommand extends SymfonyCommand
         parent::__construct('dto:export');
     }
 
-    public function configure()
-    {
-        foreach ($this->getArguments() as $argument) {
-            $this->addArgument(...$argument);
-        }
-
-        foreach ($this->getOptions() as $option) {
-            $this->addOption(...$option);
-        }
-
-        $this->setDescription('Export DTO classes to various formats.');
-        $this->setAliases([]);
-    }
-
     /**
      * Execute the console command.
      */
@@ -78,6 +64,20 @@ class ExportDTOCommand extends SymfonyCommand
             $output->writeln(sprintf('<error>Error: %s</error>', $e->getMessage()));
             return 1;
         }
+    }
+
+    protected function configure(): void
+    {
+        foreach ($this->getArguments() as $argument) {
+            $this->addArgument(...$argument);
+        }
+
+        foreach ($this->getOptions() as $option) {
+            $this->addOption(...$option);
+        }
+
+        $this->setDescription('Export DTO classes to various formats.');
+        $this->setAliases([]);
     }
 
     protected function getExporter(string $lang): ExporterInterface

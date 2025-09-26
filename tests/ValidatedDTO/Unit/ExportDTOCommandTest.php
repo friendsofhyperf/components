@@ -34,7 +34,7 @@ it('generates TypeScript interface for simple DTO', function () {
         ->once()
         ->andReturn("export interface SimpleNameDTO {\n  first_name: string;\n  last_name: string;\n}\n");
 
-    $input = new ArrayInput(['class' => SimpleNameDTO::class]);
+    $input = new ArrayInput(['class' => SimpleNameDTO::class], $this->command->getDefinition());
     $output = new BufferedOutput();
 
     $result = $this->command->execute($input, $output);
@@ -53,7 +53,7 @@ it('generates TypeScript interface for ValidatedDTO', function () {
         ->once()
         ->andReturn("export interface NameDTO {\n  first_name: string;\n  last_name: string;\n}\n");
 
-    $input = new ArrayInput(['class' => NameDTO::class]);
+    $input = new ArrayInput(['class' => NameDTO::class], $this->command->getDefinition());
     $output = new BufferedOutput();
 
     $result = $this->command->execute($input, $output);
@@ -72,7 +72,7 @@ it('generates TypeScript interface for nested DTO', function () {
         ->once()
         ->andReturn("export interface UserDTO {\n  name: NameDTO;\n  email: string;\n}\n");
 
-    $input = new ArrayInput(['class' => UserDTO::class]);
+    $input = new ArrayInput(['class' => UserDTO::class], $this->command->getDefinition());
     $output = new BufferedOutput();
 
     $result = $this->command->execute($input, $output);
@@ -101,7 +101,7 @@ it('outputs to file when output option is provided', function () {
     $input = new ArrayInput([
         'class' => SimpleNameDTO::class,
         '--output' => $outputFile,
-    ]);
+    ], $this->command->getDefinition());
     $output = new BufferedOutput();
 
     $result = $this->command->execute($input, $output);
@@ -138,7 +138,7 @@ it('creates directory when output path does not exist', function () {
     $input = new ArrayInput([
         'class' => SimpleNameDTO::class,
         '--output' => $outputFile,
-    ]);
+    ], $this->command->getDefinition());
     $output = new BufferedOutput();
 
     $result = $this->command->execute($input, $output);
@@ -158,7 +158,7 @@ it('returns error for non-existent class', function () {
         ->once()
         ->andThrow(new InvalidArgumentException('Class NonExistentClass does not exist.'));
 
-    $input = new ArrayInput(['class' => 'NonExistentClass']);
+    $input = new ArrayInput(['class' => 'NonExistentClass'], $this->command->getDefinition());
     $output = new BufferedOutput();
 
     $result = $this->command->execute($input, $output);
@@ -173,7 +173,7 @@ it('returns error for non-DTO class', function () {
         ->once()
         ->andThrow(new InvalidArgumentException('Class stdClass is not a DTO class.'));
 
-    $input = new ArrayInput(['class' => stdClass::class]);
+    $input = new ArrayInput(['class' => stdClass::class], $this->command->getDefinition());
     $output = new BufferedOutput();
 
     $result = $this->command->execute($input, $output);
@@ -200,7 +200,7 @@ it('supports typescript language option', function () {
     $input = new ArrayInput([
         'class' => SimpleNameDTO::class,
         '--lang' => 'typescript',
-    ]);
+    ], $this->command->getDefinition());
     $output = new BufferedOutput();
 
     $result = $this->command->execute($input, $output);
@@ -217,7 +217,7 @@ it('defaults to typescript language', function () {
         ->once()
         ->andReturn("export interface SimpleNameDTO {\n  first_name: string;\n  last_name: string;\n}\n");
 
-    $input = new ArrayInput(['class' => SimpleNameDTO::class]);
+    $input = new ArrayInput(['class' => SimpleNameDTO::class], $this->command->getDefinition());
     $output = new BufferedOutput();
 
     $result = $this->command->execute($input, $output);
@@ -229,7 +229,7 @@ it('returns error for unsupported language', function () {
     $input = new ArrayInput([
         'class' => SimpleNameDTO::class,
         '--lang' => 'unsupported',
-    ]);
+    ], $this->command->getDefinition());
     $output = new BufferedOutput();
 
     $result = $this->command->execute($input, $output);
