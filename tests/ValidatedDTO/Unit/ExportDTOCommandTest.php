@@ -119,8 +119,8 @@ it('outputs to file when output option is provided', function () {
 });
 
 it('creates directory when output path does not exist', function () {
-    $outputDir = '/tmp/test-dto-dir';
-    $outputFile = $outputDir . '/test-dto.ts';
+    $outputDir = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'test-dto-dir';
+    $outputFile = $outputDir . DIRECTORY_SEPARATOR . 'test-dto.ts';
 
     // Clean up any existing directory
     if (is_dir($outputDir)) {
