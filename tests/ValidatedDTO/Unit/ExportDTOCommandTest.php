@@ -86,7 +86,7 @@ it('generates TypeScript interface for nested DTO', function () {
 });
 
 it('outputs to file when output option is provided', function () {
-    $outputFile = '/tmp/test-dto.ts';
+    $outputFile = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'test-dto.ts';
 
     // Clean up any existing file
     if (file_exists($outputFile)) {
