@@ -17,11 +17,9 @@ use FriendsOfHyperf\ValidatedDTO\Casting\BooleanCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\CarbonCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\CarbonImmutableCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\CollectionCast;
-use FriendsOfHyperf\ValidatedDTO\Casting\DoubleCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\DTOCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\FloatCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\IntegerCast;
-use FriendsOfHyperf\ValidatedDTO\Casting\LongCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\ModelCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\ObjectCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\StringCast;
@@ -104,9 +102,7 @@ class TypeScriptExporter extends AbstractExporter
         return match (true) {
             $cast instanceof StringCast => 'string',
             $cast instanceof IntegerCast => 'number',
-            // $cast instanceof LongCast => 'number',
             $cast instanceof FloatCast => 'number',
-            // $cast instanceof DoubleCast => 'number',
             $cast instanceof BooleanCast => 'boolean',
             $cast instanceof ArrayCast => 'any[]',
             $cast instanceof CollectionCast => 'any[]',
