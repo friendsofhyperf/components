@@ -120,6 +120,10 @@ class ExportDTOToTypescriptCommand extends SymfonyCommand
 
         $typescript = "export interface {$className} {\n";
         
+        if (empty($properties)) {
+            $typescript .= "  // No public properties found\n";
+        }
+        
         foreach ($properties as $property) {
             $propertyName = $property->getName();
             $tsType = $this->getTypescriptType($property, $casts[$propertyName] ?? null);
@@ -151,8 +155,10 @@ class ExportDTOToTypescriptCommand extends SymfonyCommand
             $instance = $reflection->newInstanceWithoutConstructor();
             $castsMethod = $reflection->getMethod('casts');
             $castsMethod->setAccessible(true);
-            return $castsMethod->invoke($instance);
+            $casts = $castsMethod->invoke($instance);
+            return is_array($casts) ? $casts : [];
         } catch (\Exception $e) {
+            // If we can't get casts, continue without them
             return [];
         }
     }
@@ -171,8 +177,14 @@ class ExportDTOToTypescriptCommand extends SymfonyCommand
         }
 
         if ($type instanceof \ReflectionUnionType) {
-            $types = array_map(fn($t) => $this->mapPhpTypeToTypescript($t->getName()), $type->getTypes());
-            return implode(' | ', $types);
+            $types = [];
+            foreach ($type->getTypes() as $unionType) {
+                if ($unionType->getName() === 'null') {
+                    continue; // Skip null in union types, handle via optional property
+                }
+                $types[] = $this->mapPhpTypeToTypescript($unionType->getName());
+            }
+            return empty($types) ? 'any' : implode(' | ', array_unique($types));
         }
 
         if ($type instanceof \ReflectionNamedType) {
@@ -262,7 +274,25 @@ class ExportDTOToTypescriptCommand extends SymfonyCommand
     protected function isOptionalProperty(ReflectionProperty $property): bool
     {
         $type = $property->getType();
-        return $type && $type->allowsNull();
+        if (!$type) {
+            return false;
+        }
+
+        // Check for nullable types
+        if ($type->allowsNull()) {
+            return true;
+        }
+
+        // Check union types for null
+        if ($type instanceof \ReflectionUnionType) {
+            foreach ($type->getTypes() as $unionType) {
+                if ($unionType->getName() === 'null') {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     protected function writeToFile(string $path, string $content): void
@@ -270,6 +300,11 @@ class ExportDTOToTypescriptCommand extends SymfonyCommand
         $directory = dirname($path);
         if (!is_dir($directory)) {
             mkdir($directory, 0777, true);
+        }
+
+        if (file_exists($path) && !$this->input->getOption('force')) {
+            $this->output->writeln(sprintf('<error>File %s already exists! Use --force to overwrite.</error>', $path));
+            return;
         }
 
         file_put_contents($path, $content);
@@ -292,6 +327,7 @@ class ExportDTOToTypescriptCommand extends SymfonyCommand
     {
         return [
             ['output', 'o', InputOption::VALUE_OPTIONAL, 'Output file path for the TypeScript interface', null],
+            ['force', 'f', InputOption::VALUE_NONE, 'Overwrite existing files'],
         ];
     }
 }

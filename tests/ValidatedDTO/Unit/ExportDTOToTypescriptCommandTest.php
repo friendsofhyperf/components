@@ -97,6 +97,33 @@ it('outputs to file when output option is provided', function () {
     unlink($outputFile);
 });
 
+it('creates directory when output path does not exist', function () {
+    $outputDir = '/tmp/test-dto-dir';
+    $outputFile = $outputDir . '/test-dto.ts';
+    
+    // Clean up any existing directory
+    if (is_dir($outputDir)) {
+        unlink($outputFile);
+        rmdir($outputDir);
+    }
+
+    $input = new ArrayInput([
+        'class' => SimpleNameDTO::class,
+        '--output' => $outputFile
+    ]);
+    $output = new BufferedOutput();
+
+    $result = $this->command->execute($input, $output);
+
+    expect($result)->toBe(0);
+    expect(is_dir($outputDir))->toBeTrue();
+    expect(file_exists($outputFile))->toBeTrue();
+    
+    // Clean up
+    unlink($outputFile);
+    rmdir($outputDir);
+});
+
 it('returns error for non-existent class', function () {
     $input = new ArrayInput(['class' => 'NonExistentClass']);
     $output = new BufferedOutput();
@@ -115,4 +142,13 @@ it('returns error for non-DTO class', function () {
 
     expect($result)->toBe(1);
     expect($output->fetch())->toContain('is not a DTO class!');
+});
+
+it('has correct command name and aliases', function () {
+    expect($this->command->getName())->toBe('export:dto-typescript');
+    expect($this->command->getAliases())->toContain('export:dto-ts');
+});
+
+it('has correct description', function () {
+    expect($this->command->getDescription())->toBe('Export DTO classes to TypeScript interfaces.');
 });
