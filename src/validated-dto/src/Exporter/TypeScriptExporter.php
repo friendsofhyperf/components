@@ -28,6 +28,9 @@ use ReflectionProperty;
 use ReflectionUnionType;
 use Throwable;
 
+/**
+ * @property string $dtoClass
+ */
 class TypeScriptExporter extends AbstractExporter
 {
     public const TS_STRING = 'string';
@@ -135,12 +138,14 @@ class TypeScriptExporter extends AbstractExporter
     {
         try {
             /** @var string $dtoClass */
-            $dtoClass = (fn () => $this->dtoClass)->call($cast);
+            $dtoClass = (fn () => $this->dtoClass ?? '')->call($cast);
 
-            $parts = explode('\\', $dtoClass);
-            return end($parts);
+            if ($dtoClass && class_exists($dtoClass)) {
+                $parts = explode('\\', $dtoClass);
+                return end($parts);
+            }
         } catch (Throwable) {
-            // Property doesn't exist or closure binding failed
+            // Property doesn't exist
         }
 
         return self::TS_RECORD;

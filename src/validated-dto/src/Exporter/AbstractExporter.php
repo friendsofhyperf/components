@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ValidatedDTO\Exporter;
 
-use Error;
 use InvalidArgumentException;
 use ReflectionClass;
 use ReflectionException;

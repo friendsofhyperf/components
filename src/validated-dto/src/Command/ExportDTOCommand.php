@@ -98,8 +98,7 @@ class ExportDTOCommand extends SymfonyCommand
     protected function writeToFile(string $path, string $content): void
     {
         // Validate path to prevent directory traversal attacks
-        $realPath = realpath(dirname($path));
-        if ($realPath === false || str_contains($path, '..')) {
+        if (str_contains($path, '..') || str_contains($path, '~')) {
             throw new InvalidArgumentException('Invalid file path provided.');
         }
 
