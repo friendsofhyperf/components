@@ -26,7 +26,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ExportDTOCommand extends SymfonyCommand
 {
     public const DEFAULT_LANGUAGE = 'typescript';
+
     public const SUPPORTED_LANGUAGES = ['typescript', 'ts'];
+
     public const FILE_PERMISSIONS = 0755;
 
     protected InputInterface $input;

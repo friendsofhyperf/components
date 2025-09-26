@@ -31,12 +31,19 @@ use Throwable;
 class TypeScriptExporter extends AbstractExporter
 {
     public const TS_STRING = 'string';
+
     public const TS_NUMBER = 'number';
+
     public const TS_BOOLEAN = 'boolean';
+
     public const TS_ARRAY = 'any[]';
+
     public const TS_RECORD = 'Record<string, any>';
+
     public const TS_ANY = 'any';
+
     public const INTERFACE_TEMPLATE = "export interface %s {\n%s}\n";
+
     public const NO_PROPERTIES_COMMENT = "  // No public properties found\n";
 
     /**
