@@ -13,15 +13,21 @@ use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\SimpleNameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\UserDTO;
 use FriendsOfHyperf\ValidatedDTO\Command\ExportDTOCommand;
 use FriendsOfHyperf\ValidatedDTO\Exporter\TypeScriptExporter;
-use Hyperf\Contract\ConfigInterface;
 use Mockery as m;
+use Psr\Container\ContainerInterface;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 beforeEach(function () {
-    $this->config = m::mock(ConfigInterface::class);
+    $this->container = m::mock(ContainerInterface::class);
     $this->exporter = m::mock(TypeScriptExporter::class);
-    $this->command = new ExportDTOCommand($this->config, $this->exporter);
+
+    // Configure container to return the mocked exporter
+    $this->container->shouldReceive('get')
+        ->with(TypeScriptExporter::class)
+        ->andReturn($this->exporter);
+
+    $this->command = new ExportDTOCommand($this->container);
 });
 
 afterEach(function () {

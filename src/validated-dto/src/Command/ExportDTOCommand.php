@@ -14,8 +14,8 @@ namespace FriendsOfHyperf\ValidatedDTO\Command;
 use Exception;
 use FriendsOfHyperf\ValidatedDTO\Exporter\ExporterInterface;
 use FriendsOfHyperf\ValidatedDTO\Exporter\TypeScriptExporter;
-use Hyperf\Contract\ConfigInterface;
 use InvalidArgumentException;
+use Psr\Container\ContainerInterface;
 use RuntimeException;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -35,7 +35,7 @@ class ExportDTOCommand extends SymfonyCommand
 
     protected OutputInterface $output;
 
-    public function __construct(protected ConfigInterface $config, protected TypeScriptExporter $typeScriptExporter)
+    public function __construct(protected ContainerInterface $container)
     {
         parent::__construct('dto:export');
     }
@@ -90,7 +90,7 @@ class ExportDTOCommand extends SymfonyCommand
     protected function getExporter(string $lang): ExporterInterface
     {
         return match ($lang) {
-            'typescript', 'ts' => $this->typeScriptExporter,
+            'typescript', 'ts' => $this->container->get(TypeScriptExporter::class),
             default => throw new InvalidArgumentException("Unsupported language: {$lang}"),
         };
     }
