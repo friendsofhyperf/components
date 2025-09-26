@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ValidatedDTO\Exporter;
 
-use Exception;
 use FriendsOfHyperf\ValidatedDTO\Casting\ArrayCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\BooleanCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\CarbonCast;
@@ -27,6 +26,7 @@ use ReflectionClass;
 use ReflectionNamedType;
 use ReflectionProperty;
 use ReflectionUnionType;
+use Throwable;
 
 /**
  * @property string $dtoClass
@@ -129,8 +129,8 @@ class TypeScriptExporter extends AbstractExporter
 
             $parts = explode('\\', $dtoClass);
             return end($parts);
-        } catch (Exception $e) {
-            // Fall back to generic object
+        } catch (Throwable) {
+            // Property doesn't exist or closure binding failed
         }
 
         return 'Record<string, any>';

@@ -11,10 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ValidatedDTO\Exporter;
 
-use Exception;
+use Error;
 use InvalidArgumentException;
 use ReflectionClass;
+use ReflectionException;
 use ReflectionProperty;
+use Throwable;
 
 abstract class AbstractExporter implements ExporterInterface
 {
@@ -83,8 +85,11 @@ abstract class AbstractExporter implements ExporterInterface
             $castsMethod->setAccessible(true);
             $casts = $castsMethod->invoke($instance);
             return is_array($casts) ? $casts : [];
-        } catch (Exception $e) {
-            // If we can't get casts, continue without them
+        } catch (ReflectionException) {
+            // If we can't access the casts method or create instance, continue without them
+            return [];
+        } catch (Throwable) {
+            // If there's a fatal error during method invocation, continue without casts
             return [];
         }
     }
