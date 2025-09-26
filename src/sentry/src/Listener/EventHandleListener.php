@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Listener;
 
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
-use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Amqp\Event as AmqpEvent;
 use Hyperf\AsyncQueue\Event as AsyncQueueEvent;
 use Hyperf\Command\Event as CommandEvent;
@@ -85,7 +85,7 @@ class EventHandleListener implements ListenerInterface
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher,
+        protected Feature $switcher,
         protected ConfigInterface $config,
         protected StdoutLoggerInterface $logger
     ) {

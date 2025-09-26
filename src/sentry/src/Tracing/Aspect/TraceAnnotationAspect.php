@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Tracing\Annotation\Trace;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -27,7 +27,7 @@ class TraceAnnotationAspect extends AbstractAspect
         Trace::class,
     ];
 
-    public function __construct(protected Switcher $switcher)
+    public function __construct(protected Feature $switcher)
     {
     }
 

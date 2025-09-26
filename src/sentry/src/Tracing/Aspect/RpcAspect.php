@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
@@ -42,7 +42,7 @@ class RpcAspect extends AbstractAspect
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher
+        protected Feature $switcher
     ) {
     }
 

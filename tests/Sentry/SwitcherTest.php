@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tests\Sentry;
 
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use Hyperf\Config\Config;
 
 beforeEach(function () {
@@ -26,7 +26,7 @@ beforeEach(function () {
             ],
         ],
     ]);
-    $this->switcher = new Switcher($config);
+    $this->switcher = new Feature($config);
 });
 
 test('test is tracing tag enable', function ($key, $expected) {

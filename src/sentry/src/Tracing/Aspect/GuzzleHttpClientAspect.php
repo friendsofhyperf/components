@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use Error;
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use GuzzleHttp\Client;
 use GuzzleHttp\TransferStats;
 use Hyperf\Context\Context;
@@ -40,7 +40,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher
+        protected Feature $switcher
     ) {
     }
 

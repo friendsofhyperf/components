@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Util\CoroutineBacktraceHelper;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -36,7 +36,7 @@ class CoroutineAspect extends AbstractAspect
         \Psr\Http\Message\ServerRequestInterface::class,
     ];
 
-    public function __construct(protected Switcher $switcher)
+    public function __construct(protected Feature $switcher)
     {
         $this->priority = PHP_INT_MAX;
     }
@@ -45,7 +45,7 @@ class CoroutineAspect extends AbstractAspect
     {
         if (
             ! $this->switcher->isTracingSpanEnabled('coroutine')
-            || Switcher::isDisableCoroutineTracing()
+            || Feature::isDisableCoroutineTracing()
         ) {
             return $proceedingJoinPoint->process();
         }

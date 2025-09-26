@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
 use Hyperf\DB\DB;
 use Hyperf\DB\Pool\PoolFactory;
@@ -34,7 +34,7 @@ class DbAspect extends AbstractAspect
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher
+        protected Feature $switcher
     ) {
     }
 

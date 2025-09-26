@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Amqp\Annotation\Producer;
 use Hyperf\Amqp\Message\ProducerMessage;
@@ -34,7 +34,7 @@ class AmqpProducerAspect extends AbstractAspect
         'Hyperf\Amqp\Producer::produceMessage',
     ];
 
-    public function __construct(protected Switcher $switcher)
+    public function __construct(protected Feature $switcher)
     {
     }
 

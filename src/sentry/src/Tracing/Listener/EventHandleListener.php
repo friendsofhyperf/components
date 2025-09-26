@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use Closure;
 use FriendsOfHyperf\Sentry\Constants;
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
 use FriendsOfHyperf\Support\RedisCommand;
@@ -67,7 +67,7 @@ class EventHandleListener implements ListenerInterface
     public function __construct(
         protected ContainerInterface $container,
         protected ConfigInterface $config,
-        protected Switcher $switcher
+        protected Feature $switcher
     ) {
         $this->ignoreCommands = (array) $this->config->get('sentry.ignore_commands', []);
     }
