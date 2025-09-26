@@ -41,7 +41,6 @@ class TypeScriptExporter extends AbstractExporter
         $className = $reflection->getShortName();
         $properties = $this->getPublicProperties($reflection);
         $casts = $this->getCasts($reflection);
-
         $typescript = "export interface {$className} {\n";
 
         if (empty($properties)) {
@@ -74,6 +73,7 @@ class TypeScriptExporter extends AbstractExporter
 
         // Fall back to PHP type hints
         $type = $property->getType();
+
         if ($type === null) {
             return 'any';
         }
@@ -168,20 +168,13 @@ class TypeScriptExporter extends AbstractExporter
         $parts = explode('\\', $type);
         $className = end($parts);
 
-        // For common framework classes, map to appropriate TS types
-        if (str_contains($type, '\Carbon\Carbon')) {
-            return 'string'; // ISO date string
-        }
-
-        if (str_contains($type, '\Hyperf\Collection\Collection')) {
-            return 'any[]';
-        }
-
-        if (str_contains($type, 'DTO')) {
-            return $className;
-        }
-
-        return 'Record<string, any>';
+        return match (true) {
+            // For common framework classes, map to appropriate TS types
+            str_contains($type, '\Carbon\Carbon') => 'string', // ISO date string
+            str_contains($type, '\Hyperf\Collection\Collection') => 'any[]',
+            str_contains($type, 'DTO') => $className,
+            default => 'Record<string, any>',
+        };
     }
 
     /**
@@ -189,8 +182,7 @@ class TypeScriptExporter extends AbstractExporter
      */
     protected function isOptionalProperty(ReflectionProperty $property): bool
     {
-        $type = $property->getType();
-        if (! $type) {
+        if (! $type = $property->getType()) {
             return false;
         }
 
