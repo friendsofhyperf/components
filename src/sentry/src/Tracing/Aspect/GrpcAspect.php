@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\SentrySdk;
@@ -27,13 +27,13 @@ class GrpcAspect extends AbstractAspect
         'Grpc\BaseStub::_simpleRequest',
     ];
 
-    public function __construct(protected Switcher $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnabled('grpc')) {
+        if (! $this->feature->isTracingSpanEnabled('grpc')) {
             return $proceedingJoinPoint->process();
         }
 

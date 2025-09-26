@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Tracing\Annotation\Trace;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -27,7 +27,7 @@ class TraceAnnotationAspect extends AbstractAspect
         Trace::class,
     ];
 
-    public function __construct(protected Switcher $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
@@ -54,7 +54,7 @@ class TraceAnnotationAspect extends AbstractAspect
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
                 return tap($proceedingJoinPoint->process(), function ($result) use ($scope) {
-                    if ($this->switcher->isTracingExtraTagEnabled('annotation.result')) {
+                    if ($this->feature->isTracingExtraTagEnabled('annotation.result')) {
                         $scope->getSpan()?->setData(['annotation.result' => $result]);
                     }
                 });

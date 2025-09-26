@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\AsyncQueue\Driver\RedisDriver;
 use Hyperf\Context\Context;
@@ -40,13 +40,13 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     ];
 
     public function __construct(
-        protected Switcher $switcher
+        protected Feature $feature
     ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnabled('async_queue')) {
+        if (! $this->feature->isTracingEnabled('async_queue')) {
             return $proceedingJoinPoint->process();
         }
 

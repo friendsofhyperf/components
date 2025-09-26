@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing;
 
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use Hyperf\Engine\Coroutine;
 use Sentry\SentrySdk;
 use Sentry\State\HubInterface;
@@ -28,7 +28,7 @@ use function Sentry\trace;
 
 class Tracer
 {
-    public function __construct(protected Switcher $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
@@ -73,7 +73,7 @@ class Tracer
      */
     public function trace(callable $trace, SpanContext $context)
     {
-        $isTracingExtraTagEnabled = $this->switcher->isTracingExtraTagEnabled('exception.stack_trace');
+        $isTracingExtraTagEnabled = $this->feature->isTracingExtraTagEnabled('exception.stack_trace');
 
         if ($context->getStatus() === null) {
             $context->setStatus(SpanStatus::ok());

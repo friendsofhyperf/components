@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
 use Hyperf\DB\DB;
 use Hyperf\DB\Pool\PoolFactory;
@@ -34,13 +34,13 @@ class DbAspect extends AbstractAspect
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher
+        protected Feature $feature
     ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnabled('db')) {
+        if (! $this->feature->isTracingSpanEnabled('db')) {
             return $proceedingJoinPoint->process();
         }
 
@@ -76,7 +76,7 @@ class DbAspect extends AbstractAspect
             // 'server.port' => '',
         ];
 
-        if ($this->switcher->isTracingExtraTagEnabled('db.sql.bindings', true)) {
+        if ($this->feature->isTracingExtraTagEnabled('db.sql.bindings', true)) {
             $data['db.sql.bindings'] = $arguments['arguments']['bindings'] ?? [];
             foreach ($arguments['arguments']['bindings'] as $key => $value) {
                 $data['db.parameter.' . $key] = $value;
@@ -86,7 +86,7 @@ class DbAspect extends AbstractAspect
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
                 $result = $proceedingJoinPoint->process();
-                if ($this->switcher->isTracingExtraTagEnabled('db.result')) {
+                if ($this->feature->isTracingExtraTagEnabled('db.result')) {
                     $scope->getSpan()?->setData([
                         'db.result' => json_encode($result, JSON_UNESCAPED_UNICODE),
                     ]);

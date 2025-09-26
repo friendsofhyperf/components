@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use Error;
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use GuzzleHttp\Client;
 use GuzzleHttp\TransferStats;
 use Hyperf\Context\Context;
@@ -40,13 +40,13 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher
+        protected Feature $feature
     ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnabled('guzzle')) {
+        if (! $this->feature->isTracingSpanEnabled('guzzle')) {
             return $proceedingJoinPoint->process();
         }
 
@@ -122,7 +122,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                             'http.response_transfer_size' => $response->getHeaderLine('Content-Length'),
                         ]);
 
-                        if ($this->switcher->isTracingExtraTagEnabled('http.response.body.contents')) {
+                        if ($this->feature->isTracingExtraTagEnabled('http.response.body.contents')) {
                             $isTextual = \preg_match(
                                 '/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i',
                                 $response->getHeaderLine('Content-Type')
@@ -165,7 +165,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                             ->setData([
                                 'exception.message' => $exception->getMessage(),
                             ]);
-                        if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+                        if ($this->feature->isTracingExtraTagEnabled('exception.stack_trace')) {
                             $span->setData([
                                 'exception.stack_trace' => (string) $exception,
                             ]);

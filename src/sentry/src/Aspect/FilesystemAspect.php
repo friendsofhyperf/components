@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Aspect;
 
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
-use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\Breadcrumb;
@@ -41,13 +41,13 @@ class FilesystemAspect extends AbstractAspect
         // More adapter methods can be added here
     ];
 
-    public function __construct(protected Switcher $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isBreadcrumbEnabled('filesystem')) {
+        if (! $this->feature->isBreadcrumbEnabled('filesystem')) {
             return $proceedingJoinPoint->process();
         }
 

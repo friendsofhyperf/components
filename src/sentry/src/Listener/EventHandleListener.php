@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Listener;
 
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
-use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Amqp\Event as AmqpEvent;
 use Hyperf\AsyncQueue\Event as AsyncQueueEvent;
 use Hyperf\Command\Event as CommandEvent;
@@ -85,7 +85,7 @@ class EventHandleListener implements ListenerInterface
 
     public function __construct(
         protected ContainerInterface $container,
-        protected Switcher $switcher,
+        protected Feature $feature,
         protected ConfigInterface $config,
         protected StdoutLoggerInterface $logger
     ) {
@@ -239,8 +239,8 @@ class EventHandleListener implements ListenerInterface
         }
 
         if (
-            ! $this->switcher->isEnabled('request')
-            && ! $this->switcher->isTracingEnabled('request')
+            ! $this->feature->isEnabled('request')
+            && ! $this->feature->isTracingEnabled('request')
         ) {
             return;
         }
@@ -283,7 +283,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleDbQueryExecuted(object $event): void
     {
-        if (! $this->switcher->isBreadcrumbEnabled('sql_queries')) {
+        if (! $this->feature->isBreadcrumbEnabled('sql_queries')) {
             return;
         }
 
@@ -293,7 +293,7 @@ class EventHandleListener implements ListenerInterface
             $data['executionTimeMs'] = $event->time;
         }
 
-        if ($this->switcher->isBreadcrumbEnabled('sql_bindings')) {
+        if ($this->feature->isBreadcrumbEnabled('sql_bindings')) {
             $data['bindings'] = $event->bindings;
         }
 
@@ -311,7 +311,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleDbTransaction(object $event): void
     {
-        if (! $this->switcher->isBreadcrumbEnabled('sql_transaction')) {
+        if (! $this->feature->isBreadcrumbEnabled('sql_transaction')) {
             return;
         }
 
@@ -331,7 +331,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleRedisCommandExecuted(object $event): void
     {
-        if (! $this->switcher->isBreadcrumbEnabled('redis')) {
+        if (! $this->feature->isBreadcrumbEnabled('redis')) {
             return;
         }
 
@@ -353,7 +353,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleRequestReceived(object $event): void
     {
-        if (! $this->switcher->isEnabled('request')) {
+        if (! $this->feature->isEnabled('request')) {
             return;
         }
 
@@ -365,7 +365,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleRequestTerminated(object $event): void
     {
-        if (! $this->switcher->isEnabled('request')) {
+        if (! $this->feature->isEnabled('request')) {
             return;
         }
 
@@ -378,7 +378,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleCommandStarting(object $event): void
     {
-        if (! $this->switcher->isEnabled('command')) {
+        if (! $this->feature->isEnabled('command')) {
             return;
         }
 
@@ -388,9 +388,9 @@ class EventHandleListener implements ListenerInterface
             $scope->setTag('command', $event->getCommand()->getName());
         });
 
-        if ($this->switcher->isBreadcrumbEnabled('command')) {
+        if ($this->feature->isBreadcrumbEnabled('command')) {
             $data = [];
-            if ($this->switcher->isBreadcrumbEnabled('command_input')) {
+            if ($this->feature->isBreadcrumbEnabled('command_input')) {
                 /** @var InputInterface $input */
                 $input = (fn () => $this->input)->call($event->getCommand());
                 $data['input'] = $this->extractConsoleCommandInput($input);
@@ -411,11 +411,11 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleCommandFinished(object $event): void
     {
-        if (! $this->switcher->isEnabled('command')) {
+        if (! $this->feature->isEnabled('command')) {
             return;
         }
 
-        if ($this->switcher->isBreadcrumbEnabled('command')) {
+        if ($this->feature->isBreadcrumbEnabled('command')) {
             /** @var InputInterface $input */
             /** @var int $exitCode */
             [$input, $exitCode] = (function () {
@@ -426,7 +426,7 @@ class EventHandleListener implements ListenerInterface
             })->call($event->getCommand());
             $data = ['exit' => $exitCode];
 
-            if ($this->switcher->isBreadcrumbEnabled('command_input')) {
+            if ($this->feature->isBreadcrumbEnabled('command_input')) {
                 $data['input'] = $this->extractConsoleCommandInput($input);
             }
 
@@ -452,13 +452,13 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleAsyncQueueJobProcessing(object $event): void
     {
-        if (! $this->switcher->isEnabled('async_queue')) {
+        if (! $this->feature->isEnabled('async_queue')) {
             return;
         }
 
         $this->setupSentrySdk();
 
-        if ($this->switcher->isBreadcrumbEnabled('async_queue')) {
+        if ($this->feature->isBreadcrumbEnabled('async_queue')) {
             $job = [
                 'job' => $event->getMessage()->job()::class,
                 'attempts' => $event->getMessage()->getAttempts(),
@@ -479,7 +479,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleAsyncQueueJobProcessed(object $event): void
     {
-        if (! $this->switcher->isEnabled('async_queue')) {
+        if (! $this->feature->isEnabled('async_queue')) {
             return;
         }
 
@@ -491,7 +491,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleAsyncQueueJobRetryOrFailed(object $event): void
     {
-        if (! $this->switcher->isEnabled('async_queue')) {
+        if (! $this->feature->isEnabled('async_queue')) {
             return;
         }
 
@@ -504,7 +504,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleCrontabTaskStarting(object $event): void
     {
-        if (! $this->switcher->isEnabled('crontab')) {
+        if (! $this->feature->isEnabled('crontab')) {
             return;
         }
 
@@ -516,7 +516,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleCrontabTaskFinished(object $event): void
     {
-        if (! $this->switcher->isEnabled('crontab')) {
+        if (! $this->feature->isEnabled('crontab')) {
             return;
         }
 
@@ -528,7 +528,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleCrontabTaskFailed(object $event): void
     {
-        if (! $this->switcher->isEnabled('crontab')) {
+        if (! $this->feature->isEnabled('crontab')) {
             return;
         }
 
@@ -541,7 +541,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleAmqpMessageProcessing(object $event): void
     {
-        if (! $this->switcher->isEnabled('amqp')) {
+        if (! $this->feature->isEnabled('amqp')) {
             return;
         }
 
@@ -553,7 +553,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleAmqpMessageProcessed(object $event): void
     {
-        if (! $this->switcher->isEnabled('amqp')) {
+        if (! $this->feature->isEnabled('amqp')) {
             return;
         }
 
@@ -565,7 +565,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleAmqpMessageFailed(object $event): void
     {
-        if (! $this->switcher->isEnabled('amqp')) {
+        if (! $this->feature->isEnabled('amqp')) {
             return;
         }
 
@@ -578,7 +578,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleKafkaMessageProcessing(object $event): void
     {
-        if (! $this->switcher->isEnabled('kafka')) {
+        if (! $this->feature->isEnabled('kafka')) {
             return;
         }
 
@@ -590,7 +590,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleKafkaMessageProcessed(object $event): void
     {
-        if (! $this->switcher->isEnabled('kafka')) {
+        if (! $this->feature->isEnabled('kafka')) {
             return;
         }
 
@@ -602,7 +602,7 @@ class EventHandleListener implements ListenerInterface
      */
     protected function handleKafkaMessageFailed(object $event): void
     {
-        if (! $this->switcher->isEnabled('kafka')) {
+        if (! $this->feature->isEnabled('kafka')) {
             return;
         }
 

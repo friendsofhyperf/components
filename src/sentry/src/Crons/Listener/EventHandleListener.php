@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Crons\Listener;
 
 use FriendsOfHyperf\Sentry\Constants;
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
@@ -25,7 +25,7 @@ class EventHandleListener implements ListenerInterface
 {
     public function __construct(
         protected ConfigInterface $config,
-        protected Switcher $switcher,
+        protected Feature $feature,
         protected StdoutLoggerInterface $logger
     ) {
     }
@@ -44,7 +44,7 @@ class EventHandleListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if (! $this->switcher->isCronsEnabled()) {
+        if (! $this->feature->isCronsEnabled()) {
             return;
         }
 

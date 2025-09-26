@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Aspect;
 
 use Closure;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
-use FriendsOfHyperf\Sentry\Switcher;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\Breadcrumb;
@@ -32,7 +32,7 @@ class CacheAspect extends AbstractAspect
         'Hyperf\Cache\Driver\*Driver::deleteMultiple',
     ];
 
-    public function __construct(protected Switcher $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
@@ -41,7 +41,7 @@ class CacheAspect extends AbstractAspect
         $startTime = microtime(true);
 
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint, $startTime) {
-            if (! $this->switcher->isBreadcrumbEnabled('cache')) {
+            if (! $this->feature->isBreadcrumbEnabled('cache')) {
                 return;
             }
 

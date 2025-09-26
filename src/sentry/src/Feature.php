@@ -15,7 +15,7 @@ use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Sentry\SentrySdk;
 
-class Switcher
+class Feature
 {
     public function __construct(protected ConfigInterface $config)
     {

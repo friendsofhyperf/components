@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use Closure;
 use FriendsOfHyperf\Sentry\Constants;
-use FriendsOfHyperf\Sentry\Switcher;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
 use FriendsOfHyperf\Support\RedisCommand;
@@ -67,7 +67,7 @@ class EventHandleListener implements ListenerInterface
     public function __construct(
         protected ContainerInterface $container,
         protected ConfigInterface $config,
-        protected Switcher $switcher
+        protected Feature $feature
     ) {
         $this->ignoreCommands = (array) $this->config->get('sentry.ignore_commands', []);
     }
@@ -166,7 +166,7 @@ class EventHandleListener implements ListenerInterface
 
     protected function handleDbQueryExecuted(DbEvent\QueryExecuted $event): void
     {
-        if (! $this->switcher->isTracingSpanEnabled('sql_queries')) {
+        if (! $this->feature->isTracingSpanEnabled('sql_queries')) {
             return;
         }
 
@@ -192,7 +192,7 @@ class EventHandleListener implements ListenerInterface
             'db.pool.using' => $pool->getCurrentConnections(),
         ];
 
-        if ($this->switcher->isTracingExtraTagEnabled('db.sql.bindings', true)) {
+        if ($this->feature->isTracingExtraTagEnabled('db.sql.bindings', true)) {
             $data['db.sql.bindings'] = $event->bindings;
             foreach ($event->bindings as $key => $value) {
                 $data['db.parameter.' . $key] = $value;
@@ -215,7 +215,7 @@ class EventHandleListener implements ListenerInterface
 
     protected function handleDbTransactionBeginning(DbEvent\TransactionBeginning $event): void
     {
-        if (! $this->switcher->isTracingSpanEnabled('sql_transactions')) {
+        if (! $this->feature->isTracingSpanEnabled('sql_transactions')) {
             return;
         }
 
@@ -236,7 +236,7 @@ class EventHandleListener implements ListenerInterface
 
     protected function handleDbTransactionCommitted(DbEvent\TransactionCommitted $event): void
     {
-        if (! $this->switcher->isTracingSpanEnabled('sql_transactions')) {
+        if (! $this->feature->isTracingSpanEnabled('sql_transactions')) {
             return;
         }
         if (! $span = SentrySdk::getCurrentHub()->getSpan()) {
@@ -250,7 +250,7 @@ class EventHandleListener implements ListenerInterface
 
     protected function handleDbTransactionRolledBack(DbEvent\TransactionRolledBack $event): void
     {
-        if (! $this->switcher->isTracingSpanEnabled('sql_transactions')) {
+        if (! $this->feature->isTracingSpanEnabled('sql_transactions')) {
             return;
         }
         if (! $span = SentrySdk::getCurrentHub()->getSpan()) {
@@ -264,7 +264,7 @@ class EventHandleListener implements ListenerInterface
 
     protected function handleRequestReceived(HttpEvent\RequestReceived|RpcEvent\RequestReceived $event): void
     {
-        if (! $this->switcher->isTracingEnabled('request')) {
+        if (! $this->feature->isTracingEnabled('request')) {
             return;
         }
 
@@ -272,7 +272,7 @@ class EventHandleListener implements ListenerInterface
         /** @var Dispatched $dispatched */
         $dispatched = $request->getAttribute(Dispatched::class);
 
-        if (! $dispatched->isFound() && ! $this->switcher->isTracingEnabled('missing_routes')) {
+        if (! $dispatched->isFound() && ! $this->feature->isTracingEnabled('missing_routes')) {
             return;
         }
 
@@ -367,7 +367,7 @@ class EventHandleListener implements ListenerInterface
                 ->setData([
                     'exception.message' => $exception->getMessage(),
                 ]);
-            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+            if ($this->feature->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $span->setData([
                     'exception.stack_trace' => (string) $exception,
                 ]);
@@ -378,7 +378,7 @@ class EventHandleListener implements ListenerInterface
     protected function handleCommandStarting(CommandEvent\BeforeHandle $event): void
     {
         if (
-            ! $this->switcher->isTracingEnabled('command')
+            ! $this->feature->isTracingEnabled('command')
             || Str::is($this->ignoreCommands, $event->getCommand()->getName())
         ) {
             return;
@@ -432,7 +432,7 @@ class EventHandleListener implements ListenerInterface
                     ->setData([
                         'exception.message' => $exception->getMessage(),
                     ]);
-                if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+                if ($this->feature->isTracingExtraTagEnabled('exception.stack_trace')) {
                     $transaction->setData([
                         'exception.stack_trace' => (string) $exception,
                     ]);
@@ -453,7 +453,7 @@ class EventHandleListener implements ListenerInterface
 
     protected function handleRedisCommandExecuted(RedisEvent\CommandExecuted $event): void
     {
-        if (! $this->switcher->isTracingSpanEnabled('redis')) {
+        if (! $this->feature->isTracingSpanEnabled('redis')) {
             return;
         }
 
@@ -467,7 +467,7 @@ class EventHandleListener implements ListenerInterface
                     return;
                 }
 
-                if ($this->switcher->isTracingExtraTagEnabled('redis.result')) {
+                if ($this->feature->isTracingExtraTagEnabled('redis.result')) {
                     $span->setData(['db.redis.result' => $event->result]);
                 }
 
@@ -481,7 +481,7 @@ class EventHandleListener implements ListenerInterface
                         ->setData([
                             'exception.message' => $exception->getMessage(),
                         ]);
-                    if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+                    if ($this->feature->isTracingExtraTagEnabled('exception.stack_trace')) {
                         $span->setData(['exception.stack_trace' => (string) $exception]);
                     }
                 }
@@ -508,7 +508,7 @@ class EventHandleListener implements ListenerInterface
 
     protected function handleCrontabTaskStarting(CrontabEvent\BeforeExecute $event): void
     {
-        if (! $this->switcher->isTracingEnabled('crontab')) {
+        if (! $this->feature->isTracingEnabled('crontab')) {
             return;
         }
 
@@ -558,7 +558,7 @@ class EventHandleListener implements ListenerInterface
                 ->setData([
                     'exception.message' => $exception->getMessage(),
                 ]);
-            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+            if ($this->feature->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $transaction->setData(['exception.stack_trace' => (string) $exception]);
             }
         }
@@ -566,7 +566,7 @@ class EventHandleListener implements ListenerInterface
 
     protected function handleAmqpMessageProcessing(AmqpEvent\BeforeConsume $event): void
     {
-        if (! $this->switcher->isTracingEnabled('amqp')) {
+        if (! $this->feature->isTracingEnabled('amqp')) {
             return;
         }
 
@@ -640,7 +640,7 @@ class EventHandleListener implements ListenerInterface
                 ->setData([
                     'exception.message' => $exception->getMessage(),
                 ]);
-            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+            if ($this->feature->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $transaction->setData(['exception.stack_trace' => (string) $exception]);
             }
         }
@@ -648,7 +648,7 @@ class EventHandleListener implements ListenerInterface
 
     protected function handleKafkaMessageProcessing(KafkaEvent\BeforeConsume $event): void
     {
-        if (! $this->switcher->isTracingEnabled('kafka')) {
+        if (! $this->feature->isTracingEnabled('kafka')) {
             return;
         }
 
@@ -716,7 +716,7 @@ class EventHandleListener implements ListenerInterface
                 ->setData([
                     'exception.message' => $exception->getMessage(),
                 ]);
-            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+            if ($this->feature->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $transaction->setData(['exception.stack_trace' => (string) $exception]);
             }
         }
@@ -724,7 +724,7 @@ class EventHandleListener implements ListenerInterface
 
     protected function handleAsyncQueueJobProcessing(AsyncQueueEvent\BeforeHandle $event): void
     {
-        if (! $this->switcher->isTracingEnabled('async_queue')) {
+        if (! $this->feature->isTracingEnabled('async_queue')) {
             return;
         }
 
@@ -779,7 +779,7 @@ class EventHandleListener implements ListenerInterface
                 ->setData([
                     'exception.message' => $exception->getMessage(),
                 ]);
-            if ($this->switcher->isTracingExtraTagEnabled('exception.stack_trace')) {
+            if ($this->feature->isTracingExtraTagEnabled('exception.stack_trace')) {
                 $transaction->setData(['exception.stack_trace' => (string) $exception]);
             }
         }
