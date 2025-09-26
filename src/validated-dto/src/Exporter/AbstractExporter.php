@@ -41,15 +41,20 @@ abstract class AbstractExporter implements ExporterInterface
      */
     protected function isDTOClass(ReflectionClass $reflection): bool
     {
+        static $dtoClasses = [
+            \FriendsOfHyperf\ValidatedDTO\ValidatedDTO::class,
+            \FriendsOfHyperf\ValidatedDTO\SimpleDTO::class,
+        ];
+
         $parentClass = $reflection->getParentClass();
-        if (! $parentClass) {
-            return false;
+        while ($parentClass) {
+            if (in_array($parentClass->getName(), $dtoClasses, true)) {
+                return true;
+            }
+            $parentClass = $parentClass->getParentClass();
         }
 
-        $parentName = $parentClass->getName();
-        return $parentName === 'FriendsOfHyperf\ValidatedDTO\ValidatedDTO'
-            || $parentName === 'FriendsOfHyperf\ValidatedDTO\SimpleDTO'
-            || $this->isDTOClass($parentClass);
+        return false;
     }
 
     /**
