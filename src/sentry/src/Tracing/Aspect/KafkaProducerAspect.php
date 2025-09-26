@@ -35,13 +35,13 @@ class KafkaProducerAspect extends AbstractAspect
         'Hyperf\Kafka\Producer::sendBatchAsync',
     ];
 
-    public function __construct(protected Feature $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnabled('kafka')) {
+        if (! $this->feature->isTracingEnabled('kafka')) {
             return $proceedingJoinPoint->process();
         }
 

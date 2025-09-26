@@ -28,7 +28,7 @@ use function Sentry\trace;
 
 class Tracer
 {
-    public function __construct(protected Feature $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
@@ -73,7 +73,7 @@ class Tracer
      */
     public function trace(callable $trace, SpanContext $context)
     {
-        $isTracingExtraTagEnabled = $this->switcher->isTracingExtraTagEnabled('exception.stack_trace');
+        $isTracingExtraTagEnabled = $this->feature->isTracingExtraTagEnabled('exception.stack_trace');
 
         if ($context->getStatus() === null) {
             $context->setStatus(SpanStatus::ok());

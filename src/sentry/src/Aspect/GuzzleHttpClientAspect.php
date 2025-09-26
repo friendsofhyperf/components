@@ -29,14 +29,14 @@ class GuzzleHttpClientAspect extends AbstractAspect
         Client::class . '::transfer',
     ];
 
-    public function __construct(protected Feature $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         // If the guzzle aspect is disabled, we will not record the request.
-        if (! $this->switcher->isBreadcrumbEnabled('guzzle')) {
+        if (! $this->feature->isBreadcrumbEnabled('guzzle')) {
             return $proceedingJoinPoint->process();
         }
 

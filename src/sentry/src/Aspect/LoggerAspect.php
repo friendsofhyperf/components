@@ -32,14 +32,14 @@ class LoggerAspect extends AbstractAspect
         Logger::class . '::addRecord',
     ];
 
-    public function __construct(protected Feature $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
-            if (! $this->switcher->isBreadcrumbEnabled('logs')) {
+            if (! $this->feature->isBreadcrumbEnabled('logs')) {
                 return;
             }
 

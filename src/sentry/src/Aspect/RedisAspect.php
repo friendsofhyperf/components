@@ -30,7 +30,7 @@ class RedisAspect extends AbstractAspect
         RedisConnection::class . '::__call',
     ];
 
-    public function __construct(protected Feature $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
@@ -42,7 +42,7 @@ class RedisAspect extends AbstractAspect
         return tap($proceedingJoinPoint->process(), function ($result) use ($arguments, $startTime) {
             if (
                 class_exists(CommandExecuted::class)
-                || ! $this->switcher->isBreadcrumbEnabled('redis')
+                || ! $this->feature->isBreadcrumbEnabled('redis')
             ) {
                 return;
             }

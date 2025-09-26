@@ -32,7 +32,7 @@ class CacheAspect extends AbstractAspect
         'Hyperf\Cache\Driver\*Driver::deleteMultiple',
     ];
 
-    public function __construct(protected Feature $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
@@ -41,7 +41,7 @@ class CacheAspect extends AbstractAspect
         $startTime = microtime(true);
 
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint, $startTime) {
-            if (! $this->switcher->isBreadcrumbEnabled('cache')) {
+            if (! $this->feature->isBreadcrumbEnabled('cache')) {
                 return;
             }
 

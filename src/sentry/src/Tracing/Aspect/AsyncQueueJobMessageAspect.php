@@ -40,13 +40,13 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     ];
 
     public function __construct(
-        protected Feature $switcher
+        protected Feature $feature
     ) {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnabled('async_queue')) {
+        if (! $this->feature->isTracingEnabled('async_queue')) {
             return $proceedingJoinPoint->process();
         }
 

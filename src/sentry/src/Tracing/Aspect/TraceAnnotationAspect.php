@@ -27,7 +27,7 @@ class TraceAnnotationAspect extends AbstractAspect
         Trace::class,
     ];
 
-    public function __construct(protected Feature $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
@@ -54,7 +54,7 @@ class TraceAnnotationAspect extends AbstractAspect
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
                 return tap($proceedingJoinPoint->process(), function ($result) use ($scope) {
-                    if ($this->switcher->isTracingExtraTagEnabled('annotation.result')) {
+                    if ($this->feature->isTracingExtraTagEnabled('annotation.result')) {
                         $scope->getSpan()?->setData(['annotation.result' => $result]);
                     }
                 });

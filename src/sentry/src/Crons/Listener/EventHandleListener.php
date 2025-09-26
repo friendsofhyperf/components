@@ -25,7 +25,7 @@ class EventHandleListener implements ListenerInterface
 {
     public function __construct(
         protected ConfigInterface $config,
-        protected Feature $switcher,
+        protected Feature $feature,
         protected StdoutLoggerInterface $logger
     ) {
     }
@@ -44,7 +44,7 @@ class EventHandleListener implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if (! $this->switcher->isCronsEnabled()) {
+        if (! $this->feature->isCronsEnabled()) {
             return;
         }
 

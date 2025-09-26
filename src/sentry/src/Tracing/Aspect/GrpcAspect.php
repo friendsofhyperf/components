@@ -27,13 +27,13 @@ class GrpcAspect extends AbstractAspect
         'Grpc\BaseStub::_simpleRequest',
     ];
 
-    public function __construct(protected Feature $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnabled('grpc')) {
+        if (! $this->feature->isTracingSpanEnabled('grpc')) {
             return $proceedingJoinPoint->process();
         }
 

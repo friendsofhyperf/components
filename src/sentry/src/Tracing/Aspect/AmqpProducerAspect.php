@@ -34,13 +34,13 @@ class AmqpProducerAspect extends AbstractAspect
         'Hyperf\Amqp\Producer::produceMessage',
     ];
 
-    public function __construct(protected Feature $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingEnabled('amqp')) {
+        if (! $this->feature->isTracingEnabled('amqp')) {
             return $proceedingJoinPoint->process();
         }
 

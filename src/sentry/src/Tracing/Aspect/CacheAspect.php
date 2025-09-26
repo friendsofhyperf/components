@@ -36,13 +36,13 @@ class CacheAspect extends AbstractAspect
         'Hyperf\Cache\Driver\*Driver::clear',
     ];
 
-    public function __construct(protected Feature $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnabled('cache')) {
+        if (! $this->feature->isTracingSpanEnabled('cache')) {
             return $proceedingJoinPoint->process();
         }
 

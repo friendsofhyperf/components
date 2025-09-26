@@ -41,13 +41,13 @@ class FilesystemAspect extends AbstractAspect
         // More adapter methods can be added here
     ];
 
-    public function __construct(protected Feature $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isBreadcrumbEnabled('filesystem')) {
+        if (! $this->feature->isBreadcrumbEnabled('filesystem')) {
             return $proceedingJoinPoint->process();
         }
 

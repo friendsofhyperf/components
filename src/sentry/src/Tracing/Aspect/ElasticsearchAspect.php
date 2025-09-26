@@ -50,20 +50,20 @@ class ElasticsearchAspect extends AbstractAspect
         'Elastic\Elasticsearch\Traits\ClientEndpointsTrait::updateByQuery',
     ];
 
-    public function __construct(protected Feature $switcher)
+    public function __construct(protected Feature $feature)
     {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->switcher->isTracingSpanEnabled('elasticsearch')) {
+        if (! $this->feature->isTracingSpanEnabled('elasticsearch')) {
             return $proceedingJoinPoint->process();
         }
 
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
                 $result = $proceedingJoinPoint->process();
-                if ($this->switcher->isTracingExtraTagEnabled('elasticsearch.result')) {
+                if ($this->feature->isTracingExtraTagEnabled('elasticsearch.result')) {
                     $scope->getSpan()?->setData([
                         'elasticsearch.result' => (string) json_encode($result, JSON_UNESCAPED_UNICODE),
                     ]);
