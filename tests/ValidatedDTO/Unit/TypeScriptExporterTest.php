@@ -53,36 +53,60 @@ it('throws exception for non-DTO class', function () {
 
 it('handles DTO with inherited public properties', function () {
     // Create a temporary DTO class for testing using an anonymous class
-    $dto = new class extends \FriendsOfHyperf\ValidatedDTO\ValidatedDTO {
-        protected function rules(): array { return []; }
-        protected function defaults(): array { return []; }
-        protected function casts(): array { return []; }
+    $dto = new class extends FriendsOfHyperf\ValidatedDTO\ValidatedDTO {
+        protected function rules(): array
+        {
+            return [];
+        }
+
+        protected function defaults(): array
+        {
+            return [];
+        }
+
+        protected function casts(): array
+        {
+            return [];
+        }
     };
 
     $result = $this->exporter->export(get_class($dto));
 
-    expect($result)->toContain('export interface ' . (new \ReflectionClass($dto))->getShortName());
+    expect($result)->toContain('export interface ' . (new ReflectionClass($dto))->getShortName());
     expect($result)->toContain('lazyValidation: boolean;');
 });
 
 it('maps different cast types to correct TypeScript types', function () {
     // Create a DTO with various cast types for testing using an anonymous class
-    $dto = new class extends \FriendsOfHyperf\ValidatedDTO\ValidatedDTO {
+    $dto = new class extends FriendsOfHyperf\ValidatedDTO\ValidatedDTO {
         public string $stringProp;
-        public int $intProp;
-        public bool $boolProp;
-        public array $arrayProp;
-        public \Carbon\Carbon $dateProp;
 
-        protected function rules(): array { return []; }
-        protected function defaults(): array { return []; }
-        protected function casts(): array {
+        public int $intProp;
+
+        public bool $boolProp;
+
+        public array $arrayProp;
+
+        public Carbon\Carbon $dateProp;
+
+        protected function rules(): array
+        {
+            return [];
+        }
+
+        protected function defaults(): array
+        {
+            return [];
+        }
+
+        protected function casts(): array
+        {
             return [
-                "stringProp" => new \FriendsOfHyperf\ValidatedDTO\Casting\StringCast(),
-                "intProp" => new \FriendsOfHyperf\ValidatedDTO\Casting\IntegerCast(),
-                "boolProp" => new \FriendsOfHyperf\ValidatedDTO\Casting\BooleanCast(),
-                "arrayProp" => new \FriendsOfHyperf\ValidatedDTO\Casting\ArrayCast(),
-                "dateProp" => new \FriendsOfHyperf\ValidatedDTO\Casting\CarbonCast(),
+                'stringProp' => new FriendsOfHyperf\ValidatedDTO\Casting\StringCast(),
+                'intProp' => new FriendsOfHyperf\ValidatedDTO\Casting\IntegerCast(),
+                'boolProp' => new FriendsOfHyperf\ValidatedDTO\Casting\BooleanCast(),
+                'arrayProp' => new FriendsOfHyperf\ValidatedDTO\Casting\ArrayCast(),
+                'dateProp' => new FriendsOfHyperf\ValidatedDTO\Casting\CarbonCast(),
             ];
         }
     };
