@@ -13,7 +13,7 @@ use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\NameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\SimpleNameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\UserDTO;
 use FriendsOfHyperf\ValidatedDTO\Command\ExportDTOToTypescriptCommand;
-use FriendsOfHyperf\ValidatedDTO\Export\TypeScriptExporter;
+use FriendsOfHyperf\ValidatedDTO\Exporter\TypeScriptExporter;
 use Hyperf\Contract\ConfigInterface;
 use Mockery as m;
 use Symfony\Component\Console\Input\ArrayInput;

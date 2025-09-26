@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\ValidatedDTO\Export;
+namespace FriendsOfHyperf\ValidatedDTO\Exporter;
 
 use FriendsOfHyperf\ValidatedDTO\Casting\ArrayCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\BooleanCast;
@@ -27,7 +27,7 @@ use FriendsOfHyperf\ValidatedDTO\Casting\StringCast;
 use ReflectionClass;
 use ReflectionProperty;
 
-class TypeScriptExporter
+class TypeScriptExporter implements ExporterInterface
 {
     /**
      * Export a DTO class to TypeScript interface.

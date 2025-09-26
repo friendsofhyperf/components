@@ -12,7 +12,7 @@ declare(strict_types=1);
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\NameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\SimpleNameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\UserDTO;
-use FriendsOfHyperf\ValidatedDTO\Export\TypeScriptExporter;
+use FriendsOfHyperf\ValidatedDTO\Exporter\TypeScriptExporter;
 
 beforeEach(function () {
     $this->exporter = new TypeScriptExporter();

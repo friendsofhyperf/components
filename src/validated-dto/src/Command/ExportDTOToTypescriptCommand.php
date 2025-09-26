@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ValidatedDTO\Command;
 
-use FriendsOfHyperf\ValidatedDTO\Export\TypeScriptExporter;
+use FriendsOfHyperf\ValidatedDTO\Exporter\TypeScriptExporter;
 use Hyperf\Contract\ConfigInterface;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputArgument;
