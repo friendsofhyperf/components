@@ -16,6 +16,7 @@ use FriendsOfHyperf\ValidatedDTO\Exporter\ExporterInterface;
 use FriendsOfHyperf\ValidatedDTO\Exporter\TypeScriptExporter;
 use Hyperf\Contract\ConfigInterface;
 use InvalidArgumentException;
+use RuntimeException;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -96,7 +97,7 @@ class ExportDTOCommand extends SymfonyCommand
         }
 
         if (file_exists($path) && ! $this->input->getOption('force')) {
-            throw new \RuntimeException(sprintf('File %s already exists! Use --force to overwrite.', $path));
+            throw new RuntimeException(sprintf('File %s already exists! Use --force to overwrite.', $path));
         }
 
         file_put_contents($path, $content);
