@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\ValidatedDTO\Command;
 
+use FriendsOfHyperf\ValidatedDTO\Exporter\ExporterInterface;
 use FriendsOfHyperf\ValidatedDTO\Exporter\TypeScriptExporter;
 use Hyperf\Contract\ConfigInterface;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
@@ -19,15 +20,15 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ExportDTOToTypescriptCommand extends SymfonyCommand
+class ExportDTOCommand extends SymfonyCommand
 {
     protected InputInterface $input;
 
     protected OutputInterface $output;
 
-    public function __construct(protected ConfigInterface $config, protected TypeScriptExporter $exporter)
+    public function __construct(protected ConfigInterface $config, protected TypeScriptExporter $typeScriptExporter)
     {
-        parent::__construct('dto:export-ts');
+        parent::__construct('dto:export');
     }
 
     public function configure()
@@ -40,7 +41,7 @@ class ExportDTOToTypescriptCommand extends SymfonyCommand
             $this->addOption(...$option);
         }
 
-        $this->setDescription('Export DTO classes to TypeScript interfaces.');
+        $this->setDescription('Export DTO classes to various formats.');
         $this->setAliases([]);
     }
 
@@ -54,15 +55,17 @@ class ExportDTOToTypescriptCommand extends SymfonyCommand
 
         $class = $input->getArgument('class');
         $outputPath = $input->getOption('output');
+        $lang = $input->getOption('lang');
 
         try {
-            $typescript = $this->exporter->export($class);
+            $exporter = $this->getExporter($lang);
+            $exported = $exporter->export($class);
             
             if ($outputPath) {
-                $this->writeToFile($outputPath, $typescript);
-                $output->writeln(sprintf('<info>TypeScript interface exported to %s</info>', $outputPath));
+                $this->writeToFile($outputPath, $exported);
+                $output->writeln(sprintf('<info>DTO exported to %s</info>', $outputPath));
             } else {
-                $output->writeln($typescript);
+                $output->writeln($exported);
             }
 
             return 0;
@@ -73,6 +76,14 @@ class ExportDTOToTypescriptCommand extends SymfonyCommand
             $output->writeln(sprintf('<error>Error: %s</error>', $e->getMessage()));
             return 1;
         }
+    }
+
+    protected function getExporter(string $lang): ExporterInterface
+    {
+        return match ($lang) {
+            'typescript', 'ts' => $this->typeScriptExporter,
+            default => throw new \InvalidArgumentException("Unsupported language: {$lang}"),
+        };
     }
 
     protected function writeToFile(string $path, string $content): void
@@ -106,8 +117,9 @@ class ExportDTOToTypescriptCommand extends SymfonyCommand
     protected function getOptions(): array
     {
         return [
-            ['output', 'o', InputOption::VALUE_OPTIONAL, 'Output file path for the TypeScript interface', null],
+            ['output', 'o', InputOption::VALUE_OPTIONAL, 'Output file path', null],
             ['force', 'f', InputOption::VALUE_NONE, 'Overwrite existing files'],
+            ['lang', 'l', InputOption::VALUE_OPTIONAL, 'Export language (typescript|ts)', 'typescript'],
         ];
     }
 }

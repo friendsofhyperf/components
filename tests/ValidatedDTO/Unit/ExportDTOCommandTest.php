@@ -12,7 +12,7 @@ declare(strict_types=1);
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\NameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\SimpleNameDTO;
 use FriendsOfHyperf\Tests\ValidatedDTO\Datasets\UserDTO;
-use FriendsOfHyperf\ValidatedDTO\Command\ExportDTOToTypescriptCommand;
+use FriendsOfHyperf\ValidatedDTO\Command\ExportDTOCommand;
 use FriendsOfHyperf\ValidatedDTO\Exporter\TypeScriptExporter;
 use Hyperf\Contract\ConfigInterface;
 use Mockery as m;
@@ -22,7 +22,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 beforeEach(function () {
     $this->config = m::mock(ConfigInterface::class);
     $this->exporter = m::mock(TypeScriptExporter::class);
-    $this->command = new ExportDTOToTypescriptCommand($this->config, $this->exporter);
+    $this->command = new ExportDTOCommand($this->config, $this->exporter);
 });
 
 afterEach(function () {
@@ -184,10 +184,57 @@ it('returns error for non-DTO class', function () {
 });
 
 it('has correct command name and aliases', function () {
-    expect($this->command->getName())->toBe('dto:export-ts');
+    expect($this->command->getName())->toBe('dto:export');
     expect($this->command->getAliases())->toBe([]);
 });
 
 it('has correct description', function () {
-    expect($this->command->getDescription())->toBe('Export DTO classes to TypeScript interfaces.');
+    expect($this->command->getDescription())->toBe('Export DTO classes to various formats.');
+});
+
+it('supports typescript language option', function () {
+    $this->exporter->shouldReceive('export')
+        ->with(SimpleNameDTO::class)
+        ->once()
+        ->andReturn("export interface SimpleNameDTO {\n  first_name: string;\n  last_name: string;\n}\n");
+
+    $input = new ArrayInput([
+        'class' => SimpleNameDTO::class,
+        '--lang' => 'typescript'
+    ]);
+    $output = new BufferedOutput();
+
+    $result = $this->command->execute($input, $output);
+
+    expect($result)->toBe(0);
+    
+    $outputContent = $output->fetch();
+    expect($outputContent)->toContain('export interface SimpleNameDTO');
+});
+
+it('defaults to typescript language', function () {
+    $this->exporter->shouldReceive('export')
+        ->with(SimpleNameDTO::class)
+        ->once()
+        ->andReturn("export interface SimpleNameDTO {\n  first_name: string;\n  last_name: string;\n}\n");
+
+    $input = new ArrayInput(['class' => SimpleNameDTO::class]);
+    $output = new BufferedOutput();
+
+    $result = $this->command->execute($input, $output);
+
+    expect($result)->toBe(0);
+});
+
+it('returns error for unsupported language', function () {
+    $input = new ArrayInput([
+        'class' => SimpleNameDTO::class,
+        '--lang' => 'unsupported'
+    ]);
+    $output = new BufferedOutput();
+
+    $result = $this->command->execute($input, $output);
+
+    expect($result)->toBe(1);
+    expect($output->fetch())->toContain('Unsupported language: unsupported');
 });
