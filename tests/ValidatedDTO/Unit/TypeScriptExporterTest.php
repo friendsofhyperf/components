@@ -51,7 +51,7 @@ it('throws exception for non-DTO class', function () {
         ->toThrow(InvalidArgumentException::class, 'Class stdClass is not a DTO class.');
 });
 
-it('handles DTO with no public properties', function () {
+it('handles DTO with inherited public properties', function () {
     // Create a temporary DTO class for testing
     eval('
         namespace FriendsOfHyperf\ValidatedDTO;
@@ -65,29 +65,30 @@ it('handles DTO with no public properties', function () {
     $result = $this->exporter->export('FriendsOfHyperf\ValidatedDTO\EmptyTestDTO');
 
     expect($result)->toContain('export interface EmptyTestDTO');
-    expect($result)->toContain('// No public properties found');
+    expect($result)->toContain('lazyValidation: boolean;');
 });
 
 it('maps different cast types to correct TypeScript types', function () {
     // Create a DTO with various cast types for testing
     eval('
+        namespace FriendsOfHyperf\ValidatedDTO;
+
         use FriendsOfHyperf\ValidatedDTO\Casting\StringCast;
         use FriendsOfHyperf\ValidatedDTO\Casting\IntegerCast;
         use FriendsOfHyperf\ValidatedDTO\Casting\BooleanCast;
         use FriendsOfHyperf\ValidatedDTO\Casting\ArrayCast;
         use FriendsOfHyperf\ValidatedDTO\Casting\CarbonCast;
-        
-        namespace FriendsOfHyperf\ValidatedDTO;
+
         class TypeTestDTO extends ValidatedDTO {
             public string $stringProp;
             public int $intProp;
             public bool $boolProp;
             public array $arrayProp;
             public \Carbon\Carbon $dateProp;
-            
+
             protected function rules(): array { return []; }
             protected function defaults(): array { return []; }
-            protected function casts(): array { 
+            protected function casts(): array {
                 return [
                     "stringProp" => new StringCast(),
                     "intProp" => new IntegerCast(),
