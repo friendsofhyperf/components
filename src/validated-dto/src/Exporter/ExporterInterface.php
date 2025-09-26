@@ -14,7 +14,7 @@ namespace FriendsOfHyperf\ValidatedDTO\Exporter;
 interface ExporterInterface
 {
     /**
-     * Export a DTO class to TypeScript interface.
+     * Export a DTO class to the target format.
      */
     public function export(string $className): string;
 }
