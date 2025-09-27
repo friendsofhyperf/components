@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-
 use DateInterval;
 use DateTime;
 use FriendsOfHyperf\Cache\Event\CacheFlushed;
@@ -569,7 +568,7 @@ test('decrement', function () {
     expect($result)->toBe(4);
 });
 
-// GetSeconds Tests  
+// GetSeconds Tests
 test('get seconds with integer', function () {
     $driver = m::mock(DriverInterface::class);
     $container = createMockContainerWithoutEvents();
