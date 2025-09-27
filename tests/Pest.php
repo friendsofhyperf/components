@@ -32,6 +32,7 @@ uses()->group('support')->in('Support');
 uses()->group('tinker')->in('Tinker');
 uses()->group('tcp-sender')->in('TcpSender');
 uses()->group('telescope')->in('Telescope');
+uses()->group('lock')->in('Lock');
 uses()->group('validated-dto')
     ->beforeEach(function () {
         $this->subject_name = faker()->name();
