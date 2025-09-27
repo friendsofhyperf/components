@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tests\Cache;
 
-use Carbon\Carbon;
 use DateInterval;
 use DateTime;
 use FriendsOfHyperf\Cache\Event\CacheFlushed;
@@ -35,6 +34,7 @@ use PHPUnit\Framework\Attributes\Group;
 use PHPUnit\Framework\TestCase;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use ReflectionClass;
 
 /**
  * @internal
@@ -58,26 +58,11 @@ class RepositoryTest extends TestCase
         parent::tearDown();
     }
 
-    protected function createMockContainerWithoutEvents(): ContainerInterface
-    {
-        $container = m::mock(ContainerInterface::class);
-        $container->shouldReceive('has')->with(EventDispatcherInterface::class)->andReturnFalse();
-        return $container;
-    }
-
-    protected function createMockContainerWithEvents($eventDispatcher): ContainerInterface
-    {
-        $container = m::mock(ContainerInterface::class);
-        $container->shouldReceive('has')->with(EventDispatcherInterface::class)->andReturnTrue();
-        $container->shouldReceive('get')->with(EventDispatcherInterface::class)->andReturn($eventDispatcher);
-        return $container;
-    }
-
     public function testConstructorWithoutEventDispatcher(): void
     {
         $driver = m::mock(DriverInterface::class);
         $container = $this->createMockContainerWithoutEvents();
-        
+
         $repository = new Repository($container, $driver, 'test');
 
         $this->assertSame($driver, $repository->getDriver());
@@ -99,7 +84,7 @@ class RepositoryTest extends TestCase
     {
         $driver = m::mock(DriverInterface::class);
         $container = $this->createMockContainerWithoutEvents();
-        
+
         $repository = new Repository($container, $driver);
 
         $cloned = clone $repository;
@@ -116,7 +101,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(CacheHit::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -133,7 +118,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(CacheMissed::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -150,7 +135,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(CacheMissed::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -167,11 +152,11 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(CacheMissed::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
-        $result = $repository->get('foo', fn() => 'computed');
+        $result = $repository->get('foo', fn () => 'computed');
 
         $this->assertSame('computed', $result);
     }
@@ -184,7 +169,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingManyKeys::class));
         $events->shouldReceive('dispatch')->twice()->with(m::type(CacheHit::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -202,7 +187,7 @@ class RepositoryTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingManyKeys::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(CacheHit::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(CacheMissed::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -220,7 +205,7 @@ class RepositoryTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingManyKeys::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(CacheHit::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(CacheMissed::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -237,7 +222,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -254,7 +239,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -271,7 +256,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(ForgettingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyForgotten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -314,7 +299,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(ForgettingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyForgotten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -331,7 +316,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(ForgettingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyForgotten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -348,7 +333,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(CacheFlushing::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(CacheFlushed::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -365,7 +350,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(CacheFlushing::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(CacheFlushed::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -385,7 +370,7 @@ class RepositoryTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -402,7 +387,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(CacheHit::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -422,7 +407,7 @@ class RepositoryTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(ForgettingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyForgotten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -442,7 +427,7 @@ class RepositoryTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(ForgettingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyForgotten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -464,11 +449,11 @@ class RepositoryTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
-        $result = $repository->remember('foo', 60, fn() => 'computed');
+        $result = $repository->remember('foo', 60, fn () => 'computed');
 
         $this->assertSame('computed', $result);
     }
@@ -481,11 +466,11 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(CacheHit::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
-        $result = $repository->remember('foo', 60, fn() => 'computed');
+        $result = $repository->remember('foo', 60, fn () => 'computed');
 
         $this->assertSame('existing', $result);
     }
@@ -501,11 +486,11 @@ class RepositoryTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
-        $result = $repository->rememberForever('foo', fn() => 'computed');
+        $result = $repository->rememberForever('foo', fn () => 'computed');
 
         $this->assertSame('computed', $result);
     }
@@ -521,11 +506,11 @@ class RepositoryTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
-        $result = $repository->sear('foo', fn() => 'computed');
+        $result = $repository->sear('foo', fn () => 'computed');
 
         $this->assertSame('computed', $result);
     }
@@ -541,7 +526,7 @@ class RepositoryTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -561,7 +546,7 @@ class RepositoryTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -577,7 +562,7 @@ class RepositoryTest extends TestCase
         $repository = new Repository($container, $driver);
 
         // Using reflection to test protected method
-        $reflection = new \ReflectionClass($repository);
+        $reflection = new ReflectionClass($repository);
         $method = $reflection->getMethod('getSeconds');
         $method->setAccessible(true);
 
@@ -592,7 +577,7 @@ class RepositoryTest extends TestCase
         $container = $this->createMockContainerWithoutEvents();
         $repository = new Repository($container, $driver);
 
-        $reflection = new \ReflectionClass($repository);
+        $reflection = new ReflectionClass($repository);
         $method = $reflection->getMethod('getSeconds');
         $method->setAccessible(true);
 
@@ -607,7 +592,7 @@ class RepositoryTest extends TestCase
         $container = $this->createMockContainerWithoutEvents();
         $repository = new Repository($container, $driver);
 
-        $reflection = new \ReflectionClass($repository);
+        $reflection = new ReflectionClass($repository);
         $method = $reflection->getMethod('getSeconds');
         $method->setAccessible(true);
 
@@ -623,7 +608,7 @@ class RepositoryTest extends TestCase
         $container = $this->createMockContainerWithoutEvents();
         $repository = new Repository($container, $driver);
 
-        $reflection = new \ReflectionClass($repository);
+        $reflection = new ReflectionClass($repository);
         $method = $reflection->getMethod('getSeconds');
         $method->setAccessible(true);
 
@@ -642,7 +627,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingManyKeys::class));
         $events->shouldReceive('dispatch')->twice()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -658,7 +643,7 @@ class RepositoryTest extends TestCase
 
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -676,7 +661,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->twice()->with(m::type(ForgettingKey::class));
         $events->shouldReceive('dispatch')->twice()->with(m::type(KeyForgotten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -693,7 +678,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingManyKeys::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWriteFailed::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -710,7 +695,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -727,7 +712,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingManyKeys::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -745,7 +730,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->twice()->with(m::type(ForgettingKey::class));
         $events->shouldReceive('dispatch')->twice()->with(m::type(KeyForgotten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -764,7 +749,7 @@ class RepositoryTest extends TestCase
         $events->shouldReceive('dispatch')->twice()->with(m::type(ForgettingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyForgotten::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyForgetFailed::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -781,7 +766,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWriteFailed::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -798,7 +783,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWriteFailed::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -815,7 +800,7 @@ class RepositoryTest extends TestCase
         $events = m::mock(EventDispatcherInterface::class);
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingManyKeys::class));
         $events->shouldReceive('dispatch')->twice()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -835,7 +820,7 @@ class RepositoryTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -855,7 +840,7 @@ class RepositoryTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -875,7 +860,7 @@ class RepositoryTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWritten::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
@@ -895,12 +880,27 @@ class RepositoryTest extends TestCase
         $events->shouldReceive('dispatch')->once()->with(m::type(RetrievingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(WritingKey::class));
         $events->shouldReceive('dispatch')->once()->with(m::type(KeyWriteFailed::class));
-        
+
         $container = $this->createMockContainerWithEvents($events);
         $repository = new Repository($container, $driver);
 
         $result = $repository->increment('foo');
 
         $this->assertFalse($result);
+    }
+
+    protected function createMockContainerWithoutEvents(): ContainerInterface
+    {
+        $container = m::mock(ContainerInterface::class);
+        $container->shouldReceive('has')->with(EventDispatcherInterface::class)->andReturnFalse();
+        return $container;
+    }
+
+    protected function createMockContainerWithEvents($eventDispatcher): ContainerInterface
+    {
+        $container = m::mock(ContainerInterface::class);
+        $container->shouldReceive('has')->with(EventDispatcherInterface::class)->andReturnTrue();
+        $container->shouldReceive('get')->with(EventDispatcherInterface::class)->andReturn($eventDispatcher);
+        return $container;
     }
 }
