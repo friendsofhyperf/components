@@ -308,6 +308,40 @@ class RepositoryTest extends TestCase
         $this->assertTrue($result);
     }
 
+    public function testForgetDispatchesKeyForgottenEvent(): void
+    {
+        $driver = m::mock(DriverInterface::class);
+        $driver->shouldReceive('delete')->with('foo')->once()->andReturnTrue();
+
+        $events = m::mock(EventDispatcherInterface::class);
+        $events->shouldReceive('dispatch')->once()->with(m::type(ForgettingKey::class));
+        $events->shouldReceive('dispatch')->once()->with(m::type(KeyForgotten::class));
+
+        $container = $this->createMockContainerWithEvents($events);
+        $repository = new Repository($container, $driver);
+
+        $result = $repository->forget('foo');
+
+        $this->assertTrue($result);
+    }
+
+    public function testForgetDispatchesKeyForgetFailedEvent(): void
+    {
+        $driver = m::mock(DriverInterface::class);
+        $driver->shouldReceive('delete')->with('foo')->once()->andReturnFalse();
+
+        $events = m::mock(EventDispatcherInterface::class);
+        $events->shouldReceive('dispatch')->once()->with(m::type(ForgettingKey::class));
+        $events->shouldReceive('dispatch')->once()->with(m::type(KeyForgetFailed::class));
+
+        $container = $this->createMockContainerWithEvents($events);
+        $repository = new Repository($container, $driver);
+
+        $result = $repository->forget('foo');
+
+        $this->assertFalse($result);
+    }
+
     public function testDelete(): void
     {
         $driver = m::mock(DriverInterface::class);
