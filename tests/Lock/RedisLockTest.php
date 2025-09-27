@@ -8,17 +8,15 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-
 use FriendsOfHyperf\Lock\Driver\LuaScripts;
 use FriendsOfHyperf\Lock\Driver\RedisLock;
-use FriendsOfHyperf\Lock\Exception\LockTimeoutException;
 use Hyperf\Redis\RedisProxy;
 use Mockery as m;
 
 test('can acquire lock with expiration', function () {
     $redis = m::mock(RedisProxy::class);
     $redis->shouldReceive('set')->with('test_lock', m::any(), ['NX', 'EX' => 60])->andReturn(true);
-    
+
     $lock = new class('test_lock', 60, 'owner123') extends RedisLock {
         public function __construct(string $name, int $seconds, ?string $owner = null)
         {
@@ -26,13 +24,13 @@ test('can acquire lock with expiration', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($redis);
     $result = $lock->acquire();
 
@@ -50,13 +48,13 @@ test('can acquire lock without expiration', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($redis);
     $result = $lock->acquire();
 
@@ -74,13 +72,13 @@ test('acquire returns false when lock already exists', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($redis);
     $result = $lock->acquire();
 
@@ -98,13 +96,13 @@ test('can release lock successfully', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($redis);
     $result = $lock->release();
 
@@ -122,13 +120,13 @@ test('release returns false when script returns 0', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($redis);
     $result = $lock->release();
 
@@ -146,13 +144,13 @@ test('can force release lock', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($redis);
     $lock->forceRelease();
 
@@ -170,18 +168,18 @@ test('get current owner returns owner value', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
-        
+
         public function testGetCurrentOwner()
         {
             return $this->getCurrentOwner();
         }
     };
-    
+
     $lock->setStore($redis);
     $result = $lock->testGetCurrentOwner();
 
@@ -200,16 +198,16 @@ test('get method executes callback and releases lock', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($redis);
     $callbackExecuted = false;
-    
+
     $result = $lock->get(function () use (&$callbackExecuted) {
         $callbackExecuted = true;
         return 'callback_result';
@@ -230,13 +228,13 @@ test('get method returns false when lock cannot be acquired', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($redis);
     $result = $lock->get();
 

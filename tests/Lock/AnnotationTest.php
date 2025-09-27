@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-
 use FriendsOfHyperf\Lock\Annotation\Blockable;
 use FriendsOfHyperf\Lock\Annotation\Lock;
 

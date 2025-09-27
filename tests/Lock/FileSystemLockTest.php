@@ -8,7 +8,6 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-
 use FriendsOfHyperf\Lock\Driver\FileSystemLock;
 use Hyperf\Cache\Driver\FileSystemDriver;
 use Mockery as m;
@@ -25,13 +24,13 @@ test('can acquire lock when file does not exist', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($store);
     $result = $lock->acquire();
 
@@ -49,13 +48,13 @@ test('acquire returns false when file already exists', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($store);
     $result = $lock->acquire();
 
@@ -74,13 +73,13 @@ test('acquire returns false when set fails', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($store);
     $result = $lock->acquire();
 
@@ -99,13 +98,13 @@ test('can release lock when owned by current process', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($store);
     $result = $lock->release();
 
@@ -123,13 +122,13 @@ test('release returns false when not owned by current process', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($store);
     $result = $lock->release();
 
@@ -147,13 +146,13 @@ test('can force release lock', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($store);
     $lock->forceRelease();
 
@@ -171,18 +170,18 @@ test('get current owner returns owner from file system', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
-        
+
         public function testGetCurrentOwner()
         {
             return $this->getCurrentOwner();
         }
     };
-    
+
     $lock->setStore($store);
     $result = $lock->testGetCurrentOwner();
 
@@ -203,16 +202,16 @@ test('get method executes callback and releases lock', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($store);
     $callbackExecuted = false;
-    
+
     $result = $lock->get(function () use (&$callbackExecuted) {
         $callbackExecuted = true;
         return 'callback_result';
@@ -233,13 +232,13 @@ test('get method returns false when lock cannot be acquired', function () {
             $this->seconds = $seconds;
             $this->owner = $owner ?? 'default';
         }
-        
+
         public function setStore($store): void
         {
             $this->store = $store;
         }
     };
-    
+
     $lock->setStore($store);
     $result = $lock->get();
 
