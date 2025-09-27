@@ -8,8 +8,6 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use DateInterval;
-use DateTime;
 use FriendsOfHyperf\Cache\Event\CacheFlushed;
 use FriendsOfHyperf\Cache\Event\CacheFlushing;
 use FriendsOfHyperf\Cache\Event\CacheHit;
@@ -29,7 +27,6 @@ use Hyperf\Cache\Driver\DriverInterface;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use ReflectionClass;
 
 uses(InteractsWithContainer::class);
 
