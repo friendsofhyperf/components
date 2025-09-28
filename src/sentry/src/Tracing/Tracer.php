@@ -22,6 +22,7 @@ use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 use Throwable;
 
+use function Hyperf\Coroutine\defer;
 use function Sentry\trace;
 
 class Tracer
