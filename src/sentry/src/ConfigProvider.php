@@ -41,6 +41,7 @@ class ConfigProvider
                 Tracing\Aspect\RpcAspect::class,
                 Tracing\Aspect\RedisAspect::class,
                 Tracing\Aspect\TraceAnnotationAspect::class,
+                Tracing\Aspect\ViewRenderAspect::class,
             ],
             'commands' => [
                 Command\AboutCommand::class,
