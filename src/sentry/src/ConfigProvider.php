@@ -39,6 +39,7 @@ class ConfigProvider
                 Tracing\Aspect\KafkaProducerAspect::class,
                 Tracing\Aspect\RpcAspect::class,
                 Tracing\Aspect\TraceAnnotationAspect::class,
+                Tracing\Aspect\ViewRenderAspect::class,
             ],
             'commands' => [
                 Command\AboutCommand::class,
