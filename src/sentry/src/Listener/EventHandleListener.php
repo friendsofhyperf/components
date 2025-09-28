@@ -16,7 +16,6 @@ use FriendsOfHyperf\Sentry\Integration;
 use Hyperf\Amqp\Event as AmqpEvent;
 use Hyperf\AsyncQueue\Event as AsyncQueueEvent;
 use Hyperf\Command\Event as CommandEvent;
-use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Crontab\Event as CrontabEvent;
@@ -44,8 +43,6 @@ use Throwable;
  */
 class EventHandleListener implements ListenerInterface
 {
-    public const HUB = 'sentry.context.hub';
-
     protected array $missingKeys = [
         // Enable
         'sentry.enable.amqp',
@@ -207,9 +204,8 @@ class EventHandleListener implements ListenerInterface
         }
     }
 
-    protected function setupSentrySdk(): void
+    protected function setupSentryCurrentHub(): void
     {
-        Context::getOrSet(static::HUB, fn () => SentrySdk::init());
     }
 
     protected function flushEvents(): void
@@ -357,7 +353,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        $this->setupSentrySdk();
+        $this->setupSentryCurrentHub();
     }
 
     /**
@@ -382,7 +378,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        $this->setupSentrySdk();
+        $this->setupSentryCurrentHub();
 
         Integration::configureScope(static function (Scope $scope) use ($event): void {
             $scope->setTag('command', $event->getCommand()->getName());
@@ -456,7 +452,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        $this->setupSentrySdk();
+        $this->setupSentryCurrentHub();
 
         if ($this->feature->isBreadcrumbEnabled('async_queue')) {
             $job = [
@@ -508,7 +504,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        $this->setupSentrySdk();
+        $this->setupSentryCurrentHub();
     }
 
     /**
@@ -545,7 +541,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        $this->setupSentrySdk();
+        $this->setupSentryCurrentHub();
     }
 
     /**
@@ -582,7 +578,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        $this->setupSentrySdk();
+        $this->setupSentryCurrentHub();
     }
 
     /**
