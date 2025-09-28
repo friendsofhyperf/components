@@ -87,6 +87,7 @@ return [
         'crontab:run',
         'gen:*',
         'migrate*',
+        'sentry:test',
         'tinker',
         'vendor:publish',
     ],
