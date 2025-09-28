@@ -55,7 +55,7 @@ class ConfigProvider
             'listeners' => [
                 Listener\EventHandleListener::class => PHP_INT_MAX - 1,
                 Crons\Listener\EventHandleListener::class => PHP_INT_MAX - 1,
-                Tracing\Listener\EventHandleListener::class => PHP_INT_MAX,
+                Tracing\Listener\EventHandleListener::class => PHP_INT_MAX, // !! Make sure it is the first one to handle the event
             ],
             'annotations' => [
                 'scan' => [
