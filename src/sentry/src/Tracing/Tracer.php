@@ -35,8 +35,11 @@ class Tracer
      */
     public function startTransaction(TransactionContext $transactionContext, array $customSamplingContext = []): Transaction
     {
-        $hub = SentrySdk::init();
+        $hub = SentrySdk::getCurrentHub();
         $hub->pushScope();
+        $hub->configureScope(static fn (Scope $scope) => $scope->clearBreadcrumbs());
+
+        defer(static fn () => $hub->popScope());
 
         $transactionContext->setData(['coroutine.id' => Coroutine::id()] + $transactionContext->getData());
 
