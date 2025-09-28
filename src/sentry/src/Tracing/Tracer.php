@@ -39,6 +39,8 @@ class Tracer
         $hub->pushScope();
         $hub->configureScope(static fn (Scope $scope) => $scope->clearBreadcrumbs());
 
+        defer(static fn () => $hub->popScope());
+
         $transactionContext->setData(['coroutine.id' => Coroutine::id()] + $transactionContext->getData());
 
         if ($transactionContext->getStartTimestamp() === null) {
