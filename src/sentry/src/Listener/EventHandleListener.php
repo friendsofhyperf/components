@@ -204,10 +204,6 @@ class EventHandleListener implements ListenerInterface
         }
     }
 
-    protected function setupSentryCurrentHub(): void
-    {
-    }
-
     protected function flushEvents(): void
     {
         try {
@@ -352,8 +348,6 @@ class EventHandleListener implements ListenerInterface
         if (! $this->feature->isEnabled('request')) {
             return;
         }
-
-        $this->setupSentryCurrentHub();
     }
 
     /**
@@ -377,8 +371,6 @@ class EventHandleListener implements ListenerInterface
         if (! $this->feature->isEnabled('command')) {
             return;
         }
-
-        $this->setupSentryCurrentHub();
 
         Integration::configureScope(static function (Scope $scope) use ($event): void {
             $scope->setTag('command', $event->getCommand()->getName());
@@ -452,8 +444,6 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        $this->setupSentryCurrentHub();
-
         if ($this->feature->isBreadcrumbEnabled('async_queue')) {
             $job = [
                 'job' => $event->getMessage()->job()::class,
@@ -503,8 +493,6 @@ class EventHandleListener implements ListenerInterface
         if (! $this->feature->isEnabled('crontab')) {
             return;
         }
-
-        $this->setupSentryCurrentHub();
     }
 
     /**
@@ -540,8 +528,6 @@ class EventHandleListener implements ListenerInterface
         if (! $this->feature->isEnabled('amqp')) {
             return;
         }
-
-        $this->setupSentryCurrentHub();
     }
 
     /**
@@ -577,8 +563,6 @@ class EventHandleListener implements ListenerInterface
         if (! $this->feature->isEnabled('kafka')) {
             return;
         }
-
-        $this->setupSentryCurrentHub();
     }
 
     /**
