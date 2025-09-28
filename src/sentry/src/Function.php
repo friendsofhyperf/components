@@ -19,6 +19,14 @@ use Sentry\Tracing\Transaction;
 use Sentry\Tracing\TransactionContext;
 
 /**
+ * Get the Feature instance from the container.
+ */
+function feature(): Feature
+{
+    return ApplicationContext::getContainer()->get(Feature::class);
+}
+
+/**
  * Starts a new Transaction and returns it. This is the entry point to manual tracing instrumentation.
  */
 function startTransaction(TransactionContext $transactionContext, array $customSamplingContext = []): Transaction
