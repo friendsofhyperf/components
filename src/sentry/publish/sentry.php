@@ -113,6 +113,7 @@ return [
             'grpc' => env('SENTRY_TRACING_SPANS_GRPC', true),
             'redis' => env('SENTRY_TRACING_SPANS_REDIS', true),
             'sql_queries' => env('SENTRY_TRACING_SPANS_SQL_QUERIES', true),
+            'view' => env('SENTRY_TRACING_SPANS_VIEW', true),
         ],
         'extra_tags' => [
             'exception.stack_trace' => true,
