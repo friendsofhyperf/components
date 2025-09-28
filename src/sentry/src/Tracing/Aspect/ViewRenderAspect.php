@@ -19,6 +19,10 @@ use Sentry\Tracing\SpanContext;
 
 use function FriendsOfHyperf\Sentry\trace;
 
+/**
+ * @property string $mode
+ * @property string $engine
+ */
 class ViewRenderAspect extends AbstractAspect
 {
     public array $classes = [
@@ -35,9 +39,18 @@ class ViewRenderAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
+        /** @var \Hyperf\View\Render $instance */
+        $instance = $proceedingJoinPoint->getInstance();
+        [$mode, $engine] = (fn () => [$this->mode ?? '<missing_mode>', $this->engine ?? '<missing_engine>'])->call($instance);
         $arguments = $proceedingJoinPoint->arguments['keys'] ?? [];
+        /** @var string $template */
         $template = $arguments['template'] ?? 'unknown';
-        $data = $arguments['data'] ?? [];
+        $data = [
+            'view.mode' => $mode,
+            'view.engine' => $engine,
+            'view.template' => $template,
+            'view.data' => $arguments['data'] ?? [],
+        ];
 
         return trace(
             fn (Scope $scope) => $proceedingJoinPoint->process(),
