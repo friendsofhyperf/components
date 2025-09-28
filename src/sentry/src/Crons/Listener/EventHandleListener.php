@@ -95,7 +95,7 @@ class EventHandleListener implements ListenerInterface
 
     protected function handleCrontabTaskFinished(Event\AfterExecute $event): void
     {
-        /** @var string $checkInId */
+        /** @var null|string $checkInId */
         $checkInId = Context::get(Constants::CRON_CHECKIN_ID);
         if (! $checkInId) {
             return;
@@ -113,7 +113,7 @@ class EventHandleListener implements ListenerInterface
 
     protected function handleCrontabTaskFailed(Event\FailToExecute $event): void
     {
-        /** @var string $checkInId */
+        /** @var null|string $checkInId */
         $checkInId = Context::get(Constants::CRON_CHECKIN_ID);
         if (! $checkInId) {
             return;
