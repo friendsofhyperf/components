@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Tracing;
 use FriendsOfHyperf\Sentry\Feature;
 use Hyperf\Engine\Coroutine;
 use Sentry\SentrySdk;
-use Sentry\State\HubInterface;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
@@ -23,7 +22,6 @@ use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 use Throwable;
 
-use function Hyperf\Tappable\tap;
 use function Sentry\trace;
 
 class Tracer
@@ -37,9 +35,8 @@ class Tracer
      */
     public function startTransaction(TransactionContext $transactionContext, array $customSamplingContext = []): Transaction
     {
-        $hub = SentrySdk::setCurrentHub(
-            tap(clone SentrySdk::getCurrentHub(), fn (HubInterface $hub) => $hub->pushScope())
-        );
+        $hub = SentrySdk::init();
+        $hub->pushScope();
 
         $transactionContext->setData(['coroutine.id' => Coroutine::id()] + $transactionContext->getData());
 
