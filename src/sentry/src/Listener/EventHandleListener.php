@@ -16,7 +16,6 @@ use FriendsOfHyperf\Sentry\Integration;
 use Hyperf\Amqp\Event as AmqpEvent;
 use Hyperf\AsyncQueue\Event as AsyncQueueEvent;
 use Hyperf\Command\Event as CommandEvent;
-use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Crontab\Event as CrontabEvent;
@@ -44,8 +43,6 @@ use Throwable;
  */
 class EventHandleListener implements ListenerInterface
 {
-    public const HUB = 'sentry.context.hub';
-
     protected array $missingKeys = [
         // Enable
         'sentry.enable.amqp',
@@ -207,11 +204,6 @@ class EventHandleListener implements ListenerInterface
         }
     }
 
-    protected function setupSentrySdk(): void
-    {
-        Context::getOrSet(static::HUB, fn () => SentrySdk::init());
-    }
-
     protected function flushEvents(): void
     {
         try {
@@ -356,8 +348,6 @@ class EventHandleListener implements ListenerInterface
         if (! $this->feature->isEnabled('request')) {
             return;
         }
-
-        $this->setupSentrySdk();
     }
 
     /**
@@ -381,8 +371,6 @@ class EventHandleListener implements ListenerInterface
         if (! $this->feature->isEnabled('command')) {
             return;
         }
-
-        $this->setupSentrySdk();
 
         Integration::configureScope(static function (Scope $scope) use ($event): void {
             $scope->setTag('command', $event->getCommand()->getName());
@@ -456,8 +444,6 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        $this->setupSentrySdk();
-
         if ($this->feature->isBreadcrumbEnabled('async_queue')) {
             $job = [
                 'job' => $event->getMessage()->job()::class,
@@ -507,8 +493,6 @@ class EventHandleListener implements ListenerInterface
         if (! $this->feature->isEnabled('crontab')) {
             return;
         }
-
-        $this->setupSentrySdk();
     }
 
     /**
@@ -544,8 +528,6 @@ class EventHandleListener implements ListenerInterface
         if (! $this->feature->isEnabled('amqp')) {
             return;
         }
-
-        $this->setupSentrySdk();
     }
 
     /**
@@ -581,8 +563,6 @@ class EventHandleListener implements ListenerInterface
         if (! $this->feature->isEnabled('kafka')) {
             return;
         }
-
-        $this->setupSentrySdk();
     }
 
     /**

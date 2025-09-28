@@ -60,6 +60,6 @@ class SentrySdk
      */
     public static function setCurrentHub(HubInterface $hub): HubInterface
     {
-        return tap($hub, fn ($hub) => Context::set(__CLASS__, $hub));
+        return Context::set(__CLASS__, $hub);
     }
 }
