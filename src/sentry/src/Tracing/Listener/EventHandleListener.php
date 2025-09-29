@@ -657,7 +657,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        if ($event instanceof AmqpEvent\FailToConsume) {
+        if ($event instanceof KafkaEvent\FailToConsume) {
             $transaction->setStatus(SpanStatus::internalError());
         }
     }
@@ -708,7 +708,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        if ($event instanceof AmqpEvent\FailToConsume) {
+        if ($event instanceof AsyncQueueEvent\FailToConsume) {
             $transaction->setStatus(SpanStatus::internalError());
         }
     }
