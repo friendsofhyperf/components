@@ -117,7 +117,6 @@ return [
             'view' => env('SENTRY_TRACING_SPANS_VIEW', true),
         ],
         'extra_tags' => [
-            'exception.stack_trace' => true,
             'amqp.result' => false,
             'annotation.result' => false,
             'db.sql.bindings' => true,
