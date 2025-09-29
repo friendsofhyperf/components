@@ -20,6 +20,7 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
+use Sentry\Util\SentryUid;
 
 use function FriendsOfHyperf\Sentry\trace;
 use function Hyperf\Support\with;
@@ -76,7 +77,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
 
         /** @var \Hyperf\AsyncQueue\Driver\Driver $driver */
         $driver = $proceedingJoinPoint->getInstance();
-        $messageId = method_exists($job, 'getId') ? $job->getId() : uniqid('async_queue_', true);
+        $messageId = method_exists($job, 'getId') ? $job->getId() : SentryUid::generate();
         $destinationName = Context::get('sentry.messaging.destination.name', 'default');
         $bodySize = (fn ($job) => strlen($this->packer->pack($job)))->call($driver, $job);
         $data = [
