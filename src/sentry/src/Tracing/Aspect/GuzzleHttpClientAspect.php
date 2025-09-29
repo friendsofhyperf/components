@@ -11,12 +11,10 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use Error;
 use FriendsOfHyperf\Sentry\Feature;
 use GuzzleHttp\Client;
 use GuzzleHttp\TransferStats;
 use Hyperf\Context\Context;
-use Hyperf\Coroutine\Coroutine;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Container\ContainerInterface;
@@ -24,7 +22,6 @@ use Psr\Http\Message\RequestInterface;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
-use Throwable;
 
 use function FriendsOfHyperf\Sentry\trace;
 
@@ -136,32 +133,17 @@ class GuzzleHttpClientAspect extends AbstractAspect
                                 ]);
                                 $body->seek($pos);
                             } else {
-                                $span->setData(['http.response.body.contents' => '[binary omitted]']);
+                                $span->setData([
+                                    'http.response.body.contents' => '[binary omitted]',
+                                ]);
                             }
                         }
 
-                        $span->setStatus(
-                            SpanStatus::createFromHttpStatusCode($response->getStatusCode())
-                        );
-
-                        if ($response->getStatusCode() >= 400 && $response->getStatusCode() < 600) {
-                            $span->setTags([
-                                'error' => 'true',
-                                'http.response.reason' => $response->getReasonPhrase(),
-                            ]);
-                        }
+                        $span->setHttpStatus($response->getStatusCode());
                     }
 
                     if ($stats->getHandlerErrorData()) {
-                        $exception = $stats->getHandlerErrorData() instanceof Throwable
-                            ? $stats->getHandlerErrorData()
-                            : new Error();
-                        $span->setStatus(SpanStatus::internalError())
-                            ->setTags([
-                                'error' => 'true',
-                                'exception.class' => $exception::class,
-                                'exception.code' => (string) $exception->getCode(),
-                            ]);
+                        $span->setStatus(SpanStatus::internalError());
                     }
 
                     if (is_callable($onStats)) {
@@ -175,7 +157,6 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 ->setOp('http.client')
                 ->setDescription($request->getMethod() . ' ' . (string) $request->getUri())
                 ->setOrigin('auto.http.client')
-                ->setData(['coroutine.id' => Coroutine::id()])
         );
     }
 }
