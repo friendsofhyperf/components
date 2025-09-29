@@ -404,7 +404,7 @@ class EventHandleListener implements ListenerInterface
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
-        if (! $transaction || ! $transaction->getSampled()) {
+        if (! $transaction?->getSampled()) {
             return;
         }
 
@@ -517,7 +517,7 @@ class EventHandleListener implements ListenerInterface
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
-        if (! $transaction || ! $transaction->getSampled()) {
+        if (! $transaction?->getSampled()) {
             return;
         }
 
@@ -585,7 +585,7 @@ class EventHandleListener implements ListenerInterface
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
-        if (! $transaction || ! $transaction->getSampled()) {
+        if (! $transaction?->getSampled()) {
             return;
         }
 
@@ -653,7 +653,7 @@ class EventHandleListener implements ListenerInterface
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
-        if (! $transaction || ! $transaction->getSampled()) {
+        if (! $transaction?->getSampled()) {
             return;
         }
 
@@ -704,7 +704,7 @@ class EventHandleListener implements ListenerInterface
     {
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
-        if (! $transaction || ! $transaction->getSampled()) {
+        if (! $transaction?->getSampled()) {
             return;
         }
 
