@@ -76,10 +76,8 @@ class CoroutineAspect extends AbstractAspect
         SentrySdk::getCurrentHub()->setSpan($parent);
 
         // Finish the span when the coroutine is created.
-        defer(function () use ($parent, $transaction) {
+        defer(function () use ($parent) {
             $parent->finish();
-            SentrySdk::getCurrentHub()->setSpan($transaction);
-            $transaction->finish();
         });
 
         $cid = Co::id();
