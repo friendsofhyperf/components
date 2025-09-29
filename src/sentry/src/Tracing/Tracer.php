@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing;
 
-use FriendsOfHyperf\Sentry\Feature;
 use Hyperf\Engine\Coroutine;
 use Sentry\SentrySdk;
 use Sentry\State\Scope;
@@ -27,10 +26,6 @@ use function Sentry\trace;
 
 class Tracer
 {
-    public function __construct(protected Feature $feature)
-    {
-    }
-
     /**
      * Starts a new Transaction and returns it. This is the entry point to manual tracing instrumentation.
      */
@@ -74,8 +69,6 @@ class Tracer
      */
     public function trace(callable $trace, SpanContext $context)
     {
-        $isTracingExtraTagEnabled = $this->feature->isTracingExtraTagEnabled('exception.stack_trace');
-
         if ($context->getStatus() === null) {
             $context->setStatus(SpanStatus::ok());
         }
@@ -87,7 +80,7 @@ class Tracer
         $context->setData(['coroutine.id' => Coroutine::id()] + $context->getData());
 
         return trace(
-            function (Scope $scope) use ($trace, $isTracingExtraTagEnabled) {
+            function (Scope $scope) use ($trace) {
                 try {
                     return $trace($scope);
                 } catch (Throwable $exception) {
@@ -98,15 +91,7 @@ class Tracer
                                 'error' => 'true',
                                 'exception.class' => $exception::class,
                                 'exception.code' => (string) $exception->getCode(),
-                            ])
-                            ->setData([
-                                'exception.message' => $exception->getMessage(),
                             ]);
-                        if ($isTracingExtraTagEnabled) {
-                            $span->setData([
-                                'exception.stack_trace' => (string) $exception,
-                            ]);
-                        }
                     }
                     throw $exception;
                 }

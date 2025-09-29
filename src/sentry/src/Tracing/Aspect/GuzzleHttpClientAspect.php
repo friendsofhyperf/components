@@ -161,15 +161,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                                 'error' => 'true',
                                 'exception.class' => $exception::class,
                                 'exception.code' => (string) $exception->getCode(),
-                            ])
-                            ->setData([
-                                'exception.message' => $exception->getMessage(),
                             ]);
-                        if ($this->feature->isTracingExtraTagEnabled('exception.stack_trace')) {
-                            $span->setData([
-                                'exception.stack_trace' => (string) $exception,
-                            ]);
-                        }
                     }
 
                     if (is_callable($onStats)) {
