@@ -351,23 +351,17 @@ class EventHandleListener implements ListenerInterface
         }
 
         $traceId = (string) $span->getTraceId();
+
         if ($event instanceof RpcEvent\RequestHandled && $this->container->has(RpcContext::class)) {
             $this->container->get(RpcContext::class)->set('sentry-trace-id', $traceId);
         } elseif ($event->response instanceof ResponsePlusInterface) {
             $event->response->setHeader('sentry-trace-id', $traceId);
         }
 
-        $span->setStatus(
-            SpanStatus::createFromHttpStatusCode($event->response->getStatusCode())
-        );
+        $span->setHttpStatus($event->response->getStatusCode());
 
-        if ($exception = $event->getThrowable()) {
-            $span->setStatus(SpanStatus::internalError())
-                ->setTags([
-                    'error' => 'true',
-                    'exception.class' => $exception::class,
-                    'exception.code' => (string) $exception->getCode(),
-                ]);
+        if (method_exists($event, 'getThrowable') && $event->getThrowable()) {
+            $span->setStatus(SpanStatus::internalError());
         }
     }
 
@@ -422,13 +416,8 @@ class EventHandleListener implements ListenerInterface
                 'command.exit_code' => (string) $exitCode,
             ]);
 
-            if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
-                $transaction->setStatus(SpanStatus::internalError())
-                    ->setTags([
-                        'error' => 'true',
-                        'exception.class' => $exception::class,
-                        'exception.code' => (string) $exception->getCode(),
-                    ]);
+            if ($event->getThrowable()) {
+                $transaction->setStatus(SpanStatus::internalError());
             }
 
             $transaction->setStatus(
@@ -463,13 +452,8 @@ class EventHandleListener implements ListenerInterface
                     $span->setData(['db.redis.result' => $event->result]);
                 }
 
-                if ($exception = $event->throwable) {
-                    $span->setStatus(SpanStatus::internalError())
-                        ->setTags([
-                            'error' => 'true',
-                            'exception.class' => $exception::class,
-                            'exception.code' => (string) $exception->getCode(),
-                        ]);
+                if ($event->throwable) {
+                    $span->setStatus(SpanStatus::internalError());
                 }
             },
             SpanContext::make()
@@ -537,13 +521,8 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
-            $transaction->setStatus(SpanStatus::internalError())
-                ->setTags([
-                    'error' => 'true',
-                    'exception.class' => $exception::class,
-                    'exception.code' => (string) $exception->getCode(),
-                ]);
+        if ($event instanceof CrontabEvent\FailToExecute) {
+            $transaction->setStatus(SpanStatus::internalError());
         }
     }
 
@@ -614,13 +593,8 @@ class EventHandleListener implements ListenerInterface
             'messaging.amqp.message.result' => $event instanceof AmqpEvent\AfterConsume ? $event->getResult()->value : 'fail',
         ]);
 
-        if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
-            $transaction->setStatus(SpanStatus::internalError())
-                ->setTags([
-                    'error' => 'true',
-                    'exception.class' => $exception::class,
-                    'exception.code' => (string) $exception->getCode(),
-                ]);
+        if ($event instanceof AmqpEvent\FailToConsume) {
+            $transaction->setStatus(SpanStatus::internalError());
         }
     }
 
@@ -683,13 +657,8 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
-            $transaction->setStatus(SpanStatus::internalError())
-                ->setTags([
-                    'error' => 'true',
-                    'exception.class' => $exception::class,
-                    'exception.code' => (string) $exception->getCode(),
-                ]);
+        if ($event instanceof KafkaEvent\FailToConsume) {
+            $transaction->setStatus(SpanStatus::internalError());
         }
     }
 
@@ -739,13 +708,8 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
-            $transaction->setStatus(SpanStatus::internalError())
-                ->setTags([
-                    'error' => 'true',
-                    'exception.class' => $exception::class,
-                    'exception.code' => (string) $exception->getCode(),
-                ]);
+        if ($event instanceof AsyncQueueEvent\FailedHandle) {
+            $transaction->setStatus(SpanStatus::internalError());
         }
     }
 

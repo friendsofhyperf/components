@@ -84,15 +84,7 @@ class Tracer
                 try {
                     return $trace($scope);
                 } catch (Throwable $exception) {
-                    $span = $scope->getSpan();
-                    if ($span !== null) {
-                        $span->setStatus(SpanStatus::internalError())
-                            ->setTags([
-                                'error' => 'true',
-                                'exception.class' => $exception::class,
-                                'exception.code' => (string) $exception->getCode(),
-                            ]);
-                    }
+                    $scope->getSpan()?->setStatus(SpanStatus::internalError());
                     throw $exception;
                 }
             },
