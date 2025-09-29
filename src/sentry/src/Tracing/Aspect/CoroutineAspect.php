@@ -32,7 +32,7 @@ class CoroutineAspect extends AbstractAspect
     ];
 
     protected array $keys = [
-        SentrySdk::class,
+        // SentrySdk::class,
         \Psr\Http\Message\ServerRequestInterface::class,
     ];
 
