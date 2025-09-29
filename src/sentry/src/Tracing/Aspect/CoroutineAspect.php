@@ -61,7 +61,7 @@ class CoroutineAspect extends AbstractAspect
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
         // If there's no active transaction, skip tracing.
-        if (! $transaction || ! $transaction->getSampled()) {
+        if (! $transaction?->getSampled()) {
             return $proceedingJoinPoint->process();
         }
 
