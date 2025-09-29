@@ -416,7 +416,7 @@ class EventHandleListener implements ListenerInterface
                 'command.exit_code' => (string) $exitCode,
             ]);
 
-            if (method_exists($event, 'getThrowable') && $event->getThrowable()) {
+            if ($event->getThrowable()) {
                 $transaction->setStatus(SpanStatus::internalError());
             }
 
@@ -521,7 +521,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        if (method_exists($event, 'getThrowable') && $event->getThrowable()) {
+        if ($event instanceof CrontabEvent\FailToExecute) {
             $transaction->setStatus(SpanStatus::internalError());
         }
     }
@@ -593,7 +593,7 @@ class EventHandleListener implements ListenerInterface
             'messaging.amqp.message.result' => $event instanceof AmqpEvent\AfterConsume ? $event->getResult()->value : 'fail',
         ]);
 
-        if (method_exists($event, 'getThrowable') && $event->getThrowable()) {
+        if ($event instanceof AmqpEvent\FailToConsume) {
             $transaction->setStatus(SpanStatus::internalError());
         }
     }
@@ -657,7 +657,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        if (method_exists($event, 'getThrowable') && $event->getThrowable()) {
+        if ($event instanceof AmqpEvent\FailToConsume) {
             $transaction->setStatus(SpanStatus::internalError());
         }
     }
@@ -708,7 +708,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        if (method_exists($event, 'getThrowable') && $event->getThrowable()) {
+        if ($event instanceof AmqpEvent\FailToConsume) {
             $transaction->setStatus(SpanStatus::internalError());
         }
     }
