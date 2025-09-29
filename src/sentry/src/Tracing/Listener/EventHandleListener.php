@@ -708,7 +708,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        if ($event instanceof AsyncQueueEvent\FailToConsume) {
+        if ($event instanceof AsyncQueueEvent\FailedHandle) {
             $transaction->setStatus(SpanStatus::internalError());
         }
     }
