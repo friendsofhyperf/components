@@ -121,7 +121,7 @@ class CoHttpTransport implements TransportInterface
         $this->workerWatcher ??= Coroutine::create(function () {
             if (CoordinatorManager::until(Constants::WORKER_EXIT)->yield()) {
                 // sleep before setting workerExited to prevent busy-waiting
-                msleep(1);
+                msleep(100);
 
                 $this->workerExited = true;
 
