@@ -129,7 +129,6 @@ class CoroutineAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         } finally {
             $parent->finish();
-            SentrySdk::getCurrentHub()->setSpan($transaction);
         }
     }
 }
