@@ -360,7 +360,7 @@ class EventHandleListener implements ListenerInterface
 
         $span->setHttpStatus($event->response->getStatusCode());
 
-        if ($event->getThrowable()) {
+        if (method_exists($event, 'getThrowable') && $event->getThrowable()) {
             $span->setStatus(SpanStatus::internalError());
         }
     }
