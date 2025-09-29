@@ -75,6 +75,13 @@ class CoroutineAspect extends AbstractAspect
         );
         SentrySdk::getCurrentHub()->setSpan($parent);
 
+        // Finish the span when the coroutine is created.
+        defer(function () use ($parent, $transaction) {
+            $parent->finish();
+            SentrySdk::getCurrentHub()->setSpan($transaction);
+            $transaction->finish();
+        });
+
         $cid = Co::id();
         $keys = $this->keys;
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
@@ -125,11 +132,6 @@ class CoroutineAspect extends AbstractAspect
             }
         };
 
-        try {
-            return $proceedingJoinPoint->process();
-        } finally {
-            $parent->finish();
-            SentrySdk::getCurrentHub()->setSpan($transaction);
-        }
+        return $proceedingJoinPoint->process();
     }
 }
