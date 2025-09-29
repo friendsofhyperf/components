@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 use Closure;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
+use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
 use FriendsOfHyperf\Support\RedisCommand;
@@ -335,6 +336,9 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
+
+            // Flush events
+            Integration::flushEvents();
         });
     }
 
@@ -396,6 +400,9 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
+
+            // Flush events
+            Integration::flushEvents();
         });
     }
 
@@ -516,6 +523,9 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
+
+            // Flush events
+            Integration::flushEvents();
         });
     }
 
@@ -586,6 +596,9 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
+
+            // Flush events
+            Integration::flushEvents();
         });
     }
 
@@ -656,6 +669,9 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
+
+            // Flush events
+            Integration::flushEvents();
         });
     }
 
@@ -709,6 +725,9 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
+
+            // Flush events
+            Integration::flushEvents();
         });
     }
 

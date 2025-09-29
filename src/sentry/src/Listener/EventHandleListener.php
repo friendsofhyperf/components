@@ -204,15 +204,6 @@ class EventHandleListener implements ListenerInterface
         }
     }
 
-    protected function flushEvents(): void
-    {
-        try {
-            Integration::flushEvents();
-        } catch (Throwable $e) {
-            $this->logger->error((string) $e);
-        }
-    }
-
     /**
      * @param BootApplication $event
      */
@@ -360,7 +351,6 @@ class EventHandleListener implements ListenerInterface
         }
 
         $this->captureException($event->exception);
-        $this->flushEvents();
     }
 
     /**
@@ -428,7 +418,6 @@ class EventHandleListener implements ListenerInterface
         }
 
         $this->captureException($event->getThrowable());
-        $this->flushEvents();
 
         Integration::configureScope(static function (Scope $scope): void {
             $scope->removeTag('command');
@@ -468,8 +457,6 @@ class EventHandleListener implements ListenerInterface
         if (! $this->feature->isEnabled('async_queue')) {
             return;
         }
-
-        $this->flushEvents();
     }
 
     /**
@@ -482,7 +469,6 @@ class EventHandleListener implements ListenerInterface
         }
 
         $this->captureException($event->getThrowable());
-        $this->flushEvents();
     }
 
     /**
@@ -503,8 +489,6 @@ class EventHandleListener implements ListenerInterface
         if (! $this->feature->isEnabled('crontab')) {
             return;
         }
-
-        $this->flushEvents();
     }
 
     /**
@@ -517,7 +501,6 @@ class EventHandleListener implements ListenerInterface
         }
 
         $this->captureException($event->throwable);
-        $this->flushEvents();
     }
 
     /**
@@ -538,8 +521,6 @@ class EventHandleListener implements ListenerInterface
         if (! $this->feature->isEnabled('amqp')) {
             return;
         }
-
-        $this->flushEvents();
     }
 
     /**
@@ -552,7 +533,6 @@ class EventHandleListener implements ListenerInterface
         }
 
         $this->captureException($event->getThrowable());
-        $this->flushEvents();
     }
 
     /**
@@ -573,8 +553,6 @@ class EventHandleListener implements ListenerInterface
         if (! $this->feature->isEnabled('kafka')) {
             return;
         }
-
-        $this->flushEvents();
     }
 
     /**
@@ -587,7 +565,6 @@ class EventHandleListener implements ListenerInterface
         }
 
         $this->captureException($event->getThrowable());
-        $this->flushEvents();
     }
 
     /**

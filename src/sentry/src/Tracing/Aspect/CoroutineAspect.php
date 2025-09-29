@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Feature;
+use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Util\CoroutineBacktraceHelper;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -32,7 +33,6 @@ class CoroutineAspect extends AbstractAspect
     ];
 
     protected array $keys = [
-        // SentrySdk::class,
         \Psr\Http\Message\ServerRequestInterface::class,
     ];
 
@@ -57,7 +57,7 @@ class CoroutineAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        // If there's no active transaction, skip tracing.
+        // Get the current transaction from the current scope.
         $transaction = SentrySdk::getCurrentHub()->getTransaction();
 
         // If there's no active transaction, skip tracing.
@@ -99,8 +99,14 @@ class CoroutineAspect extends AbstractAspect
             );
 
             defer(function () use ($coTransaction) {
+                // Set the transaction on the current scope to ensure it's the active one.
                 SentrySdk::getCurrentHub()->setSpan($coTransaction);
+
+                // Finish the transaction when the coroutine ends.
                 $coTransaction->finish();
+
+                // Flush events
+                Integration::flushEvents();
             });
 
             try {
