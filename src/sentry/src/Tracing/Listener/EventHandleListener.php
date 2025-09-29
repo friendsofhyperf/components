@@ -392,6 +392,10 @@ class EventHandleListener implements ListenerInterface
                 ->setOp('console.command')
                 ->setDescription($command->getDescription())
                 ->setOrigin('auto.command')
+                ->setData([
+                    'command.arguments' => (fn () => $this->input->getArguments())->call($command),
+                    'command.options' => (fn () => $this->input->getOptions())->call($command),
+                ])
         );
 
         Coroutine::inCoroutine() && defer(function () use ($transaction) {
@@ -415,10 +419,7 @@ class EventHandleListener implements ListenerInterface
             $command = $event->getCommand();
             $exitCode = (fn () => $this->exitCode ?? SymfonyCommand::SUCCESS)->call($command);
 
-            $transaction->setData([
-                'command.arguments' => (fn () => $this->input->getArguments())->call($command),
-                'command.options' => (fn () => $this->input->getOptions())->call($command),
-            ])->setTags([
+            $transaction->setTags([
                 'command.exit_code' => (string) $exitCode,
             ]);
 
@@ -521,6 +522,14 @@ class EventHandleListener implements ListenerInterface
                 ->setDescription($crontab->getMemo())
                 ->setOrigin('auto.crontab')
                 ->setSource(TransactionSource::task())
+                ->setTags([
+                    'crontab.rule' => $crontab->getRule(),
+                    'crontab.type' => $crontab->getType(),
+                ])
+                ->setData([
+                    'crontab.options.is_single' => $crontab->isSingleton(),
+                    'crontab.options.is_on_one_server' => $crontab->isOnOneServer(),
+                ])
         );
 
         defer(function () use ($transaction) {
@@ -539,14 +548,6 @@ class EventHandleListener implements ListenerInterface
         if (! $transaction || ! $transaction->getSampled()) {
             return;
         }
-
-        $crontab = $event->crontab;
-        $transaction->setTags([
-            'crontab.rule' => $crontab->getRule(),
-            'crontab.type' => $crontab->getType(),
-            'crontab.options.is_single' => $crontab->isSingleton(),
-            'crontab.options.is_on_one_server' => $crontab->isOnOneServer(),
-        ]);
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError())
@@ -570,6 +571,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
+        /** @var ConsumerMessage $message */
         $message = $event->getMessage();
         $carrier = null;
 
@@ -590,6 +592,20 @@ class EventHandleListener implements ListenerInterface
                 ->setOp('queue.process')
                 ->setDescription($message::class)
                 ->setOrigin('auto.amqp')
+                ->setData([
+                    'messaging.system' => 'amqp',
+                    'messaging.operation' => 'process',
+                    'messaging.message.id' => $carrier?->get('message_id'),
+                    'messaging.message.body.size' => $carrier?->get('body_size'),
+                    'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
+                    'messaging.message.retry.count' => 0,
+                    'messaging.destination.name' => $carrier?->get('destination_name') ?: implode(', ', (array) $message->getRoutingKey()),
+                    'messaging.amqp.message.type' => $message->getTypeString(),
+                    'messaging.amqp.message.routing_key' => $message->getRoutingKey(),
+                    'messaging.amqp.message.exchange' => $message->getExchange(),
+                    'messaging.amqp.message.queue' => $message->getQueue(),
+                    'messaging.amqp.message.pool_name' => $message->getPoolName(),
+                ])
         );
 
         defer(function () use ($transaction) {
@@ -609,24 +625,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        /** @var null|Carrier $carrier */
-        $carrier = Context::get(Constants::TRACE_CARRIER);
-
-        /** @var ConsumerMessage $message */
-        $message = $event->getMessage();
         $transaction->setData([
-            'messaging.system' => 'amqp',
-            'messaging.operation' => 'process',
-            'messaging.message.id' => $carrier?->get('message_id'),
-            'messaging.message.body.size' => $carrier?->get('body_size'),
-            'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
-            'messaging.message.retry.count' => 0,
-            'messaging.destination.name' => $carrier?->get('destination_name') ?: implode(', ', (array) $message->getRoutingKey()),
-            'messaging.amqp.message.type' => $message->getTypeString(),
-            'messaging.amqp.message.routing_key' => $message->getRoutingKey(),
-            'messaging.amqp.message.exchange' => $message->getExchange(),
-            'messaging.amqp.message.queue' => $message->getQueue(),
-            'messaging.amqp.message.pool_name' => $message->getPoolName(),
             'messaging.amqp.message.result' => $event instanceof AmqpEvent\AfterConsume ? $event->getResult()->value : 'fail',
         ]);
 
@@ -672,6 +671,17 @@ class EventHandleListener implements ListenerInterface
                 ->setOp('queue.process')
                 ->setDescription($consumer::class)
                 ->setOrigin('auto.kafka')
+                ->setData([
+                    'messaging.system' => 'kafka',
+                    'messaging.operation' => 'process',
+                    'messaging.message.id' => $carrier?->get('message_id'),
+                    'messaging.message.body.size' => $carrier?->get('body_size'),
+                    'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
+                    'messaging.message.retry.count' => 0,
+                    'messaging.destination.name' => $carrier?->get('destination_name') ?: (is_array($consumer->getTopic()) ? implode(',', $consumer->getTopic()) : $consumer->getTopic()),
+                    'messaging.kafka.consumer.group' => $consumer->getGroupId(),
+                    'messaging.kafka.consumer.pool' => $consumer->getPool(),
+                ])
         );
 
         defer(function () use ($transaction) {
@@ -690,21 +700,6 @@ class EventHandleListener implements ListenerInterface
         if (! $transaction || ! $transaction->getSampled()) {
             return;
         }
-
-        /** @var null|Carrier $carrier */
-        $carrier = Context::get(Constants::TRACE_CARRIER);
-        $consumer = $event->getConsumer();
-        $transaction->setData([
-            'messaging.system' => 'kafka',
-            'messaging.operation' => 'process',
-            'messaging.message.id' => $carrier?->get('message_id'),
-            'messaging.message.body.size' => $carrier?->get('body_size'),
-            'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
-            'messaging.message.retry.count' => 0,
-            'messaging.destination.name' => $carrier?->get('destination_name') ?: (is_array($consumer->getTopic()) ? implode(',', $consumer->getTopic()) : $consumer->getTopic()),
-            'messaging.kafka.consumer.group' => $consumer->getGroupId(),
-            'messaging.kafka.consumer.pool' => $consumer->getPool(),
-        ]);
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError())
@@ -737,7 +732,15 @@ class EventHandleListener implements ListenerInterface
                 ->setName($job::class)
                 ->setOp('queue.process')
                 ->setDescription('async_queue: ' . $job::class)
-                ->setOrigin('auto.async_queue')
+                ->setOrigin('auto.async_queue')->setData([
+                    'messaging.system' => 'async_queue',
+                    'messaging.operation' => 'process',
+                    'messaging.message.id' => $carrier?->get('message_id'),
+                    'messaging.message.body.size' => $carrier?->get('body_size'),
+                    'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
+                    'messaging.message.retry.count' => $event->getMessage()->getAttempts(),
+                    'messaging.destination.name' => $carrier?->get('destination_name') ?: 'unknown queue',
+                ])
         );
 
         defer(function () use ($transaction) {
@@ -756,18 +759,6 @@ class EventHandleListener implements ListenerInterface
         if (! $transaction || ! $transaction->getSampled()) {
             return;
         }
-
-        /** @var null|Carrier $carrier */
-        $carrier = Context::get(Constants::TRACE_CARRIER, null, Coroutine::parentId());
-        $transaction->setData([
-            'messaging.system' => 'async_queue',
-            'messaging.operation' => 'process',
-            'messaging.message.id' => $carrier?->get('message_id'),
-            'messaging.message.body.size' => $carrier?->get('body_size'),
-            'messaging.message.receive.latency' => $carrier?->has('publish_time') ? (microtime(true) - $carrier->get('publish_time')) : null,
-            'messaging.message.retry.count' => $event->getMessage()->getAttempts(),
-            'messaging.destination.name' => $carrier?->get('destination_name') ?: 'unknown queue',
-        ]);
 
         if (method_exists($event, 'getThrowable') && $exception = $event->getThrowable()) {
             $transaction->setStatus(SpanStatus::internalError())
