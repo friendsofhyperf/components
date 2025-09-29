@@ -55,10 +55,10 @@ class LogsHandler extends \Sentry\Monolog\LogsHandler
             $record['message'],
             [],
             array_merge(
-                ['log_context' => $record['context']],
-                ['log_extra' => $record['extra']],
-                ['logger' => $record['channel'] ?? ''],
-                ['group' => $this->group]
+                ['record.context' => $record['context']],
+                ['record.extra' => $record['extra']],
+                ['logger.channel' => $record['channel'] ?? ''],
+                ['logger.group' => $this->group]
             )
         );
 
