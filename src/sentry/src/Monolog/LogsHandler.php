@@ -58,7 +58,8 @@ class LogsHandler extends \Sentry\Monolog\LogsHandler
                 ['record.context' => $record['context']],
                 ['record.extra' => $record['extra']],
                 ['logger.channel' => $record['channel'] ?? ''],
-                ['logger.group' => $this->group]
+                ['logger.group' => $this->group],
+                ['sentry.origin' => 'auto.logger.monolog']
             )
         );
 
