@@ -22,6 +22,7 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use PhpAmqpLib\Wire\AMQPTable;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
+use Sentry\Util\SentryUid;
 
 use function FriendsOfHyperf\Sentry\trace;
 
@@ -73,7 +74,7 @@ class AmqpProducerAspect extends AbstractAspect
             }
         }
 
-        $messageId = uniqid('amqp_', true);
+        $messageId = SentryUid::generate();
         $destinationName = implode(', ', (array) $routingKey);
         $bodySize = strlen($producerMessage->payload());
 

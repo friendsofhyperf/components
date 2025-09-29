@@ -20,6 +20,7 @@ use longlang\phpkafka\Producer\ProduceMessage;
 use longlang\phpkafka\Protocol\RecordBatch\RecordHeader;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
+use Sentry\Util\SentryUid;
 
 use function FriendsOfHyperf\Sentry\trace;
 
@@ -54,7 +55,7 @@ class KafkaProducerAspect extends AbstractAspect
 
     protected function sendAsync(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $messageId = uniqid('kafka_', true);
+        $messageId = SentryUid::generate();
         $destinationName = $proceedingJoinPoint->arguments['keys']['topic'] ?? 'unknown';
         $bodySize = strlen($proceedingJoinPoint->arguments['keys']['value'] ?? '');
 
@@ -107,7 +108,7 @@ class KafkaProducerAspect extends AbstractAspect
                             $carrier = Carrier::fromSpan($span)
                                 ->with([
                                     'publish_time' => microtime(true),
-                                    'message_id' => uniqid('kafka_', true),
+                                    'message_id' => SentryUid::generate(),
                                     'destination_name' => $this->getTopic(),
                                     'body_size' => strlen((string) $this->getValue()),
                                 ]);
