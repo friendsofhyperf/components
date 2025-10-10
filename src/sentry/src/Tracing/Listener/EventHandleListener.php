@@ -386,6 +386,9 @@ class EventHandleListener implements ListenerInterface
                     'command.arguments' => (fn () => $this->input->getArguments())->call($command),
                     'command.options' => (fn () => $this->input->getOptions())->call($command),
                 ])
+                ->setTags([
+                    'command.name' => $command->getName(),
+                ])
         );
 
         Coroutine::inCoroutine() && defer(function () use ($transaction) {
@@ -410,18 +413,17 @@ class EventHandleListener implements ListenerInterface
 
         try {
             $command = $event->getCommand();
+            /** @var int $exitCode */
             $exitCode = (fn () => $this->exitCode ?? SymfonyCommand::SUCCESS)->call($command);
 
             $transaction->setTags([
                 'command.exit_code' => (string) $exitCode,
             ]);
 
-            if ($event->getThrowable()) {
-                $transaction->setStatus(SpanStatus::internalError());
-            }
-
             $transaction->setStatus(
-                $exitCode == SymfonyCommand::SUCCESS ? SpanStatus::ok() : SpanStatus::internalError()
+                $event->getThrowable() || $exitCode !== SymfonyCommand::SUCCESS
+                ? SpanStatus::internalError()
+                : SpanStatus::ok()
             );
         } finally {
             if (! Coroutine::inCoroutine()) {
