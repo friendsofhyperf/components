@@ -76,7 +76,7 @@ class RpcAspect extends AbstractAspect
         };
 
         Context::set(static::SPAN_CONTEXT, SpanContext::make()
-            ->setOp(sprintf('%s.%s/%s', $package, $service, $path))
+            ->setOp('rpc.call')
             ->setDescription($path)
             ->setOrigin('auto.rpc')
             ->setData([
