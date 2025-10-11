@@ -1,5 +1,46 @@
 # Changelog
 
+## v3.1.69 - 2025-10-11
+
+### What's Changed
+
+* feat(sentry): add custom Monolog LogsHandler implementation by @huangdijia in https://github.com/friendsofhyperf/components/pull/909
+* feat(sentry): add integer log level support to LogsHandler by @huangdijia in https://github.com/friendsofhyperf/components/pull/910
+* chore(deps): update huangdijia/php-coding-standard to ^2.4 by @huangdijia in https://github.com/friendsofhyperf/components/pull/911
+* refactor(sentry): consolidate event listeners into unified EventListener by @huangdijia in https://github.com/friendsofhyperf/components/pull/913
+* refactor(sentry): improve span lifecycle management and code clarity by @huangdijia in https://github.com/friendsofhyperf/components/pull/914
+* feat(sentry): add filesystem operations tracking with FilesystemAspect by @huangdijia in https://github.com/friendsofhyperf/components/pull/915
+* feat(sentry): improve cache breadcrumb messages with operation-specific descriptions by @huangdijia in https://github.com/friendsofhyperf/components/pull/916
+* refactor(sentry): improve span null safety and consistency in tracing aspects by @huangdijia in https://github.com/friendsofhyperf/components/pull/918
+* Feat/sentry coroutine context propagation improvements by @huangdijia in https://github.com/friendsofhyperf/components/pull/919
+* refactor(sentry): replace SpanStarter trait with global functions by @huangdijia in https://github.com/friendsofhyperf/components/pull/920
+* refactor(sentry): centralize coroutine ID handling in tracing system by @huangdijia in https://github.com/friendsofhyperf/components/pull/921
+* feat(sentry): improve transaction handling in coroutine contexts by @huangdijia in https://github.com/friendsofhyperf/components/pull/922
+* refactor(sentry): replace Switcher class with Feature class by @huangdijia in https://github.com/friendsofhyperf/components/pull/923
+* Generate copilot-instructions.md for better GitHub Copilot integration by @Copilot in https://github.com/friendsofhyperf/components/pull/927
+* Add comprehensive unit tests for Cache Repository class by @Copilot in https://github.com/friendsofhyperf/components/pull/929
+* Add comprehensive unit test suite for lock component by @Copilot in https://github.com/friendsofhyperf/components/pull/931
+* Refactor tests/Cache/RepositoryTest.php to use Pest testing framework by @Copilot in https://github.com/friendsofhyperf/components/pull/933
+* refactor(sentry): simplify hub initialization in Tracer by @huangdijia in https://github.com/friendsofhyperf/components/pull/934
+* feat(sentry): add view rendering tracing support by @huangdijia in https://github.com/friendsofhyperf/components/pull/935
+* refactor(sentry): optimize hub management and listener priorities by @huangdijia in https://github.com/friendsofhyperf/components/pull/936
+* refactor(sentry): optimize event data setting in EventHandleListener by @huangdijia in https://github.com/friendsofhyperf/components/pull/937
+* refactor(sentry): replace try-finally with defer pattern in CoroutineAspect by @huangdijia in https://github.com/friendsofhyperf/components/pull/938
+* refactor(sentry): remove exception message and stack trace data from tracing spans by @huangdijia in https://github.com/friendsofhyperf/components/pull/939
+* refactor(sentry): optimize event flushing strategy by moving to tracing components by @huangdijia in https://github.com/friendsofhyperf/components/pull/940
+* refactor(sentry): simplify tracing data collection and remove sensitive exception details by @huangdijia in https://github.com/friendsofhyperf/components/pull/941
+* refactor(sentry): simplify transaction null checks using nullsafe operator by @huangdijia in https://github.com/friendsofhyperf/components/pull/942
+* Add extensible DTO export functionality with TypeScript and multi-format support by @Copilot in https://github.com/friendsofhyperf/components/pull/925
+* refactor(sentry): standardize message ID generation using SentryUid in tracing aspects by @huangdijia in https://github.com/friendsofhyperf/components/pull/943
+* fix(mail): add missing `scheme` configuration to SMTP mailer by @andreluizmicro in https://github.com/friendsofhyperf/components/pull/944
+
+### New Contributors
+
+* @Copilot made their first contribution in https://github.com/friendsofhyperf/components/pull/927
+* @andreluizmicro made their first contribution in https://github.com/friendsofhyperf/components/pull/944
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.68...v3.1.69
+
 ## v3.1.68 - 2025-09-18
 
 ### What's Changed
