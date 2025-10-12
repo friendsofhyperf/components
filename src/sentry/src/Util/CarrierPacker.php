@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Util;
 
+use FriendsOfHyperf\Sentry\Constants;
 use Sentry\Tracing\Span;
 use Throwable;
 
@@ -28,9 +29,9 @@ class CarrierPacker
             $carrier = json_decode($data, true, flags: JSON_THROW_ON_ERROR);
 
             return [
-                $carrier['sentry-trace'] ?? $carrier['traceparent'] ?? '',
-                $carrier['baggage'] ?? '',
-                $carrier['traceparent'] ?? '',
+                $carrier[Constants::SENTRY_TRACE] ?? $carrier[Constants::TRACEPARENT] ?? '',
+                $carrier[Constants::BAGGAGE] ?? '',
+                $carrier[Constants::TRACEPARENT] ?? '',
             ];
         } catch (Throwable) {
             return ['', '', ''];
@@ -40,9 +41,9 @@ class CarrierPacker
     public function pack(Span $span, array $extra = []): string
     {
         return json_encode([
-            'sentry-trace' => $span->toTraceparent(),
-            'baggage' => $span->toBaggage(),
-            'traceparent' => $span->toW3CTraceparent(),
+            Constants::SENTRY_TRACE => $span->toTraceparent(),
+            Constants::BAGGAGE => $span->toBaggage(),
+            Constants::TRACEPARENT => $span->toW3CTraceparent(),
             ...$extra,
         ]);
     }

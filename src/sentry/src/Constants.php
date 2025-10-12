@@ -18,4 +18,10 @@ class Constants
     public const CRON_CHECKIN_ID = 'sentry.crons.checkin_id';
 
     public const DISABLE_COROUTINE_TRACING = 'sentry.tracing.disable_coroutine_tracing';
+
+    public const SENTRY_TRACE = 'sentry-trace';
+
+    public const BAGGAGE = 'baggage';
+
+    public const TRACEPARENT = 'traceparent';
 }
