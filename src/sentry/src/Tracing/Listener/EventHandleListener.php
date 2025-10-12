@@ -381,7 +381,7 @@ class EventHandleListener implements ListenerInterface
                 ->setName($command->getName() ?: '<unnamed command>')
                 ->setOp('console.command')
                 ->setDescription($command->getDescription())
-                ->setOrigin('auto.command')
+                ->setOrigin('auto.console')
                 ->setData([
                     'command.arguments' => (fn () => $this->input->getArguments())->call($command),
                     'command.options' => (fn () => $this->input->getOptions())->call($command),
@@ -389,6 +389,7 @@ class EventHandleListener implements ListenerInterface
                 ->setTags([
                     'command.name' => $command->getName(),
                 ])
+                ->setSource(TransactionSource::task())
         );
 
         Coroutine::inCoroutine() && defer(function () use ($transaction) {
