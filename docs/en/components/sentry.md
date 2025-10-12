@@ -1,6 +1,6 @@
 # Sentry
 
-Hyperf's Sentry component.
+Sentry component for Hyperf.
 
 ## Installation
 
@@ -19,7 +19,7 @@ php bin/hyperf.php vendor:publish friendsofhyperf/sentry
 ```php
 <?php
 
-# Use it to send custom logs to Sentry
+# use it send customer log to sentry
 //\FriendsOfHyperf\Helpers\logs('project-name', 'sentry')->warning('this is a test warning issue!');
 
 return [
@@ -78,7 +78,7 @@ class Foo
 }
 ```
 
-## Distributed Tracing
+## Tracing
 
 ```env
 SENTRY_TRACING_ENABLE_AMQP=true
@@ -100,4 +100,4 @@ SENTRY_TRACING_SPANS_SQL_QUERIES=true
 ## Sentry Development Documentation
 
 - OpenTelemetry Semantic Conventions [semantic-conventions](https://github.com/open-telemetry/semantic-conventions/tree/main)
-- Sentry Span Operations Naming Conventions [span-operations](https://develop.sentry.dev/sdk/performance/span-operations/#database)
+- Sentry Span Operations Naming Standards [span-operations](https://develop.sentry.dev/sdk/performance/span-operations/#database)
