@@ -55,7 +55,7 @@ class ViewRenderAspect extends AbstractAspect
         return trace(
             fn (Scope $scope) => $proceedingJoinPoint->process(),
             SpanContext::make()
-                ->setOp('view.render')
+                ->setOp('template.render')
                 ->setDescription($template)
                 ->setOrigin('auto.view')
                 ->setData($data)

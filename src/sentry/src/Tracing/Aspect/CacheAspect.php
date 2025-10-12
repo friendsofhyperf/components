@@ -48,10 +48,13 @@ class CacheAspect extends AbstractAspect
 
         $method = $proceedingJoinPoint->methodName;
         $op = match ($method) {
-            'set', 'setMultiple' => 'cache.put',
-            'get', 'fetch', 'getMultiple' => 'cache.get',
-            'delete', 'deleteMultiple' => 'cache.remove',
-            'clear' => 'cache.flush',
+            'set' => 'cache.set_item',
+            'setMultiple' => 'cache.set_items',
+            'get', 'fetch' => 'cache.get_item',
+            'getMultiple' => 'cache.get_items',
+            'delete' => 'cache.remove_item',
+            'deleteMultiple' => 'cache.remove_items',
+            'clear' => 'cache.clear',
             default => 'cache',
         };
 

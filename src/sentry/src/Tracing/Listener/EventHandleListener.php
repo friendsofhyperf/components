@@ -205,7 +205,7 @@ class EventHandleListener implements ListenerInterface
         trace(
             fn () => null,
             SpanContext::make()
-                ->setOp('db.sql.query')
+                ->setOp('db.query')
                 ->setDescription($event->sql)
                 ->setOrigin('auto.db')
                 ->setStartTimestamp($startTimestamp)

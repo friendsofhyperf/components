@@ -94,7 +94,7 @@ class DbAspect extends AbstractAspect
                 return $result;
             },
             SpanContext::make()
-                ->setOp('db.sql.query')
+                ->setOp('db.query')
                 ->setDescription($sql)
                 ->setOrigin('auto.db')
                 ->setData($data)

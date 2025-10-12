@@ -71,9 +71,9 @@ class ElasticsearchAspect extends AbstractAspect
                 return $result;
             },
             SpanContext::make()
-                ->setOp('db.elasticsearch')
+                ->setOp('db.query')
                 ->setDescription(sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName))
-                ->setOrigin('auto.elasticsearch')
+                ->setOrigin('auto.db.elasticsearch')
                 ->setData([
                     'db.system' => 'elasticsearch',
                     'db.operation.name' => $proceedingJoinPoint->methodName,
