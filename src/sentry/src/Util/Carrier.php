@@ -24,9 +24,8 @@ use Stringable;
 
 class Carrier implements JsonSerializable, Arrayable, Stringable, Jsonable
 {
-    public function __construct(
-        protected array $data = []
-    ) {
+    public function __construct(protected array $data = [])
+    {
     }
 
     public function __toString(): string
@@ -56,9 +55,9 @@ class Carrier implements JsonSerializable, Arrayable, Stringable, Jsonable
     public static function fromSpan(Span $span): static
     {
         return new static([
-            'sentry-trace' => $span->toTraceparent(),
-            'baggage' => $span->toBaggage(),
-            'traceparent' => $span->toW3CTraceparent(),
+            Constants::SENTRY_TRACE => $span->toTraceparent(),
+            Constants::BAGGAGE => $span->toBaggage(),
+            Constants::TRACEPARENT => $span->toW3CTraceparent(),
         ]);
     }
 
@@ -66,11 +65,11 @@ class Carrier implements JsonSerializable, Arrayable, Stringable, Jsonable
     {
         // Get sentry-trace and baggage
         $sentryTrace = match (true) {
-            $request->hasHeader('sentry-trace') => $request->getHeaderLine('sentry-trace'),
-            $request->hasHeader('traceparent') => $request->getHeaderLine('traceparent'),
+            $request->hasHeader(Constants::SENTRY_TRACE) => $request->getHeaderLine(Constants::SENTRY_TRACE),
+            $request->hasHeader(Constants::TRACEPARENT) => $request->getHeaderLine(Constants::TRACEPARENT),
             default => '',
         };
-        $baggage = $request->getHeaderLine('baggage');
+        $baggage = $request->getHeaderLine(Constants::BAGGAGE);
         $container = ApplicationContext::getContainer();
 
         // Rpc Context
@@ -85,8 +84,8 @@ class Carrier implements JsonSerializable, Arrayable, Stringable, Jsonable
         }
 
         return new static([
-            'sentry-trace' => $sentryTrace,
-            'baggage' => $baggage,
+            Constants::SENTRY_TRACE => $sentryTrace,
+            Constants::BAGGAGE => $baggage,
         ]);
     }
 
@@ -99,17 +98,17 @@ class Carrier implements JsonSerializable, Arrayable, Stringable, Jsonable
 
     public function getSentryTrace(): string
     {
-        return $this->data['sentry-trace'] ?? '';
+        return $this->data[Constants::SENTRY_TRACE] ?? '';
     }
 
     public function getBaggage(): string
     {
-        return $this->data['baggage'] ?? '';
+        return $this->data[Constants::BAGGAGE] ?? '';
     }
 
     public function getTraceparent(): string
     {
-        return $this->data['traceparent'] ?? '';
+        return $this->data[Constants::TRACEPARENT] ?? '';
     }
 
     public function has(string $key): bool

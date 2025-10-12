@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
+use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -53,9 +54,8 @@ class GrpcAspect extends AbstractAspect
 
         // Inject sentry-trace header for distributed tracing
         $options['headers'] = ($options['headers'] ?? []) + [
-            'sentry-trace' => $parent->toTraceparent(),
-            'baggage' => $parent->toBaggage(),
-            'traceparent' => $parent->toW3CTraceparent(),
+            Constants::SENTRY_TRACE => $parent->toTraceparent(),
+            Constants::BAGGAGE => $parent->toBaggage(),
         ];
 
         // Inject tracing headers

@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
+use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
 use GuzzleHttp\Client;
 use GuzzleHttp\TransferStats;
@@ -75,9 +76,8 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
                 // Inject trace context
                 $options['headers'] = array_replace($options['headers'] ?? [], [
-                    'sentry-trace' => $span->toTraceparent(),
-                    'baggage' => $span->toBaggage(),
-                    'traceparent' => $span->toW3CTraceparent(),
+                    Constants::BAGGAGE => $span->toBaggage(),
+                    Constants::SENTRY_TRACE => $span->toTraceparent(),
                 ]);
 
                 // Override the headers
