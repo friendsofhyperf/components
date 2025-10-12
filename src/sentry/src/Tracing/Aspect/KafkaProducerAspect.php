@@ -80,7 +80,7 @@ class KafkaProducerAspect extends AbstractAspect
                 return $proceedingJoinPoint->process();
             },
             SpanContext::make()
-                ->setOp('queue.publish')
+                ->setOp('messaging.publish')
                 ->setDescription(sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName))
                 ->setOrigin('auto.kafka')
                 ->setData([
@@ -120,7 +120,7 @@ class KafkaProducerAspect extends AbstractAspect
                 return $proceedingJoinPoint->process();
             },
             SpanContext::make()
-                ->setOp('queue.publish')
+                ->setOp('messaging.publish')
                 ->setDescription(sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName))
                 ->setOrigin('auto.kafka')
                 ->setData(['message.count' => count($messages)])

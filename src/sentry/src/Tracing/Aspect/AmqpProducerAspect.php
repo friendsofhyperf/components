@@ -97,7 +97,7 @@ class AmqpProducerAspect extends AbstractAspect
                 return $proceedingJoinPoint->process();
             },
             SpanContext::make()
-                ->setOp('queue.publish')
+                ->setOp('messaging.publish')
                 ->setDescription(sprintf('%s::%s()', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName))
                 ->setOrigin('auto.amqp')
                 ->setData([

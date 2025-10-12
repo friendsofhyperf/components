@@ -64,10 +64,10 @@ class GrpcAspect extends AbstractAspect
         return trace(
             fn (Scope $scope) => $proceedingJoinPoint->process(),
             SpanContext::make()
-                ->setOp('grpc.client')
+                ->setOp('rpc.client')
                 ->setDescription($method)
                 ->setOrigin('auto.grpc')
-                ->setData($data)
+                ->setData(array_merge($data, ['rpc.system' => 'grpc']))
         );
     }
 }

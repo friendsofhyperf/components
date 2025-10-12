@@ -107,7 +107,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
                 return $proceedingJoinPoint->process();
             },
             SpanContext::make()
-                ->setOp('queue.publish')
+                ->setOp('messaging.publish')
                 ->setDescription($job::class)
                 ->setOrigin('auto.queue')
                 ->setData($data)
