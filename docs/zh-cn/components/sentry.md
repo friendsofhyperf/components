@@ -26,9 +26,11 @@ return [
     // ...
     'sentry' => [
         'handler' => [
-            'class' => FriendsOfHyperf\Sentry\SentryHandler::class,
+            'class' => \FriendsOfHyperf\Sentry\Monolog\LogsHandler::class,
             'constructor' => [
-                'level' => \Monolog\Level::Debug,
+                'group' => 'sentry',
+                'level' => \Sentry\Logs\LogLevel::debug(),
+                'bubble' => true,
             ],
         ],
         'formatter' => [
