@@ -221,3 +221,57 @@ When working with this codebase, prioritize:
 3. Comprehensive documentation
 4. Test coverage
 5. Performance considerations for framework components
+
+## Working with the Codebase
+
+### Tool Calling
+You have the capability to call multiple tools in a single response. For maximum efficiency, whenever you need to perform multiple independent operations, ALWAYS call tools simultaneously whenever the actions can be done in parallel rather than sequentially.
+Especially when exploring repository, searching, reading files, viewing directories, validating changes, reporting progress or replying to comments. For Example you can read 3 different files parallelly, or report progress and edit different files in parallel. Always report progress in parallel with other tool calls that follow it as it does not depend on the result of those calls.
+However, if some tool calls depend on previous calls to inform dependent values like the parameters, do NOT call these tools in parallel and instead call them sequentially.
+
+### Code Modification Principles
+- **Make minimal changes**: Only modify what's necessary to achieve the goal
+- **Preserve working code**: Never delete or modify working code unless absolutely required
+- **Surgical precision**: Change as few lines as possible
+- **Validate before committing**: Always test changes before reporting progress
+- **Use existing tools**: Leverage composer, npm, and other ecosystem tools rather than manual changes
+
+### Testing Strategy
+- Run existing tests before making changes to understand baseline
+- Create focused tests for new functionality
+- Use PHPUnit following Hyperf testing patterns
+- Mock external dependencies appropriately
+- Run tests iteratively after each change
+- Don't remove or edit unrelated tests
+
+### Error Handling
+- Check for and handle PHP errors appropriately
+- Use proper exception handling following Hyperf conventions
+- Log errors using Hyperf's logging system
+- Provide meaningful error messages
+- Don't suppress errors without good reason
+
+### File Operations
+- Always use absolute paths when referring to repository files
+- Use `view` to examine files before modifying
+- Use `str_replace` for precise, targeted edits
+- Create new files only when necessary
+- Never recreate existing files (use `str_replace` instead)
+- Use `.gitignore` to exclude build artifacts and dependencies
+
+### Build and Test Commands
+Common commands for this repository:
+- `composer install` - Install PHP dependencies
+- `composer test` - Run all tests (lint, unit, types)
+- `composer cs-fix` - Run PHP-CS-Fixer
+- `composer analyse` - Run PHPStan analysis
+- `cd docs && pnpm install` - Install documentation dependencies
+- `cd docs && pnpm run docs:dev` - Run documentation dev server
+- `cd docs && pnpm run docs:build` - Build documentation
+
+### Reporting Progress
+- Use `report_progress` early to outline your plan
+- Report progress after completing meaningful units of work
+- Update the checklist to show progress
+- Review committed files to ensure scope is minimal
+- Commit messages should be clear and concise
