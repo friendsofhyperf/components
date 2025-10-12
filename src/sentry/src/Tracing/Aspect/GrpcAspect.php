@@ -41,8 +41,9 @@ class GrpcAspect extends AbstractAspect
         $method = $proceedingJoinPoint->arguments['keys']['method'];
         $options = $proceedingJoinPoint->arguments['keys']['options'];
         $data = [
-            'grpc.method' => $method,
-            'grpc.options' => $options,
+            'rpc.system' => 'grpc',
+            'rpc.method' => $method,
+            'rpc.options' => $options,
         ];
 
         $parent = SentrySdk::getCurrentHub()->getSpan();
@@ -64,9 +65,9 @@ class GrpcAspect extends AbstractAspect
         return trace(
             fn (Scope $scope) => $proceedingJoinPoint->process(),
             SpanContext::make()
-                ->setOp('grpc.client')
+                ->setOp('rpc.client')
                 ->setDescription($method)
-                ->setOrigin('auto.grpc')
+                ->setOrigin('auto.rpc')
                 ->setData($data)
         );
     }
