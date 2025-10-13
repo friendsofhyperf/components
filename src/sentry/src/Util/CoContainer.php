@@ -63,6 +63,11 @@ class CoContainer
         return $value;
     }
 
+    public static function del(object $key): void
+    {
+        unset(self::getContainer()[$key]);
+    }
+
     private static function getContainer(): WeakMap
     {
         return Context::get(self::CONTEXT_KEY, fn () => new WeakMap());
