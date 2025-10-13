@@ -98,7 +98,7 @@ class CoroutineAspect extends AbstractAspect
                 return $proceedingJoinPoint->process();
             },
             SpanContext::make()
-                ->setOp('coroutine.aspect')
+                ->setOp('coroutine.create')
                 ->setDescription($callingOnFunction)
                 ->setOrigin('auto.coroutine')
         );
