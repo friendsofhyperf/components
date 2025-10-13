@@ -70,6 +70,6 @@ class CoContainer
 
     private static function getContainer(): WeakMap
     {
-        return Context::get(self::CONTEXT_KEY, fn () => new WeakMap());
+        return Context::getOrSet(self::CONTEXT_KEY, fn () => new WeakMap());
     }
 }
