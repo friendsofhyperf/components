@@ -396,6 +396,10 @@ class EventHandleListener implements ListenerInterface
             );
         }
 
+        if (! $parentSpan->getSampled()) {
+            return;
+        }
+
         $scope = SentrySdk::getCurrentHub()->pushScope();
         $span = $parentSpan->startChild(
             SpanContext::make()
