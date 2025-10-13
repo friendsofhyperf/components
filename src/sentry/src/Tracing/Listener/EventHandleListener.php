@@ -394,6 +394,8 @@ class EventHandleListener implements ListenerInterface
                     ])
                     ->setSource(TransactionSource::task())
             );
+
+            CoContainer::set($command, $parentSpan);
         }
 
         if (! $parentSpan->getSampled()) {
@@ -414,8 +416,6 @@ class EventHandleListener implements ListenerInterface
                 ])
         );
         $scope->setSpan($span);
-
-        CoContainer::set($command, $parentSpan);
     }
 
     protected function handleCommandFinished(CommandEvent\AfterExecute $event): void
@@ -436,8 +436,8 @@ class EventHandleListener implements ListenerInterface
                 'command.exit_code' => (string) $exitCode,
             ])->setStatus(
                 $event->getThrowable() || $exitCode !== SymfonyCommand::SUCCESS
-                    ? SpanStatus::internalError()
-                    : SpanStatus::ok()
+                ? SpanStatus::internalError()
+                : SpanStatus::ok()
             );
         } finally {
             $span->finish();
@@ -447,6 +447,7 @@ class EventHandleListener implements ListenerInterface
             $parentSpan = CoContainer::pull($command);
 
             if ($parentSpan instanceof Span) {
+                $parentSpan->finish();
                 SentrySdk::getCurrentHub()->setSpan($parentSpan);
                 SentrySdk::getCurrentHub()->popScope();
             }
