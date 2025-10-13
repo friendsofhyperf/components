@@ -394,13 +394,13 @@ class EventHandleListener implements ListenerInterface
                     ])
                     ->setSource(TransactionSource::task())
             );
-
-            CoContainer::set($command, $parentSpan);
         }
 
         if (! $parentSpan->getSampled()) {
             return;
         }
+
+        CoContainer::set($command, $parentSpan);
 
         $scope = SentrySdk::getCurrentHub()->pushScope();
         $span = $parentSpan->startChild(
