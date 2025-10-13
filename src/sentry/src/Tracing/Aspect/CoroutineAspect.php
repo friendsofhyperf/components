@@ -105,7 +105,7 @@ class CoroutineAspect extends AbstractAspect
             });
 
             return trace(
-                $callable,
+                static fn () => $callable(),
                 SpanContext::make()
                     ->setOp('coroutine.run')
                     ->setDescription($callingOnFunction)
