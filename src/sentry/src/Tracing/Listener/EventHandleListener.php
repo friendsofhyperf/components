@@ -16,6 +16,7 @@ use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Util\Carrier;
+use FriendsOfHyperf\Sentry\Util\CoContainer;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
 use FriendsOfHyperf\Support\RedisCommand;
 use Hyperf\Amqp\Event as AmqpEvent;
@@ -43,6 +44,7 @@ use PhpAmqpLib\Wire\AMQPTable;
 use Psr\Container\ContainerInterface;
 use Sentry\SentrySdk;
 use Sentry\State\Scope;
+use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
@@ -376,12 +378,36 @@ class EventHandleListener implements ListenerInterface
 
         $command = $event->getCommand();
 
-        $transaction = startTransaction(
-            TransactionContext::make()
-                ->setName($command->getName() ?: '<unnamed command>')
-                ->setOp('console.command')
-                ->setDescription($command->getDescription())
-                ->setOrigin('auto.console')
+        if (! $parentSpan = SentrySdk::getCurrentHub()->getSpan()) {
+            $parentSpan = startTransaction(
+                TransactionContext::make()
+                    ->setName($command->getName() ?: '<unnamed command>')
+                    ->setOp('console.command')
+                    ->setDescription($command->getDescription())
+                    ->setOrigin('auto.console')
+                    ->setData([
+                        'command.arguments' => (fn () => $this->input->getArguments())->call($command),
+                        'command.options' => (fn () => $this->input->getOptions())->call($command),
+                    ])
+                    ->setTags([
+                        'command.name' => $command->getName(),
+                    ])
+                    ->setSource(TransactionSource::task())
+            );
+
+            CoContainer::set($command, $parentSpan);
+        }
+
+        if (! $parentSpan->getSampled()) {
+            CoContainer::del($command);
+            return;
+        }
+
+        $scope = SentrySdk::getCurrentHub()->pushScope();
+        $span = $parentSpan->startChild(
+            SpanContext::make()
+                ->setOp('console.command.execute')
+                ->setDescription($command->getName() ?: $command->getDescription())
                 ->setData([
                     'command.arguments' => (fn () => $this->input->getArguments())->call($command),
                     'command.options' => (fn () => $this->input->getOptions())->call($command),
@@ -389,48 +415,48 @@ class EventHandleListener implements ListenerInterface
                 ->setTags([
                     'command.name' => $command->getName(),
                 ])
-                ->setSource(TransactionSource::task())
         );
-
-        Coroutine::inCoroutine() && defer(function () use ($transaction) {
-            // Make sure the transaction is finished after the command is executed
-            SentrySdk::getCurrentHub()->setSpan($transaction);
-
-            // Finish transaction
-            $transaction->finish();
-
-            // Flush events
-            Integration::flushEvents();
-        });
+        $scope->setSpan($span);
     }
 
     protected function handleCommandFinished(CommandEvent\AfterExecute $event): void
     {
-        $transaction = SentrySdk::getCurrentHub()->getTransaction();
+        $span = SentrySdk::getCurrentHub()->getSpan();
 
-        if (! $transaction?->getSampled()) {
+        if (! $span instanceof Span) {
             return;
         }
 
+        $command = $event->getCommand();
+        $sampled = $span->getSampled();
+
         try {
-            $command = $event->getCommand();
+            if (! $sampled) {
+                return;
+            }
+
             /** @var int $exitCode */
             $exitCode = (fn () => $this->exitCode ?? SymfonyCommand::SUCCESS)->call($command);
 
-            $transaction->setTags([
+            $span->setTags([
                 'command.exit_code' => (string) $exitCode,
-            ]);
-
-            $transaction->setStatus(
+            ])->setStatus(
                 $event->getThrowable() || $exitCode !== SymfonyCommand::SUCCESS
                 ? SpanStatus::internalError()
                 : SpanStatus::ok()
             );
         } finally {
-            if (! Coroutine::inCoroutine()) {
-                SentrySdk::getCurrentHub()->setSpan($transaction);
+            if ($sampled) {
+                $span->finish();
+                Integration::flushEvents();
+            }
 
-                $transaction->finish();
+            $parentSpan = CoContainer::pull($command);
+
+            if ($parentSpan instanceof Span) {
+                $parentSpan->finish();
+                SentrySdk::getCurrentHub()->setSpan($parentSpan);
+                SentrySdk::getCurrentHub()->popScope();
             }
         }
     }

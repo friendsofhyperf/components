@@ -18,11 +18,11 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Engine\Coroutine as Co;
 use Sentry\SentrySdk;
+use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
-use Sentry\Tracing\SpanStatus;
-use Throwable;
 
 use function FriendsOfHyperf\Sentry\startTransaction;
+use function FriendsOfHyperf\Sentry\trace;
 use function Hyperf\Coroutine\defer;
 use function Sentry\continueTrace;
 
@@ -52,76 +52,55 @@ class CoroutineAspect extends AbstractAspect
 
         $callingOnFunction = CoroutineBacktraceHelper::foundCallingOnFunction();
 
-        // Only trace the top-level coroutine creation.
-        if (! $callingOnFunction) {
-            return $proceedingJoinPoint->process();
-        }
+        return trace(
+            function (Scope $scope) use ($proceedingJoinPoint, $callingOnFunction) {
+                if ($callingOnFunction && $span = $scope->getSpan()) {
+                    $cid = Co::id();
+                    $keys = $this->keys;
+                    $callable = $proceedingJoinPoint->arguments['keys']['callable'];
 
-        // Get the current transaction from the current scope.
-        $transaction = SentrySdk::getCurrentHub()->getTransaction();
+                    // Transfer the Sentry context to the new coroutine.
+                    $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $span, $callingOnFunction, $cid, $keys) {
+                        SentrySdk::init(); // Ensure Sentry is initialized in the new coroutine.
 
-        // If there's no active transaction, skip tracing.
-        if (! $transaction?->getSampled()) {
-            return $proceedingJoinPoint->process();
-        }
+                        $from = Co::getContextFor($cid);
+                        $current = Co::getContextFor();
 
-        // Start a span for the coroutine creation.
-        $parent = $transaction->startChild(
+                        foreach ($keys as $key) {
+                            if (isset($from[$key]) && ! isset($current[$key])) {
+                                $current[$key] = $from[$key];
+                            }
+                        }
+
+                        $transaction = startTransaction(
+                            continueTrace($span->toTraceparent(), $span->toBaggage())
+                                ->setName('coroutine')
+                                ->setOp('coroutine.prepare')
+                                ->setDescription($callingOnFunction)
+                                ->setOrigin('auto.coroutine')
+                        );
+
+                        defer(function () use ($transaction) {
+                            $transaction->finish();
+                            Integration::flushEvents();
+                        });
+
+                        return trace(
+                            fn () => $callable(),
+                            SpanContext::make()
+                                ->setOp('coroutine.execute')
+                                ->setDescription($callingOnFunction)
+                                ->setOrigin('auto.coroutine')
+                        );
+                    };
+                }
+
+                return $proceedingJoinPoint->process();
+            },
             SpanContext::make()
                 ->setOp('coroutine.create')
                 ->setDescription($callingOnFunction)
                 ->setOrigin('auto.coroutine')
-                ->setData(['coroutine.id' => Co::id()])
         );
-        SentrySdk::getCurrentHub()->setSpan($parent);
-
-        $cid = Co::id();
-        $keys = $this->keys;
-        $callable = $proceedingJoinPoint->arguments['keys']['callable'];
-
-        // Transfer the Sentry context to the new coroutine.
-        $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent, $callingOnFunction, $cid, $keys) {
-            $from = Co::getContextFor($cid);
-            $current = Co::getContextFor();
-
-            foreach ($keys as $key) {
-                if (isset($from[$key]) && ! isset($current[$key])) {
-                    $current[$key] = $from[$key];
-                }
-            }
-
-            $coTransaction = startTransaction(
-                continueTrace($parent->toTraceparent(), $parent->toBaggage())
-                    ->setName('coroutine')
-                    ->setOp('coroutine.execute')
-                    ->setDescription($callingOnFunction)
-                    ->setOrigin('auto.coroutine')
-            );
-
-            defer(function () use ($coTransaction) {
-                // Set the transaction on the current scope to ensure it's the active one.
-                SentrySdk::getCurrentHub()->setSpan($coTransaction);
-
-                // Finish the transaction when the coroutine ends.
-                $coTransaction->finish();
-
-                // Flush events
-                Integration::flushEvents();
-            });
-
-            try {
-                $callable();
-            } catch (Throwable $exception) {
-                $coTransaction->setStatus(SpanStatus::internalError());
-
-                throw $exception;
-            }
-        };
-
-        try {
-            return $proceedingJoinPoint->process();
-        } finally {
-            $parent->finish();
-        }
     }
 }
