@@ -64,18 +64,13 @@ class CoroutineAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        // Create a new scope for the coroutine.
-        $scope = SentrySdk::getCurrentHub()->pushScope();
-
         // Start a span for the coroutine creation.
-        $scope->setSpan(
-            $span = $parentSpan->startChild(
-                SpanContext::make()
-                    ->setOp('coroutine.create')
-                    ->setDescription($callingOnFunction)
-                    ->setOrigin('auto.coroutine')
-                    ->setData(['coroutine.id' => Co::id()])
-            )
+        $span = $parentSpan->startChild(
+            SpanContext::make()
+                ->setOp('coroutine.create')
+                ->setDescription($callingOnFunction)
+                ->setOrigin('auto.coroutine')
+                ->setData(['coroutine.id' => Co::id()])
         );
 
         $cid = Co::id();
@@ -122,7 +117,6 @@ class CoroutineAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         } finally {
             $span->finish();
-            SentrySdk::getCurrentHub()->popScope();
             SentrySdk::getCurrentHub()->setSpan($parentSpan);
         }
     }
