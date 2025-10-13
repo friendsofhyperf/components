@@ -394,6 +394,7 @@ class EventHandleListener implements ListenerInterface
                     ->setSource(TransactionSource::task())
             );
         } else {
+            $scope = SentrySdk::getCurrentHub()->pushScope();
             $span = $currentSpan->startChild(
                 SpanContext::make()
                     ->setOp('console.command')
@@ -406,22 +407,8 @@ class EventHandleListener implements ListenerInterface
                         'command.name' => $command->getName(),
                     ])
             );
-
-            SentrySdk::getCurrentHub()->setSpan($span);
+            $scope->setSpan($span);
         }
-
-        Coroutine::inCoroutine() && defer(function () use ($span, $currentSpan) {
-            // Make sure the transaction is finished after the command is executed
-            SentrySdk::getCurrentHub()->setSpan($span);
-
-            // Finish transaction
-            $span->finish();
-
-            // Flush events
-            Integration::flushEvents();
-
-            isset($currentSpan) && SentrySdk::getCurrentHub()->setSpan($currentSpan);
-        });
     }
 
     protected function handleCommandFinished(CommandEvent\AfterExecute $event): void
@@ -447,11 +434,13 @@ class EventHandleListener implements ListenerInterface
                 : SpanStatus::ok()
             );
         } finally {
-            if (! Coroutine::inCoroutine()) {
-                SentrySdk::getCurrentHub()->setSpan($span);
+            SentrySdk::getCurrentHub()->setSpan($span);
 
-                $span->finish();
-            }
+            $span->finish();
+
+            Integration::flushEvents();
+
+            SentrySdk::getCurrentHub()->popScope();
         }
     }
 
