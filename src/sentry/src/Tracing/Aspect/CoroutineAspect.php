@@ -19,10 +19,9 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Engine\Coroutine as Co;
 use Sentry\SentrySdk;
 use Sentry\Tracing\SpanContext;
-use Sentry\Tracing\SpanStatus;
-use Throwable;
 
 use function FriendsOfHyperf\Sentry\startTransaction;
+use function FriendsOfHyperf\Sentry\trace;
 use function Hyperf\Coroutine\defer;
 use function Sentry\continueTrace;
 
@@ -110,13 +109,13 @@ class CoroutineAspect extends AbstractAspect
                 Integration::flushEvents();
             });
 
-            try {
-                $callable();
-            } catch (Throwable $exception) {
-                $transaction->setStatus(SpanStatus::internalError());
-
-                throw $exception;
-            }
+            return trace(
+                $callable,
+                SpanContext::make()
+                    ->setOp('coroutine.run')
+                    ->setDescription($callingOnFunction)
+                    ->setOrigin('auto.coroutine')
+            );
         };
 
         try {
