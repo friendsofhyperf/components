@@ -375,40 +375,60 @@ class EventHandleListener implements ListenerInterface
         }
 
         $command = $event->getCommand();
+        $currentSpan = SentrySdk::getCurrentHub()->getSpan();
 
-        $transaction = startTransaction(
-            TransactionContext::make()
-                ->setName($command->getName() ?: '<unnamed command>')
-                ->setOp('console.command')
-                ->setDescription($command->getDescription())
-                ->setOrigin('auto.console')
-                ->setData([
-                    'command.arguments' => (fn () => $this->input->getArguments())->call($command),
-                    'command.options' => (fn () => $this->input->getOptions())->call($command),
-                ])
-                ->setTags([
-                    'command.name' => $command->getName(),
-                ])
-                ->setSource(TransactionSource::task())
-        );
+        if ($currentSpan === null) {
+            $span = startTransaction(
+                TransactionContext::make()
+                    ->setName($command->getName() ?: '<unnamed command>')
+                    ->setOp('console.command')
+                    ->setDescription($command->getDescription())
+                    ->setOrigin('auto.console')
+                    ->setData([
+                        'command.arguments' => (fn () => $this->input->getArguments())->call($command),
+                        'command.options' => (fn () => $this->input->getOptions())->call($command),
+                    ])
+                    ->setTags([
+                        'command.name' => $command->getName(),
+                    ])
+                    ->setSource(TransactionSource::task())
+            );
+        } else {
+            $span = $currentSpan->startChild(
+                SpanContext::make()
+                    ->setOp('console.command')
+                    ->setDescription($command->getName() ?: $command->getDescription())
+                    ->setData([
+                        'command.arguments' => (fn () => $this->input->getArguments())->call($command),
+                        'command.options' => (fn () => $this->input->getOptions())->call($command),
+                    ])
+                    ->setTags([
+                        'command.name' => $command->getName(),
+                    ])
+            );
 
-        Coroutine::inCoroutine() && defer(function () use ($transaction) {
+            SentrySdk::getCurrentHub()->setSpan($span);
+        }
+
+        Coroutine::inCoroutine() && defer(function () use ($span, $currentSpan) {
             // Make sure the transaction is finished after the command is executed
-            SentrySdk::getCurrentHub()->setSpan($transaction);
+            SentrySdk::getCurrentHub()->setSpan($span);
 
             // Finish transaction
-            $transaction->finish();
+            $span->finish();
 
             // Flush events
             Integration::flushEvents();
+
+            isset($currentSpan) && SentrySdk::getCurrentHub()->setSpan($currentSpan);
         });
     }
 
     protected function handleCommandFinished(CommandEvent\AfterExecute $event): void
     {
-        $transaction = SentrySdk::getCurrentHub()->getTransaction();
+        $span = SentrySdk::getCurrentHub()->getSpan();
 
-        if (! $transaction?->getSampled()) {
+        if (! $span?->getSampled()) {
             return;
         }
 
@@ -417,20 +437,20 @@ class EventHandleListener implements ListenerInterface
             /** @var int $exitCode */
             $exitCode = (fn () => $this->exitCode ?? SymfonyCommand::SUCCESS)->call($command);
 
-            $transaction->setTags([
+            $span->setTags([
                 'command.exit_code' => (string) $exitCode,
             ]);
 
-            $transaction->setStatus(
+            $span->setStatus(
                 $event->getThrowable() || $exitCode !== SymfonyCommand::SUCCESS
                 ? SpanStatus::internalError()
                 : SpanStatus::ok()
             );
         } finally {
             if (! Coroutine::inCoroutine()) {
-                SentrySdk::getCurrentHub()->setSpan($transaction);
+                SentrySdk::getCurrentHub()->setSpan($span);
 
-                $transaction->finish();
+                $span->finish();
             }
         }
     }
