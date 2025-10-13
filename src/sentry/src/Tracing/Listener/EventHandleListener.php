@@ -375,9 +375,9 @@ class EventHandleListener implements ListenerInterface
         }
 
         $command = $event->getCommand();
-        $currentSpan = SentrySdk::getCurrentHub()->getSpan();
+        $parentSpan = SentrySdk::getCurrentHub()->getSpan();
 
-        if ($currentSpan === null) {
+        if ($parentSpan === null) {
             $span = startTransaction(
                 TransactionContext::make()
                     ->setName($command->getName() ?: '<unnamed command>')
@@ -395,7 +395,7 @@ class EventHandleListener implements ListenerInterface
             );
         } else {
             $scope = SentrySdk::getCurrentHub()->pushScope();
-            $span = $currentSpan->startChild(
+            $span = $parentSpan->startChild(
                 SpanContext::make()
                     ->setOp('console.command')
                     ->setDescription($command->getName() ?: $command->getDescription())
@@ -434,11 +434,11 @@ class EventHandleListener implements ListenerInterface
                 : SpanStatus::ok()
             );
         } finally {
-            SentrySdk::getCurrentHub()->setSpan($span);
-
             $span->finish();
 
             Integration::flushEvents();
+
+            // SentrySdk::getCurrentHub()->setSpan($parentSpan);
 
             SentrySdk::getCurrentHub()->popScope();
         }
