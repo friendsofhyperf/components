@@ -57,30 +57,33 @@ class CoroutineAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
-        // Get the current transaction from the current scope.
-        $transaction = SentrySdk::getCurrentHub()->getTransaction();
+        // Get the current span from the current scope.
+        $parentSpan = SentrySdk::getCurrentHub()->getSpan();
 
-        // If there's no active transaction, skip tracing.
-        if (! $transaction?->getSampled()) {
+        // If there's no active span, skip tracing.
+        if (! $parentSpan?->getSampled()) {
             return $proceedingJoinPoint->process();
         }
 
+        // Create a new scope for the coroutine.
+        $scope = SentrySdk::getCurrentHub()->pushScope();
+
         // Start a span for the coroutine creation.
-        $parent = $transaction->startChild(
+        $span = $parentSpan->startChild(
             SpanContext::make()
                 ->setOp('coroutine.create')
                 ->setDescription($callingOnFunction)
                 ->setOrigin('auto.coroutine')
                 ->setData(['coroutine.id' => Co::id()])
         );
-        SentrySdk::getCurrentHub()->setSpan($parent);
+        $scope->setSpan($span);
 
         $cid = Co::id();
         $keys = $this->keys;
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
 
         // Transfer the Sentry context to the new coroutine.
-        $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $parent, $callingOnFunction, $cid, $keys) {
+        $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $span, $callingOnFunction, $cid, $keys) {
             $from = Co::getContextFor($cid);
             $current = Co::getContextFor();
 
@@ -91,7 +94,7 @@ class CoroutineAspect extends AbstractAspect
             }
 
             $coTransaction = startTransaction(
-                continueTrace($parent->toTraceparent(), $parent->toBaggage())
+                continueTrace($span->toTraceparent(), $span->toBaggage())
                     ->setName('coroutine')
                     ->setOp('coroutine.execute')
                     ->setDescription($callingOnFunction)
@@ -121,7 +124,8 @@ class CoroutineAspect extends AbstractAspect
         try {
             return $proceedingJoinPoint->process();
         } finally {
-            $parent->finish();
+            $span->finish();
+            SentrySdk::getCurrentHub()->popScope();
         }
     }
 }
