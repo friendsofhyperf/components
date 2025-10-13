@@ -16,6 +16,7 @@ use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Util\Carrier;
+use FriendsOfHyperf\Sentry\Util\CoContainer;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
 use FriendsOfHyperf\Support\RedisCommand;
 use Hyperf\Amqp\Event as AmqpEvent;
@@ -43,6 +44,7 @@ use PhpAmqpLib\Wire\AMQPTable;
 use Psr\Container\ContainerInterface;
 use Sentry\SentrySdk;
 use Sentry\State\Scope;
+use Sentry\Tracing\Span;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
 use Sentry\Tracing\TransactionContext;
@@ -408,6 +410,7 @@ class EventHandleListener implements ListenerInterface
                     ])
             );
             $scope->setSpan($span);
+            CoContainer::set($command, $parentSpan);
         }
     }
 
@@ -419,8 +422,9 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
+        $command = $event->getCommand();
+
         try {
-            $command = $event->getCommand();
             /** @var int $exitCode */
             $exitCode = (fn () => $this->exitCode ?? SymfonyCommand::SUCCESS)->call($command);
 
@@ -438,7 +442,10 @@ class EventHandleListener implements ListenerInterface
 
             Integration::flushEvents();
 
-            // SentrySdk::getCurrentHub()->setSpan($parentSpan); // Needed?
+            $parentSpan = CoContainer::get($command);
+            if ($parentSpan !== null && $parentSpan instanceof Span) {
+                SentrySdk::getCurrentHub()->setSpan($parentSpan);
+            }
 
             SentrySdk::getCurrentHub()->popScope();
         }
