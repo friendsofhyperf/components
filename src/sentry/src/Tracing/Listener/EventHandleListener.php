@@ -405,7 +405,7 @@ class EventHandleListener implements ListenerInterface
         $scope = SentrySdk::getCurrentHub()->pushScope();
         $span = $parentSpan->startChild(
             SpanContext::make()
-                ->setOp('console.command')
+                ->setOp('console.command.execute')
                 ->setDescription($command->getName() ?: $command->getDescription())
                 ->setData([
                     'command.arguments' => (fn () => $this->input->getArguments())->call($command),
