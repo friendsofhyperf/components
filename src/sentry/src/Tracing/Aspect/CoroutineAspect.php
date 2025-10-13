@@ -122,8 +122,8 @@ class CoroutineAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         } finally {
             $span->finish();
-            SentrySdk::getCurrentHub()->setSpan($parentSpan);
             SentrySdk::getCurrentHub()->popScope();
+            SentrySdk::getCurrentHub()->setSpan($parentSpan);
         }
     }
 }
