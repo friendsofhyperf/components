@@ -49,7 +49,7 @@ class CoContainer
      * @param TKey $key
      * @return null|TValue
      */
-    public static function pull(?object $key = null): ?object
+    public static function pull(object $key): ?object
     {
         $container = self::getContainer();
 
