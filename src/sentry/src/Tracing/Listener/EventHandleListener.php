@@ -435,12 +435,10 @@ class EventHandleListener implements ListenerInterface
 
             $span->setTags([
                 'command.exit_code' => (string) $exitCode,
-            ]);
-
-            $span->setStatus(
+            ])->setStatus(
                 $event->getThrowable() || $exitCode !== SymfonyCommand::SUCCESS
-                ? SpanStatus::internalError()
-                : SpanStatus::ok()
+                    ? SpanStatus::internalError()
+                    : SpanStatus::ok()
             );
         } finally {
             $span->finish();
