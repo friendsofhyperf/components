@@ -377,10 +377,9 @@ class EventHandleListener implements ListenerInterface
         }
 
         $command = $event->getCommand();
-        $parentSpan = SentrySdk::getCurrentHub()->getSpan();
 
-        if ($parentSpan === null) {
-            $span = startTransaction(
+        if (! $parentSpan = SentrySdk::getCurrentHub()->getSpan()) {
+            $parentSpan = startTransaction(
                 TransactionContext::make()
                     ->setName($command->getName() ?: '<unnamed command>')
                     ->setOp('console.command')
@@ -395,24 +394,24 @@ class EventHandleListener implements ListenerInterface
                     ])
                     ->setSource(TransactionSource::task())
             );
-        } else {
-            $scope = SentrySdk::getCurrentHub()->pushScope();
-            $span = $parentSpan->startChild(
-                SpanContext::make()
-                    ->setOp('console.command')
-                    ->setDescription($command->getName() ?: $command->getDescription())
-                    ->setData([
-                        'command.arguments' => (fn () => $this->input->getArguments())->call($command),
-                        'command.options' => (fn () => $this->input->getOptions())->call($command),
-                    ])
-                    ->setTags([
-                        'command.name' => $command->getName(),
-                    ])
-            );
-            $scope->setSpan($span);
-
-            CoContainer::set($command, $parentSpan);
         }
+
+        $scope = SentrySdk::getCurrentHub()->pushScope();
+        $span = $parentSpan->startChild(
+            SpanContext::make()
+                ->setOp('console.command')
+                ->setDescription($command->getName() ?: $command->getDescription())
+                ->setData([
+                    'command.arguments' => (fn () => $this->input->getArguments())->call($command),
+                    'command.options' => (fn () => $this->input->getOptions())->call($command),
+                ])
+                ->setTags([
+                    'command.name' => $command->getName(),
+                ])
+        );
+        $scope->setSpan($span);
+
+        CoContainer::set($command, $parentSpan);
     }
 
     protected function handleCommandFinished(CommandEvent\AfterExecute $event): void
@@ -442,6 +441,7 @@ class EventHandleListener implements ListenerInterface
             Integration::flushEvents();
 
             $parentSpan = CoContainer::pull($command);
+
             if ($parentSpan instanceof Span) {
                 SentrySdk::getCurrentHub()->setSpan($parentSpan);
                 SentrySdk::getCurrentHub()->popScope();
