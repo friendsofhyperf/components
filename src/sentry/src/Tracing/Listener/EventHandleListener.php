@@ -422,13 +422,18 @@ class EventHandleListener implements ListenerInterface
     {
         $span = SentrySdk::getCurrentHub()->getSpan();
 
-        if (! $span?->getSampled()) {
+        if (! $span instanceof Span) {
             return;
         }
 
         $command = $event->getCommand();
+        $sampled = $span->getSampled();
 
         try {
+            if (! $sampled) {
+                return;
+            }
+
             /** @var int $exitCode */
             $exitCode = (fn () => $this->exitCode ?? SymfonyCommand::SUCCESS)->call($command);
 
@@ -440,14 +445,14 @@ class EventHandleListener implements ListenerInterface
                 : SpanStatus::ok()
             );
         } finally {
-            $span->finish();
-
-            Integration::flushEvents();
+            if ($sampled) {
+                $span->finish();
+                Integration::flushEvents();
+            }
 
             $parentSpan = CoContainer::pull($command);
 
             if ($parentSpan instanceof Span) {
-                $parentSpan->finish();
                 SentrySdk::getCurrentHub()->setSpan($parentSpan);
                 SentrySdk::getCurrentHub()->popScope();
             }
