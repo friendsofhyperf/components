@@ -399,6 +399,7 @@ class EventHandleListener implements ListenerInterface
         }
 
         if (! $parentSpan->getSampled()) {
+            CoContainer::del($command);
             return;
         }
 
