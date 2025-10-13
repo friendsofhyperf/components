@@ -79,6 +79,8 @@ class CoroutineAspect extends AbstractAspect
 
         // Transfer the Sentry context to the new coroutine.
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $span, $callingOnFunction, $cid, $keys) {
+            SentrySdk::init();
+
             $from = Co::getContextFor($cid);
             $current = Co::getContextFor();
 
