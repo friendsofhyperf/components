@@ -454,8 +454,8 @@ class EventHandleListener implements ListenerInterface
             $parentSpan = CoContainer::pull($command);
 
             if ($parentSpan instanceof Span) {
-                $parentSpan->finish();
                 SentrySdk::getCurrentHub()->setSpan($parentSpan);
+                $parentSpan->finish();
                 SentrySdk::getCurrentHub()->popScope();
             }
         }
