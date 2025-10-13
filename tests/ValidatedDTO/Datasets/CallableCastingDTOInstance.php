@@ -11,12 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tests\ValidatedDTO\Datasets;
 
+use FriendsOfHyperf\ValidatedDTO\Attributes\Cast;
 use FriendsOfHyperf\ValidatedDTO\Casting\DTOCast;
 use FriendsOfHyperf\ValidatedDTO\Exception\CastException;
 use FriendsOfHyperf\ValidatedDTO\SimpleDTO;
 
 class CallableCastingDTOInstance extends SimpleDTO
 {
+    #[Cast(DTOCast::class, SimpleNameDTO::class)]
     public SimpleNameDTO $name;
 
     public ?int $age = null;
@@ -29,7 +31,6 @@ class CallableCastingDTOInstance extends SimpleDTO
     protected function casts(): array
     {
         return [
-            'name' => new DTOCast(SimpleNameDTO::class),
             'age' => function (string $property, mixed $value) {
                 if (! is_numeric($value)) {
                     throw new CastException($property);

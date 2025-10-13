@@ -20,6 +20,7 @@ use FriendsOfHyperf\ValidatedDTO\Attributes\Map;
 use FriendsOfHyperf\ValidatedDTO\Attributes\Rules;
 use FriendsOfHyperf\ValidatedDTO\Casting\ArrayCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\Castable;
+use FriendsOfHyperf\ValidatedDTO\Casting\DTOCast;
 use FriendsOfHyperf\ValidatedDTO\Casting\EnumCast;
 use FriendsOfHyperf\ValidatedDTO\Concerns\DataResolver;
 use FriendsOfHyperf\ValidatedDTO\Concerns\DataTransformer;
@@ -324,9 +325,10 @@ abstract class SimpleDTO implements BaseDTO, CastsAttributes, JsonSerializable
                 continue;
             }
 
-            $param = $cast->type === EnumCast::class
-                ? $cast->param
-                : new $cast->param();
+            $param = match (true) {
+                in_array($cast->type, [EnumCast::class, DTOCast::class]) => $cast->param,
+                default => new $cast->param(),
+            };
 
             $casts[$property] = new $cast->type($param);
         }
