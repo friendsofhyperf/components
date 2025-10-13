@@ -69,14 +69,15 @@ class CoroutineAspect extends AbstractAspect
         $scope = SentrySdk::getCurrentHub()->pushScope();
 
         // Start a span for the coroutine creation.
-        $span = $parentSpan->startChild(
-            SpanContext::make()
-                ->setOp('coroutine.create')
-                ->setDescription($callingOnFunction)
-                ->setOrigin('auto.coroutine')
-                ->setData(['coroutine.id' => Co::id()])
+        $scope->setSpan(
+            $span = $parentSpan->startChild(
+                SpanContext::make()
+                    ->setOp('coroutine.create')
+                    ->setDescription($callingOnFunction)
+                    ->setOrigin('auto.coroutine')
+                    ->setData(['coroutine.id' => Co::id()])
+            )
         );
-        $scope->setSpan($span);
 
         $cid = Co::id();
         $keys = $this->keys;
@@ -93,7 +94,7 @@ class CoroutineAspect extends AbstractAspect
                 }
             }
 
-            $coTransaction = startTransaction(
+            $transaction = startTransaction(
                 continueTrace($span->toTraceparent(), $span->toBaggage())
                     ->setName('coroutine')
                     ->setOp('coroutine.execute')
@@ -101,12 +102,9 @@ class CoroutineAspect extends AbstractAspect
                     ->setOrigin('auto.coroutine')
             );
 
-            defer(function () use ($coTransaction) {
-                // Set the transaction on the current scope to ensure it's the active one.
-                SentrySdk::getCurrentHub()->setSpan($coTransaction);
-
+            defer(function () use ($transaction) {
                 // Finish the transaction when the coroutine ends.
-                $coTransaction->finish();
+                $transaction->finish();
 
                 // Flush events
                 Integration::flushEvents();
@@ -115,7 +113,7 @@ class CoroutineAspect extends AbstractAspect
             try {
                 $callable();
             } catch (Throwable $exception) {
-                $coTransaction->setStatus(SpanStatus::internalError());
+                $transaction->setStatus(SpanStatus::internalError());
 
                 throw $exception;
             }
