@@ -442,8 +442,8 @@ class EventHandleListener implements ListenerInterface
 
             Integration::flushEvents();
 
-            $parentSpan = CoContainer::get($command);
-            if ($parentSpan !== null && $parentSpan instanceof Span) {
+            $parentSpan = CoContainer::pull($command);
+            if ($parentSpan instanceof Span) {
                 SentrySdk::getCurrentHub()->setSpan($parentSpan);
             }
 

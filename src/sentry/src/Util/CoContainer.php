@@ -26,9 +26,18 @@ class CoContainer
      * @param TKey $key
      * @return null|TValue
      */
-    public static function get(?object $key = null): ?object
+    public static function pull(?object $key = null): ?object
     {
-        return self::getContainer()[$key] ?? null;
+        $container = self::getContainer();
+
+        if (! isset($container[$key])) {
+            return null;
+        }
+
+        $value = $container[$key];
+        unset($container[$key]);
+
+        return $value;
     }
 
     /**
