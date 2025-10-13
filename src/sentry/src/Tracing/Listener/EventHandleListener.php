@@ -396,10 +396,6 @@ class EventHandleListener implements ListenerInterface
                     ->setSource(TransactionSource::task())
             );
         } else {
-            if (! $parentSpan->getSampled()) {
-                return;
-            }
-
             $scope = SentrySdk::getCurrentHub()->pushScope();
             $span = $parentSpan->startChild(
                 SpanContext::make()
