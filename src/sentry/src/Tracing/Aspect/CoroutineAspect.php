@@ -75,7 +75,7 @@ class CoroutineAspect extends AbstractAspect
                         $transaction = startTransaction(
                             continueTrace($span->toTraceparent(), $span->toBaggage())
                                 ->setName('coroutine')
-                                ->setOp('coroutine.execute')
+                                ->setOp('coroutine.prepare')
                                 ->setDescription($callingOnFunction)
                                 ->setOrigin('auto.coroutine')
                         );
@@ -88,7 +88,7 @@ class CoroutineAspect extends AbstractAspect
                         return trace(
                             fn () => $callable(),
                             SpanContext::make()
-                                ->setOp('coroutine.run')
+                                ->setOp('coroutine.execute')
                                 ->setDescription($callingOnFunction)
                                 ->setOrigin('auto.coroutine')
                         );
