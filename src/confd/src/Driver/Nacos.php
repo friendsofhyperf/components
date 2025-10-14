@@ -130,6 +130,7 @@ class Nacos implements DriverInterface
             'host' => $config['host'] ?? null,
             'port' => $config['port'] ?? null,
             'grpc' => $config['grpc'] ?? [],
+            'version' => $config['version'] ?? null,
         ]);
     }
 
