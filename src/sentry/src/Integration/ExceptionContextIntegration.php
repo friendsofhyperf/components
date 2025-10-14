@@ -32,14 +32,12 @@ class ExceptionContextIntegration implements IntegrationInterface
                 return $event;
             }
 
-            if (! method_exists($hint->exception, 'context')) {
-                return $event;
-            }
+            if (method_exists($hint->exception, 'context')) {
+                $context = $hint->exception->context();
 
-            $context = $hint->exception->context();
-
-            if (is_array($context)) {
-                $event->setExtra(['exception_context' => $context]);
+                if (is_array($context)) {
+                    $event->setExtra(['exception_context' => $context]);
+                }
             }
 
             return $event;
