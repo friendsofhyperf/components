@@ -54,7 +54,7 @@ class Nacos implements DriverInterface
         $this->isGrpcEnabled = (bool) ($config['grpc']['enable'] ?? false);
         $this->listenerConfig = (array) $this->config->get('confd.drivers.nacos.listener_config', []);
         $this->mapping = (array) $this->config->get('confd.drivers.nacos.mapping', []);
-        $this->client = make(NacosClient::class, ['config' => $this->buildNacosConfig($config)]);
+        $this->client = make(NacosClient::class, [$this->buildNacosConfig($config)]);
         $this->timer = new Timer($this->logger);
     }
 
