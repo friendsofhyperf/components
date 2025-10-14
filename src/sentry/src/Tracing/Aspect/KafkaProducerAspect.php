@@ -100,9 +100,7 @@ class KafkaProducerAspect extends AbstractAspect
 
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint, $messages) {
-                $span = $scope->getSpan();
-
-                if ($span) {
+                if ($span = $scope->getSpan()) {
                     foreach ($messages as $message) {
                         (function () use ($span) {
                             $carrier = Carrier::fromSpan($span)

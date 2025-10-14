@@ -80,8 +80,7 @@ class AmqpProducerAspect extends AbstractAspect
 
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint, $producerMessage, $messageId, $destinationName, $bodySize) {
-                $span = $scope->getSpan();
-                if ($span) {
+                if ($span = $scope->getSpan()) {
                     $carrier = Carrier::fromSpan($span)->with([
                         'publish_time' => microtime(true),
                         'message_id' => $messageId,
