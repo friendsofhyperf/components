@@ -38,8 +38,6 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Throwable;
 
-use function Sentry\captureException;
-
 /**
  * @property InputInterface $input
  * @property int $exitCode
@@ -291,7 +289,7 @@ class EventHandleListener implements ListenerInterface
                 'use' => $pool->getCurrentConnections(),
             ];
         } catch (Throwable $e) {
-            captureException($e);
+            $this->captureException($e);
         }
 
         Integration::addBreadcrumb(new Breadcrumb(
