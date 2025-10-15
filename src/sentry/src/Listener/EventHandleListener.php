@@ -20,7 +20,7 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Crontab\Event as CrontabEvent;
 use Hyperf\Database\Events as DbEvent;
-use Hyperf\DbConnection\Pool\PoolFactory;
+use Hyperf\DbConnection\Pool\PoolFactory as DbPoolFactory;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Hyperf\HttpServer\Event as HttpEvent;
@@ -283,7 +283,7 @@ class EventHandleListener implements ListenerInterface
         }
 
         try {
-            $pool = $this->container->get(PoolFactory::class)->getPool($event->connectionName);
+            $pool = $this->container->get(DbPoolFactory::class)->getPool($event->connectionName);
             $data['pool'] = [
                 'max' => $pool->getOption()->getMaxConnections(),
                 'waiting' => $pool->getConnectionsInChannel(),
