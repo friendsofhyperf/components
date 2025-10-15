@@ -20,6 +20,7 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Crontab\Event as CrontabEvent;
 use Hyperf\Database\Events as DbEvent;
+use Hyperf\DbConnection\Pool\PoolFactory;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Hyperf\HttpServer\Event as HttpEvent;
@@ -36,6 +37,8 @@ use Sentry\State\Scope;
 use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Throwable;
+
+use function Sentry\captureException;
 
 /**
  * @property InputInterface $input
@@ -278,6 +281,17 @@ class EventHandleListener implements ListenerInterface
 
         if ($this->feature->isBreadcrumbEnabled('sql_bindings')) {
             $data['bindings'] = $event->bindings;
+        }
+
+        try {
+            $pool = $this->container->get(PoolFactory::class)->getPool($event->connectionName);
+            $data['pool'] = [
+                'max' => $pool->getOption()->getMaxConnections(),
+                'waiting' => $pool->getConnectionsInChannel(),
+                'use' => $pool->getCurrentConnections(),
+            ];
+        } catch (Throwable $e) {
+            captureException($e);
         }
 
         Integration::addBreadcrumb(new Breadcrumb(
