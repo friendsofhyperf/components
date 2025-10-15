@@ -81,8 +81,8 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
             Integration::addBreadcrumb(new Breadcrumb(
                 Breadcrumb::LEVEL_INFO,
-                Breadcrumb::TYPE_DEFAULT,
-                'guzzle',
+                Breadcrumb::TYPE_HTTP,
+                'http',
                 $uri,
                 $data
             ));

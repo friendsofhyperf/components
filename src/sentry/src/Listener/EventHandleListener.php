@@ -20,12 +20,14 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Crontab\Event as CrontabEvent;
 use Hyperf\Database\Events as DbEvent;
+use Hyperf\DbConnection\Pool\PoolFactory as DbPoolFactory;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Hyperf\HttpServer\Event as HttpEvent;
 use Hyperf\HttpServer\Server as HttpServer;
 use Hyperf\Kafka\Event as KafkaEvent;
 use Hyperf\Redis\Event as RedisEvent;
+use Hyperf\Redis\Pool\PoolFactory as RedisPoolFactory;
 use Hyperf\RpcServer\Event as RpcEvent;
 use Hyperf\RpcServer\Server as RpcServer;
 use Hyperf\Server\Event;
@@ -280,6 +282,17 @@ class EventHandleListener implements ListenerInterface
             $data['bindings'] = $event->bindings;
         }
 
+        try {
+            $pool = $this->container->get(DbPoolFactory::class)->getPool($event->connectionName);
+            $data['pool'] = [
+                'max' => $pool->getOption()->getMaxConnections(),
+                'waiting' => $pool->getConnectionsInChannel(),
+                'use' => $pool->getCurrentConnections(),
+            ];
+        } catch (Throwable $e) {
+            $this->captureException($e);
+        }
+
         Integration::addBreadcrumb(new Breadcrumb(
             Breadcrumb::LEVEL_INFO,
             Breadcrumb::TYPE_DEFAULT,
@@ -318,16 +331,30 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
+        $data = [
+            'connectionName' => $event->connectionName,
+            'arguments' => $event->parameters,
+            'result' => $event->result,
+            'duration' => $event->time * 1000,
+        ];
+
+        try {
+            $pool = $this->container->get(RedisPoolFactory::class)->getPool($event->connectionName);
+            $data['pool'] = [
+                'max' => $pool->getOption()->getMaxConnections(),
+                'waiting' => $pool->getConnectionsInChannel(),
+                'use' => $pool->getCurrentConnections(),
+            ];
+        } catch (Throwable $e) {
+            $this->captureException($e);
+        }
+
         Integration::addBreadcrumb(new Breadcrumb(
             Breadcrumb::LEVEL_INFO,
             Breadcrumb::TYPE_DEFAULT,
             'redis',
             $event->command,
-            [
-                'arguments' => $event->parameters,
-                'result' => $event->result,
-                'duration' => $event->time * 1000,
-            ]
+            $data
         ));
     }
 
