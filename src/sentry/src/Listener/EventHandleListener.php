@@ -283,7 +283,7 @@ class EventHandleListener implements ListenerInterface
         Integration::addBreadcrumb(new Breadcrumb(
             Breadcrumb::LEVEL_INFO,
             Breadcrumb::TYPE_DEFAULT,
-            'sql.query',
+            'db.sql.query',
             $event->sql,
             $data
         ));
@@ -303,7 +303,7 @@ class EventHandleListener implements ListenerInterface
         Integration::addBreadcrumb(new Breadcrumb(
             Breadcrumb::LEVEL_INFO,
             Breadcrumb::TYPE_DEFAULT,
-            'sql.transaction',
+            'db.sql.transaction',
             $event::class,
             $data
         ));
