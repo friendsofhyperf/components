@@ -22,15 +22,11 @@ use Hyperf\Crontab\Event as CrontabEvent;
 use Hyperf\Database\Events as DbEvent;
 use Hyperf\DbConnection\Pool\PoolFactory as DbPoolFactory;
 use Hyperf\Event\Contract\ListenerInterface;
-use Hyperf\Framework\Event\BootApplication;
 use Hyperf\HttpServer\Event as HttpEvent;
-use Hyperf\HttpServer\Server as HttpServer;
 use Hyperf\Kafka\Event as KafkaEvent;
 use Hyperf\Redis\Event as RedisEvent;
 use Hyperf\Redis\Pool\PoolFactory as RedisPoolFactory;
 use Hyperf\RpcServer\Event as RpcEvent;
-use Hyperf\RpcServer\Server as RpcServer;
-use Hyperf\Server\Event;
 use Psr\Container\ContainerInterface;
 use Sentry\Breadcrumb;
 use Sentry\SentrySdk;
@@ -45,43 +41,6 @@ use Throwable;
  */
 class EventHandleListener implements ListenerInterface
 {
-    protected array $missingKeys = [
-        // Enable
-        'sentry.enable.amqp',
-        'sentry.enable.async_queue',
-        'sentry.enable.command',
-        'sentry.enable.crontab',
-        'sentry.enable.kafka',
-        'sentry.enable.request',
-        // Breadcrumbs
-        'sentry.breadcrumbs.cache',
-        'sentry.breadcrumbs.sql_queries',
-        'sentry.breadcrumbs.sql_bindings',
-        'sentry.breadcrumbs.sql_transaction',
-        'sentry.breadcrumbs.redis',
-        'sentry.breadcrumbs.guzzle',
-        'sentry.breadcrumbs.logs',
-        // Tracing
-        'sentry.enable_tracing',
-        // Enable for tracing integrations
-        'sentry.tracing.enable.amqp',
-        'sentry.tracing.enable.async_queue',
-        'sentry.tracing.enable.cache',
-        'sentry.tracing.enable.command',
-        'sentry.tracing.enable.crontab',
-        'sentry.tracing.enable.kafka',
-        'sentry.tracing.enable.request',
-        // Enable for tracing Spans
-        'sentry.tracing.spans.cache',
-        'sentry.tracing.spans.coroutine',
-        'sentry.tracing.spans.db',
-        'sentry.tracing.spans.elasticsearch',
-        'sentry.tracing.spans.guzzle',
-        'sentry.tracing.spans.rpc',
-        'sentry.tracing.spans.redis',
-        'sentry.tracing.spans.sql_queries',
-    ];
-
     public function __construct(
         protected ContainerInterface $container,
         protected Feature $feature,
@@ -93,9 +52,6 @@ class EventHandleListener implements ListenerInterface
     public function listen(): array
     {
         return [
-            // Framework events
-            BootApplication::class,
-
             // Database events
             DbEvent\QueryExecuted::class,
             DbEvent\TransactionBeginning::class,
@@ -142,9 +98,6 @@ class EventHandleListener implements ListenerInterface
     public function process(object $event): void
     {
         match ($event::class) {
-            // Boot application events
-            BootApplication::class => $this->handleBootApplication($event),
-
             // Database events
             DbEvent\QueryExecuted::class => $this->handleDbQueryExecuted($event),
             DbEvent\TransactionBeginning::class,
@@ -203,63 +156,6 @@ class EventHandleListener implements ListenerInterface
             $this->logger->error((string) $e);
         } finally {
             $hub->getClient()?->flush();
-        }
-    }
-
-    /**
-     * @param BootApplication $event
-     */
-    protected function handleBootApplication(object $event): void
-    {
-        $this->setupRequestLifecycle();
-        $this->setupRedisEventEnable();
-    }
-
-    protected function setupRequestLifecycle(): void
-    {
-        foreach ($this->missingKeys as $key) {
-            if (! $this->config->has($key)) {
-                $this->config->set($key, true);
-            }
-        }
-
-        if (
-            ! $this->feature->isEnabled('request')
-            && ! $this->feature->isTracingEnabled('request')
-        ) {
-            return;
-        }
-
-        $servers = $this->config->get('server.servers', []);
-
-        foreach ($servers as &$server) {
-            $callbacks = $server['callbacks'] ?? [];
-            $handler = $callbacks[Event::ON_REQUEST][0] ?? $callbacks[Event::ON_RECEIVE][0] ?? null;
-
-            if (! $handler) {
-                continue;
-            }
-
-            if (
-                is_a($handler, HttpServer::class, true)
-                || is_a($handler, RpcServer::class, true)
-            ) {
-                $server['options'] ??= [];
-                $server['options']['enable_request_lifecycle'] = true;
-            }
-        }
-
-        $this->config->set('server.servers', $servers);
-    }
-
-    protected function setupRedisEventEnable(): void
-    {
-        if (! $this->config->has('redis')) {
-            return;
-        }
-
-        foreach ($this->config->get('redis', []) as $pool => $_) {
-            $this->config->set("redis.{$pool}.event.enable", true);
         }
     }
 
