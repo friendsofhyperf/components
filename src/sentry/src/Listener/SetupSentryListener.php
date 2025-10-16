@@ -81,7 +81,10 @@ class SetupSentryListener implements ListenerInterface
 
     protected function registerLoggerChannel(): void
     {
-        if ($this->config->has('logger.sentry_logs')) {
+        if (
+            ! $this->config->get('sentry.enable_logs', true)
+            || $this->config->has('logger.sentry_logs')
+        ) {
             return;
         }
 
