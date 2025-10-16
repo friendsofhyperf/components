@@ -108,7 +108,10 @@ class SetupSentryListener implements ListenerInterface
             }
         }
 
-        if (! $this->feature->isEnabled('request') && ! $this->feature->isTracingEnabled('request')) {
+        if (
+            ! $this->feature->isEnabled('request')
+            && ! $this->feature->isTracingEnabled('request')
+        ) {
             return;
         }
 
