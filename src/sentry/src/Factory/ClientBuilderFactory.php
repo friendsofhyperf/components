@@ -28,6 +28,7 @@ class ClientBuilderFactory
         'enable',
         'ignore_commands',
         'integrations',
+        'logs_channel_level',
         'transport_channel_size',
         'transport_concurrent_limit',
         'tracing',
