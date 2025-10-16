@@ -53,6 +53,7 @@ class ConfigProvider
                 \Sentry\Transport\TransportInterface::class => Transport\CoHttpTransport::class,
             ],
             'listeners' => [
+                Listener\SetupSentryListener::class,
                 Listener\EventHandleListener::class => PHP_INT_MAX - 1,
                 Crons\Listener\EventHandleListener::class => PHP_INT_MAX - 1,
                 Tracing\Listener\EventHandleListener::class => PHP_INT_MAX, // !! Make sure it is the first one to handle the event
