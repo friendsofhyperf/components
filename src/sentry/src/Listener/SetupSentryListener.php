@@ -83,15 +83,15 @@ class SetupSentryListener implements ListenerInterface
     {
         if (
             ! $this->config->get('sentry.enable_logs', true)
-            || $this->config->has('logger.sentry_logs')
+            || $this->config->has('logger.sentry')
         ) {
             return;
         }
 
-        $this->config->set('logger.sentry_logs', [
+        $this->config->set('logger.sentry', [
             'handler' => LogsHandler::class,
             'constructor' => [
-                'group' => 'sentry_logs',
+                'group' => 'sentry',
                 'logLevel' => $this->config->get('sentry.logs_channel_level'),
                 'bubble' => true,
             ],
