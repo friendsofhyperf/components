@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Monolog;
 
+use Hyperf\Collection\Arr;
 use Monolog\LogRecord;
 use Sentry\Logs\LogLevel;
 use Sentry\Logs\Logs;
@@ -55,8 +56,8 @@ class LogsHandler extends \Sentry\Monolog\LogsHandler
             $record['message'],
             [],
             array_merge(
-                ['record.context' => $record['context']],
-                ['record.extra' => $record['extra']],
+                Arr::dot($record['context'] ?? [], 'context.'),
+                Arr::dot($record['extra'] ?? [], 'extra.'),
                 ['logger.channel' => $record['channel'] ?? ''],
                 ['logger.group' => $this->group],
                 ['sentry.origin' => 'auto.logger.monolog']
