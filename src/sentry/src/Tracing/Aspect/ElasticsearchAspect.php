@@ -78,11 +78,9 @@ class ElasticsearchAspect extends AbstractAspect
                     'db.system' => 'elasticsearch',
                     'db.operation.name' => $proceedingJoinPoint->methodName,
                     'arguments' => (string) json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE),
-                    // TODO
-                    // 'http.request.method' => '',
-                    // 'url.full' => '',
-                    // 'server.host' => '',
-                    // 'server.port' => '',
+                    // Note: HTTP metadata (method, url, host, port) is not available
+                    // as Elasticsearch clients don't expose the underlying HTTP layer
+                    // in a consistent way across v7.x and v8.x
                 ])
         );
     }

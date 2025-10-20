@@ -183,7 +183,7 @@ class EventHandleListener implements ListenerInterface
             $data['db.operation.name'] = $sqlParse['operation'];
         }
         if (! empty($sqlParse['table'])) {
-            $data['db.collection.name'] = $sqlParse['table'];
+            $data['db.sql.table'] = $sqlParse['table'];
         }
 
         $pool = $this->container->get(PoolFactory::class)->getPool($event->connectionName);

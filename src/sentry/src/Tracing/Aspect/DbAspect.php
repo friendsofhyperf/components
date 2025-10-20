@@ -65,14 +65,14 @@ class DbAspect extends AbstractAspect
         $data = [
             'db.system' => $driver,
             'db.name' => $database,
-            'db.collection.name' => $table,
+            'db.sql.table' => $table,
             'db.operation.name' => $operation,
             'db.pool.name' => $poolName,
             'db.pool.max' => $pool->getOption()->getMaxConnections(),
             'db.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
             'db.pool.idle' => $pool->getConnectionsInChannel(),
             'db.pool.using' => $pool->getCurrentConnections(),
-            // 'server.host' => '',
+            // 'server.address' => '',
             // 'server.port' => '',
         ];
 

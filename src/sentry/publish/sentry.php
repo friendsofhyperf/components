@@ -46,6 +46,9 @@ return [
     'logs_channel_level' => env('SENTRY_LOGS_CHANNEL_LEVEL', Sentry\Logs\LogLevel::debug()),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#send_default_pii
+    // Note: When enabled, Sentry will send personally identifiable information (PII)
+    // like user IP addresses and usernames. Consider setting to false in production
+    // if you have strict privacy requirements.
     'send_default_pii' => env('SENTRY_SEND_DEFAULT_PII', true),
 
     // Must instanceof Psr\Log\LoggerInterface
