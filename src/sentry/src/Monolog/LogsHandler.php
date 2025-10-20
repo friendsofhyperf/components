@@ -60,7 +60,7 @@ class LogsHandler extends \Sentry\Monolog\LogsHandler
                 Arr::dot($record['extra'] ?? [], 'extra.'),
                 ['logger.channel' => $record['channel'] ?? ''],
                 ['logger.group' => $this->group],
-                ['sentry.origin' => 'auto.logger.monolog']
+                ['sentry.origin' => 'auto.log.monolog']
             )
         );
 
