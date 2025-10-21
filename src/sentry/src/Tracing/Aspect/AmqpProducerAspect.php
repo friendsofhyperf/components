@@ -25,6 +25,7 @@ use Sentry\Tracing\SpanContext;
 use Sentry\Util\SentryUid;
 
 use function FriendsOfHyperf\Sentry\trace;
+use function Hyperf\Config\config;
 
 /**
  * @property array{application_headers?:AMQPTable} $properties
@@ -86,6 +87,7 @@ class AmqpProducerAspect extends AbstractAspect
                         'message_id' => $messageId,
                         'destination_name' => $destinationName,
                         'body_size' => $bodySize,
+                        'producer' => config('app_name', 'unknown'),
                     ]);
                     (function () use ($carrier) {
                         $this->properties['application_headers'] ??= new AMQPTable();
