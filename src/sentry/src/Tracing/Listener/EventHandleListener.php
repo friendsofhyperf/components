@@ -197,9 +197,6 @@ class EventHandleListener implements ListenerInterface
 
         if ($this->feature->isTracingExtraTagEnabled('db.sql.bindings', true)) {
             $data['db.sql.bindings'] = $event->bindings;
-            foreach ($event->bindings as $key => $value) {
-                $data['db.parameter.' . $key] = $value;
-            }
         }
 
         $startTimestamp = microtime(true) - $event->time / 1000;
