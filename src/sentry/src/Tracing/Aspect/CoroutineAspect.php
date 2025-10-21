@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Util\CoroutineBacktraceHelper;
+use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Engine\Coroutine as Co;
@@ -28,12 +29,12 @@ use function Sentry\continueTrace;
 
 class CoroutineAspect extends AbstractAspect
 {
-    public array $classes = [
-        'Hyperf\Coroutine\Coroutine::create',
+    public const CONTEXT_KEYS = [
+        \Psr\Http\Message\ServerRequestInterface::class,
     ];
 
-    protected array $keys = [
-        \Psr\Http\Message\ServerRequestInterface::class,
+    public array $classes = [
+        'Hyperf\Coroutine\Coroutine::create',
     ];
 
     public function __construct(protected Feature $feature)
@@ -56,22 +57,16 @@ class CoroutineAspect extends AbstractAspect
             function (Scope $scope) use ($proceedingJoinPoint, $callingOnFunction) {
                 if ($callingOnFunction && $span = $scope->getSpan()) {
                     $cid = Co::id();
-                    $keys = $this->keys;
                     $callable = $proceedingJoinPoint->arguments['keys']['callable'];
 
                     // Transfer the Sentry context to the new coroutine.
-                    $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $span, $callingOnFunction, $cid, $keys) {
+                    $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $span, $callingOnFunction, $cid) {
                         SentrySdk::init(); // Ensure Sentry is initialized in the new coroutine.
 
-                        $from = Co::getContextFor($cid);
-                        $current = Co::getContextFor();
+                        // Restore the Context in the new Coroutine.
+                        Context::copy($cid, self::CONTEXT_KEYS);
 
-                        foreach ($keys as $key) {
-                            if (isset($from[$key]) && ! isset($current[$key])) {
-                                $current[$key] = $from[$key];
-                            }
-                        }
-
+                        // Start a new transaction for the coroutine preparation phase.
                         $transaction = startTransaction(
                             continueTrace($span->toTraceparent(), $span->toBaggage())
                                 ->setName('coroutine')
@@ -80,6 +75,7 @@ class CoroutineAspect extends AbstractAspect
                                 ->setOrigin('auto.coroutine')
                         );
 
+                        // Defer the finishing of the transaction and flushing of events until the coroutine completes.
                         defer(function () use ($transaction) {
                             $transaction->finish();
                             Integration::flushEvents();
