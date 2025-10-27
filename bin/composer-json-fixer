@@ -27,11 +27,9 @@ $require = [];
 $autoload = [];
 $autoloadFiles = [];
 $autoloadDev = [
-    'FriendsOfHyperf\\Tests\\' => 'tests/',
+    'FriendsOfHyperf\Tests\\' => 'tests/',
 ];
-$autoloadDevFiles = [
-    'tests/phpunit-patch.php',
-];
+$autoloadDevFiles = [];
 $configProviders = [];
 $replaces = [];
 
@@ -86,7 +84,11 @@ $json = json_decode(file_get_contents(__DIR__ . '/../composer.json'));
 $json->autoload->files = $autoloadFiles;
 $json->autoload->{'psr-4'} = $autoload;
 $json->{'autoload-dev'}->{'psr-4'} = $autoloadDev;
-$json->{'autoload-dev'}->files = $autoloadDevFiles;
+if (! empty($autoloadDevFiles)) {
+    $json->{'autoload-dev'}->files = $autoloadDevFiles;
+} else {
+    unset($json->{'autoload-dev'}->files);
+}
 $json->extra->hyperf->config = $configProviders;
 $json->replace = $replaces;
 

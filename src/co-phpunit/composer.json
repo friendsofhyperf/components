@@ -1,0 +1,44 @@
+{
+    "name": "friendsofhyperf/co-phpunit",
+    "description": "The Co-PHPUnit component for Hyperf.",
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "hyperf",
+        "v3.1",
+        "co-phpunit"
+    ],
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "docs": "https://hyperf.fans",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
+    "require": {
+        "hyperf/coordinator": "~3.1.0",
+        "phpunit/phpunit": "^10.0 || ^11.0 || ^12.0"
+    },
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\CoPHPUnit\\": "src/"
+        },
+        "files": [
+            "phpunit-patch.php"
+        ]
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        }
+    }
+}

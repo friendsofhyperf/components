@@ -118,6 +118,7 @@
     "replace": {
         "friendsofhyperf/amqp-job": "*",
         "friendsofhyperf/cache": "*",
+        "friendsofhyperf/co-phpunit": "*",
         "friendsofhyperf/command-benchmark": "*",
         "friendsofhyperf/command-signals": "*",
         "friendsofhyperf/command-validation": "*",
@@ -174,6 +175,7 @@
         "psr-4": {
             "FriendsOfHyperf\\AmqpJob\\": "src/amqp-job/src/",
             "FriendsOfHyperf\\Cache\\": "src/cache/src/",
+            "FriendsOfHyperf\\CoPHPUnit\\": "src/co-phpunit/src/",
             "FriendsOfHyperf\\CommandBenchmark\\": "src/command-benchmark/src/",
             "FriendsOfHyperf\\CommandSignals\\": "src/command-signals/src/",
             "FriendsOfHyperf\\CommandValidation\\": "src/command-validation/src/",
@@ -226,6 +228,7 @@
         },
         "files": [
             "src/amqp-job/src/Functions.php",
+            "src/co-phpunit/phpunit-patch.php",
             "src/encryption/src/Functions.php",
             "src/exception-event/src/Functions.php",
             "src/helpers/src/Command/Functions.php",
@@ -243,10 +246,7 @@
     "autoload-dev": {
         "psr-4": {
             "FriendsOfHyperf\\Tests\\": "tests/"
-        },
-        "files": [
-            "tests/phpunit-patch.php"
-        ]
+        }
     },
     "config": {
         "allow-plugins": {
