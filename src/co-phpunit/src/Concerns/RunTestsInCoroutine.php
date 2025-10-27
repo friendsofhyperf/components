@@ -9,13 +9,10 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Tests\Concerns;
+namespace FriendsOfHyperf\CoPHPUnit\Concerns;
 
 use Throwable;
 
-/**
- * @method string name()
- */
 trait RunTestsInCoroutine
 {
     protected bool $enableCoroutine = true;

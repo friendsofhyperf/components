@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tests;
 
+use FriendsOfHyperf\CoPHPUnit\Concerns\RunTestsInCoroutine;
 use Hyperf\Stringable\Stringable;
 use Mockery as m;
 
@@ -21,7 +22,7 @@ use Mockery as m;
 class TestCase extends \PHPUnit\Framework\TestCase
 {
     use Concerns\InteractsWithContainer;
-    use Concerns\RunTestsInCoroutine;
+    use RunTestsInCoroutine;
 
     public function __construct($name = null, array $data = [], $dataName = '')
     {
