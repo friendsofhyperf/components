@@ -264,7 +264,6 @@
                 "FriendsOfHyperf\\AmqpJob\\ConfigProvider",
                 "FriendsOfHyperf\\Cache\\ConfigProvider",
                 "FriendsOfHyperf\\CommandBenchmark\\ConfigProvider",
-                "FriendsOfHyperf\\CommandBenchmark\\ConfigProvider",
                 "FriendsOfHyperf\\CommandSignals\\ConfigProvider",
                 "FriendsOfHyperf\\CommandValidation\\ConfigProvider",
                 "FriendsOfHyperf\\Compoships\\ConfigProvider",
