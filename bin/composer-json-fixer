@@ -27,11 +27,9 @@ $require = [];
 $autoload = [];
 $autoloadFiles = [];
 $autoloadDev = [
-    'FriendsOfHyperf\\Tests\\' => 'tests/',
+    'FriendsOfHyperf\Tests\\' => 'tests/',
 ];
-$autoloadDevFiles = [
-    'tests/phpunit-patch.php',
-];
+$autoloadDevFiles = [];
 $configProviders = [];
 $replaces = [];
 

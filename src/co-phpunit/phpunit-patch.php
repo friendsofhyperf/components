@@ -9,8 +9,22 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 (function () {
-    /** @var \Composer\Autoload\ClassLoader $classLoader */
-    $classLoader = require __DIR__ . '/../vendor/autoload.php';
+    /** @var null|\Composer\Autoload\ClassLoader $classLoader */
+    $classLoader = null;
+    $autoloadFiles = [
+        __DIR__ . '/../../vendor/autoload.php',
+        __DIR__ . '/../../../vendor/autoload.php',
+        __DIR__ . '/../../../../vendor/autoload.php',
+    ];
+    foreach ($autoloadFiles as $autoloadFile) {
+        if (file_exists($autoloadFile)) {
+            $classLoader = require $autoloadFile;
+            break;
+        }
+    }
+    if (! $classLoader instanceof Composer\Autoload\ClassLoader) {
+        return;
+    }
     if ($file = $classLoader->findFile(PHPUnit\Framework\TestCase::class)) {
         $content = file_get_contents($file);
         $replace = 'public function runBare';
