@@ -11,14 +11,17 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Listener;
 
+use FriendsOfHyperf\Sentry\Annotation\IgnoreException;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Monolog\LogsHandler;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Di\Annotation\AnnotationCollector;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BootApplication;
 use Hyperf\HttpServer\Server as HttpServer;
 use Hyperf\RpcServer\Server as RpcServer;
 use Hyperf\Server\Event;
+use Throwable;
 
 class SetupSentryListener implements ListenerInterface
 {
@@ -76,7 +79,23 @@ class SetupSentryListener implements ListenerInterface
     {
         $this->setupRequestLifecycle();
         $this->setupRedisEventEnable();
+        $this->setupIgnoreExceptions();
         $this->registerLoggerChannel();
+    }
+
+    protected function setupIgnoreExceptions(): void
+    {
+        $configKey = 'sentry.ignore_exceptions';
+        $ignoreExceptions = $this->config->get($configKey, []);
+        if (! is_array($ignoreExceptions)) {
+            $ignoreExceptions = [];
+        }
+
+        /** @var array<class-string<Throwable>,IgnoreException> $classes */
+        $classes = AnnotationCollector::getClassesByAnnotation(IgnoreException::class);
+        $ignoreExceptions = array_merge($ignoreExceptions, array_keys($classes));
+
+        $this->config->set($configKey, array_unique($ignoreExceptions));
     }
 
     protected function registerLoggerChannel(): void
