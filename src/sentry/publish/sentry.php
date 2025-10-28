@@ -78,6 +78,8 @@ return [
     ],
 
     'ignore_exceptions' => [
+        Hyperf\HttpMessage\Exception\NotFoundHttpException::class,
+        Hyperf\HttpMessage\Exception\MethodNotAllowedHttpException::class,
         Hyperf\Validation\ValidationException::class,
     ],
 
