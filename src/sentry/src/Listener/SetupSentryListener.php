@@ -79,11 +79,11 @@ class SetupSentryListener implements ListenerInterface
     {
         $this->setupRequestLifecycle();
         $this->setupRedisEventEnable();
-        $this->mergeIgnoreExceptions();
+        $this->setupIgnoreExceptions();
         $this->registerLoggerChannel();
     }
 
-    protected function mergeIgnoreExceptions(): void
+    protected function setupIgnoreExceptions(): void
     {
         $configKey = 'sentry.ignore_exceptions';
         $ignoreExceptions = $this->config->get($configKey, []);
