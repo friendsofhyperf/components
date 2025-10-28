@@ -15,6 +15,6 @@ use Attribute;
 use Hyperf\Di\Annotation\AbstractAnnotation;
 
 #[Attribute(Attribute::TARGET_CLASS)]
-class Ignore extends AbstractAnnotation
+class IgnoreException extends AbstractAnnotation
 {
 }

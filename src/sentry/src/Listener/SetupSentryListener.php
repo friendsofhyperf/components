@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Listener;
 
-use FriendsOfHyperf\Sentry\Annotation\Ignore;
+use FriendsOfHyperf\Sentry\Annotation\IgnoreException;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Monolog\LogsHandler;
 use Hyperf\Contract\ConfigInterface;
@@ -91,8 +91,8 @@ class SetupSentryListener implements ListenerInterface
             $ignoreExceptions = [];
         }
 
-        /** @var array<class-string<Throwable>,Ignore> $classes */
-        $classes = AnnotationCollector::getClassesByAnnotation(Ignore::class);
+        /** @var array<class-string<Throwable>,IgnoreException> $classes */
+        $classes = AnnotationCollector::getClassesByAnnotation(IgnoreException::class);
         $ignoreExceptions = array_merge($ignoreExceptions, array_keys($classes));
 
         $this->config->set($configKey, array_unique($ignoreExceptions));
