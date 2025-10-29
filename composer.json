@@ -335,7 +335,6 @@
         "test:lint": "@php vendor/bin/php-cs-fixer fix --dry-run --diff --ansi",
         "test:types": "@php vendor/bin/pest --type-coverage",
         "test:unit": "@php vendor/bin/pest",
-
         "type-testing": "phpstan analyze --configuration=\"phpstan.types.neon.dist\" --memory-limit=-1"
     }
 }
