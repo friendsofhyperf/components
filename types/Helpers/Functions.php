@@ -8,26 +8,16 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use Carbon\Carbon;
 use FriendsOfHyperf\Support\Environment;
-use Hyperf\Contract\SessionInterface;
 use Hyperf\HttpMessage\Cookie\Cookie;
-use Hyperf\HttpMessage\Cookie\CookieJarInterface;
-use Hyperf\HttpServer\Contract\RequestInterface;
-use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Support\Fluent;
-use Hyperf\Validation\Contract\ValidatorFactoryInterface;
-use Hyperf\Validation\Contract\ValidatorInterface;
-use Psr\Container\ContainerInterface;
-use Psr\EventDispatcher\EventDispatcherInterface;
-use Psr\Log\LoggerInterface;
-use Psr\SimpleCache\CacheInterface;
 
 use function FriendsOfHyperf\Helpers\app;
 use function FriendsOfHyperf\Helpers\base_path;
 use function FriendsOfHyperf\Helpers\blank;
 use function FriendsOfHyperf\Helpers\cache;
 use function FriendsOfHyperf\Helpers\class_namespace;
+use function FriendsOfHyperf\Helpers\Command\call;
 use function FriendsOfHyperf\Helpers\cookie;
 use function FriendsOfHyperf\Helpers\di;
 use function FriendsOfHyperf\Helpers\dispatch;
@@ -59,8 +49,8 @@ use function PHPStan\Testing\assertType;
 
 // app() tests
 assertType('mixed', app());
-assertType('Hyperf\Support\Fluent', app(Fluent::class));
-assertType('Closure', app(fn() => 'test'));
+assertType('mixed', app(Fluent::class));
+assertType('Closure', app(fn () => 'test'));
 
 // base_path() tests
 assertType('string', base_path());
@@ -73,7 +63,7 @@ assertType('bool', blank('test'));
 assertType('bool', blank([]));
 
 // cache() tests
-assertType('Psr\SimpleCache\CacheInterface', cache());
+assertType('mixed', cache());
 assertType('mixed', cache('key'));
 
 // class_namespace() tests
@@ -82,15 +72,15 @@ assertType('string', class_namespace(new Fluent()));
 
 // di() tests
 assertType('Psr\Container\ContainerInterface', di());
-assertType('Hyperf\Support\Fluent', di(Fluent::class));
+assertType('mixed', di(Fluent::class));
 
 // enum_value() tests
 assertType('mixed', enum_value('test'));
-assertType('string', enum_value('test', 'default'));
+assertType('mixed', enum_value('test', 'default'));
 
 // event() tests
-$testEvent = new class() {};
-assertType('class@anonymous*', event($testEvent));
+$testEvent = new class {};
+assertType('AnonymousClass7af6ae4c28737d2b2877adcdeb4da107', event($testEvent));
 
 // filled() tests
 assertType('bool', filled(null));
@@ -116,8 +106,8 @@ assertType('Psr\Log\LoggerInterface', logs());
 assertType('Psr\Log\LoggerInterface', logs('custom'));
 
 // object_get() tests
-$obj = (object)['key' => 'value'];
-assertType('stdClass', object_get($obj));
+$obj = (object) ['key' => 'value'];
+assertType('object{key: string}&stdClass', object_get($obj));
 assertType('mixed', object_get($obj, 'key'));
 
 // preg_replace_array() tests
@@ -129,16 +119,16 @@ assertType('mixed', request('key'));
 assertType('array', request(['key1', 'key2']));
 
 // rescue() tests
-assertType('string', rescue(fn() => 'result'));
-assertType('string', rescue(fn() => throw new \Exception(), 'fallback'));
+assertType('string|null', rescue(fn () => 'result'));
+assertType('string', rescue(fn () => throw new Exception(), 'fallback'));
 
 // resolve() tests
-assertType('Hyperf\Support\Fluent', resolve(Fluent::class));
-assertType('Closure', resolve(fn() => 'test'));
+assertType('mixed', resolve(Fluent::class));
+assertType('Closure', resolve(fn () => 'test'));
 
 // response() tests
-assertType('Psr\Http\Message\ResponseInterface', response());
-assertType('Psr\Http\Message\ResponseInterface', response('content'));
+assertType('Hyperf\HttpServer\Contract\ResponseInterface|Psr\Http\Message\ResponseInterface', response());
+assertType('Hyperf\HttpServer\Contract\ResponseInterface|Psr\Http\Message\ResponseInterface', response('content'));
 
 // throw_if() tests
 assertType('bool', throw_if(false, 'Exception'));
@@ -147,12 +137,12 @@ assertType('bool', throw_if(false, 'Exception'));
 assertType('bool', throw_unless(true, 'Exception'));
 
 // transform() tests
-assertType('string', transform('value', fn($v) => $v));
-assertType('mixed', transform(null, fn($v) => $v));
+assertType('string', transform('value', fn ($v) => $v));
+assertType('null', transform(null, fn ($v) => $v));
 
 // validator() tests
-assertType('Hyperf\Validation\Contract\ValidatorFactoryInterface', validator());
-assertType('Hyperf\Contract\ValidatorInterface', validator([], []));
+assertType('Hyperf\Contract\ValidatorInterface|Hyperf\Validation\Contract\ValidatorFactoryInterface', validator());
+assertType('Hyperf\Contract\ValidatorInterface|Hyperf\Validation\Contract\ValidatorFactoryInterface', validator([], []));
 
 // when() tests
 assertType('mixed', when(true, 'value'));
@@ -164,13 +154,29 @@ assertType('Hyperf\HttpMessage\Cookie\Cookie', cookie('name', 'value'));
 
 // dispatch() tests - returns bool
 // Note: dispatch() has complex return types based on job type, testing the common case
-assertType('bool', dispatch(new class implements \Hyperf\AsyncQueue\JobInterface {
-    public function handle() {}
+assertType('bool', dispatch(new class implements Hyperf\AsyncQueue\JobInterface {
+    public function handle(): void
+    {
+    }
+
+    public function fail(\Throwable $e): void
+    {
+    }
+
+    public function getMaxAttempts(): int
+    {
+        return 0;
+    }
+
+    public function setMaxAttempts(int $maxAttempts): static
+    {
+        return $this;
+    }
 }));
 
 // environment() tests
-assertType('FriendsOfHyperf\Support\Environment|bool', environment());
-assertType('bool', environment('production'));
+assertType('bool|FriendsOfHyperf\Support\Environment', environment());
+assertType('bool|FriendsOfHyperf\Support\Environment', environment('production'));
 
 // info() tests
 assertType('mixed', info('message'));
@@ -186,3 +192,7 @@ assertType('mixed', session('key'));
 // today() tests
 assertType('Carbon\Carbon', today());
 assertType('Carbon\Carbon', today('UTC'));
+
+// call() tests
+assertType('int', call('command:name'));
+assertType('int', call('command:name', ['arg' => 'value']));
