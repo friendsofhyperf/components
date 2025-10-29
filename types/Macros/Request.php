@@ -14,7 +14,7 @@ use Hyperf\HttpServer\Request;
 use function PHPStan\Testing\assertType;
 
 // Create a mock request for testing
-Context::set(\Psr\Http\Message\ServerRequestInterface::class, new \Hyperf\HttpMessage\Server\Request('GET', '/'));
+Context::set(Psr\Http\Message\ServerRequestInterface::class, new Hyperf\HttpMessage\Server\Request('GET', '/'));
 $request = new Request();
 
 // Request::boolean() tests
@@ -32,7 +32,7 @@ assertType('Carbon\Carbon|null', $request->date('updated_at', 'Y-m-d'));
 assertType('Carbon\Carbon|null', $request->date('deleted_at', 'Y-m-d H:i:s', 'UTC'));
 
 // Request::enum() tests
-assertType('mixed', $request->enum('status', \BackedEnum::class));
+assertType('mixed', $request->enum('status', BackedEnum::class));
 
 // Request::exists() tests
 assertType('bool', $request->exists('key'));

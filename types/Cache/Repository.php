@@ -10,7 +10,6 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Cache\Contract\Repository;
 use FriendsOfHyperf\Cache\Repository as CacheRepository;
-use Hyperf\Cache\Driver\DriverInterface;
 
 use function PHPStan\Testing\assertType;
 

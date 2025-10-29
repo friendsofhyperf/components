@@ -10,7 +10,6 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\Cache\CacheManager;
 use FriendsOfHyperf\Cache\Contract\Factory;
-use FriendsOfHyperf\Cache\Contract\Repository;
 
 use function PHPStan\Testing\assertType;
 

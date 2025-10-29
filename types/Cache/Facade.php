@@ -8,9 +8,7 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use FriendsOfHyperf\Cache\Contract\Repository;
 use FriendsOfHyperf\Cache\Facade\Cache;
-use Hyperf\Cache\Driver\DriverInterface;
 
 use function PHPStan\Testing\assertType;
 
