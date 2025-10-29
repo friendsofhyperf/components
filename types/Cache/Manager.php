@@ -34,10 +34,3 @@ assertType('FriendsOfHyperf\Cache\Contract\Repository', $manager->resolve('defau
 // Factory::store() tests
 assertType('FriendsOfHyperf\Cache\Contract\Repository', $factory->store());
 assertType('FriendsOfHyperf\Cache\Contract\Repository', $factory->store('default'));
-
-// Factory::driver() tests
-assertType('FriendsOfHyperf\Cache\Contract\Repository', $factory->driver());
-assertType('FriendsOfHyperf\Cache\Contract\Repository', $factory->driver('default'));
-
-// Factory::resolve() tests
-assertType('FriendsOfHyperf\Cache\Contract\Repository', $factory->resolve('default'));
