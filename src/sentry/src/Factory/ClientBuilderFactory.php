@@ -36,7 +36,7 @@ class ClientBuilderFactory
         'tracing',
     ];
 
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container): ClientBuilder
     {
         $userConfig = $container->get(ConfigInterface::class)->get('sentry', []);
         $userConfig['enable_tracing'] ??= true;
