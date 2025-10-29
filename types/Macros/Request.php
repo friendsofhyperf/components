@@ -22,7 +22,7 @@ assertType('bool', $request->boolean('is_active'));
 assertType('bool', $request->boolean('flag', false));
 
 // Request::collect() tests
-assertType('mixed', $request->collect());
+assertType('Hyperf\Collection\Collection', $request->collect());
 assertType('Hyperf\Collection\Collection', $request->collect('key'));
 assertType('Hyperf\Collection\Collection', $request->collect(['key1', 'key2']));
 
@@ -32,7 +32,7 @@ assertType('Carbon\Carbon|null', $request->date('updated_at', 'Y-m-d'));
 assertType('Carbon\Carbon|null', $request->date('deleted_at', 'Y-m-d H:i:s', 'UTC'));
 
 // Request::enum() tests
-assertType('mixed', $request->enum('status', BackedEnum::class));
+assertType('BackedEnum|null', $request->enum('status', BackedEnum::class));
 
 // Request::exists() tests
 assertType('bool', $request->exists('key'));

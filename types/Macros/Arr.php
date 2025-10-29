@@ -34,8 +34,8 @@ assertType('float', Arr::float(['price' => 10.5], 'price'));
 assertType('float', Arr::float(['amount' => 99.99], 'amount', 0.0));
 
 // Arr::from() tests
-assertType('array', Arr::from([]));
-assertType('array', Arr::from(['key' => 'value']));
+assertType('array{}', Arr::from([]));
+assertType('array<string, string>', Arr::from(['key' => 'value']));
 
 // Arr::hasAll() tests
 assertType('bool', Arr::hasAll(['a' => 1, 'b' => 2], ['a', 'b']));

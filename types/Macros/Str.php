@@ -13,11 +13,11 @@ use Hyperf\Stringable\Str;
 use function PHPStan\Testing\assertType;
 
 // Str::createUuidsNormally() tests
-assertType('void', Str::createUuidsNormally());
+Str::createUuidsNormally();
 
 // Str::createUuidsUsing() tests
-assertType('void', Str::createUuidsUsing(null));
-assertType('void', Str::createUuidsUsing(fn () => 'custom-uuid'));
+Str::createUuidsUsing(null);
+Str::createUuidsUsing(fn () => 'custom-uuid');
 
 // Str::deduplicate() tests
 assertType('string', Str::deduplicate('hello  world'));

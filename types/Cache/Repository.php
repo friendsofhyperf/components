@@ -43,8 +43,8 @@ assertType('bool', $repository->clear());
 assertType('iterable', $repository->many(['key1', 'key2']));
 
 // Repository::getMultiple() tests
-assertType('iterable', $repository->getMultiple(['key1', 'key2']));
-assertType('iterable', $repository->getMultiple(['key1', 'key2'], 'default'));
+assertType('iterable<string, mixed>', $repository->getMultiple(['key1', 'key2']));
+assertType('iterable<string, mixed>', $repository->getMultiple(['key1', 'key2'], 'default'));
 
 // Repository::setMultiple() tests
 assertType('bool', $repository->setMultiple(['key1' => 'value1', 'key2' => 'value2']));
@@ -55,7 +55,7 @@ assertType('bool', $repository->deleteMultiple(['key1', 'key2']));
 
 // Repository::pull() tests
 assertType('mixed', $repository->pull('key'));
-assertType('mixed', $repository->pull('key', 'default'));
+assertType('string', $repository->pull('key', 'default'));
 
 // Repository::put() tests
 assertType('bool', $repository->put('key', 'value'));
@@ -90,7 +90,7 @@ assertType('bool|int', $repository->decrement('key', 5));
 // Repository::remember() tests
 assertType('string', $repository->remember('key', 60, fn () => 'value'));
 assertType('int', $repository->remember('key', 60, fn () => 123));
-assertType('array', $repository->remember('key', 60, fn () => []));
+assertType('array{}', $repository->remember('key', 60, fn () => []));
 
 // Repository::rememberForever() tests
 assertType('string', $repository->rememberForever('key', fn () => 'value'));
@@ -103,7 +103,7 @@ assertType('int', $repository->sear('key', fn () => 123));
 // Repository::flexible() tests
 assertType('string', $repository->flexible('key', [60, 120], fn () => 'value'));
 assertType('int', $repository->flexible('key', [60, 120], fn () => 123));
-assertType('array', $repository->flexible('key', [60, 120], fn () => []));
+assertType('array{}', $repository->flexible('key', [60, 120], fn () => []));
 
 // Repository::getDriver() tests
 assertType('Hyperf\Cache\Driver\DriverInterface', $repository->getDriver());

@@ -14,6 +14,15 @@ namespace Hyperf\Collection;
 class Collection
 {
     /**
+     * Create a new collection.
+     *
+     * @param mixed $items
+     */
+    public function __construct($items = [])
+    {
+    }
+
+    /**
      * Determine if the collection contains a single element.
      * @deprecated since v3.1, use `containsOneItem` instead, will be removed in v3.2.
      * @return bool

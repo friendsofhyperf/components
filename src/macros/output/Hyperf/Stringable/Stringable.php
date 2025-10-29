@@ -86,4 +86,24 @@ class Stringable
     public function whenIsAscii($callback, $default = null)
     {
     }
+
+    /**
+     * Determine if a given string doesn't end with a given substring.
+     *
+     * @param string|array $needles
+     * @return bool
+     */
+    public function doesntEndWith($needles)
+    {
+    }
+
+    /**
+     * Determine if a given string doesn't start with a given substring.
+     *
+     * @param string|array $needles
+     * @return bool
+     */
+    public function doesntStartWith($needles)
+    {
+    }
 }

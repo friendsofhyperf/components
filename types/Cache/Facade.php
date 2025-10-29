@@ -32,7 +32,6 @@ assertType('bool', Cache::missing('key'));
 
 // Cache::get() tests
 assertType('mixed', Cache::get('key'));
-assertType('mixed', Cache::get('key', 'default'));
 assertType('string', Cache::get('key', 'default'));
 assertType('int', Cache::get('key', 123));
 
@@ -41,7 +40,6 @@ assertType('iterable', Cache::many(['key1', 'key2']));
 
 // Cache::pull() tests
 assertType('mixed', Cache::pull('key'));
-assertType('mixed', Cache::pull('key', 'default'));
 assertType('string', Cache::pull('key', 'default'));
 
 // Cache::put() tests
@@ -78,7 +76,7 @@ assertType('bool|int', Cache::decrement('key', 5));
 // Cache::remember() tests
 assertType('string', Cache::remember('key', 60, fn () => 'value'));
 assertType('int', Cache::remember('key', 60, fn () => 123));
-assertType('array', Cache::remember('key', 60, fn () => []));
+assertType('array{}', Cache::remember('key', 60, fn () => []));
 
 // Cache::rememberForever() tests
 assertType('string', Cache::rememberForever('key', fn () => 'value'));
@@ -91,4 +89,4 @@ assertType('int', Cache::sear('key', fn () => 123));
 // Cache::flexible() tests
 assertType('string', Cache::flexible('key', [60, 120], fn () => 'value'));
 assertType('int', Cache::flexible('key', [60, 120], fn () => 123));
-assertType('array', Cache::flexible('key', [60, 120], fn () => []));
+assertType('array{}', Cache::flexible('key', [60, 120], fn () => []));
