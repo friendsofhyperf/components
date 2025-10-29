@@ -14,16 +14,26 @@ namespace Hyperf\Stringable;
 class Str
 {
     /**
+     * Return the remainder of a string after the first occurrence of a given value.
+     *
+     * @param mixed $string
+     * @return Stringable
+     */
+    public static function of($string)
+    {
+    }
+
+    /**
      * Set the callable that will be used to generate UUIDs.
      */
-    public static function createUuidsUsing(?callable $factory = null)
+    public static function createUuidsUsing(?callable $factory = null): void
     {
     }
 
     /**
      * Indicate that UUIDs should be created normally and not using a custom factory.
      */
-    public static function createUuidsNormally()
+    public static function createUuidsNormally(): void
     {
     }
 
@@ -65,6 +75,28 @@ class Str
      * @return string
      */
     public static function transliterate($string, $unknown = '?', $strict = false)
+    {
+    }
+
+    /**
+     * Determine if a given string doesn't end with a given substring.
+     *
+     * @param string $haystack
+     * @param string|array $needles
+     * @return bool
+     */
+    public static function doesntEndWith($haystack, $needles)
+    {
+    }
+
+    /**
+     * Determine if a given string doesn't start with a given substring.
+     *
+     * @param string $haystack
+     * @param string|array $needles
+     * @return bool
+     */
+    public static function doesntStartWith($haystack, $needles)
     {
     }
 }

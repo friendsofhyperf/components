@@ -1,0 +1,12 @@
+parameters:
+    level: max
+    paths:
+        - types
+    scanFiles:
+        - src/macros/output/Hyperf/Collection/Arr.php
+        - src/macros/output/Hyperf/Collection/Collection.php
+        - src/macros/output/Hyperf/Collection/LazyCollection.php
+        - src/macros/output/Hyperf/HttpServer/Contract/RequestInterface.php
+        - src/macros/output/Hyperf/HttpServer/Request.php
+        - src/macros/output/Hyperf/Stringable/Str.php
+        - src/macros/output/Hyperf/Stringable/Stringable.php

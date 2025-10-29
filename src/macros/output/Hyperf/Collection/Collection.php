@@ -14,6 +14,15 @@ namespace Hyperf\Collection;
 class Collection
 {
     /**
+     * Create a new collection.
+     *
+     * @param mixed $items
+     */
+    public function __construct($items = [])
+    {
+    }
+
+    /**
      * Collapse the collection of items into a single array while preserving its keys.
      *
      * @return static<mixed, mixed>

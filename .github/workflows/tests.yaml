@@ -79,6 +79,8 @@ jobs:
         run: composer update -o
       - name: Run Analyse
         run: composer analyse src
+      - name: Run Type Tests
+        run: composer type-testing
       - name: Setup Services
         run: ./.travis/setup.services.sh
       - name: Run Test Cases
