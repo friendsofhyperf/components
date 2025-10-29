@@ -19,6 +19,7 @@ use RuntimeException;
 use Sentry\ClientBuilder;
 use Sentry\Integration as SdkIntegration;
 use Sentry\State\Hub;
+use Sentry\State\HubInterface;
 
 use function Hyperf\Support\make;
 
@@ -28,7 +29,7 @@ use function Hyperf\Support\make;
  */
 class HubFactory
 {
-    public function __invoke(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container): HubInterface
     {
         $clientBuilder = $container->get(ClientBuilder::class);
         $options = $clientBuilder->getOptions();
