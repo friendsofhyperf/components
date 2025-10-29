@@ -159,7 +159,7 @@ assertType('bool', dispatch(new class implements Hyperf\AsyncQueue\JobInterface 
     {
     }
 
-    public function fail(\Throwable $e): void
+    public function fail(Throwable $e): void
     {
     }
 
