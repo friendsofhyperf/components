@@ -16,8 +16,7 @@ class Str
     /**
      * Return the remainder of a string after the first occurrence of a given value.
      *
-     * @param string $subject
-     * @param string $search
+     * @param mixed $string
      * @return Stringable
      */
     public static function of($string)
