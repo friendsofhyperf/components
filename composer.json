@@ -34,13 +34,13 @@
         "psy/psysh": "^0.10.0 || ^0.11.0",
         "ramsey/uuid": "^4.7",
         "sentry/sentry": "^4.16.0",
-        "symfony/console": "^5.3 || ^6.0 || ^7.0",
-        "symfony/http-foundation": "^5.3 || ^6.0 || ^7.0",
+        "symfony/console": "^6.0 || ^7.0",
+        "symfony/http-foundation": "^6.0 || ^7.0",
         "symfony/polyfill-php84": "^1.33",
         "symfony/polyfill-php85": "^1.33",
-        "symfony/process": "^5.3 || ^6.0 || ^7.0",
-        "symfony/uid": "^5.3 || ^6.0 || ^7.0",
-        "symfony/var-dumper": "^5.3 || ^6.0 || ^7.0"
+        "symfony/process": "^6.0 || ^7.0",
+        "symfony/uid": "^6.0 || ^7.0",
+        "symfony/var-dumper": "^6.0 || ^7.0"
     },
     "require-dev": {
         "aws/aws-sdk-php": "^3.235.5",

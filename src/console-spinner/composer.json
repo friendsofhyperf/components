@@ -24,8 +24,8 @@
         "hyperf/context": "~3.2.0",
         "hyperf/di": "~3.2.0",
         "hyperf/support": "~3.2.0",
-        "symfony/console": "^5.3 || ^6.0 || ^7.0",
-        "symfony/process": "^5.3 || ^6.0 || ^7.0"
+        "symfony/console": "^6.0 || ^7.0",
+        "symfony/process": "^6.0 || ^7.0"
     },
     "autoload": {
         "psr-4": {
