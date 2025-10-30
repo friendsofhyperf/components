@@ -1,5 +1,27 @@
 # Changelog
 
+## v3.1.70 - 2025-10-30
+
+### What's Changed
+
+* refactor(sentry): centralize trace header constants for improved maintainability by @huangdijia in https://github.com/friendsofhyperf/components/pull/946
+* ✨ Enhance Copilot instructions with coding agent best practices by @Copilot in https://github.com/friendsofhyperf/components/pull/952
+* docs(sentry): update documentation to use LogsHandler instead of deprecated SentryHandler by @Copilot in https://github.com/friendsofhyperf/components/pull/950
+* feat(sentry): align GrpcAspect with OpenTelemetry semantic conventions by @huangdijia in https://github.com/friendsofhyperf/components/pull/955
+* feat(sentry): support nested spans for console commands by @huangdijia in https://github.com/friendsofhyperf/components/pull/956
+* feat(validated-dto): support Cast attribute for DTOCast type by @huangdijia in https://github.com/friendsofhyperf/components/pull/958
+* fix(confd): correct NacosClient instantiation parameter format by @huangdijia in https://github.com/friendsofhyperf/components/pull/959
+* feat(sentry): add database connection pool metrics to breadcrumbs by @huangdijia in https://github.com/friendsofhyperf/components/pull/960
+* refactor(sentry): extract setup logic to dedicated listener by @huangdijia in https://github.com/friendsofhyperf/components/pull/961
+* fix(sentry): correct origin semantic convention for Monolog handler by @huangdijia in https://github.com/friendsofhyperf/components/pull/965
+* feat(sentry): add producer identification to AMQP tracing by @huangdijia in https://github.com/friendsofhyperf/components/pull/966
+* feat(sentry): improve coroutine context handling and exception capture by @huangdijia in https://github.com/friendsofhyperf/components/pull/967
+* feat: extract co-phpunit package for coroutine testing support by @huangdijia in https://github.com/friendsofhyperf/components/pull/968
+* feat(sentry): add @Ignore annotation for exception filtering by @huangdijia in https://github.com/friendsofhyperf/components/pull/969
+* feat: Add PHPStan type testing by @huangdijia in https://github.com/friendsofhyperf/components/pull/970
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.69...v3.1.70
+
 ## v3.1.69 - 2025-10-11
 
 ### What's Changed
