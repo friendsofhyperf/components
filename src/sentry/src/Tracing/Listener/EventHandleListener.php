@@ -18,7 +18,6 @@ use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use FriendsOfHyperf\Sentry\Util\CoContainer;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
-use FriendsOfHyperf\Support\RedisCommand;
 use Hyperf\Amqp\Event as AmqpEvent;
 use Hyperf\Amqp\Message\ConsumerMessage;
 use Hyperf\AsyncQueue\Event as AsyncQueueEvent;
@@ -466,7 +465,7 @@ class EventHandleListener implements ListenerInterface
 
         $pool = $this->container->get(RedisPoolFactory::class)->getPool($event->connectionName);
         $config = $this->config->get('redis.' . $event->connectionName, []);
-        $redisStatement = (string) new RedisCommand($event->command, $event->parameters);
+        $redisStatement = $event->getFormatCommand();
 
         trace(
             function (Scope $scope) use ($event) {
