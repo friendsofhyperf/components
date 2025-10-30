@@ -111,6 +111,7 @@ class DatabaseNotification extends Model
 
     /**
      * Create a new database notification collection instance.
+     * @return \Hyperf\Database\Model\Collection
      */
     public function newCollection(array $models = [])
     {

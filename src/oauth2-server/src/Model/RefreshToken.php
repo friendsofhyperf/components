@@ -66,7 +66,7 @@ class RefreshToken extends Model implements RefreshTokenInterface
 
     public function getAccessToken(): ?AccessTokenInterface
     {
-        return $this->accessToken()->first();
+        return $this->accessToken()->first(); // @phpstan-ignore-line
     }
 
     public function isRevoked(): bool
