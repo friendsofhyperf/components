@@ -4,7 +4,7 @@
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/components/v)](https://packagist.org/packages/friendsofhyperf/components)
 [![License](https://poser.pugx.org/friendsofhyperf/components/license)](https://packagist.org/packages/friendsofhyperf/components)
 [![PHP Version Require](https://poser.pugx.org/friendsofhyperf/components/require/php)](https://packagist.org/packages/friendsofhyperf/components)
-[![Hyperf Version Require](https://img.shields.io/badge/hyperf->=3.1.0-brightgreen.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/components)
+[![Hyperf Version Require](https://img.shields.io/badge/hyperf->=3.2.0-brightgreen.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/components)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/friendsofhyperf/components)
 
 [English](README.md)
@@ -18,7 +18,7 @@
 ## ✨ 特性
 
 - 🎯 **50+ 组件** - 涵盖各种开发需求的全面集合
-- 🔌 **易于集成** - 与 Hyperf 3.1+ 无缝集成
+- 🔌 **易于集成** - 与 Hyperf 3.2+ 无缝集成
 - 📦 **模块化设计** - 只安装您需要的组件
 - 🛡️ **生产就绪** - 在生产环境中久经考验
 - 📚 **文档完善** - 提供多语言的全面文档
