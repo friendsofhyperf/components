@@ -17,7 +17,7 @@ then
 fi
 
 NOW=$(date +%s)
-RELEASE_BRANCH="main"
+RELEASE_BRANCH="3.2"
 CURRENT_BRANCH=$(git rev-parse --abbrev-ref HEAD)
 BASEPATH=$(cd `dirname $0`; cd ../src/; pwd)
 VERSION=$1
