@@ -22,6 +22,12 @@ use function Hyperf\Config\config;
  */
 trait HasHashid
 {
+    public const DEFAULT_HASHIDS_CONNECTION = 'main';
+
+    public const DEFAULT_HASHIDS_ALPHABET = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890';
+
+    public const DEFAULT_HASHIDS_LENGTH = 0;
+
     public static function bootHasHashid()
     {
         static::addGlobalScope(new HashidScope());
@@ -63,8 +69,8 @@ trait HasHashid
 
         return new Hashids(
             $config['salt'] ?? '',
-            $config['length'] ?? 0,
-            $config['alphabet'] ?? 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'
+            $config['length'] ?? self::DEFAULT_HASHIDS_LENGTH,
+            $config['alphabet'] ?? self::DEFAULT_HASHIDS_ALPHABET
         );
     }
 
@@ -73,7 +79,7 @@ trait HasHashid
      */
     protected function getHashidsConnection()
     {
-        return config('hashids.default', 'main');
+        return config('hashids.default', self::DEFAULT_HASHIDS_CONNECTION);
     }
 
     /**
