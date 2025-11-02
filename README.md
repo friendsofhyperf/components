@@ -7,6 +7,8 @@
 [![Hyperf Version Require](https://img.shields.io/badge/hyperf->=3.1.0-brightgreen.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/components)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/friendsofhyperf/components)
 
+[中文说明](README_CN.md)
+
 🚀 The most popular and comprehensive collection of high-quality components for the [Hyperf](https://hyperf.io) framework, providing 50+ production-ready packages to accelerate your application development.
 
 ## 📖 About
