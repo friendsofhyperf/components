@@ -15,7 +15,7 @@ composer require friendsofhyperf/co-phpunit --dev
 - 協程上下文不可用
 - 計時器和事件循環無法正常工作
 - 協調器模式失敗
-- 資料庫連接池問題
+- 資料庫連線池問題
 
 Co-PHPUnit 透過在需要時自動將測試執行包裝在 Swoole 協程上下文中來解決這些問題。
 
@@ -149,7 +149,7 @@ class ServiceTest extends TestCase
 
     public function testDatabaseConnection()
     {
-        // 測試需要連接池的資料庫操作
+        // 測試需要連線池的資料庫操作
         $result = Db::table('users')->first();
 
         $this->assertIsArray($result);

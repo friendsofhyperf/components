@@ -18,7 +18,7 @@ Command Benchmark 組件為 Hyperf 命令提供了效能基準測試功能。它
 
 ## 使用
 
-該組件透過 AOP（面向切面程式設計）自動為所有 Hyperf 命令新增 `--enable-benchmark` 選項。
+該組件透過 AOP（面向切面編程）自動為所有 Hyperf 命令新增 `--enable-benchmark` 選項。
 
 ### 啟用基準測試
 
