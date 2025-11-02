@@ -1,6 +1,6 @@
 # Co-PHPUnit
 
-A PHPUnit extension that enables tests to run inside Swoole coroutines, specifically designed for testing Hyperf applications and other Swoole-based frameworks.
+A PHPUnit extension that enables tests to run within Swoole coroutines, specifically designed for testing Hyperf applications and other Swoole-based frameworks.
 
 ## Installation
 
@@ -12,12 +12,12 @@ composer require friendsofhyperf/co-phpunit --dev
 
 When testing Hyperf applications, many components rely on Swoole's coroutine context to function properly. Running tests in a traditional synchronous environment can lead to issues such as:
 
-- Coroutine context not being available
+- Coroutine context being unavailable
 - Timers and event loops not working correctly
 - Coordinator pattern failures
-- Database connection pool issues
+- Database connection pool problems
 
-Co-PHPUnit solves these problems by automatically wrapping test execution in a Swoole coroutine context when needed.
+Co-PHPUnit addresses these issues by automatically wrapping test execution within Swoole coroutine contexts when needed.
 
 ## Usage
 
@@ -39,15 +39,15 @@ class YourTest extends TestCase
 
     public function testSomething()
     {
-        // Your test code here
-        // This will automatically run inside a Swoole coroutine
+        // Your test code
+        // This will automatically run within a Swoole coroutine
     }
 }
 ```
 
 ### Disabling Coroutine for Specific Tests
 
-If you need to disable coroutine execution for a specific test class, set the `$enableCoroutine` property to `false`:
+If you need to disable coroutine execution for a particular test class, set the `$enableCoroutine` property to `false`:
 
 ```php
 <?php
@@ -74,15 +74,15 @@ class YourTest extends TestCase
 
 The `RunTestsInCoroutine` trait overrides PHPUnit's `runBare()` method to:
 
-1. **Check Prerequisites**: Verifies that the Swoole extension is loaded and not already in a coroutine context
-2. **Create Coroutine Context**: Wraps test execution in `Swoole\Coroutine\run()`
-3. **Exception Handling**: Properly captures and re-throws exceptions from within the coroutine
-4. **Cleanup**: Clears all timers and resumes coordinator on test completion
-5. **Fallback**: If conditions aren't met, falls back to normal test execution
+1. **Check Prerequisites**: Verify that the Swoole extension is loaded and not already in a coroutine context
+2. **Create Coroutine Context**: Wrap test execution within `Swoole\Coroutine\run()`
+3. **Exception Handling**: Properly catch and re-throw exceptions from within coroutines
+4. **Cleanup**: Clear all timers and restore the coordinator when tests complete
+5. **Fallback**: Fall back to normal test execution if conditions aren't met
 
 ### PHPUnit Patch
 
-The package includes a `phpunit-patch.php` file that automatically removes the `final` keyword from PHPUnit's `TestCase::runBare()` method, allowing the trait to override it. This patch is applied automatically when the package is autoloaded.
+This package includes a `phpunit-patch.php` file that automatically removes the `final` keyword from PHPUnit's `TestCase::runBare()` method, allowing the trait to override it. This patch is automatically applied when the package autoloads.
 
 ## Requirements
 
@@ -117,7 +117,7 @@ No special PHPUnit configuration is required. The package works seamlessly with 
 ## Best Practices
 
 1. **Use for Integration Tests**: This is particularly useful for integration tests that interact with Hyperf's coroutine-aware components
-2. **Selective Enablement**: Not all tests need to run in coroutines. Use `$enableCoroutine = false` for unit tests that don't require coroutine context
+2. **Enable Selectively**: Not all tests need to run in coroutines. Use `$enableCoroutine = false` for unit tests that don't require coroutine context
 3. **Test Isolation**: The package automatically cleans up timers and coordinator state between tests
 4. **Performance**: Tests running in coroutines may have slightly different performance characteristics
 
@@ -149,7 +149,7 @@ class ServiceTest extends TestCase
 
     public function testDatabaseConnection()
     {
-        // Test database operations that require connection pool
+        // Test database operations that require connection pools
         $result = Db::table('users')->first();
 
         $this->assertIsArray($result);
@@ -159,20 +159,20 @@ class ServiceTest extends TestCase
 
 ## Troubleshooting
 
-### Tests Hang or Timeout
+### Tests Hanging or Timing Out
 
-If tests hang, ensure that:
+If tests hang, ensure:
 - All async operations are properly awaited
 - No infinite loops exist in coroutine callbacks
-- Timers are cleared in test teardown
+- Timers are cleared during test teardown
 
 ### "Call to a member function on null"
 
-This usually indicates that coroutine context is not available. Ensure:
+This typically indicates coroutine context is unavailable. Ensure:
 - Swoole extension is installed and enabled
 - The `RunTestsInCoroutine` trait is included
 - `$enableCoroutine` is set to `true`
 
 ### PHPUnit Version Compatibility
 
-The package supports PHPUnit 10.x, 11.x, and 12.x. Ensure your PHPUnit version is compatible.
+This package supports PHPUnit 10.x, 11.x, and 12.x. Make sure your PHPUnit version is compatible.

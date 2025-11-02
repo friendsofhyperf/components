@@ -1,6 +1,6 @@
 # Command Benchmark
 
-Hyperf 命令的基準測試組件，Fork 自 [christophrumpel/artisan-benchmark](https://github.com/christophrumpel/artisan-benchmark)。
+Hyperf 命令的基準測試元件，Fork 自 [christophrumpel/artisan-benchmark](https://github.com/christophrumpel/artisan-benchmark)。
 
 ## 安裝
 
@@ -10,7 +10,7 @@ composer require friendsofhyperf/command-benchmark
 
 ## 介紹
 
-Command Benchmark 組件為 Hyperf 命令提供了效能基準測試功能。它可以自動收集並顯示命令執行的效能指標，包括：
+Command Benchmark 元件為 Hyperf 命令提供了效能基準測試功能。它可以自動收集並顯示命令執行的效能指標，包括：
 
 - **執行時間**：命令執行所需的時間
 - **記憶體使用**：命令執行期間使用的記憶體
@@ -18,7 +18,7 @@ Command Benchmark 組件為 Hyperf 命令提供了效能基準測試功能。它
 
 ## 使用
 
-該組件透過 AOP（面向切面編程）自動為所有 Hyperf 命令新增 `--enable-benchmark` 選項。
+該元件透過 AOP（面向切面程式設計）自動為所有 Hyperf 命令新增 `--enable-benchmark` 選項。
 
 ### 啟用基準測試
 
@@ -28,7 +28,7 @@ Command Benchmark 組件為 Hyperf 命令提供了效能基準測試功能。它
 php bin/hyperf.php your:command --enable-benchmark
 ```
 
-### 輸出範例
+### 輸出示例
 
 命令執行完成後，會在輸出末尾顯示基準測試結果：
 
@@ -43,9 +43,9 @@ php bin/hyperf.php your:command --enable-benchmark
 
 ## 工作原理
 
-該組件使用 Hyperf 的 AOP 功能攔截命令的建構和執行：
+該元件使用 Hyperf 的 AOP 功能攔截命令的構造和執行：
 
-1. **建構階段**：
+1. **構造階段**：
    - 記錄開始時間和記憶體使用
    - 註冊資料庫查詢事件監聽器
    - 為命令新增 `--enable-benchmark` 選項
@@ -60,15 +60,15 @@ php bin/hyperf.php your:command --enable-benchmark
    - 自動格式化時間（毫秒、秒、分鐘）
    - 在命令輸出末尾顯示結果
 
-## 設定
+## 配置
 
-該組件無需額外設定，安裝後即可使用。組件會自動註冊到 Hyperf 容器中。
+該元件無需額外配置，安裝後即可使用。元件會自動註冊到 Hyperf 容器中。
 
 ## 技術細節
 
 ### AOP 切面
 
-組件透過 `CommandAspect` 切面類別攔截 `Hyperf\Command\Command` 類別的以下方法：
+元件透過 `CommandAspect` 切面類攔截 `Hyperf\Command\Command` 類的以下方法：
 - `__construct`：初始化效能指標收集
 - `execute`：執行完成後顯示基準測試結果
 
@@ -85,7 +85,7 @@ php bin/hyperf.php your:command --enable-benchmark
 - 1 秒到 60 秒：顯示為秒（如 `2.5s`）
 - 大於 60 秒：顯示為分鐘和秒（如 `2m 30s`）
 
-## 範例
+## 示例
 
 ### 測試資料匯入命令
 
@@ -101,7 +101,7 @@ Importing users...
 ⚡ TIME: 5.23s  MEM: 28.45MB  SQL: 150
 ```
 
-### 測試快取清除命令
+### 測試快取清理命令
 
 ```shell
 php bin/hyperf.php cache:clear --enable-benchmark
@@ -117,7 +117,7 @@ Cache cleared successfully.
 ## 注意事項
 
 1. 基準測試會帶來輕微的效能開銷，建議只在開發和除錯時使用
-2. SQL 查詢統計包括所有透過 Hyperf 資料庫組件執行的查詢
+2. SQL 查詢統計包括所有透過 Hyperf 資料庫元件執行的查詢
 3. 記憶體使用量是相對值，表示命令執行期間增加的記憶體使用量
 
 ## 聯絡方式
