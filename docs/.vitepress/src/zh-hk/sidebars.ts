@@ -27,6 +27,14 @@ const sidebar:DefaultTheme.Sidebar = {
                     link: '/zh-hk/components/cache.md'
                 },
                 {
+                    text: 'Co-PHPUnit',
+                    link: '/zh-hk/components/co-phpunit.md'
+                },
+                {
+                    text: 'Command Benchmark',
+                    link: '/zh-hk/components/command-benchmark.md'
+                },
+                {
                     text: 'Command Signals',
                     link: '/zh-hk/components/command-signals.md'
                 },
