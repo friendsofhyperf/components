@@ -4,7 +4,7 @@
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/components/v)](https://packagist.org/packages/friendsofhyperf/components)
 [![License](https://poser.pugx.org/friendsofhyperf/components/license)](https://packagist.org/packages/friendsofhyperf/components)
 [![PHP Version Require](https://poser.pugx.org/friendsofhyperf/components/require/php)](https://packagist.org/packages/friendsofhyperf/components)
-[![Hyperf Version Require](https://img.shields.io/badge/hyperf->=3.1.0-brightgreen.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/components)
+[![Hyperf Version Require](https://img.shields.io/badge/hyperf->=3.2.0-brightgreen.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/components)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/friendsofhyperf/components)
 
 [中文说明](README_CN.md)
@@ -18,7 +18,7 @@ This repository is a **monorepo** containing a collection of battle-tested, comm
 ## ✨ Features
 
 - 🎯 **50+ Components** - Comprehensive collection covering various development needs
-- 🔌 **Easy Integration** - Seamless integration with Hyperf 3.1+
+- 🔌 **Easy Integration** - Seamless integration with Hyperf 3.2+
 - 📦 **Modular Design** - Install only what you need
 - 🛡️ **Production Ready** - Battle-tested in production environments
 - 📚 **Well Documented** - Comprehensive documentation in multiple languages
