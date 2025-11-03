@@ -11,20 +11,17 @@ declare(strict_types=1);
 (function () {
     /** @var null|\Composer\Autoload\ClassLoader $classLoader */
     $classLoader = null;
-    $autoloadFiles = [
-        __DIR__ . '/../../vendor/autoload.php',
-        __DIR__ . '/../../../vendor/autoload.php',
-        __DIR__ . '/../../../../vendor/autoload.php',
-    ];
-    foreach ($autoloadFiles as $autoloadFile) {
-        if (file_exists($autoloadFile)) {
-            $classLoader = require $autoloadFile;
-            break;
+
+    foreach (spl_autoload_functions() as $loader) {
+        if (is_array($loader) && $loader[0] instanceof Composer\Autoload\ClassLoader) {
+            $classLoader = $loader[0];
         }
     }
-    if (! $classLoader instanceof Composer\Autoload\ClassLoader) {
+
+    if (! $classLoader) {
         return;
     }
+
     if ($file = $classLoader->findFile(PHPUnit\Framework\TestCase::class)) {
         $content = file_get_contents($file);
         $replace = 'public function runBare';
