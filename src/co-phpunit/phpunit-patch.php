@@ -15,6 +15,7 @@ declare(strict_types=1);
     foreach (spl_autoload_functions() as $loader) {
         if (is_array($loader) && $loader[0] instanceof Composer\Autoload\ClassLoader) {
             $classLoader = $loader[0];
+            break;
         }
     }
 
