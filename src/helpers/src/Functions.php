@@ -319,9 +319,9 @@ function logger($message = null, array $context = [], bool $backtrace = false)
     logs()->debug($message, $context);
 }
 
-function logs(string $name = 'hyperf', string $group = 'default'): LoggerInterface
+function logs(string $name = 'hyperf', ?string $channel = null): LoggerInterface
 {
-    return di(LoggerFactory::class)->get($name, $group);
+    return di(LoggerFactory::class)->get($name, $channel);
 }
 
 /**
