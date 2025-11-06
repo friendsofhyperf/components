@@ -13,10 +13,9 @@ namespace FriendsOfHyperf\Sentry\Monolog;
 
 use Hyperf\Collection\Arr;
 use Monolog\LogRecord;
+use Override;
 use Sentry\Logs\LogLevel;
-use Sentry\Logs\Logs;
 use Sentry\Monolog\CompatibilityLogLevelTrait;
-use Throwable;
 
 class LogsHandler extends \Sentry\Monolog\LogsHandler
 {
@@ -35,35 +34,19 @@ class LogsHandler extends \Sentry\Monolog\LogsHandler
     }
 
     /**
-     * @param array<string, mixed>|LogRecord $record
+     * @param array<string,mixed>|LogRecord $record
+     *
+     * @return array<string,mixed>
      */
-    public function handle($record): bool
+    #[Override]
+    protected function compileAttributes($record): array
     {
-        if (! $this->isHandling($record)) {
-            return false;
-        }
-
-        // Do not collect logs for exceptions, they should be handled separately by the `Handler` or `captureException`
-        if (
-            isset($record['context']['exception'])
-            && $record['context']['exception'] instanceof Throwable
-        ) {
-            return false;
-        }
-
-        Logs::getInstance()->aggregator()->add(
-            self::getSentryLogLevelFromMonologLevel($record['level']),
-            $record['message'],
-            [],
-            array_merge(
-                Arr::dot($record['context'] ?? [], 'context.'),
-                Arr::dot($record['extra'] ?? [], 'extra.'),
-                ['logger.channel' => $record['channel'] ?? ''],
-                ['logger.group' => $this->group],
-                ['sentry.origin' => 'auto.log.monolog']
-            )
+        return array_merge(
+            Arr::dot($record['context'] ?? [], 'context.'),
+            Arr::dot($record['extra'] ?? [], 'extra.'),
+            ['logger.channel' => $record['channel'] ?? ''],
+            ['logger.group' => $this->group],
+            ['sentry.origin' => 'auto.log.monolog']
         );
-
-        return $this->bubble === false;
     }
 }
