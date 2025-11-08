@@ -17,6 +17,9 @@ use Throwable;
 
 trait RunTestsInCoroutine
 {
+    /**
+     * @deprecated since v3.1, will be removed in v3.2, use `#[NonCoroutine]` instead.
+     */
     protected bool $enableCoroutine = true;
 
     public function runBare(): void
