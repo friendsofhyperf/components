@@ -11,18 +11,22 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\CoPHPUnit\Concerns;
 
+use FriendsOfHyperf\CoPHPUnit\Attributes\NonCoroutine;
+use ReflectionClass;
 use Throwable;
 
 trait RunTestsInCoroutine
 {
+    /**
+     * @deprecated since v3.1, will be removed in v3.2, use `#[NonCoroutine]` instead.
+     */
     protected bool $enableCoroutine = true;
 
     public function runBare(): void
     {
-        if ($this->enableCoroutine && extension_loaded('swoole') && \Swoole\Coroutine::getCid() === -1) {
+        if ($this->isCoroutineEnabled()) {
             $exception = null;
 
-            /* @phpstan-ignore-next-line */
             \Swoole\Coroutine\run(function () use (&$exception) {
                 try {
                     parent::runBare();
@@ -42,5 +46,28 @@ trait RunTestsInCoroutine
         }
 
         parent::runBare();
+    }
+
+    private function isCoroutineEnabled(): bool
+    {
+        if (! $this->enableCoroutine) {
+            return false;
+        }
+
+        if (! extension_loaded('swoole') || \Swoole\Coroutine::getCid() !== -1) {
+            return false;
+        }
+
+        $refClass = new ReflectionClass(static::class);
+        foreach ($refClass->getAttributes(NonCoroutine::class) as $attribute) {
+            return false;
+        }
+
+        $refMethod = $refClass->getMethod($this->name());
+        foreach ($refMethod->getAttributes(NonCoroutine::class) as $attribute) {
+            return false;
+        }
+
+        return true;
     }
 }
