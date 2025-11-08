@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.1.71 - 2025-11-08
+
+### What's Changed
+
+* Add missing documentation for co-phpunit and command-benchmark components by @Copilot in https://github.com/friendsofhyperf/components/pull/978
+* Enhance README.md with comprehensive component documentation and add Chinese version by @Copilot in https://github.com/friendsofhyperf/components/pull/980
+* refactor(co-phpunit): improve ClassLoader detection using registered autoloaders by @huangdijia in https://github.com/friendsofhyperf/components/pull/985
+* Refactor PHPUnit autoloader discovery mechanism to optimize loader selection process by @huangdijia in https://github.com/friendsofhyperf/components/pull/986
+* feat(sentry): upgrade to v4.18.0 and refactor LogsHandler by @huangdijia in https://github.com/friendsofhyperf/components/pull/988
+* feat(co-phpunit): add NonCoroutine attribute to skip coroutine execution by @huangdijia in https://github.com/friendsofhyperf/components/pull/989
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.70...v3.1.71
+
 ## v3.1.70 - 2025-10-30
 
 ### What's Changed
