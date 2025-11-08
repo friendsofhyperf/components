@@ -19,7 +19,7 @@ use Swoole\Coroutine;
  * @internal
  * @coversNothing
  */
-class AttributeTest extends TestCase
+class RunTestsInCoroutineTest extends TestCase
 {
     #[NonCoroutine]
     public function testWithNonCoroutineAttribute()
