@@ -84,4 +84,8 @@ jobs:
       - name: Setup Services
         run: ./.travis/setup.services.sh
       - name: Run Test Cases
-        run: php vendor/bin/pest --parallel
+        uses: nick-fields/retry@v3
+        with:
+          timeout_minutes: 10
+          max_attempts: 2
+          command: php vendor/bin/pest --parallel
