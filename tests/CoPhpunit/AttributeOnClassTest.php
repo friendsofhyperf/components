@@ -15,10 +15,6 @@ use FriendsOfHyperf\CoPHPUnit\Attributes\NonCoroutine;
 use FriendsOfHyperf\Tests\TestCase;
 use Swoole\Coroutine;
 
-/**
- * @internal
- * @coversNothing
- */
 #[NonCoroutine]
 class AttributeOnClassTest extends TestCase
 {

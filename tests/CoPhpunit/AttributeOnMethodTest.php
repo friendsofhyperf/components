@@ -17,7 +17,6 @@ use Swoole\Coroutine;
 
 /**
  * @internal
- * @coversNothing
  */
 class AttributeOnMethodTest extends TestCase
 {

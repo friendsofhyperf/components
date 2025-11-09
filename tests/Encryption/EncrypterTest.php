@@ -18,7 +18,6 @@ use RuntimeException;
 
 /**
  * @internal
- * @coversNothing
  */
 #[\PHPUnit\Framework\Attributes\Group('encryption')]
 class EncrypterTest extends TestCase

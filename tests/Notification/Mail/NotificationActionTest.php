@@ -16,7 +16,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversNothing
  */
 class NotificationActionTest extends TestCase
 {

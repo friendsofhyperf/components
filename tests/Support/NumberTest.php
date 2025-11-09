@@ -17,7 +17,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversNothing
  */
 #[\PHPUnit\Framework\Attributes\Group('support')]
 class NumberTest extends TestCase

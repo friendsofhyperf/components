@@ -19,7 +19,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversNothing
  */
 #[Group('mail')]
 class AttachableTest extends TestCase

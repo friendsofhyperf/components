@@ -24,7 +24,6 @@ use Psr\Container\ContainerInterface;
 
 /**
  * @internal
- * @coversNothing
  */
 class NotificationSmsChannelTest extends TestCase
 {

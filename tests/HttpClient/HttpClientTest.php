@@ -52,7 +52,6 @@ use function Hyperf\Tappable\tap;
 
 /**
  * @internal
- * @coversNothing
  */
 #[\PHPUnit\Framework\Attributes\Group('http-client')]
 class HttpClientTest extends TestCase

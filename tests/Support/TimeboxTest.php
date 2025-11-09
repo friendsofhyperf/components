@@ -18,7 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversNothing
  */
 #[\PHPUnit\Framework\Attributes\Group('support')]
 class TimeboxTest extends TestCase

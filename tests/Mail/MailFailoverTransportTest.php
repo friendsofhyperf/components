@@ -21,7 +21,6 @@ use Symfony\Component\Mailer\Transport\FailoverTransport;
 
 /**
  * @internal
- * @coversNothing
  */
 #[\PHPUnit\Framework\Attributes\Group('mail')]
 class MailFailoverTransportTest extends TestCase

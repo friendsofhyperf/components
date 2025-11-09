@@ -18,7 +18,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversNothing
  */
 #[Group('support')]
 class ConfigurationUrlParserTest extends TestCase

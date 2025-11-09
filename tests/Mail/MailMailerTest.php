@@ -28,7 +28,6 @@ use function Hyperf\Collection\collect;
 
 /**
  * @internal
- * @coversNothing
  */
 #[\PHPUnit\Framework\Attributes\Group('mail')]
 class MailMailerTest extends TestCase

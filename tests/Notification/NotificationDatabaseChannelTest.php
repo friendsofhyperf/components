@@ -22,7 +22,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversNothing
  */
 #[Group('notification')]
 class NotificationDatabaseChannelTest extends TestCase

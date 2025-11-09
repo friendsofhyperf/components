@@ -20,7 +20,6 @@ use Hyperf\Guzzle\ClientFactory as GuzzleClientFactory;
 
 /**
  * @internal
- * @coversNothing
  */
 #[\PHPUnit\Framework\Attributes\Group('elasticsearch')]
 class ClientFactoryTest extends TestCase

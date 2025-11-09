@@ -25,7 +25,6 @@ use ReflectionClass;
 
 /**
  * @internal
- * @coversNothing
  */
 #[Group('notification')]
 class NotificationRoutesNotificationsTest extends TestCase

@@ -21,7 +21,6 @@ use ReflectionClass;
 
 /**
  * @internal
- * @coversNothing
  */
 #[Group('mail')]
 class MailableAlternativeSyntaxTest extends TestCase

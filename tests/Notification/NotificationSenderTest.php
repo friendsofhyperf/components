@@ -24,7 +24,6 @@ use PHPUnit\Framework\TestCase;
 
 /**
  * @internal
- * @coversNothing
  */
 #[Group('notification')]
 class NotificationSenderTest extends TestCase

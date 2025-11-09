@@ -17,7 +17,6 @@ use Mockery as m;
 
 /**
  * @internal
- * @coversNothing
  */
 class TestCase extends \PHPUnit\Framework\TestCase
 {

@@ -18,7 +18,6 @@ use Hyperf\Coroutine\Waiter;
 
 /**
  * @internal
- * @coversNothing
  */
 #[\PHPUnit\Framework\Attributes\Group('macros')]
 class ContextTest extends TestCase

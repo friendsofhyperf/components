@@ -24,7 +24,6 @@ use function Hyperf\Support\now;
 
 /**
  * @internal
- * @coversNothing
  */
 #[\PHPUnit\Framework\Attributes\Group('support')]
 #[RequiresPhp('!= 8.3.20')]

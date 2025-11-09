@@ -30,7 +30,6 @@ use ReflectionClass;
 
 /**
  * @internal
- * @coversNothing
  */
 #[Group('notification')]
 class NotificationChannelManagerTest extends TestCase
