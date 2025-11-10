@@ -141,11 +141,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     {
         return with($proceedingJoinPoint->process(), function ($result) {
             if (is_array($result) && $carrier = Context::get(Constants::TRACE_CARRIER)) {
-                if (array_is_list($result)) {
-                    $result[] = $carrier->toJson();
-                } elseif (isset($result['job'])) {
-                    $result[Constants::TRACE_CARRIER] = $carrier->toJson();
-                }
+                $result[Constants::TRACE_CARRIER] = $carrier->toJson();
             }
 
             return $result;
@@ -156,11 +152,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     {
         /** @var array $data */
         $data = $proceedingJoinPoint->arguments['keys']['data'] ?? [];
-        $carrier = match (true) {
-            is_array($data) && array_is_list($data) => array_last($data),
-            isset($data['job']) => $data[Constants::TRACE_CARRIER] ?? '',
-            default => null,
-        };
+        $carrier = $data['job'] ?? null;
 
         /** @var null|string $carrier */
         if ($carrier) {
