@@ -94,18 +94,17 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
 
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint, $messageId, $destinationName, $bodySize) {
-                if ($span = $scope->getSpan()) {
-                    $carrier = Carrier::fromSpan($span);
-                } else {
-                    $carrier = Carrier::fromArray([]);
-                }
-
-                $carrier->with([
+                $extra = [
                     'publish_time' => microtime(true),
                     'message_id' => $messageId,
                     'destination_name' => $destinationName,
                     'body_size' => $bodySize,
-                ]);
+                ];
+                if ($span = $scope->getSpan()) {
+                    $carrier = Carrier::fromSpan($span)->with($extra);
+                } else {
+                    $carrier = Carrier::fromArray([])->with($extra);
+                }
 
                 Context::set(Constants::TRACE_CARRIER, $carrier);
 
