@@ -14,9 +14,7 @@ namespace FriendsOfHyperf\Tests\AsyncQueueClosureJob;
 use FriendsOfHyperf\AsyncQueueClosureJob\ClosureJob;
 use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Context\ApplicationContext;
-use Hyperf\Contract\NormalizerInterface;
 use Hyperf\Di\ClosureDefinitionCollectorInterface;
-use InvalidArgumentException;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
 
@@ -56,7 +54,7 @@ class ClosureJobTest extends TestCase
     public function testClosureJobCanHandleSimpleClosure()
     {
         $executed = false;
-        
+
         $job = new ClosureJob(function () use (&$executed) {
             $executed = true;
         });
@@ -66,7 +64,7 @@ class ClosureJobTest extends TestCase
         $container->shouldReceive('has')
             ->with(ClosureDefinitionCollectorInterface::class)
             ->andReturn(false);
-        
+
         ApplicationContext::setContainer($container);
 
         $job->handle();
@@ -77,7 +75,7 @@ class ClosureJobTest extends TestCase
     public function testClosureJobCanHandleClosureWithReturnValue()
     {
         $result = null;
-        
+
         $job = new ClosureJob(function () use (&$result) {
             $result = 'success';
             return $result;
@@ -88,7 +86,7 @@ class ClosureJobTest extends TestCase
         $container->shouldReceive('has')
             ->with(ClosureDefinitionCollectorInterface::class)
             ->andReturn(false);
-        
+
         ApplicationContext::setContainer($container);
 
         $job->handle();
@@ -99,7 +97,7 @@ class ClosureJobTest extends TestCase
     public function testClosureJobCanHandleClosureWithParameters()
     {
         $value = null;
-        
+
         $job = new ClosureJob(function ($param = 'default') use (&$value) {
             $value = $param;
         });
@@ -109,7 +107,7 @@ class ClosureJobTest extends TestCase
         $container->shouldReceive('has')
             ->with(ClosureDefinitionCollectorInterface::class)
             ->andReturn(false);
-        
+
         ApplicationContext::setContainer($container);
 
         $job->handle();
@@ -130,7 +128,7 @@ class ClosureJobTest extends TestCase
     public function testClosureJobWithDependencyInjection()
     {
         $executed = false;
-        
+
         $job = new ClosureJob(function (ContainerInterface $container) use (&$executed) {
             $executed = true;
             $this->assertInstanceOf(ContainerInterface::class, $container);
@@ -141,7 +139,7 @@ class ClosureJobTest extends TestCase
         $container->shouldReceive('has')
             ->with(ClosureDefinitionCollectorInterface::class)
             ->andReturn(true);
-        
+
         $definitionCollector = m::mock(ClosureDefinitionCollectorInterface::class);
         $definition = m::mock();
         $definition->shouldReceive('getMeta')
@@ -154,10 +152,10 @@ class ClosureJobTest extends TestCase
             ->andReturn(false);
         $definition->shouldReceive('allowsNull')
             ->andReturn(false);
-        
+
         $definitionCollector->shouldReceive('getParameters')
             ->andReturn([0 => $definition]);
-        
+
         $container->shouldReceive('get')
             ->with(ClosureDefinitionCollectorInterface::class)
             ->andReturn($definitionCollector);
@@ -167,7 +165,7 @@ class ClosureJobTest extends TestCase
         $container->shouldReceive('get')
             ->with(ContainerInterface::class)
             ->andReturn($container);
-        
+
         ApplicationContext::setContainer($container);
 
         $job->handle();
@@ -193,7 +191,7 @@ class ClosureJobTest extends TestCase
     {
         $captured = 'captured value';
         $result = null;
-        
+
         $job = new ClosureJob(function () use ($captured, &$result) {
             $result = $captured;
         });
@@ -203,7 +201,7 @@ class ClosureJobTest extends TestCase
         $container->shouldReceive('has')
             ->with(ClosureDefinitionCollectorInterface::class)
             ->andReturn(false);
-        
+
         ApplicationContext::setContainer($container);
 
         $job->handle();
@@ -223,7 +221,7 @@ class ClosureJobTest extends TestCase
     public function testClosureJobWithNullableParameter()
     {
         $value = 'not null';
-        
+
         $job = new ClosureJob(function (?string $param = null) use (&$value) {
             $value = $param ?? 'was null';
         });
@@ -233,7 +231,7 @@ class ClosureJobTest extends TestCase
         $container->shouldReceive('has')
             ->with(ClosureDefinitionCollectorInterface::class)
             ->andReturn(true);
-        
+
         $definitionCollector = m::mock(ClosureDefinitionCollectorInterface::class);
         $definition = m::mock();
         $definition->shouldReceive('getMeta')
@@ -245,14 +243,14 @@ class ClosureJobTest extends TestCase
         $definition->shouldReceive('getMeta')
             ->with('defaultValue')
             ->andReturn(null);
-        
+
         $definitionCollector->shouldReceive('getParameters')
             ->andReturn([0 => $definition]);
-        
+
         $container->shouldReceive('get')
             ->with(ClosureDefinitionCollectorInterface::class)
             ->andReturn($definitionCollector);
-        
+
         ApplicationContext::setContainer($container);
 
         $job->handle();
