@@ -22,7 +22,7 @@ trait ClosureParameterInjection
     /**
      * @throws GlobalInvalidArgumentException
      */
-    protected function parseClosureParameters(Closure $closure, array $arguments): array
+    final protected function parseClosureParameters(Closure $closure, array $arguments): array
     {
         $container = ApplicationContext::getContainer();
 
