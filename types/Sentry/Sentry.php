@@ -124,10 +124,9 @@ assertType('bool', trace(static fn (Scope $scope): bool => true, new SpanContext
 $config = new ArrayConfig([
     'sentry.enable.foo' => true,
     'sentry.breadcrumbs.foo' => false,
-    'sentry.enable_tracing' => true,
-    'sentry.tracing.enable.foo' => true,
-    'sentry.tracing.spans.foo' => true,
-    'sentry.tracing.extra_tags' => ['foo' => true],
+    'sentry.tracing_.foo' => true,
+    'sentry.tracing_spans.foo' => true,
+    'sentry.tracing_tags' => ['foo' => true],
     'sentry.crons.enable' => true,
     'sentry.ignore_exceptions' => [RuntimeException::class],
 ]);
@@ -137,7 +136,7 @@ assertType('bool', $feature->isEnabled('foo'));
 assertType('bool', $feature->isBreadcrumbEnabled('foo'));
 assertType('bool', $feature->isTracingEnabled('foo'));
 assertType('bool', $feature->isTracingSpanEnabled('foo'));
-assertType('bool', $feature->isTracingExtraTagEnabled('foo'));
+assertType('bool', $feature->isTracingTagEnabled('foo'));
 assertType('bool', $feature->isCronsEnabled());
 
 Feature::disableCoroutineTracing();
