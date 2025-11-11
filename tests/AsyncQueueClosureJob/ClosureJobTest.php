@@ -20,7 +20,6 @@ use Psr\Container\ContainerInterface;
 
 /**
  * @internal
- * @coversNothing
  */
 #[\PHPUnit\Framework\Attributes\Group('async-queue-closure-job')]
 class ClosureJobTest extends TestCase
@@ -128,10 +127,11 @@ class ClosureJobTest extends TestCase
     public function testClosureJobWithDependencyInjection()
     {
         $executed = false;
+        $test = $this;
 
-        $job = new ClosureJob(function (ContainerInterface $container) use (&$executed) {
+        $job = new ClosureJob(function (ContainerInterface $container) use (&$executed, $test) {
             $executed = true;
-            $this->assertInstanceOf(ContainerInterface::class, $container);
+            $test->assertInstanceOf(ContainerInterface::class, $container);
         });
 
         // Mock the container with DI support
