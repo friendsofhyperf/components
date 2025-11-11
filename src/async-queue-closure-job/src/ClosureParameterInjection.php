@@ -16,44 +16,21 @@ use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\NormalizerInterface;
 use Hyperf\Di\ClosureDefinitionCollectorInterface;
 use InvalidArgumentException as GlobalInvalidArgumentException;
-use Psr\Container\ContainerInterface;
 
 trait ClosureParameterInjection
 {
-    protected function getContainer(): ContainerInterface
-    {
-        return ApplicationContext::getContainer();
-    }
-
-    protected function getClosureDefinitionCollector(): ClosureDefinitionCollectorInterface
-    {
-        return $this->getContainer()->get(ClosureDefinitionCollectorInterface::class);
-    }
-
-    protected function getNormalizer(): NormalizerInterface
-    {
-        return $this->getContainer()->get(NormalizerInterface::class);
-    }
-
     /**
      * @throws GlobalInvalidArgumentException
      */
     protected function parseClosureParameters(Closure $closure, array $arguments): array
     {
-        if (! $this->getContainer()->has(ClosureDefinitionCollectorInterface::class)) {
+        $container = ApplicationContext::getContainer();
+
+        if (! $container->has(ClosureDefinitionCollectorInterface::class)) {
             return [];
         }
 
-        $definitions = $this->getClosureDefinitionCollector()->getParameters($closure);
-
-        return $this->getInjections($definitions, 'Closure', $arguments);
-    }
-
-    /**
-     * @throws GlobalInvalidArgumentException
-     */
-    protected function getInjections(array $definitions, string $callableName, array $arguments): array
-    {
+        $definitions = $container->get(ClosureDefinitionCollectorInterface::class)->getParameters($closure);
         $injections = [];
 
         foreach ($definitions as $pos => $definition) {
@@ -61,16 +38,16 @@ trait ClosureParameterInjection
             if ($value === null) {
                 if ($definition->getMeta('defaultValueAvailable')) {
                     $injections[] = $definition->getMeta('defaultValue');
-                } elseif ($this->getContainer()->has($definition->getName())) {
-                    $injections[] = $this->getContainer()->get($definition->getName());
+                } elseif ($container->has($definition->getName())) {
+                    $injections[] = $container->get($definition->getName());
                 } elseif ($definition->allowsNull()) {
                     $injections[] = null;
                 } else {
                     throw new GlobalInvalidArgumentException("Parameter '{$definition->getMeta('name')}' "
-                        . "of {$callableName} should not be null");
+                        . "of Closure should not be null");
                 }
             } else {
-                $injections[] = $this->getNormalizer()->denormalize($value, $definition->getName());
+                $injections[] = $container->get(NormalizerInterface::class)->denormalize($value, $definition->getName());
             }
         }
 
