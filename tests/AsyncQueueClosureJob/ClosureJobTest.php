@@ -32,7 +32,7 @@ class ClosureJobTest extends TestCase
 
     public function testClosureJobCanBeCreated()
     {
-        $job = new CallQueuedClosure(function () {
+        $job = CallQueuedClosure::create(function () {
             return 'test';
         });
 
@@ -43,7 +43,7 @@ class ClosureJobTest extends TestCase
 
     public function testClosureJobCanBeCreatedWithMaxAttempts()
     {
-        $job = new CallQueuedClosure(function () {
+        $job = CallQueuedClosure::create(function () {
             return 'test';
         }, 3);
 
@@ -54,7 +54,7 @@ class ClosureJobTest extends TestCase
     {
         $executed = false;
 
-        $job = new CallQueuedClosure(function () use (&$executed) {
+        $job = CallQueuedClosure::create(function () use (&$executed) {
             $executed = true;
         });
 
@@ -75,7 +75,7 @@ class ClosureJobTest extends TestCase
     {
         $result = null;
 
-        $job = new CallQueuedClosure(function () use (&$result) {
+        $job = CallQueuedClosure::create(function () use (&$result) {
             $result = 'success';
             return $result;
         });
@@ -97,7 +97,7 @@ class ClosureJobTest extends TestCase
     {
         $value = null;
 
-        $job = new CallQueuedClosure(function ($param = 'default') use (&$value) {
+        $job = CallQueuedClosure::create(function ($param = 'default') use (&$value) {
             $value = $param;
         });
 
@@ -116,7 +116,7 @@ class ClosureJobTest extends TestCase
 
     public function testClosureJobMethodContainsFileAndLine()
     {
-        $job = new CallQueuedClosure(function () {
+        $job = CallQueuedClosure::create(function () {
             return 'test';
         });
 
@@ -129,7 +129,7 @@ class ClosureJobTest extends TestCase
         $executed = false;
         $test = $this;
 
-        $job = new CallQueuedClosure(function (ContainerInterface $container) use (&$executed, $test) {
+        $job = CallQueuedClosure::create(function (ContainerInterface $container) use (&$executed, $test) {
             $executed = true;
             $test->assertInstanceOf(ContainerInterface::class, $container);
         });
@@ -175,7 +175,7 @@ class ClosureJobTest extends TestCase
 
     public function testClosureJobSerializesCorrectly()
     {
-        $job = new CallQueuedClosure(function () {
+        $job = CallQueuedClosure::create(function () {
             return 'test';
         });
 
@@ -192,7 +192,7 @@ class ClosureJobTest extends TestCase
         $captured = 'captured value';
         $result = null;
 
-        $job = new CallQueuedClosure(function () use ($captured, &$result) {
+        $job = CallQueuedClosure::create(function () use ($captured, &$result) {
             $result = $captured;
         });
 
@@ -211,7 +211,7 @@ class ClosureJobTest extends TestCase
 
     public function testClosureJobMaxAttemptsDefaultsToZero()
     {
-        $job = new CallQueuedClosure(function () {
+        $job = CallQueuedClosure::create(function () {
             return 'test';
         });
 
@@ -222,7 +222,7 @@ class ClosureJobTest extends TestCase
     {
         $value = 'not null';
 
-        $job = new CallQueuedClosure(function (?string $param = null) use (&$value) {
+        $job = CallQueuedClosure::create(function (?string $param = null) use (&$value) {
             $value = $param ?? 'was null';
         });
 
