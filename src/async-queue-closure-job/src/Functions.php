@@ -12,24 +12,16 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\AsyncQueueClosureJob;
 
 use Closure;
-use Hyperf\AsyncQueue\Driver\DriverFactory;
-use Hyperf\Context\ApplicationContext;
 
 /**
  * Dispatch a closure as an async queue job.
  *
  * @param Closure $closure The closure to execute
- * @param-closure-this ClosureJob $closure
- * @param string $queue The queue name (default: 'default')
- * @param int $delay The delay in seconds before execution (default: 0)
- * @param int $maxAttempts Maximum number of attempts (default: 0)
+ * @param-closure-this CallQueuedClosure $closure
  */
-function dispatch(Closure $closure, string $queue = 'default', int $delay = 0, int $maxAttempts = 0): bool
+function dispatch(Closure $closure): PendingClosureDispatch
 {
-    $job = new ClosureJob($closure, $maxAttempts);
-
-    return ApplicationContext::getContainer()
-        ->get(DriverFactory::class)
-        ->get($queue)
-        ->push($job, $delay);
+    return new PendingClosureDispatch(
+        CallQueuedClosure::create($closure)
+    );
 }

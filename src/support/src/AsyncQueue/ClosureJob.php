@@ -14,6 +14,6 @@ namespace FriendsOfHyperf\Support\AsyncQueue;
 /**
  * @deprecated since v3.2, will be removed in v3.2, use `FriendsOfHyperf\AsyncQueueClosureJob\ClosureJob` instead.
  */
-class ClosureJob extends \FriendsOfHyperf\AsyncQueueClosureJob\ClosureJob
+class ClosureJob extends \FriendsOfHyperf\AsyncQueueClosureJob\CallQueuedClosure
 {
 }

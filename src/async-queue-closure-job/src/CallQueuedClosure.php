@@ -18,7 +18,7 @@ use ReflectionFunction;
 
 use function Hyperf\Support\with;
 
-class ClosureJob extends Job
+class CallQueuedClosure extends Job
 {
     use Traits\ClosureParameterInjection;
 
@@ -26,13 +26,18 @@ class ClosureJob extends Job
 
     public string $method;
 
-    protected SerializableClosure $closure;
-
-    public function __construct(Closure $closure, int $maxAttempts = 0)
+    public function __construct(public SerializableClosure $closure, int $maxAttempts = 0)
     {
-        $this->closure = new SerializableClosure($closure);
         $this->maxAttempts = $maxAttempts;
         $this->method = with(new ReflectionFunction($this->closure->getClosure()), fn ($reflection) => sprintf('%s:%s', str_replace(rtrim(BASE_PATH, '/') . '/', '', $reflection->getFileName()), $reflection->getStartLine()));
+    }
+
+    /**
+     * @param-closure-this CallQueuedClosure $job
+     */
+    public static function create(Closure $job, int $maxAttempts = 0): static
+    {
+        return new static(new SerializableClosure($job));
     }
 
     public function handle(): mixed

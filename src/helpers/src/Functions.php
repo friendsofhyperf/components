@@ -17,7 +17,7 @@ use Closure;
 use Countable;
 use DateTimeZone;
 use Exception;
-use FriendsOfHyperf\AsyncQueueClosureJob\ClosureJob;
+use FriendsOfHyperf\AsyncQueueClosureJob\CallQueuedClosure;
 use FriendsOfHyperf\AsyncTask\Task as AsyncTask;
 use FriendsOfHyperf\AsyncTask\TaskInterface as AsyncTaskInterface;
 use FriendsOfHyperf\Support\Environment;
@@ -196,7 +196,7 @@ function di(?string $abstract = null, array $parameters = [])
 function dispatch($job, ...$arguments)
 {
     if ($job instanceof Closure) {
-        $job = new ClosureJob($job, (int) ($arguments[2] ?? 0));
+        $job = CallQueuedClosure::create($job, (int) ($arguments[2] ?? 0));
     }
 
     return match (true) {

@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tests\AsyncQueueClosureJob;
 
-use FriendsOfHyperf\AsyncQueueClosureJob\ClosureJob;
+use FriendsOfHyperf\AsyncQueueClosureJob\CallQueuedClosure;
 use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Di\ClosureDefinitionCollectorInterface;
@@ -32,18 +32,18 @@ class ClosureJobTest extends TestCase
 
     public function testClosureJobCanBeCreated()
     {
-        $job = new ClosureJob(function () {
+        $job = new CallQueuedClosure(function () {
             return 'test';
         });
 
-        $this->assertInstanceOf(ClosureJob::class, $job);
+        $this->assertInstanceOf(CallQueuedClosure::class, $job);
         $this->assertEquals('Closure', $job->class);
         $this->assertIsString($job->method);
     }
 
     public function testClosureJobCanBeCreatedWithMaxAttempts()
     {
-        $job = new ClosureJob(function () {
+        $job = new CallQueuedClosure(function () {
             return 'test';
         }, 3);
 
@@ -54,7 +54,7 @@ class ClosureJobTest extends TestCase
     {
         $executed = false;
 
-        $job = new ClosureJob(function () use (&$executed) {
+        $job = new CallQueuedClosure(function () use (&$executed) {
             $executed = true;
         });
 
@@ -75,7 +75,7 @@ class ClosureJobTest extends TestCase
     {
         $result = null;
 
-        $job = new ClosureJob(function () use (&$result) {
+        $job = new CallQueuedClosure(function () use (&$result) {
             $result = 'success';
             return $result;
         });
@@ -97,7 +97,7 @@ class ClosureJobTest extends TestCase
     {
         $value = null;
 
-        $job = new ClosureJob(function ($param = 'default') use (&$value) {
+        $job = new CallQueuedClosure(function ($param = 'default') use (&$value) {
             $value = $param;
         });
 
@@ -116,7 +116,7 @@ class ClosureJobTest extends TestCase
 
     public function testClosureJobMethodContainsFileAndLine()
     {
-        $job = new ClosureJob(function () {
+        $job = new CallQueuedClosure(function () {
             return 'test';
         });
 
@@ -129,7 +129,7 @@ class ClosureJobTest extends TestCase
         $executed = false;
         $test = $this;
 
-        $job = new ClosureJob(function (ContainerInterface $container) use (&$executed, $test) {
+        $job = new CallQueuedClosure(function (ContainerInterface $container) use (&$executed, $test) {
             $executed = true;
             $test->assertInstanceOf(ContainerInterface::class, $container);
         });
@@ -175,7 +175,7 @@ class ClosureJobTest extends TestCase
 
     public function testClosureJobSerializesCorrectly()
     {
-        $job = new ClosureJob(function () {
+        $job = new CallQueuedClosure(function () {
             return 'test';
         });
 
@@ -183,7 +183,7 @@ class ClosureJobTest extends TestCase
         $this->assertIsString($serialized);
 
         $unserialized = unserialize($serialized);
-        $this->assertInstanceOf(ClosureJob::class, $unserialized);
+        $this->assertInstanceOf(CallQueuedClosure::class, $unserialized);
         $this->assertEquals($job->class, $unserialized->class);
     }
 
@@ -192,7 +192,7 @@ class ClosureJobTest extends TestCase
         $captured = 'captured value';
         $result = null;
 
-        $job = new ClosureJob(function () use ($captured, &$result) {
+        $job = new CallQueuedClosure(function () use ($captured, &$result) {
             $result = $captured;
         });
 
@@ -211,7 +211,7 @@ class ClosureJobTest extends TestCase
 
     public function testClosureJobMaxAttemptsDefaultsToZero()
     {
-        $job = new ClosureJob(function () {
+        $job = new CallQueuedClosure(function () {
             return 'test';
         });
 
@@ -222,7 +222,7 @@ class ClosureJobTest extends TestCase
     {
         $value = 'not null';
 
-        $job = new ClosureJob(function (?string $param = null) use (&$value) {
+        $job = new CallQueuedClosure(function (?string $param = null) use (&$value) {
             $value = $param ?? 'was null';
         });
 
