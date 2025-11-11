@@ -113,17 +113,6 @@ The main dispatch function that creates a closure job.
 
 The component includes **75 comprehensive tests** covering all functionality:
 
-- ✅ Basic closure job creation and execution
-- ✅ Max attempts configuration
-- ✅ Dependency injection
-- ✅ Fluent API configuration
-- ✅ Conditional execution (when/unless)
-- ✅ Delayed execution
-- ✅ Multiple queue support
-- ✅ Error handling and exceptions
-- ✅ Serialization and deserialization
-- ✅ Method chaining
-
 Run tests:
 
 ```shell
