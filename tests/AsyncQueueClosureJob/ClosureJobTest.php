@@ -93,6 +93,27 @@ class ClosureJobTest extends TestCase
         $this->assertEquals('success', $result);
     }
 
+    public function testClosureJobCanHandleClosureWithParameters()
+    {
+        $value = null;
+
+        $job = CallQueuedClosure::create(function ($param = 'default') use (&$value) {
+            $value = $param;
+        });
+
+        // Mock the container
+        $container = m::mock(ContainerInterface::class);
+        $container->shouldReceive('has')
+            ->with(ClosureDefinitionCollectorInterface::class)
+            ->andReturn(false);
+
+        ApplicationContext::setContainer($container);
+
+        $job->handle();
+
+        $this->assertEquals('default', $value);
+    }
+
     public function testClosureJobMethodContainsFileAndLine()
     {
         $job = CallQueuedClosure::create(function () {
@@ -166,6 +187,28 @@ class ClosureJobTest extends TestCase
         $this->assertEquals($job->class, $unserialized->class);
     }
 
+    public function testClosureJobCanCaptureVariables()
+    {
+        $captured = 'captured value';
+        $result = null;
+
+        $job = CallQueuedClosure::create(function () use ($captured, &$result) {
+            $result = $captured;
+        });
+
+        // Mock the container
+        $container = m::mock(ContainerInterface::class);
+        $container->shouldReceive('has')
+            ->with(ClosureDefinitionCollectorInterface::class)
+            ->andReturn(false);
+
+        ApplicationContext::setContainer($container);
+
+        $job->handle();
+
+        $this->assertEquals('captured value', $result);
+    }
+
     public function testClosureJobMaxAttemptsDefaultsToZero()
     {
         $job = CallQueuedClosure::create(function () {
@@ -173,5 +216,45 @@ class ClosureJobTest extends TestCase
         });
 
         $this->assertEquals(0, $job->getMaxAttempts());
+    }
+
+    public function testClosureJobWithNullableParameter()
+    {
+        $value = 'not null';
+
+        $job = CallQueuedClosure::create(function (?string $param = null) use (&$value) {
+            $value = $param ?? 'was null';
+        });
+
+        // Mock the container with nullable parameter support
+        $container = m::mock(ContainerInterface::class);
+        $container->shouldReceive('has')
+            ->with(ClosureDefinitionCollectorInterface::class)
+            ->andReturn(true);
+
+        $definitionCollector = m::mock(ClosureDefinitionCollectorInterface::class);
+        $definition = m::mock();
+        $definition->shouldReceive('getMeta')
+            ->with('name')
+            ->andReturn('param');
+        $definition->shouldReceive('getMeta')
+            ->with('defaultValueAvailable')
+            ->andReturn(true);
+        $definition->shouldReceive('getMeta')
+            ->with('defaultValue')
+            ->andReturn(null);
+
+        $definitionCollector->shouldReceive('getParameters')
+            ->andReturn([0 => $definition]);
+
+        $container->shouldReceive('get')
+            ->with(ClosureDefinitionCollectorInterface::class)
+            ->andReturn($definitionCollector);
+
+        ApplicationContext::setContainer($container);
+
+        $job->handle();
+
+        $this->assertEquals('was null', $value);
     }
 }
