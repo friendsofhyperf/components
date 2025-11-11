@@ -152,9 +152,9 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     {
         /** @var array $data */
         $data = $proceedingJoinPoint->arguments['keys']['data'] ?? [];
+        /** @var null|string $carrier */
         $carrier = $data['job'] ?? null;
 
-        /** @var null|string $carrier */
         if ($carrier) {
             Context::set(Constants::TRACE_CARRIER, Carrier::fromJson($carrier));
         }
