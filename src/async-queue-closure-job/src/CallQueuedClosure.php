@@ -37,7 +37,7 @@ class CallQueuedClosure extends Job
      */
     public static function create(Closure $job, int $maxAttempts = 0): static
     {
-        return new static(new SerializableClosure($job));
+        return new static(new SerializableClosure($job), $maxAttempts);
     }
 
     public function handle(): mixed
