@@ -88,18 +88,6 @@ dispatch(function (UserService $userService, int $userId) {
 }, maxAttempts: 3);
 ```
 
-## Alternative Usage
-
-You can also use the generic dispatch helper from the helpers component:
-
-```php
-use function FriendsOfHyperf\Helpers\dispatch;
-
-dispatch(function () {
-    // Your job logic here
-}, maxAttempts: 3); // Set max attempts
-```
-
 ## API Reference
 
 ### `dispatch(Closure $closure, int $maxAttempts = 0): PendingClosureDispatch`
