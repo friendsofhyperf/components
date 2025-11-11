@@ -35,9 +35,9 @@ class ClosureJob extends Job
         $this->method = with(new ReflectionFunction($this->closure->getClosure()), fn ($reflection) => sprintf('%s:%s', str_replace(rtrim(BASE_PATH, '/') . '/', '', $reflection->getFileName()), $reflection->getStartLine()));
     }
 
-    public function handle()
+    public function handle(): mixed
     {
         $parameters = $this->parseClosureParameters($this->closure->getClosure(), []);
-        $this->closure->getClosure()->call($this, ...$parameters);
+        return $this->closure->getClosure()->call($this, ...$parameters);
     }
 }
