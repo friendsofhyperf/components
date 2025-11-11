@@ -76,14 +76,14 @@ class DbAspect extends AbstractAspect
             // 'server.port' => '',
         ];
 
-        if ($this->feature->isTracingExtraTagEnabled('db.sql.bindings', true)) {
+        if ($this->feature->isTracingTagEnabled('db.sql.bindings', true)) {
             $data['db.sql.bindings'] = $arguments['arguments']['bindings'] ?? [];
         }
 
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
                 $result = $proceedingJoinPoint->process();
-                if ($this->feature->isTracingExtraTagEnabled('db.result')) {
+                if ($this->feature->isTracingTagEnabled('db.result')) {
                     $scope->getSpan()?->setData([
                         'db.result' => json_encode($result, JSON_UNESCAPED_UNICODE),
                     ]);

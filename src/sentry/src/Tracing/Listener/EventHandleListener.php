@@ -195,7 +195,7 @@ class EventHandleListener implements ListenerInterface
             'db.pool.using' => $pool->getCurrentConnections(),
         ];
 
-        if ($this->feature->isTracingExtraTagEnabled('db.sql.bindings', true)) {
+        if ($this->feature->isTracingTagEnabled('db.sql.bindings', true)) {
             $data['db.sql.bindings'] = $event->bindings;
         }
 
@@ -474,7 +474,7 @@ class EventHandleListener implements ListenerInterface
                     return;
                 }
 
-                if ($this->feature->isTracingExtraTagEnabled('redis.result')) {
+                if ($this->feature->isTracingTagEnabled('redis.result')) {
                     $span->setData(['db.redis.result' => $event->result]);
                 }
 

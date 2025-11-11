@@ -17,12 +17,10 @@ use Hyperf\Config\Config;
 beforeEach(function () {
     $config = new Config([
         'sentry' => [
-            'tracing' => [
-                'extra_tags' => [
-                    'foo.bar' => true,
-                    'foo.baz' => true,
-                    'foo.bar.baz' => false,
-                ],
+            'tracing_tags' => [
+                'foo.bar' => true,
+                'foo.baz' => true,
+                'foo.bar.baz' => false,
             ],
         ],
     ]);
@@ -30,7 +28,7 @@ beforeEach(function () {
 });
 
 test('test is tracing tag enable', function ($key, $expected) {
-    expect($this->feature->isTracingExtraTagEnabled($key))->toBe($expected);
+    expect($this->feature->isTracingTagEnabled($key))->toBe($expected);
 })->with([
     ['foo.bar', true],
     ['foo.baz', true],

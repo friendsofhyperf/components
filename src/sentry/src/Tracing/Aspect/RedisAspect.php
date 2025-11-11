@@ -80,7 +80,7 @@ class RedisAspect extends AbstractAspect
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
                 return tap($proceedingJoinPoint->process(), function ($result) use ($scope) {
-                    if ($this->feature->isTracingExtraTagEnabled('redis.result')) {
+                    if ($this->feature->isTracingTagEnabled('redis.result')) {
                         $scope->getSpan()?->setData(['redis.result' => $result]);
                     }
                 });
