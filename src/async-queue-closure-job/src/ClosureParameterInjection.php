@@ -18,7 +18,7 @@ use Hyperf\Di\ClosureDefinitionCollectorInterface;
 use InvalidArgumentException as GlobalInvalidArgumentException;
 use Psr\Container\ContainerInterface;
 
-trait ClosureJobTrait
+trait ClosureParameterInjection
 {
     protected function getContainer(): ContainerInterface
     {
