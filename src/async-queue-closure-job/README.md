@@ -107,7 +107,6 @@ The main dispatch function that creates a closure job.
 - Simple closures without parameters
 - Closures with dependency injection
 - Closures with captured variables (`use`)
-- Closures with return values
 - Closures with nullable parameters
 
 ## Testing
