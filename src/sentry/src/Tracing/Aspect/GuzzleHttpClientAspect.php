@@ -113,7 +113,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                                 'http.response_transfer_size' => $response->getHeaderLine('Content-Length'),
                             ]);
 
-                            if ($this->feature->isTracingExtraTagEnabled('http.response.body.contents')) {
+                            if ($this->feature->isTracingTagEnabled('http.response.body.contents')) {
                                 $isTextual = \preg_match(
                                     '/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i',
                                     $response->getHeaderLine('Content-Type')
