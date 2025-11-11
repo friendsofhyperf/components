@@ -54,7 +54,7 @@ class TraceAnnotationAspect extends AbstractAspect
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
                 return tap($proceedingJoinPoint->process(), function ($result) use ($scope) {
-                    if ($this->feature->isTracingExtraTagEnabled('annotation.result')) {
+                    if ($this->feature->isTracingTagEnabled('annotation.result')) {
                         $scope->getSpan()?->setData(['annotation.result' => $result]);
                     }
                 });

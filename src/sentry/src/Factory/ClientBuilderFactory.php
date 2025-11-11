@@ -34,6 +34,8 @@ class ClientBuilderFactory
         'transport_channel_size',
         'transport_concurrent_limit',
         'tracing',
+        'tracing_spans',
+        'tracing_tags',
     ];
 
     public function __invoke(ContainerInterface $container): ClientBuilder

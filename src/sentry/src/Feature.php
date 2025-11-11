@@ -33,11 +33,7 @@ class Feature
 
     public function isTracingEnabled(string $key, bool $default = true): bool
     {
-        if (! $this->config->get('sentry.enable_tracing', true)) {
-            return false;
-        }
-
-        return (bool) $this->config->get('sentry.tracing.enable.' . $key, $default);
+        return (bool) $this->config->get('sentry.tracing.' . $key, $default);
     }
 
     public function isTracingSpanEnabled(string $key, bool $default = true): bool
@@ -46,12 +42,20 @@ class Feature
             return false;
         }
 
-        return (bool) $this->config->get('sentry.tracing.spans.' . $key, $default);
+        return (bool) $this->config->get('sentry.tracing_spans.' . $key, $default);
     }
 
+    public function isTracingTagEnabled(string $key, bool $default = false): bool
+    {
+        return (bool) ($this->config->get('sentry.tracing_tags', [])[$key] ?? $default);
+    }
+
+    /**
+     * @deprecated since v3.1, will be removed in v3.2, use `isTracingTagEnabled` instead.
+     */
     public function isTracingExtraTagEnabled(string $key, bool $default = false): bool
     {
-        return (bool) ($this->config->get('sentry.tracing.extra_tags', [])[$key] ?? $default);
+        return $this->isTracingTagEnabled($key, $default);
     }
 
     public function isCronsEnabled(): bool
