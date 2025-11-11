@@ -87,17 +87,16 @@ class SetupSentryListener implements ListenerInterface
 
     protected function compatibilityConfigurations(): void
     {
-        if ($this->config->has('sentry.tracing.spans') && ! $this->config->has('sentry.tracing_spans')) {
-            $this->config->set('sentry.tracing_spans', $this->config->get('sentry.tracing.spans'));
-        }
+        $mapping = [
+            'sentry.tracing.spans' => 'sentry.tracing_spans',
+            'sentry.tracing.extra_tags' => 'sentry.tracing_tags',
+            'sentry.tracing.enable' => 'sentry.tracing', // MUST be last
+        ];
 
-        if ($this->config->has('sentry.tracing.extra_tags') && ! $this->config->has('sentry.tracing_tags')) {
-            $this->config->set('sentry.tracing_tags', $this->config->get('sentry.tracing.extra_tags'));
-        }
-
-        if ($this->config->has('sentry.tracing.enable')) {
-            foreach ($this->config->get('sentry.tracing.enable') as $key => $enabled) {
-                $this->config->set("sentry.tracing.{$key}", $enabled);
+        foreach ($mapping as $oldKey => $newKey) {
+            if ($this->config->has($oldKey) && ! $this->config->has($newKey)) {
+                $this->config->set($newKey, $this->config->get($oldKey));
+                $this->config->set($oldKey, []);
             }
         }
     }
