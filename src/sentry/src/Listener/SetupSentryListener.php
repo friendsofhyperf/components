@@ -78,10 +78,27 @@ class SetupSentryListener implements ListenerInterface
 
     public function process(object $event): void
     {
+        $this->compatibilityConfigurations();
         $this->setupRequestLifecycle();
         $this->setupRedisEventEnable();
         $this->setupIgnoreExceptions();
         $this->registerLoggerChannel();
+    }
+
+    protected function compatibilityConfigurations(): void
+    {
+        $mapping = [
+            'sentry.tracing.spans' => 'sentry.tracing_spans',
+            'sentry.tracing.extra_tags' => 'sentry.tracing_tags',
+            'sentry.tracing.enable' => 'sentry.tracing', // MUST be last
+        ];
+
+        foreach ($mapping as $oldKey => $newKey) {
+            if ($this->config->has($oldKey) && ! $this->config->has($newKey)) {
+                $this->config->set($newKey, $this->config->get($oldKey));
+                $this->config->set($oldKey, []);
+            }
+        }
     }
 
     protected function setupIgnoreExceptions(): void
