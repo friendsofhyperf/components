@@ -4,7 +4,7 @@
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/async-queue-closure-job)](https://packagist.org/packages/friendsofhyperf/async-queue-closure-job)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/async-queue-closure-job)](https://github.com/friendsofhyperf/async-queue-closure-job)
 
-The async queue closure job component for Hyperf. Execute closures as background jobs with full support for dependency injection, fluent configuration, and robust error handling.
+The async queue closure job component for Hyperf. Execute closures as background jobs with full support for dependency injection, fluent configuration.
 
 ## Installation
 
