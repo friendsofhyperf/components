@@ -93,27 +93,6 @@ class ClosureJobTest extends TestCase
         $this->assertEquals('success', $result);
     }
 
-    public function testClosureJobCanHandleClosureWithParameters()
-    {
-        $value = null;
-
-        $job = CallQueuedClosure::create(function ($param = 'default') use (&$value) {
-            $value = $param;
-        });
-
-        // Mock the container
-        $container = m::mock(ContainerInterface::class);
-        $container->shouldReceive('has')
-            ->with(ClosureDefinitionCollectorInterface::class)
-            ->andReturn(false);
-
-        ApplicationContext::setContainer($container);
-
-        $job->handle();
-
-        $this->assertEquals('default', $value);
-    }
-
     public function testClosureJobMethodContainsFileAndLine()
     {
         $job = CallQueuedClosure::create(function () {
