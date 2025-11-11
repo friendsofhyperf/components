@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Tests\AsyncQueueClosureJob;
 
+use Exception;
 use FriendsOfHyperf\AsyncQueueClosureJob\CallQueuedClosure;
 use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\AsyncQueue\Driver\Driver;
@@ -18,6 +19,8 @@ use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\Context\ApplicationContext;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
+use ReflectionClass;
+use stdClass;
 
 /**
  * @internal
@@ -31,36 +34,6 @@ class FluentDispatchIntegrationTest extends TestCase
 
         // Set up proper container mocking to prevent DirectoryNotFoundException
         $this->setupDefaultContainerMock();
-    }
-
-    protected function setupDefaultContainerMock(): void
-    {
-        $container = m::mock(ContainerInterface::class);
-        $driverFactory = m::mock(DriverFactory::class);
-        $driver = m::mock(Driver::class);
-
-        $container->shouldReceive('get')
-            ->with(DriverFactory::class)
-            ->zeroOrMoreTimes()
-            ->andReturn($driverFactory);
-
-        $container->shouldReceive('has')
-            ->with(\Hyperf\Di\ClosureDefinitionCollectorInterface::class)
-            ->andReturn(false)
-            ->byDefault();
-
-        $driverFactory->shouldReceive('get')
-            ->withAnyArgs()
-            ->zeroOrMoreTimes()
-            ->byDefault()
-            ->andReturn($driver);
-
-        $driver->shouldReceive('push')
-            ->zeroOrMoreTimes()
-            ->byDefault()
-            ->andReturnTrue();
-
-        ApplicationContext::setContainer($container);
     }
 
     protected function tearDown(): void
@@ -137,7 +110,7 @@ class FluentDispatchIntegrationTest extends TestCase
             'dispatch_configured',
             'job_pushed',
             'closure_executed',
-            'dispatch_completed'
+            'dispatch_completed',
         ];
 
         $this->assertEquals($expectedOrder, $executionOrder);
@@ -169,11 +142,11 @@ class FluentDispatchIntegrationTest extends TestCase
 
         ApplicationContext::setContainer($container);
 
-        $injectedService = new \stdClass();
+        $injectedService = new stdClass();
         $injectedService->value = 'injected service';
 
         $result = null;
-        $closure = function (\stdClass $service) use (&$result) {
+        $closure = function (stdClass $service) use (&$result) {
             $result = $service->value;
         };
 
@@ -189,11 +162,11 @@ class FluentDispatchIntegrationTest extends TestCase
             ->andReturn($driverFactory);
 
         $container->shouldReceive('has')
-            ->with(\stdClass::class)
+            ->with(stdClass::class)
             ->andReturn(true);
 
         $container->shouldReceive('get')
-            ->with(\stdClass::class)
+            ->with(stdClass::class)
             ->andReturn($injectedService);
 
         // Add missing expectations for the destructor call
@@ -254,7 +227,7 @@ class FluentDispatchIntegrationTest extends TestCase
             ->when($condition, function ($dispatch) {
                 $dispatch->onQueue('high-priority');
             })
-            ->unless(!$condition, function ($dispatch) {
+            ->unless(! $condition, function ($dispatch) {
                 $dispatch->delay(30);
             });
 
@@ -327,11 +300,11 @@ class FluentDispatchIntegrationTest extends TestCase
         $driverFactory->shouldReceive('get')
             ->with('error-queue')
             ->once()
-            ->andThrow(new \Exception('Driver not found'));
+            ->andThrow(new Exception('Driver not found'));
 
         ApplicationContext::setContainer($container);
 
-        $this->expectException(\Exception::class);
+        $this->expectException(Exception::class);
         $this->expectExceptionMessage('Driver not found');
 
         $closure = function () {
@@ -344,8 +317,39 @@ class FluentDispatchIntegrationTest extends TestCase
         unset($dispatch); // This should trigger the exception
     }
 
+    protected function setupDefaultContainerMock(): void
+    {
+        $container = m::mock(ContainerInterface::class);
+        $driverFactory = m::mock(DriverFactory::class);
+        $driver = m::mock(Driver::class);
+
+        $container->shouldReceive('get')
+            ->with(DriverFactory::class)
+            ->zeroOrMoreTimes()
+            ->andReturn($driverFactory);
+
+        $container->shouldReceive('has')
+            ->with(\Hyperf\Di\ClosureDefinitionCollectorInterface::class)
+            ->andReturn(false)
+            ->byDefault();
+
+        $driverFactory->shouldReceive('get')
+            ->withAnyArgs()
+            ->zeroOrMoreTimes()
+            ->byDefault()
+            ->andReturn($driver);
+
+        $driver->shouldReceive('push')
+            ->zeroOrMoreTimes()
+            ->byDefault()
+            ->andReturnTrue();
+
+        ApplicationContext::setContainer($container);
+    }
+
     /**
-     * Simulate job execution for testing
+     * Simulate job execution for testing.
+     * @param mixed $job
      */
     protected function simulateJobExecution($job, array &$executionOrder): void
     {
@@ -355,7 +359,8 @@ class FluentDispatchIntegrationTest extends TestCase
     }
 
     /**
-     * Simulate job execution with dependency injection
+     * Simulate job execution with dependency injection.
+     * @param mixed $job
      */
     protected function simulateJobExecutionWithDI($job): void
     {
@@ -384,7 +389,7 @@ class FluentDispatchIntegrationTest extends TestCase
             ->andReturn('service');
 
         $definition->shouldReceive('getName')
-            ->andReturn(\stdClass::class);
+            ->andReturn(stdClass::class);
 
         $definition->shouldReceive('getMeta')
             ->with('defaultValueAvailable')
@@ -395,14 +400,14 @@ class FluentDispatchIntegrationTest extends TestCase
 
         // Set up dependency injection for stdClass
         $container->shouldReceive('has')
-            ->with(\stdClass::class)
+            ->with(stdClass::class)
             ->andReturn(true);
 
-        $injectedService = new \stdClass();
+        $injectedService = new stdClass();
         $injectedService->value = 'injected service';
 
         $container->shouldReceive('get')
-            ->with(\stdClass::class)
+            ->with(stdClass::class)
             ->andReturn($injectedService);
 
         ApplicationContext::setContainer($container);
@@ -416,7 +421,7 @@ class FluentDispatchIntegrationTest extends TestCase
      */
     protected function getProperty(object $object, string $property): mixed
     {
-        $reflection = new \ReflectionClass($object);
+        $reflection = new ReflectionClass($object);
         $property = $reflection->getProperty($property);
         $property->setAccessible(true);
 

@@ -17,6 +17,7 @@ use Hyperf\Context\ApplicationContext;
 use Hyperf\Di\ClosureDefinitionCollectorInterface;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
+use ReflectionClass;
 
 /**
  * @internal
@@ -217,7 +218,7 @@ class BasicFunctionalityTest extends TestCase
      */
     protected function getProperty(object $object, string $property): mixed
     {
-        $reflection = new \ReflectionClass($object);
+        $reflection = new ReflectionClass($object);
         $property = $reflection->getProperty($property);
         $property->setAccessible(true);
 

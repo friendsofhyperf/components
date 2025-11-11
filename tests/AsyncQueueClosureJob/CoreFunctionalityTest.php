@@ -19,6 +19,7 @@ use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\Context\ApplicationContext;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
+use ReflectionClass;
 
 /**
  * @internal
@@ -209,12 +210,12 @@ class CoreFunctionalityTest extends TestCase
         $this->assertEquals(6, $job->getMaxAttempts());
 
         // Mock container for execution
-        $container = m::mock(\Psr\Container\ContainerInterface::class);
+        $container = m::mock(ContainerInterface::class);
         $container->shouldReceive('has')
             ->with(\Hyperf\Di\ClosureDefinitionCollectorInterface::class)
             ->andReturn(false);
 
-        \Hyperf\Context\ApplicationContext::setContainer($container);
+        ApplicationContext::setContainer($container);
 
         $result = $job->handle();
 
@@ -244,7 +245,7 @@ class CoreFunctionalityTest extends TestCase
      */
     protected function getProperty(object $object, string $property): mixed
     {
-        $reflection = new \ReflectionClass($object);
+        $reflection = new ReflectionClass($object);
         $property = $reflection->getProperty($property);
         $property->setAccessible(true);
 

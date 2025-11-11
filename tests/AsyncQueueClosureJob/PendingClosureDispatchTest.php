@@ -19,6 +19,7 @@ use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\Context\ApplicationContext;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
+use ReflectionClass;
 
 /**
  * @internal
@@ -214,7 +215,7 @@ class PendingClosureDispatchTest extends TestCase
      */
     protected function getProperty(object $object, string $property): mixed
     {
-        $reflection = new \ReflectionClass($object);
+        $reflection = new ReflectionClass($object);
         $property = $reflection->getProperty($property);
         $property->setAccessible(true);
 
