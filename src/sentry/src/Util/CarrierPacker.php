@@ -43,7 +43,6 @@ class CarrierPacker
         return json_encode([
             Constants::SENTRY_TRACE => $span->toTraceparent(),
             Constants::BAGGAGE => $span->toBaggage(),
-            Constants::TRACEPARENT => $span->toW3CTraceparent(),
             ...$extra,
         ]);
     }
