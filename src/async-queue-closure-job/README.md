@@ -89,48 +89,6 @@ dispatch(function (UserService $userService, int $userId) {
 }, maxAttempts: 3);
 ```
 
-### Return Values and Parameters
-
-```php
-use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
-
-// Closure with return value
-$result = dispatch(function () {
-    return 'Job completed successfully';
-});
-
-// Closure with captured variables
-$data = ['processed' => 0, 'total' => 100];
-dispatch(function () use ($data) {
-    // Process data...
-    $data['processed']++;
-});
-
-// Closure with parameters via dependency injection
-dispatch(function (string $message, int $priority) {
-    // Handle message with priority...
-});
-```
-
-### Error Handling
-
-```php
-use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
-
-try {
-    dispatch(function () {
-        // Job that might fail
-        if (!file_exists('/path/to/file')) {
-            throw new \Exception('File not found');
-        }
-        // Process file...
-    }, maxAttempts: 3); // Will retry up to 3 times
-} catch (\Exception $e) {
-    // Handle job dispatch errors
-    logger()->error('Job dispatch failed: ' . $e->getMessage());
-}
-```
-
 ## Alternative Usage
 
 You can also use the generic dispatch helper from the helpers component:
