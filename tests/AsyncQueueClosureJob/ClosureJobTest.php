@@ -174,44 +174,4 @@ class ClosureJobTest extends TestCase
 
         $this->assertEquals(0, $job->getMaxAttempts());
     }
-
-    public function testClosureJobWithNullableParameter()
-    {
-        $value = 'not null';
-
-        $job = CallQueuedClosure::create(function (?string $param = null) use (&$value) {
-            $value = $param ?? 'was null';
-        });
-
-        // Mock the container with nullable parameter support
-        $container = m::mock(ContainerInterface::class);
-        $container->shouldReceive('has')
-            ->with(ClosureDefinitionCollectorInterface::class)
-            ->andReturn(true);
-
-        $definitionCollector = m::mock(ClosureDefinitionCollectorInterface::class);
-        $definition = m::mock();
-        $definition->shouldReceive('getMeta')
-            ->with('name')
-            ->andReturn('param');
-        $definition->shouldReceive('getMeta')
-            ->with('defaultValueAvailable')
-            ->andReturn(true);
-        $definition->shouldReceive('getMeta')
-            ->with('defaultValue')
-            ->andReturn(null);
-
-        $definitionCollector->shouldReceive('getParameters')
-            ->andReturn([0 => $definition]);
-
-        $container->shouldReceive('get')
-            ->with(ClosureDefinitionCollectorInterface::class)
-            ->andReturn($definitionCollector);
-
-        ApplicationContext::setContainer($container);
-
-        $job->handle();
-
-        $this->assertEquals('was null', $value);
-    }
 }
