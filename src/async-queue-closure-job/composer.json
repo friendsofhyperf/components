@@ -5,8 +5,6 @@
     "type": "library",
     "keywords": [
         "hyperf",
-        "async-queue",
-        "closure",
         "v3.1"
     ],
     "authors": [
