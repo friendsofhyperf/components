@@ -57,7 +57,6 @@ class Carrier implements JsonSerializable, Arrayable, Stringable, Jsonable
         return new static([
             Constants::SENTRY_TRACE => $span->toTraceparent(),
             Constants::BAGGAGE => $span->toBaggage(),
-            Constants::TRACEPARENT => $span->toW3CTraceparent(),
         ]);
     }
 
