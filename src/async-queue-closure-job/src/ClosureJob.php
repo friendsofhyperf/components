@@ -41,7 +41,7 @@ class ClosureJob extends Job
     public function handle()
     {
         $parameters = $this->parseClosureParameters($this->closure->getClosure(), []);
-        $this->closure->__invoke(...$parameters);
+        $this->closure->getClosure()->call($this, ...$parameters);
     }
 
     protected function getContainer(): ContainerInterface
