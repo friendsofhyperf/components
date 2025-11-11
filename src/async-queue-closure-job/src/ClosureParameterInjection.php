@@ -43,8 +43,7 @@ trait ClosureParameterInjection
                 } elseif ($definition->allowsNull()) {
                     $injections[] = null;
                 } else {
-                    throw new GlobalInvalidArgumentException("Parameter '{$definition->getMeta('name')}' "
-                        . 'of Closure should not be null');
+                    throw new GlobalInvalidArgumentException("Parameter '{$definition->getMeta('name')}' of Closure should not be null");
                 }
             } else {
                 $injections[] = $container->get(NormalizerInterface::class)->denormalize($value, $definition->getName());
