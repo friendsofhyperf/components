@@ -108,7 +108,7 @@ class SetupSentryListener implements ListenerInterface
             return;
         }
 
-        $this->config->set('logger.sentry', [
+        $this->config->set('logger.channels.sentry', [
             'handler' => [
                 'class' => LogsHandler::class,
                 'constructor' => [
