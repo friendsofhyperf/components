@@ -20,7 +20,7 @@ use function Hyperf\Support\with;
 
 class ClosureJob extends Job
 {
-    use ClosureParameterInjection;
+    use Traits\ClosureParameterInjection;
 
     public string $class = 'Closure';
 
