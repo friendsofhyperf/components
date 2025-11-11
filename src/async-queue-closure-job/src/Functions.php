@@ -19,6 +19,7 @@ use Hyperf\Context\ApplicationContext;
  * Dispatch a closure as an async queue job.
  *
  * @param Closure $closure The closure to execute
+ * @param-closure-this ClosureJob $closure
  * @param string $queue The queue name (default: 'default')
  * @param int $delay The delay in seconds before execution (default: 0)
  * @param int $maxAttempts Maximum number of attempts (default: 0)
