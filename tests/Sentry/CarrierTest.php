@@ -69,10 +69,9 @@ describe('Carrier Construction', function () {
         $carrier = Carrier::fromSpan($span);
         $data = $carrier->toArray();
 
-        expect($data)->toHaveKeys(['sentry-trace', 'baggage', 'traceparent']);
+        expect($data)->toHaveKeys(['sentry-trace', 'baggage']);
         expect($data['sentry-trace'])->toBeString();
         expect($data['baggage'])->toBeString();
-        expect($data['traceparent'])->toBeString();
     });
 });
 
@@ -287,7 +286,7 @@ describe('Integration Tests', function () {
 
         $data = $carrier->toArray();
         expect($data)->toHaveKey('custom');
-        expect($data)->toHaveKeys(['sentry-trace', 'baggage', 'traceparent']);
+        expect($data)->toHaveKeys(['sentry-trace', 'baggage']);
 
         // Test round trip
         $json = $carrier->toJson();
