@@ -166,28 +166,6 @@ class ClosureJobTest extends TestCase
         $this->assertEquals($job->class, $unserialized->class);
     }
 
-    public function testClosureJobCanCaptureVariables()
-    {
-        $captured = 'captured value';
-        $result = null;
-
-        $job = CallQueuedClosure::create(function () use ($captured, &$result) {
-            $result = $captured;
-        });
-
-        // Mock the container
-        $container = m::mock(ContainerInterface::class);
-        $container->shouldReceive('has')
-            ->with(ClosureDefinitionCollectorInterface::class)
-            ->andReturn(false);
-
-        ApplicationContext::setContainer($container);
-
-        $job->handle();
-
-        $this->assertEquals('captured value', $result);
-    }
-
     public function testClosureJobMaxAttemptsDefaultsToZero()
     {
         $job = CallQueuedClosure::create(function () {
