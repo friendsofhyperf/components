@@ -57,7 +57,7 @@ dispatch(function () {
     // Your job logic here
 })
     ->when($condition, function ($dispatch) {
-        $dispatch->onConnection('conditional-queue');
+        $dispatch->onConnection('conditional-connection');
     });
 
 // Execute only when condition is false
@@ -96,7 +96,7 @@ The main dispatch function that creates a closure job.
 
 ### `PendingClosureDispatch` Methods
 
-- `onConnection(string $queue): static` - Set the queue name
+- `onConnection(string $connection): static` - Set the connection name
 - `delay(int $delay): static` - Set execution delay in seconds
 - `setMaxAttempts(int $maxAttempts): static` - Set maximum retry attempts
 - `when($condition, $callback): static` - Execute callback when condition is true
@@ -110,8 +110,6 @@ The main dispatch function that creates a closure job.
 - Closures with nullable parameters
 
 ## Testing
-
-The component includes **75 comprehensive tests** covering all functionality:
 
 Run tests:
 

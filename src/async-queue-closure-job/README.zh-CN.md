@@ -40,9 +40,9 @@ use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
 dispatch(function () {
     // 你的任务逻辑
 })
-    ->onConnection('high-priority')  // 指定队列
-    ->delay(60)                 // 延迟 60 秒执行
-    ->setMaxAttempts(5);        // 最多重试 5 次
+    ->onConnection('high-priority')  // 指定连接
+    ->delay(60)                      // 延迟 60 秒执行
+    ->setMaxAttempts(5);             // 最多重试 5 次
 ```
 
 ### 条件执行
@@ -57,7 +57,7 @@ dispatch(function () {
     // 你的任务逻辑
 })
     ->when($condition, function ($dispatch) {
-        $dispatch->onConnection('conditional-queue');
+        $dispatch->onConnection('conditional-connection');
     });
 
 // 仅当条件为 false 时执行
@@ -96,7 +96,7 @@ dispatch(function (UserService $userService, int $userId) {
 
 ### `PendingClosureDispatch` 方法
 
-- `onConnection(string $queue): static` - 设置队列名称
+- `onConnection(string $connection): static` - 设置连接名称
 - `delay(int $delay): static` - 设置延迟执行时间（秒）
 - `setMaxAttempts(int $maxAttempts): static` - 设置最大重试次数
 - `when($condition, $callback): static` - 当条件为真时执行回调
@@ -110,8 +110,6 @@ dispatch(function (UserService $userService, int $userId) {
 - 带可空参数的闭包
 
 ## 测试
-
-本组件包含 **75 个全面的测试**，覆盖所有功能：
 
 运行测试：
 
