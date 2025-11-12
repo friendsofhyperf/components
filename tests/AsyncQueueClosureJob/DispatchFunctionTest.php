@@ -132,7 +132,7 @@ class DispatchFunctionTest extends TestCase
         };
 
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 3)
-            ->onQueue('high-priority')
+            ->onConnection('high-priority')
             ->delay(30);
 
         $this->assertInstanceOf(PendingClosureDispatch::class, $dispatch);
@@ -159,7 +159,7 @@ class DispatchFunctionTest extends TestCase
             ->andReturn($driverFactory);
 
         $driverFactory->shouldReceive('get')
-            ->with('delayed-queue')
+            ->with('delayed-connection')
             ->once()
             ->andReturn($driver);
 
@@ -175,7 +175,7 @@ class DispatchFunctionTest extends TestCase
         };
 
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 2)
-            ->onQueue('delayed-queue')
+            ->onConnection('delayed-connection')
             ->delay(120)
             ->setMaxAttempts(5); // Override the initial maxAttempts
 
@@ -235,7 +235,7 @@ class DispatchFunctionTest extends TestCase
             ->andReturn($driverFactory);
 
         $driverFactory->shouldReceive('get')
-            ->with('conditional-queue')
+            ->with('conditional-connection')
             ->once()
             ->andReturn($driver);
 
@@ -251,7 +251,7 @@ class DispatchFunctionTest extends TestCase
 
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 1)
             ->when(true, function ($dispatch) {
-                $dispatch->onQueue('conditional-queue');
+                $dispatch->onConnection('conditional-connection');
             })
             ->unless(false, function ($dispatch) {
                 $dispatch->delay(45);
@@ -260,7 +260,7 @@ class DispatchFunctionTest extends TestCase
         $this->assertInstanceOf(PendingClosureDispatch::class, $dispatch);
 
         // Verify configuration
-        $this->assertEquals('conditional-queue', $this->getProperty($dispatch, 'queue'));
+        $this->assertEquals('conditional-connection', $this->getProperty($dispatch, 'connection'));
         $this->assertEquals(45, $this->getProperty($dispatch, 'delay'));
 
         // Verify the job has the specified maxAttempts

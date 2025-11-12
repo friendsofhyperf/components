@@ -87,15 +87,15 @@ class PendingClosureDispatchSimpleTest extends TestCase
         $this->assertSame($dispatch, $result);
     }
 
-    public function testOnQueueMethod()
+    public function testonConnectionMethod()
     {
         $job = m::mock(CallQueuedClosure::class);
 
         $dispatch = new PendingClosureDispatch($job);
-        $result = $dispatch->onQueue('high-priority');
+        $result = $dispatch->onConnection('high-priority');
 
         $this->assertSame($dispatch, $result);
-        $this->assertEquals('high-priority', $this->getProperty($dispatch, 'queue'));
+        $this->assertEquals('high-priority', $this->getProperty($dispatch, 'connection'));
     }
 
     public function testDelayMethod()
@@ -117,12 +117,12 @@ class PendingClosureDispatchSimpleTest extends TestCase
             ->with(3);
 
         $dispatch = new PendingClosureDispatch($job);
-        $result = $dispatch->onQueue('default')
+        $result = $dispatch->onConnection('default')
             ->delay(30)
             ->setMaxAttempts(3);
 
         $this->assertSame($dispatch, $result);
-        $this->assertEquals('default', $this->getProperty($dispatch, 'queue'));
+        $this->assertEquals('default', $this->getProperty($dispatch, 'connection'));
         $this->assertEquals(30, $this->getProperty($dispatch, 'delay'));
     }
 
@@ -131,7 +131,7 @@ class PendingClosureDispatchSimpleTest extends TestCase
         $job = m::mock(CallQueuedClosure::class);
         $dispatch = new PendingClosureDispatch($job);
 
-        $this->assertEquals('default', $this->getProperty($dispatch, 'queue'));
+        $this->assertEquals('default', $this->getProperty($dispatch, 'connection'));
         $this->assertEquals(0, $this->getProperty($dispatch, 'delay'));
     }
 
@@ -143,20 +143,20 @@ class PendingClosureDispatchSimpleTest extends TestCase
 
         // Test when() method from Conditionable trait
         $result = $dispatch->when(true, function ($dispatch) {
-            $dispatch->onQueue('conditional-queue');
+            $dispatch->onConnection('conditional-connection');
         });
 
         $this->assertSame($dispatch, $result);
-        $this->assertEquals('conditional-queue', $this->getProperty($dispatch, 'queue'));
+        $this->assertEquals('conditional-connection', $this->getProperty($dispatch, 'connection'));
 
         // Test when() with false condition
         $dispatch2 = new PendingClosureDispatch($job);
         $result2 = $dispatch2->when(false, function ($dispatch) {
-            $dispatch->onQueue('should-not-change');
+            $dispatch->onConnection('should-not-change');
         });
 
         $this->assertSame($dispatch2, $result2);
-        $this->assertEquals('default', $this->getProperty($dispatch2, 'queue'));
+        $this->assertEquals('default', $this->getProperty($dispatch2, 'connection'));
     }
 
     public function testUnlessMethodFromConditionableTrait()
@@ -167,20 +167,20 @@ class PendingClosureDispatchSimpleTest extends TestCase
 
         // Test unless() method from Conditionable trait
         $result = $dispatch->unless(false, function ($dispatch) {
-            $dispatch->onQueue('unless-queue');
+            $dispatch->onConnection('unless-connection');
         });
 
         $this->assertSame($dispatch, $result);
-        $this->assertEquals('unless-queue', $this->getProperty($dispatch, 'queue'));
+        $this->assertEquals('unless-connection', $this->getProperty($dispatch, 'connection'));
 
         // Test unless() with true condition
         $dispatch2 = new PendingClosureDispatch($job);
         $result2 = $dispatch2->unless(true, function ($dispatch) {
-            $dispatch->onQueue('should-not-change');
+            $dispatch->onConnection('should-not-connection');
         });
 
         $this->assertSame($dispatch2, $result2);
-        $this->assertEquals('default', $this->getProperty($dispatch2, 'queue'));
+        $this->assertEquals('default', $this->getProperty($dispatch2, 'connection'));
     }
 
     /**

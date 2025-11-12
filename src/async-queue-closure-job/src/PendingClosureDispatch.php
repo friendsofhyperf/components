@@ -20,7 +20,7 @@ class PendingClosureDispatch
 {
     use Conditionable;
 
-    protected string $queue = 'default';
+    protected string $connection = 'default';
 
     protected int $delay = 0;
 
@@ -32,7 +32,7 @@ class PendingClosureDispatch
     {
         ApplicationContext::getContainer()
             ->get(DriverFactory::class)
-            ->get($this->queue)
+            ->get($this->connection)
             ->push($this->job, $this->delay);
     }
 
@@ -42,15 +42,17 @@ class PendingClosureDispatch
         return $this;
     }
 
-    public function onQueue(string $queue): static
+    public function onConnection(string $connection): static
     {
-        $this->queue = $queue;
+        $this->connection = $connection;
+
         return $this;
     }
 
     public function delay(int $delay): static
     {
         $this->delay = $delay;
+
         return $this;
     }
 }

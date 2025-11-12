@@ -61,7 +61,7 @@ class FluentDispatchIntegrationTest extends TestCase
             ->andReturn(false);
 
         $driverFactory->shouldReceive('get')
-            ->with('integration-queue')
+            ->with('integration-connection')
             ->once()
             ->andReturn($driver);
 
@@ -90,7 +90,7 @@ class FluentDispatchIntegrationTest extends TestCase
 
         // Use the fluent dispatch API
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 3)
-            ->onQueue('integration-queue')
+            ->onConnection('integration-connection')
             ->delay(90);
 
         $executionOrder[] = 'dispatch_configured';
@@ -129,7 +129,7 @@ class FluentDispatchIntegrationTest extends TestCase
             ->andReturn($driverFactory);
 
         $driverFactory->shouldReceive('get')
-            ->with('di-queue')
+            ->with('di-connection')
             ->once()
             ->andReturn($driver);
 
@@ -175,7 +175,7 @@ class FluentDispatchIntegrationTest extends TestCase
             ->andReturn(false);
 
         $driverFactory->shouldReceive('get')
-            ->with('di-queue')
+            ->with('di-connection')
             ->andReturn($driver);
 
         $driver->shouldReceive('push')
@@ -186,7 +186,7 @@ class FluentDispatchIntegrationTest extends TestCase
 
         // Dispatch with dependency injection
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 1)
-            ->onQueue('di-queue')
+            ->onConnection('di-connection')
             ->delay(60);
 
         unset($dispatch); // Trigger execution
@@ -225,13 +225,13 @@ class FluentDispatchIntegrationTest extends TestCase
             $executed = true;
         }, 2)
             ->when($condition, function ($dispatch) {
-                $dispatch->onQueue('high-priority');
+                $dispatch->onConnection('high-priority');
             })
             ->unless(! $condition, function ($dispatch) {
                 $dispatch->delay(30);
             });
 
-        $this->assertEquals('high-priority', $this->getProperty($dispatch, 'queue'));
+        $this->assertEquals('high-priority', $this->getProperty($dispatch, 'connection'));
         $this->assertEquals(30, $this->getProperty($dispatch, 'delay'));
 
         unset($dispatch);
@@ -249,7 +249,7 @@ class FluentDispatchIntegrationTest extends TestCase
             ->andReturn($driverFactory);
 
         $driverFactory->shouldReceive('get')
-            ->with('multi-config-queue')
+            ->with('multi-config-connection')
             ->once()
             ->andReturn($driver);
 
@@ -270,14 +270,14 @@ class FluentDispatchIntegrationTest extends TestCase
 
         // Test multiple method calls and overrides
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 5)
-            ->onQueue('initial-queue')
+            ->onConnection('initial-connection')
             ->delay(60)
             ->setMaxAttempts(8) // Override maxAttempts
-            ->onQueue('multi-config-queue') // Override queue
+            ->onConnection('multi-config-connection') // Override queue
             ->delay(300) // Override delay
             ->setMaxAttempts(10); // Final maxAttempts
 
-        $this->assertEquals('multi-config-queue', $this->getProperty($dispatch, 'queue'));
+        $this->assertEquals('multi-config-connection', $this->getProperty($dispatch, 'connection'));
         $this->assertEquals(300, $this->getProperty($dispatch, 'delay'));
 
         $job = $this->getProperty($dispatch, 'job');
@@ -298,7 +298,7 @@ class FluentDispatchIntegrationTest extends TestCase
             ->andReturn($driverFactory);
 
         $driverFactory->shouldReceive('get')
-            ->with('error-queue')
+            ->with('error-connection')
             ->once()
             ->andThrow(new Exception('Driver not found'));
 
@@ -312,7 +312,7 @@ class FluentDispatchIntegrationTest extends TestCase
         };
 
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 1)
-            ->onQueue('error-queue');
+            ->onConnection('error-connection');
 
         unset($dispatch); // This should trigger the exception
     }

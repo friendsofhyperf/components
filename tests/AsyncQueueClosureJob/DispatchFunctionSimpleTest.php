@@ -111,7 +111,7 @@ class DispatchFunctionSimpleTest extends TestCase
         };
 
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 2)
-            ->onQueue('delayed-queue')
+            ->onConnection('delayed-connection')
             ->delay(120)
             ->setMaxAttempts(5); // Override the initial maxAttempts
 
@@ -123,7 +123,7 @@ class DispatchFunctionSimpleTest extends TestCase
         $this->assertEquals(5, $job->getMaxAttempts()); // Should be overridden to 5
 
         // Verify fluent configuration
-        $this->assertEquals('delayed-queue', $this->getProperty($dispatch, 'queue'));
+        $this->assertEquals('delayed-connection', $this->getProperty($dispatch, 'connection'));
         $this->assertEquals(120, $this->getProperty($dispatch, 'delay'));
     }
 
@@ -135,7 +135,7 @@ class DispatchFunctionSimpleTest extends TestCase
 
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 1)
             ->when(true, function ($dispatch) {
-                $dispatch->onQueue('conditional-queue');
+                $dispatch->onConnection('conditional-connection');
             })
             ->unless(false, function ($dispatch) {
                 $dispatch->delay(45);
@@ -144,7 +144,7 @@ class DispatchFunctionSimpleTest extends TestCase
         $this->assertInstanceOf(PendingClosureDispatch::class, $dispatch);
 
         // Verify configuration
-        $this->assertEquals('conditional-queue', $this->getProperty($dispatch, 'queue'));
+        $this->assertEquals('conditional-connection', $this->getProperty($dispatch, 'connection'));
         $this->assertEquals(45, $this->getProperty($dispatch, 'delay'));
 
         // Verify the job has the specified maxAttempts
@@ -161,14 +161,14 @@ class DispatchFunctionSimpleTest extends TestCase
 
         // Test multiple method calls and overrides
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 5)
-            ->onQueue('initial-queue')
+            ->onConnection('initial-connection')
             ->delay(60)
             ->setMaxAttempts(8) // Override maxAttempts
-            ->onQueue('multi-config-queue') // Override queue
+            ->onConnection('multi-config-connection') // Override connection
             ->delay(300) // Override delay
             ->setMaxAttempts(10); // Final maxAttempts
 
-        $this->assertEquals('multi-config-queue', $this->getProperty($dispatch, 'queue'));
+        $this->assertEquals('multi-config-connection', $this->getProperty($dispatch, 'connection'));
         $this->assertEquals(300, $this->getProperty($dispatch, 'delay'));
 
         $job = $this->getProperty($dispatch, 'job');
