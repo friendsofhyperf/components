@@ -42,6 +42,14 @@ class PendingClosureDispatch
         return $this;
     }
 
+    /**
+     * Alias to onConnection.
+     */
+    public function onPool(string $pool): static
+    {
+        return $this->onConnection($pool);
+    }
+
     public function onConnection(string $connection): static
     {
         $this->connection = $connection;
