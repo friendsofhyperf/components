@@ -40,7 +40,7 @@ use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
 dispatch(function () {
     // Your job logic here
 })
-    ->onQueue('high-priority')
+    ->onConnection('high-priority')
     ->delay(60) // Execute after 60 seconds
     ->setMaxAttempts(5);
 ```
@@ -57,7 +57,7 @@ dispatch(function () {
     // Your job logic here
 })
     ->when($condition, function ($dispatch) {
-        $dispatch->onQueue('conditional-queue');
+        $dispatch->onConnection('conditional-queue');
     });
 
 // Execute only when condition is false
@@ -96,7 +96,7 @@ The main dispatch function that creates a closure job.
 
 ### `PendingClosureDispatch` Methods
 
-- `onQueue(string $queue): static` - Set the queue name
+- `onConnection(string $queue): static` - Set the queue name
 - `delay(int $delay): static` - Set execution delay in seconds
 - `setMaxAttempts(int $maxAttempts): static` - Set maximum retry attempts
 - `when($condition, $callback): static` - Execute callback when condition is true
