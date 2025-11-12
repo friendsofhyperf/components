@@ -28,7 +28,15 @@ class CallQueuedClosure extends Job
 
     public function __construct(public SerializableClosure $closure)
     {
-        $this->method = with(new ReflectionFunction($this->closure->getClosure()), fn ($reflection) => sprintf('%s:%s', str_replace(rtrim(BASE_PATH, '/') . '/', '', $reflection->getFileName()), $reflection->getStartLine()));
+        $this->method = with(
+            new ReflectionFunction($this->closure->getClosure()),
+            fn ($reflection) => sprintf(
+                '%s:%s-%s',
+                str_replace(rtrim(BASE_PATH, '/') . '/', '', $reflection->getFileName()),
+                $reflection->getStartLine(),
+                $reflection->getEndLine()
+            )
+        );
     }
 
     /**
