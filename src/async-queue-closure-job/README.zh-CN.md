@@ -26,7 +26,7 @@ dispatch(function () {
 // 设置最大尝试次数（重试限制）
 dispatch(function () {
     // 你的任务逻辑
-}, maxAttempts: 3);
+})->setMaxAttempts(3);
 ```
 
 ## 高级用法
@@ -85,12 +85,12 @@ dispatch(function (UserService $userService, LoggerInterface $logger) {
 dispatch(function (UserService $userService, int $userId) {
     $user = $userService->find($userId);
     // 处理用户...
-}, maxAttempts: 3);
+})->setMaxAttempts(3);
 ```
 
 ## API 参考
 
-### `dispatch(Closure $closure, int $maxAttempts = 0): PendingClosureDispatch`
+### `dispatch(Closure $closure): PendingClosureDispatch`
 
 主要的分发函数，用于创建闭包任务。
 

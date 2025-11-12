@@ -26,18 +26,17 @@ class CallQueuedClosure extends Job
 
     public string $method;
 
-    public function __construct(public SerializableClosure $closure, int $maxAttempts = 0)
+    public function __construct(public SerializableClosure $closure)
     {
-        $this->maxAttempts = $maxAttempts;
         $this->method = with(new ReflectionFunction($this->closure->getClosure()), fn ($reflection) => sprintf('%s:%s', str_replace(rtrim(BASE_PATH, '/') . '/', '', $reflection->getFileName()), $reflection->getStartLine()));
     }
 
     /**
      * @param-closure-this CallQueuedClosure $job
      */
-    public static function create(Closure $job, int $maxAttempts = 0): static
+    public static function create(Closure $job): static
     {
-        return new static(new SerializableClosure($job), $maxAttempts);
+        return new static(new SerializableClosure($job));
     }
 
     public function handle(): mixed

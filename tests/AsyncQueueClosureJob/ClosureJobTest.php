@@ -45,7 +45,8 @@ class ClosureJobTest extends TestCase
     {
         $job = CallQueuedClosure::create(function () {
             return 'test';
-        }, 3);
+        });
+        $job->setMaxAttempts(3);
 
         $this->assertEquals(3, $job->getMaxAttempts());
     }

@@ -91,7 +91,8 @@ class DispatchFunctionTest extends TestCase
             return 'test with max attempts';
         };
 
-        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 5);
+        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure);
+        $dispatch->setMaxAttempts(5);
 
         $this->assertInstanceOf(PendingClosureDispatch::class, $dispatch);
 
@@ -131,9 +132,10 @@ class DispatchFunctionTest extends TestCase
             $executed = true;
         };
 
-        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 3)
+        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->onConnection('high-priority')
-            ->delay(30);
+            ->delay(30)
+            ->setMaxAttempts(3);
 
         $this->assertInstanceOf(PendingClosureDispatch::class, $dispatch);
 
@@ -174,7 +176,7 @@ class DispatchFunctionTest extends TestCase
             return 'chained dispatch';
         };
 
-        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 2)
+        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->onConnection('delayed-connection')
             ->delay(120)
             ->setMaxAttempts(5); // Override the initial maxAttempts
@@ -213,7 +215,8 @@ class DispatchFunctionTest extends TestCase
             return 'zero attempts';
         };
 
-        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 0);
+        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure);
+        $dispatch->setMaxAttempts(0);
 
         $this->assertInstanceOf(PendingClosureDispatch::class, $dispatch);
 
@@ -249,13 +252,14 @@ class DispatchFunctionTest extends TestCase
             return 'conditional';
         };
 
-        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 1)
+        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->when(true, function ($dispatch) {
                 $dispatch->onConnection('conditional-connection');
             })
             ->unless(false, function ($dispatch) {
                 $dispatch->delay(45);
-            });
+            })
+            ->setMaxAttempts(1);
 
         $this->assertInstanceOf(PendingClosureDispatch::class, $dispatch);
 

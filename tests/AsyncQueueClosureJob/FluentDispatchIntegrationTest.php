@@ -89,9 +89,10 @@ class FluentDispatchIntegrationTest extends TestCase
         $executionOrder[] = 'dispatch_started';
 
         // Use the fluent dispatch API
-        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 3)
+        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->onConnection('integration-connection')
-            ->delay(90);
+            ->delay(90)
+            ->setMaxAttempts(3);
 
         $executionOrder[] = 'dispatch_configured';
 
@@ -185,9 +186,10 @@ class FluentDispatchIntegrationTest extends TestCase
             });
 
         // Dispatch with dependency injection
-        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 1)
+        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->onConnection('di-connection')
-            ->delay(60);
+            ->delay(60)
+            ->setMaxAttempts(1);
 
         unset($dispatch); // Trigger execution
 
@@ -223,13 +225,14 @@ class FluentDispatchIntegrationTest extends TestCase
 
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch(function () use (&$executed) {
             $executed = true;
-        }, 2)
+        })
             ->when($condition, function ($dispatch) {
                 $dispatch->onConnection('high-priority');
             })
             ->unless(! $condition, function ($dispatch) {
                 $dispatch->delay(30);
-            });
+            })
+            ->setMaxAttempts(2);
 
         $this->assertEquals('high-priority', $this->getProperty($dispatch, 'connection'));
         $this->assertEquals(30, $this->getProperty($dispatch, 'delay'));
@@ -269,7 +272,7 @@ class FluentDispatchIntegrationTest extends TestCase
         };
 
         // Test multiple method calls and overrides
-        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 5)
+        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->onConnection('initial-connection')
             ->delay(60)
             ->setMaxAttempts(8) // Override maxAttempts
@@ -311,8 +314,9 @@ class FluentDispatchIntegrationTest extends TestCase
             return 'error test';
         };
 
-        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 1)
-            ->onConnection('error-connection');
+        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
+            ->onConnection('error-connection')
+            ->setMaxAttempts(1);
 
         unset($dispatch); // This should trigger the exception
     }

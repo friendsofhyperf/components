@@ -37,7 +37,8 @@ class BasicFunctionalityTest extends TestCase
             return 'test';
         };
 
-        $job = CallQueuedClosure::create($closure, 5);
+        $job = CallQueuedClosure::create($closure);
+        $job->setMaxAttempts(5);
 
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
         $this->assertEquals(5, $job->getMaxAttempts());
@@ -61,7 +62,8 @@ class BasicFunctionalityTest extends TestCase
             return 'test';
         };
 
-        $job = CallQueuedClosure::create($closure, 0);
+        $job = CallQueuedClosure::create($closure);
+        $job->setMaxAttempts(0);
 
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
         $this->assertEquals(0, $job->getMaxAttempts());
@@ -73,7 +75,8 @@ class BasicFunctionalityTest extends TestCase
             return 'test';
         };
 
-        $job = CallQueuedClosure::create($closure, -1);
+        $job = CallQueuedClosure::create($closure);
+        $job->setMaxAttempts(-1);
 
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
         $this->assertEquals(-1, $job->getMaxAttempts());
@@ -86,7 +89,8 @@ class BasicFunctionalityTest extends TestCase
         $job = CallQueuedClosure::create(function () use (&$executed) {
             $executed = true;
             return 'executed';
-        }, 3);
+        });
+        $job->setMaxAttempts(3);
 
         $this->assertEquals(3, $job->getMaxAttempts());
 
@@ -108,7 +112,8 @@ class BasicFunctionalityTest extends TestCase
     {
         $job = CallQueuedClosure::create(function () {
             return 'return value';
-        }, 2);
+        });
+        $job->setMaxAttempts(2);
 
         // Mock container for execution
         $container = m::mock(ContainerInterface::class);
@@ -130,7 +135,8 @@ class BasicFunctionalityTest extends TestCase
 
         $job = CallQueuedClosure::create(function ($param = 'default') use (&$receivedParam) {
             $receivedParam = $param;
-        }, 4);
+        });
+        $job->setMaxAttempts(4);
 
         // Mock container for execution
         $container = m::mock(ContainerInterface::class);
@@ -152,7 +158,8 @@ class BasicFunctionalityTest extends TestCase
 
         $job = CallQueuedClosure::create(function () use ($capturedValue) {
             return $capturedValue;
-        }, 6);
+        });
+        $job->setMaxAttempts(6);
 
         $this->assertEquals(6, $job->getMaxAttempts());
 
@@ -182,7 +189,8 @@ class BasicFunctionalityTest extends TestCase
     {
         $job = CallQueuedClosure::create(function () {
             return 'method property test';
-        }, 8);
+        });
+        $job->setMaxAttempts(8);
 
         $this->assertEquals(8, $job->getMaxAttempts());
         $this->assertStringContainsString('BasicFunctionalityTest.php', $job->method);
@@ -193,11 +201,16 @@ class BasicFunctionalityTest extends TestCase
     {
         $closure = function () { return 'test'; };
 
-        $job1 = CallQueuedClosure::create($closure, 1);
-        $job2 = CallQueuedClosure::create($closure, 5);
-        $job3 = CallQueuedClosure::create($closure, 10);
-        $job4 = CallQueuedClosure::create($closure, 0);
-        $job5 = CallQueuedClosure::create($closure, -1);
+        $job1 = CallQueuedClosure::create($closure);
+        $job1->setMaxAttempts(1);
+        $job2 = CallQueuedClosure::create($closure);
+        $job2->setMaxAttempts(5);
+        $job3 = CallQueuedClosure::create($closure);
+        $job3->setMaxAttempts(10);
+        $job4 = CallQueuedClosure::create($closure);
+        $job4->setMaxAttempts(0);
+        $job5 = CallQueuedClosure::create($closure);
+        $job5->setMaxAttempts(-1);
 
         $this->assertEquals(1, $job1->getMaxAttempts());
         $this->assertEquals(5, $job2->getMaxAttempts());

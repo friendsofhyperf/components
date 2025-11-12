@@ -196,7 +196,10 @@ function di(?string $abstract = null, array $parameters = [])
 function dispatch($job, ...$arguments)
 {
     if ($job instanceof Closure) {
-        $job = CallQueuedClosure::create($job, (int) ($arguments[2] ?? 0));
+        $job = CallQueuedClosure::create($job);
+        if ($arguments[2] ?? 0) {
+            $job->setMaxAttempts((int) $arguments[2]);
+        }
     }
 
     return match (true) {

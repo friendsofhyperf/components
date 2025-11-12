@@ -26,7 +26,7 @@ dispatch(function () {
 // With max attempts (retry limit)
 dispatch(function () {
     // Your job logic here
-}, maxAttempts: 3);
+})->setMaxAttempts(3);
 ```
 
 ## Advanced Usage
@@ -85,12 +85,12 @@ dispatch(function (UserService $userService, LoggerInterface $logger) {
 dispatch(function (UserService $userService, int $userId) {
     $user = $userService->find($userId);
     // Process user...
-}, maxAttempts: 3);
+})->setMaxAttempts(3);
 ```
 
 ## API Reference
 
-### `dispatch(Closure $closure, int $maxAttempts = 0): PendingClosureDispatch`
+### `dispatch(Closure $closure): PendingClosureDispatch`
 
 The main dispatch function that creates a closure job.
 

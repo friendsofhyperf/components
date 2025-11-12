@@ -48,7 +48,8 @@ class CallQueuedClosureCreateTest extends TestCase
             return 'custom max attempts';
         };
 
-        $job = CallQueuedClosure::create($closure, 7);
+        $job = CallQueuedClosure::create($closure);
+        $job->setMaxAttempts(7);
 
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
         $this->assertEquals(7, $job->getMaxAttempts());
@@ -60,7 +61,8 @@ class CallQueuedClosureCreateTest extends TestCase
             return 'zero max attempts';
         };
 
-        $job = CallQueuedClosure::create($closure, 0);
+        $job = CallQueuedClosure::create($closure);
+        $job->setMaxAttempts(0);
 
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
         $this->assertEquals(0, $job->getMaxAttempts());
@@ -72,7 +74,8 @@ class CallQueuedClosureCreateTest extends TestCase
             return 'negative max attempts';
         };
 
-        $job = CallQueuedClosure::create($closure, -1);
+        $job = CallQueuedClosure::create($closure);
+        $job->setMaxAttempts(-1);
 
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
         $this->assertEquals(-1, $job->getMaxAttempts());
@@ -84,7 +87,8 @@ class CallQueuedClosureCreateTest extends TestCase
             return 'large max attempts';
         };
 
-        $job = CallQueuedClosure::create($closure, 999);
+        $job = CallQueuedClosure::create($closure);
+        $job->setMaxAttempts(999);
 
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
         $this->assertEquals(999, $job->getMaxAttempts());
@@ -98,7 +102,8 @@ class CallQueuedClosureCreateTest extends TestCase
             return 'result';
         };
 
-        $job = CallQueuedClosure::create($closure, 5);
+        $job = CallQueuedClosure::create($closure);
+        $job->setMaxAttempts(5);
 
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
         $this->assertEquals(5, $job->getMaxAttempts());
@@ -125,7 +130,8 @@ class CallQueuedClosureCreateTest extends TestCase
             $receivedParam = $param;
         };
 
-        $job = CallQueuedClosure::create($closure, 2);
+        $job = CallQueuedClosure::create($closure);
+        $job->setMaxAttempts(2);
 
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
         $this->assertEquals(2, $job->getMaxAttempts());
@@ -154,7 +160,8 @@ class CallQueuedClosureCreateTest extends TestCase
             $test->assertInstanceOf(ContainerInterface::class, $container);
         };
 
-        $job = CallQueuedClosure::create($closure, 4);
+        $job = CallQueuedClosure::create($closure);
+        $job->setMaxAttempts(4);
 
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
         $this->assertEquals(4, $job->getMaxAttempts());
@@ -205,7 +212,8 @@ class CallQueuedClosureCreateTest extends TestCase
             return $capturedValue;
         };
 
-        $job = CallQueuedClosure::create($closure, 6);
+        $job = CallQueuedClosure::create($closure);
+        $job->setMaxAttempts(6);
 
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
         $this->assertEquals(6, $job->getMaxAttempts());
@@ -238,7 +246,8 @@ class CallQueuedClosureCreateTest extends TestCase
             return 'method property test';
         };
 
-        $job = CallQueuedClosure::create($closure, 8);
+        $job = CallQueuedClosure::create($closure);
+        $job->setMaxAttempts(8);
 
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
         $this->assertEquals(8, $job->getMaxAttempts());
@@ -252,9 +261,12 @@ class CallQueuedClosureCreateTest extends TestCase
         $closure2 = function () { return 'second'; };
         $closure3 = function () { return 'third'; };
 
-        $job1 = CallQueuedClosure::create($closure1, 1);
-        $job2 = CallQueuedClosure::create($closure2, 5);
-        $job3 = CallQueuedClosure::create($closure3, 10);
+        $job1 = CallQueuedClosure::create($closure1);
+        $job1->setMaxAttempts(1);
+        $job2 = CallQueuedClosure::create($closure2);
+        $job2->setMaxAttempts(5);
+        $job3 = CallQueuedClosure::create($closure3);
+        $job3->setMaxAttempts(10);
 
         $this->assertEquals(1, $job1->getMaxAttempts());
         $this->assertEquals(5, $job2->getMaxAttempts());

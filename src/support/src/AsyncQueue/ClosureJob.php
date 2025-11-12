@@ -21,6 +21,10 @@ class ClosureJob extends \FriendsOfHyperf\AsyncQueueClosureJob\CallQueuedClosure
 {
     public function __construct(Closure $closure, int $maxAttempts = 0)
     {
-        parent::__construct(new SerializableClosure($closure), $maxAttempts);
+        parent::__construct(new SerializableClosure($closure));
+
+        if ($maxAttempts > 0) {
+            $this->setMaxAttempts($maxAttempts);
+        }
     }
 }

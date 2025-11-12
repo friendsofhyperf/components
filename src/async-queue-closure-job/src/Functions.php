@@ -19,9 +19,9 @@ use Closure;
  * @param Closure $closure The closure to execute
  * @param-closure-this CallQueuedClosure $closure
  */
-function dispatch(Closure $closure, int $maxAttempts = 0): PendingClosureDispatch
+function dispatch(Closure $closure): PendingClosureDispatch
 {
     return new PendingClosureDispatch(
-        CallQueuedClosure::create($closure, $maxAttempts)
+        CallQueuedClosure::create($closure)
     );
 }

@@ -62,7 +62,8 @@ class CoreFunctionalityTest extends TestCase
             return 'test';
         };
 
-        $job = CallQueuedClosure::create($closure, 5);
+        $job = CallQueuedClosure::create($closure);
+        $job->setMaxAttempts(5);
 
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
         $this->assertEquals(5, $job->getMaxAttempts());
@@ -86,7 +87,8 @@ class CoreFunctionalityTest extends TestCase
             return 'test';
         };
 
-        $job = CallQueuedClosure::create($closure, 3);
+        $job = CallQueuedClosure::create($closure);
+        $job->setMaxAttempts(3);
 
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
         $this->assertEquals(3, $job->getMaxAttempts());
@@ -117,7 +119,8 @@ class CoreFunctionalityTest extends TestCase
             return 'dispatch test';
         };
 
-        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 4);
+        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure);
+        $dispatch->setMaxAttempts(4);
 
         $this->assertInstanceOf(PendingClosureDispatch::class, $dispatch);
 
@@ -147,7 +150,7 @@ class CoreFunctionalityTest extends TestCase
             return 'chaining test';
         };
 
-        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 2)
+        $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->onConnection('chained-connection')
             ->delay(60)
             ->setMaxAttempts(8); // Override initial value
@@ -166,7 +169,7 @@ class CoreFunctionalityTest extends TestCase
         };
 
         // Test when() with true condition
-        $dispatch1 = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 1)
+        $dispatch1 = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->when(true, function ($dispatch) {
                 $dispatch->onConnection('when-true-connection');
             });
@@ -174,7 +177,7 @@ class CoreFunctionalityTest extends TestCase
         $this->assertEquals('when-true-connection', $this->getProperty($dispatch1, 'connection'));
 
         // Test when() with false condition
-        $dispatch2 = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 1)
+        $dispatch2 = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->when(false, function ($dispatch) {
                 $dispatch->onConnection('when-false-connection');
             });
@@ -182,7 +185,7 @@ class CoreFunctionalityTest extends TestCase
         $this->assertEquals('default', $this->getProperty($dispatch2, 'connection'));
 
         // Test unless() with true condition
-        $dispatch3 = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 1)
+        $dispatch3 = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->unless(true, function ($dispatch) {
                 $dispatch->onConnection('unless-true-connection');
             });
@@ -190,7 +193,7 @@ class CoreFunctionalityTest extends TestCase
         $this->assertEquals('default', $this->getProperty($dispatch3, 'connection'));
 
         // Test unless() with false condition
-        $dispatch4 = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure, 1)
+        $dispatch4 = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->unless(false, function ($dispatch) {
                 $dispatch->onConnection('unless-false-connection');
             });
@@ -205,7 +208,8 @@ class CoreFunctionalityTest extends TestCase
         $job = CallQueuedClosure::create(function () use (&$executed) {
             $executed = true;
             return 'executed';
-        }, 6);
+        });
+        $job->setMaxAttempts(6);
 
         $this->assertEquals(6, $job->getMaxAttempts());
 
@@ -227,11 +231,16 @@ class CoreFunctionalityTest extends TestCase
     {
         $closure = function () { return 'test'; };
 
-        $job1 = CallQueuedClosure::create($closure, 1);
-        $job2 = CallQueuedClosure::create($closure, 5);
-        $job3 = CallQueuedClosure::create($closure, 10);
-        $job4 = CallQueuedClosure::create($closure, 0);
-        $job5 = CallQueuedClosure::create($closure, -1);
+        $job1 = CallQueuedClosure::create($closure);
+        $job1->setMaxAttempts(1);
+        $job2 = CallQueuedClosure::create($closure);
+        $job2->setMaxAttempts(5);
+        $job3 = CallQueuedClosure::create($closure);
+        $job3->setMaxAttempts(10);
+        $job4 = CallQueuedClosure::create($closure);
+        $job4->setMaxAttempts(0);
+        $job5 = CallQueuedClosure::create($closure);
+        $job5->setMaxAttempts(-1);
 
         $this->assertEquals(1, $job1->getMaxAttempts());
         $this->assertEquals(5, $job2->getMaxAttempts());
