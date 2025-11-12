@@ -17,9 +17,9 @@ use Closure;
 use Countable;
 use DateTimeZone;
 use Exception;
+use FriendsOfHyperf\AsyncQueueClosureJob\CallQueuedClosure;
 use FriendsOfHyperf\AsyncTask\Task as AsyncTask;
 use FriendsOfHyperf\AsyncTask\TaskInterface as AsyncTaskInterface;
-use FriendsOfHyperf\Support\AsyncQueue\ClosureJob;
 use FriendsOfHyperf\Support\Environment;
 use Hyperf\Amqp\Message\ProducerMessageInterface;
 use Hyperf\Amqp\Producer;
@@ -196,7 +196,10 @@ function di(?string $abstract = null, array $parameters = [])
 function dispatch($job, ...$arguments)
 {
     if ($job instanceof Closure) {
-        $job = new ClosureJob($job, (int) ($arguments[2] ?? 0));
+        $job = CallQueuedClosure::create($job);
+        if ($arguments[2] ?? 0) {
+            $job->setMaxAttempts((int) $arguments[2]);
+        }
     }
 
     return match (true) {
