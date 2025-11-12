@@ -1,6 +1,6 @@
 {
-    "name": "friendsofhyperf/support",
-    "description": "Another support component for Hyperf.",
+    "name": "friendsofhyperf/async-queue-closure-job",
+    "description": "The async queue closure job component for Hyperf.",
     "license": "MIT",
     "type": "library",
     "keywords": [
@@ -20,32 +20,22 @@
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
-        "hyperf/collection": "~3.2.0",
-        "hyperf/context": "~3.2.0",
-        "hyperf/di": "~3.2.0",
-        "hyperf/macroable": "~3.2.0",
-        "hyperf/pipeline": "~3.2.0",
-        "hyperf/stringable": "~3.2.0",
-        "hyperf/support": "~3.2.0",
-        "hyperf/tappable": "~3.2.0",
-        "nesbot/carbon": "^2.0 || ^3.0",
-        "symfony/polyfill-php85": "^1.33"
-    },
-    "suggest": {
-        "hyperf/async-queue": "Required to use Hyperf\\AsyncQueue\\Job.(~3.2.0)",
-        "vlucas/phpdotenv": "Required to use Dotenv.(^5.0)"
+        "hyperf/async-queue": "~3.1.0",
+        "hyperf/context": "~3.1.0",
+        "hyperf/di": "~3.1.0",
+        "hyperf/support": "~3.1.0",
+        "laravel/serializable-closure": "^2.0"
     },
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "FriendsOfHyperf\\Support\\": "src"
+            "FriendsOfHyperf\\AsyncQueueClosureJob\\": "src/"
         },
         "files": [
             "src/Functions.php"
         ]
     },
     "config": {
-        "optimize-autoloader": true,
         "sort-packages": true
     },
     "extra": {
@@ -53,7 +43,7 @@
             "dev-main": "3.1-dev"
         },
         "hyperf": {
-            "config": "FriendsOfHyperf\\Support\\ConfigProvider"
+            "config": "FriendsOfHyperf\\AsyncQueueClosureJob\\ConfigProvider"
         }
     }
 }

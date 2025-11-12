@@ -16,6 +16,7 @@ use Hyperf\Validation\Contract\ValidatorFactoryInterface;
 use Mockery as m;
 
 uses(FriendsOfHyperf\Tests\TestCase::class)->in('*/*');
+uses()->group('async-queue-closure-job')->in('AsyncQueueClosureJob');
 uses()->group('cache')->in('Cache');
 uses()->group('config-consul')->in('ConfigConsul');
 uses()->group('elasticsearch')->in('Elasticsearch');
