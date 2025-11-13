@@ -19,6 +19,8 @@ use longlang\phpkafka\Protocol\RecordBatch\RecordHeader;
 
 /**
  * @property array $headers
+ * @property null|string $key
+ * @property null|string $value
  */
 class PendingKafkaProducerMessageDispatch
 {
@@ -41,6 +43,18 @@ class PendingKafkaProducerMessageDispatch
     public function onPool(string $pool): static
     {
         $this->pool = $pool;
+        return $this;
+    }
+
+    public function setKey(string $key): static
+    {
+        (fn () => $this->key = $key)->call($this->message);
+        return $this;
+    }
+
+    public function setValue(string $value): static
+    {
+        (fn () => $this->value = $value)->call($this->message);
         return $this;
     }
 
