@@ -32,7 +32,7 @@ use Psr\Container\ContainerInterface;
 use ReflectionClass;
 use stdClass;
 
-use function FriendsOfHyperf\Helpers\dispatch;
+use function FriendsOfHyperf\Support\dispatch;
 
 /**
  * @internal
