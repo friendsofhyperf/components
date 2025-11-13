@@ -20,7 +20,7 @@ class PendingAmqpProducerMessageDispatch
 {
     use Conditionable;
 
-    public string $pool = 'default';
+    public ?string $pool = null;
 
     public int $timeout = 5;
 
@@ -32,6 +32,7 @@ class PendingAmqpProducerMessageDispatch
 
     public function __destruct()
     {
+        $this->pool && $this->message->setPoolName($this->pool);
         ApplicationContext::getContainer()
             ->get(Producer::class)
             ->produce($this->message, $this->confirm, $this->timeout);
