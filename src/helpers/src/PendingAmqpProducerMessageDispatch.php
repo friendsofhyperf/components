@@ -16,6 +16,9 @@ use Hyperf\Amqp\Producer;
 use Hyperf\Conditionable\Conditionable;
 use Hyperf\Context\ApplicationContext;
 
+/**
+ * @property array{application_headers?:AMQPTable} $properties
+ */
 class PendingAmqpProducerMessageDispatch
 {
     use Conditionable;
@@ -47,6 +50,15 @@ class PendingAmqpProducerMessageDispatch
     public function setPayload(mixed $data): static
     {
         $this->message->setPayload($data);
+        return $this;
+    }
+
+    public function withHeader(string $key, mixed $value, ?int $ttl = null): static
+    {
+        (function () use ($key, $value, $ttl) {
+            $this->properties['application_headers'] ??= new \PhpAmqpLib\Wire\AMQPTable(); // @phpstan-ignore-line
+            $this->properties['application_headers']->set($key, $value, $ttl);
+        })->call($this->message);
         return $this;
     }
 
