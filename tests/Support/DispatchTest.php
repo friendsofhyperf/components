@@ -217,6 +217,11 @@ class DispatchTest extends TestCase
     public function testPendingAmqpProducerMessageDispatchOnPool()
     {
         $message = m::mock(ProducerMessage::class);
+        $message->shouldReceive('setPoolName')
+            ->with('amqp-custom')
+            ->once()
+            ->andReturnSelf();
+
         $pending = dispatch($message);
 
         $result = $pending->onPool('amqp-custom');
@@ -250,6 +255,10 @@ class DispatchTest extends TestCase
     public function testPendingAmqpProducerMessageDispatchFluentChaining()
     {
         $message = m::mock(ProducerMessage::class);
+        $message->shouldReceive('setPoolName')
+            ->with('amqp-pool')
+            ->once()
+            ->andReturnSelf();
 
         $pending = dispatch($message)
             ->onPool('amqp-pool')
