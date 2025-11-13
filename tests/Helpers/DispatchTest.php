@@ -25,11 +25,12 @@ use Hyperf\AsyncQueue\JobInterface;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Kafka\Producer as HyperfKafkaProducer;
 use Hyperf\Kafka\ProducerManager;
+use InvalidArgumentException;
 use longlang\phpkafka\Producer\ProduceMessage;
-use longlang\phpkafka\Producer\Producer as KafkaProducer;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
+use stdClass;
 
 use function FriendsOfHyperf\Helpers\dispatch;
 
@@ -49,58 +50,6 @@ class DispatchTest extends TestCase
     {
         parent::tearDown();
         m::close();
-    }
-
-    protected function setupDefaultContainerMock(): void
-    {
-        $container = m::mock(ContainerInterface::class);
-        $driverFactory = m::mock(DriverFactory::class);
-        $driver = m::mock(Driver::class);
-        $producer = m::mock(Producer::class);
-        $producerManager = m::mock(ProducerManager::class);
-        $kafkaProducer = m::mock(HyperfKafkaProducer::class);
-
-        // Setup for AsyncQueue dispatch
-        $container->shouldReceive('get')
-            ->with(DriverFactory::class)
-            ->zeroOrMoreTimes()
-            ->andReturn($driverFactory);
-
-        $driverFactory->shouldReceive('get')
-            ->withAnyArgs()
-            ->zeroOrMoreTimes()
-            ->andReturn($driver);
-
-        $driver->shouldReceive('push')
-            ->zeroOrMoreTimes()
-            ->andReturnTrue();
-
-        // Setup for AMQP dispatch
-        $container->shouldReceive('get')
-            ->with(Producer::class)
-            ->zeroOrMoreTimes()
-            ->andReturn($producer);
-
-        $producer->shouldReceive('produce')
-            ->zeroOrMoreTimes()
-            ->andReturnTrue();
-
-        // Setup for Kafka dispatch
-        $container->shouldReceive('get')
-            ->with(ProducerManager::class)
-            ->zeroOrMoreTimes()
-            ->andReturn($producerManager);
-
-        $producerManager->shouldReceive('getProducer')
-            ->withAnyArgs()
-            ->zeroOrMoreTimes()
-            ->andReturn($kafkaProducer);
-
-        $kafkaProducer->shouldReceive('sendBatch')
-            ->zeroOrMoreTimes()
-            ->andReturnTrue();
-
-        ApplicationContext::setContainer($container);
     }
 
     public function testDispatchWithClosure()
@@ -150,10 +99,10 @@ class DispatchTest extends TestCase
 
     public function testDispatchWithInvalidType()
     {
-        $this->expectException(\InvalidArgumentException::class);
+        $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Unsupported job type.');
 
-        dispatch(new \stdClass());
+        dispatch(new stdClass());
     }
 
     public function testPendingAsyncQueueDispatchOnPool()
@@ -522,6 +471,58 @@ class DispatchTest extends TestCase
 
         // Trigger destruct which should throw
         unset($pending);
+    }
+
+    protected function setupDefaultContainerMock(): void
+    {
+        $container = m::mock(ContainerInterface::class);
+        $driverFactory = m::mock(DriverFactory::class);
+        $driver = m::mock(Driver::class);
+        $producer = m::mock(Producer::class);
+        $producerManager = m::mock(ProducerManager::class);
+        $kafkaProducer = m::mock(HyperfKafkaProducer::class);
+
+        // Setup for AsyncQueue dispatch
+        $container->shouldReceive('get')
+            ->with(DriverFactory::class)
+            ->zeroOrMoreTimes()
+            ->andReturn($driverFactory);
+
+        $driverFactory->shouldReceive('get')
+            ->withAnyArgs()
+            ->zeroOrMoreTimes()
+            ->andReturn($driver);
+
+        $driver->shouldReceive('push')
+            ->zeroOrMoreTimes()
+            ->andReturnTrue();
+
+        // Setup for AMQP dispatch
+        $container->shouldReceive('get')
+            ->with(Producer::class)
+            ->zeroOrMoreTimes()
+            ->andReturn($producer);
+
+        $producer->shouldReceive('produce')
+            ->zeroOrMoreTimes()
+            ->andReturnTrue();
+
+        // Setup for Kafka dispatch
+        $container->shouldReceive('get')
+            ->with(ProducerManager::class)
+            ->zeroOrMoreTimes()
+            ->andReturn($producerManager);
+
+        $producerManager->shouldReceive('getProducer')
+            ->withAnyArgs()
+            ->zeroOrMoreTimes()
+            ->andReturn($kafkaProducer);
+
+        $kafkaProducer->shouldReceive('sendBatch')
+            ->zeroOrMoreTimes()
+            ->andReturnTrue();
+
+        ApplicationContext::setContainer($container);
     }
 
     /**
