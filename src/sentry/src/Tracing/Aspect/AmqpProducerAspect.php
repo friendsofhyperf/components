@@ -76,7 +76,7 @@ class AmqpProducerAspect extends AbstractAspect
         }
 
         $messageId = SentryUid::generate();
-        $destinationName = implode(', ', (array) $routingKey);
+        $destinationName = empty($routingKey) ? $exchange : implode(', ', (array) $routingKey);
         $bodySize = strlen($producerMessage->payload());
 
         return trace(
