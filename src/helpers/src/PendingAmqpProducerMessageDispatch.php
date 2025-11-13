@@ -44,6 +44,12 @@ class PendingAmqpProducerMessageDispatch
         return $this;
     }
 
+    public function setPayload(mixed $data): static
+    {
+        $this->message->setPayload($data);
+        return $this;
+    }
+
     public function setConfirm(bool $confirm): static
     {
         $this->confirm = $confirm;
