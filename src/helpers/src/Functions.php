@@ -16,6 +16,7 @@ use Closure;
 use Countable;
 use Exception;
 use FriendsOfHyperf\AsyncQueueClosureJob\CallQueuedClosure;
+use FriendsOfHyperf\AsyncTask\TaskInterface as AsyncTaskInterface;
 use Hyperf\Amqp\Annotation\Producer;
 use Hyperf\Amqp\Message\ProducerMessageInterface;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
