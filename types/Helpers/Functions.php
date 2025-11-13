@@ -175,6 +175,9 @@ assertType('FriendsOfHyperf\Helpers\PendingAsyncQueueDispatch', dispatch(new cla
     }
 }));
 
+assertType('FriendsOfHyperf\Helpers\PendingAsyncQueueDispatch', dispatch(function () {
+}));
+
 // info() tests
 assertType('mixed', info('message'));
 
