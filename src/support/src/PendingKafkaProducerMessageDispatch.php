@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Helpers;
+namespace FriendsOfHyperf\Support;
 
 use Hyperf\Conditionable\Conditionable;
 use Hyperf\Context\ApplicationContext;

@@ -16,7 +16,9 @@ use Closure;
 use Countable;
 use Exception;
 use FriendsOfHyperf\AsyncQueueClosureJob\CallQueuedClosure;
+use Hyperf\Amqp\Annotation\Producer;
 use Hyperf\Amqp\Message\ProducerMessageInterface;
+use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\AsyncQueue\JobInterface;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\SessionInterface;
@@ -27,6 +29,7 @@ use Hyperf\HttpMessage\Cookie\CookieJarInterface;
 use Hyperf\HttpMessage\Stream\SwooleStream;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface;
+use Hyperf\Kafka\ProducerManager;
 use Hyperf\Logger\LoggerFactory;
 use Hyperf\Stringable\Str;
 use Hyperf\Support\Fluent;
@@ -182,21 +185,33 @@ function di(?string $abstract = null, array $parameters = [])
 }
 
 /**
- * Do not assign a value to the return value of this function unless you are very clear about the consequences of doing so.
- * @param Closure|JobInterface|ProduceMessage|ProducerMessageInterface|mixed $job
- * @return ($job is Closure ? PendingAsyncQueueDispatch : ($job is JobInterface ? PendingAsyncQueueDispatch : ($job is ProducerMessageInterface ? PendingAmqpProducerMessageDispatch : PendingKafkaProducerMessageDispatch)))
- * @throws InvalidArgumentException
+ * @param AsyncTaskInterface|Closure|JobInterface|ProduceMessage|ProducerMessageInterface|object $job
+ * @return bool
  */
-function dispatch($job)
+function dispatch($job, ...$arguments)
 {
     if ($job instanceof Closure) {
         $job = CallQueuedClosure::create($job);
+        if ($arguments[2] ?? 0) {
+            $job->setMaxAttempts((int) $arguments[2]);
+        }
     }
 
     return match (true) {
-        interface_exists(ProducerMessageInterface::class) && $job instanceof ProducerMessageInterface => new PendingAmqpProducerMessageDispatch($job),
-        class_exists(ProduceMessage::class) && $job instanceof ProduceMessage => new PendingKafkaProducerMessageDispatch($job),
-        interface_exists(JobInterface::class) && $job instanceof JobInterface => new PendingAsyncQueueDispatch($job),
+        $job instanceof JobInterface => di(DriverFactory::class)
+            ->get((string) ($arguments[0] ?? (fn () => $this->queue ?? $this->pool ?? 'default')->call($job)))
+            ->push(
+                tap(
+                    $job,
+                    fn ($job) => isset($arguments[2]) && (fn () => $this->maxAttempts = (int) $arguments[2])->call($job)
+                ),
+                (int) ($arguments[1] ?? (fn () => $this->delay ?? 0)->call($job))
+            ),
+        $job instanceof ProducerMessageInterface => di(Producer::class)
+            ->produce($job, ...$arguments),
+        $job instanceof ProduceMessage => di(ProducerManager::class)
+            ->getProducer((string) ($arguments[0] ?? 'default'))
+            ->sendBatch([$job]),
         default => throw new InvalidArgumentException('Unsupported job type.')
     };
 }

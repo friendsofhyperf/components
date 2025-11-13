@@ -9,13 +9,13 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\Tests\Helpers;
+namespace FriendsOfHyperf\Tests\Support;
 
 use Exception;
 use FriendsOfHyperf\AsyncQueueClosureJob\CallQueuedClosure;
-use FriendsOfHyperf\Helpers\PendingAmqpProducerMessageDispatch;
-use FriendsOfHyperf\Helpers\PendingAsyncQueueDispatch;
-use FriendsOfHyperf\Helpers\PendingKafkaProducerMessageDispatch;
+use FriendsOfHyperf\Support\PendingAmqpProducerMessageDispatch;
+use FriendsOfHyperf\Support\PendingAsyncQueueDispatch;
+use FriendsOfHyperf\Support\PendingKafkaProducerMessageDispatch;
 use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Amqp\Message\ProducerMessage;
 use Hyperf\Amqp\Producer;
@@ -37,7 +37,7 @@ use function FriendsOfHyperf\Helpers\dispatch;
 /**
  * @internal
  */
-#[\PHPUnit\Framework\Attributes\Group('helpers')]
+#[\PHPUnit\Framework\Attributes\Group('support')]
 class DispatchTest extends TestCase
 {
     protected function setUp(): void
