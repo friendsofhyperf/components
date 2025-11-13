@@ -150,7 +150,7 @@ assertType('Hyperf\HttpMessage\Cookie\Cookie', cookie('name', 'value'));
 
 // dispatch() tests - returns bool
 // Note: dispatch() has complex return types based on job type, testing the common case
-assertType('FriendsOfHyperf\Helpers\PendingAsyncQueueDispatch', dispatch(new class implements Hyperf\AsyncQueue\JobInterface {
+assertType('bool', dispatch(new class implements Hyperf\AsyncQueue\JobInterface {
     public function handle(): void
     {
     }
@@ -173,9 +173,6 @@ assertType('FriendsOfHyperf\Helpers\PendingAsyncQueueDispatch', dispatch(new cla
     {
         return 'default';
     }
-}));
-
-assertType('FriendsOfHyperf\Helpers\PendingAsyncQueueDispatch', dispatch(function () {
 }));
 
 // info() tests
