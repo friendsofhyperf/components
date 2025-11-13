@@ -190,6 +190,7 @@ function di(?string $abstract = null, array $parameters = [])
 }
 
 /**
+ * @deprecated since v3.1, will be removed in v3.2, use `FriendsOfHyperf\Support\dispatch()` instead
  * @param AsyncTaskInterface|Closure|JobInterface|ProduceMessage|ProducerMessageInterface|object $job
  * @return bool
  */
