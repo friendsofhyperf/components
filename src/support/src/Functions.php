@@ -24,7 +24,7 @@ use function Hyperf\Support\value;
  * Do not assign a value to the return value of this function unless you are very clear about the consequences of doing so.
  * @param Closure|JobInterface|ProduceMessage|ProducerMessageInterface|mixed $job
  * @return ($job is Closure ? PendingAsyncQueueDispatch : ($job is JobInterface ? PendingAsyncQueueDispatch : ($job is ProducerMessageInterface ? PendingAmqpProducerMessageDispatch : PendingKafkaProducerMessageDispatch)))
- * @throws InvalidArgumentException
+ * @throws \InvalidArgumentException
  */
 function dispatch($job)
 {
