@@ -10,6 +10,10 @@ const sidebar:DefaultTheme.Sidebar = {
                     link: '/en/components/amqp-job.md'
                 },
                 {
+                    text: 'Async Queue Closure Job',
+                    link: '/en/components/async-queue-closure-job.md'
+                },
+                {
                     text: 'Cache',
                     link: '/en/components/cache.md'
                 },
