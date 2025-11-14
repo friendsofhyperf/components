@@ -224,7 +224,7 @@ class BasicFunctionalityTest extends TestCase
     }
 
     // Note: Dispatch function tests are omitted due to container configuration requirements
-    // The functionality is tested through PendingClosureDispatch direct instantiation
+    // The functionality is tested through PendingAsyncQueueDispatch direct instantiation
 
     /**
      * Helper method to get protected/private property value.
