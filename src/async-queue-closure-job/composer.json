@@ -24,7 +24,7 @@
         "hyperf/conditionable": "~3.1.0",
         "hyperf/context": "~3.1.0",
         "hyperf/di": "~3.1.0",
-        "hyperf/support": "~3.1.0",
+        "hyperf/support": "~3.1.72",
         "laravel/serializable-closure": "^1.0 || ^2.0"
     },
     "minimum-stability": "dev",
