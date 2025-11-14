@@ -224,9 +224,11 @@ foreach ($userIds as $userId) {
 The main dispatch function that creates a closure job.
 
 **Parameters:**
+
 - `$closure` - The closure to execute
 
 **Returns:**
+
 - `PendingAsyncQueueDispatch` - Pending closure dispatch object
 
 ### `PendingAsyncQueueDispatch` Methods
@@ -236,9 +238,11 @@ The main dispatch function that creates a closure job.
 Set the queue connection name.
 
 **Parameters:**
+
 - `$connection` - Queue connection name
 
 **Returns:**
+
 - `static` - Current object for method chaining
 
 #### `onPool(string $pool): static`
@@ -246,9 +250,11 @@ Set the queue connection name.
 Set the queue connection name (alias for `onConnection`).
 
 **Parameters:**
+
 - `$pool` - Queue connection name
 
 **Returns:**
+
 - `static` - Current object for method chaining
 
 #### `delay(int $delay): static`
@@ -256,9 +262,11 @@ Set the queue connection name (alias for `onConnection`).
 Set the delay time before execution.
 
 **Parameters:**
+
 - `$delay` - Delay time in seconds
 
 **Returns:**
+
 - `static` - Current object for method chaining
 
 #### `setMaxAttempts(int $maxAttempts): static`
@@ -266,9 +274,11 @@ Set the delay time before execution.
 Set the maximum retry attempts.
 
 **Parameters:**
+
 - `$maxAttempts` - Maximum attempts
 
 **Returns:**
+
 - `static` - Current object for method chaining
 
 #### `when($condition, $callback): static`
@@ -276,10 +286,12 @@ Set the maximum retry attempts.
 Execute callback when condition is true.
 
 **Parameters:**
+
 - `$condition` - Condition expression
 - `$callback` - Callback function that receives the current object as parameter
 
 **Returns:**
+
 - `static` - Current object for method chaining
 
 #### `unless($condition, $callback): static`
@@ -287,10 +299,12 @@ Execute callback when condition is true.
 Execute callback when condition is false.
 
 **Parameters:**
+
 - `$condition` - Condition expression
 - `$callback` - Callback function that receives the current object as parameter
 
 **Returns:**
+
 - `static` - Current object for method chaining
 
 ## Supported Closure Types
@@ -375,6 +389,7 @@ dispatch(function (NotificationService $notification) use ($userId, $message) {
 ```
 
 Advantages of closure jobs:
+
 - Cleaner code, no need to create extra class files
 - Better readability, job logic is right where it's dispatched
 - Full dependency injection support
