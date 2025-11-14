@@ -51,7 +51,7 @@ use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
 dispatch(function () {
     // 你的任務邏輯
 })
-    ->onConnection('high-priority')  // 指定隊列連接
+    ->onPool('high-priority')  // 指定隊列連接
     ->delay(60)                      // 延遲 60 秒執行
     ->setMaxAttempts(5);             // 最多重試 5 次
 ```
@@ -66,7 +66,7 @@ use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
 // 使用指定的隊列連接
 dispatch(function () {
     // 高優先級任務邏輯
-})->onConnection('high-priority');
+})->onPool('high-priority');
 
 // 或者使用 onPool 方法（別名）
 dispatch(function () {
@@ -106,7 +106,7 @@ dispatch(function () {
     // 你的任務邏輯
 })
     ->when($isUrgent, function ($dispatch) {
-        $dispatch->onConnection('urgent');
+        $dispatch->onPool('urgent');
     });
 
 // 僅當條件為 false 時執行回調
@@ -122,7 +122,7 @@ dispatch(function () {
     // 你的任務邏輯
 })
     ->when($isUrgent, function ($dispatch) {
-        $dispatch->onConnection('urgent');
+        $dispatch->onPool('urgent');
     })
     ->unless($isUrgent, function ($dispatch) {
         $dispatch->delay(60);
@@ -200,7 +200,7 @@ use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
 dispatch(function (StatisticsService $stats) use ($date) {
     $stats->calculateDailyReport($date);
     $stats->sendReport($date);
-})->onConnection('statistics');
+})->onPool('statistics');
 ```
 
 ### 批量操作
@@ -231,7 +231,7 @@ foreach ($userIds as $userId) {
 
 ### `PendingAsyncQueueDispatch` 方法
 
-#### `onConnection(string $connection): static`
+#### `onPool(string $connection): static`
 
 設置隊列連接名稱。
 
@@ -243,7 +243,7 @@ foreach ($userIds as $userId) {
 
 #### `onPool(string $pool): static`
 
-設置隊列連接名稱（`onConnection` 的別名）。
+設置隊列連接名稱（`onPool` 的別名）。
 
 **參數：**
 - `$pool` - 隊列連接名稱
