@@ -51,7 +51,7 @@ use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
 dispatch(function () {
     // 你的任务逻辑
 })
-    ->onConnection('high-priority')  // 指定队列连接
+    ->onPool('high-priority')  // 指定队列连接
     ->delay(60)                      // 延迟 60 秒执行
     ->setMaxAttempts(5);             // 最多重试 5 次
 ```
@@ -66,7 +66,7 @@ use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
 // 使用指定的队列连接
 dispatch(function () {
     // 高优先级任务逻辑
-})->onConnection('high-priority');
+})->onPool('high-priority');
 
 // 或者使用 onPool 方法（别名）
 dispatch(function () {
@@ -106,7 +106,7 @@ dispatch(function () {
     // 你的任务逻辑
 })
     ->when($isUrgent, function ($dispatch) {
-        $dispatch->onConnection('urgent');
+        $dispatch->onPool('urgent');
     });
 
 // 仅当条件为 false 时执行回调
@@ -122,7 +122,7 @@ dispatch(function () {
     // 你的任务逻辑
 })
     ->when($isUrgent, function ($dispatch) {
-        $dispatch->onConnection('urgent');
+        $dispatch->onPool('urgent');
     })
     ->unless($isUrgent, function ($dispatch) {
         $dispatch->delay(60);
@@ -200,7 +200,7 @@ use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
 dispatch(function (StatisticsService $stats) use ($date) {
     $stats->calculateDailyReport($date);
     $stats->sendReport($date);
-})->onConnection('statistics');
+})->onPool('statistics');
 ```
 
 ### 批量操作
@@ -219,7 +219,7 @@ foreach ($userIds as $userId) {
 
 ## API 参考
 
-### `dispatch(Closure $closure): PendingClosureDispatch`
+### `dispatch(Closure $closure): PendingAsyncQueueDispatch`
 
 主要的分发函数，用于创建闭包任务。
 
@@ -227,23 +227,13 @@ foreach ($userIds as $userId) {
 - `$closure` - 要执行的闭包
 
 **返回：**
-- `PendingClosureDispatch` - 待处理的闭包分发对象
+- `PendingAsyncQueueDispatch` - 待处理的闭包分发对象
 
-### `PendingClosureDispatch` 方法
-
-#### `onConnection(string $connection): static`
-
-设置队列连接名称。
-
-**参数：**
-- `$connection` - 队列连接名称
-
-**返回：**
-- `static` - 当前对象，支持链式调用
+### `PendingAsyncQueueDispatch` 方法
 
 #### `onPool(string $pool): static`
 
-设置队列连接名称（`onConnection` 的别名）。
+设置队列连接名称。
 
 **参数：**
 - `$pool` - 队列连接名称

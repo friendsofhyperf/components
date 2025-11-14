@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\AsyncQueueClosureJob;
 
 use Closure;
+use FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch;
 
 /**
  * Dispatch a closure as an async queue job.
@@ -19,9 +20,9 @@ use Closure;
  * @param Closure $closure The closure to execute
  * @param-closure-this CallQueuedClosure $closure
  */
-function dispatch(Closure $closure): PendingClosureDispatch
+function dispatch(Closure $closure): PendingAsyncQueueDispatch
 {
-    return new PendingClosureDispatch(
+    return new PendingAsyncQueueDispatch(
         CallQueuedClosure::create($closure)
     );
 }

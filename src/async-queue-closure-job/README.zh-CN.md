@@ -90,11 +90,11 @@ dispatch(function (UserService $userService, int $userId) {
 
 ## API 参考
 
-### `dispatch(Closure $closure): PendingClosureDispatch`
+### `dispatch(Closure $closure): PendingAsyncQueueDispatch`
 
 主要的分发函数，用于创建闭包任务。
 
-### `PendingClosureDispatch` 方法
+### `PendingAsyncQueueDispatch` 方法
 
 - `onConnection(string $connection): static` - 设置连接名称
 - `delay(int $delay): static` - 设置延迟执行时间（秒）
