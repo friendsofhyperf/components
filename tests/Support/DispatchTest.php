@@ -447,7 +447,7 @@ class DispatchTest extends TestCase
         $pending = dispatch($job);
 
         // Verify defaults
-        $this->assertEquals('default', $this->getProperty($pending, 'pool'));
+        $this->assertNull($this->getProperty($pending, 'pool'));
         $this->assertEquals(0, $this->getProperty($pending, 'delay'));
 
         // Trigger destruct

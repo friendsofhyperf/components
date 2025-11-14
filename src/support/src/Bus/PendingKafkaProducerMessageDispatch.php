@@ -26,7 +26,7 @@ class PendingKafkaProducerMessageDispatch
 {
     use Conditionable;
 
-    public string $pool = 'default';
+    public ?string $pool = null;
 
     public function __construct(protected ProduceMessage $message)
     {
@@ -36,7 +36,7 @@ class PendingKafkaProducerMessageDispatch
     {
         ApplicationContext::getContainer()
             ->get(ProducerManager::class)
-            ->getProducer($this->pool)
+            ->getProducer($this->pool ?? 'default')
             ->sendBatch([$this->message]);
     }
 

@@ -20,7 +20,7 @@ class PendingAsyncQueueDispatch
 {
     use Conditionable;
 
-    public string $pool = 'default';
+    public ?string $pool = null;
 
     public int $delay = 0;
 
@@ -32,7 +32,7 @@ class PendingAsyncQueueDispatch
     {
         ApplicationContext::getContainer()
             ->get(DriverFactory::class)
-            ->get($this->pool)
+            ->get($this->pool ?? 'default')
             ->push($this->job, $this->delay);
     }
 
