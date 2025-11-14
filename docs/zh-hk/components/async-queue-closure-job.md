@@ -231,19 +231,9 @@ foreach ($userIds as $userId) {
 
 ### `PendingAsyncQueueDispatch` 方法
 
-#### `onPool(string $connection): static`
-
-設置隊列連接名稱。
-
-**參數：**
-- `$connection` - 隊列連接名稱
-
-**返回：**
-- `static` - 當前對象，支持鏈式調用
-
 #### `onPool(string $pool): static`
 
-設置隊列連接名稱（`onPool` 的別名）。
+設置隊列連接名稱。
 
 **參數：**
 - `$pool` - 隊列連接名稱

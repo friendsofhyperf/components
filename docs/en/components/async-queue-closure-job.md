@@ -2,9 +2,9 @@
 
 ## Introduction
 
-`friendsofhyperf/async-queue-closure-job` is an asynchronous queue closure job component for Hyperf. It allows you to execute closures as background tasks, with full support for dependency injection and fluent configuration, making the use of asynchronous tasks simpler and more elegant.
+`friendsofhyperf/async-queue-closure-job` is an async queue closure job component for Hyperf. It allows you to execute closures as background jobs with full support for dependency injection and fluent configuration, making async tasks simpler and more elegant.
 
-Unlike the traditional approach of creating task classes, this component enables you to define task logic directly using closures, eliminating the need for additional class files and making the code more concise.
+Unlike traditional job classes, this component lets you define job logic directly with closures, eliminating the need for extra class files and making your code more concise.
 
 ## Installation
 
@@ -14,26 +14,26 @@ composer require friendsofhyperf/async-queue-closure-job
 
 ## Basic Usage
 
-### Simple Closure Task
+### Simple Closure Job
 
 ```php
 use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
 
-// Dispatch a simple closure task
+// Dispatch a simple closure job
 dispatch(function () {
-    // Your task logic
+    // Your job logic here
     var_dump('Hello from closure job!');
 });
 ```
 
-### Setting Maximum Attempts
+### Set Maximum Attempts
 
 ```php
 use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
 
 // Set maximum attempts (retry limit)
 dispatch(function () {
-    // Your task logic
+    // Your job logic here
     // If it fails, it will retry up to 3 times
 })->setMaxAttempts(3);
 ```
@@ -42,59 +42,59 @@ dispatch(function () {
 
 ### Fluent API Configuration
 
-You can flexibly configure various task options through method chaining:
+You can flexibly configure various options using method chaining:
 
 ```php
 use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
 
 // Chain multiple configuration options
 dispatch(function () {
-    // Your task logic
+    // Your job logic here
 })
     ->onPool('high-priority')  // Specify queue connection
     ->delay(60)                      // Delay execution by 60 seconds
-    ->setMaxAttempts(5);             // Maximum of 5 retries
+    ->setMaxAttempts(5);             // Retry up to 5 times
 ```
 
-### Specifying Queue Connection
+### Specifying Queue Connections
 
-When you have multiple queue connections, you can specify which connection the task uses:
+When you have multiple queue connections, you can specify which connection to use:
 
 ```php
 use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
 
-// Use specified queue connection
+// Use a specific queue connection
 dispatch(function () {
-    // High-priority task logic
+    // High priority task logic
 })->onPool('high-priority');
 
-// Or use the onPool method (alias)
+// Alternative pool name
 dispatch(function () {
-    // Low-priority task logic
+    // Low priority task logic
 })->onPool('low-priority');
 ```
 
 ### Delayed Execution
 
-You can set tasks to execute after a certain period:
+You can set a delay before the task starts executing:
 
 ```php
 use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
 
-// Execute after 60 seconds delay
+// Delay execution by 60 seconds
 dispatch(function () {
-    // Your task logic
+    // Your job logic here
 })->delay(60);
 
-// Execute after 5 minutes delay
+// Delay execution by 5 minutes
 dispatch(function () {
-    // Your task logic
+    // Your job logic here
 })->delay(300);
 ```
 
 ### Conditional Execution
 
-Use the `when` and `unless` methods to dynamically configure tasks based on conditions:
+Use `when` and `unless` methods to dynamically configure tasks based on conditions:
 
 ```php
 use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
@@ -103,7 +103,7 @@ $isUrgent = true;
 
 // Execute callback only when condition is true
 dispatch(function () {
-    // Your task logic
+    // Your job logic here
 })
     ->when($isUrgent, function ($dispatch) {
         $dispatch->onPool('urgent');
@@ -111,15 +111,15 @@ dispatch(function () {
 
 // Execute callback only when condition is false
 dispatch(function () {
-    // Your task logic
+    // Your job logic here
 })
     ->unless($isUrgent, function ($dispatch) {
-        $dispatch->delay(300);
+        $dispatch->delay(30);
     });
 
-// Combined usage
+// Combine usage
 dispatch(function () {
-    // Your task logic
+    // Your job logic here
 })
     ->when($isUrgent, function ($dispatch) {
         $dispatch->onPool('urgent');
@@ -131,7 +131,7 @@ dispatch(function () {
 
 ### Dependency Injection
 
-Closure tasks fully support Hyperf's dependency injection functionality. You can declare required dependencies in the closure parameters:
+Closure jobs fully support Hyperf's dependency injection. You can declare required dependencies as closure parameters:
 
 ```php
 use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
@@ -142,9 +142,9 @@ use Psr\Log\LoggerInterface;
 dispatch(function (UserService $userService, LoggerInterface $logger) {
     $users = $userService->getActiveUsers();
     $logger->info('Processing ' . count($users) . ' users');
-    
+
     foreach ($users as $user) {
-        // Process user...
+        // Process users...
     }
 });
 ```
@@ -162,14 +162,14 @@ $action = 'update';
 // Use captured variables
 dispatch(function (UserService $userService) use ($userId, $action) {
     $user = $userService->find($userId);
-    
+
     if ($action === 'update') {
         $userService->update($user);
     }
 })->setMaxAttempts(3);
 ```
 
-## Practical Application Scenarios
+## Real-World Use Cases
 
 ### Sending Notifications
 
@@ -181,7 +181,7 @@ dispatch(function (NotificationService $notification) use ($userId, $message) {
 })->setMaxAttempts(3);
 ```
 
-### Processing File Uploads
+### File Upload Processing
 
 ```php
 use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
@@ -221,103 +221,105 @@ foreach ($userIds as $userId) {
 
 ### `dispatch(Closure $closure): PendingAsyncQueueDispatch`
 
-The main dispatch function used to create closure tasks.
+The main dispatch function that creates a closure job.
 
 **Parameters:**
+
 - `$closure` - The closure to execute
 
 **Returns:**
+
 - `PendingAsyncQueueDispatch` - Pending closure dispatch object
 
 ### `PendingAsyncQueueDispatch` Methods
 
-#### `onPool(string $connection): static`
+#### `onPool(string $pool): static`
 
 Set the queue connection name.
 
 **Parameters:**
-- `$connection` - Queue connection name
 
-**Returns:**
-- `static` - Current object, supports method chaining
-
-#### `onPool(string $pool): static`
-
-Set the queue connection name (alias of `onPool`).
-
-**Parameters:**
 - `$pool` - Queue connection name
 
 **Returns:**
-- `static` - Current object, supports method chaining
+
+- `static` - Current object for method chaining
 
 #### `delay(int $delay): static`
 
-Set the delay execution time.
+Set the delay time before execution.
 
 **Parameters:**
+
 - `$delay` - Delay time in seconds
 
 **Returns:**
-- `static` - Current object, supports method chaining
+
+- `static` - Current object for method chaining
 
 #### `setMaxAttempts(int $maxAttempts): static`
 
-Set the maximum number of retry attempts.
+Set the maximum retry attempts.
 
 **Parameters:**
-- `$maxAttempts` - Maximum number of attempts
+
+- `$maxAttempts` - Maximum attempts
 
 **Returns:**
-- `static` - Current object, supports method chaining
+
+- `static` - Current object for method chaining
 
 #### `when($condition, $callback): static`
 
 Execute callback when condition is true.
 
 **Parameters:**
+
 - `$condition` - Condition expression
 - `$callback` - Callback function that receives the current object as parameter
 
 **Returns:**
-- `static` - Current object, supports method chaining
+
+- `static` - Current object for method chaining
 
 #### `unless($condition, $callback): static`
 
 Execute callback when condition is false.
 
 **Parameters:**
+
 - `$condition` - Condition expression
 - `$callback` - Callback function that receives the current object as parameter
 
 **Returns:**
-- `static` - Current object, supports method chaining
+
+- `static` - Current object for method chaining
 
 ## Supported Closure Types
 
-This component supports the following types of closures:
+This component supports the following closure types:
 
 - ✅ Simple closures without parameters
 - ✅ Closures with dependency injection
-- ✅ Closures using captured variables (`use`)
+- ✅ Closures with captured variables (`use`)
 - ✅ Closures with nullable parameters
-- ✅ Closures mixing dependency injection and captured variables
+- ✅ Mixing dependency injection and captured variables
 
 ## Notes
 
-1. **Serialization Limitations**: Closures are serialized for storage, therefore:
-   - Cannot capture unserializable resources (such as database connections, file handles, etc.)
+1. **Serialization Limitations**: Closures are serialized before storage, therefore:
+   - Cannot capture non-serializable resources (e.g., database connections, file handles)
    - Captured objects should be serializable
 
-2. **Dependency Injection**: Dependencies in closures are resolved from the container when the task executes and are not serialized
+2. **Dependency Injection**: Dependencies in closures will be resolved from the container when the job executes, not serialized
 
-3. **Asynchronous Execution**: Tasks are executed asynchronously; the dispatch function returns immediately without waiting for task completion
+3. **Async Execution**: Tasks execute asynchronously. The dispatch function returns immediately without waiting for task completion
 
-4. **Error Handling**: Failed task executions will retry according to the number of attempts set by `setMaxAttempts`
+4. **Error Handling**: Failed tasks will retry according to the `setMaxAttempts` configuration
 
 ## Configuration
 
-This component uses Hyperf's asynchronous queue configuration. You can configure queue parameters in `config/autoload/async_queue.php`:
+This component uses Hyperf's async queue configuration. You can configure queue parameters in `config/autoload/async_queue.php`:
 
 ```php
 <?php
@@ -340,12 +342,12 @@ return [
 composer test:unit -- tests/AsyncQueueClosureJob
 ```
 
-## Comparison with Traditional Task Classes
+## Comparison with Traditional Job Classes
 
 ### Traditional Approach
 
 ```php
-// Need to create task class
+// Need to create a job class
 class SendNotificationJob extends Job
 {
     public function __construct(public int $userId, public string $message)
@@ -359,28 +361,29 @@ class SendNotificationJob extends Job
     }
 }
 
-// Dispatch task
+// Dispatch job
 $driver->push(new SendNotificationJob($userId, $message));
 ```
 
-### Using Closure Tasks
+### Using Closure Jobs
 
 ```php
 use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
 
-// Use closure directly, no need to create class
+// Directly use closure, no need to create a class
 dispatch(function (NotificationService $notification) use ($userId, $message) {
     $notification->send($userId, $message);
 });
 ```
 
-Advantages of closure tasks:
-- More concise code, no need for additional class files
-- Better readability, task logic is located where it's dispatched
-- Full support for dependency injection
+Advantages of closure jobs:
+
+- Cleaner code, no need to create extra class files
+- Better readability, job logic is right where it's dispatched
+- Full dependency injection support
 - Flexible fluent API configuration
 
 ## Related Components
 
-- [hyperf/async-queue](https://hyperf.wiki/3.1/#/en/async-queue) - Hyperf Async Queue
-- [friendsofhyperf/closure-job](https://github.com/friendsofhyperf/components/tree/main/src/closure-job) - General Closure Job Component
+- [hyperf/async-queue](https://hyperf.wiki/3.1/#/zh-cn/async-queue) - Hyperf Async Queue
+- [friendsofhyperf/closure-job](https://github.com/friendsofhyperf/components/tree/main/src/closure-job) - Generic Closure Job Component
