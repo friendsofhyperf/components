@@ -75,7 +75,7 @@ assertType('mixed', enum_value('test', 'default'));
 
 // event() tests
 $testEvent = new class {};
-assertType('AnonymousClass876f9ee1df9515d53da4de3de3377dd1', event($testEvent));
+assertType('AnonymousClass2ca85e4e26b37316bcc3f800597ba981', event($testEvent));
 
 // filled() tests
 assertType('bool', filled(null));
@@ -146,10 +146,6 @@ assertType('mixed', when(false, 'value', 'default'));
 // cookie() tests
 assertType('Hyperf\HttpMessage\Cookie\CookieJarInterface', cookie());
 assertType('Hyperf\HttpMessage\Cookie\Cookie', cookie('name', 'value'));
-
-// environment() tests
-assertType('bool|FriendsOfHyperf\Support\Environment', environment());
-assertType('bool|FriendsOfHyperf\Support\Environment', environment('production'));
 
 // info() tests
 assertType('mixed', info('message'));

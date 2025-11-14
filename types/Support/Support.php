@@ -76,6 +76,11 @@ assertType('FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch', dispatch(new
     {
         return $this;
     }
+
+    public function getQueueName(): string
+    {
+        return uniqid();
+    }
 }));
 
 assertType('FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch', dispatch(fn () => null));
