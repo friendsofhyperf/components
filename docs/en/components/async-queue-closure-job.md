@@ -219,7 +219,7 @@ foreach ($userIds as $userId) {
 
 ## API Reference
 
-### `dispatch(Closure $closure): PendingClosureDispatch`
+### `dispatch(Closure $closure): PendingAsyncQueueDispatch`
 
 The main dispatch function that creates a closure job.
 
@@ -227,9 +227,9 @@ The main dispatch function that creates a closure job.
 - `$closure` - The closure to execute
 
 **Returns:**
-- `PendingClosureDispatch` - Pending closure dispatch object
+- `PendingAsyncQueueDispatch` - Pending closure dispatch object
 
-### `PendingClosureDispatch` Methods
+### `PendingAsyncQueueDispatch` Methods
 
 #### `onConnection(string $connection): static`
 

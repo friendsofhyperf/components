@@ -219,7 +219,7 @@ foreach ($userIds as $userId) {
 
 ## API 参考
 
-### `dispatch(Closure $closure): PendingClosureDispatch`
+### `dispatch(Closure $closure): PendingAsyncQueueDispatch`
 
 主要的分发函数，用于创建闭包任务。
 
@@ -227,9 +227,9 @@ foreach ($userIds as $userId) {
 - `$closure` - 要执行的闭包
 
 **返回：**
-- `PendingClosureDispatch` - 待处理的闭包分发对象
+- `PendingAsyncQueueDispatch` - 待处理的闭包分发对象
 
-### `PendingClosureDispatch` 方法
+### `PendingAsyncQueueDispatch` 方法
 
 #### `onConnection(string $connection): static`
 

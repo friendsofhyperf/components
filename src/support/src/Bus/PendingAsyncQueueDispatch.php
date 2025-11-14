@@ -48,6 +48,11 @@ class PendingAsyncQueueDispatch
         return $this;
     }
 
+    public function onConnection(string $connection): static
+    {
+        return $this->onPool($connection);
+    }
+
     public function delay(int $delay): static
     {
         $this->delay = $delay;

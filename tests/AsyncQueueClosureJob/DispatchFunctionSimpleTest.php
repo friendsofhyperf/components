@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Tests\AsyncQueueClosureJob;
 
 use FriendsOfHyperf\AsyncQueueClosureJob\CallQueuedClosure;
-use FriendsOfHyperf\AsyncQueueClosureJob\PendingClosureDispatch;
+use FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch;
 use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\AsyncQueue\Driver\Driver;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
@@ -64,7 +64,7 @@ class DispatchFunctionSimpleTest extends TestCase
 
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure);
 
-        $this->assertInstanceOf(PendingClosureDispatch::class, $dispatch);
+        $this->assertInstanceOf(PendingAsyncQueueDispatch::class, $dispatch);
 
         // Verify the job has default maxAttempts (0)
         $job = $this->getProperty($dispatch, 'job');
@@ -81,7 +81,7 @@ class DispatchFunctionSimpleTest extends TestCase
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure);
         $dispatch->setMaxAttempts(5);
 
-        $this->assertInstanceOf(PendingClosureDispatch::class, $dispatch);
+        $this->assertInstanceOf(PendingAsyncQueueDispatch::class, $dispatch);
 
         // Verify the job has the specified maxAttempts
         $job = $this->getProperty($dispatch, 'job');
@@ -98,7 +98,7 @@ class DispatchFunctionSimpleTest extends TestCase
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure);
         $dispatch->setMaxAttempts(0);
 
-        $this->assertInstanceOf(PendingClosureDispatch::class, $dispatch);
+        $this->assertInstanceOf(PendingAsyncQueueDispatch::class, $dispatch);
 
         // Verify the job has zero maxAttempts
         $job = $this->getProperty($dispatch, 'job');
@@ -117,7 +117,7 @@ class DispatchFunctionSimpleTest extends TestCase
             ->delay(120)
             ->setMaxAttempts(5); // Override the initial maxAttempts
 
-        $this->assertInstanceOf(PendingClosureDispatch::class, $dispatch);
+        $this->assertInstanceOf(PendingAsyncQueueDispatch::class, $dispatch);
 
         // Verify the job has the overridden maxAttempts
         $job = $this->getProperty($dispatch, 'job');
@@ -125,7 +125,7 @@ class DispatchFunctionSimpleTest extends TestCase
         $this->assertEquals(5, $job->getMaxAttempts()); // Should be overridden to 5
 
         // Verify fluent configuration
-        $this->assertEquals('delayed-connection', $this->getProperty($dispatch, 'connection'));
+        $this->assertEquals('delayed-connection', $this->getProperty($dispatch, 'pool'));
         $this->assertEquals(120, $this->getProperty($dispatch, 'delay'));
     }
 
@@ -144,10 +144,10 @@ class DispatchFunctionSimpleTest extends TestCase
             })
             ->setMaxAttempts(1);
 
-        $this->assertInstanceOf(PendingClosureDispatch::class, $dispatch);
+        $this->assertInstanceOf(PendingAsyncQueueDispatch::class, $dispatch);
 
         // Verify configuration
-        $this->assertEquals('conditional-connection', $this->getProperty($dispatch, 'connection'));
+        $this->assertEquals('conditional-connection', $this->getProperty($dispatch, 'pool'));
         $this->assertEquals(45, $this->getProperty($dispatch, 'delay'));
 
         // Verify the job has the specified maxAttempts
@@ -171,7 +171,7 @@ class DispatchFunctionSimpleTest extends TestCase
             ->delay(300) // Override delay
             ->setMaxAttempts(10); // Final maxAttempts
 
-        $this->assertEquals('multi-config-connection', $this->getProperty($dispatch, 'connection'));
+        $this->assertEquals('multi-config-connection', $this->getProperty($dispatch, 'pool'));
         $this->assertEquals(300, $this->getProperty($dispatch, 'delay'));
 
         $job = $this->getProperty($dispatch, 'job');

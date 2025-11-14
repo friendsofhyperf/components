@@ -90,11 +90,11 @@ dispatch(function (UserService $userService, int $userId) {
 
 ## API Reference
 
-### `dispatch(Closure $closure): PendingClosureDispatch`
+### `dispatch(Closure $closure): PendingAsyncQueueDispatch`
 
 The main dispatch function that creates a closure job.
 
-### `PendingClosureDispatch` Methods
+### `PendingAsyncQueueDispatch` Methods
 
 - `onConnection(string $connection): static` - Set the connection name
 - `delay(int $delay): static` - Set execution delay in seconds

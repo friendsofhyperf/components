@@ -234,7 +234,7 @@ class FluentDispatchIntegrationTest extends TestCase
             })
             ->setMaxAttempts(2);
 
-        $this->assertEquals('high-priority', $this->getProperty($dispatch, 'connection'));
+        $this->assertEquals('high-priority', $this->getProperty($dispatch, 'pool'));
         $this->assertEquals(30, $this->getProperty($dispatch, 'delay'));
 
         unset($dispatch);
@@ -280,7 +280,7 @@ class FluentDispatchIntegrationTest extends TestCase
             ->delay(300) // Override delay
             ->setMaxAttempts(10); // Final maxAttempts
 
-        $this->assertEquals('multi-config-connection', $this->getProperty($dispatch, 'connection'));
+        $this->assertEquals('multi-config-connection', $this->getProperty($dispatch, 'pool'));
         $this->assertEquals(300, $this->getProperty($dispatch, 'delay'));
 
         $job = $this->getProperty($dispatch, 'job');

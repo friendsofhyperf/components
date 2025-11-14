@@ -219,7 +219,7 @@ foreach ($userIds as $userId) {
 
 ## API 參考
 
-### `dispatch(Closure $closure): PendingClosureDispatch`
+### `dispatch(Closure $closure): PendingAsyncQueueDispatch`
 
 主要的分發函數，用於建立閉包任務。
 
@@ -227,9 +227,9 @@ foreach ($userIds as $userId) {
 - `$closure` - 要執行的閉包
 
 **返回：**
-- `PendingClosureDispatch` - 待處理的閉包分發物件
+- `PendingAsyncQueueDispatch` - 待處理的閉包分發物件
 
-### `PendingClosureDispatch` 方法
+### `PendingAsyncQueueDispatch` 方法
 
 #### `onConnection(string $connection): static`
 

@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Tests\AsyncQueueClosureJob;
 
 use FriendsOfHyperf\AsyncQueueClosureJob\CallQueuedClosure;
-use FriendsOfHyperf\AsyncQueueClosureJob\PendingClosureDispatch;
+use FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch;
 use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\AsyncQueue\Driver\Driver;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
@@ -94,13 +94,13 @@ class CoreFunctionalityTest extends TestCase
         $this->assertEquals(3, $job->getMaxAttempts());
     }
 
-    public function testPendingClosureDispatchConfiguration()
+    public function testPendingAsyncQueueDispatchConfiguration()
     {
         $job = CallQueuedClosure::create(function () {
             return 'test';
         });
 
-        $dispatch = new PendingClosureDispatch($job);
+        $dispatch = new PendingAsyncQueueDispatch($job);
 
         // Test configuration methods
         $result = $dispatch->onConnection('test-connection')
@@ -108,7 +108,7 @@ class CoreFunctionalityTest extends TestCase
             ->setMaxAttempts(7);
 
         $this->assertSame($dispatch, $result);
-        $this->assertEquals('test-connection', $this->getProperty($dispatch, 'connection'));
+        $this->assertEquals('test-connection', $this->getProperty($dispatch, 'pool'));
         $this->assertEquals(30, $this->getProperty($dispatch, 'delay'));
         $this->assertEquals(7, $job->getMaxAttempts());
     }
@@ -122,7 +122,7 @@ class CoreFunctionalityTest extends TestCase
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure);
         $dispatch->setMaxAttempts(4);
 
-        $this->assertInstanceOf(PendingClosureDispatch::class, $dispatch);
+        $this->assertInstanceOf(PendingAsyncQueueDispatch::class, $dispatch);
 
         $job = $this->getProperty($dispatch, 'job');
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
@@ -137,7 +137,7 @@ class CoreFunctionalityTest extends TestCase
 
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure);
 
-        $this->assertInstanceOf(PendingClosureDispatch::class, $dispatch);
+        $this->assertInstanceOf(PendingAsyncQueueDispatch::class, $dispatch);
 
         $job = $this->getProperty($dispatch, 'job');
         $this->assertInstanceOf(CallQueuedClosure::class, $job);
@@ -155,7 +155,7 @@ class CoreFunctionalityTest extends TestCase
             ->delay(60)
             ->setMaxAttempts(8); // Override initial value
 
-        $this->assertEquals('chained-connection', $this->getProperty($dispatch, 'connection'));
+        $this->assertEquals('chained-connection', $this->getProperty($dispatch, 'pool'));
         $this->assertEquals(60, $this->getProperty($dispatch, 'delay'));
 
         $job = $this->getProperty($dispatch, 'job');
@@ -174,7 +174,7 @@ class CoreFunctionalityTest extends TestCase
                 $dispatch->onConnection('when-true-connection');
             });
 
-        $this->assertEquals('when-true-connection', $this->getProperty($dispatch1, 'connection'));
+        $this->assertEquals('when-true-connection', $this->getProperty($dispatch1, 'pool'));
 
         // Test when() with false condition
         $dispatch2 = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
@@ -182,7 +182,7 @@ class CoreFunctionalityTest extends TestCase
                 $dispatch->onConnection('when-false-connection');
             });
 
-        $this->assertEquals('default', $this->getProperty($dispatch2, 'connection'));
+        $this->assertEquals('default', $this->getProperty($dispatch2, 'pool'));
 
         // Test unless() with true condition
         $dispatch3 = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
@@ -190,7 +190,7 @@ class CoreFunctionalityTest extends TestCase
                 $dispatch->onConnection('unless-true-connection');
             });
 
-        $this->assertEquals('default', $this->getProperty($dispatch3, 'connection'));
+        $this->assertEquals('default', $this->getProperty($dispatch3, 'pool'));
 
         // Test unless() with false condition
         $dispatch4 = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
@@ -198,7 +198,7 @@ class CoreFunctionalityTest extends TestCase
                 $dispatch->onConnection('unless-false-connection');
             });
 
-        $this->assertEquals('unless-false-connection', $this->getProperty($dispatch4, 'connection'));
+        $this->assertEquals('unless-false-connection', $this->getProperty($dispatch4, 'pool'));
     }
 
     public function testJobExecutionWithMaxAttempts()
