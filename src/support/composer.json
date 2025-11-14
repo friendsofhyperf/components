@@ -32,6 +32,7 @@
         "symfony/polyfill-php85": "^1.33"
     },
     "suggest": {
+        "friendsofhyperf/async-queue-closure-job": "Required to use CallQueuedClosure.(~3.2.0)",
         "hyperf/async-queue": "Required to use Hyperf\\AsyncQueue\\Job.(~3.2.0)",
         "vlucas/phpdotenv": "Required to use Dotenv.(^5.0)"
     },
