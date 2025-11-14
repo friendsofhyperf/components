@@ -53,9 +53,13 @@ class CoroutineAspect extends AbstractAspect
 
         $callingOnFunction = CoroutineBacktraceHelper::foundCallingOnFunction();
 
+        if (! $callingOnFunction) {
+            return $proceedingJoinPoint->process();
+        }
+
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint, $callingOnFunction) {
-                if ($callingOnFunction && $span = $scope->getSpan()) {
+                if ($span = $scope->getSpan()) {
                     $cid = Co::id();
                     $callable = $proceedingJoinPoint->arguments['keys']['callable'];
 
@@ -64,7 +68,9 @@ class CoroutineAspect extends AbstractAspect
                         SentrySdk::init(); // Ensure Sentry is initialized in the new coroutine.
 
                         // Restore the Context in the new Coroutine.
-                        Context::copy($cid, self::CONTEXT_KEYS);
+                        foreach (self::CONTEXT_KEYS as $key) {
+                            Context::getOrSet($key, fn () => Context::get($key, coroutineId: $cid));
+                        }
 
                         // Start a new transaction for the coroutine preparation phase.
                         $transaction = startTransaction(

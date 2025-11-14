@@ -53,7 +53,9 @@ class CoroutineAspect extends AbstractAspect
 
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $cid) {
             // Restore the Context in the new Coroutine.
-            Context::copy($cid, self::CONTEXT_KEYS);
+            foreach (self::CONTEXT_KEYS as $key) {
+                Context::getOrSet($key, fn () => Context::get($key, coroutineId: $cid));
+            }
 
             // Defer the flushing of events until the coroutine completes.
             Co::defer(fn () => Integration::flushEvents());
