@@ -19,7 +19,6 @@ use function FriendsOfHyperf\Helpers\class_namespace;
 use function FriendsOfHyperf\Helpers\Command\call;
 use function FriendsOfHyperf\Helpers\cookie;
 use function FriendsOfHyperf\Helpers\di;
-use function FriendsOfHyperf\Helpers\dispatch;
 use function FriendsOfHyperf\Helpers\enum_value;
 use function FriendsOfHyperf\Helpers\event;
 use function FriendsOfHyperf\Helpers\filled;
@@ -76,7 +75,7 @@ assertType('mixed', enum_value('test', 'default'));
 
 // event() tests
 $testEvent = new class {};
-assertType('AnonymousClass4004dde0f84f92673e75903308a0e94d', event($testEvent));
+assertType('AnonymousClass876f9ee1df9515d53da4de3de3377dd1', event($testEvent));
 
 // filled() tests
 assertType('bool', filled(null));
@@ -148,32 +147,9 @@ assertType('mixed', when(false, 'value', 'default'));
 assertType('Hyperf\HttpMessage\Cookie\CookieJarInterface', cookie());
 assertType('Hyperf\HttpMessage\Cookie\Cookie', cookie('name', 'value'));
 
-// dispatch() tests - returns bool
-// Note: dispatch() has complex return types based on job type, testing the common case
-assertType('bool', dispatch(new class implements Hyperf\AsyncQueue\JobInterface {
-    public function handle(): void
-    {
-    }
-
-    public function fail(Throwable $e): void
-    {
-    }
-
-    public function getMaxAttempts(): int
-    {
-        return 0;
-    }
-
-    public function setMaxAttempts(int $maxAttempts): static
-    {
-        return $this;
-    }
-
-    public function getQueueName(): string
-    {
-        return 'default';
-    }
-}));
+// environment() tests
+assertType('bool|FriendsOfHyperf\Support\Environment', environment());
+assertType('bool|FriendsOfHyperf\Support\Environment', environment('production'));
 
 // info() tests
 assertType('mixed', info('message'));

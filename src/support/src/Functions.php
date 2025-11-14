@@ -13,8 +13,37 @@ namespace FriendsOfHyperf\Support;
 
 use Closure;
 use Exception;
+use FriendsOfHyperf\AsyncQueueClosureJob\CallQueuedClosure;
+use FriendsOfHyperf\Support\Bus\PendingAmqpProducerMessageDispatch;
+use FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch;
+use FriendsOfHyperf\Support\Bus\PendingKafkaProducerMessageDispatch;
+use Hyperf\Amqp\Message\ProducerMessageInterface;
+use Hyperf\AsyncQueue\JobInterface;
+use InvalidArgumentException;
+use longlang\phpkafka\Producer\ProduceMessage;
 
 use function Hyperf\Support\value;
+
+/**
+ * Do not assign a value to the return value of this function unless you are very clear about the consequences of doing so.
+ * @param Closure|JobInterface|ProduceMessage|ProducerMessageInterface|mixed $job
+ * @param-closure-this ($job is Closure ? CallQueuedClosure : mixed) $job
+ * @return ($job is Closure ? PendingAsyncQueueDispatch : ($job is JobInterface ? PendingAsyncQueueDispatch : ($job is ProducerMessageInterface ? PendingAmqpProducerMessageDispatch : PendingKafkaProducerMessageDispatch)))
+ * @throws InvalidArgumentException
+ */
+function dispatch($job)
+{
+    if ($job instanceof Closure) {
+        $job = CallQueuedClosure::create($job);
+    }
+
+    return match (true) {
+        interface_exists(ProducerMessageInterface::class) && $job instanceof ProducerMessageInterface => new PendingAmqpProducerMessageDispatch($job),
+        class_exists(ProduceMessage::class) && $job instanceof ProduceMessage => new PendingKafkaProducerMessageDispatch($job),
+        interface_exists(JobInterface::class) && $job instanceof JobInterface => new PendingAsyncQueueDispatch($job),
+        default => throw new InvalidArgumentException('Unsupported job type.')
+    };
+}
 
 /**
  * Retry an operation a given number of times.
