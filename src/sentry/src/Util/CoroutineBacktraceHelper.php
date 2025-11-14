@@ -21,12 +21,14 @@ class CoroutineBacktraceHelper
         'Hyperf\Coroutine\Waiter->wait',
         'Hyperf\Coroutine\co', 'co',
         'Hyperf\Coroutine\go', 'go',
+        'Hyperf\Coroutine\wait', 'wait',
         'Hyperf\Coroutine\parallel', 'parallel',
     ];
 
     protected static array $breakFunctions = [
         'Multiplex\Socket\Client->loop', 'Multiplex\Socket\Client->heartbeat',
         'FriendsOfHyperf\Sentry\HttpClient\HttpClient->loop',
+        'FriendsOfHyperf\Sentry\Transport\CoHttpTransport->loop',
         'Hyperf\Kafka\Producer->loop',
         'Hyperf\Metric\Listener\OnMetricFactoryReady->process',
         'Hyperf\Metric\Listener\QueueWatcher->process',
