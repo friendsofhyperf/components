@@ -133,7 +133,7 @@ class DispatchFunctionTest extends TestCase
         };
 
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
-            ->onConnection('high-priority')
+            ->onPool('high-priority')
             ->delay(30)
             ->setMaxAttempts(3);
 
@@ -177,7 +177,7 @@ class DispatchFunctionTest extends TestCase
         };
 
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
-            ->onConnection('delayed-connection')
+            ->onPool('delayed-connection')
             ->delay(120)
             ->setMaxAttempts(5); // Override the initial maxAttempts
 
@@ -254,7 +254,7 @@ class DispatchFunctionTest extends TestCase
 
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->when(true, function ($dispatch) {
-                $dispatch->onConnection('conditional-connection');
+                $dispatch->onPool('conditional-connection');
             })
             ->unless(false, function ($dispatch) {
                 $dispatch->delay(45);

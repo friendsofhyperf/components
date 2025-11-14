@@ -90,7 +90,7 @@ class FluentDispatchIntegrationTest extends TestCase
 
         // Use the fluent dispatch API
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
-            ->onConnection('integration-connection')
+            ->onPool('integration-connection')
             ->delay(90)
             ->setMaxAttempts(3);
 
@@ -187,7 +187,7 @@ class FluentDispatchIntegrationTest extends TestCase
 
         // Dispatch with dependency injection
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
-            ->onConnection('di-connection')
+            ->onPool('di-connection')
             ->delay(60)
             ->setMaxAttempts(1);
 
@@ -227,7 +227,7 @@ class FluentDispatchIntegrationTest extends TestCase
             $executed = true;
         })
             ->when($condition, function ($dispatch) {
-                $dispatch->onConnection('high-priority');
+                $dispatch->onPool('high-priority');
             })
             ->unless(! $condition, function ($dispatch) {
                 $dispatch->delay(30);
@@ -273,10 +273,10 @@ class FluentDispatchIntegrationTest extends TestCase
 
         // Test multiple method calls and overrides
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
-            ->onConnection('initial-connection')
+            ->onPool('initial-connection')
             ->delay(60)
             ->setMaxAttempts(8) // Override maxAttempts
-            ->onConnection('multi-config-connection') // Override queue
+            ->onPool('multi-config-connection') // Override queue
             ->delay(300) // Override delay
             ->setMaxAttempts(10); // Final maxAttempts
 
@@ -315,7 +315,7 @@ class FluentDispatchIntegrationTest extends TestCase
         };
 
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
-            ->onConnection('error-connection')
+            ->onPool('error-connection')
             ->setMaxAttempts(1);
 
         unset($dispatch); // This should trigger the exception

@@ -103,7 +103,7 @@ class CoreFunctionalityTest extends TestCase
         $dispatch = new PendingAsyncQueueDispatch($job);
 
         // Test configuration methods
-        $result = $dispatch->onConnection('test-connection')
+        $result = $dispatch->onPool('test-connection')
             ->delay(30)
             ->setMaxAttempts(7);
 
@@ -151,7 +151,7 @@ class CoreFunctionalityTest extends TestCase
         };
 
         $dispatch = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
-            ->onConnection('chained-connection')
+            ->onPool('chained-connection')
             ->delay(60)
             ->setMaxAttempts(8); // Override initial value
 
@@ -171,7 +171,7 @@ class CoreFunctionalityTest extends TestCase
         // Test when() with true condition
         $dispatch1 = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->when(true, function ($dispatch) {
-                $dispatch->onConnection('when-true-connection');
+                $dispatch->onPool('when-true-connection');
             });
 
         $this->assertEquals('when-true-connection', $this->getProperty($dispatch1, 'pool'));
@@ -179,7 +179,7 @@ class CoreFunctionalityTest extends TestCase
         // Test when() with false condition
         $dispatch2 = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->when(false, function ($dispatch) {
-                $dispatch->onConnection('when-false-connection');
+                $dispatch->onPool('when-false-connection');
             });
 
         $this->assertEquals('default', $this->getProperty($dispatch2, 'pool'));
@@ -187,7 +187,7 @@ class CoreFunctionalityTest extends TestCase
         // Test unless() with true condition
         $dispatch3 = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->unless(true, function ($dispatch) {
-                $dispatch->onConnection('unless-true-connection');
+                $dispatch->onPool('unless-true-connection');
             });
 
         $this->assertEquals('default', $this->getProperty($dispatch3, 'pool'));
@@ -195,7 +195,7 @@ class CoreFunctionalityTest extends TestCase
         // Test unless() with false condition
         $dispatch4 = \FriendsOfHyperf\AsyncQueueClosureJob\dispatch($closure)
             ->unless(false, function ($dispatch) {
-                $dispatch->onConnection('unless-false-connection');
+                $dispatch->onPool('unless-false-connection');
             });
 
         $this->assertEquals('unless-false-connection', $this->getProperty($dispatch4, 'pool'));
