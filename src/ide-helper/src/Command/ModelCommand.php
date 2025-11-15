@@ -275,6 +275,38 @@ class ModelCommand extends HyperfCommand
     }
 
     /**
+     * Get the type name from a Doctrine Type instance.
+     * Doctrine DBAL v4 compatibility: getName() was removed from Type.
+     */
+    protected function getDoctrineTypeName(\Doctrine\DBAL\Types\Type $type): string
+    {
+        // For DBAL v3 and earlier
+        if (method_exists($type, 'getName')) {
+            return $type->getName();
+        }
+
+        // For DBAL v4, map type instances to their string names
+        $typeClass = get_class($type);
+        $typeMap = [
+            \Doctrine\DBAL\Types\StringType::class => 'string',
+            \Doctrine\DBAL\Types\TextType::class => 'text',
+            \Doctrine\DBAL\Types\IntegerType::class => 'integer',
+            \Doctrine\DBAL\Types\BigIntType::class => 'bigint',
+            \Doctrine\DBAL\Types\SmallIntType::class => 'smallint',
+            \Doctrine\DBAL\Types\FloatType::class => 'float',
+            \Doctrine\DBAL\Types\DecimalType::class => 'decimal',
+            \Doctrine\DBAL\Types\BooleanType::class => 'boolean',
+            \Doctrine\DBAL\Types\DateType::class => 'date',
+            \Doctrine\DBAL\Types\DateTimeType::class => 'datetime',
+            \Doctrine\DBAL\Types\DateTimeTzType::class => 'datetimetz',
+            \Doctrine\DBAL\Types\TimeType::class => 'time',
+            \Doctrine\DBAL\Types\GuidType::class => 'guid',
+        ];
+
+        return $typeMap[$typeClass] ?? 'mixed';
+    }
+
+    /**
      * Load the properties from the database table.
      *
      * @param \Hyperf\Database\Model\Model $model
@@ -285,23 +317,24 @@ class ModelCommand extends HyperfCommand
         $connection = $model->getConnection();
         $table = $connection->getTablePrefix() . $model->getTable();
         $schema = $connection->getDoctrineSchemaManager($table);
-        $databasePlatform = $schema->getDatabasePlatform();
+        $databasePlatform = $connection->getDoctrineConnection()->getDatabasePlatform();
         $databasePlatform->registerDoctrineTypeMapping('enum', 'string');
 
-        $platformName = $databasePlatform->getName();
+        // Doctrine DBAL v4 compatibility: getName() was removed from AbstractPlatform
+        $platformName = method_exists($databasePlatform, 'getName')
+            ? $databasePlatform->getName()
+            : strtolower((new \ReflectionClass($databasePlatform))->getShortName());
         $customTypes = $this->config->get("ide-helper.model.custom_db_types.{$platformName}", []);
 
         foreach ($customTypes as $yourTypeName => $doctrineTypeName) {
             $databasePlatform->registerDoctrineTypeMapping($yourTypeName, $doctrineTypeName);
         }
 
-        $database = null;
-
         if (strpos($table, '.')) {
-            [$database, $table] = explode('.', $table);
+            [, $table] = explode('.', $table);
         }
 
-        $columns = $schema->listTableColumns($table, $database);
+        $columns = $schema->listTableColumns($table);
 
         if ($columns) {
             foreach ($columns as $column) {
@@ -309,7 +342,9 @@ class ModelCommand extends HyperfCommand
                 if (in_array($name, $model->getDates())) {
                     $type = $this->dateClass;
                 } else {
-                    $type = $column->getType()->getName();
+                    $columnType = $column->getType();
+                    // Doctrine DBAL v4 compatibility: getName() was removed, and Type cannot be cast to string
+                    $type = $this->getDoctrineTypeName($columnType);
                     switch ($type) {
                         case 'string':
                         case 'text':
