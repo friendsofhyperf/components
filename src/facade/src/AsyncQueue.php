@@ -18,6 +18,7 @@ use Override;
 /**
  * @mixin DriverFactory
  * @property null|string $queue
+ * @property null|string $pool
  */
 class AsyncQueue extends Facade
 {
@@ -25,11 +26,11 @@ class AsyncQueue extends Facade
      * Push a job to the queue.
      * @return bool
      */
-    public static function push(JobInterface $job, int $delay = 0, ?string $queue = null)
+    public static function push(JobInterface $job, int $delay = 0, ?string $pool = null)
     {
-        $queue = (fn ($queue) => $this->queue ?? $queue)->call($job, $queue);
+        $pool ??= (fn () => $this->queue ?? $this->pool ?? 'default')->call($job);
 
-        return self::get($queue)->push($job, $delay);
+        return self::get($pool)->push($job, $delay);
     }
 
     #[Override]

@@ -21,28 +21,27 @@ use Override;
  */
 class Kafka extends Facade
 {
-    public static function send(ProduceMessage $produceMessage, ?string $queue = null): void
+    public static function send(ProduceMessage $produceMessage, ?string $pool = null): void
     {
-        $queue = (fn ($queue) => $this->queue ?? $queue)->call($produceMessage, $queue);
-        self::getProducer($queue)->sendBatch([$produceMessage]);
+        $pool ??= (fn () => $this->pool ?? $this->queue ?? 'default')->call($produceMessage);
+        self::getProducer($pool)->sendBatch([$produceMessage]);
     }
 
     /**
      * @param ProduceMessage[] $produceMessages
      */
-    public static function sendBatch($produceMessages, ?string $queue = null): void
+    public static function sendBatch($produceMessages, ?string $pool = null): void
     {
         /** @var array<string,ProduceMessage[]> */
         $groupMessages = [];
-        $queue ??= 'default';
 
         foreach ($produceMessages as $message) {
-            $queue = (fn ($queue) => $this->queue ?? $queue)->call($message, $queue);
-            $groupMessages[$queue][] = $message;
+            $subPool = (fn () => $pool ?? $this->pool ?? $this->queue ?? 'default')->call($message);
+            $groupMessages[$subPool][] = $message;
         }
 
-        foreach ($groupMessages as $queue => $messages) {
-            self::getProducer($queue)->sendBatch($messages);
+        foreach ($groupMessages as $subPool => $messages) {
+            self::getProducer($subPool)->sendBatch($messages);
         }
     }
 
