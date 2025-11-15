@@ -24,7 +24,7 @@ jobs:
     strategy:
       matrix:
         php-version: [ '8.4', '8.3', '8.2' ]
-        mysql-replication: [ '9.0', '8.0' ]
+        mysql-replication: [ '^9.0', '^8.0' ]
       max-parallel: 2
       fail-fast: false
     steps:
@@ -40,7 +40,7 @@ jobs:
           coverage: none
       - name: Setup Packages
         run: |
-          composer require krowinski/php-mysql-replication:^${{ matrix.mysql-replication }} --no-update
+          composer require krowinski/php-mysql-replication:${{ matrix.mysql-replication }} --no-update
           composer update -o
       - name: Run Test Cases
         run: |
@@ -54,7 +54,7 @@ jobs:
     strategy:
       matrix:
         php-version: [ '8.4', '8.3', '8.2' ]
-        serializable-closure: [ '2.0', '1.0' ]
+        serializable-closure: [ '^2.0', '^1.0' ]
       max-parallel: 20
       fail-fast: false
     steps:
@@ -70,7 +70,7 @@ jobs:
           coverage: none
       - name: Setup Packages
         run: |
-          composer require laravel/serializable-closure:^${{ matrix.serializable-closure }} --no-update
+          composer require laravel/serializable-closure:${{ matrix.serializable-closure }} --no-update
           composer update -o
       - name: Run Test Cases
         run: |
@@ -84,7 +84,7 @@ jobs:
     strategy:
       matrix:
         php-version: [ '8.4', '8.3', '8.2' ]
-        carbon: [ '3.0', '2.0' ]
+        carbon-version: [ '^3.0', '^2.0' ]
       max-parallel: 20
       fail-fast: false
     steps:
@@ -100,7 +100,7 @@ jobs:
           coverage: none
       - name: Setup Packages
         run: |
-          composer require nesbot/carbon:^${{ matrix.carbon }} --no-update
+          composer require nesbot/carbon:${{ matrix.carbon-version }} --no-update
           composer update -o
       - name: Run Test Cases
         run: |
@@ -114,7 +114,7 @@ jobs:
     strategy:
       matrix:
         php-version: [ '8.4', '8.3', '8.2' ]
-        symfony: [ '7.0', '6.0' ]
+        symfony-version: [ '^7.0', '^6.0' ]
       max-parallel: 20
       fail-fast: false
     steps:
@@ -131,7 +131,7 @@ jobs:
       - name: Setup Packages
         run: |
           for package in `cat composer.json|grep "symfony/" | grep -v "polyfill" | awk -F '"' '{print $2}'`; do
-            composer require "${package}:^${{ matrix.symfony }}" --dev --no-update;
+            composer require "${package}:${{ matrix.symfony-version }}" --dev --no-update;
           done
           composer update -o
       - name: Run Test Cases
