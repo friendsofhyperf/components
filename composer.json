@@ -154,7 +154,6 @@
         "friendsofhyperf/notification-mail": "*",
         "friendsofhyperf/oauth2-server": "*",
         "friendsofhyperf/openai-client": "*",
-        "friendsofhyperf/pest-plugin-hyperf": "*",
         "friendsofhyperf/pretty-console": "*",
         "friendsofhyperf/purifier": "*",
         "friendsofhyperf/recaptcha": "*",
@@ -223,8 +222,7 @@
             "FriendsOfHyperf\\Tinker\\": "src/tinker/src/",
             "FriendsOfHyperf\\Trigger\\": "src/trigger/src/",
             "FriendsOfHyperf\\ValidatedDTO\\": "src/validated-dto/src/",
-            "FriendsOfHyperf\\WebTinker\\": "src/web-tinker/src/",
-            "Pest\\Hyperf\\": "src/pest-plugin-hyperf/src/"
+            "FriendsOfHyperf\\WebTinker\\": "src/web-tinker/src/"
         },
         "files": [
             "src/amqp-job/src/Functions.php",

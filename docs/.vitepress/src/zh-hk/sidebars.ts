@@ -171,10 +171,6 @@ const sidebar:DefaultTheme.Sidebar = {
                     link: '/zh-hk/components/openai-client.md'
                 },
                 {
-                    text: 'Pest Plugin Hyperf',
-                    link: '/zh-hk/components/pest-plugin-hyperf.md'
-                },
-                {
                     text: 'Pretty Console',
                     link: '/zh-hk/components/pretty-console.md'
                 },
