@@ -31,8 +31,7 @@ class Kafka extends Facade
 
     public static function send(ProduceMessage $produceMessage, ?string $pool = null): void
     {
-        $pool ??= (fn () => $this->pool ?? $this->queue ?? 'default')->call($produceMessage);
-        self::getProducer($pool)->sendBatch([$produceMessage]);
+        self::getProducer($pool ?? 'default')->sendBatch([$produceMessage]);
     }
 
     /**
