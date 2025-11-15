@@ -44,5 +44,5 @@ jobs:
           composer update -o
       - name: Run Test Cases
         run: |
-          composer analyse
+          composer analyse src
           composer analyse:types
