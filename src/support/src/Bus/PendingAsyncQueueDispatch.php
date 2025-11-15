@@ -20,9 +20,9 @@ class PendingAsyncQueueDispatch
 {
     use Conditionable;
 
-    public ?string $pool = null;
+    protected ?string $pool = null;
 
-    public int $delay = 0;
+    protected int $delay = 0;
 
     public function __construct(protected JobInterface $job)
     {
