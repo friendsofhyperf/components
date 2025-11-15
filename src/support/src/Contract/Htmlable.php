@@ -16,6 +16,7 @@ class_alias(\Hyperf\Contract\Htmlable::class, Htmlable::class);
 if (! interface_exists(Htmlable::class)) {
     /**
      * Interface Htmlable.
+     * @deprecated since v3.1, will be removed in v3.2, use `\Hyperf\Contract\Htmlable` instead
      */
     interface Htmlable extends \Hyperf\Contract\Htmlable
     {
