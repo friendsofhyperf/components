@@ -77,7 +77,7 @@ assertType('FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch', dispatch(new
         return $this;
     }
 
-    public function getQueueName(): string
+    public function getPoolName(): string
     {
         return uniqid();
     }
