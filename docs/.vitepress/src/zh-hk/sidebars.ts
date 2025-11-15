@@ -95,10 +95,6 @@ const sidebar:DefaultTheme.Sidebar = {
                     link: '/zh-hk/components/http-client.md'
                 },
                 {
-                    text: 'Http Logger',
-                    link: '/zh-hk/components/http-logger.md'
-                },
-                {
                     text: 'Ide Helper',
                     link: '/zh-hk/components/ide-helper.md'
                 },
