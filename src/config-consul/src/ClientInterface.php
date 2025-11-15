@@ -13,10 +13,8 @@ namespace FriendsOfHyperf\ConfigConsul;
 
 class_alias(\Hyperf\ConfigCenter\Contract\ClientInterface::class, ClientInterface::class);
 
-if (false) { // @phpstan-ignore-line
-    // @codeCoverageIgnoreStart
+if (! interface_exists(ClientInterface::class)) {
     interface ClientInterface extends \Hyperf\ConfigCenter\Contract\ClientInterface
     {
     }
-    // @codeCoverageIgnoreEnd
 }
