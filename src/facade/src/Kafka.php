@@ -11,9 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Facade;
 
+use FriendsOfHyperf\Support\Bus\PendingKafkaProducerMessageDispatch;
 use Hyperf\Kafka\ProducerManager;
 use longlang\phpkafka\Producer\ProduceMessage;
 use Override;
+
+use function FriendsOfHyperf\Support\dispatch;
 
 /**
  * @mixin ProducerManager
@@ -21,6 +24,11 @@ use Override;
  */
 class Kafka extends Facade
 {
+    public function dispatch(ProduceMessage $produceMessage): PendingKafkaProducerMessageDispatch
+    {
+        return dispatch($produceMessage);
+    }
+
     public static function send(ProduceMessage $produceMessage, ?string $pool = null): void
     {
         $pool ??= (fn () => $this->pool ?? $this->queue ?? 'default')->call($produceMessage);

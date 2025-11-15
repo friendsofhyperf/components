@@ -11,9 +11,13 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Facade;
 
+use Closure;
+use FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\AsyncQueue\JobInterface;
 use Override;
+
+use function FriendsOfHyperf\Support\dispatch;
 
 /**
  * @mixin DriverFactory
@@ -22,6 +26,11 @@ use Override;
  */
 class AsyncQueue extends Facade
 {
+    public function dispatch(Closure|JobInterface $job): PendingAsyncQueueDispatch
+    {
+        return dispatch($job);
+    }
+
     /**
      * Push a job to the queue.
      * @return bool
