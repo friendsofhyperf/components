@@ -47,7 +47,7 @@ jobs:
           composer analyse src
           composer analyse:types
   serializable-closure:
-    name: Test for PHP MySQL Replication
+    name: Test for PHP Laravel Serializable Closure
     runs-on: 'ubuntu-latest'
     env:
       PHP_VERSION: ${{ matrix.php-version }}
