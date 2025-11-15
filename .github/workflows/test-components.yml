@@ -5,11 +5,13 @@ on:
     paths:
       - "**"
       - "!docs/**"
+      - "!.vscode/**"
       - "!**.md"
   pull_request:
     paths:
       - "**"
       - "!docs/**"
+      - "!.vscode/**"
       - "!**.md"
   schedule:
     - cron: '0 2 * * *'
