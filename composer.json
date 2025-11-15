@@ -117,7 +117,6 @@
     },
     "replace": {
         "friendsofhyperf/amqp-job": "*",
-        "friendsofhyperf/async-queue-closure-job": "*",
         "friendsofhyperf/cache": "*",
         "friendsofhyperf/co-phpunit": "*",
         "friendsofhyperf/command-benchmark": "*",
@@ -175,7 +174,6 @@
     "autoload": {
         "psr-4": {
             "FriendsOfHyperf\\AmqpJob\\": "src/amqp-job/src/",
-            "FriendsOfHyperf\\AsyncQueueClosureJob\\": "src/async-queue-closure-job/src/",
             "FriendsOfHyperf\\Cache\\": "src/cache/src/",
             "FriendsOfHyperf\\CoPHPUnit\\": "src/co-phpunit/src/",
             "FriendsOfHyperf\\CommandBenchmark\\": "src/command-benchmark/src/",
@@ -230,7 +228,6 @@
         },
         "files": [
             "src/amqp-job/src/Functions.php",
-            "src/async-queue-closure-job/src/Functions.php",
             "src/co-phpunit/phpunit-patch.php",
             "src/encryption/src/Functions.php",
             "src/exception-event/src/Functions.php",
@@ -264,7 +261,6 @@
         "hyperf": {
             "config": [
                 "FriendsOfHyperf\\AmqpJob\\ConfigProvider",
-                "FriendsOfHyperf\\AsyncQueueClosureJob\\ConfigProvider",
                 "FriendsOfHyperf\\Cache\\ConfigProvider",
                 "FriendsOfHyperf\\CommandBenchmark\\ConfigProvider",
                 "FriendsOfHyperf\\CommandSignals\\ConfigProvider",
