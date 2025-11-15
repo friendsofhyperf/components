@@ -78,18 +78,8 @@ class TriggerSubscriber extends AbstractSubscriber
      */
     protected function process(RowsDTO $event): void
     {
-        $database = match (true) {
-            method_exists($event, 'getTableMap') => $event->getTableMap()->getDatabase(), // v7.x, @deprecated, will be removed in v3.2
-            property_exists($event, 'tableMap') => $event->tableMap->database, // @phpstan-ignore property.private
-            default => null,
-        };
-
-        $table = match (true) {
-            method_exists($event, 'getTableMap') => $event->getTableMap()->getTable(), // v7.x, @deprecated, will be removed in v3.2
-            property_exists($event, 'tableMap') => $event->tableMap->table, // @phpstan-ignore property.private
-            default => null,
-        };
-
+        $database = $event->tableMap->database;
+        $table = $event->tableMap->table;
         $key = join('.', [
             $this->consumer->connection,
             $database,
