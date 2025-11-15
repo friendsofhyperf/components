@@ -130,7 +130,9 @@ jobs:
           coverage: none
       - name: Setup Packages
         run: |
-          for package in `cat composer.json|grep "symfony/"| awk -F '"' '{print $2}'`; do composer require "${package}:${{ matrix.symfony }}" --dev --no-update; done
+          for package in `cat composer.json|grep "symfony/" | grep -v "polyfill" | awk -F '"' '{print $2}'`; do
+            composer require "${package}:${{ matrix.symfony }}" --dev --no-update;
+          done
           composer update -o
       - name: Run Test Cases
         run: |
