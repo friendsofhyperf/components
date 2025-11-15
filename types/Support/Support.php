@@ -85,12 +85,18 @@ assertType('FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch', dispatch(new
 
 assertType('FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch', dispatch(fn () => null));
 
-assertType('FriendsOfHyperf\Support\Bus\PendingAmqpProducerMessageDispatch', dispatch(new class extends Hyperf\Amqp\Message\ProducerMessage {
-    public function __construct()
-    {
-        $this->exchange = 'test.exchange';
-        $this->routingKey = 'test.routing.key';
-    }
-}));
+assertType(
+    'FriendsOfHyperf\Support\Bus\PendingAmqpProducerMessageDispatch',
+    dispatch(new class extends Hyperf\Amqp\Message\ProducerMessage {
+        public function __construct()
+        {
+            $this->exchange = 'test.exchange';
+            $this->routingKey = 'test.routing.key';
+        }
+    })
+);
 
-assertType('FriendsOfHyperf\Support\Bus\PendingKafkaProducerMessageDispatch', dispatch(new longlang\phpkafka\Producer\ProduceMessage('test-topic', 'test-value')));
+assertType(
+    'FriendsOfHyperf\Support\Bus\PendingKafkaProducerMessageDispatch',
+    dispatch(new longlang\phpkafka\Producer\ProduceMessage('test-topic', 'test-value'))
+);
