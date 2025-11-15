@@ -25,7 +25,7 @@ jobs:
       matrix:
         php-version: [ '8.4', '8.3', '8.2' ]
         mysql-replication: [ '^9.0', '^8.0' ]
-      max-parallel: 2
+      max-parallel: 4
       fail-fast: false
     steps:
       - name: Checkout
@@ -55,7 +55,7 @@ jobs:
       matrix:
         php-version: [ '8.4', '8.3', '8.2' ]
         serializable-closure: [ '^2.0', '^1.0' ]
-      max-parallel: 20
+      max-parallel: 4
       fail-fast: false
     steps:
       - name: Checkout
@@ -85,7 +85,7 @@ jobs:
       matrix:
         php-version: [ '8.4', '8.3', '8.2' ]
         carbon-version: [ '^3.0', '^2.0' ]
-      max-parallel: 20
+      max-parallel: 4
       fail-fast: false
     steps:
       - name: Checkout
@@ -115,7 +115,7 @@ jobs:
       matrix:
         php-version: [ '8.4', '8.3', '8.2' ]
         symfony-version: [ '^7.0', '^6.0' ]
-      max-parallel: 20
+      max-parallel: 4
       fail-fast: false
     steps:
       - name: Checkout
