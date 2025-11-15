@@ -11,6 +11,13 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Support\Contract;
 
-interface Htmlable extends \Hyperf\Contract\Htmlable
-{
+class_alias(\Hyperf\Contract\Htmlable::class, Htmlable::class);
+
+if (! interface_exists(Htmlable::class)) {
+    /**
+     * Interface Htmlable.
+     */
+    interface Htmlable extends \Hyperf\Contract\Htmlable
+    {
+    }
 }
