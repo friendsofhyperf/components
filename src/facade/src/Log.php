@@ -37,15 +37,13 @@ class Log extends Facade
     }
 
     /**
-     * @param string $name
-     * @param string $group
      * @return \Psr\Log\LoggerInterface
      */
-    public static function channel($name = 'hyperf', $group = 'default')
+    public static function channel(string $name = 'hyperf', string $channel = 'default')
     {
         return ApplicationContext::getContainer()
             ->get(static::getFacadeAccessor())
-            ->get($name, $group);
+            ->get($name, $channel);
     }
 
     #[Override]
