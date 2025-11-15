@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\AsyncQueueClosureJob\Traits;
+namespace FriendsOfHyperf\Support\Traits;
 
 use Closure;
 use Hyperf\Context\ApplicationContext;
