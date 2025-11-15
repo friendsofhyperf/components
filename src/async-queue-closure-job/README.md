@@ -6,6 +6,8 @@
 
 The async queue closure job component for Hyperf. Execute closures as background jobs with full support for dependency injection, fluent configuration.
 
+> **Note**: Starting from v3.1.73, this package serves as a convenience wrapper around the `friendsofhyperf/support` package. The core implementation (`CallQueuedClosure` and related classes) has been moved to the support package to eliminate circular dependencies and improve package architecture.
+
 ## Installation
 
 ```shell
@@ -109,13 +111,38 @@ The main dispatch function that creates a closure job.
 - Closures with captured variables (`use`)
 - Closures with nullable parameters
 
+## Package Architecture
+
+As of v3.1.73, this package has been refactored to improve the overall architecture:
+
+- **Core Implementation**: Moved to `friendsofhyperf/support` package
+  - `FriendsOfHyperf\Support\CallQueuedClosure`
+  - `FriendsOfHyperf\Support\Traits\ClosureParameterInjection`
+- **Convenience Layer**: This package now provides a namespace alias for easy migration
+  - `FriendsOfHyperf\AsyncQueueClosureJob\dispatch()` → delegates to support package
+
+### Why This Change?
+
+1. **Eliminates Circular Dependencies**: The support package previously depended on this package, creating a circular dependency
+2. **Single Source of Truth**: Core functionality now lives in one place
+3. **Simplified Dependency Tree**: Reduces maintenance overhead
+4. **Non-Breaking**: Existing code continues to work without changes
+
+### Migration Guide
+
+**No action required!** The namespace `FriendsOfHyperf\AsyncQueueClosureJob\dispatch()` continues to work as before. However, if you want to use the new location directly:
+
+```php
+// Old (still supported)
+use function FriendsOfHyperf\AsyncQueueClosureJob\dispatch;
+
+// New (recommended for new code)
+use function FriendsOfHyperf\Support\dispatch;
+```
+
 ## Testing
 
-Run tests:
-
-```shell
-composer test:unit -- tests/AsyncQueueClosureJob
-```
+Tests for the core functionality are now maintained in the support package.
 
 ## Contributing
 

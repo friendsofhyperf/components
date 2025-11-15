@@ -23,11 +23,15 @@ class PendingAmqpProducerMessageDispatch
 {
     use Conditionable;
 
-    public ?string $pool = null;
+    protected ?string $pool = null;
 
-    public int $timeout = 5;
+    protected int $timeout = 5;
 
-    public bool $confirm = false;
+    protected bool $confirm = false;
+
+    protected null|array|string $routingKey = null;
+
+    protected ?string $exchange = null;
 
     public function __construct(protected ProducerMessageInterface $message)
     {
@@ -36,6 +40,8 @@ class PendingAmqpProducerMessageDispatch
     public function __destruct()
     {
         $this->pool && $this->message->setPoolName($this->pool);
+        $this->routingKey && $this->message->setRoutingKey($this->routingKey);
+        $this->exchange && $this->message->setExchange($this->exchange);
         ApplicationContext::getContainer()
             ->get(Producer::class)
             ->produce($this->message, $this->confirm, $this->timeout);
@@ -59,6 +65,18 @@ class PendingAmqpProducerMessageDispatch
             $this->properties['application_headers'] ??= new \PhpAmqpLib\Wire\AMQPTable(); // @phpstan-ignore-line
             $this->properties['application_headers']->set($key, $value, $ttl);
         })->call($this->message);
+        return $this;
+    }
+
+    public function setExchange(string $exchange): static
+    {
+        $this->exchange = $exchange;
+        return $this;
+    }
+
+    public function setRoutingKey(array|string $routingKey): static
+    {
+        $this->routingKey = $routingKey;
         return $this;
     }
 

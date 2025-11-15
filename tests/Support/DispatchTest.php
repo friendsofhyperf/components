@@ -12,10 +12,10 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Tests\Support;
 
 use Exception;
-use FriendsOfHyperf\AsyncQueueClosureJob\CallQueuedClosure;
 use FriendsOfHyperf\Support\Bus\PendingAmqpProducerMessageDispatch;
 use FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch;
 use FriendsOfHyperf\Support\Bus\PendingKafkaProducerMessageDispatch;
+use FriendsOfHyperf\Support\CallQueuedClosure;
 use FriendsOfHyperf\Tests\TestCase;
 use Hyperf\Amqp\Message\ProducerMessage;
 use Hyperf\Amqp\Producer;

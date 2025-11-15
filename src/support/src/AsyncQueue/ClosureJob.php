@@ -12,12 +12,13 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Support\AsyncQueue;
 
 use Closure;
+use FriendsOfHyperf\Support\CallQueuedClosure;
 use Laravel\SerializableClosure\SerializableClosure;
 
 /**
  * @deprecated since v3.2, will be removed in v3.2, use `FriendsOfHyperf\AsyncQueueClosureJob\ClosureJob` instead.
  */
-class ClosureJob extends \FriendsOfHyperf\AsyncQueueClosureJob\CallQueuedClosure
+class ClosureJob extends CallQueuedClosure
 {
     public function __construct(Closure $closure, int $maxAttempts = 0)
     {
