@@ -20,7 +20,6 @@ use function FriendsOfHyperf\Support\dispatch;
 
 /**
  * @mixin ProducerManager
- * @property null|string $queue
  */
 class Kafka extends Facade
 {
@@ -31,8 +30,7 @@ class Kafka extends Facade
 
     public static function send(ProduceMessage $produceMessage, ?string $pool = null): void
     {
-        $pool ??= (fn () => $this->pool ?? $this->queue ?? 'default')->call($produceMessage);
-        self::getProducer($pool)->sendBatch([$produceMessage]);
+        self::getProducer($pool ?? 'default')->sendBatch([$produceMessage]);
     }
 
     /**
@@ -40,17 +38,7 @@ class Kafka extends Facade
      */
     public static function sendBatch($produceMessages, ?string $pool = null): void
     {
-        /** @var array<string,ProduceMessage[]> */
-        $groupMessages = [];
-
-        foreach ($produceMessages as $message) {
-            $subPool = (fn () => $pool ?? $this->pool ?? $this->queue ?? 'default')->call($message);
-            $groupMessages[$subPool][] = $message;
-        }
-
-        foreach ($groupMessages as $subPool => $messages) {
-            self::getProducer($subPool)->sendBatch($messages);
-        }
+        self::getProducer($pool ?? 'default')->sendBatch($produceMessages);
     }
 
     #[Override]

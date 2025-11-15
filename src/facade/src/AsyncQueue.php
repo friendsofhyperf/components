@@ -21,7 +21,6 @@ use function FriendsOfHyperf\Support\dispatch;
 
 /**
  * @mixin DriverFactory
- * @property null|string $queue
  * @property null|string $pool
  */
 class AsyncQueue extends Facade
@@ -37,9 +36,7 @@ class AsyncQueue extends Facade
      */
     public static function push(JobInterface $job, int $delay = 0, ?string $pool = null)
     {
-        $pool ??= (fn () => $this->queue ?? $this->pool ?? 'default')->call($job);
-
-        return self::get($pool)->push($job, $delay);
+        return self::get($pool ?? $job->getPoolName())->push($job, $delay);
     }
 
     #[Override]
