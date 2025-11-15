@@ -85,7 +85,7 @@ assertType('FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch', dispatch(new
 
 assertType('FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch', dispatch(fn () => null));
 
-assertType('FriendsOfHyperf\Support\Bus\PendingAmqpProducerMessageDispatch', dispatch(new class () extends Hyperf\Amqp\Message\ProducerMessage {
+assertType('FriendsOfHyperf\Support\Bus\PendingAmqpProducerMessageDispatch', dispatch(new class extends Hyperf\Amqp\Message\ProducerMessage {
     public function __construct()
     {
         $this->exchange = 'test.exchange';
