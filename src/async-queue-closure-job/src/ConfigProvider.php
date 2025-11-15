@@ -15,15 +15,6 @@ final class ConfigProvider
 {
     public function __invoke()
     {
-        return [
-            'dependencies' => [],
-            'annotations' => [
-                'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
-                ],
-            ],
-        ];
+        return [];
     }
 }

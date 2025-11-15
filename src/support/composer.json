@@ -20,7 +20,6 @@
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
-        "friendsofhyperf/async-queue-closure-job": "~3.1.0",
         "hyperf/collection": "~3.1.0",
         "hyperf/context": "~3.1.0",
         "hyperf/di": "~3.1.0",
@@ -29,6 +28,7 @@
         "hyperf/stringable": "~3.1.0",
         "hyperf/support": "~3.1.0",
         "hyperf/tappable": "~3.1.0",
+        "laravel/serializable-closure": "^1.0 || ^2.0",
         "nesbot/carbon": "^2.0 || ^3.0",
         "symfony/polyfill-php85": "^1.33"
     },

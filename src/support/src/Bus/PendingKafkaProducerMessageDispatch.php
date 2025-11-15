@@ -26,7 +26,7 @@ class PendingKafkaProducerMessageDispatch
 {
     use Conditionable;
 
-    public ?string $pool = null;
+    protected ?string $pool = null;
 
     public function __construct(protected ProduceMessage $message)
     {

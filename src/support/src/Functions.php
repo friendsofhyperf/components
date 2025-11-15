@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Support;
 
 use Closure;
 use Exception;
-use FriendsOfHyperf\AsyncQueueClosureJob\CallQueuedClosure;
 use FriendsOfHyperf\Support\Bus\PendingAmqpProducerMessageDispatch;
 use FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch;
 use FriendsOfHyperf\Support\Bus\PendingKafkaProducerMessageDispatch;
