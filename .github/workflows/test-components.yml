@@ -39,10 +39,10 @@ jobs:
           ini-values: opcache.enable_cli=1
           coverage: none
       - name: Setup Packages
-        run: ./.travis/requirement.install.sh
-      - name: Run Test Cases
         run: |
           composer require krowinski/php-mysql-replication:^${{ matrix.mysql-replication }} --no-update
           composer update -o
+      - name: Run Test Cases
+        run: |
           composer analyse
           composer analyse:types
