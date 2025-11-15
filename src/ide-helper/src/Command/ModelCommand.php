@@ -323,7 +323,7 @@ class ModelCommand extends HyperfCommand
         // Doctrine DBAL v4 compatibility: getName() was removed from AbstractPlatform
         $platformName = method_exists($databasePlatform, 'getName')
             ? $databasePlatform->getName()
-            : strtolower((new \ReflectionClass($databasePlatform))->getShortName());
+            : strtolower((new ReflectionClass($databasePlatform))->getShortName());
         $customTypes = $this->config->get("ide-helper.model.custom_db_types.{$platformName}", []);
 
         foreach ($customTypes as $yourTypeName => $doctrineTypeName) {
