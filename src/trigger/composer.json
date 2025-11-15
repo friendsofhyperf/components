@@ -35,7 +35,7 @@
         "hyperf/stringable": "~3.2.0",
         "hyperf/support": "~3.2.0",
         "hyperf/tappable": "~3.2.0",
-        "krowinski/php-mysql-replication": "^8.0",
+        "krowinski/php-mysql-replication": "^8.0 || ^9.0",
         "ramsey/uuid": "^4.7"
     },
     "suggest": {
