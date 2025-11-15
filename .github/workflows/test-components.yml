@@ -79,7 +79,7 @@ jobs:
           composer analyse src
           composer analyse:types
   carbon:
-    name: Test for Carbon
+    name: Test for Nesbot Carbon
     runs-on: 'ubuntu-latest'
     env:
       PHP_VERSION: ${{ matrix.php-version }}
