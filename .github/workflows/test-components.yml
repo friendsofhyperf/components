@@ -16,8 +16,8 @@ on:
 env:
   SW_VERSION: 'v6.1.0'
 jobs:
-  trigger:
-    name: Test for Trigger
+  php-mysql-replication:
+    name: Test for PHP MySQL Replication
     runs-on: 'ubuntu-latest'
     env:
       PHP_VERSION: ${{ matrix.php-version }}
