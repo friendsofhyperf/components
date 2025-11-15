@@ -11,10 +11,14 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Support\Contract;
 
-interface Htmlable
-{
+class_alias(\Hyperf\Contract\Htmlable::class, Htmlable::class);
+
+if (! interface_exists(Htmlable::class)) {
     /**
-     * Get content as a string of HTML.
+     * Interface Htmlable.
+     * @deprecated since v3.2, will be removed in next major version, use `\Hyperf\Contract\Htmlable` instead
      */
-    public function toHtml(): string;
+    interface Htmlable extends \Hyperf\Contract\Htmlable
+    {
+    }
 }

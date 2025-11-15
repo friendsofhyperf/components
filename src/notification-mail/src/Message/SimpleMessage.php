@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Notification\Mail\Message;
 
 use FriendsOfHyperf\Notification\Mail\Action;
-use FriendsOfHyperf\Support\Contract\Htmlable;
+use Hyperf\Contract\Htmlable;
 
 class SimpleMessage
 {
@@ -223,9 +223,9 @@ class SimpleMessage
     /**
      * Format the given line of text.
      */
-    protected function formatLine(Htmlable|\Hyperf\ViewEngine\Contract\Htmlable|array|string $line): \Hyperf\ViewEngine\Contract\Htmlable|Htmlable|string
+    protected function formatLine(Htmlable|array|string $line): Htmlable|string
     {
-        if ($line instanceof Htmlable || $line instanceof \Hyperf\ViewEngine\Contract\Htmlable) {
+        if ($line instanceof Htmlable) {
             return $line;
         }
 
