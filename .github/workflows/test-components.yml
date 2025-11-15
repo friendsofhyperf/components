@@ -5,11 +5,13 @@ on:
     paths:
       - "**"
       - "!docs/**"
+      - "!.vscode/**"
       - "!**.md"
   pull_request:
     paths:
       - "**"
       - "!docs/**"
+      - "!.vscode/**"
       - "!**.md"
   schedule:
     - cron: '0 2 * * *'
@@ -24,8 +26,8 @@ jobs:
     strategy:
       matrix:
         php-version: [ '8.4', '8.3', '8.2' ]
-        mysql-replication: [ '9.0', '8.0' ]
-      max-parallel: 2
+        mysql-replication: [ '^9.0', '^8.0' ]
+      max-parallel: 10
       fail-fast: false
     steps:
       - name: Checkout
@@ -40,7 +42,7 @@ jobs:
           coverage: none
       - name: Setup Packages
         run: |
-          composer require krowinski/php-mysql-replication:^${{ matrix.mysql-replication }} --no-update
+          composer require krowinski/php-mysql-replication:${{ matrix.mysql-replication }} --no-update
           composer update -o
       - name: Run Test Cases
         run: |
@@ -54,8 +56,8 @@ jobs:
     strategy:
       matrix:
         php-version: [ '8.4', '8.3', '8.2' ]
-        serializable-closure: [ '2.0', '1.0' ]
-      max-parallel: 20
+        serializable-closure: [ '^2.0', '^1.0' ]
+      max-parallel: 10
       fail-fast: false
     steps:
       - name: Checkout
@@ -70,22 +72,22 @@ jobs:
           coverage: none
       - name: Setup Packages
         run: |
-          composer require laravel/serializable-closure:^${{ matrix.serializable-closure }} --no-update
+          composer require laravel/serializable-closure:${{ matrix.serializable-closure }} --no-update
           composer update -o
       - name: Run Test Cases
         run: |
           composer analyse src
           composer analyse:types
   carbon:
-    name: Test for Carbon
+    name: Test for Nesbot Carbon
     runs-on: 'ubuntu-latest'
     env:
       PHP_VERSION: ${{ matrix.php-version }}
     strategy:
       matrix:
         php-version: [ '8.4', '8.3', '8.2' ]
-        carbon: [ '3.0', '2.0' ]
-      max-parallel: 20
+        carbon-version: [ '^3.0', '^2.0' ]
+      max-parallel: 10
       fail-fast: false
     steps:
       - name: Checkout
@@ -100,7 +102,39 @@ jobs:
           coverage: none
       - name: Setup Packages
         run: |
-          composer require nesbot/carbon:^${{ matrix.carbon }} --no-update
+          composer require nesbot/carbon:${{ matrix.carbon-version }} --no-update
+          composer update -o
+      - name: Run Test Cases
+        run: |
+          composer analyse src
+          composer analyse:types
+  symfony:
+    name: Test for Symfony Components
+    runs-on: 'ubuntu-latest'
+    env:
+      PHP_VERSION: ${{ matrix.php-version }}
+    strategy:
+      matrix:
+        php-version: [ '8.4', '8.3', '8.2' ]
+        symfony-version: [ '^7.0', '^6.0' ]
+      max-parallel: 10
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: phpize
+          extensions: redis, pdo, pdo_mysql, bcmath, swoole
+          ini-values: opcache.enable_cli=1
+          coverage: none
+      - name: Setup Packages
+        run: |
+          for package in `cat composer.json|grep "symfony/" | grep -v "polyfill" | awk -F '"' '{print $2}'`; do
+            composer require "${package}:${{ matrix.symfony-version }}" --dev --no-update;
+          done
           composer update -o
       - name: Run Test Cases
         run: |
