@@ -130,6 +130,7 @@ jobs:
           coverage: none
       - name: Setup Packages
         run: |
+          composer remove pestphp/* --dev --no-update
           for package in `cat composer.json|grep "symfony/" | grep -v "polyfill" | awk -F '"' '{print $2}'`; do
             composer require "${package}:${{ matrix.symfony-version }}" --dev --no-update;
           done
