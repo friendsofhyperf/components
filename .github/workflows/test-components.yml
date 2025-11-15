@@ -1,0 +1,108 @@
+name: Test for Components
+
+on:
+  push:
+    paths:
+      - "**"
+      - "!docs/**"
+      - "!**.md"
+  pull_request:
+    paths:
+      - "**"
+      - "!docs/**"
+      - "!**.md"
+  schedule:
+    - cron: '0 2 * * *'
+env:
+  SW_VERSION: 'v6.1.0'
+jobs:
+  php-mysql-replication:
+    name: Test for PHP MySQL Replication
+    runs-on: 'ubuntu-latest'
+    env:
+      PHP_VERSION: ${{ matrix.php-version }}
+    strategy:
+      matrix:
+        php-version: [ '8.4', '8.3', '8.2' ]
+        mysql-replication: [ '9.0', '8.0' ]
+      max-parallel: 2
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: phpize
+          extensions: redis, pdo, pdo_mysql, bcmath, swoole
+          ini-values: opcache.enable_cli=1
+          coverage: none
+      - name: Setup Packages
+        run: |
+          composer require krowinski/php-mysql-replication:^${{ matrix.mysql-replication }} --no-update
+          composer update -o
+      - name: Run Test Cases
+        run: |
+          composer analyse src
+          composer analyse:types
+  serializable-closure:
+    name: Test for Laravel Serializable Closure
+    runs-on: 'ubuntu-latest'
+    env:
+      PHP_VERSION: ${{ matrix.php-version }}
+    strategy:
+      matrix:
+        php-version: [ '8.4', '8.3', '8.2' ]
+        serializable-closure: [ '2.0', '1.0' ]
+      max-parallel: 20
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: phpize
+          extensions: redis, pdo, pdo_mysql, bcmath, swoole
+          ini-values: opcache.enable_cli=1
+          coverage: none
+      - name: Setup Packages
+        run: |
+          composer require laravel/serializable-closure:^${{ matrix.serializable-closure }} --no-update
+          composer update -o
+      - name: Run Test Cases
+        run: |
+          composer analyse src
+          composer analyse:types
+  carbon:
+    name: Test for Carbon
+    runs-on: 'ubuntu-latest'
+    env:
+      PHP_VERSION: ${{ matrix.php-version }}
+    strategy:
+      matrix:
+        php-version: [ '8.4', '8.3', '8.2' ]
+        carbon: [ '3.0', '2.0' ]
+      max-parallel: 20
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: phpize
+          extensions: redis, pdo, pdo_mysql, bcmath, swoole
+          ini-values: opcache.enable_cli=1
+          coverage: none
+      - name: Setup Packages
+        run: |
+          composer require nesbot/carbon:^${{ matrix.carbon }} --no-update
+          composer update -o
+      - name: Run Test Cases
+        run: |
+          composer analyse src
+          composer analyse:types
