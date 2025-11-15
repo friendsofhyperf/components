@@ -20,6 +20,8 @@ use function FriendsOfHyperf\Support\dispatch as base_dispatch;
 /**
  * Dispatch a closure as an async queue job.
  *
+ * @deprecated since version 3.1.73, will be removed in version 3.2, use `FriendsOfHyperf\Support\dispatch` instead.
+ *
  * @param Closure $closure The closure to execute
  * @param-closure-this CallQueuedClosure $closure
  */
