@@ -15,10 +15,10 @@ use FriendsOfHyperf\Mail\Attachment;
 use FriendsOfHyperf\Mail\Contract\Attachable;
 use FriendsOfHyperf\Mail\Contract\Mailer;
 use FriendsOfHyperf\Mail\Markdown;
-use FriendsOfHyperf\Support\Contract\Htmlable;
 use Hyperf\Conditionable\Conditionable;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Contract\Arrayable;
+use Hyperf\Contract\Htmlable;
 use Hyperf\ViewEngine\Contract\Renderable;
 
 use function Hyperf\Collection\collect;
@@ -294,7 +294,7 @@ class MailMessage extends SimpleMessage implements Renderable
     /**
      * Render the mail notification message into an HTML string.
      */
-    public function render(): Htmlable|\Hyperf\ViewEngine\Contract\Htmlable
+    public function render(): Htmlable
     {
         $container = ApplicationContext::getContainer();
         if (isset($this->view)) {
