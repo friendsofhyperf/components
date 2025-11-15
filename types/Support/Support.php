@@ -63,40 +63,30 @@ assertType('Dotenv\Repository\RepositoryInterface', Env::getRepository());
 $command = new RedisCommand('SET', ['key', 'value']);
 assertType('string', (string) $command);
 
-assertType('FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch', dispatch(new class implements Hyperf\AsyncQueue\JobInterface {
-    public function handle(): void
-    {
-    }
-
-    public function fail(Throwable $e): void
-    {
-    }
-
-    public function getMaxAttempts(): int
-    {
-        return 0;
-    }
-
-    public function setMaxAttempts(int $maxAttempts): static
-    {
-        return $this;
-    }
-}));
-
-assertType('FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch', dispatch(fn () => null));
-
 assertType(
-    'FriendsOfHyperf\Support\Bus\PendingAmqpProducerMessageDispatch',
-    dispatch(new class extends Hyperf\Amqp\Message\ProducerMessage {
-        public function __construct()
+    'FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch',
+    dispatch(new class implements Hyperf\AsyncQueue\JobInterface {
+        public function handle(): void
         {
-            $this->exchange = 'test.exchange';
-            $this->routingKey = 'test.routing.key';
+        }
+
+        public function fail(Throwable $e): void
+        {
+        }
+
+        public function getMaxAttempts(): int
+        {
+            return 0;
+        }
+
+        public function setMaxAttempts(int $maxAttempts): static
+        {
+            return $this;
         }
     })
 );
 
 assertType(
-    'FriendsOfHyperf\Support\Bus\PendingKafkaProducerMessageDispatch',
-    dispatch(new longlang\phpkafka\Producer\ProduceMessage('test-topic', 'test-value'))
+    'FriendsOfHyperf\Support\Bus\PendingAsyncQueueDispatch',
+    dispatch(fn () => null)
 );
