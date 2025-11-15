@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Trigger\Contract;
 
 class_alias(\Psr\Log\LoggerInterface::class, LoggerInterface::class);
 
-if (false) { // @phpstan-ignore if.alwaysFalse
+if (! interface_exists(LoggerInterface::class)) {
     interface LoggerInterface extends \Psr\Log\LoggerInterface
     {
     }
