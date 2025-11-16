@@ -93,7 +93,6 @@ php bin/hyperf.php vendor:publish friendsofhyperf/[组件名称]
 ### 🌐 HTTP 与 API
 
 - **[http-client](src/http-client)** - 优雅的 HTTP 客户端（Laravel 风格）
-- **[http-logger](src/http-logger)** - HTTP 请求/响应日志
 - **[oauth2-server](src/oauth2-server)** - OAuth2 服务器实现
 
 ### 📨 通知与通信
