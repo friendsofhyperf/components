@@ -152,7 +152,6 @@ php bin/hyperf.php vendor:publish friendsofhyperf/[组件名称]
 
 ### 🧪 测试
 
-- **[pest-plugin-hyperf](src/pest-plugin-hyperf)** - Pest 测试框架集成
 - **[co-phpunit](src/co-phpunit)** - 协程兼容的 PHPUnit
 
 ### 🤖 AI 与外部服务
