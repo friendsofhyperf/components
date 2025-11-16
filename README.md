@@ -152,7 +152,6 @@ php bin/hyperf.php vendor:publish friendsofhyperf/[component-name]
 
 ### 🧪 Testing
 
-- **[pest-plugin-hyperf](src/pest-plugin-hyperf)** - Pest testing framework integration
 - **[co-phpunit](src/co-phpunit)** - Coroutine-compatible PHPUnit
 
 ### 🤖 AI & External Services
