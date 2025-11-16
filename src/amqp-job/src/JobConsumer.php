@@ -17,6 +17,7 @@ use Hyperf\Amqp\Message\ConsumerMessage;
 use Hyperf\Amqp\Result;
 use Hyperf\Contract\StdoutLoggerInterface;
 use PhpAmqpLib\Message\AMQPMessage;
+use Psr\Log\LoggerInterface as PsrLoggerInterface;
 use Throwable;
 
 class JobConsumer extends ConsumerMessage
@@ -58,24 +59,24 @@ class JobConsumer extends ConsumerMessage
 
     final public function unserialize(string $data)
     {
-        $packer = $this->getContainer()->get(Packer::class);
+        static $packer = null;
+
+        $packer ??= $this->getContainer()->get(Packer::class);
 
         return $packer->unpack($data);
     }
 
-    protected function resolveLoggerInstance(): ?\Psr\Log\LoggerInterface
+    protected function resolveLoggerInstance(): ?PsrLoggerInterface
     {
         static $logger = null;
 
-        if ($logger) {
-            return $logger;
-        }
-
-        return $logger = match (true) {
+        $logger ??= match (true) {
             $this->container->has(LoggerInterface::class) => $this->container->get(LoggerInterface::class), // @deprecated, will be removed in v3.2
             $this->container->has(Contract\LoggerInterface::class) => $this->container->get(Contract\LoggerInterface::class),
             $this->container->has(StdoutLoggerInterface::class) => $this->container->get(StdoutLoggerInterface::class),
             default => null,
         };
+
+        return $logger;
     }
 }
