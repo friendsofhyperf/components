@@ -14,9 +14,6 @@ namespace FriendsOfHyperf\AmqpJob;
 class_alias(Contract\LoggerInterface::class, LoggerInterface::class);
 
 if (! interface_exists(LoggerInterface::class)) {
-    /**
-     * @deprecated since v3.1, use FriendsOfHyperf\AmqpJob\Contract\LoggerInterface instead, will be removed in v3.2
-     */
     interface LoggerInterface extends Contract\LoggerInterface
     {
     }
