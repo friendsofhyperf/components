@@ -22,20 +22,7 @@ use function FriendsOfHyperf\Sentry\trace;
 class ElasticsearchAspect extends AbstractAspect
 {
     public array $classes = [
-        // v7.x
-        'Elasticsearch\Client::bulk',
-        'Elasticsearch\Client::count',
-        'Elasticsearch\Client::create',
-        'Elasticsearch\Client::get',
-        'Elasticsearch\Client::getSource',
-        'Elasticsearch\Client::index',
-        'Elasticsearch\Client::mget',
-        'Elasticsearch\Client::msearch',
-        'Elasticsearch\Client::scroll',
-        'Elasticsearch\Client::search',
-        'Elasticsearch\Client::update',
-        'Elasticsearch\Client::updateByQuery',
-        // v8.x
+        // v8.x+
         'Elastic\Elasticsearch\Traits\ClientEndpointsTrait::bulk',
         'Elastic\Elasticsearch\Traits\ClientEndpointsTrait::count',
         'Elastic\Elasticsearch\Traits\ClientEndpointsTrait::create',

@@ -36,7 +36,7 @@
         "symfony/polyfill-php85": "^1.33"
     },
     "suggest": {
-        "elasticsearch/elasticsearch": "Required to use the elasticsearch client (^7.0|^8.0).",
+        "elasticsearch/elasticsearch": "Required to use the elasticsearch client (^8.0 || ^9.0).",
         "hyperf/amqp": "Required to use the amqp event (~3.2.0).",
         "hyperf/crontab": "Required to use the crontab event (~3.2.0).",
         "hyperf/database": "Required to use the crontab event (~3.2.0).",
