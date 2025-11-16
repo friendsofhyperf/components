@@ -46,10 +46,6 @@ const sidebar:DefaultTheme.Sidebar = {
                     link: '/en/components/console-spinner.md'
                 },
                 {
-                    text: 'Di Plus',
-                    link: '/en/components/di-plus.md'
-                },
-                {
                     text: 'Elasticsearch',
                     link: '/en/components/elasticsearch.md'
                 },
@@ -100,10 +96,6 @@ const sidebar:DefaultTheme.Sidebar = {
                 {
                     text: 'Mail',
                     link: '/en/components/mail.md'
-                },
-                {
-                    text: 'Middleware Plus',
-                    link: '/en/components/middleware-plus.md'
                 },
                 {
                     text: 'Model Factory',

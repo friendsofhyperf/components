@@ -122,9 +122,7 @@ php bin/hyperf.php vendor:publish friendsofhyperf/[组件名称]
 
 ### 🧩 依赖注入与架构
 
-- **[di-plus](src/di-plus)** - 增强的依赖注入功能
 - **[facade](src/facade)** - Hyperf 的 Laravel 风格门面
-- **[middleware-plus](src/middleware-plus)** - 增强的中间件功能
 - **[ipc-broadcaster](src/ipc-broadcaster)** - 进程间通信广播器
 
 ### 🔐 安全与验证

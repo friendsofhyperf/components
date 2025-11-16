@@ -122,9 +122,7 @@ php bin/hyperf.php vendor:publish friendsofhyperf/[component-name]
 
 ### 🧩 Dependency Injection & Architecture
 
-- **[di-plus](src/di-plus)** - Enhanced dependency injection features
 - **[facade](src/facade)** - Laravel-style facades for Hyperf
-- **[middleware-plus](src/middleware-plus)** - Enhanced middleware features
 - **[ipc-broadcaster](src/ipc-broadcaster)** - Inter-process communication broadcaster
 
 ### 🔐 Security & Validation
