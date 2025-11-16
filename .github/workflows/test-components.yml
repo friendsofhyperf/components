@@ -168,5 +168,9 @@ jobs:
           composer update -o
       - name: Run Test Cases
         run: |
-          composer analyse src
-          composer analyse:types
+          composer analyse src/elasticsearch
+          composer analyse src/sentry
+          composer analyse src/telescope-elasticsearch
+          composer analyse:types types/Sentry
+          composer test:unit -- --group=elasticsearch
+          composer test:unit -- --group=sentry
