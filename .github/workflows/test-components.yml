@@ -46,8 +46,7 @@ jobs:
           composer update -o
       - name: Run Test Cases
         run: |
-          composer analyse src
-          composer analyse:types
+          composer analyse src/trigger
   serializable-closure:
     name: Test for Laravel Serializable Closure
     runs-on: 'ubuntu-latest'
@@ -76,8 +75,9 @@ jobs:
           composer update -o
       - name: Run Test Cases
         run: |
-          composer analyse src
-          composer analyse:types
+          composer analyse src/support
+          composer analyse:types types/Support
+          composer test:unit -- tests/Support/DispatchTest.php
   carbon:
     name: Test for Nesbot Carbon
     runs-on: 'ubuntu-latest'
@@ -140,3 +140,37 @@ jobs:
         run: |
           composer analyse src
           composer analyse:types
+  elasticsearch:
+    name: Test for Elasticsearch
+    runs-on: 'ubuntu-latest'
+    env:
+      PHP_VERSION: ${{ matrix.php-version }}
+    strategy:
+      matrix:
+        php-version: [ '8.4', '8.3', '8.2' ]
+        elasticsearch-version: [ '^9.0', '^8.0' ]
+      max-parallel: 10
+      fail-fast: false
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          tools: phpize
+          extensions: redis, pdo, pdo_mysql, bcmath, swoole
+          ini-values: opcache.enable_cli=1
+          coverage: none
+      - name: Setup Packages
+        run: |
+          composer require elasticsearch/elasticsearch:${{ matrix.elasticsearch-version }} --no-update
+          composer update -o
+      - name: Run Test Cases
+        run: |
+          composer analyse src/elasticsearch
+          composer analyse src/sentry
+          composer analyse src/telescope-elasticsearch
+          composer analyse:types types/Sentry
+          composer test:unit -- --group=elasticsearch
+          composer test:unit -- --group=sentry
