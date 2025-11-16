@@ -23,7 +23,7 @@ class MySqlGrammarAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        return match ($proceedingJoinPoint->getReflectMethod()->getName()) {
+        return match ($proceedingJoinPoint->methodName) {
             'compileColumnListing' => str_replace(
                 ', `column_comment` as `column_comment`,',
                 ', binary `column_comment` as `column_comment`,',
