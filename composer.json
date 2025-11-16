@@ -44,7 +44,7 @@
     },
     "require-dev": {
         "aws/aws-sdk-php": "^3.235.5",
-        "elasticsearch/elasticsearch": "^7.0 || ^8.0",
+        "elasticsearch/elasticsearch": "^8.0",
         "ergebnis/composer-normalize": "^2.43",
         "hashids/hashids": "^4.1 || ^5.0",
         "huangdijia/php-coding-standard": "^2.4",
