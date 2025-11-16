@@ -27,13 +27,11 @@
         "pull-request": "https://github.com/friendsofhyperf/components/pulls"
     },
     "require": {
+        "elasticsearch/elasticsearch": "^7.0 || ^8.0",
         "friendsofhyperf/telescope": "~3.1.49",
         "hyperf/collection": "~3.1.0",
         "hyperf/guzzle": "~3.1.0",
         "hyperf/stringable": "~3.1.0"
-    },
-    "suggest": {
-        "elasticsearch/elasticsearch": "Required to use Elasticsearch Client.(^7.17.0||^8.8.0)"
     },
     "autoload": {
         "psr-4": {
