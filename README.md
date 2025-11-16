@@ -93,7 +93,6 @@ php bin/hyperf.php vendor:publish friendsofhyperf/[component-name]
 ### 🌐 HTTP & API
 
 - **[http-client](src/http-client)** - Elegant HTTP client (Laravel-style)
-- **[http-logger](src/http-logger)** - HTTP request/response logging
 - **[oauth2-server](src/oauth2-server)** - OAuth2 server implementation
 
 ### 📨 Notifications & Communication
