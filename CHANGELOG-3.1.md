@@ -1,5 +1,20 @@
 # Changelog
 
+## v3.1.73 - 2025-11-17
+
+### What's Changed
+
+* feat(sentry): improve coroutine backtrace filtering by @huangdijia in https://github.com/friendsofhyperf/components/pull/1000
+* refactor: remove unused PendingClosureDispatch class by @huangdijia in https://github.com/friendsofhyperf/components/pull/1001
+* fix: correct pool property initialization in dispatch classes by @huangdijia in https://github.com/friendsofhyperf/components/pull/1002
+* refactor: consolidate CallQueuedClosure to support package by @huangdijia in https://github.com/friendsofhyperf/components/pull/1003
+* Add type tests for AMQP and Kafka dispatch return types by @Copilot in https://github.com/friendsofhyperf/components/pull/1005
+* Remove pest-plugin-hyperf component by @huangdijia in https://github.com/friendsofhyperf/components/pull/1008
+* Remove http-logger component by @huangdijia in https://github.com/friendsofhyperf/components/pull/1009
+* fix: standardize pool parameter naming in AsyncQueue and Kafka facades by @huangdijia in https://github.com/friendsofhyperf/components/pull/1010
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.72...v3.1.73
+
 ## v3.1.72 - 2025-11-14
 
 ### What's Changed
