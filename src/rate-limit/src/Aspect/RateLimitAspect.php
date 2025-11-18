@@ -76,7 +76,7 @@ class RateLimitAspect extends AbstractAspect
                 $placeholder = $matches[1];
 
                 // Try to get from method arguments
-                $arguments = $proceedingJoinPoint->arguments;
+                $arguments = $proceedingJoinPoint->arguments['keys'];
                 foreach ($arguments['keys'] ?? [] as $argKey => $argValue) {
                     if ($argKey === $placeholder) {
                         return (string) $argValue;
