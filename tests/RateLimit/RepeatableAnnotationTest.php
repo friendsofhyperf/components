@@ -8,8 +8,11 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+
 use FriendsOfHyperf\RateLimit\Algorithm;
 use FriendsOfHyperf\RateLimit\Annotation\RateLimit;
+use Hyperf\Di\Annotation\MultipleAnnotation;
+
 
 test('RateLimit annotation supports IS_REPEATABLE flag', function () {
     $reflection = new ReflectionClass(RateLimit::class);
@@ -26,34 +29,41 @@ test('RateLimit annotation supports IS_REPEATABLE flag', function () {
 });
 
 test('RateLimit aspect can handle multiple annotations', function () {
-    $metadata = new class {
-        public array $method = [];
-    };
+    $annotation1 = new RateLimit(key: 'test:1', maxAttempts: 10, decay: 60);
+    $annotation2 = new RateLimit(key: 'test:2', maxAttempts: 20, decay: 120);
 
-    // Simulate multiple annotations
-    $metadata->method[RateLimit::class] = [
-        new RateLimit(key: 'test:1', maxAttempts: 10, decay: 60),
-        new RateLimit(key: 'test:2', maxAttempts: 20, decay: 120),
-    ];
+    // MultipleAnnotation only takes one annotation in constructor
+    $multipleAnnotation = new MultipleAnnotation($annotation1);
+    // Insert the second annotation
+    $multipleAnnotation->insert($annotation2);
 
-    expect($metadata->method[RateLimit::class])->toBeArray();
-    expect($metadata->method[RateLimit::class])->toHaveCount(2);
+    expect($multipleAnnotation->toAnnotations())->toBeArray();
+    expect($multipleAnnotation->toAnnotations())->toHaveCount(2);
+
+    // Verify the annotations are properly converted
+    $converted = $multipleAnnotation->toAnnotations();
+    expect($converted[0]->key)->toBe('test:1');
+    expect($converted[0]->maxAttempts)->toBe(10);
+    expect($converted[0]->decay)->toBe(60);
+
+    expect($converted[1]->key)->toBe('test:2');
+    expect($converted[1]->maxAttempts)->toBe(20);
+    expect($converted[1]->decay)->toBe(120);
 });
 
 test('RateLimit aspect can handle single annotation (backward compatibility)', function () {
-    $metadata = new class {
-        public array $method = [];
-    };
+    $singleAnnotation = new RateLimit(key: 'test:single', maxAttempts: 10);
 
-    // Simulate single annotation (backward compatibility)
-    $metadata->method[RateLimit::class] = new RateLimit(key: 'test:single', maxAttempts: 10);
+    $multipleAnnotation = new MultipleAnnotation($singleAnnotation);
 
-    $annotation = $metadata->method[RateLimit::class];
+    expect($multipleAnnotation)->toBeInstanceOf(MultipleAnnotation::class);
 
-    // Should remain as single instance for backward compatibility
-    expect($annotation)->toBeInstanceOf(RateLimit::class);
-    expect($annotation->key)->toBe('test:single');
-    expect($annotation->maxAttempts)->toBe(10);
+    $converted = $multipleAnnotation->toAnnotations();
+    expect($converted)->toBeArray();
+    expect($converted)->toHaveCount(1);
+    expect($converted[0])->toBeInstanceOf(RateLimit::class);
+    expect($converted[0]->key)->toBe('test:single');
+    expect($converted[0]->maxAttempts)->toBe(10);
 });
 
 test('multiple rate limit configurations have different properties', function () {
