@@ -7,7 +7,7 @@
         "php",
         "hyperf",
         "sentry",
-        "v3.1"
+        "v3.2"
     ],
     "authors": [
         {

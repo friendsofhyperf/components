@@ -7,7 +7,7 @@
         "hyperf",
         "rate-limit",
         "throttle",
-        "v3.1"
+        "v3.2"
     ],
     "authors": [
         {

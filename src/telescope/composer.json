@@ -6,7 +6,7 @@
         "swoole",
         "hyperf",
         "debugging",
-        "v3.1"
+        "v3.2"
     ],
     "authors": [
         {
