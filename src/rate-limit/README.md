@@ -34,17 +34,18 @@ This will create a `config/autoload/rate_limit.php` configuration file.
 ### Using Annotations
 
 ```php
+use FriendsOfHyperf\RateLimit\Algorithm;
 use FriendsOfHyperf\RateLimit\Annotation\RateLimit;
 
 class UserController
 {
-    #[RateLimit(key: "api:{ip}", maxAttempts: 60, decay: 60, algorithm: "sliding_window")]
+    #[RateLimit(key: "api:{ip}", maxAttempts: 60, decay: 60, algorithm: Algorithm::SLIDING_WINDOW)]
     public function index()
     {
         return ['message' => 'Hello World'];
     }
 
-    #[RateLimit(key: "login:{ip}", maxAttempts: 5, decay: 60, algorithm: "fixed_window")]
+    #[RateLimit(key: "login:{ip}", maxAttempts: 5, decay: 60, algorithm: Algorithm::FIXED_WINDOW)]
     public function login()
     {
         // Login logic
@@ -59,6 +60,7 @@ Create a custom middleware that extends `RateLimitMiddleware`:
 ```php
 namespace App\Middleware;
 
+use FriendsOfHyperf\RateLimit\Algorithm;
 use FriendsOfHyperf\RateLimit\Middleware\RateLimitMiddleware;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -66,7 +68,7 @@ class ApiRateLimitMiddleware extends RateLimitMiddleware
 {
     protected int $maxAttempts = 60;
     protected int $decay = 60;
-    protected string $algorithm = 'sliding_window';
+    protected Algorithm $algorithm = Algorithm::SLIDING_WINDOW;
 
     protected function resolveKey(ServerRequestInterface $request): string
     {
@@ -80,6 +82,7 @@ Then register it in your middleware configuration.
 ### Using Directly in Code
 
 ```php
+use FriendsOfHyperf\RateLimit\Algorithm;
 use FriendsOfHyperf\RateLimit\RateLimiterFactory;
 
 class YourService
@@ -90,8 +93,8 @@ class YourService
 
     public function someMethod()
     {
-        $limiter = $this->factory->make('sliding_window');
-        
+        $limiter = $this->factory->make(Algorithm::SLIDING_WINDOW);
+
         $key = 'operation:user:123';
         $maxAttempts = 10;
         $decay = 60;
@@ -112,7 +115,9 @@ class YourService
 Simple counter that resets at fixed intervals. Fast but can allow bursts at window boundaries.
 
 ```php
-#[RateLimit(algorithm: "fixed_window", maxAttempts: 100, decay: 60)]
+use FriendsOfHyperf\RateLimit\Algorithm;
+
+#[RateLimit(algorithm: Algorithm::FIXED_WINDOW, maxAttempts: 100, decay: 60)]
 ```
 
 ### Sliding Window
@@ -120,7 +125,9 @@ Simple counter that resets at fixed intervals. Fast but can allow bursts at wind
 More accurate than fixed window, uses sorted sets to track requests with timestamps.
 
 ```php
-#[RateLimit(algorithm: "sliding_window", maxAttempts: 100, decay: 60)]
+use FriendsOfHyperf\RateLimit\Algorithm;
+
+#[RateLimit(algorithm: Algorithm::SLIDING_WINDOW, maxAttempts: 100, decay: 60)]
 ```
 
 ### Token Bucket
@@ -128,7 +135,9 @@ More accurate than fixed window, uses sorted sets to track requests with timesta
 Allows bursts up to bucket capacity, tokens are added at a constant rate.
 
 ```php
-#[RateLimit(algorithm: "token_bucket", maxAttempts: 100, decay: 60)]
+use FriendsOfHyperf\RateLimit\Algorithm;
+
+#[RateLimit(algorithm: Algorithm::TOKEN_BUCKET, maxAttempts: 100, decay: 60)]
 ```
 
 ### Leaky Bucket
@@ -136,7 +145,9 @@ Allows bursts up to bucket capacity, tokens are added at a constant rate.
 Smooths out bursts, processes requests at a constant rate regardless of arrival pattern.
 
 ```php
-#[RateLimit(algorithm: "leaky_bucket", maxAttempts: 100, decay: 60)]
+use FriendsOfHyperf\RateLimit\Algorithm;
+
+#[RateLimit(algorithm: Algorithm::LEAKY_BUCKET, maxAttempts: 100, decay: 60)]
 ```
 
 ## Configuration
