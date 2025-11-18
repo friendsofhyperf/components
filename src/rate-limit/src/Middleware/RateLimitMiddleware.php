@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\RateLimit\Middleware;
 
 use FriendsOfHyperf\RateLimit\RateLimiterFactory;
-use Hyperf\Context\Context;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface as HttpResponse;
 use Psr\Container\ContainerInterface;

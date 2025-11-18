@@ -33,10 +33,10 @@ class RateLimitAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $metadata = $proceedingJoinPoint->getAnnotationMetadata();
-        
-        /** @var RateLimit|null $annotation */
-        $annotation = $metadata->method[RateLimit::class] 
-            ?? $metadata->class[RateLimit::class] 
+
+        /** @var null|RateLimit $annotation */
+        $annotation = $metadata->method[RateLimit::class]
+            ?? $metadata->class[RateLimit::class]
             ?? null;
 
         if (! $annotation) {
@@ -73,16 +73,16 @@ class RateLimitAspect extends AbstractAspect
         if (str_contains($key, '{')) {
             $key = preg_replace_callback('/\{([^}]+)\}/', function ($matches) use ($proceedingJoinPoint) {
                 $placeholder = $matches[1];
-                
+
                 // Try to get from request
                 if ($placeholder === 'ip') {
                     return $this->getClientIp();
                 }
-                
+
                 if ($placeholder === 'user_id') {
                     return $this->getUserId();
                 }
-                
+
                 // Try to get from method arguments
                 $arguments = $proceedingJoinPoint->arguments;
                 foreach ($arguments['keys'] ?? [] as $argKey => $argValue) {
@@ -90,7 +90,7 @@ class RateLimitAspect extends AbstractAspect
                         return (string) $argValue;
                     }
                 }
-                
+
                 return $matches[0];
             }, $key);
         }

@@ -24,7 +24,7 @@ class LeakyBucketRateLimiter implements RateLimiterInterface
     public function attempt(string $key, int $maxAttempts, int $decay): bool
     {
         $leakRate = $maxAttempts / $decay;
-        
+
         $result = $this->redis->eval(
             LuaScripts::leakyBucket(),
             [$this->getKey($key)],

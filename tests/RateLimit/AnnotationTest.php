@@ -42,5 +42,5 @@ test('annotation accepts custom parameters', function () {
 test('annotation extends abstract annotation', function () {
     $annotation = new RateLimit();
 
-    expect($annotation)->toBeInstanceOf(\Hyperf\Di\Annotation\AbstractAnnotation::class);
+    expect($annotation)->toBeInstanceOf(Hyperf\Di\Annotation\AbstractAnnotation::class);
 });

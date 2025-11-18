@@ -24,7 +24,7 @@ class TokenBucketRateLimiter implements RateLimiterInterface
     public function attempt(string $key, int $maxAttempts, int $decay): bool
     {
         $refillRate = $maxAttempts / $decay;
-        
+
         $result = $this->redis->eval(
             LuaScripts::tokenBucket(),
             [$this->getKey($key)],
