@@ -60,8 +60,7 @@ class RateLimitAspect extends AbstractAspect
 
     protected function resolveKey(string|array $key, ProceedingJoinPoint $proceedingJoinPoint): string
     {
-        if (empty($key)) {
-            // Use method signature as default key
+        if (empty($key)) { // Use method signature as default key
             $className = $proceedingJoinPoint->className;
             $methodName = $proceedingJoinPoint->methodName;
             return "{$className}:{$methodName}";
