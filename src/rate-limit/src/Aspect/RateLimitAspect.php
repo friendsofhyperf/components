@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\RateLimit\Aspect;
 
+use FriendsOfHyperf\RateLimit\Annotation\AutoSort;
 use FriendsOfHyperf\RateLimit\Annotation\RateLimit;
-use FriendsOfHyperf\RateLimit\Annotation\SmartOrder;
 use FriendsOfHyperf\RateLimit\Exception\RateLimitException;
 use FriendsOfHyperf\RateLimit\RateLimiterFactory;
 use Hyperf\Di\Annotation\MultipleAnnotation;
@@ -39,14 +39,14 @@ class RateLimitAspect extends AbstractAspect
 
         /** @var null|MultipleAnnotation $annotations */
         $annotations = $metadata->method[RateLimit::class] ?? null;
-        $isSmartOrder = $metadata->method[SmartOrder::class] ?? false;
+        $isAutoSort = $metadata->method[AutoSort::class] ?? false;
 
         /** @var SplPriorityQueue<RateLimit> $queue */
         $queue = new SplPriorityQueue();
         foreach ($annotations?->toAnnotations() ?? [] as $annotation) {
             /** @var RateLimit $annotation */
             $priority = 0;
-            if ($isSmartOrder) {
+            if ($isAutoSort) {
                 $priority = 0 - $annotation->maxAttempts / $annotation->decay;
             }
             $queue->insert($annotation, $priority);

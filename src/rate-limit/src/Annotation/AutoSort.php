@@ -15,6 +15,6 @@ use Attribute;
 use Hyperf\Di\Annotation\AbstractAnnotation;
 
 #[Attribute(Attribute::TARGET_METHOD)]
-class SmartOrder extends AbstractAnnotation
+class AutoSort extends AbstractAnnotation
 {
 }
