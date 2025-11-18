@@ -27,6 +27,7 @@
         "hyperf/context": "~3.2.0",
         "hyperf/di": "~3.2.0",
         "hyperf/redis": "~3.2.0",
+        "hyperf/stringable": "~3.2.0",
         "hyperf/support": "~3.2.0"
     },
     "suggest": {
