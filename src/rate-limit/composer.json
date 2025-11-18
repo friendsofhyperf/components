@@ -1,0 +1,54 @@
+{
+    "name": "friendsofhyperf/rate-limit",
+    "description": "Rate limiting component for Hyperf with support for multiple algorithms (Fixed Window, Sliding Window, Token Bucket, Leaky Bucket).",
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "hyperf",
+        "rate-limit",
+        "throttle",
+        "v3.1"
+    ],
+    "authors": [
+        {
+            "name": "huangdijia",
+            "email": "huangdijia@gmail.com"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/friendsofhyperf/components/issues",
+        "source": "https://github.com/friendsofhyperf/components",
+        "docs": "https://hyperf.fans",
+        "pull-request": "https://github.com/friendsofhyperf/components/pulls"
+    },
+    "require": {
+        "php": ">=8.1",
+        "hyperf/collection": "~3.1.0",
+        "hyperf/config": "~3.1.0",
+        "hyperf/context": "~3.1.0",
+        "hyperf/di": "~3.1.0",
+        "hyperf/redis": "~3.1.0",
+        "hyperf/support": "~3.1.0"
+    },
+    "suggest": {
+        "hyperf/config-center": "Required for dynamic configuration support.",
+        "hyperf/http-server": "Required for middleware support."
+    },
+    "autoload": {
+        "psr-4": {
+            "FriendsOfHyperf\\RateLimit\\": "src"
+        }
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-main": "3.1-dev"
+        },
+        "hyperf": {
+            "config": "FriendsOfHyperf\\RateLimit\\ConfigProvider"
+        }
+    }
+}
