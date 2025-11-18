@@ -49,7 +49,7 @@ class RateLimiterFactory
 
     protected function getRedis(?string $pool = null): Redis
     {
-        return $this->container->get(RedisFactory::class)->get($pool);
+        return $this->container->get(RedisFactory::class)->get($pool ?? 'default');
     }
 
     protected function getPrefix(): string

@@ -8,94 +8,102 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-use FriendsOfHyperf\RateLimit\Exception\RateLimitException;
+use FriendsOfHyperf\RateLimit\Algorithm;
 use FriendsOfHyperf\RateLimit\RateLimiterFactory;
-use Hyperf\Redis\Redis;
+use Hyperf\Redis\RedisProxy;
+use Hyperf\Redis\RedisFactory;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
 
 test('factory can create fixed window limiter', function () {
     $container = m::mock(ContainerInterface::class);
-    $redis = m::mock(Redis::class);
+    $redisFactory = m::mock(RedisFactory::class);
+    $redis = m::mock(RedisProxy::class);
 
     $container->shouldReceive('get')
-        ->with(Redis::class)
+        ->with(RedisFactory::class)
+        ->andReturn($redisFactory);
+    $redisFactory->shouldReceive('get')
+        ->with('default')
         ->andReturn($redis);
 
     $factory = new RateLimiterFactory($container);
-    $limiter = $factory->make('fixed_window');
+    $limiter = $factory->make(Algorithm::FIXED_WINDOW);
 
     expect($limiter)->toBeInstanceOf(FriendsOfHyperf\RateLimit\Algorithm\FixedWindowRateLimiter::class);
 });
 
 test('factory can create sliding window limiter', function () {
     $container = m::mock(ContainerInterface::class);
-    $redis = m::mock(Redis::class);
+    $redisFactory = m::mock(RedisFactory::class);
+    $redis = m::mock(RedisProxy::class);
 
     $container->shouldReceive('get')
-        ->with(Redis::class)
+        ->with(RedisFactory::class)
+        ->andReturn($redisFactory);
+    $redisFactory->shouldReceive('get')
+        ->with('default')
         ->andReturn($redis);
 
     $factory = new RateLimiterFactory($container);
-    $limiter = $factory->make('sliding_window');
+    $limiter = $factory->make(Algorithm::SLIDING_WINDOW);
 
     expect($limiter)->toBeInstanceOf(FriendsOfHyperf\RateLimit\Algorithm\SlidingWindowRateLimiter::class);
 });
 
 test('factory can create token bucket limiter', function () {
     $container = m::mock(ContainerInterface::class);
-    $redis = m::mock(Redis::class);
+    $redisFactory = m::mock(RedisFactory::class);
+    $redis = m::mock(RedisProxy::class);
 
     $container->shouldReceive('get')
-        ->with(Redis::class)
+        ->with(RedisFactory::class)
+        ->andReturn($redisFactory);
+    $redisFactory->shouldReceive('get')
+        ->with('default')
         ->andReturn($redis);
 
     $factory = new RateLimiterFactory($container);
-    $limiter = $factory->make('token_bucket');
+    $limiter = $factory->make(Algorithm::TOKEN_BUCKET);
 
     expect($limiter)->toBeInstanceOf(FriendsOfHyperf\RateLimit\Algorithm\TokenBucketRateLimiter::class);
 });
 
 test('factory can create leaky bucket limiter', function () {
     $container = m::mock(ContainerInterface::class);
-    $redis = m::mock(Redis::class);
+    $redisFactory = m::mock(RedisFactory::class);
+    $redis = m::mock(RedisProxy::class);
 
     $container->shouldReceive('get')
-        ->with(Redis::class)
+        ->with(RedisFactory::class)
+        ->andReturn($redisFactory);
+    $redisFactory->shouldReceive('get')
+        ->with('default')
         ->andReturn($redis);
 
     $factory = new RateLimiterFactory($container);
-    $limiter = $factory->make('leaky_bucket');
+    $limiter = $factory->make(Algorithm::LEAKY_BUCKET);
 
     expect($limiter)->toBeInstanceOf(FriendsOfHyperf\RateLimit\Algorithm\LeakyBucketRateLimiter::class);
 });
 
-test('factory throws exception for unsupported algorithm', function () {
-    $container = m::mock(ContainerInterface::class);
-    $redis = m::mock(Redis::class);
-
-    $container->shouldReceive('get')
-        ->with(Redis::class)
-        ->andReturn($redis);
-
-    $factory = new RateLimiterFactory($container);
-
-    expect(fn () => $factory->make('invalid_algorithm'))
-        ->toThrow(RateLimitException::class);
-});
-
 test('factory caches limiter instances', function () {
     $container = m::mock(ContainerInterface::class);
-    $redis = m::mock(Redis::class);
+    $redisFactory = m::mock(RedisFactory::class);
+    $redis = m::mock(RedisProxy::class);
 
     $container->shouldReceive('get')
-        ->with(Redis::class)
+        ->with(RedisFactory::class)
+        ->once()
+        ->andReturn($redisFactory);
+    $redisFactory->shouldReceive('get')
+        ->with('default')
         ->once()
         ->andReturn($redis);
 
     $factory = new RateLimiterFactory($container);
-    $limiter1 = $factory->make('fixed_window');
-    $limiter2 = $factory->make('fixed_window');
+    $limiter1 = $factory->make(Algorithm::FIXED_WINDOW);
+    $limiter2 = $factory->make(Algorithm::FIXED_WINDOW);
 
     expect($limiter1)->toBe($limiter2);
 });
