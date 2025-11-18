@@ -81,9 +81,9 @@ class RateLimitAspect extends AbstractAspect
             $key = preg_replace_callback('/\{([^}]+)\}/', function ($matches) use ($proceedingJoinPoint) {
                 $placeholder = $matches[1];
 
-                // Try to get from method arguments
-                $arguments = $proceedingJoinPoint->arguments['keys'];
-                foreach ($arguments ?? [] as $argKey => $argValue) {
+                /** @var array $arguments */
+                $arguments = $proceedingJoinPoint->arguments['keys'] ?? [];
+                foreach ($arguments as $argKey => $argValue) {
                     if (
                         (is_array($argValue) || is_object($argValue))
                         && str_contains($placeholder, '.')
