@@ -16,7 +16,6 @@ use FriendsOfHyperf\RateLimit\Exception\RateLimitException;
 use FriendsOfHyperf\RateLimit\RateLimiterFactory;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Hyperf\HttpServer\Contract\RequestInterface;
 
 class RateLimitAspect extends AbstractAspect
 {
@@ -26,7 +25,6 @@ class RateLimitAspect extends AbstractAspect
 
     public function __construct(
         protected RateLimiterFactory $factory,
-        protected RequestInterface $request
     ) {
     }
 
@@ -74,15 +72,6 @@ class RateLimitAspect extends AbstractAspect
             $key = preg_replace_callback('/\{([^}]+)\}/', function ($matches) use ($proceedingJoinPoint) {
                 $placeholder = $matches[1];
 
-                // Try to get from request
-                if ($placeholder === 'ip') {
-                    return $this->getClientIp();
-                }
-
-                if ($placeholder === 'user_id') {
-                    return $this->getUserId();
-                }
-
                 // Try to get from method arguments
                 $arguments = $proceedingJoinPoint->arguments;
                 foreach ($arguments['keys'] ?? [] as $argKey => $argValue) {
@@ -96,32 +85,5 @@ class RateLimitAspect extends AbstractAspect
         }
 
         return $key;
-    }
-
-    protected function getClientIp(): string
-    {
-        $headers = [
-            'x-forwarded-for',
-            'x-real-ip',
-            'remote-addr',
-        ];
-
-        foreach ($headers as $header) {
-            if ($ip = $this->request->getHeaderLine($header)) {
-                // Get first IP if comma-separated list
-                if (str_contains($ip, ',')) {
-                    $ip = trim(explode(',', $ip)[0]);
-                }
-                return $ip;
-            }
-        }
-
-        return $this->request->server('remote_addr', 'unknown');
-    }
-
-    protected function getUserId(): string
-    {
-        // This is a placeholder - should be customized based on your auth system
-        return (string) ($this->request->getAttribute('user_id') ?? 'guest');
     }
 }

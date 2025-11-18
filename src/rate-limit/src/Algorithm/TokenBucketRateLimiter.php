@@ -27,8 +27,7 @@ class TokenBucketRateLimiter implements RateLimiterInterface
 
         $result = $this->redis->eval(
             LuaScripts::tokenBucket(),
-            [$this->getKey($key)],
-            [$maxAttempts, $refillRate, 1, microtime(true)],
+            [$this->getKey($key), $maxAttempts, $refillRate, 1, microtime(true)],
             1
         );
 
@@ -60,7 +59,7 @@ class TokenBucketRateLimiter implements RateLimiterInterface
     public function availableIn(string $key): int
     {
         $ttl = $this->redis->ttl($this->getKey($key));
-        return $ttl > 0 ? $ttl : 0;
+        return (is_int($ttl) && $ttl > 0) ? $ttl : 0;
     }
 
     protected function getKey(string $key): string

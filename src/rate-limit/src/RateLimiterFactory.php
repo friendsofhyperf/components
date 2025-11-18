@@ -16,7 +16,6 @@ use FriendsOfHyperf\RateLimit\Algorithm\LeakyBucketRateLimiter;
 use FriendsOfHyperf\RateLimit\Algorithm\SlidingWindowRateLimiter;
 use FriendsOfHyperf\RateLimit\Algorithm\TokenBucketRateLimiter;
 use FriendsOfHyperf\RateLimit\Contract\RateLimiterInterface;
-use FriendsOfHyperf\RateLimit\Exception\RateLimitException;
 use Hyperf\Redis\Redis;
 use Hyperf\Redis\RedisFactory;
 use Psr\Container\ContainerInterface;
@@ -45,7 +44,6 @@ class RateLimiterFactory
             Algorithm::SLIDING_WINDOW => new SlidingWindowRateLimiter($redis, $prefix),
             Algorithm::TOKEN_BUCKET => new TokenBucketRateLimiter($redis, $prefix),
             Algorithm::LEAKY_BUCKET => new LeakyBucketRateLimiter($redis, $prefix),
-            default => throw new RateLimitException("Unsupported rate limiter algorithm: {$algorithm}"),
         };
     }
 

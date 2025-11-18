@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\RateLimit\Middleware;
 
+use FriendsOfHyperf\RateLimit\Algorithm;
 use FriendsOfHyperf\RateLimit\RateLimiterFactory;
 use Hyperf\HttpServer\Contract\RequestInterface;
 use Hyperf\HttpServer\Contract\ResponseInterface as HttpResponse;
@@ -35,7 +36,7 @@ abstract class RateLimitMiddleware implements MiddlewareInterface
     /**
      * Algorithm to use: fixed_window, sliding_window, token_bucket, leaky_bucket.
      */
-    protected string $algorithm = 'fixed_window';
+    protected Algorithm $algorithm = Algorithm::FIXED_WINDOW;
 
     /**
      * Response message when rate limit exceeded.
@@ -113,15 +114,15 @@ abstract class RateLimitMiddleware implements MiddlewareInterface
     protected function buildRateLimitExceededResponse(string $key, int $retryAfter): ResponseInterface
     {
         return $this->response
+            ->json([
+                'message' => $this->responseMessage,
+                'retry_after' => $retryAfter,
+            ])
             ->withStatus($this->responseCode)
             ->withAddedHeader('Retry-After', (string) $retryAfter)
             ->withAddedHeader('X-RateLimit-Limit', (string) $this->maxAttempts)
             ->withAddedHeader('X-RateLimit-Remaining', '0')
-            ->withAddedHeader('X-RateLimit-Reset', (string) (time() + $retryAfter))
-            ->json([
-                'message' => $this->responseMessage,
-                'retry_after' => $retryAfter,
-            ]);
+            ->withAddedHeader('X-RateLimit-Reset', (string) (time() + $retryAfter));
     }
 
     /**
@@ -134,8 +135,8 @@ abstract class RateLimitMiddleware implements MiddlewareInterface
         int $retryAfter
     ): ResponseInterface {
         return $response
-            ->withAddedHeader('X-RateLimit-Limit', (string) $maxAttempts)
-            ->withAddedHeader('X-RateLimit-Remaining', (string) max(0, $remaining))
-            ->withAddedHeader('X-RateLimit-Reset', (string) (time() + $retryAfter));
+            ->withHeader('X-RateLimit-Limit', (string) $maxAttempts)
+            ->withHeader('X-RateLimit-Remaining', (string) max(0, $remaining))
+            ->withHeader('X-RateLimit-Reset', (string) (time() + $retryAfter));
     }
 }
