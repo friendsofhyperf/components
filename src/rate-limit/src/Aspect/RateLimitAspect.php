@@ -73,7 +73,7 @@ class RateLimitAspect extends AbstractAspect
         }
 
         if (is_array($key)) {
-            $key = implode(':', $key);
+            $key = implode(':', array_values($key));
         }
 
         // Support placeholders like {user_id}, {ip}, etc.
