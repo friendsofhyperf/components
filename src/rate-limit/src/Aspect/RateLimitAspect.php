@@ -65,7 +65,7 @@ class RateLimitAspect extends AbstractAspect
             // Use method signature as default key
             $className = $proceedingJoinPoint->className;
             $methodName = $proceedingJoinPoint->methodName;
-            $key = "{$className}:{$methodName}";
+            return "{$className}:{$methodName}";
         }
 
         if (is_callable($key)) {
