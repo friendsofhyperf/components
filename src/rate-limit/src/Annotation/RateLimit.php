@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\RateLimit\Annotation;
 
 use Attribute;
+use FriendsOfHyperf\RateLimit\Algorithm;
 use Hyperf\Di\Annotation\AbstractAnnotation;
 
 #[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
@@ -29,7 +30,7 @@ class RateLimit extends AbstractAnnotation
         public string $key = '',
         public int $maxAttempts = 60,
         public int $decay = 60,
-        public string $algorithm = 'fixed_window',
+        public Algorithm $algorithm = Algorithm::FIXED_WINDOW,
         public string $response = 'Too Many Attempts.',
         public int $responseCode = 429
     ) {
