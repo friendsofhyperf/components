@@ -18,6 +18,7 @@ use FriendsOfHyperf\RateLimit\Algorithm\TokenBucketRateLimiter;
 use FriendsOfHyperf\RateLimit\Contract\RateLimiterInterface;
 use FriendsOfHyperf\RateLimit\Exception\RateLimitException;
 use Hyperf\Redis\Redis;
+use Hyperf\Redis\RedisFactory;
 use Psr\Container\ContainerInterface;
 
 class RateLimiterFactory
@@ -50,7 +51,7 @@ class RateLimiterFactory
 
     protected function getRedis(?string $connection = null): Redis
     {
-        return $this->container->get(Redis::class);
+        return $this->container->get(RedisFactory::class)->get($connection);
     }
 
     protected function getPrefix(): string
