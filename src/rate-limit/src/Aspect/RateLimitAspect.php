@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\RateLimit\Aspect;
 use FriendsOfHyperf\RateLimit\Annotation\RateLimit;
 use FriendsOfHyperf\RateLimit\Exception\RateLimitException;
 use FriendsOfHyperf\RateLimit\RateLimiterFactory;
+use Hyperf\Di\Annotation\MultipleAnnotation;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Stringable\Str;
@@ -26,34 +27,32 @@ class RateLimitAspect extends AbstractAspect
         RateLimit::class,
     ];
 
-    public function __construct(
-        protected RateLimiterFactory $factory,
-    ) {
+    public function __construct(protected RateLimiterFactory $factory)
+    {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         $metadata = $proceedingJoinPoint->getAnnotationMetadata();
 
-        /** @var null|RateLimit $annotation */
-        $annotation = $metadata->method[RateLimit::class] ?? null;
+        /** @var null|MultipleAnnotation $annotations */
+        $annotations = $metadata->method[RateLimit::class] ?? null;
 
-        if (! $annotation) {
-            return $proceedingJoinPoint->process();
-        }
+        foreach ($annotations?->toAnnotations() ?? [] as $annotation) {
+            /** @var RateLimit $annotation */
+            $key = $this->resolveKey($annotation->key, $proceedingJoinPoint);
+            $limiter = $this->factory->make($annotation->algorithm, $annotation->pool);
 
-        $key = $this->resolveKey($annotation->key, $proceedingJoinPoint);
-        $limiter = $this->factory->make($annotation->algorithm, $annotation->pool);
+            if ($limiter->tooManyAttempts($key, $annotation->maxAttempts, $annotation->decay)) {
+                $availableIn = $limiter->availableIn($key);
+                $message = Str::replaceArray('%d', [(string) $availableIn], $annotation->response);
 
-        if ($limiter->tooManyAttempts($key, $annotation->maxAttempts, $annotation->decay)) {
-            $availableIn = $limiter->availableIn($key);
-            $message = Str::replaceArray('%d', [(string) $availableIn], $annotation->response);
-
-            throw new RateLimitException(
-                $message,
-                $annotation->responseCode,
-                $availableIn
-            );
+                throw new RateLimitException(
+                    $message,
+                    $annotation->responseCode,
+                    $availableIn
+                );
+            }
         }
 
         return $proceedingJoinPoint->process();
@@ -61,8 +60,7 @@ class RateLimitAspect extends AbstractAspect
 
     protected function resolveKey(string|array $key, ProceedingJoinPoint $proceedingJoinPoint): string
     {
-        if (empty($key)) {
-            // Use method signature as default key
+        if (empty($key)) { // Use method signature as default key
             $className = $proceedingJoinPoint->className;
             $methodName = $proceedingJoinPoint->methodName;
             return "{$className}:{$methodName}";
