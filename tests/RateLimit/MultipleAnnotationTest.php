@@ -8,11 +8,9 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
-
 use FriendsOfHyperf\RateLimit\Algorithm;
 use FriendsOfHyperf\RateLimit\Annotation\RateLimit;
 use Hyperf\Di\Annotation\MultipleAnnotation;
-
 
 test('RateLimit annotation supports IS_REPEATABLE flag', function () {
     $reflection = new ReflectionClass(RateLimit::class);
