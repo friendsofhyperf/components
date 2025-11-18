@@ -72,6 +72,10 @@ class RateLimitAspect extends AbstractAspect
             return $key($proceedingJoinPoint);
         }
 
+        if (is_array($key)) {
+            $key = implode(':', $key);
+        }
+
         // Support placeholders like {user_id}, {ip}, etc.
         if (str_contains($key, '{')) {
             $key = preg_replace_callback('/\{([^}]+)\}/', function ($matches) use ($proceedingJoinPoint) {
