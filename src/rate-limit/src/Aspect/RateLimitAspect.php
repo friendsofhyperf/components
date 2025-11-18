@@ -16,6 +16,7 @@ use FriendsOfHyperf\RateLimit\Exception\RateLimitException;
 use FriendsOfHyperf\RateLimit\RateLimiterFactory;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Hyperf\Stringable\Str;
 
 use function Hyperf\Collection\data_get;
 
@@ -47,11 +48,9 @@ class RateLimitAspect extends AbstractAspect
         if ($limiter->tooManyAttempts($key, $annotation->maxAttempts, $annotation->decay)) {
             $remaining = $limiter->remaining($key, $annotation->maxAttempts);
             $availableIn = $limiter->availableIn($key);
-            $message = $annotation->response ?? sprintf(
-                '%s Please try again in %d seconds.',
-                $annotation->response,
-                $availableIn
-            );
+            $message = $annotation->response ?? 'Too Many Attempts, Please try again in %d seconds.';
+            $message = Str::replaceArray('%d', [(string) $availableIn], $message);
+
             throw new RateLimitException(
                 $message,
                 $annotation->responseCode,
