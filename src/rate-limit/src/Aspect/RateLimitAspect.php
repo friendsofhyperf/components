@@ -17,6 +17,8 @@ use FriendsOfHyperf\RateLimit\RateLimiterFactory;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 
+use function Hyperf\Collection\data_get;
+
 class RateLimitAspect extends AbstractAspect
 {
     public array $annotations = [
@@ -78,6 +80,12 @@ class RateLimitAspect extends AbstractAspect
                 // Try to get from method arguments
                 $arguments = $proceedingJoinPoint->arguments['keys'];
                 foreach ($arguments['keys'] ?? [] as $argKey => $argValue) {
+                    if (
+                        (is_array($argValue) || is_object($argValue))
+                        && str_contains($placeholder, '.')
+                    ) {
+                        return (string) data_get($argValue, str_replace('.', '', $placeholder));
+                    }
                     if ($argKey === $placeholder) {
                         return (string) $argValue;
                     }

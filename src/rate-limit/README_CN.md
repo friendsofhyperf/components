@@ -34,17 +34,18 @@ php bin/hyperf.php vendor:publish friendsofhyperf/rate-limit
 ### 使用注解
 
 ```php
+use FriendsOfHyperf\RateLimit\Algorithm;
 use FriendsOfHyperf\RateLimit\Annotation\RateLimit;
 
 class UserController
 {
-    #[RateLimit(key: "api:{ip}", maxAttempts: 60, decay: 60, algorithm: "sliding_window")]
+    #[RateLimit(key: "api:{ip}", maxAttempts: 60, decay: 60, algorithm: Algorithm::SLIDING_WINDOW)]
     public function index()
     {
         return ['message' => 'Hello World'];
     }
 
-    #[RateLimit(key: "login:{ip}", maxAttempts: 5, decay: 60, algorithm: "fixed_window")]
+    #[RateLimit(key: "login:{ip}", maxAttempts: 5, decay: 60, algorithm: Algorithm::FIXED_WINDOW)]
     public function login()
     {
         // 登录逻辑
@@ -59,6 +60,7 @@ class UserController
 ```php
 namespace App\Middleware;
 
+use FriendsOfHyperf\RateLimit\Algorithm;
 use FriendsOfHyperf\RateLimit\Middleware\RateLimitMiddleware;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -66,7 +68,7 @@ class ApiRateLimitMiddleware extends RateLimitMiddleware
 {
     protected int $maxAttempts = 60;
     protected int $decay = 60;
-    protected string $algorithm = 'sliding_window';
+    protected Algorithm $algorithm = Algorithm::SLIDING_WINDOW;
 
     protected function resolveKey(ServerRequestInterface $request): string
     {
@@ -80,6 +82,7 @@ class ApiRateLimitMiddleware extends RateLimitMiddleware
 ### 在代码中直接使用
 
 ```php
+use FriendsOfHyperf\RateLimit\Algorithm;
 use FriendsOfHyperf\RateLimit\RateLimiterFactory;
 
 class YourService
@@ -90,8 +93,8 @@ class YourService
 
     public function someMethod()
     {
-        $limiter = $this->factory->make('sliding_window');
-        
+        $limiter = $this->factory->make(Algorithm::SLIDING_WINDOW);
+
         $key = 'operation:user:123';
         $maxAttempts = 10;
         $decay = 60;
@@ -112,7 +115,9 @@ class YourService
 简单的计数器，在固定时间间隔重置。速度快但可能在窗口边界出现突发流量。
 
 ```php
-#[RateLimit(algorithm: "fixed_window", maxAttempts: 100, decay: 60)]
+use FriendsOfHyperf\RateLimit\Algorithm;
+
+#[RateLimit(algorithm: Algorithm::FIXED_WINDOW, maxAttempts: 100, decay: 60)]
 ```
 
 ### 滑动窗口（Sliding Window）
@@ -120,7 +125,9 @@ class YourService
 比固定窗口更精确，使用有序集合跟踪带时间戳的请求。
 
 ```php
-#[RateLimit(algorithm: "sliding_window", maxAttempts: 100, decay: 60)]
+use FriendsOfHyperf\RateLimit\Algorithm;
+
+#[RateLimit(algorithm: Algorithm::SLIDING_WINDOW, maxAttempts: 100, decay: 60)]
 ```
 
 ### 令牌桶（Token Bucket）
@@ -128,7 +135,9 @@ class YourService
 允许突发流量达到桶容量，令牌以恒定速率添加。
 
 ```php
-#[RateLimit(algorithm: "token_bucket", maxAttempts: 100, decay: 60)]
+use FriendsOfHyperf\RateLimit\Algorithm;
+
+#[RateLimit(algorithm: Algorithm::TOKEN_BUCKET, maxAttempts: 100, decay: 60)]
 ```
 
 ### 漏桶（Leaky Bucket）
@@ -136,7 +145,9 @@ class YourService
 平滑突发流量，无论到达模式如何，都以恒定速率处理请求。
 
 ```php
-#[RateLimit(algorithm: "leaky_bucket", maxAttempts: 100, decay: 60)]
+use FriendsOfHyperf\RateLimit\Algorithm;
+
+#[RateLimit(algorithm: Algorithm::LEAKY_BUCKET, maxAttempts: 100, decay: 60)]
 ```
 
 ## 配置
