@@ -15,7 +15,7 @@ use Attribute;
 use FriendsOfHyperf\RateLimit\Algorithm;
 use Hyperf\Di\Annotation\AbstractAnnotation;
 
-#[Attribute(Attribute::TARGET_METHOD | Attribute::TARGET_CLASS)]
+#[Attribute(Attribute::TARGET_METHOD)]
 class RateLimit extends AbstractAnnotation
 {
     /**
