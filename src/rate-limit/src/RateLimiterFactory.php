@@ -29,9 +29,9 @@ class RateLimiterFactory
     {
     }
 
-    public function make(string $algorithm = 'fixed_window', ?string $pool = null): RateLimiterInterface
+    public function make(Algorithm $algorithm = Algorithm::FIXED_WINDOW, ?string $pool = null): RateLimiterInterface
     {
-        $key = $algorithm . ':' . ($pool ?? 'default');
+        $key = $algorithm->value . ':' . ($pool ?? 'default');
 
         if (isset($this->limiters[$key])) {
             return $this->limiters[$key];
@@ -41,10 +41,10 @@ class RateLimiterFactory
         $prefix = $this->getPrefix();
 
         return $this->limiters[$key] = match ($algorithm) {
-            'fixed_window' => new FixedWindowRateLimiter($redis, $prefix),
-            'sliding_window' => new SlidingWindowRateLimiter($redis, $prefix),
-            'token_bucket' => new TokenBucketRateLimiter($redis, $prefix),
-            'leaky_bucket' => new LeakyBucketRateLimiter($redis, $prefix),
+            Algorithm::FIXED_WINDOW => new FixedWindowRateLimiter($redis, $prefix),
+            Algorithm::SLIDING_WINDOW => new SlidingWindowRateLimiter($redis, $prefix),
+            Algorithm::TOKEN_BUCKET => new TokenBucketRateLimiter($redis, $prefix),
+            Algorithm::LEAKY_BUCKET => new LeakyBucketRateLimiter($redis, $prefix),
             default => throw new RateLimitException("Unsupported rate limiter algorithm: {$algorithm}"),
         };
     }
