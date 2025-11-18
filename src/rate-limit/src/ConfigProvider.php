@@ -18,19 +18,8 @@ class ConfigProvider
     public function __invoke(): array
     {
         return [
-            'dependencies' => [
-                // Add dependencies here
-            ],
             'aspects' => [
                 RateLimitAspect::class,
-            ],
-            'publish' => [
-                [
-                    'id' => 'config',
-                    'description' => 'The configuration file of rate-limit.',
-                    'source' => __DIR__ . '/../publish/rate_limit.php',
-                    'destination' => BASE_PATH . '/config/autoload/rate_limit.php',
-                ],
             ],
         ];
     }
