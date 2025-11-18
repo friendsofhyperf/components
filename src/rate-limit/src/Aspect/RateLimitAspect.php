@@ -45,14 +45,18 @@ class RateLimitAspect extends AbstractAspect
         $limiter = $this->factory->make($annotation->algorithm, $annotation->pool);
 
         if ($limiter->tooManyAttempts($key, $annotation->maxAttempts, $annotation->decay)) {
+            $remaining = $limiter->remaining($key, $annotation->maxAttempts);
             $availableIn = $limiter->availableIn($key);
+            $message = $annotation->response ?? sprintf(
+                '%s Please try again in %d seconds.',
+                $annotation->response,
+                $availableIn
+            );
             throw new RateLimitException(
-                sprintf(
-                    '%s Please try again in %d seconds.',
-                    $annotation->response,
-                    $availableIn
-                ),
-                $annotation->responseCode
+                $message,
+                $annotation->responseCode,
+                $remaining,
+                $availableIn
             );
         }
 

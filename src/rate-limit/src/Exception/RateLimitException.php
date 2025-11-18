@@ -12,7 +12,17 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\RateLimit\Exception;
 
 use RuntimeException;
+use Throwable;
 
 class RateLimitException extends RuntimeException
 {
+    public function __construct(
+        string $message = '',
+        int $code = 0,
+        public ?int $remaining = null,
+        public ?int $availableIn = null,
+        ?Throwable $previous = null
+    ) {
+        parent::__construct($message, $code, $previous);
+    }
 }
