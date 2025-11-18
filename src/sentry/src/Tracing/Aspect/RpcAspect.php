@@ -14,11 +14,17 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Util\Carrier;
+use FriendsOfHyperf\Sentry\Util\SocketOptionContainer;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Hyperf\Engine\Contract\Socket\SocketOptionInterface;
+use Hyperf\Engine\Contract\SocketInterface;
+use Hyperf\JsonRpc\JsonRpcPoolTransporter;
+use Hyperf\JsonRpc\Pool\RpcConnection;
 use Hyperf\Rpc;
+use Hyperf\Rpc\Contract\TransporterInterface;
 use Hyperf\RpcClient;
 use Hyperf\Stringable\Str;
 use Psr\Container\ContainerInterface;
@@ -97,9 +103,25 @@ class RpcAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
+        /** @var null|TransporterInterface $transporter */
+        $transporter = $proceedingJoinPoint->getInstance()->getTransporter();
+        /** @var null|SocketOptionInterface $socketOptions */
+        $socketOptions = null;
+
+        if ($transporter instanceof JsonRpcPoolTransporter) {
+            $contextId = spl_object_hash($transporter) . '.Connection';
+            /** @var null|RpcConnection $connection */
+            $connection = Context::get($contextId);
+            if ($connection instanceof RpcConnection) {
+                /** @var null|SocketInterface $socket */
+                $socket = (fn () => $this->connection ?? null)->call($connection);
+                $socketOptions = SocketOptionContainer::get($socket);
+            }
+        }
+
         try {
             return trace(
-                function (Scope $scope) use ($proceedingJoinPoint) {
+                function (Scope $scope) use ($proceedingJoinPoint, $socketOptions) {
                     $span = $scope->getSpan();
                     if ($span && $this->container->has(Rpc\Context::class)) {
                         $rpcCtx = $this->container->get(Rpc\Context::class);
@@ -107,6 +129,8 @@ class RpcAspect extends AbstractAspect
                         // Inject the RPC context data into span.
                         $span->setData([
                             'rpc.context' => $rpcCtx->getData(),
+                            'server.address' => $socketOptions?->getHost(),
+                            'server.port' => $socketOptions?->getPort(),
                         ]);
                         // Inject the tracing carrier into RPC context.
                         $rpcCtx->set(Constants::TRACE_CARRIER, $carrier->toJson());
