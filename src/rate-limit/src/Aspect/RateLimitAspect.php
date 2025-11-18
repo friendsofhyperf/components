@@ -26,9 +26,8 @@ class RateLimitAspect extends AbstractAspect
         RateLimit::class,
     ];
 
-    public function __construct(
-        protected RateLimiterFactory $factory,
-    ) {
+    public function __construct(protected RateLimiterFactory $factory)
+    {
     }
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
