@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\RateLimit\Aspect;
 use FriendsOfHyperf\RateLimit\Annotation\RateLimit;
 use FriendsOfHyperf\RateLimit\Exception\RateLimitException;
 use FriendsOfHyperf\RateLimit\RateLimiterFactory;
+use Hyperf\Di\Annotation\MultipleAnnotation;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Stringable\Str;
@@ -34,20 +35,11 @@ class RateLimitAspect extends AbstractAspect
     {
         $metadata = $proceedingJoinPoint->getAnnotationMetadata();
 
-        /** @var null|RateLimit|RateLimit[] $annotations */
+        /** @var null|MultipleAnnotation $annotations */
         $annotations = $metadata->method[RateLimit::class] ?? null;
 
-        if (! $annotations) {
-            return $proceedingJoinPoint->process();
-        }
-
-        // Ensure annotations is an array for consistent handling
-        if (! is_array($annotations)) {
-            $annotations = [$annotations];
-        }
-
-        // Process all rate limit rules: any rule triggered will reject the request
-        foreach ($annotations as $annotation) {
+        foreach ($annotations?->toAnnotations() ?? [] as $annotation) {
+            /** @var RateLimit $annotation */
             $key = $this->resolveKey($annotation->key, $proceedingJoinPoint);
             $limiter = $this->factory->make($annotation->algorithm, $annotation->pool);
 

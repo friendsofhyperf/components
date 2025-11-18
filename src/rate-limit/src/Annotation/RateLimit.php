@@ -13,10 +13,10 @@ namespace FriendsOfHyperf\RateLimit\Annotation;
 
 use Attribute;
 use FriendsOfHyperf\RateLimit\Algorithm;
-use Hyperf\Di\Annotation\AbstractAnnotation;
+use Hyperf\Di\Annotation\AbstractMultipleAnnotation;
 
 #[Attribute(Attribute::TARGET_METHOD | Attribute::IS_REPEATABLE)]
-class RateLimit extends AbstractAnnotation
+class RateLimit extends AbstractMultipleAnnotation
 {
     /**
      * @param string|array $key Rate limit key, supports placeholders like {user_id}
