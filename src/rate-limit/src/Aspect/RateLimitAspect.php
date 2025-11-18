@@ -51,7 +51,8 @@ class RateLimitAspect extends AbstractAspect
                     '%s Please try again in %d seconds.',
                     $annotation->response,
                     $availableIn
-                )
+                ),
+                $annotation->responseCode
             );
         }
 
