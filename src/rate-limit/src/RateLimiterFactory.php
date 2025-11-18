@@ -29,15 +29,15 @@ class RateLimiterFactory
     {
     }
 
-    public function make(string $algorithm = 'fixed_window', ?string $connection = null): RateLimiterInterface
+    public function make(string $algorithm = 'fixed_window', ?string $pool = null): RateLimiterInterface
     {
-        $key = $algorithm . ':' . ($connection ?? 'default');
+        $key = $algorithm . ':' . ($pool ?? 'default');
 
         if (isset($this->limiters[$key])) {
             return $this->limiters[$key];
         }
 
-        $redis = $this->getRedis($connection);
+        $redis = $this->getRedis($pool);
         $prefix = $this->getPrefix();
 
         return $this->limiters[$key] = match ($algorithm) {
@@ -49,9 +49,9 @@ class RateLimiterFactory
         };
     }
 
-    protected function getRedis(?string $connection = null): Redis
+    protected function getRedis(?string $pool = null): Redis
     {
-        return $this->container->get(RedisFactory::class)->get($connection);
+        return $this->container->get(RedisFactory::class)->get($pool);
     }
 
     protected function getPrefix(): string
