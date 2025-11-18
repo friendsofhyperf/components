@@ -39,7 +39,7 @@ class RateLimitAspect extends AbstractAspect
 
         /** @var null|MultipleAnnotation $annotations */
         $annotations = $metadata->method[RateLimit::class] ?? null;
-        $isAutoSort = $metadata->method[AutoSort::class] ?? false;
+        $isAutoSort = isset($metadata->method[AutoSort::class]);
 
         /** @var SplPriorityQueue<RateLimit> $queue */
         $queue = new SplPriorityQueue();
