@@ -27,7 +27,6 @@ class FixedWindowRateLimiter implements RateLimiterInterface
             LuaScripts::fixedWindow(),
             [$this->getKey($key)],
             [$maxAttempts, $decay, time()],
-            1
         );
 
         return (bool) $result[0];
