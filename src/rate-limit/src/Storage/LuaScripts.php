@@ -69,7 +69,7 @@ if current >= max_attempts then
 end
 
 -- Add current request
-redis.call('zadd', key, current_time, current_time .. ':' .. math.random())
+redis.call('zadd', key, current_time, current_time .. ':' .. math.random(1000000, 9999999))
 redis.call('expire', key, decay + 1)
 
 return {1, current + 1, decay}
