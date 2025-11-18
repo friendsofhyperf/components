@@ -33,9 +33,7 @@ class RateLimitAspect extends AbstractAspect
         $metadata = $proceedingJoinPoint->getAnnotationMetadata();
 
         /** @var null|RateLimit $annotation */
-        $annotation = $metadata->method[RateLimit::class]
-            ?? $metadata->class[RateLimit::class]
-            ?? null;
+        $annotation = $metadata->method[RateLimit::class] ?? null;
 
         if (! $annotation) {
             return $proceedingJoinPoint->process();
