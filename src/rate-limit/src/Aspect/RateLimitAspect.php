@@ -12,11 +12,13 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\RateLimit\Aspect;
 
 use FriendsOfHyperf\RateLimit\Annotation\RateLimit;
+use FriendsOfHyperf\RateLimit\Annotation\SmartOrder;
 use FriendsOfHyperf\RateLimit\Exception\RateLimitException;
 use FriendsOfHyperf\RateLimit\RateLimiterFactory;
 use Hyperf\Di\Annotation\MultipleAnnotation;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Hyperf\Stdlib\SplPriorityQueue;
 use Hyperf\Stringable\Str;
 
 use function Hyperf\Collection\data_get;
@@ -37,8 +39,20 @@ class RateLimitAspect extends AbstractAspect
 
         /** @var null|MultipleAnnotation $annotations */
         $annotations = $metadata->method[RateLimit::class] ?? null;
+        $isSmartOrder = $metadata->method[SmartOrder::class] ?? false;
 
+        /** @var SplPriorityQueue<RateLimit> $queue */
+        $queue = new SplPriorityQueue();
         foreach ($annotations?->toAnnotations() ?? [] as $annotation) {
+            /** @var RateLimit $annotation */
+            $priority = 0;
+            if ($isSmartOrder) {
+                $priority = 0 - $annotation->maxAttempts / $annotation->decay;
+            }
+            $queue->insert($annotation, $priority);
+        }
+
+        foreach ($queue as $annotation) {
             /** @var RateLimit $annotation */
             $key = $this->resolveKey($annotation->key, $proceedingJoinPoint);
             $limiter = $this->factory->make($annotation->algorithm, $annotation->pool);
