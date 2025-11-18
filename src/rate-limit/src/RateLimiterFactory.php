@@ -22,6 +22,9 @@ use Psr\Container\ContainerInterface;
 
 class RateLimiterFactory
 {
+    /**
+     * @var array<string,RateLimiterInterface>
+     */
     protected array $limiters = [];
 
     public function __construct(protected ContainerInterface $container)
