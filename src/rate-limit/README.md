@@ -14,7 +14,6 @@ composer require friendsofhyperf/rate-limit
 
 ## Requirements
 
-- PHP >= 8.1
 - Hyperf ~3.1.0
 - Redis
 
