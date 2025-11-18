@@ -148,10 +148,6 @@ class UserController
 The `key` parameter supports dynamic placeholders that will be replaced with method arguments:
 
 ```php
-// Method arguments: $userId, $action
-#[RateLimit(key: 'user:{0}:{1}')]  // Becomes: user:123:create
-public function action($userId, $action)
-
 // Named placeholders
 #[RateLimit(key: 'user:{userId}:{action}')]
 public function action($userId, $action)
