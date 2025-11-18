@@ -39,6 +39,11 @@ abstract class RateLimitMiddleware implements MiddlewareInterface
     protected Algorithm $algorithm = Algorithm::FIXED_WINDOW;
 
     /**
+     * Redis connection pool to use.
+     */
+    protected ?string $pool = null;
+
+    /**
      * Response message when rate limit exceeded.
      */
     protected string $responseMessage = 'Too Many Attempts.';
@@ -59,7 +64,7 @@ abstract class RateLimitMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         $key = $this->resolveKey($request);
-        $limiter = $this->factory->make($this->algorithm);
+        $limiter = $this->factory->make($this->algorithm, $this->pool);
 
         if ($limiter->tooManyAttempts($key, $this->maxAttempts, $this->decay)) {
             return $this->buildRateLimitExceededResponse($key, $limiter->availableIn($key));
