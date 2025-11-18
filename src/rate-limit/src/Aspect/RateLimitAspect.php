@@ -35,25 +35,33 @@ class RateLimitAspect extends AbstractAspect
     {
         $metadata = $proceedingJoinPoint->getAnnotationMetadata();
 
-        /** @var null|RateLimit $annotation */
-        $annotation = $metadata->method[RateLimit::class] ?? null;
+        /** @var null|RateLimit|RateLimit[] $annotations */
+        $annotations = $metadata->method[RateLimit::class] ?? null;
 
-        if (! $annotation) {
+        if (! $annotations) {
             return $proceedingJoinPoint->process();
         }
 
-        $key = $this->resolveKey($annotation->key, $proceedingJoinPoint);
-        $limiter = $this->factory->make($annotation->algorithm, $annotation->pool);
+        // Ensure annotations is an array for consistent handling
+        if (! is_array($annotations)) {
+            $annotations = [$annotations];
+        }
 
-        if ($limiter->tooManyAttempts($key, $annotation->maxAttempts, $annotation->decay)) {
-            $availableIn = $limiter->availableIn($key);
-            $message = Str::replaceArray('%d', [(string) $availableIn], $annotation->response);
+        // Process all rate limit rules: any rule triggered will reject the request
+        foreach ($annotations as $annotation) {
+            $key = $this->resolveKey($annotation->key, $proceedingJoinPoint);
+            $limiter = $this->factory->make($annotation->algorithm, $annotation->pool);
 
-            throw new RateLimitException(
-                $message,
-                $annotation->responseCode,
-                $availableIn
-            );
+            if ($limiter->tooManyAttempts($key, $annotation->maxAttempts, $annotation->decay)) {
+                $availableIn = $limiter->availableIn($key);
+                $message = Str::replaceArray('%d', [(string) $availableIn], $annotation->response);
+
+                throw new RateLimitException(
+                    $message,
+                    $annotation->responseCode,
+                    $availableIn
+                );
+            }
         }
 
         return $proceedingJoinPoint->process();
