@@ -27,6 +27,10 @@ composer require friendsofhyperf/rate-limit
 - **Flexible Usage**
   - Annotation-based rate limiting via Aspect
   - Custom middleware support
+- **Smart Order for Multiple Annotations**
+  - Automatic prioritization of multiple RateLimit annotations
+  - Intelligent ordering by strictness (maxAttempts/decay ratio)
+  - More restrictive limits evaluated first for better performance
 - **Flexible Key Generation**
   - Default method/class-based keys
   - Custom key with placeholders support
@@ -39,7 +43,7 @@ composer require friendsofhyperf/rate-limit
 
 ## Usage
 
-### Method 1: Using Annotagion
+### Method 1: Using Annotation
 
 The easiest way to add rate limiting is using the `#[RateLimit]` attribute:
 
@@ -141,6 +145,49 @@ class UserController
 | `pool` | `?string` | `null` | The Redis connection pool to use |
 | `response` | `string` | `'Too Many Attempts.'` | Custom response when rate limit is exceeded |
 | `responseCode` | `int` | `429` | HTTP response code when rate limit is exceeded |
+
+#### Multiple RateLimits with AutoSort
+
+When you need multiple rate limits on the same method (e.g., per-minute and per-hour limits), you can use the `AutoSort` annotation to automatically prioritize them:
+
+```php
+<?php
+
+use FriendsOfHyperf\RateLimit\Annotation\RateLimit;
+use FriendsOfHyperf\RateLimit\Annotation\AutoSort;
+
+class ApiController
+{
+    /**
+     * Multiple rate limits with smart prioritization
+     * Stricter limits (smaller maxAttempts/decay ratio) are evaluated first
+     */
+    #[AutoSort]
+    #[RateLimit(maxAttempts: 10, decay: 60)]      // 10 requests/minute - evaluated first
+    #[RateLimit(maxAttempts: 100, decay: 3600)]    // 100 requests/hour - evaluated second
+    public function expensiveOperation()
+    {
+        // Your code here
+    }
+
+    /**
+     * Without AutoSort, rate limits are evaluated in declaration order
+     */
+    #[RateLimit(maxAttempts: 100, decay: 3600)]    // Evaluated first
+    #[RateLimit(maxAttempts: 10, decay: 60)]       // Evaluated second
+    public function anotherOperation()
+    {
+        // Your code here
+    }
+}
+```
+
+**Benefits of AutoSort:**
+
+- **Performance**: Stricter limits are checked first, avoiding unnecessary checks of more lenient limits
+- **Intelligence**: Automatically calculates priority based on limit strictness (maxAttempts/decay ratio)
+- **Opt-in**: Only affects methods where `AutoSort` is explicitly used
+- **Backward Compatible**: Existing code continues to work without changes
 
 #### Key Placeholders
 
@@ -396,6 +443,28 @@ class IpRateLimitMiddleware extends RateLimitMiddleware
     protected function resolveKey(ServerRequestInterface $request): string
     {
         return 'ip:' . $this->getClientIp();
+    }
+}
+```
+
+### Example 5: Multiple Rate Limits with Smart Order
+
+Use AutoSort to efficiently handle multiple rate limits on expensive operations:
+
+```php
+class ReportController
+{
+    /**
+     * Expensive report generation with multiple protection levels
+     * AutoSort ensures stricter limits are checked first for better performance
+     */
+    #[AutoSort]
+    #[RateLimit(maxAttempts: 5, decay: 60, response: 'Too many requests. Max 5 per minute')]       // Emergency brake
+    #[RateLimit(maxAttempts: 30, decay: 3600, response: 'Hourly limit exceeded. Max 30 per hour')] // Sustained load
+    #[RateLimit(maxAttempts: 100, decay: 86400, response: 'Daily limit exceeded. Max 100 per day')] // Daily cap
+    public function generateReport($reportType)
+    {
+        // Expensive report generation logic here
     }
 }
 ```
