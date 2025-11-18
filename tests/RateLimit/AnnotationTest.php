@@ -12,7 +12,7 @@ use FriendsOfHyperf\RateLimit\Algorithm;
 use FriendsOfHyperf\RateLimit\Annotation\RateLimit;
 
 test('annotation can be instantiated with defaults', function () {
-    $annotation = new RateLimit();
+    $annotation = new RateLimit(response: 'Too Many Attempts.');
 
     expect($annotation->key)->toBe('');
     expect($annotation->maxAttempts)->toBe(60);

@@ -33,7 +33,7 @@ class RateLimit extends AbstractAnnotation
         public int $decay = 60,
         public Algorithm $algorithm = Algorithm::FIXED_WINDOW,
         public ?string $pool = null,
-        public string $response = 'Too Many Attempts.',
+        public ?string $response = null,
         public int $responseCode = 429
     ) {
     }
