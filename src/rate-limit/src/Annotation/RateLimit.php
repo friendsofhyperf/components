@@ -23,7 +23,7 @@ class RateLimit extends AbstractAnnotation
      * @param int $maxAttempts Maximum number of attempts allowed
      * @param int $decay Time window in seconds
      * @param Algorithm $algorithm Algorithm to use: fixed_window, sliding_window, token_bucket, leaky_bucket
-     * @param null|string $pool The Redis connection pool to use
+     * @param string $pool The Redis connection pool to use
      * @param string $response Custom response when rate limit is exceeded
      * @param int $responseCode HTTP response code when rate limit is exceeded
      */
@@ -33,7 +33,7 @@ class RateLimit extends AbstractAnnotation
         public int $decay = 60,
         public Algorithm $algorithm = Algorithm::FIXED_WINDOW,
         public ?string $pool = null,
-        public ?string $response = null,
+        public string $response = 'Too Many Attempts, Please try again in %d seconds.',
         public int $responseCode = 429
     ) {
     }

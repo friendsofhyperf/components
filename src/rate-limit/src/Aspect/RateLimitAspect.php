@@ -47,8 +47,7 @@ class RateLimitAspect extends AbstractAspect
 
         if ($limiter->tooManyAttempts($key, $annotation->maxAttempts, $annotation->decay)) {
             $availableIn = $limiter->availableIn($key);
-            $message = $annotation->response ?? 'Too Many Attempts, Please try again in %d seconds.';
-            $message = Str::replaceArray('%d', [(string) $availableIn], $message);
+            $message = Str::replaceArray('%d', [(string) $availableIn], $annotation->response);
 
             throw new RateLimitException(
                 $message,
