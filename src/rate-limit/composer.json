@@ -31,7 +31,6 @@
         "hyperf/support": "~3.2.0"
     },
     "suggest": {
-        "hyperf/config-center": "Required for dynamic configuration support.",
         "hyperf/http-server": "Required for middleware support."
     },
     "autoload": {
