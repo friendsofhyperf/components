@@ -19,7 +19,6 @@ class RateLimitException extends RuntimeException
     public function __construct(
         string $message = '',
         int $code = 0,
-        public ?int $remaining = null,
         public ?int $availableIn = null,
         ?Throwable $previous = null
     ) {
