@@ -80,7 +80,7 @@ class UserController
      * Custom key with user ID placeholder
      */
     #[RateLimit(
-        key: 'user:{user_id}:action',
+        key: 'user:{userId}:action',
         maxAttempts: 10,
         decay: 3600
     )]
@@ -93,7 +93,7 @@ class UserController
      * Using array key
      */
     #[RateLimit(
-        key: ['user', '{user_id}', 'create'],
+        key: ['user', '{userId}', 'create'],
         maxAttempts: 5,
         decay: 60
     )]
