@@ -19,7 +19,7 @@ use Hyperf\Di\Annotation\AbstractAnnotation;
 class RateLimit extends AbstractAnnotation
 {
     /**
-     * @param string $key Rate limit key, supports placeholders like {user_id}
+     * @param string|array $key Rate limit key, supports placeholders like {user_id}
      * @param int $maxAttempts Maximum number of attempts allowed
      * @param int $decay Time window in seconds
      * @param Algorithm $algorithm Algorithm to use: fixed_window, sliding_window, token_bucket, leaky_bucket
@@ -27,7 +27,7 @@ class RateLimit extends AbstractAnnotation
      * @param int $responseCode HTTP response code when rate limit is exceeded
      */
     public function __construct(
-        public string $key = '',
+        public string|array $key = '',
         public int $maxAttempts = 60,
         public int $decay = 60,
         public Algorithm $algorithm = Algorithm::FIXED_WINDOW,
