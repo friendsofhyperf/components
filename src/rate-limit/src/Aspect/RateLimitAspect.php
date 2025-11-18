@@ -40,7 +40,7 @@ class RateLimitAspect extends AbstractAspect
         }
 
         $key = $this->resolveKey($annotation->key, $proceedingJoinPoint);
-        $limiter = $this->factory->make($annotation->algorithm);
+        $limiter = $this->factory->make($annotation->algorithm, $annotation->pool);
 
         if ($limiter->tooManyAttempts($key, $annotation->maxAttempts, $annotation->decay)) {
             $availableIn = $limiter->availableIn($key);
