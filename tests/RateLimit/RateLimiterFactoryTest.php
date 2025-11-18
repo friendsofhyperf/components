@@ -10,8 +10,8 @@ declare(strict_types=1);
  */
 use FriendsOfHyperf\RateLimit\Algorithm;
 use FriendsOfHyperf\RateLimit\RateLimiterFactory;
-use Hyperf\Redis\RedisProxy;
 use Hyperf\Redis\RedisFactory;
+use Hyperf\Redis\RedisProxy;
 use Mockery as m;
 use Psr\Container\ContainerInterface;
 
@@ -30,7 +30,7 @@ test('factory can create fixed window limiter', function () {
     $factory = new RateLimiterFactory($container);
     $limiter = $factory->make(Algorithm::FIXED_WINDOW);
 
-    expect($limiter)->toBeInstanceOf(FriendsOfHyperf\RateLimit\Algorithm\FixedWindowRateLimiter::class);
+    expect($limiter)->toBeInstanceOf(Algorithm\FixedWindowRateLimiter::class);
 });
 
 test('factory can create sliding window limiter', function () {
@@ -48,7 +48,7 @@ test('factory can create sliding window limiter', function () {
     $factory = new RateLimiterFactory($container);
     $limiter = $factory->make(Algorithm::SLIDING_WINDOW);
 
-    expect($limiter)->toBeInstanceOf(FriendsOfHyperf\RateLimit\Algorithm\SlidingWindowRateLimiter::class);
+    expect($limiter)->toBeInstanceOf(Algorithm\SlidingWindowRateLimiter::class);
 });
 
 test('factory can create token bucket limiter', function () {
@@ -66,7 +66,7 @@ test('factory can create token bucket limiter', function () {
     $factory = new RateLimiterFactory($container);
     $limiter = $factory->make(Algorithm::TOKEN_BUCKET);
 
-    expect($limiter)->toBeInstanceOf(FriendsOfHyperf\RateLimit\Algorithm\TokenBucketRateLimiter::class);
+    expect($limiter)->toBeInstanceOf(Algorithm\TokenBucketRateLimiter::class);
 });
 
 test('factory can create leaky bucket limiter', function () {
@@ -84,7 +84,7 @@ test('factory can create leaky bucket limiter', function () {
     $factory = new RateLimiterFactory($container);
     $limiter = $factory->make(Algorithm::LEAKY_BUCKET);
 
-    expect($limiter)->toBeInstanceOf(FriendsOfHyperf\RateLimit\Algorithm\LeakyBucketRateLimiter::class);
+    expect($limiter)->toBeInstanceOf(Algorithm\LeakyBucketRateLimiter::class);
 });
 
 test('factory caches limiter instances', function () {
