@@ -42,7 +42,7 @@ class RedisServerMutex implements ServerMutexInterface
     ) {
         $this->name = sprintf(
             '%s%s',
-            $options['prefix'] ?? 'trigger:mutex:',
+            $options['prefix'] ?? 'trigger:server_mutex:',
             $this->connection
         );
         if (isset($options['expires'])) {
