@@ -116,10 +116,10 @@ class RpcAspect extends AbstractAspect
                         if ($this->feature->isTracingTagEnabled('rpc.result')) {
                             $span?->setData(['rpc.result' => $result]);
                         }
-                        if (Context::has(Constants::TRACE_RPC_ENDPOINT_HOST)) {
+                        if (Context::has(Constants::TRACE_RPC_SERVER_ADDRESS)) {
                             $span?->setData([
-                                'server.address' => Context::get(Constants::TRACE_RPC_ENDPOINT_HOST),
-                                'server.port' => Context::get(Constants::TRACE_RPC_ENDPOINT_PORT),
+                                'server.address' => Context::get(Constants::TRACE_RPC_SERVER_ADDRESS),
+                                'server.port' => Context::get(Constants::TRACE_RPC_SERVER_PORT),
                             ]);
                         }
                     });
