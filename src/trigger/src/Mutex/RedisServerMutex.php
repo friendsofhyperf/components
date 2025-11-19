@@ -35,7 +35,7 @@ class RedisServerMutex implements ServerMutexInterface
 
     public function __construct(
         protected Redis $redis,
-        protected ?string $connection = null,
+        protected string $connection = 'default',
         array $options = [],
         protected ?string $owner = null,
         protected ?LoggerInterface $logger = null
