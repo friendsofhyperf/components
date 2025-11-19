@@ -28,39 +28,45 @@ use function Hyperf\Tappable\tap;
 
 class Consumer
 {
-    public readonly Config $config;
+    public Config $config;
 
-    public readonly string $name;
+    public string $name;
 
-    public readonly string $identifier;
+    public string $identifier;
 
-    public readonly ?HealthMonitor $healthMonitor;
+    public ?HealthMonitor $healthMonitor = null;
 
-    public readonly ?ServerMutexInterface $serverMutex;
+    public ?ServerMutexInterface $serverMutex = null;
 
-    public readonly BinLogCurrentSnapshotInterface $binLogCurrentSnapshot;
+    public BinLogCurrentSnapshotInterface $binLogCurrentSnapshot;
 
     private bool $stopped = false;
 
     public function __construct(
-        protected readonly SubscriberManager $subscriberManager,
-        protected readonly TriggerManager $triggerManager,
-        public readonly string $connection = 'default',
+        protected SubscriberManager $subscriberManager,
+        protected TriggerManager $triggerManager,
+        public string $connection = 'default',
         array $options = [],
-        public readonly ?LoggerInterface $logger = null
+        public ?LoggerInterface $logger = null
     ) {
         $this->name = $options['name'] ?? sprintf('trigger.%s', $this->connection);
         $this->identifier = $options['identifier'] ?? sprintf('trigger.%s', $this->connection);
         $this->config = new Config($options);
 
         $this->binLogCurrentSnapshot = make(BinLogCurrentSnapshotInterface::class, ['consumer' => $this]);
-        $this->healthMonitor = $this->config->get('health_monitor.enable', true) ? make(HealthMonitor::class, ['consumer' => $this]) : null;
-        $this->serverMutex = $this->config->get('server_mutex.enable', true) ? make(ServerMutexInterface::class, [
-            'name' => 'trigger:mutex:' . $this->connection,
-            'owner' => Util::getInternalIp(),
-            'options' => $this->config->get('server_mutex', []) + ['connection' => $this->connection],
-            'logger' => $this->logger,
-        ]) : null;
+
+        if ($this->config->get('health_monitor.enable', true)) {
+            $this->healthMonitor = make(HealthMonitor::class, ['consumer' => $this]);
+        }
+
+        if ($this->config->get('server_mutex.enable', true)) {
+            $this->serverMutex = make(ServerMutexInterface::class, [
+                'connection' => $this->connection,
+                'options' => (array) $this->config->get('server_mutex', []),
+                'owner' => Util::getInternalIp(),
+                'logger' => $this->logger,
+            ]);
+        }
     }
 
     public function start(): void
