@@ -46,9 +46,15 @@ class RedisServerMutex implements ServerMutexInterface
             $this->connection
         );
         $this->owner = $owner ?? Util::getInternalIp();
-        $this->expires = (int) ($options['expires'] ?? 60);
-        $this->keepaliveInterval = (int) ($options['keepalive_interval'] ?? 10);
-        $this->retryInterval = (int) ($options['retry_interval'] ?? 10);
+        if (isset($options['expires'])) {
+            $this->expires = (int) $options['expires'];
+        }
+        if (isset($options['keepalive_interval'])) {
+            $this->keepaliveInterval = (int) $options['keepalive_interval'];
+        }
+        if (isset($options['retry_interval'])) {
+            $this->retryInterval = (int) $options['retry_interval'];
+        }
         $this->timer = new Timer($this->logger);
     }
 
