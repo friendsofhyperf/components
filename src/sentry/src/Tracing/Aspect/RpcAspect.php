@@ -75,6 +75,7 @@ class RpcAspect extends AbstractAspect
             default => 'rpc',
         };
 
+        // https://github.com/open-telemetry/semantic-conventions/blob/main/docs/rpc/rpc-spans.md
         Context::set(static::SPAN_CONTEXT, SpanContext::make()
             ->setOp('rpc.client')
             ->setDescription($path)
