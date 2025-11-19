@@ -75,6 +75,7 @@ class RpcAspect extends AbstractAspect
             default => 'rpc',
         };
 
+        // https://github.com/open-telemetry/semantic-conventions/blob/main/docs/rpc/rpc-spans.md
         Context::set(static::SPAN_CONTEXT, SpanContext::make()
             ->setOp('rpc.client')
             ->setDescription($path)
@@ -112,8 +113,14 @@ class RpcAspect extends AbstractAspect
                         $rpcCtx->set(Constants::TRACE_CARRIER, $carrier->toJson());
                     }
                     return tap($proceedingJoinPoint->process(), function ($result) use ($span) {
-                        if ($span && $this->feature->isTracingTagEnabled('rpc.result')) {
-                            $span->setData(['rpc.result' => $result]);
+                        if ($this->feature->isTracingTagEnabled('rpc.result')) {
+                            $span?->setData(['rpc.result' => $result]);
+                        }
+                        if (Context::has(Constants::TRACE_RPC_SERVER_ADDRESS)) {
+                            $span?->setData([
+                                'server.address' => Context::get(Constants::TRACE_RPC_SERVER_ADDRESS),
+                                'server.port' => Context::get(Constants::TRACE_RPC_SERVER_PORT),
+                            ]);
                         }
                     });
                 },

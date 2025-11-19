@@ -85,6 +85,7 @@
         "hyperf/redis": "~3.2.0",
         "hyperf/rpc": "~3.2.0",
         "hyperf/rpc-client": "~3.2.0",
+        "hyperf/rpc-multiplex": "~3.2.0",
         "hyperf/rpc-server": "~3.2.0",
         "hyperf/scout": "~3.2.0",
         "hyperf/session": "~3.2.0",
