@@ -40,10 +40,10 @@ class ServerMutexCommand extends \Hyperf\Command\Command
                 ->reject(function ($config, $connection) {
                     return ! ($config['server_mutex']['enable'] ?? true);
                 })
-                ->transform(function ($config, $connection) use ($redis) {
+                ->transform(function ($connectionConfig, $connection) use ($redis) {
                     $mutex = make(ServerMutexInterface::class, [
                         'connection' => $connection,
-                        'options' => $config['server_mutex'] ?? [],
+                        'options' => $connectionConfig['server_mutex'] ?? [],
                     ]);
 
                     $name = $mutex->getName();
