@@ -45,7 +45,6 @@ class RedisServerMutex implements ServerMutexInterface
             $options['prefix'] ?? 'trigger:mutex:',
             $this->connection
         );
-        $this->owner = $owner ?? Util::getInternalIp();
         if (isset($options['expires'])) {
             $this->expires = (int) $options['expires'];
         }
@@ -55,6 +54,7 @@ class RedisServerMutex implements ServerMutexInterface
         if (isset($options['retry_interval'])) {
             $this->retryInterval = (int) $options['retry_interval'];
         }
+        $this->owner = $owner ?? Util::getInternalIp();
         $this->timer = new Timer($this->logger);
     }
 
