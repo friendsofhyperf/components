@@ -39,6 +39,7 @@ class ConfigProvider
                 Tracing\Aspect\GuzzleHttpClientAspect::class,
                 Tracing\Aspect\KafkaProducerAspect::class,
                 Tracing\Aspect\RpcAspect::class,
+                Tracing\Aspect\RpcEndpointAspect::class,
                 Tracing\Aspect\RedisAspect::class,
                 Tracing\Aspect\TraceAnnotationAspect::class,
                 Tracing\Aspect\ViewRenderAspect::class,

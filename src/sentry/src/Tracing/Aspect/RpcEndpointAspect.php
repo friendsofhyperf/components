@@ -13,15 +13,13 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
 use Hyperf\Context\Context;
-use Hyperf\Di\Annotation\Aspect;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\RpcMultiplex\Socket;
 
 use function Hyperf\Tappable\tap;
 
-#[Aspect()]
-class RpcSocketFactoryAspect extends AbstractAspect
+class RpcEndpointAspect extends AbstractAspect
 {
     public array $classes = [
         \Hyperf\RpcMultiplex\SocketFactory::class . '::get',
