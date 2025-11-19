@@ -68,10 +68,10 @@ class RpcAspect extends AbstractAspect
         $package = Str::camel($config->get('app_name', 'package'));
         /** @var string $service */
         $service = $proceedingJoinPoint->getInstance()->getServiceName();
-        $prototype = (fn () => $this->prototype ?? 'jsonrpc')->call($proceedingJoinPoint->getInstance());
+        $protocol = (fn () => $this->protocol ?? 'jsonrpc')->call($proceedingJoinPoint->getInstance());
         $system = match (true) {
-            str_contains($prototype, 'multiplex') => 'multiplex-rpc',
-            str_contains($prototype, 'jsonrpc') => 'jsonrpc',
+            str_contains($protocol, 'multiplex') => 'multiplex-rpc',
+            str_contains($protocol, 'jsonrpc') => 'jsonrpc',
             default => 'rpc',
         };
 
