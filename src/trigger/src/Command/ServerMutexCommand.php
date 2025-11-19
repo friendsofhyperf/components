@@ -25,7 +25,7 @@ class ServerMutexCommand extends \Hyperf\Command\Command
 
     public function __construct(protected ContainerInterface $container)
     {
-        return parent::__construct();
+        parent::__construct();
     }
 
     public function handle()
