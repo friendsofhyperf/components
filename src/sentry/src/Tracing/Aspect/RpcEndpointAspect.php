@@ -29,15 +29,29 @@ class RpcEndpointAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) {
+            // RpcMultiplex
             if ($result instanceof \Hyperf\RpcMultiplex\Socket) {
                 Context::set(Constants::TRACE_RPC_SERVER_ADDRESS, $result->getName());
                 Context::set(Constants::TRACE_RPC_SERVER_PORT, $result->getPort());
             }
+            // JsonRpcHttpTransporter
             if ($result instanceof \Hyperf\LoadBalancer\Node) {
                 Context::set(Constants::TRACE_RPC_SERVER_ADDRESS, $result->host);
                 Context::set(Constants::TRACE_RPC_SERVER_PORT, $result->port);
             }
-            // todo: JsonRpcPoolTransporter::getConnection
+            // JsonRpcPoolTransporter
+            if ($result instanceof \Hyperf\JsonRpc\Pool\RpcConnection) {
+                /** @var null|\Hyperf\Engine\Contract\SocketInterface $socket */
+                $socket = (fn () => $this->connection ?? null)->call($result);
+                if (method_exists($socket, 'getSocketOption')) {
+                    /** @var null|\Hyperf\Engine\Contract\Socket\SocketOptionInterface $option */
+                    $option = $socket->getSocketOption();
+                    if ($option instanceof \Hyperf\Engine\Contract\Socket\SocketOptionInterface) {
+                        Context::set(Constants::TRACE_RPC_SERVER_ADDRESS, $option->getHost());
+                        Context::set(Constants::TRACE_RPC_SERVER_PORT, $option->getPort());
+                    }
+                }
+            }
         });
     }
 }
