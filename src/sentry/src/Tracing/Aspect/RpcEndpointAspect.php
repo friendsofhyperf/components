@@ -27,9 +27,11 @@ class RpcEndpointAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        return tap($proceedingJoinPoint->process(), function (Socket $socket) {
-            Context::set(Constants::TRACE_RPC_SERVER_ADDRESS, $socket->getName());
-            Context::set(Constants::TRACE_RPC_SERVER_PORT, $socket->getPort());
+        return tap($proceedingJoinPoint->process(), function ($socket) {
+            if ($socket instanceof Socket) {
+                Context::set(Constants::TRACE_RPC_SERVER_ADDRESS, $socket->getName());
+                Context::set(Constants::TRACE_RPC_SERVER_PORT, $socket->getPort());
+            }
         });
     }
 }
