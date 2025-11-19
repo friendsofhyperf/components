@@ -31,24 +31,30 @@ class RedisServerMutex implements ServerMutexInterface
 
     protected int $retryInterval = 10;
 
-    protected string $connection = 'default';
+    protected string $name = '';
 
     public function __construct(
         protected Redis $redis,
-        protected ?string $name = null,
+        protected ?string $connection = null,
         protected ?string $owner = null,
         array $options = [],
         protected ?LoggerInterface $logger = null
     ) {
+        $this->name = sprintf(
+            '%s%s',
+            $options['prefix'] ?? 'trigger:mutex:',
+            $this->connection
+        );
+        $this->owner = $owner ?? Util::getInternalIp();
         $this->expires = (int) ($options['expires'] ?? 60);
         $this->keepaliveInterval = (int) ($options['keepalive_interval'] ?? 10);
-        $this->name = ($options['prefix'] ?? '') . ($name ?? sprintf('trigger:server:%s', $this->connection));
-        $this->owner = $owner ?? Util::getInternalIp();
-        if (isset($options['connection'])) {
-            $this->connection = $options['connection'];
-        }
-        $this->timer = new Timer($this->logger);
         $this->retryInterval = (int) ($options['retry_interval'] ?? 10);
+        $this->timer = new Timer($this->logger);
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     public function attempt(?callable $callback = null): void
