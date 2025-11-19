@@ -31,24 +31,36 @@ class RedisServerMutex implements ServerMutexInterface
 
     protected int $retryInterval = 10;
 
-    protected string $connection = 'default';
+    protected string $name = '';
 
     public function __construct(
         protected Redis $redis,
-        protected ?string $name = null,
-        protected ?string $owner = null,
+        protected string $connection = 'default',
         array $options = [],
+        protected ?string $owner = null,
         protected ?LoggerInterface $logger = null
     ) {
-        $this->expires = (int) ($options['expires'] ?? 60);
-        $this->keepaliveInterval = (int) ($options['keepalive_interval'] ?? 10);
-        $this->name = ($options['prefix'] ?? '') . ($name ?? sprintf('trigger:server:%s', $this->connection));
-        $this->owner = $owner ?? Util::getInternalIp();
-        if (isset($options['connection'])) {
-            $this->connection = $options['connection'];
+        $this->name = sprintf(
+            '%s%s',
+            $options['prefix'] ?? 'trigger:mutex:',
+            $this->connection
+        );
+        if (isset($options['expires'])) {
+            $this->expires = (int) $options['expires'];
         }
+        if (isset($options['keepalive_interval'])) {
+            $this->keepaliveInterval = (int) $options['keepalive_interval'];
+        }
+        if (isset($options['retry_interval'])) {
+            $this->retryInterval = (int) $options['retry_interval'];
+        }
+        $this->owner = $owner ?? Util::getInternalIp();
         $this->timer = new Timer($this->logger);
-        $this->retryInterval = (int) ($options['retry_interval'] ?? 10);
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     public function attempt(?callable $callback = null): void
