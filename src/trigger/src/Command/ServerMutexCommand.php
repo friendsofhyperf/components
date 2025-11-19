@@ -35,36 +35,44 @@ class ServerMutexCommand extends \Hyperf\Command\Command
         $config = $this->container->get(ConfigInterface::class);
 
         if ($action === 'list') {
-            $headers = ['Connection', 'Holder', 'Owner', 'Expires At'];
+            $headers = ['Connection', 'Name', 'Owner', 'Expires At'];
             $mutexes = collect($config->get('trigger.connections', []))
                 ->reject(function ($config, $connection) {
                     return ! $config['server_mutex']['enable'];
                 })
                 ->transform(function ($config, $connection) use ($redis) {
                     $mutex = make(ServerMutexInterface::class, [
-                        'name' => 'trigger:mutex:' . $connection,
-                        'options' => $config['server_mutex'] ?? [] + ['connection' => $connection],
+                        'connection' => $connection,
+                        'options' => $config['server_mutex'] ?? [],
                     ]);
 
-                    $holder = (fn () => $this->name ?? 'unknown')->call($mutex);
-                    $expiresAt = $redis->ttl($holder);
-                    $owner = $redis->get($holder) ?? 'none';
+                    $name = $mutex->getName();
+                    $ttl = $redis->ttl($name);
+                    $owner = $redis->get($name) ?? 'none';
 
-                    return [$connection, $holder, $owner, $expiresAt > 0 ? date('Y-m-d H:i:s', time() + $expiresAt) : 'expired'];
+                    return [$connection, $name, $owner, $ttl > 0 ? date('Y-m-d H:i:s', time() + $ttl) : 'expired'];
                 })
                 ->toArray();
 
             $this->table($headers, $mutexes);
             return;
         }
+
         if ($action === 'release') {
             $connection = $this->input->getOption('connection');
+
+            if (! $connection) {
+                $this->error('Please specify the connection name using --connection option.');
+                return;
+            }
+
             $options = $config->get("trigger.connections.{$connection}.server_mutex", []);
             $mutex = make(ServerMutexInterface::class, [
-                'name' => 'trigger:mutex:' . $connection,
-                'options' => $options + ['connection' => $connection],
+                'connection' => $connection,
+                'options' => $options,
             ]);
             $mutex->release(true);
+
             $this->line("Released mutex for connection: {$connection}");
             return;
         }

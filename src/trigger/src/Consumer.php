@@ -62,8 +62,8 @@ class Consumer
         if ($this->config->get('server_mutex.enable', true)) {
             $this->serverMutex = make(ServerMutexInterface::class, [
                 'connection' => $this->connection,
-                'owner' => Util::getInternalIp(),
                 'options' => (array) $this->config->get('server_mutex', []),
+                'owner' => Util::getInternalIp(),
                 'logger' => $this->logger,
             ]);
         }
