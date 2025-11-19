@@ -15,6 +15,10 @@ class Constants
 {
     public const TRACE_CARRIER = 'sentry.tracing.trace_carrier';
 
+    public const TRACE_RPC_SERVER_ADDRESS = 'sentry.tracing.rpc.server.address';
+
+    public const TRACE_RPC_SERVER_PORT = 'sentry.tracing.rpc.server.port';
+
     public const CRON_CHECKIN_ID = 'sentry.crons.checkin_id';
 
     public const DISABLE_COROUTINE_TRACING = 'sentry.tracing.disable_coroutine_tracing';
