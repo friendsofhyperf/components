@@ -31,7 +31,7 @@ return [
 
             'server_mutex' => [
                 'enable' => true,
-                'prefix' => env('APP_NAME', 'trigger') . ':',
+                'prefix' => env('APP_NAME', 'trigger') . ':server_mutex:',
                 'expires' => 30,
                 'keepalive_interval' => 10,
                 'retry_interval' => 10,
