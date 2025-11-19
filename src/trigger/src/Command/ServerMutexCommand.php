@@ -38,7 +38,7 @@ class ServerMutexCommand extends \Hyperf\Command\Command
             $headers = ['Connection', 'Name', 'Owner', 'Expires At'];
             $mutexes = collect($config->get('trigger.connections', []))
                 ->reject(function ($config, $connection) {
-                    return ! $config['server_mutex']['enable'];
+                    return ! ($config['server_mutex']['enable'] ?? true);
                 })
                 ->transform(function ($config, $connection) use ($redis) {
                     $mutex = make(ServerMutexInterface::class, [
