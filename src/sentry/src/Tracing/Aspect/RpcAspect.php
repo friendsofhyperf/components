@@ -112,8 +112,14 @@ class RpcAspect extends AbstractAspect
                         $rpcCtx->set(Constants::TRACE_CARRIER, $carrier->toJson());
                     }
                     return tap($proceedingJoinPoint->process(), function ($result) use ($span) {
-                        if ($span && $this->feature->isTracingTagEnabled('rpc.result')) {
-                            $span->setData(['rpc.result' => $result]);
+                        if ($this->feature->isTracingTagEnabled('rpc.result')) {
+                            $span?->setData(['rpc.result' => $result]);
+                        }
+                        if (Context::has(Constants::TRACE_RPC_ENDPOINT_HOST)) {
+                            $span?->setData([
+                                'server.address' => Context::get(Constants::TRACE_RPC_ENDPOINT_HOST),
+                                'server.port' => Context::get(Constants::TRACE_RPC_ENDPOINT_PORT),
+                            ]);
                         }
                     });
                 },
