@@ -28,6 +28,7 @@ class ConfigProvider
             ],
             'commands' => [
                 Command\ConsumeCommand::class,
+                Command\ServerMutexCommand::class,
                 Command\SubscribersCommand::class,
                 Command\TriggersCommand::class,
             ],
