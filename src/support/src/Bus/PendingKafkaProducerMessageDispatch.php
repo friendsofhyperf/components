@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Support\Bus;
 
-use Hyperf\Conditionable\Conditionable;
 use Hyperf\Context\ApplicationContext;
 use Hyperf\Kafka\ProducerManager;
 use longlang\phpkafka\Producer\ProduceMessage;
@@ -22,22 +21,12 @@ use longlang\phpkafka\Protocol\RecordBatch\RecordHeader;
  * @property null|string $key
  * @property null|string $value
  */
-class PendingKafkaProducerMessageDispatch
+class PendingKafkaProducerMessageDispatch extends AbstractPendingDispatch
 {
-    use Conditionable;
-
     protected ?string $pool = null;
 
     public function __construct(protected ProduceMessage $message)
     {
-    }
-
-    public function __destruct()
-    {
-        ApplicationContext::getContainer()
-            ->get(ProducerManager::class)
-            ->getProducer($this->pool ?? 'default')
-            ->sendBatch([$this->message]);
     }
 
     public function onPool(string $pool): static
@@ -63,5 +52,13 @@ class PendingKafkaProducerMessageDispatch
         $header = (new RecordHeader())->setHeaderKey($key)->setValue($value);
         (fn () => $this->headers[] = $header)->call($this->message);
         return $this;
+    }
+
+    protected function dispatch()
+    {
+        ApplicationContext::getContainer()
+            ->get(ProducerManager::class)
+            ->getProducer($this->pool ?? 'default')
+            ->sendBatch([$this->message]);
     }
 }

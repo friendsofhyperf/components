@@ -13,16 +13,13 @@ namespace FriendsOfHyperf\Support\Bus;
 
 use Hyperf\Amqp\Message\ProducerMessageInterface;
 use Hyperf\Amqp\Producer;
-use Hyperf\Conditionable\Conditionable;
 use Hyperf\Context\ApplicationContext;
 
 /**
  * @property array{application_headers?:AMQPTable} $properties
  */
-class PendingAmqpProducerMessageDispatch
+class PendingAmqpProducerMessageDispatch extends AbstractPendingDispatch
 {
-    use Conditionable;
-
     protected ?string $pool = null;
 
     protected int $timeout = 5;
@@ -35,16 +32,6 @@ class PendingAmqpProducerMessageDispatch
 
     public function __construct(protected ProducerMessageInterface $message)
     {
-    }
-
-    public function __destruct()
-    {
-        $this->pool && $this->message->setPoolName($this->pool);
-        $this->routingKey && $this->message->setRoutingKey($this->routingKey);
-        $this->exchange && $this->message->setExchange($this->exchange);
-        ApplicationContext::getContainer()
-            ->get(Producer::class)
-            ->produce($this->message, $this->confirm, $this->timeout);
     }
 
     public function onPool(string $pool): static
@@ -90,5 +77,15 @@ class PendingAmqpProducerMessageDispatch
     {
         $this->timeout = $timeout;
         return $this;
+    }
+
+    protected function dispatch()
+    {
+        $this->pool && $this->message->setPoolName($this->pool);
+        $this->routingKey && $this->message->setRoutingKey($this->routingKey);
+        $this->exchange && $this->message->setExchange($this->exchange);
+        ApplicationContext::getContainer()
+            ->get(Producer::class)
+            ->produce($this->message, $this->confirm, $this->timeout);
     }
 }
