@@ -466,6 +466,11 @@ class EventHandleListener implements ListenerInterface
 
         $pool = $this->container->get(RedisPoolFactory::class)->getPool($event->connectionName);
         $config = $this->config->get('redis.' . $event->connectionName, []);
+        $serverData = match (true) {
+            $config['cluster']['enable'] ?? false => ['server.address' => $config['cluster']['nodes'] ?? null],
+            $config['sentinel']['enable'] ?? false => ['server.address' => $config['sentinel']['nodes'] ?? null],
+            default => ['server.address' => $config['host'] ?? null, 'server.port' => $config['port'] ?? null],
+        };
         $redisStatement = (string) new RedisCommand($event->command, $event->parameters);
 
         trace(
@@ -497,6 +502,7 @@ class EventHandleListener implements ListenerInterface
                     'db.redis.pool.idle' => $pool->getConnectionsInChannel(),
                     'db.redis.pool.using' => $pool->getCurrentConnections(),
                     'duration' => $event->time * 1000,
+                    ...$serverData,
                 ])
                 ->setStartTimestamp(microtime(true) - $event->time / 1000)
         );
