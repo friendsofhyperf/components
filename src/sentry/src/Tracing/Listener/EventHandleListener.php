@@ -467,9 +467,16 @@ class EventHandleListener implements ListenerInterface
         $pool = $this->container->get(RedisPoolFactory::class)->getPool($event->connectionName);
         $config = $this->config->get('redis.' . $event->connectionName, []);
         $serverData = match (true) {
-            $config['cluster']['enable'] ?? false => ['server.address' => $config['cluster']['nodes'] ?? null],
-            $config['sentinel']['enable'] ?? false => ['server.address' => $config['sentinel']['nodes'] ?? null],
-            default => ['server.address' => $config['host'] ?? null, 'server.port' => $config['port'] ?? null],
+            $config['cluster']['enable'] ?? false => [
+                'server.address' => implode(',', $config['cluster']['nodes'] ?? []),
+            ],
+            $config['sentinel']['enable'] ?? false => [
+                'server.address' => implode(',', $config['sentinel']['nodes'] ?? []),
+            ],
+            default => [
+                'server.address' => $config['host'] ?? '',
+                'server.port' => $config['port'] ?? 0,
+            ],
         };
         $redisStatement = (string) new RedisCommand($event->command, $event->parameters);
 
