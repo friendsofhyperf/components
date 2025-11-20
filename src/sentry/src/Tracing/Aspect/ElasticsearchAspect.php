@@ -75,8 +75,8 @@ class ElasticsearchAspect extends AbstractAspect
                         /** @var \Elasticsearch\Client|\Elastic\Elasticsearch\Client $client */
                         $client = $proceedingJoinPoint->getInstance();
                         $data = match ($client::class) {
-                            'Elasticsearch\Client' => (function ($client) {
-                                $lastConnection = $client->transport->getLastConnection();
+                            'Elasticsearch\Client' => (function ($client) { // @phpstan-ignore-line
+                                $lastConnection = $client->transport->getLastConnection(); // @phpstan-ignore-line
                                 $lastRequestInfo = $lastConnection->getLastRequestInfo();
                                 return [
                                     'server.address' => $lastConnection->getHost(),
