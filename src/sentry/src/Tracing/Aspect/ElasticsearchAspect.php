@@ -72,11 +72,10 @@ class ElasticsearchAspect extends AbstractAspect
                     }
 
                     try {
-                        /** @var \Elasticsearch\Client|\Elastic\Elasticsearch\Client $client */
                         $client = $proceedingJoinPoint->getInstance();
                         $data = match ($client::class) {
-                            'Elasticsearch\Client' => (function ($client) { // @phpstan-ignore-line
-                                $lastConnection = $client->transport->getLastConnection(); // @phpstan-ignore-line
+                            'Elasticsearch\Client' => (function ($client) {  // @phpstan-ignore-line
+                                $lastConnection = $client->transport->getLastConnection();
                                 $lastRequestInfo = $lastConnection->getLastRequestInfo();
                                 return [
                                     'server.address' => $lastConnection->getHost(),
@@ -85,7 +84,7 @@ class ElasticsearchAspect extends AbstractAspect
                                     'url.full' => $lastRequestInfo['response']['effective_url'] ?? null,
                                 ];
                             })($client),
-                            'Elastic\Elasticsearch\Client' => (function ($client) {
+                            'Elastic\Elasticsearch\Client' => (function ($client) { // @phpstan-ignore-line
                                 /** @var \Elastic\Elasticsearch\Client $client */
                                 $transport = $client->getTransport();
                                 $lastRequest = $transport->getLastRequest();
