@@ -41,11 +41,3 @@ parameters:
       message: '#.* has invalid return type Elasticsearch\\Client.#'
       paths:
         - src/telescope-elasticsearch/*/*.php
-    -
-      message: '#unknown class Elasticsearch\\Client#'
-      paths:
-        - src/sentry/src/Tracing/Aspect/ElasticsearchAspect.php
-    -
-      message: "#'Elasticsearch\\Client' is always false#"
-      paths:
-        - src/sentry/src/Tracing/Aspect/ElasticsearchAspect.php
