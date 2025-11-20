@@ -16,8 +16,10 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
+use Throwable;
 
 use function FriendsOfHyperf\Sentry\trace;
+use function Hyperf\Tappable\tap;
 
 class ElasticsearchAspect extends AbstractAspect
 {
@@ -62,13 +64,25 @@ class ElasticsearchAspect extends AbstractAspect
 
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
-                $result = $proceedingJoinPoint->process();
-                if ($this->feature->isTracingTagEnabled('elasticsearch.result')) {
-                    $scope->getSpan()?->setData([
-                        'elasticsearch.result' => (string) json_encode($result, JSON_UNESCAPED_UNICODE),
-                    ]);
-                }
-                return $result;
+                return tap($proceedingJoinPoint->process(), function ($result) use ($scope, $proceedingJoinPoint) {
+                    if ($this->feature->isTracingTagEnabled('elasticsearch.result')) {
+                        $scope->getSpan()?->setData([
+                            'elasticsearch.result' => (string) json_encode($result, JSON_UNESCAPED_UNICODE),
+                        ]);
+                    }
+
+                    try {
+                        $client = $proceedingJoinPoint->getInstance();
+                        $data = match ($client::class) {
+                            'Elasticsearch\Client' => $this->getV7Data($client), // @phpstan-ignore-line
+                            'Elastic\Elasticsearch\Client' => $this->getV8Data($client), // @phpstan-ignore-line
+                            default => [],
+                        };
+                        $scope->getSpan()?->setData($data);
+                    } catch (Throwable) {
+                        // Ignore errors
+                    }
+                });
             },
             SpanContext::make()
                 ->setOp('db.query')
@@ -78,12 +92,33 @@ class ElasticsearchAspect extends AbstractAspect
                     'db.system' => 'elasticsearch',
                     'db.operation.name' => $proceedingJoinPoint->methodName,
                     'arguments' => (string) json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE),
-                    // TODO
-                    // 'http.request.method' => '',
-                    // 'url.full' => '',
-                    // 'server.host' => '',
-                    // 'server.port' => '',
                 ])
         );
+    }
+
+    protected function getV7Data($client): array
+    {
+        $lastConnection = $client->transport->getLastConnection();
+        $lastRequestInfo = $lastConnection->getLastRequestInfo();
+
+        return [
+            'server.address' => $lastConnection->getHost(),
+            'server.port' => $lastConnection->getPort(),
+            'http.request.method' => $lastRequestInfo['request']['http_method'] ?? null,
+            'url.full' => $lastRequestInfo['response']['effective_url'] ?? null,
+        ];
+    }
+
+    protected function getV8Data($client): array
+    {
+        $transport = $client->getTransport();
+        $lastRequest = $transport->getLastRequest();
+
+        return [
+            'server.address' => $lastRequest->getUri()->getHost(),
+            'server.port' => $lastRequest->getUri()->getPort(),
+            'http.request.method' => $lastRequest->getMethod(),
+            'url.full' => (fn ($request) => $this->getFullUrl($request))->call($transport, $lastRequest),
+        ];
     }
 }
