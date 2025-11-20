@@ -74,27 +74,8 @@ class ElasticsearchAspect extends AbstractAspect
                     try {
                         $client = $proceedingJoinPoint->getInstance();
                         $data = match ($client::class) {
-                            'Elasticsearch\Client' => (function ($client) {  // @phpstan-ignore-line
-                                $lastConnection = $client->transport->getLastConnection();
-                                $lastRequestInfo = $lastConnection->getLastRequestInfo();
-                                return [
-                                    'server.address' => $lastConnection->getHost(),
-                                    'server.port' => $lastConnection->getPort(),
-                                    'http.request.method' => $lastRequestInfo['request']['http_method'] ?? null,
-                                    'url.full' => $lastRequestInfo['response']['effective_url'] ?? null,
-                                ];
-                            })($client),
-                            'Elastic\Elasticsearch\Client' => (function ($client) { // @phpstan-ignore-line
-                                /** @var \Elastic\Elasticsearch\Client $client */
-                                $transport = $client->getTransport();
-                                $lastRequest = $transport->getLastRequest();
-                                return [
-                                    'server.address' => $lastRequest->getUri()->getHost(),
-                                    'server.port' => $lastRequest->getUri()->getPort(),
-                                    'http.request.method' => $lastRequest->getMethod(),
-                                    'url.full' => (fn ($request) => $this->getFullUrl($request))->call($transport, $lastRequest),
-                                ];
-                            })($client),
+                            'Elasticsearch\Client' => $this->getV7Data($client), // @phpstan-ignore-line
+                            'Elastic\Elasticsearch\Client' => $this->getV8Data($client), // @phpstan-ignore-line
                             default => [],
                         };
                         $scope->getSpan()?->setData($data);
@@ -113,5 +94,31 @@ class ElasticsearchAspect extends AbstractAspect
                     'arguments' => (string) json_encode($proceedingJoinPoint->arguments['keys'], JSON_UNESCAPED_UNICODE),
                 ])
         );
+    }
+
+    protected function getV7Data($client): array
+    {
+        $lastConnection = $client->transport->getLastConnection();
+        $lastRequestInfo = $lastConnection->getLastRequestInfo();
+
+        return [
+            'server.address' => $lastConnection->getHost(),
+            'server.port' => $lastConnection->getPort(),
+            'http.request.method' => $lastRequestInfo['request']['http_method'] ?? null,
+            'url.full' => $lastRequestInfo['response']['effective_url'] ?? null,
+        ];
+    }
+
+    protected function getV8Data($client): array
+    {
+        $transport = $client->getTransport();
+        $lastRequest = $transport->getLastRequest();
+
+        return [
+            'server.address' => $lastRequest->getUri()->getHost(),
+            'server.port' => $lastRequest->getUri()->getPort(),
+            'http.request.method' => $lastRequest->getMethod(),
+            'url.full' => (fn ($request) => $this->getFullUrl($request))->call($transport, $lastRequest),
+        ];
     }
 }
