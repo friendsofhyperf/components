@@ -28,7 +28,7 @@ class RedisConnectionAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        return tap($proceedingJoinPoint->process(), function ($connection) use ($proceedingJoinPoint) {
+        return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
             $redisConnection = $proceedingJoinPoint->getInstance();
             $connection = (fn () => $this->connection ?? null)->call($redisConnection);
 
