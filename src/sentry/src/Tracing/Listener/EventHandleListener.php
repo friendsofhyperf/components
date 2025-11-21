@@ -496,6 +496,8 @@ class EventHandleListener implements ListenerInterface
                     'db.redis.pool.idle' => $pool->getConnectionsInChannel(),
                     'db.redis.pool.using' => $pool->getCurrentConnections(),
                     'duration' => $event->time * 1000,
+                    'server.address' => (string) Context::get(Constants::TRACE_REDIS_SERVER_ADDRESS, 'localhost'),
+                    'server.port' => (int) Context::get(Constants::TRACE_REDIS_SERVER_PORT, 6379),
                 ])
                 ->setStartTimestamp(microtime(true) - $event->time / 1000)
         );
