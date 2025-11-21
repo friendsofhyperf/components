@@ -191,10 +191,14 @@ class EventHandleListener implements ListenerInterface
         if (! Context::has(Constants::TRACE_DB_SERVER_PORT)) {
             $useReadPdo = (bool) Context::get(Constants::TRACE_DB_USE_READ_PDO, false);
             $dbConfig = $this->config->get('databases.' . $event->connectionName, []);
-            $hosts = $useReadPdo ? ($dbConfig['read']['host'] ?? $dbConfig['write']['host'] ?? [$dbConfig['host']]) : ($dbConfig['write']['host'] ?? [$dbConfig['host']]);
-            $ports = $useReadPdo ? ($dbConfig['read']['port'] ?? $dbConfig['write']['port'] ?? [$dbConfig['port']]) : ($dbConfig['write']['port'] ?? [$dbConfig['port']]);
+            $hosts = $dbConfig['write']['host'] ?? [$dbConfig['host']];
+            $ports = $dbConfig['write']['port'] ?? [$dbConfig['port']];
+            if ($useReadPdo) {
+                $hosts = $dbConfig['read']['host'] ?? $hosts;
+                $ports = $dbConfig['read']['port'] ?? $ports;
+            }
             $index = array_find_key($hosts, fn ($item) => $item == $host);
-            $port = $ports[$index] ?? 3306;
+            $port = $ports[$index] ?? $ports[0] ?? 3306;
         } else {
             $port = (int) Context::get(Constants::TRACE_DB_SERVER_PORT);
         }
