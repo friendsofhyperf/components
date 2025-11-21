@@ -32,12 +32,12 @@ class RedisConnectionAspect extends AbstractAspect
             $redisConnection = $proceedingJoinPoint->getInstance();
             $connection = (fn () => $this->connection ?? null)->call($redisConnection);
 
-            if ($connection instanceof Redis) {
+            if ($connection instanceof Redis) { // Redis or RedisSentinel
                 Context::set(Constants::TRACE_REDIS_SERVER_ADDRESS, $connection->getHost());
                 Context::set(Constants::TRACE_REDIS_SERVER_PORT, $connection->getPort());
             }
 
-            if ($connection instanceof RedisCluster) {
+            if ($connection instanceof RedisCluster) { // RedisCluster
                 // TODO: support RedisCluster
             }
         });
