@@ -192,6 +192,8 @@ class EventHandleListener implements ListenerInterface
             'db.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
             'db.pool.idle' => $pool->getConnectionsInChannel(),
             'db.pool.using' => $pool->getCurrentConnections(),
+            'server.address' => (string) Context::get(Constants::TRACE_DB_SERVER_ADDRESS, 'localhost'),
+            'server.port' => (int) Context::get(Constants::TRACE_DB_SERVER_PORT, 3306),
         ];
 
         if ($this->feature->isTracingTagEnabled('db.sql.bindings', true)) {

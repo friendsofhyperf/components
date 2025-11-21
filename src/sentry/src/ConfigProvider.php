@@ -32,6 +32,7 @@ class ConfigProvider
                 Tracing\Aspect\CoordinatorAspect::class,
                 Tracing\Aspect\CoroutineAspect::class,
                 Tracing\Aspect\DbAspect::class,
+                Tracing\Aspect\DbConnectionAspect::class,
                 Tracing\Aspect\ElasticsearchAspect::class,
                 Tracing\Aspect\ElasticsearchRequestAspect::class,
                 Tracing\Aspect\FilesystemAspect::class,
