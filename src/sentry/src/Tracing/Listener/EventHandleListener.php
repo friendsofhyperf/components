@@ -186,6 +186,23 @@ class EventHandleListener implements ListenerInterface
             $data['db.collection.name'] = $sqlParse['table'];
         }
 
+        // Get port from config
+        $host = (string) Context::get(Constants::TRACE_DB_SERVER_ADDRESS, 'localhost');
+        if (! Context::has(Constants::TRACE_DB_SERVER_PORT)) {
+            $useReadPdo = (bool) Context::get(Constants::TRACE_DB_USE_READ_PDO, false);
+            $dbConfig = (fn () => $this->config ?? ['host' => $host, 'port' => 3306])->call($event->connection);
+            $hosts = $dbConfig['write']['host'] ?? [$dbConfig['host']];
+            $ports = $dbConfig['write']['port'] ?? [$dbConfig['port']];
+            if ($useReadPdo) {
+                $hosts = $dbConfig['read']['host'] ?? $hosts;
+                $ports = $dbConfig['read']['port'] ?? $ports;
+            }
+            $index = array_search($host, $hosts, true);
+            $port = $ports[$index] ?? $ports[0] ?? 3306;
+        } else {
+            $port = (int) Context::get(Constants::TRACE_DB_SERVER_PORT);
+        }
+
         $pool = $this->container->get(PoolFactory::class)->getPool($event->connectionName);
         $data += [
             'db.pool.name' => $event->connectionName,
@@ -193,8 +210,8 @@ class EventHandleListener implements ListenerInterface
             'db.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
             'db.pool.idle' => $pool->getConnectionsInChannel(),
             'db.pool.using' => $pool->getCurrentConnections(),
-            'server.address' => (string) Context::get(Constants::TRACE_DB_SERVER_ADDRESS, 'localhost'),
-            'server.port' => (int) Context::get(Constants::TRACE_DB_SERVER_PORT, 3306),
+            'server.address' => $host,
+            'server.port' => $port,
         ];
 
         if ($this->feature->isTracingTagEnabled('db.sql.bindings', true)) {

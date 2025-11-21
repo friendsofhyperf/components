@@ -28,7 +28,12 @@ class DbConnectionAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        return tap($proceedingJoinPoint->process(), function ($pdo) {
+        return tap($proceedingJoinPoint->process(), function ($pdo) use ($proceedingJoinPoint) {
+            if ($proceedingJoinPoint->methodName === 'getPdoForSelect') {
+                $arguments = $proceedingJoinPoint->arguments['keys'] ?? [];
+                Context::set(Constants::TRACE_DB_USE_READ_PDO, $arguments['useReadPdo'] ?? false);
+            }
+
             Context::getOrSet(self::class, function () use ($pdo) {
                 $connectionStatus = $pdo->getAttribute(PDO::ATTR_CONNECTION_STATUS);
                 [$host] = explode(' ', $connectionStatus);
