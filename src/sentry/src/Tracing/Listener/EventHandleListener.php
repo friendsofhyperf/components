@@ -197,7 +197,7 @@ class EventHandleListener implements ListenerInterface
                 $hosts = $dbConfig['read']['host'] ?? $hosts;
                 $ports = $dbConfig['read']['port'] ?? $ports;
             }
-            $index = array_find_key($hosts, fn ($item) => $item == $host);
+            $index = array_search($host, $hosts, true);
             $port = $ports[$index] ?? $ports[0] ?? 3306;
         } else {
             $port = (int) Context::get(Constants::TRACE_DB_SERVER_PORT);
