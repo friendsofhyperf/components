@@ -30,12 +30,11 @@ class RedisConnectionAspect extends AbstractAspect
     {
         return tap($proceedingJoinPoint->process(), function ($connection) use ($proceedingJoinPoint) {
             $redisConnection = $proceedingJoinPoint->getInstance();
-            $config = (fn () => $this->config ?? [])->call($redisConnection);
             $connection = (fn () => $this->connection ?? null)->call($redisConnection);
 
             if ($connection instanceof Redis) {
-                Context::set(Constants::TRACE_REDIS_SERVER_ADDRESS, $config['host'] ?? 'localhost');
-                Context::set(Constants::TRACE_REDIS_SERVER_PORT, $config['port'] ?? 6379);
+                Context::set(Constants::TRACE_REDIS_SERVER_ADDRESS, $connection->getHost());
+                Context::set(Constants::TRACE_REDIS_SERVER_PORT, $connection->getPort());
             }
 
             if ($connection instanceof RedisCluster) {
