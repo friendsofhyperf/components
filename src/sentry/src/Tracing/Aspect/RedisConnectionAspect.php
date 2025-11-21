@@ -11,30 +11,36 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use FriendsOfHyperf\Sentry\Util\ConnectionContainer;
+use FriendsOfHyperf\Sentry\Constants;
+use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Redis;
+use RedisCluster;
 
 use function Hyperf\Tappable\tap;
 
 class RedisConnectionAspect extends AbstractAspect
 {
     public array $classes = [
-        'Hyperf\Redis\RedisConnection::create*',
+        'Hyperf\Redis\RedisConnection::__call',
     ];
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($connection) use ($proceedingJoinPoint) {
-            $instance = $proceedingJoinPoint->getInstance();
-            $config = (fn () => $this->config ?? [])->call($instance);
+            $redisConnection = $proceedingJoinPoint->getInstance();
+            $config = (fn () => $this->config ?? [])->call($redisConnection);
+            $connection = (fn () => $this->connection ?? null)->call($redisConnection);
 
-            match ($proceedingJoinPoint->methodName) {
-                'createRedis' => ConnectionContainer::set($connection, $config),
-                'createRedisCluster' => ConnectionContainer::set($connection, $config['cluster'] ?? []),
-                'createRedisSentinel' => ConnectionContainer::set($connection, $config['sentinel'] ?? []),
-                default => null,
-            };
+            if ($connection instanceof Redis) {
+                Context::set(Constants::TRACE_REDIS_SERVER_ADDRESS, $config['host'] ?? 'localhost');
+                Context::set(Constants::TRACE_REDIS_SERVER_PORT, $config['port'] ?? 6379);
+            }
+
+            if ($connection instanceof RedisCluster) {
+                // TODO: support RedisCluster
+            }
         });
     }
 }

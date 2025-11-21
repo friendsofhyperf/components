@@ -15,6 +15,10 @@ class Constants
 {
     public const TRACE_CARRIER = 'sentry.tracing.trace_carrier';
 
+    public const TRACE_REDIS_SERVER_ADDRESS = 'sentry.tracing.redis.server.address';
+
+    public const TRACE_REDIS_SERVER_PORT = 'sentry.tracing.redis.server.port';
+
     public const TRACE_RPC_SERVER_ADDRESS = 'sentry.tracing.rpc.server.address';
 
     public const TRACE_RPC_SERVER_PORT = 'sentry.tracing.rpc.server.port';
