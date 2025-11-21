@@ -29,13 +29,14 @@ class DbConnectionAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($pdo) {
-            if (! Context::get(self::class . '.executed')) {
+            Context::getOrSet(self::class, function () use ($pdo) {
                 $connectionStatus = $pdo->getAttribute(PDO::ATTR_CONNECTION_STATUS);
                 [$host] = explode(' ', $connectionStatus);
 
                 Context::set(Constants::TRACE_DB_SERVER_ADDRESS, $host);
-                Context::set(self::class . '.executed', true);
-            }
+
+                return true;
+            });
         });
     }
 }
