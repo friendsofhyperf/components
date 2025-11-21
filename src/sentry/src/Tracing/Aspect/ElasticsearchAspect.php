@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
+use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
+use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
@@ -50,23 +52,14 @@ class ElasticsearchAspect extends AbstractAspect
 
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
-                return tap($proceedingJoinPoint->process(), function ($result) use ($scope, $proceedingJoinPoint) {
+                return tap($proceedingJoinPoint->process(), function ($result) use ($scope) {
                     if ($this->feature->isTracingTagEnabled('elasticsearch.result')) {
                         $scope->getSpan()?->setData([
                             'elasticsearch.result' => (string) json_encode($result, JSON_UNESCAPED_UNICODE),
                         ]);
                     }
 
-                    /** @var \Elastic\Elasticsearch\Client */
-                    $client = $proceedingJoinPoint->getInstance();
-                    $transport = $client->getTransport();
-                    $lastRequest = $transport->getLastRequest();
-                    $data = [
-                        'server.address' => $lastRequest->getUri()->getHost(),
-                        'server.port' => $lastRequest->getUri()->getPort(),
-                        'http.request.method' => $lastRequest->getMethod(),
-                        'url.full' => (fn ($request) => $this->getFullUrl($request))->call($transport, $lastRequest),
-                    ];
+                    $data = (array) Context::get(Constants::TRACE_ELASTICSEARCH_REQUEST_DATA, []);
                     $scope->getSpan()?->setData($data);
                 });
             },
