@@ -15,10 +15,8 @@ use FriendsOfHyperf\Sentry\Constants;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Psr\Http\Message\RequestInterface;
 
-/**
- * @method string getFullUrl()
- */
 class ElasticsearchRequestAspect extends AbstractAspect
 {
     public array $classes = [
@@ -28,9 +26,8 @@ class ElasticsearchRequestAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $client = $proceedingJoinPoint->getInstance();
-
         if ($proceedingJoinPoint->methodName === 'performRequest') { // ES 7.x
+            $client = $proceedingJoinPoint->getInstance();
             $lastConnection = $client->transport->getLastConnection();
             $data = [
                 'server.address' => $lastConnection->getHost(),
@@ -42,17 +39,38 @@ class ElasticsearchRequestAspect extends AbstractAspect
         }
 
         if ($proceedingJoinPoint->methodName === 'sendRequest') { // ES 8.x
-            $transport = $client->getTransport();
-            $lastRequest = $transport->getLastRequest();
-            $data = [
-                'server.address' => $lastRequest->getUri()->getHost(),
-                'server.port' => $lastRequest->getUri()->getPort(),
-                'http.request.method' => $lastRequest->getMethod(),
-                'url.full' => (fn ($request) => $this->getFullUrl($request))->call($transport, $lastRequest),
-            ];
-            Context::set(Constants::TRACE_ELASTICSEARCH_REQUEST_DATA, $data);
+            $request = $proceedingJoinPoint->arguments['keys']['request'] ?? null;
+            if ($request instanceof RequestInterface) {
+                $data = [
+                    'server.address' => $request->getUri()->getHost(),
+                    'server.port' => $request->getUri()->getPort(),
+                    'http.request.method' => $request->getMethod(),
+                    'url.full' => $this->getFullUrl($request),
+                ];
+                Context::set(Constants::TRACE_ELASTICSEARCH_REQUEST_DATA, $data);
+            }
         }
 
         return $proceedingJoinPoint->process();
+    }
+
+    /**
+     * Return the full URL in the format
+     * scheme://host:port/path?query_string.
+     */
+    private function getFullUrl(RequestInterface $request): string
+    {
+        $fullUrl = sprintf(
+            '%s://%s:%s%s',
+            $request->getUri()->getScheme(),
+            $request->getUri()->getHost(),
+            $request->getUri()->getPort(),
+            $request->getUri()->getPath()
+        );
+        $queryString = $request->getUri()->getQuery();
+        if (! empty($queryString)) {
+            $fullUrl .= '?' . $queryString;
+        }
+        return $fullUrl;
     }
 }
