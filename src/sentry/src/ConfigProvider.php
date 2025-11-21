@@ -34,6 +34,7 @@ class ConfigProvider
                 Tracing\Aspect\CoroutineAspect::class,
                 Tracing\Aspect\DbAspect::class,
                 Tracing\Aspect\ElasticsearchAspect::class,
+                Tracing\Aspect\ElasticsearchRequestAspect::class,
                 Tracing\Aspect\FilesystemAspect::class,
                 Tracing\Aspect\GrpcAspect::class,
                 Tracing\Aspect\GuzzleHttpClientAspect::class,
