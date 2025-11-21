@@ -1,5 +1,18 @@
 # Changelog
 
+## v3.1.74 - 2025-11-21
+
+### What's Changed
+
+* Add rate-limit component with 4 algorithms, annotations, AOP, and middleware by @Copilot in https://github.com/friendsofhyperf/components/pull/1014
+* feat: add IS_REPEATABLE support to RateLimit annotation by @huangdijia in https://github.com/friendsofhyperf/components/pull/1015
+* feat: add SmartOrder annotation for intelligent RateLimit prioritization by @huangdijia in https://github.com/friendsofhyperf/components/pull/1016
+* feat: add socket tracing support for RPC calls by @huangdijia in https://github.com/friendsofhyperf/components/pull/1017
+* refactor: improve server mutex implementation and configuration by @huangdijia in https://github.com/friendsofhyperf/components/pull/1019
+* feat: add server address and HTTP method tracing for Elasticsearch operations by @huangdijia in https://github.com/friendsofhyperf/components/pull/1022
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.73...v3.1.74
+
 ## v3.1.73 - 2025-11-17
 
 ### What's Changed
