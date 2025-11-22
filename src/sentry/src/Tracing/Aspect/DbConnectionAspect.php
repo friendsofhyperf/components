@@ -15,30 +15,46 @@ use FriendsOfHyperf\Sentry\Constants;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use PDO;
+use WeakMap;
 
 use function Hyperf\Tappable\tap;
 
 class DbConnectionAspect extends AbstractAspect
 {
     public array $classes = [
+        'Hyperf\Database\Connectors\Connector::createPdoConnection',
         'Hyperf\Database\Connection::getPdoForSelect',
         'Hyperf\Database\Connection::getPdo',
     ];
 
+    private WeakMap $serverCache;
+
+    public function __construct()
+    {
+        $this->serverCache = new WeakMap();
+    }
+
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($pdo) use ($proceedingJoinPoint) {
-            if ($proceedingJoinPoint->methodName === 'getPdoForSelect') {
-                $arguments = $proceedingJoinPoint->arguments['keys'] ?? [];
-                Context::set(Constants::TRACE_DB_USE_READ_PDO, $arguments['useReadPdo'] ?? false);
+            if ($proceedingJoinPoint->methodName === 'createPdoConnection') {
+                $dsn = $proceedingJoinPoint->arguments['keys']['dsn'] ?? '';
+                $pattern = '/host=([^;]+);port=(\d+);?/';
+                if (preg_match($pattern, $dsn, $matches)) {
+                    $host = $matches[1];
+                    $port = $matches[2];
+                    $this->serverCache[$pdo] = ['host' => $host, 'port' => $port];
+                }
+                return;
             }
 
             Context::getOrSet(self::class, function () use ($pdo) {
-                $connectionStatus = $pdo->getAttribute(PDO::ATTR_CONNECTION_STATUS);
-                [$host] = explode(' ', $connectionStatus);
+                $server = $this->serverCache[$pdo] ?? null;
 
-                Context::set(Constants::TRACE_DB_SERVER_ADDRESS, $host);
+                if (is_array($server)) {
+                    Context::set(Constants::TRACE_DB_SERVER_ADDRESS, $server['host']);
+                    Context::set(Constants::TRACE_DB_SERVER_PORT, $server['port']);
+                }
 
                 return true;
             });
