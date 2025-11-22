@@ -13,27 +13,16 @@ namespace FriendsOfHyperf\Support\Bus;
 
 use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\AsyncQueue\JobInterface;
-use Hyperf\Conditionable\Conditionable;
 use Hyperf\Context\ApplicationContext;
 
-class PendingAsyncQueueDispatch
+class PendingAsyncQueueDispatch extends AbstractPendingDispatch
 {
-    use Conditionable;
-
     protected ?string $pool = null;
 
     protected int $delay = 0;
 
     public function __construct(protected JobInterface $job)
     {
-    }
-
-    public function __destruct()
-    {
-        ApplicationContext::getContainer()
-            ->get(DriverFactory::class)
-            ->get($this->pool ?? 'default')
-            ->push($this->job, $this->delay);
     }
 
     public function setMaxAttempts(int $maxAttempts): static
@@ -52,5 +41,13 @@ class PendingAsyncQueueDispatch
     {
         $this->delay = $delay;
         return $this;
+    }
+
+    protected function dispatch()
+    {
+        ApplicationContext::getContainer()
+            ->get(DriverFactory::class)
+            ->get($this->pool ?? 'default')
+            ->push($this->job, $this->delay);
     }
 }
