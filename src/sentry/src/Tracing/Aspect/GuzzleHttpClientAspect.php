@@ -66,7 +66,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
         }
 
         return trace(
-            function (Scope $scope) use ($proceedingJoinPoint, $options, $guzzleConfig) {
+            function (Scope $scope) use ($proceedingJoinPoint, $options, $guzzleConfig, $request) {
                 if ($span = $scope->getSpan()) {
                     // Inject trace context
                     $options['headers'] = array_replace($options['headers'] ?? [], [
@@ -79,7 +79,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     $onStats = $options['on_stats'] ?? null;
 
                     // Add or override the on_stats option to record the request duration.
-                    $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($options, $guzzleConfig, $onStats, $span) {
+                    $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($options, $guzzleConfig, $onStats, $request, $span) {
                         $request = $stats->getRequest();
                         $uri = $request->getUri();
                         $span->setData([
@@ -100,6 +100,8 @@ class GuzzleHttpClientAspect extends AbstractAspect
                             'http.guzzle.config' => $guzzleConfig,
                             'http.guzzle.options' => $options ?? [],
                             'duration' => $stats->getTransferTime() * 1000, // in milliseconds
+                            'server.address' => $request->getUri()->getHost(),
+                            'server.port' => $request->getUri()->getPort(),
                         ]);
 
                         if ($response = $stats->getResponse()) {
