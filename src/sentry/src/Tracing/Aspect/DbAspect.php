@@ -90,7 +90,7 @@ class DbAspect extends AbstractAspect
         if ($pool instanceof \Hyperf\DB\Pool\Pool) {
             $config = $pool->getConfig();
             $database = $config['database'] ?? '';
-            $driver = $config['driver'] ?? 'unknown';
+            $driver = $config['driver'] ?? $driver;
         }
 
         $sql = $arguments['arguments']['query'] ?? '';
