@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
+use FriendsOfHyperf\Sentry\Feature;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -23,19 +24,25 @@ class ElasticsearchRequestAspect extends AbstractAspect
         'Elastic\Elasticsearch\Client::sendRequest',
     ];
 
+    public function __construct(protected Feature $feature)
+    {
+    }
+
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $arguments = $proceedingJoinPoint->arguments['keys'] ?? [];
-        $request = $arguments['request'] ?? null;
+        if ($this->feature->isTracingSpanEnabled('elasticsearch')) {
+            $arguments = $proceedingJoinPoint->arguments['keys'] ?? [];
+            $request = $arguments['request'] ?? null;
 
-        if ($request instanceof RequestInterface) {
-            $data = [
-                'server.address' => $request->getUri()->getHost(),
-                'server.port' => $request->getUri()->getPort(),
-                'http.request.method' => $request->getMethod(),
-                'url.full' => $this->getFullUrl($request),
-            ];
-            Context::set(Constants::TRACE_ELASTICSEARCH_REQUEST_DATA, $data);
+            if ($request instanceof RequestInterface) {
+                $data = [
+                    'server.address' => $request->getUri()->getHost(),
+                    'server.port' => $request->getUri()->getPort(),
+                    'http.request.method' => $request->getMethod(),
+                    'url.full' => $this->getFullUrl($request),
+                ];
+                Context::set(Constants::TRACE_ELASTICSEARCH_REQUEST_DATA, $data);
+            }
         }
 
         return $proceedingJoinPoint->process();
