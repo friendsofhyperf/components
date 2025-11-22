@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
+use FriendsOfHyperf\Sentry\Util\RedisClusterKeySlot;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -61,7 +62,8 @@ class RedisConnectionAspect extends AbstractAspect
 
     private function getClusterNodeBySlot(RedisCluster $rc, string $key)
     {
-        $slot = $rc->cluster('CLUSTER', 'KEYSLOT', $key);
+        // $slot = $rc->cluster('CLUSTER', 'KEYSLOT', $key);
+        $slot = RedisClusterKeySlot::get($key);
         $slots = ($this->slotNodeCache[$rc] ??= $rc->cluster('CLUSTER', 'SLOTS')); // @phpstan-ignore-line
 
         foreach ($slots as $range) {
