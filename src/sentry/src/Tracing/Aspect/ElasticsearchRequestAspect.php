@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
+use FriendsOfHyperf\Sentry\Feature;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -26,8 +27,16 @@ class ElasticsearchRequestAspect extends AbstractAspect
         'Elastic\Elasticsearch\Client::sendRequest',
     ];
 
+    public function __construct(protected Feature $feature)
+    {
+    }
+
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
+        if (! $this->feature->isTracingSpanEnabled('elasticsearch')) {
+            return $proceedingJoinPoint->process();
+        }
+
         if ($proceedingJoinPoint->methodName === 'sendRequest') { // ES 8.x
             $request = $proceedingJoinPoint->arguments['keys']['request'] ?? null;
             if ($request instanceof RequestInterface) {
