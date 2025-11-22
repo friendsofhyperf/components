@@ -15,8 +15,6 @@ class Constants
 {
     public const TRACE_CARRIER = 'sentry.tracing.trace_carrier';
 
-    public const TRACE_DB_USE_READ_PDO = 'sentry.tracing.db.use_read_pdo';
-
     public const TRACE_DB_SERVER_ADDRESS = 'sentry.tracing.db.server.address';
 
     public const TRACE_DB_SERVER_PORT = 'sentry.tracing.db.server.port';
