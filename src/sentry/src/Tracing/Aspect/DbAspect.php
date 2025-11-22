@@ -40,6 +40,9 @@ class DbAspect extends AbstractAspect
         'Hyperf\DB\DB::__call',
     ];
 
+    /**
+     * @var WeakMap<\Hyperf\DB\AbstractConnection,array>
+     */
     private WeakMap $serverCache;
 
     public function __construct(
@@ -65,9 +68,10 @@ class DbAspect extends AbstractAspect
 
         if ($proceedingJoinPoint->methodName === 'getConnection') {
             return tap($proceedingJoinPoint->process(), function ($connection) {
+                /** @var \Hyperf\DB\AbstractConnection $connection */
                 $server = $this->serverCache[$connection] ?? null;
                 if ($server !== null) {
-                    Context::set(Constants::TRACE_DB_SERVER_ADDRESS, $server['host']);
+                    Context::set(Constants::TRACE_DB_SERVER_ADDRESS, $server['host'] ?? 'localhost');
                     Context::set(Constants::TRACE_DB_SERVER_PORT, $server['port'] ?? 3306);
                 }
             });
