@@ -49,10 +49,8 @@ class RedisConnectionAspect extends AbstractAspect
                 $arguments = $proceedingJoinPoint->arguments['keys']['arguments'] ?? [];
                 $key = $arguments[0] ?? null;
                 if (is_string($key)) {
-                    $slot = $this->getSlotByKey($connection, $key);
-                    $slots = $this->getSlots($connection);
-                    $node = $this->findNodeBySlot($slots, $slot);
-                    if (is_array($node)) {
+                    $node = $this->getClusterNodeBySlot($connection, $key);
+                    if ($node !== null) {
                         Context::set(Constants::TRACE_REDIS_SERVER_ADDRESS, $node['host']);
                         Context::set(Constants::TRACE_REDIS_SERVER_PORT, $node['port']);
                     }
@@ -61,20 +59,11 @@ class RedisConnectionAspect extends AbstractAspect
         });
     }
 
-    private function getSlotByKey(RedisCluster $rc, string $key): int
+    private function getClusterNodeBySlot(RedisCluster $rc, string $key)
     {
-        return (int) $rc->cluster('CLUSTER', 'KEYSLOT', $key);
-    }
+        $slot = $rc->cluster('CLUSTER', 'KEYSLOT', $key);
+        $slots = ($this->slotNodeCache[$rc] ??= $rc->cluster('CLUSTER', 'SLOTS')); // @phpstan-ignore-line
 
-    private function getSlots(RedisCluster $rc): array
-    {
-        $this->slotNodeCache[$rc] ??= $rc->cluster('CLUSTER', 'SLOTS');
-
-        return $this->slotNodeCache[$rc];
-    }
-
-    private function findNodeBySlot(array $slots, int $slot): ?array
-    {
         foreach ($slots as $range) {
             [$start, $end, $master] = $range;
             if ($slot >= $start && $slot <= $end) {
