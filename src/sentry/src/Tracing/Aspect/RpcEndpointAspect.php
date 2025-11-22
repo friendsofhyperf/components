@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
+use FriendsOfHyperf\Sentry\Feature;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -26,9 +27,17 @@ class RpcEndpointAspect extends AbstractAspect
         'Hyperf\JsonRpc\JsonRpcPoolTransporter::getConnection',
     ];
 
+    public function __construct(protected Feature $feature)
+    {
+    }
+
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) {
+            if (! $this->feature->isTracingSpanEnabled('rpc')) {
+                return;
+            }
+
             // RpcMultiplex
             if ($result instanceof \Hyperf\RpcMultiplex\Socket) {
                 Context::set(Constants::TRACE_RPC_SERVER_ADDRESS, $result->getName());

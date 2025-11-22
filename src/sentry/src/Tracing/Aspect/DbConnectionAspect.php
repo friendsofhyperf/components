@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
+use FriendsOfHyperf\Sentry\Feature;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -29,7 +30,7 @@ class DbConnectionAspect extends AbstractAspect
 
     private WeakMap $serverCache;
 
-    public function __construct()
+    public function __construct(protected Feature $feature)
     {
         $this->serverCache = new WeakMap();
     }
@@ -37,6 +38,10 @@ class DbConnectionAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($pdo) use ($proceedingJoinPoint) {
+            if (! $this->feature->isTracingSpanEnabled('db')) {
+                return;
+            }
+
             if ($proceedingJoinPoint->methodName === 'createPdoConnection') {
                 $dsn = $proceedingJoinPoint->arguments['keys']['dsn'] ?? '';
                 $pattern = '/host=([^;]+);port=(\d+);?/';

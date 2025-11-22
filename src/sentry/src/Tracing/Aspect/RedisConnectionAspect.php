@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Util\RedisClusterKeySlot;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -30,7 +31,7 @@ class RedisConnectionAspect extends AbstractAspect
 
     private WeakMap $slotNodeCache;
 
-    public function __construct()
+    public function __construct(protected Feature $feature)
     {
         $this->slotNodeCache = new WeakMap();
     }
@@ -38,6 +39,10 @@ class RedisConnectionAspect extends AbstractAspect
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return tap($proceedingJoinPoint->process(), function ($result) use ($proceedingJoinPoint) {
+            if (! $this->feature->isTracingSpanEnabled('redis')) {
+                return;
+            }
+
             $redisConnection = $proceedingJoinPoint->getInstance();
             $connection = (fn () => $this->connection ?? null)->call($redisConnection);
 
