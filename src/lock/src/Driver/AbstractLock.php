@@ -13,6 +13,8 @@ namespace FriendsOfHyperf\Lock\Driver;
 
 use FriendsOfHyperf\Lock\Exception\HeartbeatException;
 use FriendsOfHyperf\Lock\Exception\LockTimeoutException;
+use Hyperf\Context\ApplicationContext;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Coroutine;
@@ -176,7 +178,7 @@ abstract class AbstractLock implements LockInterface
                 try {
                     $this->delayExpiration();
                 } catch (Throwable $throwable) {
-                    // print log
+                    ApplicationContext::getContainer()->get(StdoutLoggerInterface::class)?->warning($throwable);
                 }
             }
         });
