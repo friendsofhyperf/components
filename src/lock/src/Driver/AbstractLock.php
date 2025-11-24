@@ -159,7 +159,7 @@ abstract class AbstractLock implements LockInterface
 
     protected function heartbeat(): bool
     {
-        if ($this->heartbeat == 0 || $this->seconds <= 0 || ! Coroutine::inCoroutine()) {
+        if ($this->heartbeat <= 0 || $this->seconds <= 0 || ! Coroutine::inCoroutine()) {
             return false;
         }
         Coroutine::create(function () {
