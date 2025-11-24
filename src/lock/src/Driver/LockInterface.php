@@ -47,4 +47,23 @@ interface LockInterface
      * Releases this lock in disregard of ownership.
      */
     public function forceRelease(): void;
+
+    /**
+     * Refresh the lock expiration time.
+     *
+     * @param null|int $ttl the new time-to-live in seconds, or null to use the original TTL
+     */
+    public function refresh(?int $ttl = null): bool;
+
+    /**
+     * Check if the lock has expired.
+     */
+    public function isExpired(): bool;
+
+    /**
+     * Get the remaining lifetime of the lock in seconds.
+     *
+     * @return null|float the remaining lifetime in seconds, or null if the lock doesn't expire
+     */
+    public function getRemainingLifetime(): ?float;
 }

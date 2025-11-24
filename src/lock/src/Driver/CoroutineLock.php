@@ -37,6 +37,16 @@ class CoroutineLock extends AbstractLock
     protected static ?WeakMap $timers = null;
 
     /**
+     * @var null|WeakMap<Channel, float>
+     */
+    protected static ?WeakMap $acquiredTimes = null;
+
+    /**
+     * @var null|WeakMap<Channel, int>
+     */
+    protected static ?WeakMap $ttls = null;
+
+    /**
      * Create a new lock instance.
      */
     public function __construct(
@@ -53,6 +63,8 @@ class CoroutineLock extends AbstractLock
         self::$owners ??= new WeakMap();
         self::$timers ??= new WeakMap();
         self::$timer ??= new Timer();
+        self::$acquiredTimes ??= new WeakMap();
+        self::$ttls ??= new WeakMap();
     }
 
     /**
@@ -69,6 +81,9 @@ class CoroutineLock extends AbstractLock
             }
 
             self::$owners[$chan] = $this->owner;
+            $this->acquiredAt = microtime(true);
+            self::$acquiredTimes[$chan] = $this->acquiredAt;
+            self::$ttls[$chan] = $this->seconds;
 
             if ($timeId = self::$timers[$chan] ?? null) {
                 self::$timer?->clear((int) $timeId);
@@ -92,7 +107,13 @@ class CoroutineLock extends AbstractLock
     public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
-            return (self::$channels[$this->name] ?? null)?->pop(0.01) ? true : false;
+            $result = (self::$channels[$this->name] ?? null)?->pop(0.01) ? true : false;
+
+            if ($result) {
+                $this->acquiredAt = null;
+            }
+
+            return $result;
         }
 
         return false;
@@ -109,8 +130,97 @@ class CoroutineLock extends AbstractLock
         }
 
         self::$channels[$this->name] = null;
+        $this->acquiredAt = null;
 
         $chan->close();
+    }
+
+    /**
+     * Refresh the lock expiration time.
+     */
+    #[Override]
+    public function refresh(?int $ttl = null): bool
+    {
+        $ttl = $ttl ?? $this->seconds;
+
+        if ($ttl <= 0) {
+            return false;
+        }
+
+        if (! $this->isOwnedByCurrentProcess()) {
+            return false;
+        }
+
+        if (! $chan = self::$channels[$this->name] ?? null) {
+            return false;
+        }
+
+        // Clear existing timer
+        if ($timeId = self::$timers[$chan] ?? null) {
+            self::$timer?->clear((int) $timeId);
+        }
+
+        // Update TTL and acquired time
+        $this->seconds = $ttl;
+        $this->acquiredAt = microtime(true);
+        self::$acquiredTimes[$chan] = $this->acquiredAt;
+        self::$ttls[$chan] = $ttl;
+
+        // Set new timer
+        $timeId = self::$timer?->after($ttl * 1000, fn () => $this->forceRelease());
+        $timeId && self::$timers[$chan] = $timeId;
+
+        return true;
+    }
+
+    /**
+     * Check if the lock has expired.
+     */
+    #[Override]
+    public function isExpired(): bool
+    {
+        if ($this->seconds <= 0) {
+            return false;
+        }
+
+        if (! $chan = self::$channels[$this->name] ?? null) {
+            return true;
+        }
+
+        $acquiredAt = self::$acquiredTimes[$chan] ?? null;
+        $ttl = self::$ttls[$chan] ?? $this->seconds;
+
+        if ($acquiredAt === null) {
+            return true;
+        }
+
+        return microtime(true) >= ($acquiredAt + $ttl);
+    }
+
+    /**
+     * Get the remaining lifetime of the lock in seconds.
+     */
+    #[Override]
+    public function getRemainingLifetime(): ?float
+    {
+        if ($this->seconds <= 0) {
+            return null;
+        }
+
+        if (! $chan = self::$channels[$this->name] ?? null) {
+            return null;
+        }
+
+        $acquiredAt = self::$acquiredTimes[$chan] ?? null;
+        $ttl = self::$ttls[$chan] ?? $this->seconds;
+
+        if ($acquiredAt === null) {
+            return null;
+        }
+
+        $remaining = ($acquiredAt + $ttl) - microtime(true);
+
+        return $remaining > 0 ? $remaining : 0.0;
     }
 
     /**
