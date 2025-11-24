@@ -86,14 +86,6 @@ class CoroutineLock extends AbstractLock
         return true;
     }
 
-    #[Override]
-    protected function delayExpiration(): bool
-    {
-        // Not supported
-        return false;
-    }
-
-
     /**
      * Release the lock.
      */
@@ -120,6 +112,13 @@ class CoroutineLock extends AbstractLock
         self::$channels[$this->name] = null;
 
         $chan->close();
+    }
+
+    #[Override]
+    protected function delayExpiration(): bool
+    {
+        // Not supported
+        return false;
     }
 
     /**

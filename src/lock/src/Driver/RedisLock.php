@@ -52,15 +52,6 @@ class RedisLock extends AbstractLock
         return $this->store->setNX($this->name, $this->owner) === true;
     }
 
-    #[Override]
-    protected function delayExpiration(): bool
-    {
-        if ($this->seconds > 0) {
-            return $this->store->set($this->name, $this->owner, ['EX' => $this->seconds]);
-        }
-        return true;
-    }
-
     /**
      * Release the lock.
      */
@@ -77,6 +68,15 @@ class RedisLock extends AbstractLock
     public function forceRelease(): void
     {
         $this->store->del($this->name);
+    }
+
+    #[Override]
+    protected function delayExpiration(): bool
+    {
+        if ($this->seconds > 0) {
+            return $this->store->set($this->name, $this->owner, ['EX' => $this->seconds]);
+        }
+        return true;
     }
 
     /**

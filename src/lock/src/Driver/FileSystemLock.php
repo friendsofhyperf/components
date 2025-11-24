@@ -46,14 +46,6 @@ class FileSystemLock extends AbstractLock
 
         return $this->store->set($this->name, $this->owner, $this->seconds) == true;
     }
-    #[Override]
-    protected function delayExpiration(): bool
-    {
-        if ($this->seconds > 0){
-            return $this->store->set($this->name, $this->owner, $this->seconds);
-        }
-        return true;
-    }
 
     /**
      * Release the lock.
@@ -75,6 +67,15 @@ class FileSystemLock extends AbstractLock
     public function forceRelease(): void
     {
         $this->store->delete($this->name);
+    }
+
+    #[Override]
+    protected function delayExpiration(): bool
+    {
+        if ($this->seconds > 0) {
+            return $this->store->set($this->name, $this->owner, $this->seconds);
+        }
+        return true;
     }
 
     /**
