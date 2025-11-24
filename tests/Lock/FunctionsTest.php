@@ -25,7 +25,7 @@ test('lock function returns factory when no name provided', function () {
 test('lock function returns lock instance when name provided', function () {
     $lockInstance = $this->mock(LockInterface::class);
     $factory = $this->mock(LockFactory::class, function ($mock) use ($lockInstance) {
-        $mock->shouldReceive('make')->with('foo', 0, null, 'default')->andReturn($lockInstance);
+        $mock->shouldReceive('make')->with('foo', 0, null, 'default', 0)->andReturn($lockInstance);
     });
     $this->instance(LockFactory::class, $factory);
 
@@ -37,7 +37,7 @@ test('lock function returns lock instance when name provided', function () {
 test('lock function passes all parameters correctly', function () {
     $lockInstance = $this->mock(LockInterface::class);
     $factory = $this->mock(LockFactory::class, function ($mock) use ($lockInstance) {
-        $mock->shouldReceive('make')->with('mylock', 60, 'owner123', 'redis')->andReturn($lockInstance);
+        $mock->shouldReceive('make')->with('mylock', 60, 'owner123', 'redis', 0)->andReturn($lockInstance);
     });
     $this->instance(LockFactory::class, $factory);
 
@@ -49,7 +49,7 @@ test('lock function passes all parameters correctly', function () {
 test('lock function uses default values correctly', function () {
     $lockInstance = $this->mock(LockInterface::class);
     $factory = $this->mock(LockFactory::class, function ($mock) use ($lockInstance) {
-        $mock->shouldReceive('make')->with('test', 30, null, 'default')->andReturn($lockInstance);
+        $mock->shouldReceive('make')->with('test', 30, null, 'default', 0)->andReturn($lockInstance);
     });
     $this->instance(LockFactory::class, $factory);
 
