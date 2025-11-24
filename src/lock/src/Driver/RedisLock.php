@@ -28,9 +28,9 @@ class RedisLock extends AbstractLock
     /**
      * Create a new lock instance.
      */
-    public function __construct(string $name, int $seconds, ?string $owner = null, array $constructor = [])
+    public function __construct(string $name, int $seconds, ?string $owner = null, array $constructor = [], int $heartbeat = 0)
     {
-        parent::__construct($name, $seconds, $owner);
+        parent::__construct($name, $seconds, $owner, $heartbeat);
 
         $constructor = array_merge(['pool' => 'default', 'prefix' => ''], $constructor);
         if ($constructor['prefix']) {
@@ -50,6 +50,15 @@ class RedisLock extends AbstractLock
         }
 
         return $this->store->setNX($this->name, $this->owner) === true;
+    }
+
+    #[Override]
+    protected function delayExpiration(): bool
+    {
+        if ($this->seconds > 0) {
+            return $this->store->set($this->name, $this->owner, ['EX' => $this->seconds]);
+        }
+        return true;
     }
 
     /**

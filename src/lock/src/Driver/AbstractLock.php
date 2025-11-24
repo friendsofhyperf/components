@@ -12,9 +12,13 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Lock\Driver;
 
 use FriendsOfHyperf\Lock\Exception\LockTimeoutException;
+use Hyperf\Coordinator\Constants;
+use Hyperf\Coordinator\CoordinatorManager;
+use Hyperf\Coroutine\Coroutine;
 use Hyperf\Stringable\Str;
 use Hyperf\Support\Traits\InteractsWithTime;
 use Override;
+use Throwable;
 
 use function Hyperf\Support\now;
 
@@ -32,12 +36,15 @@ abstract class AbstractLock implements LockInterface
      */
     protected int $sleepMilliseconds = 250;
 
+    protected int $heartbeat = 0;
+
     /**
      * Create a new lock instance.
      */
-    public function __construct(protected string $name, protected int $seconds, ?string $owner = null)
+    public function __construct(protected string $name, protected int $seconds, ?string $owner = null, int $heartbeat = 0)
     {
         $this->owner = $owner ?? Str::random();
+        $this->heartbeat = $heartbeat;
     }
 
     /**
@@ -59,10 +66,13 @@ abstract class AbstractLock implements LockInterface
     {
         $result = $this->acquire();
 
+        $result && $this->heartbeat();
+
         if ($result && is_callable($callback)) {
             try {
                 return $callback();
             } finally {
+                $this->heartbeat = 0;
                 $this->release();
             }
         }
@@ -90,10 +100,12 @@ abstract class AbstractLock implements LockInterface
             usleep($this->sleepMilliseconds * 1000);
         }
 
+        $this->heartbeat();
         if (is_callable($callback)) {
             try {
                 return $callback();
             } finally {
+                $this->heartbeat = 0;
                 $this->release();
             }
         }
@@ -131,6 +143,8 @@ abstract class AbstractLock implements LockInterface
         return $this->getCurrentOwner() === $owner;
     }
 
+    abstract protected function delayExpiration(): bool;
+
     /**
      * Returns the owner value written into the driver for this lock.
      */
@@ -142,5 +156,27 @@ abstract class AbstractLock implements LockInterface
     protected function isOwnedByCurrentProcess(): bool
     {
         return $this->isOwnedBy($this->owner);
+    }
+
+    private function heartbeat(): void
+    {
+        if ($this->heartbeat == 0 || $this->seconds <= 0 || ! Coroutine::inCoroutine()) {
+            return;
+        }
+        Coroutine::create(function () {
+            while (true) {
+                if (CoordinatorManager::until(Constants::WORKER_EXIT)->yield($this->heartbeat)) {
+                    break;
+                }
+                if ($this->heartbeat == 0) {
+                    return;
+                }
+                try {
+                    $this->delayExpiration();
+                } catch (Throwable $throwable) {
+                    // print log
+                }
+            }
+        });
     }
 }

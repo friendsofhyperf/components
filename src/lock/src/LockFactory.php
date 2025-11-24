@@ -27,7 +27,7 @@ class LockFactory
     /**
      * Get a lock instance.
      */
-    public function make(string $name, int $seconds = 0, ?string $owner = null, string $driver = 'default'): LockInterface
+    public function make(string $name, int $seconds = 0, ?string $owner = null, string $driver = 'default', int $heartbeat = 0): LockInterface
     {
         $driver = $driver ?: 'default';
 
@@ -45,6 +45,7 @@ class LockFactory
             'seconds' => $seconds,
             'owner' => $owner,
             'constructor' => $constructor,
+            'heartbeat' => $heartbeat,
         ]);
     }
 }

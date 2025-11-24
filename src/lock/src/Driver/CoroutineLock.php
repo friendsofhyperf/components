@@ -43,12 +43,13 @@ class CoroutineLock extends AbstractLock
         string $name,
         int $seconds,
         ?string $owner = null,
-        array $constructor = []
+        array $constructor = [],
+        int $heartbeat = 0
     ) {
         $constructor = array_merge(['prefix' => ''], $constructor);
         $name = $constructor['prefix'] . $name;
 
-        parent::__construct($name, $seconds, $owner);
+        parent::__construct($name, $seconds, $owner, $heartbeat);
 
         self::$owners ??= new WeakMap();
         self::$timers ??= new WeakMap();
@@ -84,6 +85,14 @@ class CoroutineLock extends AbstractLock
 
         return true;
     }
+
+    #[Override]
+    protected function delayExpiration(): bool
+    {
+        // Not supported
+        return false;
+    }
+
 
     /**
      * Release the lock.

@@ -26,9 +26,9 @@ class FileSystemLock extends AbstractLock
     /**
      * Create a new lock instance.
      */
-    public function __construct(string $name, int $seconds, ?string $owner = null, array $constructor = [])
+    public function __construct(string $name, int $seconds, ?string $owner = null, array $constructor = [], int $heartbeat = 0)
     {
-        parent::__construct($name, $seconds, $owner);
+        parent::__construct($name, $seconds, $owner, $heartbeat);
 
         $constructor = array_merge(['config' => ['prefix' => 'lock:']], $constructor);
         $this->store = make(FileSystemDriver::class, $constructor);
@@ -45,6 +45,14 @@ class FileSystemLock extends AbstractLock
         }
 
         return $this->store->set($this->name, $this->owner, $this->seconds) == true;
+    }
+    #[Override]
+    protected function delayExpiration(): bool
+    {
+        if ($this->seconds > 0){
+            return $this->store->set($this->name, $this->owner, $this->seconds);
+        }
+        return true;
     }
 
     /**

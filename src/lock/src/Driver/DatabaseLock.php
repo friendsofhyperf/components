@@ -28,9 +28,9 @@ class DatabaseLock extends AbstractLock
     /**
      * Create a new lock instance.
      */
-    public function __construct(string $name, int $seconds, ?string $owner = null, array $constructor = [])
+    public function __construct(string $name, int $seconds, ?string $owner = null, array $constructor = [], int $heartbeat = 0)
     {
-        parent::__construct($name, $seconds, $owner);
+        parent::__construct($name, $seconds, $owner, $heartbeat);
 
         $constructor = array_merge(['pool' => 'default', 'table' => 'locks', 'prefix' => ''], $constructor);
         if ($constructor['prefix']) {
@@ -69,6 +69,23 @@ class DatabaseLock extends AbstractLock
         }
 
         return $acquired;
+    }
+
+    #[Override]
+    protected function delayExpiration(): bool
+    {
+        if ($this->seconds > 0){
+            $updated = $this->connection->table($this->table)
+                ->where('key', $this->name)
+                ->where(fn ($query) => $query->where('owner', $this->owner)->orWhere('expiration', '<=', time()))
+                ->update([
+                             'owner' => $this->owner,
+                             'expiration' => $this->expiresAt(),
+                         ]);
+
+            return $updated >= 1;
+        }
+        return true;
     }
 
     /**

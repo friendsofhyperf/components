@@ -21,7 +21,8 @@ class Lock extends AbstractAnnotation
         public string $name,
         public int $seconds = 0,
         public ?string $owner = null,
-        public string $driver = 'default'
+        public string $driver = 'default',
+        public int $heartbeat = 0
     ) {
     }
 }

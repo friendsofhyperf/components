@@ -22,7 +22,8 @@ class Blockable extends AbstractAnnotation
         public ?string $value = null,
         public int $seconds = 0,
         public int $ttl = 0,
-        public string $driver = 'default'
+        public string $driver = 'default',
+        public int $heartbeat = 0
     ) {
     }
 }

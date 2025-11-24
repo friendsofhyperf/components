@@ -17,7 +17,7 @@ use Hyperf\Context\ApplicationContext;
 /**
  * @return ($name is null ? LockFactory : LockInterface)
  */
-function lock(?string $name = null, int $seconds = 0, ?string $owner = null, string $driver = 'default'): LockFactory|LockInterface
+function lock(?string $name = null, int $seconds = 0, ?string $owner = null, string $driver = 'default', int $heartbeat = 0): LockFactory|LockInterface
 {
     $factory = ApplicationContext::getContainer()->get(LockFactory::class);
 
@@ -25,5 +25,5 @@ function lock(?string $name = null, int $seconds = 0, ?string $owner = null, str
         return $factory;
     }
 
-    return $factory->make($name, $seconds, $owner, $driver);
+    return $factory->make($name, $seconds, $owner, $driver, $heartbeat);
 }

@@ -48,8 +48,9 @@ class RegisterPropertyHandlerListener implements ListenerInterface
                 $seconds = (int) $annotation->seconds;
                 $owner = $annotation->owner;
                 $driver = $annotation->driver;
+                $heartbeat = $annotation->heartbeat;
 
-                $reflectionProperty->setValue($object, $this->lockFactory->make($name, $seconds, $owner, $driver));
+                $reflectionProperty->setValue($object, $this->lockFactory->make($name, $seconds, $owner, $driver, $heartbeat));
             }
         });
     }

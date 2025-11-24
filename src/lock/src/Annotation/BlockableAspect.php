@@ -39,7 +39,7 @@ class BlockableAspect extends AbstractAspect
 
         $key = StringHelper::format($annotation->prefix, $arguments, $annotation->value);
 
-        return $this->lockFactory->make($key, $annotation->ttl, driver: $annotation->driver)
+        return $this->lockFactory->make($key, $annotation->ttl, driver: $annotation->driver, heartbeat: $annotation->heartbeat)
             ->block($annotation->seconds, fn () => $proceedingJoinPoint->process());
     }
 }
