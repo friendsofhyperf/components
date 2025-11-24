@@ -59,6 +59,11 @@ class TestLock extends AbstractLock
     {
         return $this->currentOwner;
     }
+
+    protected function delayExpiration(): bool
+    {
+        return true;
+    }
 }
 
 test('abstract lock generates random owner when none provided', function () {

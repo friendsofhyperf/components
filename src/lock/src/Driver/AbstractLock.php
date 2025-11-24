@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Lock\Driver;
 
+use FriendsOfHyperf\Lock\Exception\HeartbeatException;
 use FriendsOfHyperf\Lock\Exception\LockTimeoutException;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
@@ -45,6 +46,9 @@ abstract class AbstractLock implements LockInterface
     {
         $this->owner = $owner ?? Str::random();
         $this->heartbeat = $heartbeat;
+        if ($seconds > 0 && $heartbeat > 0 && $seconds <= $heartbeat) {
+            throw new HeartbeatException('Heartbeat must be less than lock seconds.');
+        }
     }
 
     /**
@@ -164,6 +168,9 @@ abstract class AbstractLock implements LockInterface
                     break;
                 }
                 if ($this->heartbeat == 0) {
+                    return;
+                }
+                if (! $this->isOwnedByCurrentProcess()) {
                     return;
                 }
                 try {
