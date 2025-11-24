@@ -20,28 +20,41 @@ use WeakMap;
 class CoroutineLock extends AbstractLock
 {
     /**
+     * Mapping of lock names to their corresponding channels.
+     *
      * @var array<string, Channel>
      */
     protected static array $channels = [];
 
     /**
+     * Mapping of channels to their current owners (used for ownership verification).
+     *
      * @var null|WeakMap<Channel, string>
      */
     protected static ?WeakMap $owners = null;
 
+    /**
+     * Timer instance for scheduling lock expiration.
+     */
     protected static ?Timer $timer = null;
 
     /**
+     * Mapping of channels to their timer IDs (for clearing expiration timers).
+     *
      * @var null|WeakMap<Channel, int>
      */
     protected static ?WeakMap $timers = null;
 
     /**
+     * Mapping of channels to their acquisition timestamps (for tracking expiration).
+     *
      * @var null|WeakMap<Channel, float>
      */
     protected static ?WeakMap $acquiredTimes = null;
 
     /**
+     * Mapping of channels to their TTL values (for tracking remaining lifetime).
+     *
      * @var null|WeakMap<Channel, int>
      */
     protected static ?WeakMap $ttls = null;
