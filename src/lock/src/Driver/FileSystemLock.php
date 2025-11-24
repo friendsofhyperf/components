@@ -44,7 +44,7 @@ class FileSystemLock extends AbstractLock
             return false;
         }
 
-        return $this->store->set($this->name, $this->owner, $this->seconds) == true;
+        return $this->store->set($this->name, $this->owner, $this->seconds) == true && $this->heartbeat();
     }
 
     /**
@@ -54,6 +54,7 @@ class FileSystemLock extends AbstractLock
     public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
+            $this->stopHeartbeat();
             return $this->store->delete($this->name);
         }
 
@@ -66,6 +67,7 @@ class FileSystemLock extends AbstractLock
     #[Override]
     public function forceRelease(): void
     {
+        $this->stopHeartbeat();
         $this->store->delete($this->name);
     }
 

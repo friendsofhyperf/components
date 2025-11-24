@@ -46,7 +46,7 @@ class CacheLock extends AbstractLock
             return false;
         }
 
-        return $this->store->set($this->name, $this->owner, $this->seconds);
+        return $this->store->set($this->name, $this->owner, $this->seconds) && $this->heartbeat();
     }
 
     /**
@@ -56,6 +56,7 @@ class CacheLock extends AbstractLock
     public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
+            $this->stopHeartbeat();
             return $this->store->delete($this->name);
         }
 
@@ -68,6 +69,7 @@ class CacheLock extends AbstractLock
     #[Override]
     public function forceRelease(): void
     {
+        $this->stopHeartbeat();
         $this->store->delete($this->name);
     }
 

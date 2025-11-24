@@ -67,7 +67,7 @@ class DatabaseLock extends AbstractLock
 
             $acquired = $updated >= 1;
         }
-
+        $acquired && $this->heartbeat();
         return $acquired;
     }
 
@@ -78,6 +78,7 @@ class DatabaseLock extends AbstractLock
     public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
+            $this->stopHeartbeat();
             $this->connection->table($this->table)
                 ->where('key', $this->name)
                 ->where('owner', $this->owner)
@@ -95,6 +96,7 @@ class DatabaseLock extends AbstractLock
     #[Override]
     public function forceRelease(): void
     {
+        $this->stopHeartbeat();
         $this->connection->table($this->table)
             ->where('key', $this->name)
             ->delete();

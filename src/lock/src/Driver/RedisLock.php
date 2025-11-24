@@ -46,7 +46,7 @@ class RedisLock extends AbstractLock
     public function acquire(): bool
     {
         if ($this->seconds > 0) {
-            return $this->store->set($this->name, $this->owner, ['NX', 'EX' => $this->seconds]) == true;
+            return $this->store->set($this->name, $this->owner, ['NX', 'EX' => $this->seconds]) == true && $this->heartbeat();
         }
 
         return $this->store->setNX($this->name, $this->owner) === true;
@@ -58,6 +58,7 @@ class RedisLock extends AbstractLock
     #[Override]
     public function release(): bool
     {
+        $this->stopHeartbeat();
         return (bool) $this->store->eval(LuaScripts::releaseLock(), [$this->name, $this->owner], 1);
     }
 
@@ -67,6 +68,7 @@ class RedisLock extends AbstractLock
     #[Override]
     public function forceRelease(): void
     {
+        $this->stopHeartbeat();
         $this->store->del($this->name);
     }
 

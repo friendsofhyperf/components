@@ -66,13 +66,10 @@ abstract class AbstractLock implements LockInterface
     {
         $result = $this->acquire();
 
-        $result && $this->heartbeat();
-
         if ($result && is_callable($callback)) {
             try {
                 return $callback();
             } finally {
-                $this->heartbeat = 0;
                 $this->release();
             }
         }
@@ -100,12 +97,10 @@ abstract class AbstractLock implements LockInterface
             usleep($this->sleepMilliseconds * 1000);
         }
 
-        $this->heartbeat();
         if (is_callable($callback)) {
             try {
                 return $callback();
             } finally {
-                $this->heartbeat = 0;
                 $this->release();
             }
         }
@@ -158,10 +153,10 @@ abstract class AbstractLock implements LockInterface
         return $this->isOwnedBy($this->owner);
     }
 
-    private function heartbeat(): void
+    protected function heartbeat(): bool
     {
         if ($this->heartbeat == 0 || $this->seconds <= 0 || ! Coroutine::inCoroutine()) {
-            return;
+            return false;
         }
         Coroutine::create(function () {
             while (true) {
@@ -178,5 +173,11 @@ abstract class AbstractLock implements LockInterface
                 }
             }
         });
+        return true;
+    }
+
+    protected function stopHeartbeat(): void
+    {
+        $this->heartbeat = 0;
     }
 }
