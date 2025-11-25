@@ -103,7 +103,7 @@ class CoroutineLock extends AbstractLock
             }
 
             if ($this->seconds > 0) {
-                $timeId = self::$timer?->after($this->seconds * 1000, fn () => $this->forceRelease());
+                $timeId = self::$timer?->after($this->seconds, fn () => $this->forceRelease());
                 $timeId && self::$timerIds[$chan] = $timeId;
             }
         } catch (Throwable) {
@@ -180,7 +180,7 @@ class CoroutineLock extends AbstractLock
         self::$ttls[$chan] = $ttl;
 
         // Set new timer
-        $timeId = self::$timer?->after($ttl * 1000, fn () => $this->forceRelease());
+        $timeId = self::$timer?->after($ttl, fn () => $this->forceRelease());
         $timeId && self::$timerIds[$chan] = $timeId;
 
         return true;
