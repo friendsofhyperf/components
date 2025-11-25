@@ -33,6 +33,11 @@ abstract class AbstractLock implements LockInterface
     protected int $sleepMilliseconds = 250;
 
     /**
+     * The timestamp when the lock was acquired.
+     */
+    protected ?float $acquiredAt = null;
+
+    /**
      * Create a new lock instance.
      */
     public function __construct(protected string $name, protected int $seconds, ?string $owner = null)
@@ -129,6 +134,51 @@ abstract class AbstractLock implements LockInterface
     public function isOwnedBy($owner): bool
     {
         return $this->getCurrentOwner() === $owner;
+    }
+
+    /**
+     * Refresh the lock expiration time.
+     * {@inheritdoc}
+     */
+    #[Override]
+    abstract public function refresh(?int $ttl = null): bool;
+
+    /**
+     * Check if the lock has expired.
+     * {@inheritdoc}
+     */
+    #[Override]
+    public function isExpired(): bool
+    {
+        if ($this->seconds <= 0) {
+            return false;
+        }
+
+        if ($this->acquiredAt === null) {
+            return true;
+        }
+
+        return microtime(true) >= ($this->acquiredAt + $this->seconds);
+    }
+
+    /**
+     * Get the remaining lifetime of the lock in seconds.
+     * {@inheritdoc}
+     */
+    #[Override]
+    public function getRemainingLifetime(): ?float
+    {
+        if ($this->seconds <= 0) {
+            return null;
+        }
+
+        if ($this->acquiredAt === null) {
+            return null;
+        }
+
+        $remaining = ($this->acquiredAt + $this->seconds) - microtime(true);
+
+        return $remaining > 0 ? $remaining : 0.0;
     }
 
     /**

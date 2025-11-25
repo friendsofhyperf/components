@@ -28,4 +28,21 @@ else
 end
 LUA;
     }
+
+    /**
+     * Get the Lua script to atomically refresh a lock's expiration.
+     * KEYS[1] - The name of the lock
+     * ARGV[1] - The owner key of the lock instance trying to refresh it.
+     * ARGV[2] - The new TTL in seconds.
+     */
+    public static function refreshLock(): string
+    {
+        return <<<'LUA'
+if redis.call("get",KEYS[1]) == ARGV[1] then
+    return redis.call("expire",KEYS[1],ARGV[2])
+else
+    return 0
+end
+LUA;
+    }
 }

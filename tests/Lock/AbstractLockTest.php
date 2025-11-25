@@ -18,6 +18,8 @@ class TestLock extends AbstractLock
 
     private bool $canRelease = true;
 
+    private bool $canRefresh = true;
+
     private string $currentOwner = '';
 
     public function setCanAcquire(bool $canAcquire): void
@@ -30,24 +32,64 @@ class TestLock extends AbstractLock
         $this->canRelease = $canRelease;
     }
 
+    public function setCanRefresh(bool $canRefresh): void
+    {
+        $this->canRefresh = $canRefresh;
+    }
+
     public function setCurrentOwner(string $owner): void
     {
         $this->currentOwner = $owner;
     }
 
+    public function setAcquiredAt(?float $acquiredAt): void
+    {
+        $this->acquiredAt = $acquiredAt;
+    }
+
+    public function getAcquiredAt(): ?float
+    {
+        return $this->acquiredAt;
+    }
+
+    public function getSeconds(): int
+    {
+        return $this->seconds;
+    }
+
     public function acquire(): bool
     {
+        if ($this->canAcquire) {
+            $this->acquiredAt = microtime(true);
+        }
         return $this->canAcquire;
     }
 
     public function release(): bool
     {
+        if ($this->canRelease) {
+            $this->acquiredAt = null;
+        }
         return $this->canRelease;
     }
 
     public function forceRelease(): void
     {
-        // Do nothing for test implementation
+        $this->acquiredAt = null;
+    }
+
+    public function refresh(?int $ttl = null): bool
+    {
+        if (! $this->canRefresh) {
+            return false;
+        }
+        $ttl = $ttl ?? $this->seconds;
+        if ($ttl <= 0) {
+            return false;
+        }
+        $this->seconds = $ttl;
+        $this->acquiredAt = microtime(true);
+        return true;
     }
 
     public function getSleepMilliseconds(): int
@@ -244,4 +286,105 @@ test('between blocked attempts sleep for sets sleep milliseconds', function () {
 
     expect($result)->toBe($lock);
     expect($lock->getSleepMilliseconds())->toBe(500);
+});
+
+test('refresh method returns true when lock can be refreshed', function () {
+    $lock = new TestLock('test', 60, 'owner');
+    $lock->setCanRefresh(true);
+    $lock->acquire();
+
+    $result = $lock->refresh();
+
+    expect($result)->toBeTrue();
+});
+
+test('refresh method returns false when ttl is zero or negative', function () {
+    $lock = new TestLock('test', 0, 'owner');
+    $lock->setCanRefresh(true);
+
+    $result = $lock->refresh();
+
+    expect($result)->toBeFalse();
+});
+
+test('refresh method updates seconds when new ttl provided', function () {
+    $lock = new TestLock('test', 60, 'owner');
+    $lock->setCanRefresh(true);
+    $lock->acquire();
+
+    $lock->refresh(120);
+
+    expect($lock->getSeconds())->toBe(120);
+});
+
+test('refresh method updates acquired at timestamp', function () {
+    $lock = new TestLock('test', 60, 'owner');
+    $lock->setCanRefresh(true);
+    $lock->acquire();
+
+    $originalAcquiredAt = $lock->getAcquiredAt();
+    usleep(1000); // Sleep 1ms
+    $lock->refresh();
+
+    expect($lock->getAcquiredAt())->toBeGreaterThan($originalAcquiredAt);
+});
+
+test('isExpired returns false when lock has no expiration', function () {
+    $lock = new TestLock('test', 0, 'owner');
+    $lock->acquire();
+
+    expect($lock->isExpired())->toBeFalse();
+});
+
+test('isExpired returns true when acquiredAt is null', function () {
+    $lock = new TestLock('test', 60, 'owner');
+    $lock->setAcquiredAt(null);
+
+    expect($lock->isExpired())->toBeTrue();
+});
+
+test('isExpired returns false when lock is still valid', function () {
+    $lock = new TestLock('test', 60, 'owner');
+    $lock->acquire();
+
+    expect($lock->isExpired())->toBeFalse();
+});
+
+test('isExpired returns true when lock has expired', function () {
+    $lock = new TestLock('test', 1, 'owner');
+    $lock->setAcquiredAt(microtime(true) - 2); // Acquired 2 seconds ago
+
+    expect($lock->isExpired())->toBeTrue();
+});
+
+test('getRemainingLifetime returns null when lock has no expiration', function () {
+    $lock = new TestLock('test', 0, 'owner');
+    $lock->acquire();
+
+    expect($lock->getRemainingLifetime())->toBeNull();
+});
+
+test('getRemainingLifetime returns null when acquiredAt is null', function () {
+    $lock = new TestLock('test', 60, 'owner');
+    $lock->setAcquiredAt(null);
+
+    expect($lock->getRemainingLifetime())->toBeNull();
+});
+
+test('getRemainingLifetime returns positive value for valid lock', function () {
+    $lock = new TestLock('test', 60, 'owner');
+    $lock->acquire();
+
+    $remaining = $lock->getRemainingLifetime();
+
+    expect($remaining)->toBeFloat();
+    expect($remaining)->toBeGreaterThan(0);
+    expect($remaining)->toBeLessThanOrEqual(60);
+});
+
+test('getRemainingLifetime returns zero when lock has expired', function () {
+    $lock = new TestLock('test', 1, 'owner');
+    $lock->setAcquiredAt(microtime(true) - 2); // Acquired 2 seconds ago
+
+    expect($lock->getRemainingLifetime())->toBe(0.0);
 });
