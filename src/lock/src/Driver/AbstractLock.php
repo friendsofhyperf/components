@@ -137,19 +137,6 @@ abstract class AbstractLock implements LockInterface
     }
 
     /**
-     * Returns the owner value written into the driver for this lock.
-     */
-    abstract protected function getCurrentOwner();
-
-    /**
-     * Determines whether this lock is allowed to release the lock in the driver.
-     */
-    protected function isOwnedByCurrentProcess(): bool
-    {
-        return $this->isOwnedBy($this->owner);
-    }
-
-    /**
      * Refresh the lock expiration time.
      * {@inheritdoc}
      */
@@ -192,5 +179,18 @@ abstract class AbstractLock implements LockInterface
         $remaining = ($this->acquiredAt + $this->seconds) - microtime(true);
 
         return $remaining > 0 ? $remaining : 0.0;
+    }
+
+    /**
+     * Returns the owner value written into the driver for this lock.
+     */
+    abstract protected function getCurrentOwner();
+
+    /**
+     * Determines whether this lock is allowed to release the lock in the driver.
+     */
+    protected function isOwnedByCurrentProcess(): bool
+    {
+        return $this->isOwnedBy($this->owner);
     }
 }
