@@ -43,7 +43,7 @@ class CoroutineLock extends AbstractLock
      *
      * @var null|WeakMap<Channel, int>
      */
-    protected static ?WeakMap $timers = null;
+    protected static ?WeakMap $timerIds = null;
 
     /**
      * Mapping of channels to their acquisition timestamps (for tracking expiration).
@@ -74,10 +74,10 @@ class CoroutineLock extends AbstractLock
         parent::__construct($name, $seconds, $owner);
 
         self::$owners ??= new WeakMap();
-        self::$timers ??= new WeakMap();
-        self::$timer ??= new Timer();
         self::$acquiredTimes ??= new WeakMap();
         self::$ttls ??= new WeakMap();
+        self::$timer ??= new Timer();
+        self::$timerIds ??= new WeakMap();
     }
 
     /**
@@ -98,13 +98,13 @@ class CoroutineLock extends AbstractLock
             self::$acquiredTimes[$chan] = $this->acquiredAt;
             self::$ttls[$chan] = $this->seconds;
 
-            if ($timeId = self::$timers[$chan] ?? null) {
+            if ($timeId = self::$timerIds[$chan] ?? null) {
                 self::$timer?->clear((int) $timeId);
             }
 
             if ($this->seconds > 0) {
                 $timeId = self::$timer?->after($this->seconds * 1000, fn () => $this->forceRelease());
-                $timeId && self::$timers[$chan] = $timeId;
+                $timeId && self::$timerIds[$chan] = $timeId;
             }
         } catch (Throwable) {
             return false;
@@ -169,7 +169,7 @@ class CoroutineLock extends AbstractLock
         }
 
         // Clear existing timer
-        if ($timeId = self::$timers[$chan] ?? null) {
+        if ($timeId = self::$timerIds[$chan] ?? null) {
             self::$timer?->clear((int) $timeId);
         }
 
@@ -181,7 +181,7 @@ class CoroutineLock extends AbstractLock
 
         // Set new timer
         $timeId = self::$timer?->after($ttl * 1000, fn () => $this->forceRelease());
-        $timeId && self::$timers[$chan] = $timeId;
+        $timeId && self::$timerIds[$chan] = $timeId;
 
         return true;
     }
