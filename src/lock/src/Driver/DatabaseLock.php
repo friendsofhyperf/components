@@ -68,6 +68,10 @@ class DatabaseLock extends AbstractLock
             $acquired = $updated >= 1;
         }
 
+        if ($acquired) {
+            $this->acquiredAt = microtime(true);
+        }
+
         return $acquired;
     }
 
@@ -82,6 +86,8 @@ class DatabaseLock extends AbstractLock
                 ->where('key', $this->name)
                 ->where('owner', $this->owner)
                 ->delete();
+
+            $this->acquiredAt = null;
 
             return true;
         }
@@ -98,6 +104,35 @@ class DatabaseLock extends AbstractLock
         $this->connection->table($this->table)
             ->where('key', $this->name)
             ->delete();
+        $this->acquiredAt = null;
+    }
+
+    /**
+     * Refresh the lock expiration time.
+     */
+    #[Override]
+    public function refresh(?int $ttl = null): bool
+    {
+        $ttl = $ttl ?? $this->seconds;
+
+        if ($ttl <= 0) {
+            return false;
+        }
+
+        $updated = $this->connection->table($this->table)
+            ->where('key', $this->name)
+            ->where('owner', $this->owner)
+            ->update([
+                'expiration' => time() + $ttl,
+            ]);
+
+        if ($updated >= 1) {
+            $this->seconds = $ttl;
+            $this->acquiredAt = microtime(true);
+            return true;
+        }
+
+        return false;
     }
 
     /**

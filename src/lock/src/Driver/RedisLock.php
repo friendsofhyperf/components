@@ -45,11 +45,19 @@ class RedisLock extends AbstractLock
     #[Override]
     public function acquire(): bool
     {
+        $result = false;
+
         if ($this->seconds > 0) {
-            return $this->store->set($this->name, $this->owner, ['NX', 'EX' => $this->seconds]) == true;
+            $result = $this->store->set($this->name, $this->owner, ['NX', 'EX' => $this->seconds]) == true;
+        } else {
+            $result = $this->store->setNX($this->name, $this->owner) === true;
         }
 
-        return $this->store->setNX($this->name, $this->owner) === true;
+        if ($result) {
+            $this->acquiredAt = microtime(true);
+        }
+
+        return $result;
     }
 
     /**
@@ -58,7 +66,13 @@ class RedisLock extends AbstractLock
     #[Override]
     public function release(): bool
     {
-        return (bool) $this->store->eval(LuaScripts::releaseLock(), [$this->name, $this->owner], 1);
+        $result = (bool) $this->store->eval(LuaScripts::releaseLock(), [$this->name, $this->owner], 1);
+
+        if ($result) {
+            $this->acquiredAt = null;
+        }
+
+        return $result;
     }
 
     /**
@@ -68,6 +82,29 @@ class RedisLock extends AbstractLock
     public function forceRelease(): void
     {
         $this->store->del($this->name);
+        $this->acquiredAt = null;
+    }
+
+    /**
+     * Refresh the lock expiration time.
+     */
+    #[Override]
+    public function refresh(?int $ttl = null): bool
+    {
+        $ttl = $ttl ?? $this->seconds;
+
+        if ($ttl <= 0) {
+            return false;
+        }
+
+        $result = (bool) $this->store->eval(LuaScripts::refreshLock(), [$this->name, $this->owner, $ttl], 1);
+
+        if ($result) {
+            $this->seconds = $ttl;
+            $this->acquiredAt = microtime(true);
+        }
+
+        return $result;
     }
 
     /**

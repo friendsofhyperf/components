@@ -240,3 +240,98 @@ test('get method returns false when lock cannot be acquired', function () {
 
     expect($result)->toBeFalse();
 });
+
+test('can refresh lock successfully', function () {
+    $redis = m::mock(RedisProxy::class);
+    $redis->shouldReceive('eval')->with(LuaScripts::refreshLock(), ['test_lock', 'owner123', 60], 1)->andReturn(1);
+
+    $lock = new class('test_lock', 60, 'owner123') extends RedisLock {
+        public function __construct(string $name, int $seconds, ?string $owner = null)
+        {
+            $this->name = $name;
+            $this->seconds = $seconds;
+            $this->owner = $owner ?? 'default';
+        }
+
+        public function setStore($store): void
+        {
+            $this->store = $store;
+        }
+    };
+
+    $lock->setStore($redis);
+    $result = $lock->refresh();
+
+    expect($result)->toBeTrue();
+});
+
+test('refresh with custom ttl uses provided value', function () {
+    $redis = m::mock(RedisProxy::class);
+    $redis->shouldReceive('eval')->with(LuaScripts::refreshLock(), ['test_lock', 'owner123', 120], 1)->andReturn(1);
+
+    $lock = new class('test_lock', 60, 'owner123') extends RedisLock {
+        public function __construct(string $name, int $seconds, ?string $owner = null)
+        {
+            $this->name = $name;
+            $this->seconds = $seconds;
+            $this->owner = $owner ?? 'default';
+        }
+
+        public function setStore($store): void
+        {
+            $this->store = $store;
+        }
+    };
+
+    $lock->setStore($redis);
+    $result = $lock->refresh(120);
+
+    expect($result)->toBeTrue();
+});
+
+test('refresh returns false when script returns 0', function () {
+    $redis = m::mock(RedisProxy::class);
+    $redis->shouldReceive('eval')->with(LuaScripts::refreshLock(), ['test_lock', 'owner123', 60], 1)->andReturn(0);
+
+    $lock = new class('test_lock', 60, 'owner123') extends RedisLock {
+        public function __construct(string $name, int $seconds, ?string $owner = null)
+        {
+            $this->name = $name;
+            $this->seconds = $seconds;
+            $this->owner = $owner ?? 'default';
+        }
+
+        public function setStore($store): void
+        {
+            $this->store = $store;
+        }
+    };
+
+    $lock->setStore($redis);
+    $result = $lock->refresh();
+
+    expect($result)->toBeFalse();
+});
+
+test('refresh returns false when ttl is zero or negative', function () {
+    $redis = m::mock(RedisProxy::class);
+
+    $lock = new class('test_lock', 0, 'owner123') extends RedisLock {
+        public function __construct(string $name, int $seconds, ?string $owner = null)
+        {
+            $this->name = $name;
+            $this->seconds = $seconds;
+            $this->owner = $owner ?? 'default';
+        }
+
+        public function setStore($store): void
+        {
+            $this->store = $store;
+        }
+    };
+
+    $lock->setStore($redis);
+    $result = $lock->refresh();
+
+    expect($result)->toBeFalse();
+});

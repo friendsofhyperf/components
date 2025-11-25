@@ -30,3 +30,24 @@ test('release lock script has correct logic structure', function () {
     expect($script)->toContain('return 0');
     expect($script)->toContain('end');
 });
+
+test('refresh lock script returns valid lua script', function () {
+    $script = LuaScripts::refreshLock();
+
+    expect($script)->toBeString();
+    expect($script)->toContain('redis.call("get",KEYS[1])');
+    expect($script)->toContain('ARGV[1]');
+    expect($script)->toContain('redis.call("expire",KEYS[1],ARGV[2])');
+});
+
+test('refresh lock script has correct logic structure', function () {
+    $script = LuaScripts::refreshLock();
+
+    // The script should check if the current owner matches
+    expect($script)->toContain('if redis.call("get",KEYS[1]) == ARGV[1] then');
+    // Should extend the expiration if owner matches
+    expect($script)->toContain('return redis.call("expire",KEYS[1],ARGV[2])');
+    // Should return 0 if owner doesn't match
+    expect($script)->toContain('return 0');
+    expect($script)->toContain('end');
+});

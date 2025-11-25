@@ -44,7 +44,13 @@ class FileSystemLock extends AbstractLock
             return false;
         }
 
-        return $this->store->set($this->name, $this->owner, $this->seconds) == true;
+        $result = $this->store->set($this->name, $this->owner, $this->seconds) == true;
+
+        if ($result) {
+            $this->acquiredAt = microtime(true);
+        }
+
+        return $result;
     }
 
     /**
@@ -54,7 +60,13 @@ class FileSystemLock extends AbstractLock
     public function release(): bool
     {
         if ($this->isOwnedByCurrentProcess()) {
-            return $this->store->delete($this->name);
+            $result = $this->store->delete($this->name);
+
+            if ($result) {
+                $this->acquiredAt = null;
+            }
+
+            return $result;
         }
 
         return false;
@@ -67,6 +79,33 @@ class FileSystemLock extends AbstractLock
     public function forceRelease(): void
     {
         $this->store->delete($this->name);
+        $this->acquiredAt = null;
+    }
+
+    /**
+     * Refresh the lock expiration time.
+     */
+    #[Override]
+    public function refresh(?int $ttl = null): bool
+    {
+        $ttl = $ttl ?? $this->seconds;
+
+        if ($ttl <= 0) {
+            return false;
+        }
+
+        if (! $this->isOwnedByCurrentProcess()) {
+            return false;
+        }
+
+        $result = $this->store->set($this->name, $this->owner, $ttl) == true;
+
+        if ($result) {
+            $this->seconds = $ttl;
+            $this->acquiredAt = microtime(true);
+        }
+
+        return $result;
     }
 
     /**
