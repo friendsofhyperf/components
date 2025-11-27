@@ -16,7 +16,7 @@ on:
   schedule:
     - cron: '0 2 * * *'
 env:
-  SW_VERSION: 'v6.1.0'
+  SW_VERSION: 'v6.1.3'
 jobs:
   php-mysql-replication:
     name: Test for PHP MySQL Replication
