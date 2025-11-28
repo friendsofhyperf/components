@@ -118,7 +118,7 @@ class ClassAliasAutoloader
             return false;
         }
 
-        if (! $this->includedAliases->filter(fn ($alias) => str_starts_with($class, $alias))->isEmpty()) {
+        if (! $this->includedAliases->contains(fn ($alias) => str_starts_with($class, $alias))) {
             return true;
         }
 
@@ -126,7 +126,7 @@ class ClassAliasAutoloader
             return false;
         }
 
-        if (! $this->excludedAliases->filter(fn ($alias) => str_starts_with($class, $alias))->isEmpty()) {
+        if (! $this->excludedAliases->contains(fn ($alias) => str_starts_with($class, $alias))) {
             return false;
         }
 
