@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry;
 
 use FriendsOfHyperf\Sentry\Tracing\Tracer;
 use Hyperf\Context\ApplicationContext;
+use Sentry\Metrics\TraceMetrics;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\Transaction;
@@ -24,6 +25,11 @@ use Sentry\Tracing\TransactionContext;
 function feature(): Feature
 {
     return ApplicationContext::getContainer()->get(Feature::class);
+}
+
+function metrics(): TraceMetrics
+{
+    return TraceMetrics::getInstance();
 }
 
 /**

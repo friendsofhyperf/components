@@ -11,8 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Metrics\Traits;
 
-use Sentry\Metrics\TraceMetrics;
 use Sentry\Unit;
+
+use function FriendsOfHyperf\Sentry\metrics;
 
 trait MetricSetter
 {
@@ -21,7 +22,7 @@ trait MetricSetter
         foreach (array_keys($stats) as $key) {
             $metricsKey = str_replace('.', '_', $prefix . $key);
             if (array_key_exists($metricsKey, $metrics)) {
-                TraceMetrics::getInstance()->gauge(
+                metrics()->gauge(
                     $metricsKey,
                     (float) $stats[$key],
                     ['worker' => (string) $workerId],

@@ -21,8 +21,8 @@ use Hyperf\Framework\Event\BeforeWorkerStart;
 use Hyperf\Pool\Pool;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
-use Sentry\Metrics\TraceMetrics;
 
+use function FriendsOfHyperf\Sentry\metrics;
 use function Hyperf\Coroutine\defer;
 
 abstract class PoolWatcher implements ListenerInterface
@@ -70,9 +70,9 @@ abstract class PoolWatcher implements ListenerInterface
             $workerId,
             $poolName
         ) {
-            defer(fn () => TraceMetrics::getInstance()->flush());
+            defer(fn () => metrics()->flush());
 
-            TraceMetrics::getInstance()->gauge(
+            metrics()->gauge(
                 $this->getPrefix() . '_connections_in_use',
                 (float) $pool->getCurrentConnections(),
                 [
@@ -80,7 +80,7 @@ abstract class PoolWatcher implements ListenerInterface
                     'worker' => (string) $workerId,
                 ]
             );
-            TraceMetrics::getInstance()->gauge(
+            metrics()->gauge(
                 $this->getPrefix() . '_connections_in_waiting',
                 (float) $pool->getConnectionsInChannel(),
                 [
@@ -88,7 +88,7 @@ abstract class PoolWatcher implements ListenerInterface
                     'worker' => (string) $workerId,
                 ]
             );
-            TraceMetrics::getInstance()->gauge(
+            metrics()->gauge(
                 $this->getPrefix() . '_max_connections',
                 (float) $pool->getOption()->getMaxConnections(),
                 [

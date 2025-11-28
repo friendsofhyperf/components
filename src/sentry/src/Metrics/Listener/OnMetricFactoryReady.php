@@ -23,10 +23,10 @@ use Hyperf\Engine\Coroutine;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Support\System;
 use Psr\Container\ContainerInterface;
-use Sentry\Metrics\TraceMetrics;
 use Sentry\Unit;
 use Swoole\Server as SwooleServer;
 
+use function FriendsOfHyperf\Sentry\metrics;
 use function Hyperf\Coroutine\defer;
 
 class OnMetricFactoryReady implements ListenerInterface
@@ -99,7 +99,7 @@ class OnMetricFactoryReady implements ListenerInterface
         }
 
         $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () use ($metrics, $serverStatsFactory, $workerId) {
-            defer(fn () => TraceMetrics::getInstance()->flush());
+            defer(fn () => metrics()->flush());
 
             $this->trySet('', $metrics, Coroutine::stats(), $workerId);
             $this->trySet('timer_', $metrics, Timer::stats(), $workerId);
@@ -113,18 +113,18 @@ class OnMetricFactoryReady implements ListenerInterface
             }
 
             $load = sys_getloadavg();
-            TraceMetrics::getInstance()->gauge(
+            metrics()->gauge(
                 'sys_load',
                 round($load[0] / System::getCpuCoresNum(), 2),
                 ['worker' => (string) $workerId],
             );
-            TraceMetrics::getInstance()->gauge(
+            metrics()->gauge(
                 'metric_process_memory_usage',
                 (float) memory_get_usage(),
                 ['worker' => (string) $workerId],
                 Unit::byte()
             );
-            TraceMetrics::getInstance()->gauge(
+            metrics()->gauge(
                 'metric_process_memory_peak_usage',
                 (float) memory_get_peak_usage(),
                 ['worker' => (string) $workerId],

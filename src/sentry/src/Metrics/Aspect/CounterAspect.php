@@ -15,8 +15,8 @@ use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Metrics\Annotation\Counter;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Sentry\Metrics\TraceMetrics;
 
+use function FriendsOfHyperf\Sentry\metrics;
 use function Hyperf\Coroutine\defer;
 
 class CounterAspect extends AbstractAspect
@@ -46,13 +46,12 @@ class CounterAspect extends AbstractAspect
                 $name = $source;
             }
 
-            defer(fn () => TraceMetrics::getInstance()->flush());
+            defer(fn () => metrics()->flush());
 
-            TraceMetrics::getInstance()
-                ->count($name, 1, [
-                    'class' => $proceedingJoinPoint->className,
-                    'method' => $proceedingJoinPoint->methodName,
-                ]);
+            metrics()->count($name, 1, [
+                'class' => $proceedingJoinPoint->className,
+                'method' => $proceedingJoinPoint->methodName,
+            ]);
         }
 
         return $proceedingJoinPoint->process();

@@ -22,9 +22,9 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Sentry\Metrics\TraceMetrics;
 use Sentry\Unit;
 
+use function FriendsOfHyperf\Sentry\metrics;
 use function Hyperf\Coroutine\defer;
 
 class OnCoroutineServerStart implements ListenerInterface
@@ -97,18 +97,18 @@ class OnCoroutineServerStart implements ListenerInterface
         ];
 
         $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () use ($metrics) {
-            defer(fn () => TraceMetrics::getInstance()->flush());
+            defer(fn () => metrics()->flush());
 
             $this->trySet('gc_', $metrics, gc_status());
             $this->trySet('', $metrics, getrusage());
 
-            TraceMetrics::getInstance()->gauge(
+            metrics()->gauge(
                 'memory_usage',
                 (float) memory_get_usage(),
                 [],
                 Unit::byte()
             );
-            TraceMetrics::getInstance()->gauge(
+            metrics()->gauge(
                 'memory_peak_usage',
                 (float) memory_get_peak_usage(),
                 [],

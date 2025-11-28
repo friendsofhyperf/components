@@ -12,14 +12,13 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
 use FriendsOfHyperf\Sentry\Metrics\CoroutineServerStats;
+use FriendsOfHyperf\Sentry\Metrics\Timer;
 use Hyperf\Engine\Coroutine;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Event as HttpEvent;
 use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\RpcServer\Event as RpcEvent;
 use Psr\Http\Message\ServerRequestInterface;
-use Sentry\Metrics\TraceMetrics;
-use Sentry\Unit;
 
 class RequestWatcher implements ListenerInterface
 {
@@ -45,24 +44,17 @@ class RequestWatcher implements ListenerInterface
             ++$this->stats->connection_num;
 
             $request = $event->request;
-            $startAt = microtime(true);
+            $timer = Timer::make('http_requests', [
+                'request_path' => $this->getPath($request),
+                'request_method' => $request->getMethod(),
+            ]);
 
-            Coroutine::defer(function () use ($request, $startAt) {
+            Coroutine::defer(function () use ($timer) {
                 ++$this->stats->close_count;
                 ++$this->stats->response_count;
                 --$this->stats->connection_num;
 
-                TraceMetrics::getInstance()->distribution(
-                    'http_requests',
-                    microtime(true) - $startAt,
-                    [
-                        'request_path' => $this->getPath($request),
-                        'request_method' => $request->getMethod(),
-                    ],
-                    Unit::second()
-                );
-
-                TraceMetrics::getInstance()->flush();
+                $timer->end(true);
             });
         }
     }
