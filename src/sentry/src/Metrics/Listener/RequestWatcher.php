@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
 use FriendsOfHyperf\Sentry\Metrics\CoroutineServerStats;
+use Hyperf\Engine\Coroutine;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Event as HttpEvent;
 use Hyperf\RpcServer\Event as RpcEvent;
@@ -34,24 +35,16 @@ class RequestWatcher implements ListenerInterface
 
     public function process(object $event): void
     {
-        match (true) {
-            $event instanceof HttpEvent\RequestReceived, $event instanceof RpcEvent\RequestReceived => $this->handleRequestReceived(),
-            $event instanceof HttpEvent\RequestHandled, $event instanceof RpcEvent\RequestHandled => $this->handleRequestHandled(),
-            default => null,
-        };
-    }
+        if ($event instanceof HttpEvent\RequestReceived || $event instanceof RpcEvent\RequestReceived) {
+            ++$this->stats->accept_count;
+            ++$this->stats->request_count;
+            ++$this->stats->connection_num;
 
-    protected function handleRequestReceived(): void
-    {
-        ++$this->stats->accept_count;
-        ++$this->stats->request_count;
-        ++$this->stats->connection_num;
-    }
-
-    protected function handleRequestHandled(): void
-    {
-        ++$this->stats->close_count;
-        ++$this->stats->response_count;
-        --$this->stats->connection_num;
+            Coroutine::defer(function () {
+                ++$this->stats->close_count;
+                ++$this->stats->response_count;
+                --$this->stats->connection_num;
+            });
+        }
     }
 }
