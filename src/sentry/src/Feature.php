@@ -38,7 +38,13 @@ class Feature
 
     public function getMetricsInterval(int $default = 10): int
     {
-        return (int) $this->config->get('sentry.metrics_interval', $default);
+        $interval = (int) $this->config->get('sentry.metrics_interval', $default);
+
+        if ($interval < 5) {
+            return 5;
+        }
+
+        return $interval;
     }
 
     public function isTracingEnabled(string $key, bool $default = true): bool
