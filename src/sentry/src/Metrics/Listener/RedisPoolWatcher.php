@@ -30,6 +30,7 @@ class RedisPoolWatcher extends PoolWatcher
     {
         $config = $this->container->get(ConfigInterface::class);
         $poolNames = array_keys($config->get('redis', ['default' => []]));
+
         foreach ($poolNames as $poolName) {
             $workerId = (int) ($event->workerId ?? 0);
             $pool = $this
