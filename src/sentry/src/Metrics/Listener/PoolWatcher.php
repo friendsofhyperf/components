@@ -57,7 +57,7 @@ abstract class PoolWatcher implements ListenerInterface
      */
     abstract public function process(object $event): void;
 
-    public function watch(Pool $pool, string $poolName, int $workerId)
+    public function watch(Pool $pool, string $poolName, int $workerId): void
     {
         if (! $this->feature->isMetricsEnabled()) {
             return;
