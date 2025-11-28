@@ -19,6 +19,7 @@ use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\RpcServer\Event as RpcEvent;
 use Psr\Http\Message\ServerRequestInterface;
 use Sentry\Metrics\TraceMetrics;
+use Sentry\Unit;
 
 class RequestWatcher implements ListenerInterface
 {
@@ -57,7 +58,8 @@ class RequestWatcher implements ListenerInterface
                     [
                         'request_path' => $this->getPath($request),
                         'request_method' => $request->getMethod(),
-                    ]
+                    ],
+                    Unit::second()
                 );
 
                 TraceMetrics::getInstance()->flush();
