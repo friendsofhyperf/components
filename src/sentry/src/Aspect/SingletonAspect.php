@@ -23,7 +23,7 @@ class SingletonAspect extends AbstractAspect
         \Sentry\MonitorScheduleUnit::class . '::getInstance',
         \Sentry\Integration\IntegrationRegistry::class . '::getInstance',
         \Sentry\Logs\LogLevel::class . '::getInstance',
-        \Sentry\Metrics\Metrics::class . '::getInstance',
+        \Sentry\Metrics\TraceMetrics::class . '::getInstance',
         \Sentry\State\HubAdapter::class . '::getInstance',
         \Sentry\Tracing\SpanStatus::class . '::getInstance',
         \Sentry\Tracing\TransactionSource::class . '::getInstance',
