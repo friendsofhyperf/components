@@ -48,6 +48,9 @@ abstract class PoolWatcher implements ListenerInterface
 
     abstract public function getPrefix(): string;
 
+    /**
+     * @param object|BeforeWorkerStart|MainCoroutineServerStart $event
+     */
     abstract public function process(object $event): void;
 
     public function watch(Pool $pool, string $poolName, int $workerId)

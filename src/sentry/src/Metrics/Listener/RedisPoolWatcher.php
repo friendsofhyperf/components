@@ -12,7 +12,9 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Framework\Event\BeforeWorkerStart;
 use Hyperf\Redis\Pool\PoolFactory;
+use Hyperf\Server\Event\MainCoroutineServerStart;
 
 class RedisPoolWatcher extends PoolWatcher
 {
@@ -21,6 +23,9 @@ class RedisPoolWatcher extends PoolWatcher
         return 'redis';
     }
 
+    /**
+     * @param object|BeforeWorkerStart|MainCoroutineServerStart $event
+     */
     public function process(object $event): void
     {
         $config = $this->container->get(ConfigInterface::class);

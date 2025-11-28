@@ -45,7 +45,7 @@ class QueueWatcher implements ListenerInterface
     }
 
     /**
-     * Periodically scan metrics.
+     * @param object|MetricFactoryReady $event
      */
     public function process(object $event): void
     {
@@ -85,6 +85,7 @@ class QueueWatcher implements ListenerInterface
                 );
             }
         });
+
         Coroutine::create(function () use ($timerId) {
             CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
             $this->timer->clear($timerId);

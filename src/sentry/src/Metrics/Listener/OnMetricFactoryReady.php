@@ -47,12 +47,16 @@ class OnMetricFactoryReady implements ListenerInterface
         ];
     }
 
+    /**
+     * @param object|MetricFactoryReady $event
+     */
     public function process(object $event): void
     {
         if (! $this->feature->isMetricsEnabled()) {
             return;
         }
 
+        $workerId = $event->workerId;
         $metrics = [
             'sys_load',
             'event_num',
@@ -92,35 +96,35 @@ class OnMetricFactoryReady implements ListenerInterface
             }
         }
 
-        $timerId = $this->timer->tick(1, function () use ($metrics, $serverStatsFactory) {
-            $this->trySet('', $metrics, Coroutine::stats(), 0, Unit::second());
-            $this->trySet('timer_', $metrics, Timer::stats(), 0, Unit::second());
+        $timerId = $this->timer->tick(1, function () use ($metrics, $serverStatsFactory, $workerId) {
+            $this->trySet('', $metrics, Coroutine::stats(), $workerId, Unit::second());
+            $this->trySet('timer_', $metrics, Timer::stats(), $workerId, Unit::second());
 
             if ($serverStatsFactory) {
-                $this->trySet('', $metrics, $serverStatsFactory(), 0, Unit::second());
+                $this->trySet('', $metrics, $serverStatsFactory(), $workerId, Unit::second());
             }
 
             if (class_exists('Swoole\Timer')) {
-                $this->trySet('swoole_timer_', $metrics, \Swoole\Timer::stats(), 0, Unit::second());
+                $this->trySet('swoole_timer_', $metrics, \Swoole\Timer::stats(), $workerId, Unit::second());
             }
 
             $load = sys_getloadavg();
             TraceMetrics::getInstance()->gauge(
                 'sys_load',
                 round($load[0] / System::getCpuCoresNum(), 2),
-                ['worker' => '0'],
+                ['worker' => (string) $workerId],
                 Unit::second()
             );
             TraceMetrics::getInstance()->gauge(
                 'metric_process_memory_usage',
                 (float) memory_get_usage(),
-                ['worker' => '0'],
+                ['worker' => (string) $workerId],
                 Unit::second()
             );
             TraceMetrics::getInstance()->gauge(
                 'metric_process_memory_peak_usage',
                 (float) memory_get_peak_usage(),
-                ['worker' => '0'],
+                ['worker' => (string) $workerId],
                 Unit::second()
             );
         });

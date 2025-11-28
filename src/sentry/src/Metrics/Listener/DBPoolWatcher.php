@@ -13,6 +13,8 @@ namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\DbConnection\Pool\PoolFactory;
+use Hyperf\Framework\Event\BeforeWorkerStart;
+use Hyperf\Server\Event\MainCoroutineServerStart;
 
 class DBPoolWatcher extends PoolWatcher
 {
@@ -21,6 +23,9 @@ class DBPoolWatcher extends PoolWatcher
         return 'mysql';
     }
 
+    /**
+     * @param object|BeforeWorkerStart|MainCoroutineServerStart $event
+     */
     public function process(object $event): void
     {
         $config = $this->container->get(ConfigInterface::class);

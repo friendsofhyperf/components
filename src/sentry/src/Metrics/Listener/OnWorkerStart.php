@@ -46,6 +46,9 @@ class OnWorkerStart implements ListenerInterface
         ];
     }
 
+    /**
+     * @param object|BeforeWorkerStart $event
+     */
     public function process(object $event): void
     {
         if (! $this->feature->isMetricsEnabled()) {

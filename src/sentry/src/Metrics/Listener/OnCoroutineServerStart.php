@@ -40,9 +40,6 @@ class OnCoroutineServerStart implements ListenerInterface
         $this->timer = new Timer();
     }
 
-    /**
-     * @return string[] returns the events that you want to listen
-     */
     public function listen(): array
     {
         return [
@@ -50,6 +47,9 @@ class OnCoroutineServerStart implements ListenerInterface
         ];
     }
 
+    /**
+     * @param object|MainCoroutineServerStart $event
+     */
     public function process(object $event): void
     {
         if (! $this->feature->isMetricsEnabled()) {
