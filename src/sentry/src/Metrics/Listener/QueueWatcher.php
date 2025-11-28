@@ -55,7 +55,9 @@ class QueueWatcher implements ListenerInterface
 
         $timerId = $this->timer->tick(1, function () {
             $config = $this->container->get(ConfigInterface::class);
-            foreach ($config->get('async_queue', []) as $name => $options) {
+            $queues = array_keys($config->get('async_queue', []));
+
+            foreach ($queues as $name) {
                 $queue = $this->container->get(DriverFactory::class)->get($name);
                 $info = $queue->info();
 
