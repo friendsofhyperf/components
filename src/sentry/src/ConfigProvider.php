@@ -60,6 +60,15 @@ class ConfigProvider
                 Listener\SetupSentryListener::class,
                 Listener\EventHandleListener::class => PHP_INT_MAX - 1,
                 Crons\Listener\EventHandleListener::class => PHP_INT_MAX - 1,
+                Metrics\Listener\DBPoolWatcher::class,
+                Metrics\Listener\OnBeforeHandle::class,
+                Metrics\Listener\OnCoroutineServerStart::class,
+                Metrics\Listener\OnMetricFactoryReady::class,
+                Metrics\Listener\OnWorkerStart::class,
+                Metrics\Listener\PoolWatcher::class,
+                Metrics\Listener\QueueWatcher::class,
+                Metrics\Listener\RedisPoolWatcher::class,
+                Metrics\Listener\RequestWatcher::class,
                 Tracing\Listener\EventHandleListener::class => PHP_INT_MAX, // !! Make sure it is the first one to handle the event
             ],
             'annotations' => [
