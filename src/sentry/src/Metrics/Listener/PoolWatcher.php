@@ -1,0 +1,97 @@
+<?php
+
+declare(strict_types=1);
+/**
+ * This file is part of friendsofhyperf/components.
+ *
+ * @link     https://github.com/friendsofhyperf/components
+ * @document https://github.com/friendsofhyperf/components/blob/main/README.md
+ * @contact  huangdijia@gmail.com
+ */
+
+namespace FriendsOfHyperf\Sentry\Metrics\Listener;
+
+use FriendsOfHyperf\Sentry\Feature;
+use Hyperf\Coordinator\Constants;
+use Hyperf\Coordinator\CoordinatorManager;
+use Hyperf\Coordinator\Timer;
+use Hyperf\Engine\Coroutine;
+use Hyperf\Event\Contract\ListenerInterface;
+use Hyperf\Framework\Event\BeforeWorkerStart;
+use Hyperf\Pool\Pool;
+use Hyperf\Server\Event\MainCoroutineServerStart;
+use Psr\Container\ContainerInterface;
+use Sentry\Metrics\TraceMetrics;
+use Sentry\Unit;
+
+abstract class PoolWatcher implements ListenerInterface
+{
+    protected Timer $timer;
+
+    public function __construct(
+        protected ContainerInterface $container,
+        protected Feature $feature,
+    ) {
+        $this->timer = new Timer();
+    }
+
+    /**
+     * @return string[] returns the events that you want to listen
+     */
+    public function listen(): array
+    {
+        return [
+            BeforeWorkerStart::class,
+            MainCoroutineServerStart::class,
+        ];
+    }
+
+    abstract public function getPrefix(): string;
+
+    abstract public function process(object $event): void;
+
+    public function watch(Pool $pool, string $poolName, int $workerId)
+    {
+        if (! $this->feature->isMetricsEnabled()) {
+            return;
+        }
+
+        $timerId = $this->timer->tick(1, function () use (
+            $pool,
+            $workerId,
+            $poolName
+        ) {
+            TraceMetrics::getInstance()->gauge(
+                $this->getPrefix() . '_connections_in_use',
+                (float) $pool->getCurrentConnections(),
+                [
+                    'pool' => $poolName,
+                    'worker' => (string) $workerId,
+                ],
+                Unit::second()
+            );
+            TraceMetrics::getInstance()->gauge(
+                $this->getPrefix() . '_connections_in_waiting',
+                (float) $pool->getConnectionsInChannel(),
+                [
+                    'pool' => $poolName,
+                    'worker' => (string) $workerId,
+                ],
+                Unit::second()
+            );
+            TraceMetrics::getInstance()->gauge(
+                $this->getPrefix() . '_max_connections',
+                (float) $pool->getOption()->getMaxConnections(),
+                [
+                    'pool' => $poolName,
+                    'worker' => (string) $workerId,
+                ],
+                Unit::second()
+            );
+        });
+        Coroutine::create(function () use ($timerId) {
+            CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
+            $this->timer->clear($timerId);
+        });
+    }
+}
