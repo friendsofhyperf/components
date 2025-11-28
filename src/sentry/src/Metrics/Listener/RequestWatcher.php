@@ -15,7 +15,10 @@ use FriendsOfHyperf\Sentry\Metrics\CoroutineServerStats;
 use Hyperf\Engine\Coroutine;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Event as HttpEvent;
+use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\RpcServer\Event as RpcEvent;
+use Psr\Http\Message\ServerRequestInterface;
+use Sentry\Metrics\TraceMetrics;
 
 class RequestWatcher implements ListenerInterface
 {
@@ -40,11 +43,35 @@ class RequestWatcher implements ListenerInterface
             ++$this->stats->request_count;
             ++$this->stats->connection_num;
 
-            Coroutine::defer(function () {
+            $request = $event->request;
+            $startAt = microtime(true);
+
+            Coroutine::defer(function () use ($request, $startAt) {
                 ++$this->stats->close_count;
                 ++$this->stats->response_count;
                 --$this->stats->connection_num;
+
+                TraceMetrics::getInstance()->distribution(
+                    'http_requests',
+                    microtime(true) - $startAt,
+                    [
+                        'request_path' => $this->getPath($request),
+                        'request_method' => $request->getMethod(),
+                    ]
+                );
             });
         }
+    }
+
+    protected function getPath(ServerRequestInterface $request): string
+    {
+        $dispatched = $request->getAttribute(Dispatched::class);
+        if (! $dispatched) {
+            return $request->getUri()->getPath();
+        }
+        if (! $dispatched->handler) {
+            return 'not_found';
+        }
+        return $dispatched->handler->route;
     }
 }
