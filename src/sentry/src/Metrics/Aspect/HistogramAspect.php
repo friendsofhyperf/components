@@ -16,6 +16,7 @@ use FriendsOfHyperf\Sentry\Metrics\Annotation\Histogram;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\Metrics\TraceMetrics;
+use Sentry\Unit;
 
 use function Hyperf\Tappable\tap;
 
@@ -56,7 +57,8 @@ class HistogramAspect extends AbstractAspect
                 [
                     'class' => $proceedingJoinPoint->className,
                     'method' => $proceedingJoinPoint->methodName,
-                ]
+                ],
+                Unit::second()
             );
         });
     }
