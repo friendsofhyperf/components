@@ -38,4 +38,6 @@ class Constants
     public const BAGGAGE = 'baggage';
 
     public const TRACEPARENT = 'traceparent';
+
+    public const RUN_IN_COMMAND = 'sentry.run_in_command';
 }

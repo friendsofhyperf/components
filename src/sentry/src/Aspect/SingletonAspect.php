@@ -22,10 +22,13 @@ class SingletonAspect extends AbstractAspect
         \Sentry\EventType::class . '::getInstance',
         \Sentry\MonitorScheduleUnit::class . '::getInstance',
         \Sentry\Integration\IntegrationRegistry::class . '::getInstance',
+        \Sentry\Logs\LogLevel::class . '::getInstance',
+        \Sentry\Metrics\TraceMetrics::class . '::getInstance',
         \Sentry\State\HubAdapter::class . '::getInstance',
         \Sentry\Tracing\SpanStatus::class . '::getInstance',
         \Sentry\Tracing\TransactionSource::class . '::getInstance',
         \Sentry\Transport\ResultStatus::class . '::getInstance',
+        \Sentry\Unit::class . '::getInstance',
     ];
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
