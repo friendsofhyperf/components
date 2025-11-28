@@ -94,21 +94,21 @@ class OnCoroutineServerStart implements ListenerInterface
             'ru_stime_tv_sec',
         ];
 
-        $timerId = $this->timer->tick(1, function () use ($metrics) {
-            $this->trySet('gc_', $metrics, gc_status(), 0, Unit::second());
-            $this->trySet('', $metrics, getrusage(), 0, Unit::second());
+        $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () use ($metrics) {
+            $this->trySet('gc_', $metrics, gc_status());
+            $this->trySet('', $metrics, getrusage());
 
             TraceMetrics::getInstance()->gauge(
                 'memory_usage',
                 (float) memory_get_usage(),
                 [],
-                Unit::second()
+                Unit::byte()
             );
             TraceMetrics::getInstance()->gauge(
                 'memory_peak_usage',
                 (float) memory_get_peak_usage(),
                 [],
-                Unit::second()
+                Unit::byte()
             );
         });
         // Clean up timer on worker exit;

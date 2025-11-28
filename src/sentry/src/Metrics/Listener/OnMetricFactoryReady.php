@@ -96,16 +96,16 @@ class OnMetricFactoryReady implements ListenerInterface
             }
         }
 
-        $timerId = $this->timer->tick(1, function () use ($metrics, $serverStatsFactory, $workerId) {
-            $this->trySet('', $metrics, Coroutine::stats(), $workerId, Unit::second());
-            $this->trySet('timer_', $metrics, Timer::stats(), $workerId, Unit::second());
+        $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () use ($metrics, $serverStatsFactory, $workerId) {
+            $this->trySet('', $metrics, Coroutine::stats(), $workerId);
+            $this->trySet('timer_', $metrics, Timer::stats(), $workerId);
 
             if ($serverStatsFactory) {
-                $this->trySet('', $metrics, $serverStatsFactory(), $workerId, Unit::second());
+                $this->trySet('', $metrics, $serverStatsFactory(), $workerId);
             }
 
             if (class_exists('Swoole\Timer')) {
-                $this->trySet('swoole_timer_', $metrics, \Swoole\Timer::stats(), $workerId, Unit::second());
+                $this->trySet('swoole_timer_', $metrics, \Swoole\Timer::stats(), $workerId);
             }
 
             $load = sys_getloadavg();
@@ -113,19 +113,18 @@ class OnMetricFactoryReady implements ListenerInterface
                 'sys_load',
                 round($load[0] / System::getCpuCoresNum(), 2),
                 ['worker' => (string) $workerId],
-                Unit::second()
             );
             TraceMetrics::getInstance()->gauge(
                 'metric_process_memory_usage',
                 (float) memory_get_usage(),
                 ['worker' => (string) $workerId],
-                Unit::second()
+                Unit::byte()
             );
             TraceMetrics::getInstance()->gauge(
                 'metric_process_memory_peak_usage',
                 (float) memory_get_peak_usage(),
                 ['worker' => (string) $workerId],
-                Unit::second()
+                Unit::byte()
             );
         });
 

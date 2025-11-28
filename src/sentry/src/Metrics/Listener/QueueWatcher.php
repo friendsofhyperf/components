@@ -53,7 +53,7 @@ class QueueWatcher implements ListenerInterface
             return;
         }
 
-        $timerId = $this->timer->tick(1, function () {
+        $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () {
             $config = $this->container->get(ConfigInterface::class);
             $queues = array_keys($config->get('async_queue', []));
 
@@ -64,26 +64,22 @@ class QueueWatcher implements ListenerInterface
                 TraceMetrics::getInstance()->gauge(
                     'queue_waiting',
                     (float) $info['waiting'],
-                    ['queue' => $name],
-                    \Sentry\Unit::second()
+                    ['queue' => $name]
                 );
                 TraceMetrics::getInstance()->gauge(
                     'queue_delayed',
                     (float) $info['delayed'],
-                    ['queue' => $name],
-                    \Sentry\Unit::second()
+                    ['queue' => $name]
                 );
                 TraceMetrics::getInstance()->gauge(
                     'queue_failed',
                     (float) $info['failed'],
-                    ['queue' => $name],
-                    \Sentry\Unit::second()
+                    ['queue' => $name]
                 );
                 TraceMetrics::getInstance()->gauge(
                     'queue_timeout',
                     (float) $info['timeout'],
-                    ['queue' => $name],
-                    \Sentry\Unit::second()
+                    ['queue' => $name]
                 );
             }
         });

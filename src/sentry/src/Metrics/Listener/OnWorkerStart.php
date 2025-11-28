@@ -88,7 +88,7 @@ class OnWorkerStart implements ListenerInterface
             'ru_stime_tv_sec',
         ];
 
-        $timerId = $this->timer->tick(1, function () use ($metrics, $event) {
+        $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () use ($metrics, $event) {
             $server = $this->container->get(Server::class);
             $serverStats = $server->stats();
             $this->trySet('gc_', $metrics, gc_status());
@@ -98,25 +98,23 @@ class OnWorkerStart implements ListenerInterface
                 'worker_request_count',
                 (float) $serverStats['worker_request_count'],
                 ['worker' => (string) ($event->workerId ?? 0)],
-                Unit::second()
             );
             TraceMetrics::getInstance()->gauge(
                 'worker_dispatch_count',
                 (float) $serverStats['worker_dispatch_count'],
                 ['worker' => (string) ($event->workerId ?? 0)],
-                Unit::second()
             );
             TraceMetrics::getInstance()->gauge(
                 'memory_usage',
                 (float) memory_get_usage(),
                 ['worker' => (string) ($event->workerId ?? 0)],
-                Unit::second()
+                Unit::byte()
             );
             TraceMetrics::getInstance()->gauge(
                 'memory_peak_usage',
                 (float) memory_get_peak_usage(),
                 ['worker' => (string) ($event->workerId ?? 0)],
-                Unit::second()
+                Unit::byte()
             );
         });
 

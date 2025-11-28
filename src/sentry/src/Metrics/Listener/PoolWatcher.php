@@ -22,7 +22,6 @@ use Hyperf\Pool\Pool;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
 use Sentry\Metrics\TraceMetrics;
-use Sentry\Unit;
 
 abstract class PoolWatcher implements ListenerInterface
 {
@@ -59,7 +58,7 @@ abstract class PoolWatcher implements ListenerInterface
             return;
         }
 
-        $timerId = $this->timer->tick(1, function () use (
+        $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () use (
             $pool,
             $workerId,
             $poolName
@@ -70,8 +69,7 @@ abstract class PoolWatcher implements ListenerInterface
                 [
                     'pool' => $poolName,
                     'worker' => (string) $workerId,
-                ],
-                Unit::second()
+                ]
             );
             TraceMetrics::getInstance()->gauge(
                 $this->getPrefix() . '_connections_in_waiting',
@@ -79,8 +77,7 @@ abstract class PoolWatcher implements ListenerInterface
                 [
                     'pool' => $poolName,
                     'worker' => (string) $workerId,
-                ],
-                Unit::second()
+                ]
             );
             TraceMetrics::getInstance()->gauge(
                 $this->getPrefix() . '_max_connections',
@@ -88,8 +85,7 @@ abstract class PoolWatcher implements ListenerInterface
                 [
                     'pool' => $poolName,
                     'worker' => (string) $workerId,
-                ],
-                Unit::second()
+                ]
             );
         });
         Coroutine::create(function () use ($timerId) {

@@ -20,7 +20,7 @@ class DBPoolWatcher extends PoolWatcher
 {
     public function getPrefix(): string
     {
-        return 'mysql';
+        return 'db';
     }
 
     /**
