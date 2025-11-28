@@ -13,10 +13,9 @@ namespace FriendsOfHyperf\Sentry\Metrics\Aspect;
 
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Metrics\Annotation\Histogram;
+use FriendsOfHyperf\Sentry\Metrics\Timer;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Sentry\Metrics\TraceMetrics;
-use Sentry\Unit;
 
 use function Hyperf\Coroutine\defer;
 use function Hyperf\Tappable\tap;
@@ -49,20 +48,13 @@ class HistogramAspect extends AbstractAspect
             $name = $source;
         }
 
-        $startAt = microtime(true);
+        $timer = Timer::make($name, [
+            'class' => $proceedingJoinPoint->className,
+            'method' => $proceedingJoinPoint->methodName,
+        ]);
 
-        return tap($proceedingJoinPoint->process(), function () use ($name, $proceedingJoinPoint, $startAt) {
-            defer(fn () => TraceMetrics::getInstance()->flush());
-
-            TraceMetrics::getInstance()->distribution(
-                $name,
-                (microtime(true) - $startAt) * 1000,
-                [
-                    'class' => $proceedingJoinPoint->className,
-                    'method' => $proceedingJoinPoint->methodName,
-                ],
-                Unit::second()
-            );
+        return tap($proceedingJoinPoint->process(), function () use ($timer) {
+            defer(fn () => $timer->end(true));
         });
     }
 

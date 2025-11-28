@@ -21,8 +21,8 @@ use Hyperf\Coordinator\Timer;
 use Hyperf\Engine\Coroutine;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
-use Sentry\Metrics\TraceMetrics;
 
+use function FriendsOfHyperf\Sentry\metrics;
 use function Hyperf\Coroutine\defer;
 
 class QueueWatcher implements ListenerInterface
@@ -56,7 +56,7 @@ class QueueWatcher implements ListenerInterface
         }
 
         $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () {
-            defer(fn () => TraceMetrics::getInstance()->flush());
+            defer(fn () => metrics()->flush());
 
             $config = $this->container->get(ConfigInterface::class);
             $queues = array_keys($config->get('async_queue', []));
@@ -65,22 +65,22 @@ class QueueWatcher implements ListenerInterface
                 $queue = $this->container->get(DriverFactory::class)->get($name);
                 $info = $queue->info();
 
-                TraceMetrics::getInstance()->gauge(
+                metrics()->gauge(
                     'queue_waiting',
                     (float) $info['waiting'],
                     ['queue' => $name]
                 );
-                TraceMetrics::getInstance()->gauge(
+                metrics()->gauge(
                     'queue_delayed',
                     (float) $info['delayed'],
                     ['queue' => $name]
                 );
-                TraceMetrics::getInstance()->gauge(
+                metrics()->gauge(
                     'queue_failed',
                     (float) $info['failed'],
                     ['queue' => $name]
                 );
-                TraceMetrics::getInstance()->gauge(
+                metrics()->gauge(
                     'queue_timeout',
                     (float) $info['timeout'],
                     ['queue' => $name]

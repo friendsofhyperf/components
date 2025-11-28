@@ -22,10 +22,10 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BeforeWorkerStart;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Sentry\Metrics\TraceMetrics;
 use Sentry\Unit;
 use Swoole\Server;
 
+use function FriendsOfHyperf\Sentry\metrics;
 use function Hyperf\Coroutine\defer;
 
 class OnWorkerStart implements ListenerInterface
@@ -91,30 +91,30 @@ class OnWorkerStart implements ListenerInterface
         ];
 
         $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () use ($metrics, $event) {
-            defer(fn () => TraceMetrics::getInstance()->flush());
+            defer(fn () => metrics()->flush());
 
             $server = $this->container->get(Server::class);
             $serverStats = $server->stats();
             $this->trySet('gc_', $metrics, gc_status());
             $this->trySet('', $metrics, getrusage());
 
-            TraceMetrics::getInstance()->gauge(
+            metrics()->gauge(
                 'worker_request_count',
                 (float) $serverStats['worker_request_count'],
                 ['worker' => (string) ($event->workerId ?? 0)],
             );
-            TraceMetrics::getInstance()->gauge(
+            metrics()->gauge(
                 'worker_dispatch_count',
                 (float) $serverStats['worker_dispatch_count'],
                 ['worker' => (string) ($event->workerId ?? 0)],
             );
-            TraceMetrics::getInstance()->gauge(
+            metrics()->gauge(
                 'memory_usage',
                 (float) memory_get_usage(),
                 ['worker' => (string) ($event->workerId ?? 0)],
                 Unit::byte()
             );
-            TraceMetrics::getInstance()->gauge(
+            metrics()->gauge(
                 'memory_peak_usage',
                 (float) memory_get_peak_usage(),
                 ['worker' => (string) ($event->workerId ?? 0)],
