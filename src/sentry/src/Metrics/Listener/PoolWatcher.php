@@ -23,6 +23,8 @@ use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
 use Sentry\Metrics\TraceMetrics;
 
+use function Hyperf\Coroutine\defer;
+
 abstract class PoolWatcher implements ListenerInterface
 {
     protected Timer $timer;
@@ -68,6 +70,8 @@ abstract class PoolWatcher implements ListenerInterface
             $workerId,
             $poolName
         ) {
+            defer(fn () => TraceMetrics::getInstance()->flush());
+
             TraceMetrics::getInstance()->gauge(
                 $this->getPrefix() . '_connections_in_use',
                 (float) $pool->getCurrentConnections(),

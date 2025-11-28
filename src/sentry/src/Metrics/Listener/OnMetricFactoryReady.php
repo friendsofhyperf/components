@@ -27,6 +27,8 @@ use Sentry\Metrics\TraceMetrics;
 use Sentry\Unit;
 use Swoole\Server as SwooleServer;
 
+use function Hyperf\Coroutine\defer;
+
 class OnMetricFactoryReady implements ListenerInterface
 {
     use MetricSetter;
@@ -97,6 +99,8 @@ class OnMetricFactoryReady implements ListenerInterface
         }
 
         $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () use ($metrics, $serverStatsFactory, $workerId) {
+            defer(fn () => TraceMetrics::getInstance()->flush());
+
             $this->trySet('', $metrics, Coroutine::stats(), $workerId);
             $this->trySet('timer_', $metrics, Timer::stats(), $workerId);
 

@@ -18,6 +18,7 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\Metrics\TraceMetrics;
 use Sentry\Unit;
 
+use function Hyperf\Coroutine\defer;
 use function Hyperf\Tappable\tap;
 
 class HistogramAspect extends AbstractAspect
@@ -51,6 +52,8 @@ class HistogramAspect extends AbstractAspect
         $startAt = microtime(true);
 
         return tap($proceedingJoinPoint->process(), function () use ($name, $proceedingJoinPoint, $startAt) {
+            defer(fn () => TraceMetrics::getInstance()->flush());
+
             TraceMetrics::getInstance()->distribution(
                 $name,
                 (microtime(true) - $startAt) * 1000,

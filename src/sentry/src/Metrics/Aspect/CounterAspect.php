@@ -17,6 +17,8 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\Metrics\TraceMetrics;
 
+use function Hyperf\Coroutine\defer;
+
 class CounterAspect extends AbstractAspect
 {
     public array $classes = [];
@@ -43,6 +45,8 @@ class CounterAspect extends AbstractAspect
             } else {
                 $name = $source;
             }
+
+            defer(fn () => TraceMetrics::getInstance()->flush());
 
             TraceMetrics::getInstance()
                 ->count($name, 1, [

@@ -25,6 +25,8 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Sentry\Metrics\TraceMetrics;
 use Sentry\Unit;
 
+use function Hyperf\Coroutine\defer;
+
 class OnCoroutineServerStart implements ListenerInterface
 {
     use MetricSetter;
@@ -95,6 +97,8 @@ class OnCoroutineServerStart implements ListenerInterface
         ];
 
         $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () use ($metrics) {
+            defer(fn () => TraceMetrics::getInstance()->flush());
+
             $this->trySet('gc_', $metrics, gc_status());
             $this->trySet('', $metrics, getrusage());
 

@@ -23,6 +23,8 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
 use Sentry\Metrics\TraceMetrics;
 
+use function Hyperf\Coroutine\defer;
+
 class QueueWatcher implements ListenerInterface
 {
     private Timer $timer;
@@ -54,6 +56,8 @@ class QueueWatcher implements ListenerInterface
         }
 
         $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () {
+            defer(fn () => TraceMetrics::getInstance()->flush());
+
             $config = $this->container->get(ConfigInterface::class);
             $queues = array_keys($config->get('async_queue', []));
 

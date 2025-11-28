@@ -59,6 +59,8 @@ class RequestWatcher implements ListenerInterface
                         'request_method' => $request->getMethod(),
                     ]
                 );
+
+                TraceMetrics::getInstance()->flush();
             });
         }
     }
