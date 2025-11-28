@@ -45,6 +45,11 @@ abstract class PoolWatcher implements ListenerInterface
         ];
     }
 
+    /**
+     * Get the metric name prefix for this pool type (e.g., 'redis', 'mysql').
+     *
+     * @return string The prefix used in metric names like '{prefix}_connections_in_use'
+     */
     abstract public function getPrefix(): string;
 
     /**
