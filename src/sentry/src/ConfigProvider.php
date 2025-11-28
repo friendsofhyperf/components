@@ -65,7 +65,6 @@ class ConfigProvider
                 Metrics\Listener\OnCoroutineServerStart::class,
                 Metrics\Listener\OnMetricFactoryReady::class,
                 Metrics\Listener\OnWorkerStart::class,
-                Metrics\Listener\PoolWatcher::class,
                 Metrics\Listener\QueueWatcher::class,
                 Metrics\Listener\RedisPoolWatcher::class,
                 Metrics\Listener\RequestWatcher::class,
