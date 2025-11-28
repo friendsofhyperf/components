@@ -93,6 +93,7 @@ abstract class PoolWatcher implements ListenerInterface
                 ]
             );
         });
+
         Coroutine::create(function () use ($timerId) {
             CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
             $this->timer->clear($timerId);
