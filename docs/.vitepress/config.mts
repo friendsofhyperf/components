@@ -105,7 +105,7 @@ export default defineConfig({
     }
   },
   sitemap: {
-    hostname: 'https://hyperf.fans'
+    hostname: 'https://docs.hdj.me'
   },
   themeConfig: {
     outline: {

@@ -162,14 +162,14 @@ php bin/hyperf.php vendor:publish friendsofhyperf/[component-name]
 
 ## 📚 Documentation
 
-For detailed documentation, visit the [official documentation website](https://hyperf.fans/).
+For detailed documentation, visit the [official documentation website](https://docs.hdj.me/).
 
 ### Documentation by Language
 
-- [简体中文 (Simplified Chinese)](https://hyperf.fans/zh-cn/)
-- [繁體中文 (Traditional Chinese)](https://hyperf.fans/zh-tw/)
-- [香港繁體 (Hong Kong Traditional)](https://hyperf.fans/zh-hk/)
-- [English](https://hyperf.fans/en/)
+- [简体中文 (Simplified Chinese)](https://docs.hdj.me/zh-cn/)
+- [繁體中文 (Traditional Chinese)](https://docs.hdj.me/zh-tw/)
+- [香港繁體 (Hong Kong Traditional)](https://docs.hdj.me/zh-hk/)
+- [English](https://docs.hdj.me/en/)
 
 ## 🔨 Development
 
@@ -224,7 +224,7 @@ We welcome contributions from the community! Please read our [Contributing Guide
 
 ## 🌟 Support & Community
 
-- 📖 **Documentation**: [hyperf.fans](https://hyperf.fans/)
+- 📖 **Documentation**: [docs.hdj.me](https://docs.hdj.me/)
 - 💬 **Issues**: [GitHub Issues](https://github.com/friendsofhyperf/components/issues)
 - 🐦 **Twitter**: [@huangdijia](https://twitter.com/huangdijia)
 - 📧 **Email**: [huangdijia@gmail.com](mailto:huangdijia@gmail.com)

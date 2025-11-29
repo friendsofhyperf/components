@@ -77,7 +77,7 @@ foreach ($files as $file) {
     }
     $composerJson->support->issues = 'https://github.com/friendsofhyperf/components/issues';
     $composerJson->support->source = 'https://github.com/friendsofhyperf/components';
-    $composerJson->support->docs = 'https://hyperf.fans';
+    $composerJson->support->docs = 'https://docs.hdj.me';
     $composerJson->support->{'pull-request'} = 'https://github.com/friendsofhyperf/components/pulls';
 
     // Extra
