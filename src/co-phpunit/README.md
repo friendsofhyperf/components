@@ -188,7 +188,7 @@ Contributions are welcome! Please feel free to submit a Pull Request.
 ## Support
 
 - Issues: [GitHub Issues](https://github.com/friendsofhyperf/components/issues)
-- Documentation: [Hyperf Fans](https://hyperf.fans)
+- Documentation: [Hyperf Fans](https://docs.hdj.me)
 - Pull Requests: [GitHub Pull Requests](https://github.com/friendsofhyperf/components/pulls)
 
 ## License

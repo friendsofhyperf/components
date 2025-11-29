@@ -2,7 +2,7 @@
     "settings": {
         "title": "Friends of Hyperf Components",
         "project": "/friendsofhyperf/components",
-        "description": "🚀 The most popular components for Hyperf. A collection of 40+ reusable packages including cache, encryption, HTTP client, notification, OAuth2 server, and more. Built for Hyperf 3.1+ with PHP 8.1+. https://hyperf.fans/",
+        "description": "🚀 The most popular components for Hyperf. A collection of 40+ reusable packages including cache, encryption, HTTP client, notification, OAuth2 server, and more. Built for Hyperf 3.1+ with PHP 8.1+. https://docs.hdj.me/",
         "docsRepoUrl": "https://github.com/friendsofhyperf/components",
         "folders": [
             "src",

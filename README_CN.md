@@ -162,14 +162,14 @@ php bin/hyperf.php vendor:publish friendsofhyperf/[组件名称]
 
 ## 📚 文档
 
-详细文档请访问 [官方文档网站](https://hyperf.fans/)。
+详细文档请访问 [官方文档网站](https://docs.hdj.me/)。
 
 ### 多语言文档
 
-- [简体中文](https://hyperf.fans/zh-cn/)
-- [繁體中文](https://hyperf.fans/zh-tw/)
-- [香港繁體](https://hyperf.fans/zh-hk/)
-- [English](https://hyperf.fans/en/)
+- [简体中文](https://docs.hdj.me/zh-cn/)
+- [繁體中文](https://docs.hdj.me/zh-tw/)
+- [香港繁體](https://docs.hdj.me/zh-hk/)
+- [English](https://docs.hdj.me/en/)
 
 ## 🔨 开发
 
@@ -224,7 +224,7 @@ composer analyse
 
 ## 🌟 支持与社区
 
-- 📖 **文档**：[hyperf.fans](https://hyperf.fans/)
+- 📖 **文档**：[docs.hdj.me](https://docs.hdj.me/)
 - 💬 **问题反馈**：[GitHub Issues](https://github.com/friendsofhyperf/components/issues)
 - 🐦 **Twitter**：[@huangdijia](https://twitter.com/huangdijia)
 - 📧 **邮箱**：[huangdijia@gmail.com](mailto:huangdijia@gmail.com)
