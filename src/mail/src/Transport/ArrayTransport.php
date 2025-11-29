@@ -12,12 +12,13 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Mail\Transport;
 
 use Hyperf\Collection\Collection;
+use Stringable;
 use Symfony\Component\Mailer\Envelope;
 use Symfony\Component\Mailer\SentMessage;
 use Symfony\Component\Mailer\Transport\TransportInterface;
 use Symfony\Component\Mime\RawMessage;
 
-class ArrayTransport implements TransportInterface
+class ArrayTransport implements Stringable, TransportInterface
 {
     /**
      * The collection of Symfony Messages.

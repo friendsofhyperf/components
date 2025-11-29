@@ -11,7 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Oauth2\Server\ValueObject;
 
-final class Scope
+use Stringable;
+
+final class Scope implements Stringable
 {
     public function __construct(
         private readonly string $scope

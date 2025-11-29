@@ -16,6 +16,7 @@ use DateTimeInterface;
 use Hyperf\Database\Model\Concerns\HasUuids;
 use Hyperf\Database\Model\Relations\BelongsTo;
 use Hyperf\DbConnection\Model\Model;
+use Stringable;
 
 /**
  * @property string $id
@@ -26,7 +27,7 @@ use Hyperf\DbConnection\Model\Model;
  * @property Carbon $updated_at
  * @property AccessToken $access_token
  */
-class RefreshToken extends Model implements RefreshTokenInterface
+class RefreshToken extends Model implements Stringable, RefreshTokenInterface
 {
     use HasUuids;
 

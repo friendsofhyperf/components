@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Mail\Transport;
 
 use Aws\Exception\AwsException;
 use Aws\Ses\SesClient;
+use Stringable;
 use Symfony\Component\Mailer\Exception\TransportException;
 use Symfony\Component\Mailer\Header\MetadataHeader;
 use Symfony\Component\Mailer\SentMessage;
@@ -21,7 +22,7 @@ use Symfony\Component\Mime\Message;
 
 use function Hyperf\Collection\collect;
 
-class SesTransport extends AbstractTransport
+class SesTransport extends AbstractTransport implements Stringable
 {
     public function __construct(
         protected SesClient $ses,
