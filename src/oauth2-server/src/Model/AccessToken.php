@@ -19,6 +19,7 @@ use Hyperf\Database\Model\Concerns\HasUuids;
 use Hyperf\Database\Model\Relations\BelongsTo;
 use Hyperf\DbConnection\Model\Model;
 use RuntimeException;
+use Stringable;
 
 /**
  * @property string $id
@@ -31,7 +32,7 @@ use RuntimeException;
  * @property Carbon $expires_at
  * @property Client $client
  */
-class AccessToken extends Model implements AccessTokenInterface
+class AccessToken extends Model implements Stringable, AccessTokenInterface
 {
     use HasUuids;
 

@@ -12,8 +12,9 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Oauth2\Server\ValueObject;
 
 use RuntimeException;
+use Stringable;
 
-final class RedirectUri
+final class RedirectUri implements Stringable
 {
     public function __construct(
         private readonly string $redirectUri

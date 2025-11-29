@@ -18,6 +18,7 @@ use FriendsOfHyperf\Oauth2\Server\ValueObject\Scope;
 use Hyperf\Database\Model\Relations\BelongsTo;
 use Hyperf\DbConnection\Model\Model;
 use RuntimeException;
+use Stringable;
 
 /**
  * @property string $code
@@ -31,7 +32,7 @@ use RuntimeException;
  * @property Carbon $expires_at
  * @property Client $client
  */
-class AuthorizationCode extends Model implements AuthorizationCodeInterface
+class AuthorizationCode extends Model implements Stringable, AuthorizationCodeInterface
 {
     public bool $incrementing = false;
 

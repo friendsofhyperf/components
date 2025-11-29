@@ -16,6 +16,7 @@ use Hyperf\Contract\Arrayable;
 use Hyperf\Contract\Jsonable;
 use IteratorAggregate;
 use JsonSerializable;
+use Stringable;
 use Traversable;
 
 class TestArrayableObject implements Arrayable
@@ -26,7 +27,7 @@ class TestArrayableObject implements Arrayable
     }
 }
 
-class TestJsonableObject implements Jsonable
+class TestJsonableObject implements Stringable, Jsonable
 {
     public function __toString(): string
     {
