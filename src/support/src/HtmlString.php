@@ -12,8 +12,9 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Support;
 
 use Hyperf\Contract\Htmlable;
+use Stringable;
 
-class HtmlString implements Htmlable
+class HtmlString implements Stringable, Htmlable
 {
     /**
      * Create a new HTML string instance.
