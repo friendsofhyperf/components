@@ -54,7 +54,7 @@ class OnMetricFactoryReady implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if ($this->feature->isDefaultMetricsEnabled()) {
+        if (! $this->feature->isDefaultMetricsEnabled()) {
             return;
         }
 
