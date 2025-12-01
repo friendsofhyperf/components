@@ -52,7 +52,7 @@ class OnBeforeHandle implements ListenerInterface
 
         if (
             $event instanceof BeforeHandle
-            && ! $event->getCommand()->getApplication()->isAutoExitEnabled() // Return when running in crontab
+            && ! $event->getCommand()->getApplication()->isAutoExitEnabled() // Only enable in the command with auto exit.
         ) {
             return;
         }
