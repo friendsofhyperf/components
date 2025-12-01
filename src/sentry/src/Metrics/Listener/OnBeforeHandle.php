@@ -46,13 +46,10 @@ class OnBeforeHandle implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if (! $this->feature->isCommandMetricsEnabled()) { // Disabled
-            return;
-        }
-
         if (
-            $event instanceof BeforeHandle
-            && ! $event->getCommand()->getApplication()->isAutoExitEnabled() // Only enable in the command with auto exit.
+            ! $event instanceof BeforeHandle
+            || ! $event->getCommand()->getApplication()->isAutoExitEnabled() // Only enable in the command with auto exit.
+            || ! $this->feature->isCommandMetricsEnabled() // Only enable in the command with command metrics enabled.
         ) {
             return;
         }
