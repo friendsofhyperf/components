@@ -96,13 +96,13 @@ class OnBeforeHandle implements ListenerInterface
             metrics()->gauge(
                 'memory_usage',
                 (float) memory_get_usage(),
-                ['worker' => 'N/A'],
+                ['worker' => '0'],
                 Unit::byte()
             );
             metrics()->gauge(
                 'memory_peak_usage',
                 (float) memory_get_peak_usage(),
-                ['worker' => 'N/A'],
+                ['worker' => '0'],
                 Unit::byte()
             );
         });
