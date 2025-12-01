@@ -67,6 +67,10 @@ class OnCoroutineServerStart implements ListenerInterface
         $eventDispatcher = $this->container->get(EventDispatcherInterface::class);
         $eventDispatcher->dispatch(new MetricFactoryReady());
 
+        if (! $this->feature->isDefaultMetricsEnabled()) {
+            return;
+        }
+
         // The following metrics MUST be collected in worker.
         $metrics = [
             // 'worker_request_count',
@@ -105,13 +109,13 @@ class OnCoroutineServerStart implements ListenerInterface
             metrics()->gauge(
                 'memory_usage',
                 (float) memory_get_usage(),
-                [],
+                ['worker' => '0'],
                 Unit::byte()
             );
             metrics()->gauge(
                 'memory_peak_usage',
                 (float) memory_get_peak_usage(),
-                [],
+                ['worker' => '0'],
                 Unit::byte()
             );
         });
