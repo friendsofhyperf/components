@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Metrics\Traits\MetricSetter;
-use Hyperf\Command\Event\AfterExecute;
 use Hyperf\Command\Event\BeforeHandle;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coordinator\Timer;
@@ -39,25 +38,26 @@ class OnBeforeHandle implements ListenerInterface
     {
         return [
             BeforeHandle::class,
-            AfterExecute::class,
         ];
     }
 
     /**
-     * @param object|BeforeHandle|AfterExecute $event
+     * @param object|BeforeHandle $event
      */
     public function process(object $event): void
     {
-        if ($event instanceof AfterExecute) {
-            Constants::$runningInCommand = false;
+        if (! $this->feature->isCommandMetricsEnabled()) { // Disabled
+            return;
+        }
+
+        if (
+            $event instanceof BeforeHandle
+            && ! $event->getCommand()->getApplication()->isAutoExitEnabled() // Return when running in crontab
+        ) {
             return;
         }
 
         Constants::$runningInCommand = true;
-
-        if (! $this->feature->isCommandMetricsEnabled()) {
-            return;
-        }
 
         // The following metrics MUST be collected in worker.
         $metrics = [
