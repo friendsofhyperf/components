@@ -45,6 +45,15 @@ class Feature
         return (bool) $this->config->get('sentry.enable_default_metrics', $default);
     }
 
+    public function isCommandMetricsEnabled(bool $default = true): bool
+    {
+        if (! $this->isMetricsEnabled()) {
+            return false;
+        }
+
+        return (bool) $this->config->get('sentry.enable_command_metrics', $default);
+    }
+
     public function getMetricsInterval(int $default = 10): int
     {
         $interval = (int) $this->config->get('sentry.metrics_interval', $default);

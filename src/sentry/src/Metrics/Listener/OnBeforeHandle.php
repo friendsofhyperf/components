@@ -56,7 +56,7 @@ class OnBeforeHandle implements ListenerInterface
 
         Context::set(Constants::RUN_IN_COMMAND, true);
 
-        if (! $this->feature->isDefaultMetricsEnabled()) {
+        if (! $this->feature->isCommandMetricsEnabled()) {
             return;
         }
 
