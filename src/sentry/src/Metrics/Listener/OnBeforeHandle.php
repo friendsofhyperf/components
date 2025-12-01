@@ -49,12 +49,15 @@ class OnBeforeHandle implements ListenerInterface
         if (
             ! $event instanceof BeforeHandle
             || ! $event->getCommand()->getApplication()->isAutoExitEnabled() // Only enable in the command with auto exit.
-            || ! $this->feature->isCommandMetricsEnabled() // Only enable in the command with command metrics enabled.
         ) {
             return;
         }
 
         Constants::$runningInCommand = true;
+
+        if (! $this->feature->isCommandMetricsEnabled()) {
+            return;
+        }
 
         // The following metrics MUST be collected in worker.
         $metrics = [
