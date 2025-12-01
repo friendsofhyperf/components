@@ -16,7 +16,6 @@ use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Metrics\Traits\MetricSetter;
 use Hyperf\Command\Event\AfterExecute;
 use Hyperf\Command\Event\BeforeHandle;
-use Hyperf\Context\Context;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coordinator\Timer;
 use Hyperf\Engine\Coroutine;
@@ -50,11 +49,11 @@ class OnBeforeHandle implements ListenerInterface
     public function process(object $event): void
     {
         if ($event instanceof AfterExecute) {
-            Context::destroy(Constants::RUN_IN_COMMAND);
+            Constants::$runningInCommand = false;
             return;
         }
 
-        Context::set(Constants::RUN_IN_COMMAND, true);
+        Constants::$runningInCommand = true;
 
         if (! $this->feature->isCommandMetricsEnabled()) {
             return;
