@@ -31,6 +31,8 @@ class ClientBuilderFactory
         'http_chanel_size', // deprecated, will be removed in v3.2
         'http_concurrent_limit', // deprecated, will be removed in v3.2
         'logs_channel_level',
+        'enable_default_metrics',
+        'enable_command_metrics',
         'metrics_interval',
         'transport_channel_size',
         'transport_concurrent_limit',

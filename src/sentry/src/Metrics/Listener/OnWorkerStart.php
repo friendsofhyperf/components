@@ -53,7 +53,7 @@ class OnWorkerStart implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if (! $this->feature->isMetricsEnabled()) {
+        if (! $this->feature->isDefaultMetricsEnabled()) {
             return;
         }
 

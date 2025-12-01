@@ -42,6 +42,8 @@ return [
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#enable_metrics
     'enable_metrics' => env('SENTRY_ENABLE_METRICS', true),
+    'enable_default_metrics' => env('SENTRY_ENABLE_DEFAULT_METRICS', true),
+    'enable_command_metrics' => env('SENTRY_ENABLE_COMMAND_METRICS', true),
     'metrics_interval' => (int) env('SENTRY_METRICS_INTERVAL', 10),
 
     'logs_channel_level' => env('SENTRY_LOGS_CHANNEL_LEVEL', Sentry\Logs\LogLevel::debug()),
