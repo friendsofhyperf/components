@@ -31,4 +31,8 @@ trait MetricSetter
             }
         }
     }
+
+    // protected function spawnDefaultMetrics()
+    // {
+    // }
 }
