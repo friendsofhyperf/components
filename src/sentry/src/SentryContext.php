@@ -17,7 +17,7 @@ use Sentry\Tracing\SpanContext;
 
 class SentryContext
 {
-    public const TRACE_CARRIER = 'sentry.tracing.trace_carrier';
+    public const TRACE_CARRIER = 'sentry.tracing.trace.carrier';
 
     public const CRON_CHECKIN_ID = 'sentry.crons.checkin_id';
 
