@@ -700,8 +700,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        /** @var null|Carrier $carrier */
-        $carrier = Context::get(Constants::TRACE_CARRIER, null, Coroutine::parentId());
+        $carrier = SentryContext::getCarrier(Coroutine::parentId());
         $job = $event->getMessage()->job();
 
         $transaction = startTransaction(

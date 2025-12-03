@@ -75,9 +75,9 @@ class Context
         Ctx::set(self::TRACE_CARRIER, $carrier);
     }
 
-    public static function getCarrier(): ?Carrier
+    public static function getCarrier(?int $coroutineId = null): ?Carrier
     {
-        return Ctx::get(self::TRACE_CARRIER);
+        return Ctx::get(self::TRACE_CARRIER, coroutineId: $coroutineId);
     }
 
     public static function setRedisServerAddress(string $address): void
