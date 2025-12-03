@@ -45,7 +45,7 @@ class ElasticsearchRequestAspect extends AbstractAspect
                     'http.request.method' => $request->getMethod(),
                     'url.full' => $this->getFullUrl($request),
                 ];
-                SentryContext::setSpanData($data);
+                SentryContext::setElasticsearchSpanData($data);
             }
         }
 
@@ -59,7 +59,7 @@ class ElasticsearchRequestAspect extends AbstractAspect
                     'http.request.method' => $lastConnection->getLastRequestInfo()['request']['http_method'] ?? 'GET',
                     'url.full' => $lastConnection->getLastRequestInfo()['response']['effective_url'] ?? '',
                 ];
-                SentryContext::setSpanData($data);
+                SentryContext::setElasticsearchSpanData($data);
             }
         });
     }

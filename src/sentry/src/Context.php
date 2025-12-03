@@ -26,7 +26,7 @@ class Context
 
     public const TRACE_SERVER_PORT = 'sentry.tracing.server.port';
 
-    public const TRACE_SPAN_DATA = 'sentry.tracing.data';
+    public const TRACE_ELASTICSEARCH_SPAN_DATA = 'sentry.tracing.elasticsearch.span.data';
 
     public const TRACE_DB_SERVER_ADDRESS = 'sentry.tracing.db.server.address';
 
@@ -160,13 +160,13 @@ class Context
         return Ctx::get(self::TRACE_DB_SERVER_PORT);
     }
 
-    public static function setSpanData(array $data): void
+    public static function setElasticsearchSpanData(array $data): void
     {
-        Ctx::set(self::TRACE_SPAN_DATA, $data);
+        Ctx::set(self::TRACE_ELASTICSEARCH_SPAN_DATA, $data);
     }
 
-    public static function getSpanData(): ?array
+    public static function getElasticsearchSpanData(): ?array
     {
-        return Ctx::get(self::TRACE_SPAN_DATA);
+        return Ctx::get(self::TRACE_ELASTICSEARCH_SPAN_DATA);
     }
 }

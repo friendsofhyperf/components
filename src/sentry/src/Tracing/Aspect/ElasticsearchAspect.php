@@ -71,7 +71,7 @@ class ElasticsearchAspect extends AbstractAspect
                         ]);
                     }
 
-                    $data = (array) SentryContext::getSpanData();
+                    $data = (array) SentryContext::getElasticsearchSpanData();
                     $data && $scope->getSpan()?->setData($data);
                 });
             },

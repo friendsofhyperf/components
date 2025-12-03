@@ -117,9 +117,9 @@ class RpcAspect extends AbstractAspect
                         if ($this->feature->isTracingTagEnabled('rpc.result')) {
                             $span?->setData(['rpc.result' => $result]);
                         }
-                        if (Context::has(Constants::TRACE_RPC_SERVER_ADDRESS)) {
+                        if ($serverAddress = SentryContext::getRpcServerAddress()) {
                             $span?->setData([
-                                'server.address' => SentryContext::getRpcServerAddress(),
+                                'server.address' => $serverAddress,
                                 'server.port' => SentryContext::getRpcServerPort(),
                             ]);
                         }
