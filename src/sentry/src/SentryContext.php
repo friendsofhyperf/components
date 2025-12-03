@@ -49,11 +49,6 @@ class SentryContext
         Context::set(self::CTX_DISABLE_COROUTINE_TRACING, false);
     }
 
-    public static function isTracingEnabled(): bool
-    {
-        return ! Context::get(self::CTX_DISABLE_COROUTINE_TRACING, false);
-    }
-
     public static function isTracingDisabled(): bool
     {
         return Context::get(self::CTX_DISABLE_COROUTINE_TRACING, false);
