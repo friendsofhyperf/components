@@ -23,10 +23,6 @@ class SentryContext
 
     public const CTX_CARRIER = 'sentry.ctx.trace.carrier';
 
-    public const CTX_SERVER_ADDRESS = 'sentry.ctx.server.address';
-
-    public const CTX_SERVER_PORT = 'sentry.ctx.server.port';
-
     public const CTX_ELASTICSEARCH_SPAN_DATA = 'sentry.ctx.elasticsearch.span.data';
 
     public const CTX_DB_SERVER_ADDRESS = 'sentry.ctx.db.server.address';
@@ -101,26 +97,6 @@ class SentryContext
     public static function getRedisServerPort(): ?int
     {
         return Context::get(self::CTX_REDIS_SERVER_PORT);
-    }
-
-    public static function setServerAddress(string $address): void
-    {
-        Context::set(self::CTX_SERVER_ADDRESS, $address);
-    }
-
-    public static function getServerAddress(): ?string
-    {
-        return Context::get(self::CTX_SERVER_ADDRESS);
-    }
-
-    public static function setServerPort(int $port): void
-    {
-        Context::set(self::CTX_SERVER_PORT, $port);
-    }
-
-    public static function getServerPort(): ?int
-    {
-        return Context::get(self::CTX_SERVER_PORT);
     }
 
     public static function setRpcServerAddress(string $address): void
