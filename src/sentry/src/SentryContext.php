@@ -17,11 +17,11 @@ use Sentry\Tracing\SpanContext;
 
 class SentryContext
 {
-    public const TRACE_CARRIER = 'sentry.tracing.trace.carrier';
-
     public const CRON_CHECKIN_ID = 'sentry.crons.checkin_id';
 
     public const DISABLE_COROUTINE_TRACING = 'sentry.tracing.coroutine.disabled';
+
+    public const TRACE_CARRIER = 'sentry.tracing.trace.carrier';
 
     public const TRACE_SERVER_ADDRESS = 'sentry.tracing.server.address';
 
