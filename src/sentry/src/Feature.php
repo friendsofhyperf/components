@@ -106,7 +106,7 @@ class Feature
     }
 
     /**
-     * @deprecated since v3.1, will be removed in v3.2, use `\FriendsOfHyperf\Sentry\Context::isDisableTracing()` instead.
+     * @deprecated since v3.1, will be removed in v3.2, use `\FriendsOfHyperf\Sentry\Context::isTracingDisabled()` instead.
      */
     public static function isDisableCoroutineTracing(): bool
     {
