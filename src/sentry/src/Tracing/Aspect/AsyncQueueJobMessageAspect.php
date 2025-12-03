@@ -78,7 +78,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
 
         /** @var \Hyperf\AsyncQueue\Driver\Driver $driver */
         $driver = $proceedingJoinPoint->getInstance();
-        $messageId = method_exists($job, 'getId') ? $job->getId() : SentryUid::generate();
+        $messageId = method_exists($job, 'getId') ? call_user_func([$job, 'getId']) : SentryUid::generate();
         $destinationName = Context::get('sentry.messaging.destination.name', 'default');
         $bodySize = (fn ($job) => strlen($this->packer->pack($job)))->call($driver, $job);
         $data = [
