@@ -24,7 +24,6 @@ use Hyperf\Amqp\Event as AmqpEvent;
 use Hyperf\Amqp\Message\ConsumerMessage;
 use Hyperf\AsyncQueue\Event as AsyncQueueEvent;
 use Hyperf\Command\Event as CommandEvent;
-use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Crontab\Event as CrontabEvent;
@@ -574,7 +573,7 @@ class EventHandleListener implements ListenerInterface
             $applicationHeaders = $amqpMessage->has('application_headers') ? $amqpMessage->get('application_headers') : null;
             if ($applicationHeaders && isset($applicationHeaders[Constants::TRACE_CARRIER])) {
                 $carrier = Carrier::fromJson($applicationHeaders[Constants::TRACE_CARRIER]);
-                Context::set(Constants::TRACE_CARRIER, $carrier);
+                SentryContext::setCarrier($carrier);
             }
         }
 
@@ -644,7 +643,7 @@ class EventHandleListener implements ListenerInterface
             foreach ($message->getHeaders() as $header) {
                 if ($header->getHeaderKey() === Constants::TRACE_CARRIER) {
                     $carrier = Carrier::fromJson($header->getValue());
-                    Context::set(Constants::TRACE_CARRIER, $carrier);
+                    SentryContext::setCarrier($carrier);
                     break;
                 }
             }
