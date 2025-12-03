@@ -21,7 +21,7 @@ class SentryContext
 
     public const CTX_DISABLE_COROUTINE_TRACING = 'sentry.ctx.coroutine.disabled';
 
-    public const CTX_CARRIER = 'sentry.ctx.trace.carrier';
+    public const CTX_CARRIER = 'sentry.ctx.carrier';
 
     public const CTX_ELASTICSEARCH_SPAN_DATA = 'sentry.ctx.elasticsearch.span.data';
 
