@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Helpers;
 
 use BackedEnum;
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Closure;
 use Countable;
 use DateTimeZone;
@@ -300,6 +301,16 @@ function fluent($value): Fluent
 }
 
 /**
+ * Get client IP.
+ */
+function get_client_ip(): string
+{
+    /** @var RequestInterface $request */
+    $request = di(RequestInterface::class);
+    return $request->getHeaderLine('x-real-ip') ?: $request->server('remote_addr');
+}
+
+/**
  * @param string|Stringable $message
  */
 function info($message, array $context = [], bool $backtrace = false)
@@ -347,6 +358,30 @@ function logger($message = null, array $context = [], bool $backtrace = false)
 function logs(string $name = 'hyperf', string $group = 'default'): LoggerInterface
 {
     return di(LoggerFactory::class)->get($name, $group);
+}
+
+/**
+ * Get the current date / time plus the given number of microseconds.
+ */
+function microseconds(int $microseconds): CarbonInterval
+{
+    return CarbonInterval::microseconds($microseconds);
+}
+
+/**
+ * Get the current date / time plus the given number of months.
+ */
+function months(int $months): CarbonInterval
+{
+    return CarbonInterval::months($months);
+}
+
+/**
+ * Get the current date / time plus the given number of milliseconds.
+ */
+function milliseconds(int $milliseconds): CarbonInterval
+{
+    return CarbonInterval::milliseconds($milliseconds);
 }
 
 /**
@@ -625,6 +660,14 @@ function validator(array $data = [], array $rules = [], array $messages = [], ar
 }
 
 /**
+ * Get the current date / time plus the given number of weeks.
+ */
+function weeks(int $weeks): CarbonInterval
+{
+    return CarbonInterval::weeks($weeks);
+}
+
+/**
  * @param mixed $expr
  * @param mixed $value
  * @param mixed $default
@@ -635,14 +678,4 @@ function when($expr, $value = null, $default = null)
     $result = value($expr) ? $value : $default;
 
     return $result instanceof Closure ? $result($expr) : $result;
-}
-
-/**
- * Get client IP.
- */
-function get_client_ip(): string
-{
-    /** @var RequestInterface $request */
-    $request = di(RequestInterface::class);
-    return $request->getHeaderLine('x-real-ip') ?: $request->server('remote_addr');
 }
