@@ -37,7 +37,7 @@ class SentryContext
 
     public const CTX_RPC_SERVER_PORT = 'sentry.ctx.rpc.server.port';
 
-    public const CTX_RPC_SPAN_CONTEXT = 'sentry.ctx.rpc.span_context';
+    public const CTX_RPC_SPAN_CONTEXT = 'sentry.ctx.rpc.span.context';
 
     public static function disableTracing(): void
     {
