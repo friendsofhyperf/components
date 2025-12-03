@@ -51,7 +51,7 @@ class SentryContext
 
     public static function isTracingDisabled(): bool
     {
-        return Context::get(self::CTX_DISABLE_COROUTINE_TRACING, false);
+        return (bool) Context::get(self::CTX_DISABLE_COROUTINE_TRACING, false);
     }
 
     public static function setCronCheckInId(string $checkInId): void
