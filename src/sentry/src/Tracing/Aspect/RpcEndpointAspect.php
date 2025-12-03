@@ -39,13 +39,13 @@ class RpcEndpointAspect extends AbstractAspect
 
             // RpcMultiplex
             if ($result instanceof \Hyperf\RpcMultiplex\Socket) {
-                SentryContext::setServerAddress($result->getName());
-                SentryContext::setServerPort($result->getPort());
+                SentryContext::setRpcServerAddress($result->getName());
+                SentryContext::setRpcServerPort($result->getPort());
             }
             // JsonRpcHttpTransporter
             if ($result instanceof \Hyperf\LoadBalancer\Node) {
-                SentryContext::setServerAddress($result->host);
-                SentryContext::setServerPort($result->port);
+                SentryContext::setRpcServerAddress($result->host);
+                SentryContext::setRpcServerPort($result->port);
             }
             // JsonRpcPoolTransporter
             if ($result instanceof \Hyperf\JsonRpc\Pool\RpcConnection) {
