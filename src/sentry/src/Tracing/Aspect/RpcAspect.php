@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
+use FriendsOfHyperf\Sentry\Context as SentryContext;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Context\Context;
@@ -118,8 +119,8 @@ class RpcAspect extends AbstractAspect
                         }
                         if (Context::has(Constants::TRACE_RPC_SERVER_ADDRESS)) {
                             $span?->setData([
-                                'server.address' => Context::get(Constants::TRACE_RPC_SERVER_ADDRESS),
-                                'server.port' => Context::get(Constants::TRACE_RPC_SERVER_PORT),
+                                'server.address' => SentryContext::getRpcServerAddress(),
+                                'server.port' => SentryContext::getRpcServerPort(),
                             ]);
                         }
                     });

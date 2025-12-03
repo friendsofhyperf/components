@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
+use FriendsOfHyperf\Sentry\Context as SentryContext;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\AsyncQueue\Driver\RedisDriver;
@@ -106,7 +107,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
                     $carrier = Carrier::fromArray([])->with($extra);
                 }
 
-                Context::set(Constants::TRACE_CARRIER, $carrier);
+                SentryContext::setCarrier($carrier);
 
                 return $proceedingJoinPoint->process();
             },
@@ -140,7 +141,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     protected function handleSerialize(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return with($proceedingJoinPoint->process(), function ($result) {
-            if (is_array($result) && $carrier = Context::get(Constants::TRACE_CARRIER)) {
+            if (is_array($result) && $carrier = SentryContext::getCarrier()) {
                 if (array_is_list($result)) {
                     $result[] = $carrier->toJson();
                 } elseif (isset($result['job'])) {
@@ -164,7 +165,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
 
         /** @var null|string $carrier */
         if ($carrier) {
-            Context::set(Constants::TRACE_CARRIER, Carrier::fromJson($carrier));
+            SentryContext::setCarrier(Carrier::fromJson($carrier));
         }
 
         return $proceedingJoinPoint->process();
