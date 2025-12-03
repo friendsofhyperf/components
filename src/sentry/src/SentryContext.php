@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry;
 
 use FriendsOfHyperf\Sentry\Util\Carrier;
-use Hyperf\Context\Context as Ctx;
+use Hyperf\Context\Context;
 use Sentry\Tracing\SpanContext;
 
 class SentryContext
@@ -45,141 +45,141 @@ class SentryContext
 
     public static function disableTracing(): void
     {
-        Ctx::set(self::DISABLE_COROUTINE_TRACING, true);
+        Context::set(self::DISABLE_COROUTINE_TRACING, true);
     }
 
     public static function enableTracing(): void
     {
-        Ctx::set(self::DISABLE_COROUTINE_TRACING, false);
+        Context::set(self::DISABLE_COROUTINE_TRACING, false);
     }
 
     public static function isTracingEnabled(): bool
     {
-        return ! Ctx::get(self::DISABLE_COROUTINE_TRACING, false);
+        return ! Context::get(self::DISABLE_COROUTINE_TRACING, false);
     }
 
     public static function isTracingDisabled(): bool
     {
-        return Ctx::get(self::DISABLE_COROUTINE_TRACING, false);
+        return Context::get(self::DISABLE_COROUTINE_TRACING, false);
     }
 
     public static function setCronCheckInId(string $checkInId): void
     {
-        Ctx::set(self::CRON_CHECKIN_ID, $checkInId);
+        Context::set(self::CRON_CHECKIN_ID, $checkInId);
     }
 
     public static function getCronCheckInId(): ?string
     {
-        return Ctx::get(self::CRON_CHECKIN_ID);
+        return Context::get(self::CRON_CHECKIN_ID);
     }
 
     public static function setCarrier(Carrier $carrier): void
     {
-        Ctx::set(self::TRACE_CARRIER, $carrier);
+        Context::set(self::TRACE_CARRIER, $carrier);
     }
 
     public static function getCarrier(?int $coroutineId = null): ?Carrier
     {
-        return Ctx::get(self::TRACE_CARRIER, coroutineId: $coroutineId);
+        return Context::get(self::TRACE_CARRIER, coroutineId: $coroutineId);
     }
 
     public static function setRedisServerAddress(string $address): void
     {
-        Ctx::set(self::TRACE_REDIS_SERVER_ADDRESS, $address);
+        Context::set(self::TRACE_REDIS_SERVER_ADDRESS, $address);
     }
 
     public static function getRedisServerAddress(): ?string
     {
-        return Ctx::get(self::TRACE_REDIS_SERVER_ADDRESS);
+        return Context::get(self::TRACE_REDIS_SERVER_ADDRESS);
     }
 
     public static function setRedisServerPort(int $port): void
     {
-        Ctx::set(self::TRACE_REDIS_SERVER_PORT, $port);
+        Context::set(self::TRACE_REDIS_SERVER_PORT, $port);
     }
 
     public static function getRedisServerPort(): ?int
     {
-        return Ctx::get(self::TRACE_REDIS_SERVER_PORT);
+        return Context::get(self::TRACE_REDIS_SERVER_PORT);
     }
 
     public static function setServerAddress(string $address): void
     {
-        Ctx::set(self::TRACE_SERVER_ADDRESS, $address);
+        Context::set(self::TRACE_SERVER_ADDRESS, $address);
     }
 
     public static function getServerAddress(): ?string
     {
-        return Ctx::get(self::TRACE_SERVER_ADDRESS);
+        return Context::get(self::TRACE_SERVER_ADDRESS);
     }
 
     public static function setServerPort(int $port): void
     {
-        Ctx::set(self::TRACE_SERVER_PORT, $port);
+        Context::set(self::TRACE_SERVER_PORT, $port);
     }
 
     public static function getServerPort(): ?int
     {
-        return Ctx::get(self::TRACE_SERVER_PORT);
+        return Context::get(self::TRACE_SERVER_PORT);
     }
 
     public static function setRpcServerAddress(string $address): void
     {
-        Ctx::set(self::TRACE_RPC_SERVER_ADDRESS, $address);
+        Context::set(self::TRACE_RPC_SERVER_ADDRESS, $address);
     }
 
     public static function getRpcServerAddress(): ?string
     {
-        return Ctx::get(self::TRACE_RPC_SERVER_ADDRESS);
+        return Context::get(self::TRACE_RPC_SERVER_ADDRESS);
     }
 
     public static function setRpcServerPort(int $port): void
     {
-        Ctx::set(self::TRACE_RPC_SERVER_PORT, $port);
+        Context::set(self::TRACE_RPC_SERVER_PORT, $port);
     }
 
     public static function getRpcServerPort(): ?int
     {
-        return Ctx::get(self::TRACE_RPC_SERVER_PORT);
+        return Context::get(self::TRACE_RPC_SERVER_PORT);
     }
 
     public static function setDbServerAddress(string $address): void
     {
-        Ctx::set(self::TRACE_DB_SERVER_ADDRESS, $address);
+        Context::set(self::TRACE_DB_SERVER_ADDRESS, $address);
     }
 
     public static function getDbServerAddress(): ?string
     {
-        return Ctx::get(self::TRACE_DB_SERVER_ADDRESS);
+        return Context::get(self::TRACE_DB_SERVER_ADDRESS);
     }
 
     public static function setDbServerPort(int $port): void
     {
-        Ctx::set(self::TRACE_DB_SERVER_PORT, $port);
+        Context::set(self::TRACE_DB_SERVER_PORT, $port);
     }
 
     public static function getDbServerPort(): ?int
     {
-        return Ctx::get(self::TRACE_DB_SERVER_PORT);
+        return Context::get(self::TRACE_DB_SERVER_PORT);
     }
 
     public static function setElasticsearchSpanData(array $data): void
     {
-        Ctx::set(self::TRACE_ELASTICSEARCH_SPAN_DATA, $data);
+        Context::set(self::TRACE_ELASTICSEARCH_SPAN_DATA, $data);
     }
 
     public static function getElasticsearchSpanData(): ?array
     {
-        return Ctx::get(self::TRACE_ELASTICSEARCH_SPAN_DATA);
+        return Context::get(self::TRACE_ELASTICSEARCH_SPAN_DATA);
     }
 
     public static function setRpcSpanContext(SpanContext $spanContext): void
     {
-        Ctx::set(self::TRACE_RPC_SPAN_CONTEXT, $spanContext);
+        Context::set(self::TRACE_RPC_SPAN_CONTEXT, $spanContext);
     }
 
     public static function getRpcSpanContext(): ?SpanContext
     {
-        return Ctx::get(self::TRACE_RPC_SPAN_CONTEXT);
+        return Context::get(self::TRACE_RPC_SPAN_CONTEXT);
     }
 }
