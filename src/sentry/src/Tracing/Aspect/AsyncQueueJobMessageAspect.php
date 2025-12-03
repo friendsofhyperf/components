@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
+use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\AsyncQueue\Driver\RedisDriver;
 use Hyperf\Context\Context;
@@ -77,7 +78,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
 
         /** @var \Hyperf\AsyncQueue\Driver\Driver $driver */
         $driver = $proceedingJoinPoint->getInstance();
-        $messageId = method_exists($job, 'getId') ? $job->getId() : SentryUid::generate();
+        $messageId = method_exists($job, 'getId') ? call_user_func([$job, 'getId']) : SentryUid::generate();
         $destinationName = Context::get('sentry.messaging.destination.name', 'default');
         $bodySize = (fn ($job) => strlen($this->packer->pack($job)))->call($driver, $job);
         $data = [
@@ -106,7 +107,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
                     $carrier = Carrier::fromArray([])->with($extra);
                 }
 
-                Context::set(Constants::TRACE_CARRIER, $carrier);
+                SentryContext::setCarrier($carrier);
 
                 return $proceedingJoinPoint->process();
             },
@@ -140,7 +141,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
     protected function handleSerialize(ProceedingJoinPoint $proceedingJoinPoint)
     {
         return with($proceedingJoinPoint->process(), function ($result) {
-            if (is_array($result) && $carrier = Context::get(Constants::TRACE_CARRIER)) {
+            if (is_array($result) && $carrier = SentryContext::getCarrier()) {
                 $result[Constants::TRACE_CARRIER] = $carrier->toJson();
             }
 
@@ -156,7 +157,7 @@ class AsyncQueueJobMessageAspect extends AbstractAspect
         $carrier = $data['job'] ?? null;
 
         if ($carrier) {
-            Context::set(Constants::TRACE_CARRIER, Carrier::fromJson($carrier));
+            SentryContext::setCarrier(Carrier::fromJson($carrier));
         }
 
         return $proceedingJoinPoint->process();

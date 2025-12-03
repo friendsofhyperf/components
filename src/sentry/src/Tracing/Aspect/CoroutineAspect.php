@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
+use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Util\CoroutineBacktraceHelper;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -46,7 +47,7 @@ class CoroutineAspect extends AbstractAspect
     {
         if (
             ! $this->feature->isTracingSpanEnabled('coroutine')
-            || Feature::isDisableCoroutineTracing()
+            || SentryContext::isTracingDisabled()
         ) {
             return $proceedingJoinPoint->process();
         }

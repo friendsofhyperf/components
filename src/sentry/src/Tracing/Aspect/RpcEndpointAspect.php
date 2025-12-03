@@ -11,9 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
-use Hyperf\Context\Context;
+use FriendsOfHyperf\Sentry\SentryContext;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 
@@ -40,13 +39,13 @@ class RpcEndpointAspect extends AbstractAspect
 
             // RpcMultiplex
             if ($result instanceof \Hyperf\RpcMultiplex\Socket) {
-                Context::set(Constants::TRACE_RPC_SERVER_ADDRESS, $result->getName());
-                Context::set(Constants::TRACE_RPC_SERVER_PORT, $result->getPort());
+                SentryContext::setRpcServerAddress($result->getName());
+                SentryContext::setRpcServerPort($result->getPort());
             }
             // JsonRpcHttpTransporter
             if ($result instanceof \Hyperf\LoadBalancer\Node) {
-                Context::set(Constants::TRACE_RPC_SERVER_ADDRESS, $result->host);
-                Context::set(Constants::TRACE_RPC_SERVER_PORT, $result->port);
+                SentryContext::setRpcServerAddress($result->host);
+                SentryContext::setRpcServerPort($result->port);
             }
             // JsonRpcPoolTransporter
             if ($result instanceof \Hyperf\JsonRpc\Pool\RpcConnection) {
@@ -56,8 +55,8 @@ class RpcEndpointAspect extends AbstractAspect
                     /** @var null|\Hyperf\Engine\Contract\Socket\SocketOptionInterface $option */
                     $option = $socket->getSocketOption();
                     if ($option instanceof \Hyperf\Engine\Contract\Socket\SocketOptionInterface) {
-                        Context::set(Constants::TRACE_RPC_SERVER_ADDRESS, $option->getHost());
-                        Context::set(Constants::TRACE_RPC_SERVER_PORT, $option->getPort());
+                        SentryContext::setRpcServerAddress($option->getHost());
+                        SentryContext::setRpcServerPort($option->getPort());
                     }
                 }
             }

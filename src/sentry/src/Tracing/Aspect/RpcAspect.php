@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
+use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
@@ -76,7 +77,7 @@ class RpcAspect extends AbstractAspect
         };
 
         // https://github.com/open-telemetry/semantic-conventions/blob/main/docs/rpc/rpc-spans.md
-        Context::set(static::SPAN_CONTEXT, SpanContext::make()
+        SentryContext::setRpcSpanContext(SpanContext::make()
             ->setOp('rpc.client')
             ->setDescription($path)
             ->setOrigin('auto.rpc')
@@ -91,8 +92,7 @@ class RpcAspect extends AbstractAspect
 
     private function handleSend(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        /** @var null|SpanContext $spanContext */
-        $spanContext = Context::get(static::SPAN_CONTEXT);
+        $spanContext = SentryContext::getRpcSpanContext();
 
         if (! $spanContext) {
             return $proceedingJoinPoint->process();
@@ -116,18 +116,16 @@ class RpcAspect extends AbstractAspect
                         if ($this->feature->isTracingTagEnabled('rpc.result')) {
                             $span?->setData(['rpc.result' => $result]);
                         }
-                        if (Context::has(Constants::TRACE_RPC_SERVER_ADDRESS)) {
-                            $span?->setData([
-                                'server.address' => Context::get(Constants::TRACE_RPC_SERVER_ADDRESS),
-                                'server.port' => Context::get(Constants::TRACE_RPC_SERVER_PORT),
-                            ]);
-                        }
+                        $span?->setData([
+                            'server.address' => SentryContext::getRpcServerAddress() ?? 'unknown',
+                            'server.port' => SentryContext::getRpcServerPort() ?? 0,
+                        ]);
                     });
                 },
                 $spanContext
             );
         } finally {
-            Context::destroy(static::SPAN_CONTEXT);
+            SentryContext::destroyRpcSpanContext();
         }
     }
 }

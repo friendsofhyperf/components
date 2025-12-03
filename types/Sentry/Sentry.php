@@ -138,9 +138,6 @@ assertType('bool', $feature->isTracingSpanEnabled('foo'));
 assertType('bool', $feature->isTracingTagEnabled('foo'));
 assertType('bool', $feature->isCronsEnabled());
 
-Feature::disableCoroutineTracing();
-assertType('bool', Feature::isDisableCoroutineTracing());
-
 assertType('string', Integration::sentryMeta());
 assertType('string', Integration::sentryTracingMeta());
 assertType('string', Integration::sentryBaggageMeta());

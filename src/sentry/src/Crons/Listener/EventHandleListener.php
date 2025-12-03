@@ -11,9 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Crons\Listener;
 
-use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
-use Hyperf\Context\Context;
+use FriendsOfHyperf\Sentry\SentryContext;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Crontab\Event;
@@ -90,13 +89,13 @@ class EventHandleListener implements ListenerInterface
             monitorConfig: $monitorConfig,
         );
 
-        Context::set(Constants::CRON_CHECKIN_ID, $checkInId);
+        SentryContext::setCronCheckInId($checkInId);
     }
 
     protected function handleCrontabTaskFinished(Event\AfterExecute $event): void
     {
-        /** @var null|string $checkInId */
-        $checkInId = Context::get(Constants::CRON_CHECKIN_ID);
+        $checkInId = SentryContext::getCronCheckInId();
+
         if (! $checkInId) {
             return;
         }
@@ -113,8 +112,8 @@ class EventHandleListener implements ListenerInterface
 
     protected function handleCrontabTaskFailed(Event\FailToExecute $event): void
     {
-        /** @var null|string $checkInId */
-        $checkInId = Context::get(Constants::CRON_CHECKIN_ID);
+        $checkInId = SentryContext::getCronCheckInId();
+
         if (! $checkInId) {
             return;
         }

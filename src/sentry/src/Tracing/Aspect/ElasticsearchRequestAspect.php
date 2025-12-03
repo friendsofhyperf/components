@@ -11,9 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
-use Hyperf\Context\Context;
+use FriendsOfHyperf\Sentry\SentryContext;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Http\Message\RequestInterface;
@@ -41,7 +40,7 @@ class ElasticsearchRequestAspect extends AbstractAspect
                     'http.request.method' => $request->getMethod(),
                     'url.full' => $this->getFullUrl($request),
                 ];
-                Context::set(Constants::TRACE_ELASTICSEARCH_REQUEST_DATA, $data);
+                SentryContext::setElasticsearchSpanData($data);
             }
         }
 

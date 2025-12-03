@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry;
 
-use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Sentry\SentrySdk;
 
@@ -87,15 +86,5 @@ class Feature
     public function isCronsEnabled(): bool
     {
         return (bool) $this->config->get('sentry.crons.enable', true);
-    }
-
-    public static function disableCoroutineTracing(): void
-    {
-        Context::set(Constants::DISABLE_COROUTINE_TRACING, true);
-    }
-
-    public static function isDisableCoroutineTracing(): bool
-    {
-        return (bool) Context::get(Constants::DISABLE_COROUTINE_TRACING);
     }
 }
