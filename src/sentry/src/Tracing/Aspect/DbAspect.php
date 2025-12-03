@@ -70,8 +70,8 @@ class DbAspect extends AbstractAspect
                 /** @var \Hyperf\DB\AbstractConnection $connection */
                 $server = $this->serverCache[$connection] ?? null;
                 if ($server !== null) {
-                    SentryContext::setServerAddress($server['host'] ?? 'localhost');
-                    SentryContext::setServerPort((int) ($server['port'] ?? 3306));
+                    SentryContext::setDbServerAddress($server['host'] ?? 'localhost');
+                    SentryContext::setDbServerPort((int) ($server['port'] ?? 3306));
                 }
             });
         }
