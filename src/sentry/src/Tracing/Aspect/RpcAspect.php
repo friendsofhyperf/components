@@ -125,7 +125,7 @@ class RpcAspect extends AbstractAspect
                 $spanContext
             );
         } finally {
-            Context::destroy(SentryContext::TRACE_RPC_SPAN_CONTEXT);
+            SentryContext::destroyRpcSpanContext();
         }
     }
 }

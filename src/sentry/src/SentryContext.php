@@ -182,4 +182,9 @@ class SentryContext
     {
         return Context::get(self::CTX_RPC_SPAN_CONTEXT);
     }
+
+    public static function destroyRpcSpanContext(): void
+    {
+        Context::destroy(self::CTX_RPC_SPAN_CONTEXT);
+    }
 }
