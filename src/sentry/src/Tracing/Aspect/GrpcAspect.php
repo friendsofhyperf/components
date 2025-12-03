@@ -15,6 +15,8 @@ use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
+use Hyperf\GrpcClient\BaseClient;
+use Hyperf\GrpcClient\GrpcClient;
 use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
@@ -38,12 +40,20 @@ class GrpcAspect extends AbstractAspect
             return $proceedingJoinPoint->process();
         }
 
+        /** @var BaseClient $instance */
+        $instance = $proceedingJoinPoint->getInstance();
+        /** @var GrpcClient $grpcClient */
+        $grpcClient = $instance->_getGrpcClient();
+        [$serverAddress, $serverPort] = (fn () => [$this->host ?? null, $this->port ?? null])->call($grpcClient);
+
         $method = $proceedingJoinPoint->arguments['keys']['method'];
         $options = $proceedingJoinPoint->arguments['keys']['options'];
         $data = [
             'rpc.system' => 'grpc',
             'rpc.method' => $method,
             'rpc.options' => $options,
+            'server.address' => $serverAddress,
+            'server.port' => $serverPort,
         ];
 
         $parent = SentrySdk::getCurrentHub()->getSpan();
