@@ -11,10 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
+use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
-use Hyperf\Context\Context;
 use Hyperf\DB\Pool\PoolFactory;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -71,8 +70,8 @@ class DbAspect extends AbstractAspect
                 /** @var \Hyperf\DB\AbstractConnection $connection */
                 $server = $this->serverCache[$connection] ?? null;
                 if ($server !== null) {
-                    Context::set(Constants::TRACE_DB_SERVER_ADDRESS, $server['host'] ?? 'localhost');
-                    Context::set(Constants::TRACE_DB_SERVER_PORT, $server['port'] ?? 3306);
+                    SentryContext::setDbServerAddress($server['host'] ?? 'localhost');
+                    SentryContext::setDbServerPort((int) ($server['port'] ?? 3306));
                 }
             });
         }
@@ -108,8 +107,8 @@ class DbAspect extends AbstractAspect
             'db.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
             'db.pool.idle' => $pool->getConnectionsInChannel(),
             'db.pool.using' => $pool->getCurrentConnections(),
-            'server.host' => Context::get(Constants::TRACE_DB_SERVER_ADDRESS, 'localhost'),
-            'server.port' => Context::get(Constants::TRACE_DB_SERVER_PORT, 3306),
+            'server.host' => SentryContext::getDbServerAddress() ?? 'localhost',
+            'server.port' => SentryContext::getDbServerPort() ?? 3306,
         ];
 
         if ($this->feature->isTracingTagEnabled('db.sql.bindings', true)) {

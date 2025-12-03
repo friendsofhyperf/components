@@ -11,10 +11,9 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
+use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Util\RedisClusterKeySlot;
-use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Redis;
@@ -47,8 +46,8 @@ class RedisConnectionAspect extends AbstractAspect
             $connection = (fn () => $this->connection ?? null)->call($redisConnection);
 
             if ($connection instanceof Redis) { // Redis or RedisSentinel
-                Context::set(Constants::TRACE_REDIS_SERVER_ADDRESS, $connection->getHost());
-                Context::set(Constants::TRACE_REDIS_SERVER_PORT, $connection->getPort());
+                SentryContext::setRedisServerAddress($connection->getHost());
+                SentryContext::setRedisServerPort($connection->getPort());
             }
 
             if ($connection instanceof RedisCluster) { // RedisCluster
@@ -57,8 +56,8 @@ class RedisConnectionAspect extends AbstractAspect
                 if (is_string($key)) {
                     $node = $this->getClusterNodeBySlot($connection, $key);
                     if ($node !== null) {
-                        Context::set(Constants::TRACE_REDIS_SERVER_ADDRESS, $node['host']);
-                        Context::set(Constants::TRACE_REDIS_SERVER_PORT, $node['port']);
+                        SentryContext::setRedisServerAddress($node['host']);
+                        SentryContext::setRedisServerPort((int) $node['port']);
                     }
                 }
             }

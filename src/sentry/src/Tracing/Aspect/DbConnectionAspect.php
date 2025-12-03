@@ -11,8 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
-use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
+use FriendsOfHyperf\Sentry\SentryContext;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -57,8 +57,8 @@ class DbConnectionAspect extends AbstractAspect
                 $server = $this->serverCache[$pdo] ?? null;
 
                 if (is_array($server)) {
-                    Context::set(Constants::TRACE_DB_SERVER_ADDRESS, $server['host']);
-                    Context::set(Constants::TRACE_DB_SERVER_PORT, $server['port']);
+                    SentryContext::setDbServerAddress($server['host']);
+                    SentryContext::setDbServerPort((int) $server['port']);
                 }
 
                 return true;

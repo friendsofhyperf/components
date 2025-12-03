@@ -52,7 +52,7 @@ class GrpcAspect extends AbstractAspect
             'rpc.system' => 'grpc',
             'rpc.method' => $method,
             'rpc.options' => $options,
-            'server.address' => $serverAddress,
+            'server.address' => (string) ($serverAddress ?? 'unknown'),
             'server.port' => $serverPort,
         ];
 

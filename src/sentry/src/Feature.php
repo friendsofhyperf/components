@@ -97,11 +97,17 @@ class Feature
         return (bool) $this->config->get('sentry.crons.enable', true);
     }
 
+    /**
+     * @deprecated since v3.1, will be removed in v3.2, use `\FriendsOfHyperf\Sentry\Context::disableTracing()` instead.
+     */
     public static function disableCoroutineTracing(): void
     {
         Context::set(Constants::DISABLE_COROUTINE_TRACING, true);
     }
 
+    /**
+     * @deprecated since v3.1, will be removed in v3.2, use `\FriendsOfHyperf\Sentry\Context::isTracingDisabled()` instead.
+     */
     public static function isDisableCoroutineTracing(): bool
     {
         return (bool) Context::get(Constants::DISABLE_COROUTINE_TRACING);

@@ -15,6 +15,7 @@ use Closure;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
+use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use FriendsOfHyperf\Sentry\Util\CoContainer;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
@@ -23,7 +24,6 @@ use Hyperf\Amqp\Event as AmqpEvent;
 use Hyperf\Amqp\Message\ConsumerMessage;
 use Hyperf\AsyncQueue\Event as AsyncQueueEvent;
 use Hyperf\Command\Event as CommandEvent;
-use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coroutine\Coroutine;
 use Hyperf\Crontab\Event as CrontabEvent;
@@ -193,8 +193,8 @@ class EventHandleListener implements ListenerInterface
             'db.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
             'db.pool.idle' => $pool->getConnectionsInChannel(),
             'db.pool.using' => $pool->getCurrentConnections(),
-            'server.address' => (string) Context::get(Constants::TRACE_DB_SERVER_ADDRESS, 'localhost'),
-            'server.port' => (int) Context::get(Constants::TRACE_DB_SERVER_PORT, 3306),
+            'server.address' => SentryContext::getDbServerAddress() ?? 'localhost',
+            'server.port' => SentryContext::getDbServerPort() ?? 3306,
         ];
 
         if ($this->feature->isTracingTagEnabled('db.sql.bindings', true)) {
@@ -499,8 +499,8 @@ class EventHandleListener implements ListenerInterface
                     'db.redis.pool.idle' => $pool->getConnectionsInChannel(),
                     'db.redis.pool.using' => $pool->getCurrentConnections(),
                     'duration' => $event->time * 1000,
-                    'server.address' => (string) Context::get(Constants::TRACE_REDIS_SERVER_ADDRESS, 'localhost'),
-                    'server.port' => (int) Context::get(Constants::TRACE_REDIS_SERVER_PORT, 6379),
+                    'server.address' => SentryContext::getRedisServerAddress() ?? 'localhost',
+                    'server.port' => SentryContext::getRedisServerPort() ?? 6379,
                 ])
                 ->setStartTimestamp(microtime(true) - $event->time / 1000)
         );
@@ -573,7 +573,7 @@ class EventHandleListener implements ListenerInterface
             $applicationHeaders = $amqpMessage->has('application_headers') ? $amqpMessage->get('application_headers') : null;
             if ($applicationHeaders && isset($applicationHeaders[Constants::TRACE_CARRIER])) {
                 $carrier = Carrier::fromJson($applicationHeaders[Constants::TRACE_CARRIER]);
-                Context::set(Constants::TRACE_CARRIER, $carrier);
+                SentryContext::setCarrier($carrier);
             }
         }
 
@@ -643,7 +643,7 @@ class EventHandleListener implements ListenerInterface
             foreach ($message->getHeaders() as $header) {
                 if ($header->getHeaderKey() === Constants::TRACE_CARRIER) {
                     $carrier = Carrier::fromJson($header->getValue());
-                    Context::set(Constants::TRACE_CARRIER, $carrier);
+                    SentryContext::setCarrier($carrier);
                     break;
                 }
             }
@@ -699,8 +699,7 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        /** @var null|Carrier $carrier */
-        $carrier = Context::get(Constants::TRACE_CARRIER, null, Coroutine::parentId());
+        $carrier = SentryContext::getCarrier(Coroutine::parentId());
         $job = $event->getMessage()->job();
 
         $transaction = startTransaction(

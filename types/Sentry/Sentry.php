@@ -139,9 +139,6 @@ assertType('bool', $feature->isTracingSpanEnabled('foo'));
 assertType('bool', $feature->isTracingTagEnabled('foo'));
 assertType('bool', $feature->isCronsEnabled());
 
-Feature::disableCoroutineTracing();
-assertType('bool', Feature::isDisableCoroutineTracing());
-
 $switcher = new Switcher($config);
 assertType('bool', $switcher->isEnable('foo'));
 assertType('bool', $switcher->isExceptionIgnored(RuntimeException::class));
