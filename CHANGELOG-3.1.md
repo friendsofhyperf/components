@@ -1,5 +1,23 @@
 # Changelog
 
+## v3.1.75 - 2025-12-03
+
+### What's Changed
+
+* feat: add server address tracing for Redis connections by @huangdijia in https://github.com/friendsofhyperf/components/pull/1021
+* feat: add server address tracing for database connections by @huangdijia in https://github.com/friendsofhyperf/components/pull/1024
+* fix: improve database read/write connection tracing by @huangdijia in https://github.com/friendsofhyperf/components/pull/1025
+* feat: add server address tracing for RedisCluster connections by @huangdijia in https://github.com/friendsofhyperf/components/pull/1026
+* refactor: optimize database server address tracing with WeakMap by @huangdijia in https://github.com/friendsofhyperf/components/pull/1027
+* feat: enhance DB connection tracing with real-time server address detection by @huangdijia in https://github.com/friendsofhyperf/components/pull/1028
+* feat: add feature flag support for tracing aspects by @huangdijia in https://github.com/friendsofhyperf/components/pull/1029
+* Add refresh, isExpired, getRemainingLifetime methods to lock drivers by @Copilot in https://github.com/friendsofhyperf/components/pull/1031
+* feat: Support Trace Metrics by @huangdijia in https://github.com/friendsofhyperf/components/pull/1032
+* fix: replace filter with contains method in ClassAliasAutoloader by @huangdijia in https://github.com/friendsofhyperf/components/pull/1033
+* feat: enhance Sentry metrics with configurable default metrics collection by @huangdijia in https://github.com/friendsofhyperf/components/pull/1034
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.74...v3.1.75
+
 ## v3.1.74 - 2025-11-21
 
 ### What's Changed
