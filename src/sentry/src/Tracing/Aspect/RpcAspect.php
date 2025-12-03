@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
-use FriendsOfHyperf\Sentry\Context as SentryContext;
 use FriendsOfHyperf\Sentry\Feature;
+use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
@@ -77,7 +77,7 @@ class RpcAspect extends AbstractAspect
         };
 
         // https://github.com/open-telemetry/semantic-conventions/blob/main/docs/rpc/rpc-spans.md
-        Context::set(static::SPAN_CONTEXT, SpanContext::make()
+        SentryContext::setRpcSpanContext(SpanContext::make()
             ->setOp('rpc.client')
             ->setDescription($path)
             ->setOrigin('auto.rpc')
@@ -92,8 +92,7 @@ class RpcAspect extends AbstractAspect
 
     private function handleSend(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        /** @var null|SpanContext $spanContext */
-        $spanContext = Context::get(static::SPAN_CONTEXT);
+        $spanContext = SentryContext::getRpcSpanContext();
 
         if (! $spanContext) {
             return $proceedingJoinPoint->process();
@@ -126,7 +125,7 @@ class RpcAspect extends AbstractAspect
                 $spanContext
             );
         } finally {
-            Context::destroy(static::SPAN_CONTEXT);
+            Context::destroy(SentryContext::TRACE_RPC_SPAN_CONTEXT);
         }
     }
 }

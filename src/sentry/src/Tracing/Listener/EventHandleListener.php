@@ -13,9 +13,9 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 
 use Closure;
 use FriendsOfHyperf\Sentry\Constants;
-use FriendsOfHyperf\Sentry\Context as SentryContext;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
+use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use FriendsOfHyperf\Sentry\Util\CoContainer;
 use FriendsOfHyperf\Sentry\Util\SqlParser;

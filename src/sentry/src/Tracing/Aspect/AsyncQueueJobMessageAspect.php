@@ -12,8 +12,8 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
-use FriendsOfHyperf\Sentry\Context as SentryContext;
 use FriendsOfHyperf\Sentry\Feature;
+use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\AsyncQueue\Driver\RedisDriver;
 use Hyperf\Context\Context;

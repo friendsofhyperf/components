@@ -13,8 +13,9 @@ namespace FriendsOfHyperf\Sentry;
 
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use Hyperf\Context\Context as Ctx;
+use Sentry\Tracing\SpanContext;
 
-class Context
+class SentryContext
 {
     public const TRACE_CARRIER = 'sentry.tracing.trace_carrier';
 
@@ -39,6 +40,8 @@ class Context
     public const TRACE_RPC_SERVER_ADDRESS = 'sentry.tracing.rpc.server.address';
 
     public const TRACE_RPC_SERVER_PORT = 'sentry.tracing.rpc.server.port';
+
+    public const TRACE_RPC_SPAN_CONTEXT = 'sentry.tracing.rpc.span_context';
 
     public static function disableTracing(): void
     {
@@ -168,5 +171,15 @@ class Context
     public static function getElasticsearchSpanData(): ?array
     {
         return Ctx::get(self::TRACE_ELASTICSEARCH_SPAN_DATA);
+    }
+
+    public static function setRpcSpanContext(SpanContext $spanContext): void
+    {
+        Ctx::set(self::TRACE_RPC_SPAN_CONTEXT, $spanContext);
+    }
+
+    public static function getRpcSpanContext(): ?SpanContext
+    {
+        return Ctx::get(self::TRACE_RPC_SPAN_CONTEXT);
     }
 }
