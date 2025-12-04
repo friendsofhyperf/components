@@ -21,7 +21,7 @@ return [
     'environment' => env('APP_ENV', 'production'),
 
     // @see: https://docs.sentry.io/platforms/php/configuration/options/#server_name
-    'server_name' => env('SENTRY_SERVER_NAME', gethostname()),
+    // 'server_name' => env('SENTRY_SERVER_NAME', gethostname()),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#sample_rate
     'sample_rate' => env('SENTRY_SAMPLE_RATE') === null ? 1.0 : (float) env('SENTRY_SAMPLE_RATE'),
