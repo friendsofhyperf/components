@@ -20,6 +20,9 @@ return [
     // When left empty or `null` the environment will be used (usually discovered from `APP_ENV` in your `.env`)
     'environment' => env('APP_ENV', 'production'),
 
+    // @see: https://docs.sentry.io/platforms/php/configuration/options/#server_name
+    'server_name' => env('SENTRY_SERVER_NAME', gethostname()),
+
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#sample_rate
     'sample_rate' => env('SENTRY_SAMPLE_RATE') === null ? 1.0 : (float) env('SENTRY_SAMPLE_RATE'),
 
@@ -40,13 +43,29 @@ return [
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#enable_logs
     'enable_logs' => env('SENTRY_ENABLE_LOGS', true),
 
+    // @see: https://docs.sentry.io/platforms/php/configuration/options/#before_send_log
+    // 'before_send_log' => function (Sentry\Logs\Log $log): Sentry\Logs\Log {
+    //     return $log;
+    // },
+
+    'logs_channel_level' => env('SENTRY_LOGS_CHANNEL_LEVEL', Sentry\Logs\LogLevel::debug()),
+
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#enable_metrics
     'enable_metrics' => env('SENTRY_ENABLE_METRICS', true),
+
+    // @see: https://docs.sentry.io/platforms/php/configuration/options/#before_send_metric
+    // 'before_send_metric' => function (Sentry\Metrics\Types\Metric $metric): ?Sentry\Metrics\Types\Metric {
+    //     return $metric;
+    // },
+
+    // @see: https://docs.sentry.io/platforms/php/configuration/options/#before_send_check_in
+    // 'before_send_check_in' => function (Sentry\Event $event): Sentry\Event {
+    //     return $event;
+    // },
+
     'enable_default_metrics' => env('SENTRY_ENABLE_DEFAULT_METRICS', true),
     'enable_command_metrics' => env('SENTRY_ENABLE_COMMAND_METRICS', true),
     'metrics_interval' => (int) env('SENTRY_METRICS_INTERVAL', 10),
-
-    'logs_channel_level' => env('SENTRY_LOGS_CHANNEL_LEVEL', Sentry\Logs\LogLevel::debug()),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#send_default_pii
     'send_default_pii' => env('SENTRY_SEND_DEFAULT_PII', true),
@@ -54,6 +73,24 @@ return [
     // Must instanceof Psr\Log\LoggerInterface
     // 'logger' => Hyperf\Contract\StdoutLoggerInterface::class,
 
+    // @see: https://docs.sentry.io/platforms/php/configuration/options/#ignore_exceptions
+    'ignore_exceptions' => [
+        Hyperf\HttpMessage\Exception\NotFoundHttpException::class,
+        Hyperf\HttpMessage\Exception\MethodNotAllowedHttpException::class,
+        Hyperf\Validation\ValidationException::class,
+    ],
+
+    // @see: before_send_transaction
+    // 'before_send_transaction' => function (Sentry\Event $event): Sentry\Event {
+    //     return $event;
+    // },
+
+    // @see: https://docs.sentry.io/platforms/php/configuration/options/#ignore_transactions
+    'ignore_transactions' => [
+        'GET /health',
+    ],
+
+    // Enable or disable specific integrations
     'enable' => [
         'amqp' => env('SENTRY_ENABLE_AMQP', true),
         'async_queue' => env('SENTRY_ENABLE_ASYNC_QUEUE', true),
@@ -63,6 +100,7 @@ return [
         'request' => env('SENTRY_ENABLE_REQUEST', true),
     ],
 
+    // Breadcrumbs configuration
     'breadcrumbs' => [
         'async_queue' => env('SENTRY_BREADCRUMBS_ASYNC_QUEUE', true),
         'cache' => env('SENTRY_BREADCRUMBS_CACHE', true),
@@ -77,19 +115,11 @@ return [
         'logs' => env('SENTRY_BREADCRUMBS_LOGS', true),
     ],
 
+    // Additional integrations to register
     'integrations' => [
     ],
 
-    'ignore_exceptions' => [
-        Hyperf\HttpMessage\Exception\NotFoundHttpException::class,
-        Hyperf\HttpMessage\Exception\MethodNotAllowedHttpException::class,
-        Hyperf\Validation\ValidationException::class,
-    ],
-
-    'ignore_transactions' => [
-        'GET /health',
-    ],
-
+    // Commands to ignore for performance monitoring
     'ignore_commands' => [
         'crontab:run',
         'gen:*',
@@ -109,6 +139,8 @@ return [
         'missing_routes' => env('SENTRY_TRACING_ENABLE_MISSING_ROUTES', true),
         'request' => env('SENTRY_TRACING_ENABLE_REQUEST', true),
     ],
+
+    // Enable or disable specific tracing spans
     'tracing_spans' => [
         'cache' => env('SENTRY_TRACING_SPANS_CACHE', true),
         'coroutine' => env('SENTRY_TRACING_SPANS_COROUTINE', true),
@@ -122,6 +154,8 @@ return [
         'sql_queries' => env('SENTRY_TRACING_SPANS_SQL_QUERIES', true),
         'view' => env('SENTRY_TRACING_SPANS_VIEW', true),
     ],
+
+    // Whether to include the given tags in tracing spans
     'tracing_tags' => [
         'amqp.result' => false,
         'annotation.result' => false,
@@ -133,6 +167,7 @@ return [
         'rpc.result' => false,
     ],
 
+    // Crons configuration
     'crons' => [
         'enable' => env('SENTRY_CRONS_ENABLE', true),
         'checkin_margin' => (int) env('SENTRY_CRONS_CHECKIN_MARGIN', 5),
@@ -140,6 +175,7 @@ return [
         'timezone' => env('SENTRY_CRONS_TIMEZONE', date_default_timezone_get()),
     ],
 
+    // Transport configuration
     'transport_channel_size' => (int) env('SENTRY_TRANSPORT_CHANNEL_SIZE', 65535),
     'transport_concurrent_limit' => (int) env('SENTRY_TRANSPORT_CONCURRENT_LIMIT', 1000),
 
