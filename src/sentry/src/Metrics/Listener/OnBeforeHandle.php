@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Metrics\Traits\MetricSetter;
+use FriendsOfHyperf\Sentry\SentryContext;
 use Hyperf\Command\Event\BeforeHandle;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coordinator\Timer;
@@ -48,6 +49,7 @@ class OnBeforeHandle implements ListenerInterface
     {
         if (
             ! $event instanceof BeforeHandle
+            || SentryContext::getCronCheckInId() // Prevent duplicate metrics in cron job.
             || ! $event->getCommand()->getApplication()->isAutoExitEnabled() // Only enable in the command with auto exit.
             || ! $this->feature->isCommandMetricsEnabled()
         ) {
