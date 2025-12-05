@@ -114,7 +114,7 @@ interface Repository extends \Psr\SimpleCache\CacheInterface
      *
      * @param string $key
      * @param null|DateInterval|DateTimeInterface|int $ttl
-     * @param Closure(): TCacheValue $callback
+     * @param (Closure(): TCacheValue) $callback
      * @return TCacheValue
      */
     public function remember($key, $ttl, Closure $callback);
@@ -125,7 +125,7 @@ interface Repository extends \Psr\SimpleCache\CacheInterface
      * @template TCacheValue
      *
      * @param string $key
-     * @param Closure(): TCacheValue $callback
+     * @param (Closure(): TCacheValue) $callback
      * @return TCacheValue
      */
     public function rememberForever($key, Closure $callback);
@@ -136,7 +136,7 @@ interface Repository extends \Psr\SimpleCache\CacheInterface
      * @template TCacheValue
      *
      * @param string $key
-     * @param Closure(): TCacheValue $callback
+     * @param (Closure(): TCacheValue) $callback
      * @return TCacheValue
      */
     public function sear($key, Closure $callback);

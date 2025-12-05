@@ -57,7 +57,7 @@ interface RequestInterface
     public function except($keys): array;
 
     /**
-     * @param null|Closure(ServerRequestInterface):ServerRequestInterface $closure
+     * @param null|(Closure(ServerRequestInterface):ServerRequestInterface) $closure
      */
     public static function fake(?Closure $closure = null): ServerRequestInterface;
 

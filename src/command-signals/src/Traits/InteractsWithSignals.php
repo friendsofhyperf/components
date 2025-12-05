@@ -24,7 +24,7 @@ trait InteractsWithSignals
      * Define a callback to be run when the given signal(s) occurs.
      *
      * @param int|int[] $signo
-     * @param callable(int $signo): void $callback
+     * @param (callable(int $signo): void) $callback
      */
     protected function trap(array|int $signo, callable $callback): void
     {

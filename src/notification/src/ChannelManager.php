@@ -47,7 +47,7 @@ class ChannelManager implements Dispatcher
     }
 
     /**
-     * @param class-string<Channel>|Channel|Closure():Channel $class
+     * @param class-string<Channel>|Channel|(Closure():Channel) $class
      */
     public function register(string $name, string|Channel|Closure $class, bool $replace = false): void
     {

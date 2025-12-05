@@ -92,9 +92,9 @@ function retry($times, callable $callback, $sleepMilliseconds = 0, $when = null)
 /**
  * Ensures a callable is only called once, and returns the result on subsequent calls.
  *
- * @template  TReturnType
+ * @template TReturnType
  *
- * @param callable(): TReturnType $callback
+ * @param (callable(): TReturnType) $callback
  * @return TReturnType
  */
 function once(callable $callback)

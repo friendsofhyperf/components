@@ -48,7 +48,7 @@ function startTransaction(TransactionContext $transactionContext, array $customS
  *
  * @template T
  *
- * @param callable(Scope):T $trace
+ * @param (callable(Scope):T) $trace
  * @return T
  */
 function trace(callable $trace, SpanContext $context)

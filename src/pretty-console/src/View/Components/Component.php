@@ -34,7 +34,7 @@ abstract class Component
     /**
      * The list of mutators to apply on the view data.
      *
-     * @var array<int, callable(string): string>
+     * @var array<int,(callable(string): string)>
      */
     protected $mutators;
 
@@ -82,9 +82,9 @@ abstract class Component
     /**
      * Mutates the given data with the given set of mutators.
      *
-     * @param array<int, string>|string $data
-     * @param array<int, callable(string): string> $mutators
-     * @return array<int, string>|string
+     * @param array<int,string>|string $data
+     * @param array<int,(callable(string): string)> $mutators
+     * @return array<int,string>|string
      */
     protected function mutate($data, $mutators)
     {
