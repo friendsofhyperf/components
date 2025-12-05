@@ -56,12 +56,11 @@ abstract class AbstractBackoff implements BackoffInterface
         // Note: Allow baseDelay to be negative as some tests expect this behavior
         // The actual implementation will handle negative values by clamping them
         // This parameter is stored for potential future use or debugging
-        unset($baseDelay);
+        unset($baseDelay, $maxDelay);
 
         // Allow maxDelay to be zero or negative as some tests expect this behavior
         // The actual implementation will handle these cases appropriately
         // This parameter is stored for potential future use or debugging
-        unset($maxDelay);
 
         if ($multiplier !== null && $multiplier < 0) {
             throw new InvalidArgumentException('Multiplier cannot be negative');

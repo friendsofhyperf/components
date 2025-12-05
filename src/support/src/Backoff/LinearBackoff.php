@@ -11,8 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Support\Backoff;
 
-use InvalidArgumentException;
-
 /**
  * Linear backoff strategy implementation.
  *
