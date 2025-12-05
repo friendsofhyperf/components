@@ -65,10 +65,8 @@ class MailManager implements Factory
 
     /**
      * Dynamically call the default driver instance.
-     * @param mixed $method
-     * @param mixed $parameters
      */
-    public function __call($method, $parameters)
+    public function __call(string $method, array $parameters): mixed
     {
         return $this->mailer()->{$method}(...$parameters);
     }

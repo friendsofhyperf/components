@@ -80,12 +80,8 @@ class Response implements ArrayAccess, Stringable
 
     /**
      * Dynamically proxy other methods to the underlying response.
-     *
-     * @param string $method
-     * @param array $parameters
-     * @return mixed
      */
-    public function __call($method, $parameters)
+    public function __call(string $method, array $parameters): mixed
     {
         return static::hasMacro($method)
                     ? $this->macroCall($method, $parameters)

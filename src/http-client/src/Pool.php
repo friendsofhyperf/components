@@ -51,11 +51,9 @@ class Pool
     /**
      * Add a request to the pool with a numeric index.
      *
-     * @param string $method
-     * @param array $parameters
      * @return PendingRequest|\GuzzleHttp\Promise\Promise
      */
-    public function __call($method, $parameters)
+    public function __call(string $method, array $parameters): mixed
     {
         return $this->pool[] = $this->asyncRequest()->{$method}(...$parameters);
     }

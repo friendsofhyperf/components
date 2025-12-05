@@ -163,13 +163,11 @@ class Mailable implements Contract\Mailable
     /**
      * Dynamically bind parameters to the message.
      *
-     * @param string $method
-     * @param array $parameters
      * @return static
      *
      * @throws BadMethodCallException
      */
-    public function __call($method, $parameters)
+    public function __call(string $method, array $parameters)
     {
         if (static::hasMacro($method)) {
             return $this->macroCall($method, $parameters);

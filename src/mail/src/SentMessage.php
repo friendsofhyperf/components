@@ -30,10 +30,8 @@ class SentMessage
 
     /**
      * Dynamically pass missing methods to the Symfony instance.
-     * @param mixed $method
-     * @param mixed $parameters
      */
-    public function __call($method, $parameters)
+    public function __call(string $method, array $parameters): mixed
     {
         return $this->forwardCallTo($this->sentMessage, $method, $parameters);
     }
