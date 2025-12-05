@@ -48,7 +48,7 @@ function dispatch($job)
  * Retry an operation a given number of times.
  * @template TReturn
  *
- * @param array|int $times
+ * @param array<positive-int>|positive-int $times
  * @param callable(int):TReturn $callback
  * @param Closure|int $sleepMilliseconds
  * @param null|callable $when
