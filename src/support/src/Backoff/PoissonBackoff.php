@@ -25,14 +25,17 @@ namespace FriendsOfHyperf\Support\Backoff;
  *
  * @see https://en.wikipedia.org/wiki/Poisson_distribution
  * @see https://en.wikipedia.org/wiki/Knuth%27s_algorithm
- *
- * @param int $mean The mean delay (in milliseconds) for the Poisson distribution. Default is 500 ms.
- * @param int $max The maximum allowed delay (in milliseconds). Default is 5000 ms.
  */
 class PoissonBackoff extends AbstractBackoff
 {
+    /**
+     * @param int $mean The mean delay (in milliseconds) for the Poisson distribution. Default is 500 ms.
+     */
     private int $mean;     // Average delay
 
+    /**
+     * @param int $max The maximum allowed delay (in milliseconds). Default is 5000 ms.
+     */
     private int $max;
 
     private bool $hasSpare = false;
