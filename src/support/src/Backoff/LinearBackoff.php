@@ -11,6 +11,8 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Support\Backoff;
 
+use InvalidArgumentException;
+
 /**
  * Linear backoff strategy implementation.
  *
@@ -20,7 +22,7 @@ namespace FriendsOfHyperf\Support\Backoff;
  *
  * The delay is capped at the maximum value to prevent excessive waiting times.
  */
-class LinearBackoff implements BackoffInterface
+class LinearBackoff extends AbstractBackoff
 {
     /**
      * The initial delay in milliseconds for the first attempt.
@@ -38,11 +40,6 @@ class LinearBackoff implements BackoffInterface
     private int $max;
 
     /**
-     * The current attempt number, starting from 0.
-     */
-    private int $attempt = 0;
-
-    /**
      * Create a new linear backoff instance.
      *
      * @param int $initial The initial delay in milliseconds (default: 100ms)
@@ -51,6 +48,11 @@ class LinearBackoff implements BackoffInterface
      */
     public function __construct(int $initial = 100, int $step = 50, int $max = 2000)
     {
+        $this->validateParameters($initial, $max);
+
+        // Allow negative step as some tests expect this behavior
+        // The implementation will handle it appropriately
+
         $this->initial = $initial;
         $this->step = $step;
         $this->max = $max;
@@ -70,41 +72,21 @@ class LinearBackoff implements BackoffInterface
      */
     public function next(): int
     {
+        // Handle edge case where max is negative or zero
+        if ($this->max <= 0) {
+            $this->incrementAttempt();
+            return 0;
+        }
+
         // Calculate linear delay: initial + (attempt * step)
         $delay = $this->initial + $this->attempt * $this->step;
 
         // Increment attempt counter for next calculation
-        ++$this->attempt;
+        $this->incrementAttempt();
 
-        // Cap the delay at the maximum value
-        if ($delay > $this->max) {
-            $delay = $this->max;
-        }
-
-        return $delay;
-    }
-
-    /**
-     * Reset the backoff state to its initial condition.
-     *
-     * This method resets the attempt counter back to 0, effectively
-     * starting the backoff sequence over from the beginning.
-     */
-    public function reset(): void
-    {
-        $this->attempt = 0;
-    }
-
-    /**
-     * Get the current attempt number.
-     *
-     * Returns the number of times the next() method has been called
-     * since the last reset or instantiation.
-     *
-     * @return int The current attempt number (0-based)
-     */
-    public function getAttempt(): int
-    {
-        return $this->attempt;
+        // Cap the delay at the maximum value and ensure non-negative
+        return $this->ensureNonNegative(
+            $this->capDelay($delay, $this->max)
+        );
     }
 }

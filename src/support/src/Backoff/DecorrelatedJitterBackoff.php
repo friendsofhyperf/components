@@ -52,7 +52,7 @@ namespace FriendsOfHyperf\Support\Backoff;
  * @see https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/
  * @see https://github.com/awslabs/aws-sdk-rust/blob/main/sdk/aws-smithy-async/src/backoff.rs
  */
-class DecorrelatedJitterBackoff implements BackoffInterface
+class DecorrelatedJitterBackoff extends AbstractBackoff
 {
     /**
      * @var int Minimal starting delay (milliseconds)
@@ -75,11 +75,6 @@ class DecorrelatedJitterBackoff implements BackoffInterface
     private int $prevDelay;
 
     /**
-     * @var int Current retry attempt
-     */
-    private int $attempt = 0;
-
-    /**
      * Constructor.
      *
      * @param int $base Minimum delay in ms
@@ -91,6 +86,8 @@ class DecorrelatedJitterBackoff implements BackoffInterface
         int $max = 10000,
         float $factor = 3.0
     ) {
+        $this->validateParameters($base, $max, $factor);
+
         $this->base = $base;
         $this->max = $max;
         $this->factor = $factor;
@@ -102,8 +99,30 @@ class DecorrelatedJitterBackoff implements BackoffInterface
      */
     public function next(): int
     {
-        // Compute upper bound
-        $upper = (int) ($this->prevDelay * $this->factor);
+        // Handle edge case where max is negative or zero
+        if ($this->max <= 0) {
+            $this->incrementAttempt();
+            return 0;
+        }
+
+        // Handle edge case where factor is 0
+        if ($this->factor == 0) {
+            $delay = $this->base;
+            $this->prevDelay = $delay;
+            $this->incrementAttempt();
+            return $this->capDelay($delay, $this->max);
+        }
+
+        // Compute upper bound with overflow protection
+        $upper = $this->prevDelay * $this->factor;
+
+        // Protect against integer overflow
+        if ($upper > PHP_INT_MAX) {
+            $upper = PHP_INT_MAX;
+        }
+
+        // Cast to int after overflow check
+        $upper = (int) $upper;
 
         // Ensure upper bound is at least base to avoid random_int errors
         $upper = max($upper, $this->base);
@@ -112,12 +131,12 @@ class DecorrelatedJitterBackoff implements BackoffInterface
         $delay = random_int($this->base, $upper);
 
         // Cap by max
-        $delay = min($delay, $this->max);
+        $delay = $this->capDelay($delay, $this->max);
 
         // Update memory
         $this->prevDelay = $delay;
 
-        ++$this->attempt;
+        $this->incrementAttempt();
 
         return $delay;
     }
@@ -127,15 +146,7 @@ class DecorrelatedJitterBackoff implements BackoffInterface
      */
     public function reset(): void
     {
-        $this->attempt = 0;
+        parent::reset();
         $this->prevDelay = $this->base;
-    }
-
-    /**
-     * 0-based attempt index.
-     */
-    public function getAttempt(): int
-    {
-        return $this->attempt;
     }
 }
