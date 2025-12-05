@@ -186,7 +186,9 @@ class PoissonBackoffTest extends BackoffTestCase
 
         for ($i = 0; $i < 5; ++$i) {
             $delay = $backoff->next();
-            $this->assertEquals(-100, $delay);
+            // When max is negative, delay is capped to max (-100),
+            // then max(0, delay) ensures it's at least 0
+            $this->assertEquals(0, $delay);
         }
     }
 
@@ -232,6 +234,41 @@ class PoissonBackoffTest extends BackoffTestCase
         $expectedStdDev = sqrt(20);
         $this->assertGreaterThan($expectedStdDev * 0.5, $stdDev);
         $this->assertLessThan($expectedStdDev * 2.0, $stdDev);
+    }
+
+    public function testLargeMeanValue()
+    {
+        // Test with large mean value that would cause underflow in original algorithm
+        $backoff = new PoissonBackoff(1000, 10000);
+
+        // Should generate values without infinite loop
+        $delays = [];
+        for ($i = 0; $i < 10; ++$i) {
+            $delay = $backoff->next();
+            $delays[] = $delay;
+            $this->assertGreaterThanOrEqual(0, $delay);
+            $this->assertLessThanOrEqual(10000, $delay);
+        }
+
+        // Average should be close to mean (1000)
+        $average = array_sum($delays) / count($delays);
+        $this->assertGreaterThan(500, $average);
+        $this->assertLessThan(1500, $average);
+    }
+
+    public function testVeryLargeMeanValue()
+    {
+        // Test with very large mean value
+        $backoff = new PoissonBackoff(5000, 10000);
+
+        // Should use normal approximation
+        $delays = [];
+        for ($i = 0; $i < 10; ++$i) {
+            $delay = $backoff->next();
+            $delays[] = $delay;
+            $this->assertGreaterThanOrEqual(0, $delay);
+            $this->assertLessThanOrEqual(10000, $delay);
+        }
     }
 
     protected function createBackoff(): PoissonBackoff
