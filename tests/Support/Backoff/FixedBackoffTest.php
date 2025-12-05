@@ -96,6 +96,43 @@ class FixedBackoffTest extends BackoffTestCase
         $this->assertEquals(0, $delay);
     }
 
+    public function testSleep()
+    {
+        $backoff = new FixedBackoff(100); // 100ms delay
+
+        // Test sleep returns correct delay
+        $start = microtime(true);
+        $delay = $backoff->sleep();
+        $end = microtime(true);
+
+        // Should return the delay value
+        $this->assertEquals(100, $delay);
+
+        // Should have slept for approximately 100ms (allowing some variance)
+        $elapsedMs = (int) (($end - $start) * 1000);
+        $this->assertGreaterThanOrEqual(90, $elapsedMs); // Allow 10ms variance
+        $this->assertLessThanOrEqual(150, $elapsedMs);   // Allow 50ms variance for system load
+
+        // Should increment attempt counter
+        $this->assertEquals(1, $backoff->getAttempt());
+    }
+
+    public function testSleepWithZeroDelay()
+    {
+        $backoff = new FixedBackoff(0);
+
+        $start = microtime(true);
+        $delay = $backoff->sleep();
+        $end = microtime(true);
+
+        // Should return 0 delay
+        $this->assertEquals(0, $delay);
+
+        // Should not sleep (or sleep for negligible time)
+        $elapsedMs = (int) (($end - $start) * 1000);
+        $this->assertLessThan(10, $elapsedMs); // Less than 10ms
+    }
+
     protected function createBackoff(): FixedBackoff
     {
         return new FixedBackoff(500);

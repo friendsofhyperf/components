@@ -36,4 +36,14 @@ interface BackoffInterface
      * @return int Current number of retries
      */
     public function getAttempt(): int;
+
+    /**
+     * Sleep for the calculated backoff delay and return the delay time.
+     *
+     * This method combines next() and actual sleeping, providing a convenient
+     * way to perform backoff waiting in retry loops.
+     *
+     * @return int The actual delay time in milliseconds that was slept
+     */
+    public function sleep(): int;
 }

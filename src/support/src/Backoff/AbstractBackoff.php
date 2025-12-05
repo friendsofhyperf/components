@@ -38,6 +38,18 @@ abstract class AbstractBackoff implements BackoffInterface
         $this->attempt = 0;
     }
 
+    public function sleep(): int
+    {
+        $delay = $this->next();
+
+        if ($delay > 0) {
+            // Convert milliseconds to microseconds for usleep
+            usleep($delay * 1000);
+        }
+
+        return $delay;
+    }
+
     /**
      * Validate common parameters for backoff strategies.
      *

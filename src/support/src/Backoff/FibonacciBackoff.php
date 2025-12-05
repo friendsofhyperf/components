@@ -30,17 +30,12 @@ namespace FriendsOfHyperf\Support\Backoff;
  * @see ExponentialBackoff
  * @see FixedBackoff
  */
-class FibonacciBackoff implements BackoffInterface
+class FibonacciBackoff extends AbstractBackoff
 {
     /**
      * @var int Maximum allowed delay (milliseconds)
      */
     private int $max;
-
-    /**
-     * @var int Current retry attempt number
-     */
-    private int $attempt = 0;
 
     /**
      * @var int Cache for previous Fibonacci number
@@ -72,13 +67,9 @@ class FibonacciBackoff implements BackoffInterface
         // Move Fibonacci forward
         [$this->prev, $this->curr] = [$this->curr, $this->prev + $this->curr];
 
-        ++$this->attempt;
+        $this->incrementAttempt();
 
-        if ($delay > $this->max) {
-            $delay = $this->max;
-        }
-
-        return max(0, $delay);
+        return $this->ensureNonNegative($this->capDelay($delay, $this->max));
     }
 
     /**
@@ -86,16 +77,8 @@ class FibonacciBackoff implements BackoffInterface
      */
     public function reset(): void
     {
-        $this->attempt = 0;
+        parent::reset();
         $this->prev = 0;
         $this->curr = 1;
-    }
-
-    /**
-     * Current retry attempt (0-based before first next() call).
-     */
-    public function getAttempt(): int
-    {
-        return $this->attempt;
     }
 }
