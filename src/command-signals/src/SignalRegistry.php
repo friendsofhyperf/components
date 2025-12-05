@@ -35,7 +35,7 @@ class SignalRegistry
 
     /**
      * @param int|int[] $signo
-     * @param callable(int $signo): void $signalHandler
+     * @param (callable(int $signo): void) $signalHandler
      */
     public function register(int|array $signo, callable $signalHandler): void
     {
@@ -64,7 +64,7 @@ class SignalRegistry
     }
 
     /**
-     * @param callable(int $signo): void $signalHandler
+     * @param (callable(int $signo): void) $signalHandler
      */
     protected function pushSignalHandler(int $signo, callable $signalHandler): void
     {

@@ -64,7 +64,7 @@ class Tracer
      *
      * @template T
      *
-     * @param callable(Scope):T $trace
+     * @param (callable(Scope):T) $trace
      * @return T
      */
     public function trace(callable $trace, SpanContext $context)

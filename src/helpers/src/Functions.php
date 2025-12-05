@@ -249,7 +249,7 @@ function environment(...$environments)
  * @template TDefault
  *
  * @param TValue $value
- * @param TDefault|callable(TValue): TDefault $default
+ * @param TDefault|(callable(TValue): TDefault) $default
  * @return ($value is empty ? TDefault : mixed)
  */
 function enum_value($value, $default = null)
@@ -512,9 +512,9 @@ function response($content = '', $status = 200, array $headers = [])
  * @template TValue
  * @template TFallback
  *
- * @param callable(): TValue $callback
+ * @param (callable(): TValue) $callback
  * @param (callable(Throwable): TFallback)|TFallback $rescue
- * @param null|Closure(Throwable): void $exceptionHandler
+ * @param null|(Closure(Throwable): void) $exceptionHandler
  * @return TValue|TFallback
  */
 function rescue(callable $callback, mixed $rescue = null, ?Closure $exceptionHandler = null)
@@ -627,8 +627,8 @@ function throw_unless($condition, $exception, ...$parameters)
  * @template TDefault
  *
  * @param TValue $value
- * @param callable(TValue): TReturn $callback
- * @param TDefault|callable(TValue): TDefault $default
+ * @param (callable(TValue): TReturn) $callback
+ * @param TDefault|(callable(TValue): TDefault) $default
  * @return ($value is empty ? TDefault : TReturn)
  */
 function transform($value, callable $callback, $default = null)

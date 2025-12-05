@@ -191,7 +191,7 @@ class Cache
      *
      * @param string $key
      * @param null|DateInterval|DateTimeInterface|int $ttl
-     * @param Closure(): TCacheValue $callback
+     * @param (Closure(): TCacheValue) $callback
      * @return TCacheValue
      */
     public static function remember($key, $ttl, Closure $callback)
@@ -205,7 +205,7 @@ class Cache
      * @template TCacheValue
      *
      * @param string $key
-     * @param Closure(): TCacheValue $callback
+     * @param (Closure(): TCacheValue) $callback
      * @return TCacheValue
      */
     public static function rememberForever($key, Closure $callback)
@@ -219,7 +219,7 @@ class Cache
      * @template TCacheValue
      *
      * @param string $key
-     * @param Closure(): TCacheValue $callback
+     * @param (Closure(): TCacheValue) $callback
      * @return TCacheValue
      */
     public static function sear($key, Closure $callback)

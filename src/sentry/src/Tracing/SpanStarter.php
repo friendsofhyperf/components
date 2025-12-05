@@ -51,7 +51,7 @@ trait SpanStarter
      *
      * @template T
      *
-     * @param callable(Scope):T $trace
+     * @param (callable(Scope):T) $trace
      * @return T
      */
     protected function trace(callable $trace, SpanContext $context)
