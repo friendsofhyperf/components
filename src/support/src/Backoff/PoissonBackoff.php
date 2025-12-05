@@ -44,6 +44,10 @@ class PoissonBackoff extends AbstractBackoff
 
     private static ?float $maxRandValue = null;
 
+    /**
+     * @param positive-int $mean
+     * @param positive-int $max
+     */
     public function __construct(int $mean = 100, int $max = 5000)
     {
         $this->validateParameters($mean, $max);

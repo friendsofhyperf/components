@@ -55,11 +55,11 @@ class FibonacciBackoff implements BackoffInterface
     /**
      * Constructor.
      *
-     * @param int $max Maximum cap delay in milliseconds
+     * @param positive-int $max Maximum cap delay in milliseconds
      */
     public function __construct(int $max = 10000)
     {
-        $this->max = $max;
+        $this->max = max(0, $max);
     }
 
     /**
@@ -78,7 +78,7 @@ class FibonacciBackoff implements BackoffInterface
             $delay = $this->max;
         }
 
-        return $delay;
+        return max(0, $delay);
     }
 
     /**

@@ -35,11 +35,11 @@ class FixedBackoff implements BackoffInterface
     /**
      * Constructor to initialize the fixed backoff strategy.
      *
-     * @param int $delay The delay in milliseconds to wait between retry attempts (default: 500ms)
+     * @param positive-int $delay The delay in milliseconds to wait between retry attempts (default: 500ms)
      */
     public function __construct(int $delay = 500)
     {
-        $this->delay = $delay;
+        $this->delay = max(0, $delay);
     }
 
     /**

@@ -40,9 +40,9 @@ class LinearBackoff extends AbstractBackoff
     /**
      * Create a new linear backoff instance.
      *
-     * @param int $initial The initial delay in milliseconds (default: 100ms)
-     * @param int $step The step size to increase delay per attempt (default: 50ms)
-     * @param int $max The maximum delay cap in milliseconds (default: 2000ms)
+     * @param positive-int $initial The initial delay in milliseconds (default: 100ms)
+     * @param positive-int $step The step size to increase delay per attempt (default: 50ms)
+     * @param positive-int $max The maximum delay cap in milliseconds (default: 2000ms)
      */
     public function __construct(int $initial = 100, int $step = 50, int $max = 2000)
     {

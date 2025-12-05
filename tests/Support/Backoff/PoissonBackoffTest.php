@@ -154,8 +154,6 @@ class PoissonBackoffTest extends BackoffTestCase
         $this->assertGreaterThan(5, count($zeros));
     }
 
-
-
     public function testZeroMax()
     {
         // Edge case: max is 0

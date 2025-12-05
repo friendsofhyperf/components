@@ -50,8 +50,8 @@ class ExponentialBackoff implements BackoffInterface
     /**
      * Constructor.
      *
-     * @param int $initial Initial delay (default 100ms)
-     * @param int $max Maximum delay (default 10 seconds)
+     * @param positive-int $initial Initial delay (default 100ms)
+     * @param positive-int $max Maximum delay (default 10 seconds)
      * @param float $factor Exponential backoff factor (default 2, meaning multiply by 2)
      * @param bool $jitter Whether to enable jitter
      */

@@ -77,8 +77,8 @@ class DecorrelatedJitterBackoff extends AbstractBackoff
     /**
      * Constructor.
      *
-     * @param int $base Minimum delay in ms
-     * @param int $max Cap delay in ms
+     * @param positive-int $base Minimum delay in ms
+     * @param positive-int $max Cap delay in ms
      * @param float $factor Multiplier (default 3 per AWS best-practice)
      */
     public function __construct(
