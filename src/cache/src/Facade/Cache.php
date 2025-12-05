@@ -20,12 +20,7 @@ use Hyperf\Context\ApplicationContext;
 
 class Cache
 {
-    /**
-     * @param string $name
-     * @param mixed $arguments
-     * @return mixed
-     */
-    public static function __callStatic($name, $arguments)
+    public static function __callStatic(string $name, array $arguments): mixed
     {
         return self::store()->{$name}(...$arguments);
     }
