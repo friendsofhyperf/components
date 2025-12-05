@@ -68,7 +68,7 @@ abstract class AbstractBackoff implements BackoffInterface
         // Note: Allow baseDelay to be negative as some tests expect this behavior
         // The actual implementation will handle negative values by clamping them
         // This parameter is stored for potential future use or debugging
-        unset($baseDelay, $maxDelay);
+
 
         // Allow maxDelay to be zero or negative as some tests expect this behavior
         // The actual implementation will handle these cases appropriately
@@ -107,7 +107,7 @@ abstract class AbstractBackoff implements BackoffInterface
     }
 
     /**
-     * Reset the attempt counter.
+     * Increment the attempt counter.
      */
     protected function incrementAttempt(): void
     {

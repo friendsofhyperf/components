@@ -29,12 +29,12 @@ namespace FriendsOfHyperf\Support\Backoff;
 class PoissonBackoff extends AbstractBackoff
 {
     /**
-     * @param int $mean The mean delay (in milliseconds) for the Poisson distribution. Default is 500 ms.
+     * @var int The mean delay (in milliseconds) for the Poisson distribution. Default is 500 ms.
      */
     private int $mean;     // Average delay
 
     /**
-     * @param int $max The maximum allowed delay (in milliseconds). Default is 5000 ms.
+     * @var int The maximum allowed delay (in milliseconds). Default is 5000 ms.
      */
     private int $max;
 
