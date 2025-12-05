@@ -68,9 +68,7 @@ class PoissonBackoff implements BackoffInterface
         }
 
         // 确保延迟不为负数
-        $delay = max(0, $delay);
-
-        return $delay;
+        return max(0, $delay);
     }
 
     public function reset(): void
