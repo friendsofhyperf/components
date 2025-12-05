@@ -185,7 +185,7 @@ class DecorrelatedJitterBackoffTest extends BackoffTestCase
     }
 
     /**
-     * DecorrelatedJitterBackoff uses randomness, so it's non-deterministic
+     * DecorrelatedJitterBackoff uses randomness, so it's non-deterministic.
      */
     protected function isDeterministic(): bool
     {

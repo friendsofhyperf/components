@@ -93,7 +93,7 @@ abstract class BackoffTestCase extends TestCase
     }
 
     /**
-     * Override in test classes for random strategies
+     * Override in test classes for random strategies.
      */
     protected function isDeterministic(): bool
     {

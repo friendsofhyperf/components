@@ -20,19 +20,6 @@ use FriendsOfHyperf\Support\Backoff\PoissonBackoff;
 #[\PHPUnit\Framework\Attributes\Group('support')]
 class PoissonBackoffTest extends BackoffTestCase
 {
-    protected function createBackoff(): PoissonBackoff
-    {
-        return new PoissonBackoff(500, 5000);
-    }
-
-    /**
-     * PoissonBackoff uses randomness, so it's non-deterministic
-     */
-    protected function isDeterministic(): bool
-    {
-        return false;
-    }
-
     public function testConstructorWithDefaults()
     {
         $backoff = new PoissonBackoff();
@@ -163,7 +150,7 @@ class PoissonBackoffTest extends BackoffTestCase
         }
 
         // Most should be 0
-        $zeros = array_filter($delays, fn($d) => $d === 0);
+        $zeros = array_filter($delays, fn ($d) => $d === 0);
         $this->assertGreaterThan(5, count($zeros));
     }
 
@@ -245,5 +232,18 @@ class PoissonBackoffTest extends BackoffTestCase
         $expectedStdDev = sqrt(20);
         $this->assertGreaterThan($expectedStdDev * 0.5, $stdDev);
         $this->assertLessThan($expectedStdDev * 2.0, $stdDev);
+    }
+
+    protected function createBackoff(): PoissonBackoff
+    {
+        return new PoissonBackoff(500, 5000);
+    }
+
+    /**
+     * PoissonBackoff uses randomness, so it's non-deterministic.
+     */
+    protected function isDeterministic(): bool
+    {
+        return false;
     }
 }
