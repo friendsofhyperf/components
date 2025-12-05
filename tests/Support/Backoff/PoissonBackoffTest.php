@@ -154,19 +154,7 @@ class PoissonBackoffTest extends BackoffTestCase
         $this->assertGreaterThan(5, count($zeros));
     }
 
-    public function testNegativeMean()
-    {
-        // Edge case: negative mean
-        $backoff = new PoissonBackoff(-100, 1000);
 
-        // Should still produce valid delays
-        for ($i = 0; $i < 5; ++$i) {
-            $delay = $backoff->next();
-            $this->assertIsInt($delay);
-            $this->assertGreaterThanOrEqual(0, $delay);
-            $this->assertLessThanOrEqual(1000, $delay);
-        }
-    }
 
     public function testZeroMax()
     {

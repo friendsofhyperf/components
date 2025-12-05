@@ -182,7 +182,7 @@ class FibonacciBackoffTest extends BackoffTestCase
         // Should cap at 0 (can't have negative delays)
         for ($i = 0; $i < 5; ++$i) {
             $delay = $backoff->next();
-            $this->assertEquals(-100, $delay);
+            $this->assertEquals(0, $delay);
         }
     }
 

@@ -90,10 +90,10 @@ class FixedBackoffTest extends BackoffTestCase
 
     public function testNegativeDelay()
     {
-        // Test with negative delay - should still return it
+        // Test with negative delay - should coerce to zero
         $backoff = new FixedBackoff(-100);
         $delay = $backoff->next();
-        $this->assertEquals(-100, $delay);
+        $this->assertEquals(0, $delay);
     }
 
     protected function createBackoff(): FixedBackoff
