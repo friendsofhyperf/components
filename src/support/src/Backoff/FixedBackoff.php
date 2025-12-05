@@ -12,7 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Support\Backoff;
 
 /**
- * Fixed backoff implementation for email retry mechanism.
+ * Fixed backoff implementation for retry mechanisms.
  *
  * This class provides a simple backoff strategy where the delay between
  * retry attempts remains constant (fixed). It's useful when you want

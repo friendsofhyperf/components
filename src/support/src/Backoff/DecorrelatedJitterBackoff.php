@@ -11,8 +11,48 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Support\Backoff;
 
+/**
+ * Implements the "decorrelated jitter" backoff strategy as recommended by AWS for robust retry logic.
+ *
+ * Decorrelated jitter is a backoff algorithm designed to mitigate the "thundering herd" problem,
+ * where many clients retrying at the same time can overwhelm a system. Unlike standard exponential
+ * backoff or simple jitter, decorrelated jitter randomizes the delay for each retry attempt in a way
+ * that both increases the delay over time and ensures that retries are spread out, reducing the chance
+ * of synchronized retries.
+ *
+ * ## Why AWS Recommends Decorrelated Jitter
+ * AWS recommends this approach because it provides better distribution of retry attempts across clients,
+ * leading to improved system stability under load. By decorrelating the retry intervals, it prevents
+ * large numbers of clients from retrying simultaneously after a failure, which can cause cascading failures.
+ *
+ * ## How It Works
+ * The algorithm works as follows:
+ *   - On each retry, the next delay is chosen randomly between a base value and the previous delay multiplied by a factor.
+ *   - The delay is capped at a maximum value.
+ *   - This approach "decorrelates" the retry intervals, so each client follows a unique retry pattern.
+ *
+ * Formula (per AWS best-practice):
+ *   nextDelay = random_between(base, prevDelay * factor)
+ *   nextDelay = min(nextDelay, max)
+ *
+ * ## Difference from Standard Exponential Backoff with Jitter
+ * - Standard exponential backoff increases the delay exponentially, sometimes with added jitter (randomness).
+ * - Decorrelated jitter uses the previous delay as part of the calculation, so the growth is less predictable and more randomized.
+ * - This further reduces the risk of synchronized retries compared to simple exponential backoff with jitter.
+ *
+ * ## When to Use
+ * Use decorrelated jitter backoff when:
+ *   - You are building distributed systems or clients that may experience simultaneous failures.
+ *   - You want to minimize the risk of thundering herd problems.
+ *   - You need robust, production-grade retry logic as recommended by AWS.
+ *
+ * For simple or low-traffic scenarios, linear or fixed backoff may suffice. For high-availability or cloud-native
+ * systems, decorrelated jitter is preferred.
+ *
+ * @see https://aws.amazon.com/blogs/architecture/exponential-backoff-and-jitter/
+ * @see https://github.com/awslabs/aws-sdk-rust/blob/main/sdk/aws-smithy-async/src/backoff.rs
+ */
 class DecorrelatedJitterBackoff implements BackoffInterface
-{
     /**
      * @var int Minimal starting delay (milliseconds)
      */
@@ -88,7 +128,7 @@ class DecorrelatedJitterBackoff implements BackoffInterface
     }
 
     /**
-     * 1-based attempt index.
+     * 0-based attempt index.
      */
     public function getAttempt(): int
     {

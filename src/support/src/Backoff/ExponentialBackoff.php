@@ -102,7 +102,7 @@ class ExponentialBackoff implements BackoffInterface
     }
 
     /**
-     * Current retry count (starting from 1).
+     * Current retry count (0-based; 0 before first call to next()).
      */
     public function getAttempt(): int
     {

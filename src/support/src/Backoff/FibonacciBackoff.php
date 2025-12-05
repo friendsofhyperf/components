@@ -11,8 +11,26 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Support\Backoff;
 
+/**
+ * Implements a Fibonacci backoff strategy for retrying operations.
+ *
+ * The Fibonacci backoff increases the delay between retries according to the Fibonacci sequence:
+ * 1, 1, 2, 3, 5, 8, 13, ... (in milliseconds by default). Each retry waits for the next Fibonacci number of milliseconds,
+ * up to a configurable maximum delay.
+ *
+ * Use cases:
+ * - Useful for retrying operations where a moderate, non-aggressive increase in delay is desired.
+ * - Suitable for distributed systems, network requests, or resource contention scenarios where exponential backoff may be too aggressive,
+ *   and linear backoff too slow.
+ *
+ * Compared to exponential backoff, Fibonacci backoff grows more slowly, reducing the risk of long wait times while still avoiding
+ * overwhelming the system. It is preferable when you want a compromise between linear and exponential strategies.
+ *
+ * @see LinearBackoff
+ * @see ExponentialBackoff
+ * @see FixedBackoff
+ */
 class FibonacciBackoff implements BackoffInterface
-{
     /**
      * @var int Maximum allowed delay (milliseconds)
      */
@@ -73,7 +91,7 @@ class FibonacciBackoff implements BackoffInterface
     }
 
     /**
-     * 1-based attempt count.
+     * Current retry attempt (0-based before first next() call).
      */
     public function getAttempt(): int
     {
