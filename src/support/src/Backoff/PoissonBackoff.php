@@ -31,7 +31,7 @@ namespace FriendsOfHyperf\Support\Backoff;
  */
 class PoissonBackoff implements BackoffInterface
 {
-    private int $mean;     // 平均延迟
+    private int $mean;     // Average delay
 
     private int $max;
 
@@ -39,21 +39,21 @@ class PoissonBackoff implements BackoffInterface
 
     public function __construct(int $mean = 100, int $max = 5000)
     {
-        $this->mean = max(0, $mean);  // 确保均值不为负数
+        $this->mean = max(0, $mean);  // Ensure mean is not negative
         $this->max = $max;
     }
 
     public function next(): int
     {
-        // 生成泊松分布随机数
-        // 对于大均值，使用正态近似以避免数值下溢
+        // Generate Poisson distributed random number
+        // For large means, use normal approximation to avoid numerical underflow
         if ($this->mean > 700) {
-            // 对于大均值，泊松分布可以用正态分布近似
-            // 使用 Box-Muller 变换生成正态分布随机数
+            // For large means, Poisson distribution can be approximated with normal distribution
+            // Use Box-Muller transform to generate normal distributed random numbers
             $delay = (int) round($this->mean + sqrt($this->mean) * $this->gaussRandom());
         } else {
-            // 对于中小均值，使用改进的 Knuth 算法
-            // 对于较大的均值，使用对数方法避免下溢
+            // For small to medium means, use improved Knuth algorithm
+            // For larger means, use logarithmic method to avoid underflow
             if ($this->mean > 30) {
                 $delay = $this->generatePoissonLarge();
             } else {
@@ -67,7 +67,7 @@ class PoissonBackoff implements BackoffInterface
             $delay = $this->max;
         }
 
-        // 确保延迟不为负数
+        // Ensure delay is not negative
         return max(0, $delay);
     }
 
@@ -82,7 +82,7 @@ class PoissonBackoff implements BackoffInterface
     }
 
     /**
-     * 使用 Knuth 算法生成泊松分布（适用于小均值）.
+     * Generate Poisson distribution using Knuth algorithm (suitable for small means).
      */
     private function generatePoissonKnuth(): int
     {
@@ -99,18 +99,18 @@ class PoissonBackoff implements BackoffInterface
     }
 
     /**
-     * 使用对数方法生成泊松分布（适用于中等均值）.
+     * Generate Poisson distribution using logarithmic method (suitable for medium means).
      */
     private function generatePoissonLarge(): int
     {
-        // 对于中等均值，使用更简单的算法避免复杂计算
-        // 使用截断的正态分布作为泊松分布的近似
+        // For medium means, use a simpler algorithm to avoid complex calculations
+        // Use truncated normal distribution as an approximation of Poisson distribution
         $result = (int) round($this->mean + sqrt($this->mean) * $this->gaussRandom());
         return max(0, $result);
     }
 
     /**
-     * 生成标准正态分布随机数（Box-Muller 变换）.
+     * Generate standard normal distributed random number (Box-Muller transform).
      */
     private function gaussRandom(): float
     {
