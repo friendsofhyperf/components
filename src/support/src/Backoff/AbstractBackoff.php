@@ -69,7 +69,6 @@ abstract class AbstractBackoff implements BackoffInterface
         // The actual implementation will handle negative values by clamping them
         // This parameter is stored for potential future use or debugging
 
-
         // Allow maxDelay to be zero or negative as some tests expect this behavior
         // The actual implementation will handle these cases appropriately
         // This parameter is stored for potential future use or debugging
