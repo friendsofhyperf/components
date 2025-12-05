@@ -49,8 +49,8 @@ function dispatch($job)
  * @template TReturn
  *
  * @param array<positive-int>|positive-int $times
- * @param callable(int):TReturn $callback
- * @param Closure|int $sleepMilliseconds
+ * @param (callable(int):TReturn) $callback
+ * @param (Closure(int, Exception):int)|int $sleepMilliseconds
  * @param null|callable $when
  * @return TReturn|void
  * @throws Exception
