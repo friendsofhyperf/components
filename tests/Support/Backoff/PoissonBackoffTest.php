@@ -25,6 +25,14 @@ class PoissonBackoffTest extends BackoffTestCase
         return new PoissonBackoff(500, 5000);
     }
 
+    /**
+     * PoissonBackoff uses randomness, so it's non-deterministic
+     */
+    protected function isDeterministic(): bool
+    {
+        return false;
+    }
+
     public function testConstructorWithDefaults()
     {
         $backoff = new PoissonBackoff();

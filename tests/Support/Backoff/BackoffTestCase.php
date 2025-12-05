@@ -79,11 +79,25 @@ abstract class BackoffTestCase extends TestCase
         // Reset
         $backoff->reset();
 
-        // Get delay after reset - should be same as first
+        // Get delay after reset
         $afterResetDelay = $backoff->next();
 
-        $this->assertEquals($firstDelay, $afterResetDelay);
+        // For deterministic strategies, should be same as first
+        // For random strategies, just verify we're at attempt 1
         $this->assertEquals(1, $backoff->getAttempt());
+
+        // If this is a deterministic strategy, verify the delay
+        if ($this->isDeterministic()) {
+            $this->assertEquals($firstDelay, $afterResetDelay);
+        }
+    }
+
+    /**
+     * Override in test classes for random strategies
+     */
+    protected function isDeterministic(): bool
+    {
+        return true;
     }
 
     abstract protected function createBackoff(): BackoffInterface;
