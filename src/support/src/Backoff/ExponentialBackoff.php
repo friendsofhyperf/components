@@ -72,11 +72,7 @@ class ExponentialBackoff implements BackoffInterface
      */
     public function next(): int
     {
-        if ($this->attempt === 0) {
-            $delay = $this->initial;
-        } else {
-            $delay = (int) ($this->initial * ($this->factor ** $this->attempt));
-        }
+        $delay = (int) ($this->initial * ($this->factor ** $this->attempt));
 
         ++$this->attempt;
 
