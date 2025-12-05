@@ -34,13 +34,13 @@ class Environment
         $this->env = $env ?? env('APP_ENV');
     }
 
-    public function __call($method, $parameters = [])
+    public function __call(string $name, array $arguments): mixed
     {
-        if (Str::startsWith($method, 'is')) {
-            return $this->is(Str::snake(substr($method, 2)));
+        if (Str::startsWith($name, 'is')) {
+            return $this->is(Str::snake(substr($name, 2)));
         }
 
-        throw new BadMethodCallException(sprintf('Method %s::%s does not exist.', static::class, $method));
+        throw new BadMethodCallException(sprintf('Method %s::%s does not exist.', static::class, $name));
     }
 
     /**

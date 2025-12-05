@@ -52,12 +52,9 @@ class Factory
     /**
      * Dynamically handle calls into the component instance.
      *
-     * @param string $method
-     * @param array $parameters
-     * @return mixed
      * @throws InvalidArgumentException
      */
-    public function __call($method, $parameters)
+    public function __call(string $method, array $parameters): mixed
     {
         $component = '\FriendsOfHyperf\PrettyConsole\View\Components\\' . ucfirst($method);
 
