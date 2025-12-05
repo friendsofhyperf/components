@@ -31,7 +31,7 @@ use Override;
  */
 class Log extends Facade
 {
-    public static function __callStatic($name, $arguments)
+    public static function __callStatic(string $name, array $arguments): mixed
     {
         return self::channel()->{$name}(...$arguments);
     }

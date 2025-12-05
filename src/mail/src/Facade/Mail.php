@@ -66,17 +66,13 @@ class Mail
     /**
      * Handle dynamic, static calls to the object.
      *
-     * @param string $method
-     * @param array $args
-     * @return mixed
-     *
      * @throws RuntimeException
      */
-    public static function __callStatic($method, $args)
+    public static function __callStatic(string $method, array $arguments): mixed
     {
         $container = ApplicationContext::getContainer();
         $instance = $container->get(MailManager::class);
 
-        return $instance->{$method}(...$args);
+        return $instance->{$method}(...$arguments);
     }
 }

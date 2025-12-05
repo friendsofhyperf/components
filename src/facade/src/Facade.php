@@ -24,10 +24,8 @@ abstract class Facade
 
     /**
      * Handle dynamic, static calls to the object.
-     *
-     * @return mixed
      */
-    public static function __callStatic(string $method, array $arguments)
+    public static function __callStatic(string $name, array $arguments): mixed
     {
         $instance = static::getFacadeRoot();
 
@@ -35,7 +33,7 @@ abstract class Facade
             throw new RuntimeException('A facade root has not been set.');
         }
 
-        return $instance->{$method}(...$arguments);
+        return $instance->{$name}(...$arguments);
     }
 
     /**

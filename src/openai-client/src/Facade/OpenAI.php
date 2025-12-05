@@ -32,7 +32,7 @@ use OpenAI\Contracts\ClientContract;
  */
 class OpenAI
 {
-    public static function __callStatic($name, $arguments)
+    public static function __callStatic(string $name, array $arguments): mixed
     {
         $instance = ApplicationContext::getContainer()->get(ClientContract::class);
 

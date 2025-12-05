@@ -112,7 +112,7 @@ class Http
      */
     protected static $resolvedInstance;
 
-    public static function __callStatic($name, $arguments)
+    public static function __callStatic(string $name, array $arguments)
     {
         return static::getFacadeRoot()->{$name}(...$arguments);
     }
