@@ -53,6 +53,7 @@ namespace FriendsOfHyperf\Support\Backoff;
  * @see https://github.com/awslabs/aws-sdk-rust/blob/main/sdk/aws-smithy-async/src/backoff.rs
  */
 class DecorrelatedJitterBackoff implements BackoffInterface
+{
     /**
      * @var int Minimal starting delay (milliseconds)
      */
@@ -103,6 +104,9 @@ class DecorrelatedJitterBackoff implements BackoffInterface
     {
         // Compute upper bound
         $upper = (int) ($this->prevDelay * $this->factor);
+
+        // Ensure upper bound is at least base to avoid random_int errors
+        $upper = max($upper, $this->base);
 
         // Random value between base and upper bound
         $delay = random_int($this->base, $upper);

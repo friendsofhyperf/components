@@ -31,6 +31,7 @@ namespace FriendsOfHyperf\Support\Backoff;
  * @see FixedBackoff
  */
 class FibonacciBackoff implements BackoffInterface
+{
     /**
      * @var int Maximum allowed delay (milliseconds)
      */

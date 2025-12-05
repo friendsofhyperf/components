@@ -80,15 +80,17 @@ class DecorrelatedJitterBackoffTest extends BackoffTestCase
     {
         // Test with factor 2.0
         $backoff1 = new DecorrelatedJitterBackoff(100, 10000, 2.0);
-        $backoff1->next(); // First delay
+        $backoff1->next(); // First delay (between 100 and 200)
         $delay2 = $backoff1->next();
-        $this->assertLessThanOrEqual(300, $delay2); // 100 * 3 (since prevDelay is random)
+        // Second delay upper bound will be delay1 * 2.0, where delay1 is at most 200
+        $this->assertLessThanOrEqual(400, $delay2); // Maximum upper bound
 
         // Test with factor 4.0
         $backoff2 = new DecorrelatedJitterBackoff(100, 10000, 4.0);
-        $backoff2->next(); // First delay
+        $backoff2->next(); // First delay (between 100 and 400)
         $delay3 = $backoff2->next();
-        $this->assertLessThanOrEqual(500, $delay3); // 100 * 5 (since prevDelay is random)
+        // Second delay upper bound will be delay2 * 4.0, where delay2 is at most 400
+        $this->assertLessThanOrEqual(1600, $delay3); // Maximum upper bound
     }
 
     public function testRandomnessVariation()
@@ -176,6 +178,43 @@ class DecorrelatedJitterBackoffTest extends BackoffTestCase
         for ($i = 0; $i < 5; ++$i) {
             $delay = $backoff->next();
             $this->assertEquals(500, $delay);
+        }
+    }
+
+    public function testFactorLessThanOne()
+    {
+        // Edge case: factor less than 1.0 - should not throw exception
+        $backoff = new DecorrelatedJitterBackoff(100, 1000, 0.5);
+
+        // Should produce delays between base and base (since upper will be capped at base)
+        for ($i = 0; $i < 5; ++$i) {
+            $delay = $backoff->next();
+            $this->assertGreaterThanOrEqual(100, $delay);
+            $this->assertLessThanOrEqual(1000, $delay);
+        }
+    }
+
+    public function testZeroFactor()
+    {
+        // Edge case: factor is 0
+        $backoff = new DecorrelatedJitterBackoff(100, 10000, 0.0);
+
+        // Should produce base value consistently since upper will be capped at base
+        for ($i = 0; $i < 5; ++$i) {
+            $delay = $backoff->next();
+            $this->assertEquals(100, $delay);
+        }
+    }
+
+    public function testNegativeBase()
+    {
+        // Edge case: negative base
+        $backoff = new DecorrelatedJitterBackoff(-100, 10000, 3.0);
+
+        for ($i = 0; $i < 5; ++$i) {
+            $delay = $backoff->next();
+            $this->assertGreaterThanOrEqual(-100, $delay);
+            $this->assertLessThanOrEqual(10000, $delay);
         }
     }
 
