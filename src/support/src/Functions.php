@@ -58,12 +58,10 @@ function dispatch($job)
 function retry($times, callable $callback, $sleepMilliseconds = 0, $when = null)
 {
     $attempts = 0;
-
     $backoff = [];
 
-    if (is_array($times)) {
+    if (is_array($times)) { // array of backoff timings
         $backoff = $times;
-
         $times = count($times) + 1;
     }
 
@@ -78,6 +76,9 @@ function retry($times, callable $callback, $sleepMilliseconds = 0, $when = null)
             throw $e;
         }
 
+        // If we have backoff timings defined and the current attempt has a corresponding
+        // backoff time, we will use that. Otherwise, we will use the default sleep
+        // time specified by the developer to pause execution before retrying.
         $sleepMilliseconds = $backoff[$attempts - 1] ?? $sleepMilliseconds;
 
         if ($sleepMilliseconds) {
