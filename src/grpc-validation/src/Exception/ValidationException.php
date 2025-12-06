@@ -9,7 +9,7 @@ declare(strict_types=1);
  * @contact  huangdijia@gmail.com
  */
 
-namespace FriendsOfHyperf\GrpcValidation\Annotation;
+namespace FriendsOfHyperf\GrpcValidation\Exception;
 
 use Hyperf\GrpcServer\Exception\GrpcException;
 use Throwable;
