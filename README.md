@@ -142,7 +142,6 @@ php bin/hyperf.php vendor:publish friendsofhyperf/[component-name]
 ### 📊 Monitoring & Logging
 
 - **[sentry](src/sentry)** - Sentry error tracking integration
-- **[monolog-hook](src/monolog-hook)** - Monolog hooks and processors
 
 ### 🚀 Queue & Jobs
 

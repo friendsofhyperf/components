@@ -131,10 +131,6 @@ const sidebar:DefaultTheme.Sidebar = {
                     link: '/zh-hk/components/model-scope.md'
                 },
                 {
-                    text: 'Monolog Hook',
-                    link: '/zh-hk/components/monolog-hook.md'
-                },
-                {
                     text: 'Mysql Grammar Addon',
                     link: '/zh-hk/components/mysql-grammar-addon.md'
                 },
