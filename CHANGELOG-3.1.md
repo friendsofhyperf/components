@@ -54,7 +54,6 @@
 * refactor(sentry): simplify configuration structure and improve API naming by @huangdijia in https://github.com/friendsofhyperf/components/pull/991
 * feat(sentry): add backwards compatibility for legacy configuration keys by @huangdijia in https://github.com/friendsofhyperf/components/pull/992
 * Update Swoole test matrix to v6.1.2 by @Copilot in https://github.com/friendsofhyperf/components/pull/994
-* Split ClosureJob from support to async-queue-closure-job component by @Copilot in https://github.com/friendsofhyperf/components/pull/993
 * Enable composer repo:pending by configuring Symfony Finder autoloader by @Copilot in https://github.com/friendsofhyperf/components/pull/996
 * feat: introduce fluent API for dispatch() helper function by @huangdijia in https://github.com/friendsofhyperf/components/pull/999
 

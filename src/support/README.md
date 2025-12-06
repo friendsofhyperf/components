@@ -271,15 +271,6 @@ interface BackoffInterface
 }
 ```
 
-## Architecture Notes
-
-As of v3.1.73, this package includes the core async queue closure functionality:
-
-- Previously in `friendsofhyperf/async-queue-closure-job`
-- Moved here to eliminate circular dependencies
-- The `async-queue-closure-job` package now depends on this package
-- All functionality remains backward compatible
-
 ## Contact
 
 - [Twitter](https://twitter.com/huangdijia)
