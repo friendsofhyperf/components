@@ -11,6 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Confd\Contract;
 
-interface LoggerInterface extends \Psr\Log\LoggerInterface
-{
+use Psr\Log\LoggerInterface as PsrLoggerInterface;
+
+class_alias(PsrLoggerInterface::class, LoggerInterface::class);
+
+if (! interface_exists(LoggerInterface::class)) {
+    interface LoggerInterface extends PsrLoggerInterface
+    {
+    }
 }
