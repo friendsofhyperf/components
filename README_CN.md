@@ -142,7 +142,6 @@ php bin/hyperf.php vendor:publish friendsofhyperf/[组件名称]
 ### 📊 监控与日志
 
 - **[sentry](src/sentry)** - Sentry 错误追踪集成
-- **[monolog-hook](src/monolog-hook)** - Monolog 钩子和处理器
 
 ### 🚀 队列与任务
 
