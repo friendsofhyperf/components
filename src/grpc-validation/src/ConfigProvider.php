@@ -11,15 +11,13 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\GrpcValidation;
 
-use FriendsOfHyperf\GrpcValidation\Annotation\ValidationAspect;
-
 class ConfigProvider
 {
     public function __invoke(): array
     {
         return [
             'aspects' => [
-                ValidationAspect::class,
+                Aspect\ValidationAspect::class,
             ],
         ];
     }
