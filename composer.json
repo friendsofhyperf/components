@@ -278,7 +278,6 @@
                 "FriendsOfHyperf\\ModelMorphAddon\\ConfigProvider",
                 "FriendsOfHyperf\\ModelObserver\\ConfigProvider",
                 "FriendsOfHyperf\\ModelScope\\ConfigProvider",
-                "FriendsOfHyperf\\MonologHook\\ConfigProvider",
                 "FriendsOfHyperf\\MySqlGrammarAddon\\ConfigProvider",
                 "FriendsOfHyperf\\Notification\\ConfigProvider",
                 "FriendsOfHyperf\\Notification\\EasySms\\ConfigProvider",
