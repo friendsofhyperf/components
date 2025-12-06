@@ -13,6 +13,7 @@ A comprehensive support component for Hyperf providing essential utilities, help
 - 🛠️ **Helper Functions** - Collection of useful helper functions
 - 📦 **Bus System** - Pending dispatch classes for various message systems
 - 🧩 **Traits & Utilities** - Reusable traits and utility classes
+- ⏱️ **Backoff Strategies** - Multiple retry backoff implementations for retry mechanisms
 
 ## Installation
 
@@ -204,6 +205,71 @@ Creates a pending dispatch instance based on the job type:
 - `create(Closure $closure): static` - Create a new closure job
 - `setMaxAttempts(int $attempts): void` - Set max retry attempts
 - `handle(): mixed` - Execute the closure (called by queue worker)
+
+### Backoff Strategies
+
+The component provides various backoff strategies for retry mechanisms:
+
+#### ArrayBackoff
+
+Use custom delay intervals defined in an array:
+
+```php
+use FriendsOfHyperf\Support\Backoff\ArrayBackoff;
+
+// Custom delays
+$backoff = new ArrayBackoff([100, 500, 1000, 2000, 5000]);
+
+// Stop after array is exhausted (returns 0)
+$backoff = new ArrayBackoff([100, 500, 1000], false);
+
+// From comma-separated string
+$backoff = ArrayBackoff::fromString('100, 500, 1000, 2000');
+
+// From predefined patterns
+$backoff = ArrayBackoff::fromPattern('short');      // [100, 200, 300, 500, 1000]
+$backoff = ArrayBackoff::fromPattern('medium');     // [200, 500, 1000, 2000, 5000]
+$backoff = ArrayBackoff::fromPattern('long');       // [500, 1000, 2000, 5000, 10000, 30000]
+$backoff = ArrayBackoff::fromPattern('exponential'); // [100, 200, 400, 800, 1600, 3200, 6400]
+
+// Usage in retry logic
+$attempt = 0;
+while (true) {
+    try {
+        return performOperation();
+    } catch (Exception $e) {
+        $delay = $backoff->next();
+        if ($delay === 0) {
+            throw $e; // No more retries
+        }
+        usleep($delay * 1000); // Convert to microseconds
+    }
+}
+```
+
+#### Available Backoff Implementations
+
+- **ArrayBackoff** - Custom intervals from an array
+- **FixedBackoff** - Constant delay between retries
+- **LinearBackoff** - Linear growth with configurable step
+- **ExponentialBackoff** - Exponential growth with optional jitter
+- **FibonacciBackoff** - Fibonacci sequence-based delays
+- **PoissonBackoff** - Statistical distribution-based delays
+- **DecorrelatedJitterBackoff** - Decorrelated jitter for better spreading
+
+#### Common Backoff Interface
+
+All backoff implementations implement `BackoffInterface`:
+
+```php
+interface BackoffInterface
+{
+    public function next(): int;           // Get next delay in milliseconds
+    public function reset(): void;         // Reset attempt counter
+    public function getAttempt(): int;     // Get current attempt count
+    public function sleep(): int;          // Sleep for calculated delay
+}
+```
 
 ## Architecture Notes
 
