@@ -14,6 +14,9 @@ namespace FriendsOfHyperf\MonologHook\Aspect;
 class_alias(\Hyperf\Logger\Aspect\UdpSocketAspect::class, UdpSocketAspect::class);
 
 if (! class_exists(UdpSocketAspect::class)) {
+    /**
+     * @deprecated use `\Hyperf\Logger\Aspect\UdpSocketAspect` instead
+     */
     class UdpSocketAspect extends \Hyperf\Logger\Aspect\UdpSocketAspect
     {
     }
