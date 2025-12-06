@@ -2,12 +2,15 @@
 
 This repository contains a monorepo of popular components for the Hyperf PHP framework. This document provides guidance for GitHub Copilot to better understand the project structure and conventions.
 
+> **Note**: Also see `CLAUDE.md` and `AGENTS.md` in the repository root for additional development guidance.
+
 ## Project Overview
 
 - **Repository**: friendsofhyperf/components
-- **Type**: Monorepo containing 50+ Hyperf components
+- **Type**: Monorepo containing 49 Hyperf components
 - **PHP Version**: >=8.2
 - **Framework**: Hyperf >=3.2.0
+- **Testing Framework**: Pest (PHPUnit under the hood)
 - **License**: MIT
 - **Main Author**: Deeka Wong (huangdijia@gmail.com)
 
@@ -17,10 +20,15 @@ This repository contains a monorepo of popular components for the Hyperf PHP fra
 /
 ├── bin/                    # Utility scripts
 ├── docs/                   # Multi-language documentation (VitePress)
-├── src/                    # Component source code (50+ components)
-├── tests/                  # Test suites
+├── src/                    # Component source code (49 components)
+├── tests/                  # Test suites (Pest)
+├── types/                  # PHP type stubs
+├── .github/                # GitHub workflows and configuration
 ├── composer.json           # Main composer configuration
-└── package.json           # Documentation build configuration
+├── package.json            # Documentation build configuration
+├── phpstan.neon.dist       # PHPStan configuration
+├── CLAUDE.md               # Claude Code (claude.ai/code) development guidance
+└── AGENTS.md               # Repository guidelines for agents
 ```
 
 ## Component Architecture
@@ -39,14 +47,53 @@ src/{component-name}/
 ```
 
 ### Key Components Include:
-- **Cache**: Enhanced caching functionality
-- **Http Client**: HTTP client utilities
-- **Elasticsearch**: Elasticsearch integration
-- **Notification**: Multi-channel notifications
-- **Model Factory**: Database model factories
-- **Telescope**: Application debugging and monitoring
-- **Tinker**: Interactive REPL
-- **Validation**: Enhanced validation features
+
+**Development Tools**:
+- **telescope**: Application debugging and monitoring
+- **tinker**: Interactive REPL
+- **ide-helper**: IDE autocompletion helper
+- **pretty-console**: Enhanced console output
+
+**Database**:
+- **model-factory**: Database model factories
+- **model-observer**: Model event observers
+- **model-scope**: Model query scopes
+- **fast-paginate**: Optimized pagination
+- **compoships**: Composite key relationships
+- **mysql-grammar-addon**: MySQL grammar extensions
+
+**Caching/Storage**:
+- **cache**: Enhanced caching functionality
+- **lock**: Distributed locking
+- **redis-subscriber**: Redis pub/sub subscriber
+
+**HTTP/API**:
+- **http-client**: HTTP client utilities
+- **oauth2-server**: OAuth2 server implementation
+- **openai-client**: OpenAI API client
+
+**Notifications**:
+- **notification**: Multi-channel notifications
+- **notification-mail**: Email notifications
+- **notification-easysms**: SMS notifications via EasySms
+- **mail**: Mail sending functionality
+
+**Search**:
+- **elasticsearch**: Elasticsearch integration
+- **telescope-elasticsearch**: Telescope Elasticsearch storage
+
+**Security**:
+- **encryption**: Encryption utilities
+- **purifier**: HTML purification
+- **recaptcha**: Google reCAPTCHA integration
+- **validated-dto**: Data Transfer Objects with validation
+
+**Infrastructure**:
+- **confd**: Configuration daemon
+- **config-consul**: Consul configuration center
+- **facade**: Laravel-style facades
+- **ipc-broadcaster**: IPC broadcasting
+- **sentry**: Sentry error tracking integration
 
 ## Development Conventions
 
@@ -66,9 +113,11 @@ Each component typically includes a `ConfigProvider.php` file that defines:
 - PHPStan for static analysis (`phpstan.neon.dist`)
 
 ### Testing
-- Uses PHPUnit for testing (`phpunit.xml.dist`)
-- Test files located in `tests/` directory
+- Uses Pest testing framework (PHPUnit under the hood)
+- Test configuration in `phpunit.xml.dist` and `tests/Pest.php`
+- Test files located in `tests/` directory with groups per component
 - Follows Hyperf testing patterns
+- Type coverage analysis via Pest plugin
 
 ## Documentation Structure
 
@@ -88,16 +137,25 @@ Documentation is available in multiple languages:
 
 ### Scripts Available:
 - `bin/generate-repository-doc.sh` - Generate component documentation
-- `bin/doc-translate` - PHP-based translation script
-- `bin/doc-translate.github-model.js` - AI-powered translation
+- `bin/regenerate-readme.sh` - Regenerate README files
+- `bin/doc-translate` - PHP-based translation script (uses OpenCC)
+- `bin/doc-translate.js` - JavaScript-based translation
+- `bin/doc-translate.github-model.js` - AI-powered translation using language models
 - `bin/split-docs.sh` - Deploy documentation to separate repository
+- `bin/split.sh`, `bin/split-linux.sh` - Split components to individual repos
+- `bin/release.sh` - Release management
+- `bin/composer-json-fixer` - Fix and normalize composer.json files
+- `bin/pending-repositories.sh` - Check for pending repository changes
 
 ### GitHub Actions:
-- `tests.yaml` - Run test suite
-- `docs-split.yaml` - Deploy documentation
+- `tests.yaml` - Run main test suite (CS Fixer, PHPStan, Pest)
+- `test-components.yml` - Component-specific tests (PHP MySQL Replication, Carbon, Symfony, Elasticsearch)
+- `docs-split.yaml` - Deploy documentation to separate repository
 - `docs-translate.yaml` - Auto-translate documentation
 - `release.yaml` - Handle releases
 - `split.yaml` - Split components to individual repositories
+- `update-changelog.yml` - Auto-update changelog on releases
+- `cnb.yaml` - Mirror to CNB repository
 
 ## Development Workflow
 
@@ -119,6 +177,9 @@ Documentation is available in multiple languages:
 ### Configuration Provider Template:
 ```php
 <?php
+
+declare(strict_types=1);
+
 namespace FriendsOfHyperf\ComponentName;
 
 class ConfigProvider
@@ -126,16 +187,16 @@ class ConfigProvider
     public function __invoke(): array
     {
         return [
-            'dependencies' => [],
-            'commands' => [],
-            'listeners' => [],
-            'annotations' => [
+            'dependencies' => [],    // DI container bindings
+            'commands' => [],        // Console commands
+            'listeners' => [],       // Event listeners
+            'aspects' => [],         // AOP aspects
+            'annotations' => [       // Annotation scanning
                 'scan' => [
-                    'paths' => [
-                        __DIR__,
-                    ],
+                    'paths' => [__DIR__],
                 ],
             ],
+            'publish' => [],         // Publishable assets
         ];
     }
 }
@@ -187,10 +248,14 @@ composer require friendsofhyperf/components
 
 ## Testing Conventions
 
-- Test files should be in `tests/` directory
+- Test files should be in `tests/` directory, mirroring component structure
+- Uses Pest testing framework with PHPUnit compatibility
+- Test groups configured in `tests/Pest.php` per component
+- Run tests for specific components using `--group` flag
 - Use Hyperf testing utilities
-- Mock external dependencies appropriately
+- Mock external dependencies appropriately using `tests/Concerns/InteractsWithContainer.php`
 - Follow AAA pattern (Arrange, Act, Assert)
+- Maintain type coverage; add/update tests when public APIs change
 
 ## Documentation Standards
 
@@ -207,6 +272,30 @@ composer require friendsofhyperf/components
 4. Write/update tests
 5. Update documentation
 6. Submit pull request
+
+### Commit Guidelines
+- Use Conventional Commits, scoped where possible (e.g., `feat(cache): add redis tagging`, `fix(tinker): handle empty input`)
+- Before opening a PR, ensure `composer test` passes
+- Include rationale, linked issues, and before/after notes for behavioral changes
+- Never commit secrets or sensitive data
+
+## Coroutine Safety
+
+All code must be coroutine-safe (Swoole/Swow compatibility). Avoid:
+- Global state without proper context management
+- Blocking I/O operations
+- Non-coroutine-safe third-party libraries without wrappers
+
+Use Hyperf's context API for request-scoped data:
+```php
+use Hyperf\Context\Context;
+
+// Store in context
+Context::set('key', $value);
+
+// Retrieve from context
+Context::get('key');
+```
 
 ## Deployment and Release
 
@@ -239,10 +328,11 @@ However, if some tool calls depend on previous calls to inform dependent values 
 ### Testing Strategy
 - Run existing tests before making changes to understand baseline
 - Create focused tests for new functionality
-- Use PHPUnit following Hyperf testing patterns
+- Use Pest following Hyperf testing patterns
 - Mock external dependencies appropriately
 - Run tests iteratively after each change
 - Don't remove or edit unrelated tests
+- Use `--group` flag to run component-specific tests
 
 ### Error Handling
 - Check for and handle PHP errors appropriately
@@ -263,11 +353,20 @@ However, if some tool calls depend on previous calls to inform dependent values 
 Common commands for this repository:
 - `composer install` - Install PHP dependencies
 - `composer test` - Run all tests (lint, unit, types)
+- `composer test:unit` - Run unit tests only (vendor/bin/pest)
+- `composer test:lint` - Run linting (dry-run)
+- `composer test:types` - Run type coverage analysis
 - `composer cs-fix` - Run PHP-CS-Fixer
 - `composer analyse` - Run PHPStan analysis
+- `composer analyse:types` - Run stricter type analysis
+- `composer json-fix` - Normalize all composer.json files
+- `composer gen:readme` - Generate README files
+- `vendor/bin/pest --group=<component>` - Run tests for specific component
+- `vendor/bin/pest --parallel` - Run tests in parallel
 - `cd docs && pnpm install` - Install documentation dependencies
 - `cd docs && pnpm run docs:dev` - Run documentation dev server
 - `cd docs && pnpm run docs:build` - Build documentation
+- `pnpm run docs:translate` - Translate documentation
 
 ### Reporting Progress
 - Use `report_progress` early to outline your plan
