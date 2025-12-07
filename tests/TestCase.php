@@ -24,11 +24,6 @@ class TestCase extends \PHPUnit\Framework\TestCase
     use Concerns\InteractsWithContainer;
     use RunTestsInCoroutine;
 
-    public function __construct($name = null, array $data = [], $dataName = '')
-    {
-        parent::__construct($name, $data, $dataName);
-    }
-
     protected function setUp(): void
     {
         $bootApplication = (object) [];
