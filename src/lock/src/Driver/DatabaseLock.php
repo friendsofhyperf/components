@@ -17,8 +17,6 @@ use Hyperf\Database\Exception\QueryException;
 use Hyperf\DbConnection\Db;
 use Override;
 
-use function Hyperf\Support\optional;
-
 class DatabaseLock extends AbstractLock
 {
     protected ConnectionInterface $connection;
@@ -149,6 +147,6 @@ class DatabaseLock extends AbstractLock
      */
     protected function getCurrentOwner()
     {
-        return optional($this->connection->table($this->table)->where('key', $this->name)->first())->owner; // @phpstan-ignore-line
+        return $this->connection->table($this->table)->where('key', $this->name)->first()?->owner; // @phpstan-ignore-line
     }
 }
