@@ -1,0 +1,15 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "jq -r '.tool_input.file_path' | { read file_path; if echo \"$file_path\" | grep -q '\\.php$'; then ${CLAUDE_PROJECT_DIR}/vendor/bin/php-cs-fixer fix \"$file_path\" --quiet; fi; }"
+          }
+        ]
+      }
+    ]
+  }
+}
