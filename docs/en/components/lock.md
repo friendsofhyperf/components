@@ -52,7 +52,7 @@ try {
 } catch (LockTimeoutException $e) {
     // Unable to acquire lock...
 } finally {
-    optional($lock)->release();
+    $lock->release();
 }
 
 lock('foo', 10)->block(5, function () {
