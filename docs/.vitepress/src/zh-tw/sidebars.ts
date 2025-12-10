@@ -163,6 +163,10 @@ const sidebar:DefaultTheme.Sidebar = {
                     link: '/zh-tw/components/purifier.md'
                 },
                 {
+                    text: 'Rate Limit',
+                    link: '/zh-tw/components/rate-limit.md'
+                },
+                {
                     text: 'Recaptcha',
                     link: '/zh-tw/components/recaptcha.md'
                 },

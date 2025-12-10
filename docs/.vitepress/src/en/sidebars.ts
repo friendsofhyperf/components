@@ -150,6 +150,10 @@ const sidebar:DefaultTheme.Sidebar = {
                     link: '/en/components/purifier.md'
                 },
                 {
+                    text: 'Rate Limit',
+                    link: '/en/components/rate-limit.md'
+                },
+                {
                     text: 'Recaptcha',
                     link: '/en/components/recaptcha.md'
                 },
