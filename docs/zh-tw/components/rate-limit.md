@@ -8,7 +8,7 @@ Hyperf 的限流元件，支援多種演算法（固定視窗、滑動視窗、�
 composer require friendsofhyperf/rate-limit
 ```
 
-## 環境需求
+## 環境要求
 
 - Hyperf ~3.1.0
 - Redis
@@ -22,19 +22,19 @@ composer require friendsofhyperf/rate-limit
   - 漏桶
 - **靈活的使用方式**
   - 基於註解的限流（透過切面實現）
-  - 自訂中介軟體支援
+  - 自定義中介軟體支援
 - **多註解智慧排序**
-  - 自動對多個 RateLimit 註解進行優先級排序
+  - 自動對多個 RateLimit 註解進行優先順序排序
   - 根據嚴格程度智慧排序（maxAttempts/decay 比率）
   - 更嚴格的限制優先檢查，提升效能
 - **靈活的鍵生成**
-  - 預設基於方法/類別的鍵
-  - 支援自訂鍵和佔位符
+  - 預設基於方法/類的鍵
+  - 支援自定義鍵和佔位符
   - 支援陣列鍵
   - 支援可呼叫鍵
-- **自訂回應**
-  - 自訂回應訊息
-  - 自訂 HTTP 回應碼
+- **自定義響應**
+  - 自定義響應訊息
+  - 自定義 HTTP 響應碼
 - **多 Redis 連線池支援**
 
 ## 使用方式
@@ -76,7 +76,7 @@ class UserController
     }
 
     /**
-     * 自訂鍵，支援使用者 ID 佔位符
+     * 自定義鍵，支援使用者 ID 佔位符
      */
     #[RateLimit(
         key: 'user:{userId}:action',
@@ -102,7 +102,7 @@ class UserController
     }
 
     /**
-     * 自訂回應訊息和狀態碼
+     * 自定義響應訊息和狀態碼
      */
     #[RateLimit(
         maxAttempts: 5,
@@ -130,16 +130,16 @@ class UserController
 }
 ```
 
-### 註解參數
+### 註解引數
 
-| 參數 | 類型 | 預設值 | 說明 |
+| 引數 | 型別 | 預設值 | 說明 |
 |-----------|------|---------|-------------|
 | `key` | `string\|array` | `''` | 限流鍵。支援：'user:{user_id}', ['user', '{user_id}'], 或可呼叫函式 |
 | `maxAttempts` | `int` | `60` | 允許的最大請求次數 |
 | `decay` | `int` | `60` | 時間視窗（秒） |
 | `algorithm` | `Algorithm` | `Algorithm::FIXED_WINDOW` | 演算法：fixed_window, sliding_window, token_bucket, leaky_bucket |
 | `pool` | `?string` | `null` | 使用的 Redis 連線池 |
-| `response` | `string` | `'Too Many Attempts.'` | 超出限流時的自訂回應 |
+| `response` | `string` | `'Too Many Attempts.'` | 超出限流時的自定義響應 |
 | `responseCode` | `int` | `429` | 超出限流時的 HTTP 狀態碼 |
 
 ### 使用 AutoSort 實現多限流規則智慧排序
@@ -181,27 +181,27 @@ class ApiController
 **AutoSort 的優勢：**
 
 - **效能**：嚴格的限制優先檢查，避免不必要的寬鬆限制檢查
-- **智慧**：自動根據限制嚴格程度（maxAttempts/decay 比率）計算優先級
+- **智慧**：自動根據限制嚴格程度（maxAttempts/decay 比率）計算優先順序
 - **可選**：僅在顯式使用 `AutoSort` 的方法上生效
 - **向後相容**：現有程式碼無需修改即可繼續工作
 
 ### 鍵佔位符
 
-`key` 參數支援動態佔位符，會被方法參數替換：
+`key` 引數支援動態佔位符，會被方法引數替換：
 
 ```php
 // 命名佔位符
 #[RateLimit(key: 'user:{userId}:{action}')]
 public function action($userId, $action)
 
-// 陣列格式（自動用 ':' 連接）
+// 陣列格式（自動用 ':' 連線）
 #[RateLimit(key: ['user', '{userId}', '{action}'])]
 public function action($userId, $action)
 ```
 
 ### 方式二：使用中介軟體
 
-對於 HTTP 請求，可以建立繼承 `RateLimitMiddleware` 的自訂中介軟體：
+對於 HTTP 請求，可以建立繼承 `RateLimitMiddleware` 的自定義中介軟體：
 
 ```php
 <?php
@@ -223,7 +223,7 @@ class ApiRateLimitMiddleware extends RateLimitMiddleware
     protected string $responseMessage = 'API rate limit exceeded';
     protected int $responseCode = 429;
 
-    // 或自訂鍵解析
+    // 或自定義鍵解析
     protected function resolveKey(ServerRequestInterface $request): string
     {
         return 'api:' . $this->getClientIp();
@@ -231,7 +231,7 @@ class ApiRateLimitMiddleware extends RateLimitMiddleware
 }
 ```
 
-然後在設定中註冊中介軟體：
+然後在配置中註冊中介軟體：
 
 ```php
 // config/autoload/middlewares.php
@@ -275,7 +275,7 @@ return [
 ```
 
 **優點**：允許突發流量，靈活  
-**缺點**：需要更多設定
+**缺點**：需要更多配置
 
 ### 漏桶
 
@@ -288,7 +288,7 @@ return [
 **優點**：平滑輸出速率，防止突發  
 **缺點**：可能延遲請求
 
-## 自訂限流器
+## 自定義限流器
 
 你可以透過實現 `RateLimiterInterface` 來實現自己的限流器：
 
@@ -318,9 +318,9 @@ class CustomRateLimiter implements RateLimiterInterface
 }
 ```
 
-## 例外處理
+## 異常處理
 
-當超出限流時，會拋出 `RateLimitException`：
+當超出限流時，會丟擲 `RateLimitException`：
 
 ```php
 <?php
@@ -334,16 +334,16 @@ try {
 }
 ```
 
-## 設定
+## 配置
 
-元件使用 Hyperf 的 Redis 設定。你可以在註解或中介軟體中指定使用的 Redis 連線池：
+元件使用 Hyperf 的 Redis 配置。你可以在註解或中介軟體中指定使用的 Redis 連線池：
 
 ```php
 // 使用特定的 Redis 連線池
 #[RateLimit(pool: 'rate_limit')]
 ```
 
-確保在 `config/autoload/redis.php` 中設定 Redis 連線池：
+確保在 `config/autoload/redis.php` 中配置 Redis 連線池：
 
 ```php
 return [
@@ -370,9 +370,9 @@ return [
 ];
 ```
 
-## 範例
+## 示例
 
-### 範例 1：登入限流
+### 示例 1：登入限流
 
 限制登入嘗試以防止暴力破解：
 
@@ -390,7 +390,7 @@ public function login(string $email, string $password)
 }
 ```
 
-### 範例 2：API 端點限流
+### 示例 2：API 端點限流
 
 為不同的 API 端點設定不同的限流：
 
@@ -404,16 +404,16 @@ class ApiController
         // 公共端點
     }
 
-    // 進階 API：每分鐘 1000 次請求
+    // 高階 API：每分鐘 1000 次請求
     #[RateLimit(maxAttempts: 1000, decay: 60)]
     public function premium()
     {
-        // 進階端點
+        // 高階端點
     }
 }
 ```
 
-### 範例 3：基於使用者的限流
+### 示例 3：基於使用者的限流
 
 按使用者限流：
 
@@ -429,9 +429,9 @@ public function performAction(int $userId)
 }
 ```
 
-### 範例 4：基於 IP 的限流
+### 示例 4：基於 IP 的限流
 
-使用中介軟體按 IP 位址限流：
+使用中介軟體按 IP 地址限流：
 
 ```php
 class IpRateLimitMiddleware extends RateLimitMiddleware
@@ -443,7 +443,7 @@ class IpRateLimitMiddleware extends RateLimitMiddleware
 }
 ```
 
-### 範例 5：使用 AutoSort 的多級限流
+### 示例 5：使用 AutoSort 的多級限流
 
 使用 AutoSort 高效處理昂貴操作的多級限流：
 

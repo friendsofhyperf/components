@@ -1,6 +1,6 @@
 # Rate Limit
 
-Hyperf 的限流組件，支援多種演算法（固定視窗、滑動視窗、令牌桶、漏桶）。
+Hyperf 的限流組件，支持多種算法（固定窗口、滑動窗口、令牌桶、漏桶）。
 
 ## 安裝
 
@@ -8,34 +8,34 @@ Hyperf 的限流組件，支援多種演算法（固定視窗、滑動視窗、�
 composer require friendsofhyperf/rate-limit
 ```
 
-## 環境需求
+## 環境要求
 
 - Hyperf ~3.1.0
 - Redis
 
 ## 特性
 
-- **多種限流演算法**
-  - 固定視窗
-  - 滑動視窗
+- **多種限流算法**
+  - 固定窗口
+  - 滑動窗口
   - 令牌桶
   - 漏桶
 - **靈活的使用方式**
-  - 基於註解的限流（透過切面實現）
-  - 自訂中間件支援
-- **多註解智慧排序**
+  - 基於註解的限流（通過切面實現）
+  - 自定義中間件支持
+- **多註解智能排序**
   - 自動對多個 RateLimit 註解進行優先級排序
-  - 根據嚴格程度智慧排序（maxAttempts/decay 比率）
-  - 更嚴格的限制優先檢查，提升效能
+  - 根據嚴格程度智能排序（maxAttempts/decay 比率）
+  - 更嚴格的限制優先檢查，提升性能
 - **靈活的鍵生成**
-  - 預設基於方法/類別的鍵
-  - 支援自訂鍵和佔位符
-  - 支援陣列鍵
-  - 支援可呼叫鍵
-- **自訂回應**
-  - 自訂回應訊息
-  - 自訂 HTTP 回應碼
-- **多 Redis 連接池支援**
+  - 默認基於方法/類的鍵
+  - 支持自定義鍵和佔位符
+  - 支持數組鍵
+  - 支持可調用鍵
+- **自定義響應**
+  - 自定義響應消息
+  - 自定義 HTTP 響應碼
+- **多 Redis 連接池支持**
 
 ## 使用方式
 
@@ -63,7 +63,7 @@ class UserController
     }
 
     /**
-     * 使用滑動視窗演算法
+     * 使用滑動窗口算法
      */
     #[RateLimit(
         maxAttempts: 100,
@@ -76,7 +76,7 @@ class UserController
     }
 
     /**
-     * 自訂鍵，支援用戶 ID 佔位符
+     * 自定義鍵，支持用户 ID 佔位符
      */
     #[RateLimit(
         key: 'user:{userId}:action',
@@ -89,7 +89,7 @@ class UserController
     }
 
     /**
-     * 使用陣列鍵
+     * 使用數組鍵
      */
     #[RateLimit(
         key: ['user', '{userId}', 'create'],
@@ -102,7 +102,7 @@ class UserController
     }
 
     /**
-     * 自訂回應訊息和狀態碼
+     * 自定義響應消息和狀態碼
      */
     #[RateLimit(
         maxAttempts: 5,
@@ -132,17 +132,17 @@ class UserController
 
 ### 註解參數
 
-| 參數 | 類型 | 預設值 | 說明 |
+| 參數 | 類型 | 默認值 | 説明 |
 |-----------|------|---------|-------------|
-| `key` | `string\|array` | `''` | 限流鍵。支援：'user:{user_id}', ['user', '{user_id}'], 或可呼叫函數 |
+| `key` | `string\|array` | `''` | 限流鍵。支持：'user:{user_id}', ['user', '{user_id}'], 或可調用函數 |
 | `maxAttempts` | `int` | `60` | 允許的最大請求次數 |
-| `decay` | `int` | `60` | 時間視窗（秒） |
-| `algorithm` | `Algorithm` | `Algorithm::FIXED_WINDOW` | 演算法：fixed_window, sliding_window, token_bucket, leaky_bucket |
+| `decay` | `int` | `60` | 時間窗口（秒） |
+| `algorithm` | `Algorithm` | `Algorithm::FIXED_WINDOW` | 算法：fixed_window, sliding_window, token_bucket, leaky_bucket |
 | `pool` | `?string` | `null` | 使用的 Redis 連接池 |
-| `response` | `string` | `'Too Many Attempts.'` | 超出限流時的自訂回應 |
+| `response` | `string` | `'Too Many Attempts.'` | 超出限流時的自定義響應 |
 | `responseCode` | `int` | `429` | 超出限流時的 HTTP 狀態碼 |
 
-### 使用 AutoSort 實現多限流規則智慧排序
+### 使用 AutoSort 實現多限流規則智能排序
 
 當同一個方法需要多個限流規則時（例如每分鐘和每小時的限制），可以使用 `AutoSort` 註解自動按嚴格程度排序：
 
@@ -155,7 +155,7 @@ use FriendsOfHyperf\RateLimit\Annotation\AutoSort;
 class ApiController
 {
     /**
-     * 多個限流規則智慧排序
+     * 多個限流規則智能排序
      * 更嚴格的限制（maxAttempts/decay 比率更小）優先檢查
      */
     #[AutoSort]
@@ -167,7 +167,7 @@ class ApiController
     }
 
     /**
-     * 不使用 AutoSort 時，按宣告順序檢查
+     * 不使用 AutoSort 時，按聲明順序檢查
      */
     #[RateLimit(maxAttempts: 100, decay: 3600)]    // 優先檢查
     #[RateLimit(maxAttempts: 10, decay: 60)]       // 其次檢查
@@ -180,28 +180,28 @@ class ApiController
 
 **AutoSort 的優勢：**
 
-- **效能**：嚴格的限制優先檢查，避免不必要的寬鬆限制檢查
-- **智慧**：自動根據限制嚴格程度（maxAttempts/decay 比率）計算優先級
+- **性能**：嚴格的限制優先檢查，避免不必要的寬鬆限制檢查
+- **智能**：自動根據限制嚴格程度（maxAttempts/decay 比率）計算優先級
 - **可選**：僅在顯式使用 `AutoSort` 的方法上生效
-- **向後相容**：現有代碼無需修改即可繼續工作
+- **向後兼容**：現有代碼無需修改即可繼續工作
 
 ### 鍵佔位符
 
-`key` 參數支援動態佔位符，會被方法參數替換：
+`key` 參數支持動態佔位符，會被方法參數替換：
 
 ```php
 // 命名佔位符
 #[RateLimit(key: 'user:{userId}:{action}')]
 public function action($userId, $action)
 
-// 陣列格式（自動用 ':' 連接）
+// 數組格式（自動用 ':' 連接）
 #[RateLimit(key: ['user', '{userId}', '{action}'])]
 public function action($userId, $action)
 ```
 
 ### 方式二：使用中間件
 
-對於 HTTP 請求，可以創建繼承 `RateLimitMiddleware` 的自訂中間件：
+對於 HTTP 請求，可以創建繼承 `RateLimitMiddleware` 的自定義中間件：
 
 ```php
 <?php
@@ -216,14 +216,14 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class ApiRateLimitMiddleware extends RateLimitMiddleware
 {
-    // 重寫預設屬性
+    // 重寫默認屬性
     protected int $maxAttempts = 100;
     protected int $decay = 60;
     protected Algorithm $algorithm = Algorithm::SLIDING_WINDOW;
     protected string $responseMessage = 'API rate limit exceeded';
     protected int $responseCode = 429;
 
-    // 或自訂鍵解析
+    // 或自定義鍵解析
     protected function resolveKey(ServerRequestInterface $request): string
     {
         return 'api:' . $this->getClientIp();
@@ -242,22 +242,22 @@ return [
 ];
 ```
 
-## 限流演算法
+## 限流算法
 
-### 固定視窗（預設）
+### 固定窗口（默認）
 
-最簡單的演算法，在固定時間視窗內計數請求。
+最簡單的算法，在固定時間窗口內計數請求。
 
 ```php
 #[RateLimit(algorithm: Algorithm::FIXED_WINDOW)]
 ```
 
 **優點**：簡單，內存高效  
-**缺點**：可能在視窗邊界處允許突發請求
+**缺點**：可能在窗口邊界處允許突發請求
 
-### 滑動視窗
+### 滑動窗口
 
-比固定視窗更準確，均勻分佈請求。
+比固定窗口更準確，均勻分佈請求。
 
 ```php
 #[RateLimit(algorithm: Algorithm::SLIDING_WINDOW)]
@@ -288,9 +288,9 @@ return [
 **優點**：平滑輸出速率，防止突發  
 **缺點**：可能延遲請求
 
-## 自訂限流器
+## 自定義限流器
 
-你可以透過實現 `RateLimiterInterface` 來實現自己的限流器：
+你可以通過實現 `RateLimiterInterface` 來實現自己的限流器：
 
 ```php
 <?php
@@ -413,9 +413,9 @@ class ApiController
 }
 ```
 
-### 示例 3：基於用戶的限流
+### 示例 3：基於用户的限流
 
-按用戶限流：
+按用户限流：
 
 ```php
 #[RateLimit(
@@ -452,7 +452,7 @@ class ReportController
 {
     /**
      * 昂貴的報告生成，多級保護
-     * AutoSort 確保優先檢查嚴格的限制，提升效能
+     * AutoSort 確保優先檢查嚴格的限制，提升性能
      */
     #[AutoSort]
     #[RateLimit(maxAttempts: 5, decay: 60, response: 'Too many requests. Max 5 per minute')]       // 緊急制動

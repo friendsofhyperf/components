@@ -1,6 +1,6 @@
 # Rate Limit
 
-Rate limiting component for Hyperf with support for multiple algorithms (Fixed Window, Sliding Window, Token Bucket, Leaky Bucket).
+Hyperf's rate limiting component, supporting multiple algorithms (fixed window, sliding window, token bucket, leaky bucket).
 
 ## Installation
 
@@ -21,27 +21,27 @@ composer require friendsofhyperf/rate-limit
   - Token Bucket
   - Leaky Bucket
 - **Flexible Usage**
-  - Annotation-based rate limiting via Aspect
+  - Annotation-based rate limiting (via aspect)
   - Custom middleware support
-- **Smart Order for Multiple Annotations**
-  - Automatic prioritization of multiple RateLimit annotations
-  - Intelligent ordering by strictness (maxAttempts/decay ratio)
-  - More restrictive limits evaluated first for better performance
+- **Smart Multi-Annotation Sorting**
+  - Automatically sorts multiple RateLimit annotations by priority
+  - Intelligent sorting based on strictness (maxAttempts/decay ratio)
+  - Stricter limits checked first for better performance
 - **Flexible Key Generation**
   - Default method/class-based keys
-  - Custom key with placeholders support
-  - Array keys support
-  - Callable keys support
-- **Customizable Responses**
-  - Custom response message
-  - Custom HTTP response code
-- **Multi Redis Pool Support**
+  - Support for custom keys and placeholders
+  - Support for array keys
+  - Support for callable keys
+- **Custom Responses**
+  - Custom response messages
+  - Custom HTTP response codes
+- **Multiple Redis Connection Pool Support**
 
 ## Usage
 
-### Method 1: Using Annotation
+### Method 1: Using Annotations
 
-The easiest way to add rate limiting is using the `#[RateLimit]` attribute:
+The simplest way is to use the `#[RateLimit]` attribute:
 
 ```php
 <?php
@@ -54,12 +54,12 @@ use FriendsOfHyperf\RateLimit\Algorithm;
 class UserController
 {
     /**
-     * Basic rate limiting: 60 attempts per 60 seconds
+     * Basic rate limit: max 60 requests in 60 seconds
      */
     #[RateLimit(maxAttempts: 60, decay: 60)]
     public function index()
     {
-        // Your code here
+        // Your code
     }
 
     /**
@@ -72,7 +72,7 @@ class UserController
     )]
     public function api()
     {
-        // Your code here
+        // Your code
     }
 
     /**
@@ -85,7 +85,7 @@ class UserController
     )]
     public function create($userId)
     {
-        // Your code here
+        // Your code
     }
 
     /**
@@ -98,11 +98,11 @@ class UserController
     )]
     public function update($userId)
     {
-        // Your code here
+        // Your code
     }
 
     /**
-     * Custom response message and code
+     * Custom response message and status code
      */
     #[RateLimit(
         maxAttempts: 5,
@@ -112,11 +112,11 @@ class UserController
     )]
     public function login()
     {
-        // Your code here
+        // Your code
     }
 
     /**
-     * Using specific Redis pool
+     * Using specified Redis connection pool
      */
     #[RateLimit(
         maxAttempts: 60,
@@ -125,7 +125,7 @@ class UserController
     )]
     public function heavyOperation()
     {
-        // Your code here
+        // Your code
     }
 }
 ```
@@ -134,17 +134,17 @@ class UserController
 
 | Parameter | Type | Default | Description |
 |-----------|------|---------|-------------|
-| `key` | `string\|array` | `''` | Rate limit key. Supports: 'user:{user_id}', ['user', '{user_id}'], or callable |
-| `maxAttempts` | `int` | `60` | Maximum number of attempts allowed |
+| `key` | `string\|array` | `''` | Rate limit key. Supports: 'user:{user_id}', ['user', '{user_id}'], or callable functions |
+| `maxAttempts` | `int` | `60` | Maximum number of allowed requests |
 | `decay` | `int` | `60` | Time window in seconds |
-| `algorithm` | `Algorithm` | `Algorithm::FIXED_WINDOW` | Algorithm to use: fixed_window, sliding_window, token_bucket, leaky_bucket |
-| `pool` | `?string` | `null` | The Redis connection pool to use |
+| `algorithm` | `Algorithm` | `Algorithm::FIXED_WINDOW` | Algorithm: fixed_window, sliding_window, token_bucket, leaky_bucket |
+| `pool` | `?string` | `null` | Redis connection pool to use |
 | `response` | `string` | `'Too Many Attempts.'` | Custom response when rate limit is exceeded |
-| `responseCode` | `int` | `429` | HTTP response code when rate limit is exceeded |
+| `responseCode` | `int` | `429` | HTTP status code when rate limit is exceeded |
 
-### Multiple RateLimits with AutoSort
+### Using AutoSort for Smart Multi-Rate-Limit Rule Sorting
 
-When you need multiple rate limits on the same method (e.g., per-minute and per-hour limits), you can use the `AutoSort` annotation to automatically prioritize them:
+When a single method requires multiple rate limiting rules (e.g., per-minute and per-hour limits), use the `AutoSort` annotation for automatic sorting by strictness:
 
 ```php
 <?php
@@ -155,39 +155,39 @@ use FriendsOfHyperf\RateLimit\Annotation\AutoSort;
 class ApiController
 {
     /**
-     * Multiple rate limits with smart prioritization
-     * Stricter limits (smaller maxAttempts/decay ratio) are evaluated first
+     * Smart sorting of multiple rate limit rules
+     * Stricter limits (smaller maxAttempts/decay ratio) are checked first
      */
     #[AutoSort]
-    #[RateLimit(maxAttempts: 10, decay: 60)]      // 10 requests/minute - evaluated first
-    #[RateLimit(maxAttempts: 100, decay: 3600)]    // 100 requests/hour - evaluated second
+    #[RateLimit(maxAttempts: 10, decay: 60)]      // 10 per minute - checked first
+    #[RateLimit(maxAttempts: 100, decay: 3600)]    // 100 per hour - checked second
     public function expensiveOperation()
     {
-        // Your code here
+        // Your code
     }
 
     /**
-     * Without AutoSort, rate limits are evaluated in declaration order
+     * Without AutoSort, checks in declaration order
      */
-    #[RateLimit(maxAttempts: 100, decay: 3600)]    // Evaluated first
-    #[RateLimit(maxAttempts: 10, decay: 60)]       // Evaluated second
+    #[RateLimit(maxAttempts: 100, decay: 3600)]    // Checked first
+    #[RateLimit(maxAttempts: 10, decay: 60)]       // Checked second
     public function anotherOperation()
     {
-        // Your code here
+        // Your code
     }
 }
 ```
 
-**Benefits of AutoSort:**
+**AutoSort Advantages:**
 
-- **Performance**: Stricter limits are checked first, avoiding unnecessary checks of more lenient limits
-- **Intelligence**: Automatically calculates priority based on limit strictness (maxAttempts/decay ratio)
-- **Opt-in**: Only affects methods where `AutoSort` is explicitly used
-- **Backward Compatible**: Existing code continues to work without changes
+- **Performance**: Stricter limits checked first, avoiding unnecessary checks of looser limits
+- **Intelligent**: Automatically calculates priority based on limit strictness (maxAttempts/decay ratio)
+- **Optional**: Only takes effect on methods explicitly using `AutoSort`
+- **Backward Compatible**: Existing code continues to work without modification
 
 ### Key Placeholders
 
-The `key` parameter supports dynamic placeholders that will be replaced with method arguments:
+The `key` parameter supports dynamic placeholders that are replaced with method parameters:
 
 ```php
 // Named placeholders
@@ -231,7 +231,7 @@ class ApiRateLimitMiddleware extends RateLimitMiddleware
 }
 ```
 
-Then register the middleware in your config:
+Then register the middleware in configuration:
 
 ```php
 // config/autoload/middlewares.php
@@ -246,25 +246,25 @@ return [
 
 ### Fixed Window (Default)
 
-Simplest algorithm, counts requests in fixed time windows.
+The simplest algorithm, counting requests within a fixed time window.
 
 ```php
 #[RateLimit(algorithm: Algorithm::FIXED_WINDOW)]
 ```
 
-**Pros**: Simple, memory efficient  
-**Cons**: Can allow burst requests at window boundaries
+**Advantages**: Simple, memory efficient  
+**Disadvantages**: May allow burst requests at window boundaries
 
 ### Sliding Window
 
-More accurate than fixed window, spreads requests evenly.
+More accurate than fixed window, distributing requests evenly.
 
 ```php
 #[RateLimit(algorithm: Algorithm::SLIDING_WINDOW)]
 ```
 
-**Pros**: Smooths out bursts, more accurate  
-**Cons**: Slightly more complex
+**Advantages**: Smooths burst traffic, more accurate  
+**Disadvantages**: Slightly more complex
 
 ### Token Bucket
 
@@ -274,19 +274,19 @@ Allows burst traffic while maintaining average rate.
 #[RateLimit(algorithm: Algorithm::TOKEN_BUCKET)]
 ```
 
-**Pros**: Allows burst traffic, flexible  
-**Cons**: Requires more configuration
+**Advantages**: Allows burst traffic, flexible  
+**Disadvantages**: Requires more configuration
 
 ### Leaky Bucket
 
-Processes requests at constant rate, queues bursts.
+Processes requests at a constant rate, queuing burst traffic.
 
 ```php
 #[RateLimit(algorithm: Algorithm::LEAKY_BUCKET)]
 ```
 
-**Pros**: Smooth output rate, prevents bursts  
-**Cons**: Can delay requests
+**Advantages**: Smooth output rate, prevents bursts  
+**Disadvantages**: May delay requests
 
 ## Custom Rate Limiter
 
@@ -336,14 +336,14 @@ try {
 
 ## Configuration
 
-The component uses Hyperf's Redis configuration. You can specify which Redis pool to use in the annotation or middleware:
+The component uses Hyperf's Redis configuration. You can specify the Redis connection pool to use in annotations or middleware:
 
 ```php
-// Using specific Redis pool
+// Use specific Redis connection pool
 #[RateLimit(pool: 'rate_limit')]
 ```
 
-Make sure to configure your Redis pool in `config/autoload/redis.php`:
+Ensure Redis connection pools are configured in `config/autoload/redis.php`:
 
 ```php
 return [
@@ -386,13 +386,13 @@ Limit login attempts to prevent brute force attacks:
 )]
 public function login(string $email, string $password)
 {
-    // Login logic here
+    // Login logic
 }
 ```
 
-### Example 2: API Endpoint Rate Limit
+### Example 2: API Endpoint Rate Limiting
 
-Different rate limits for different API endpoints:
+Set different rate limits for different API endpoints:
 
 ```php
 class ApiController
@@ -413,9 +413,9 @@ class ApiController
 }
 ```
 
-### Example 3: User-based Rate Limiting
+### Example 3: User-Based Rate Limiting
 
-Rate limit per user:
+Rate limit by user:
 
 ```php
 #[RateLimit(
@@ -425,11 +425,11 @@ Rate limit per user:
 )]
 public function performAction(int $userId)
 {
-    // Action logic here
+    // Action logic
 }
 ```
 
-### Example 4: IP-based Rate Limiting
+### Example 4: IP-Based Rate Limiting
 
 Rate limit by IP address using middleware:
 
@@ -443,15 +443,15 @@ class IpRateLimitMiddleware extends RateLimitMiddleware
 }
 ```
 
-### Example 5: Multiple Rate Limits with Smart Order
+### Example 5: Multi-Level Rate Limiting with AutoSort
 
-Use AutoSort to efficiently handle multiple rate limits on expensive operations:
+Efficiently handle multi-level rate limiting for expensive operations using AutoSort:
 
 ```php
 class ReportController
 {
     /**
-     * Expensive report generation with multiple protection levels
+     * Expensive report generation with multi-level protection
      * AutoSort ensures stricter limits are checked first for better performance
      */
     #[AutoSort]
@@ -460,7 +460,7 @@ class ReportController
     #[RateLimit(maxAttempts: 100, decay: 86400, response: 'Daily limit exceeded. Max 100 per day')] // Daily cap
     public function generateReport($reportType)
     {
-        // Expensive report generation logic here
+        // Expensive report generation logic
     }
 }
 ```
