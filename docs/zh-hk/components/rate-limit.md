@@ -167,7 +167,7 @@ class ApiController
     }
 
     /**
-     * 不使用 AutoSort 時，按聲明順序檢查
+     * 不使用 AutoSort 時，按宣告順序檢查
      */
     #[RateLimit(maxAttempts: 100, decay: 3600)]    // 優先檢查
     #[RateLimit(maxAttempts: 10, decay: 60)]       // 其次檢查
@@ -183,7 +183,7 @@ class ApiController
 - **效能**：嚴格的限制優先檢查，避免不必要的寬鬆限制檢查
 - **智慧**：自動根據限制嚴格程度（maxAttempts/decay 比率）計算優先級
 - **可選**：僅在顯式使用 `AutoSort` 的方法上生效
-- **向後兼容**：現有代碼無需修改即可繼續工作
+- **向後相容**：現有代碼無需修改即可繼續工作
 
 ### 鍵佔位符
 
