@@ -139,7 +139,7 @@ class UserController
 | `decay` | `int` | `60` | Time window in seconds |
 | `algorithm` | `Algorithm` | `Algorithm::FIXED_WINDOW` | Algorithm: fixed_window, sliding_window, token_bucket, leaky_bucket |
 | `pool` | `?string` | `null` | Redis connection pool to use |
-| `response` | `string` | `'Too Many Attempts.'` | Custom response when rate limit is exceeded |
+| `response` | `string` | `'Too Many Attempts, Please try again in %d seconds.'` | Custom response when rate limit is exceeded |
 | `responseCode` | `int` | `429` | HTTP status code when rate limit is exceeded |
 
 ### Using AutoSort for Smart Multi-Rate-Limit Rule Sorting

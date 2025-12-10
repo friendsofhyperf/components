@@ -139,7 +139,7 @@ class UserController
 | `decay` | `int` | `60` | 时间窗口（秒） |
 | `algorithm` | `Algorithm` | `Algorithm::FIXED_WINDOW` | 算法：fixed_window, sliding_window, token_bucket, leaky_bucket |
 | `pool` | `?string` | `null` | 使用的 Redis 连接池 |
-| `response` | `string` | `'Too Many Attempts.'` | 超出限流时的自定义响应 |
+| `response` | `string` | `'Too Many Attempts, Please try again in %d seconds.'` | 超出限流时的自定义响应 |
 | `responseCode` | `int` | `429` | 超出限流时的 HTTP 状态码 |
 
 ### 使用 AutoSort 实现多限流规则智能排序
