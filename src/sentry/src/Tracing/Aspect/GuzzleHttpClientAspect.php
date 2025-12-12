@@ -146,6 +146,10 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
     protected function getResponsePayload(?\Psr\Http\Message\ResponseInterface $response, array $options = []): mixed
     {
+        if ($response === null) {
+            return '[No Response]';
+        }
+
         if (isset($options['stream']) && $options['stream'] === true) {
             return '[Streamed Response]';
         }
