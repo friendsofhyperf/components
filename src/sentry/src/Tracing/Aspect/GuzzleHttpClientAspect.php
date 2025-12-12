@@ -184,8 +184,11 @@ class GuzzleHttpClientAspect extends AbstractAspect
             }
 
             if (strlen($content) > self::MAX_RESPONSE_BODY_SIZE) {
-                return substr($content, 0, self::MAX_RESPONSE_BODY_SIZE)
-                    . '… [truncated]';
+                return substr(
+                    $content,
+                    0,
+                    self::MAX_RESPONSE_BODY_SIZE
+                ) . '… [truncated]';
             }
 
             return $content === '' ? '[Empty-String Response]' : $content;
