@@ -111,9 +111,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
         // If the response is not textual, we will return a placeholder.
         if (! $isTextual) {
-            return $contentType === ''
-                ? 'No Content-Type Header (treated as text)'
-                : 'Binary Response';
+            return 'Binary Response';
         }
 
         $stream = $response->getBody();
