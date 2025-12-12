@@ -33,6 +33,8 @@ use function FriendsOfHyperf\Sentry\trace;
  */
 class GuzzleHttpClientAspect extends AbstractAspect
 {
+    private const MAX_RESPONSE_BODY_SIZE = 8192; // 8KB，和 Telescope 对齐
+
     public array $classes = [
         Client::class . '::transfer',
     ];
@@ -166,17 +168,27 @@ class GuzzleHttpClientAspect extends AbstractAspect
         $stream = $response->getBody();
 
         try {
+            $pos = null;
             if ($stream->isSeekable()) {
+                $pos = $stream->tell();
                 $stream->rewind();
             }
 
-            $content = $stream->getContents();
+            $content = \GuzzleHttp\Psr7\Utils::copyToString(
+                $stream,
+                self::MAX_RESPONSE_BODY_SIZE + 1 // 多读 1 byte 用来判断是否截断
+            );
 
-            if ($content !== '') {
-                return $content;
+            if ($pos !== null) {
+                $stream->seek($pos);
             }
 
-            return '[Empty-String Response]';
+            if (strlen($content) > self::MAX_RESPONSE_BODY_SIZE) {
+                return substr($content, 0, self::MAX_RESPONSE_BODY_SIZE)
+                    . '… [truncated]';
+            }
+
+            return $content === '' ? '[Empty-String Response]' : $content;
         } catch (Throwable $e) {
             return '[Error Retrieving Response Content]';
         } finally {
