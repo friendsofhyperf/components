@@ -104,7 +104,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
             $isTextual = true;
         } else {
             $isTextual = \preg_match(
-                '/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i',
+                '/^(text\/|application\/(json|xml|x-www-form-urlencoded|grpc))/i',
                 $contentType
             ) === 1;
         }
