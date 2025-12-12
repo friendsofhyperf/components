@@ -60,7 +60,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
         // Add or override the on_stats option to record the request duration.
         $onStats = $options['on_stats'] ?? null;
-        $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($onStats) {
+        $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($onStats, $options) {
             try {
                 $request = $stats->getRequest();
                 $response = $stats->getResponse();
@@ -75,7 +75,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     $content['response_status'] = $response->getStatusCode();
                     $content['response_headers'] = $response->getHeaders();
                     $content['response_reason'] = $response->getReasonPhrase();
-                    $content['response_payload'] = $this->getResponsePayload($response);
+                    $content['response_payload'] = $this->getResponsePayload($response, $options);
                 }
 
                 Telescope::recordClientRequest(IncomingEntry::make($content));
@@ -91,9 +91,26 @@ class GuzzleHttpClientAspect extends AbstractAspect
         return $proceedingJoinPoint->process();
     }
 
-    public function getResponsePayload(ResponseInterface $response)
+    public function getResponsePayload(ResponseInterface $response, array $options = []): mixed
     {
+        if (isset($options['stream']) && $options['stream'] === true) {
+            return 'Streamed Response';
+        }
+
+        // Determine if the response is textual based on the Content-Type header.
+        $contentType = $response->getHeaderLine('Content-Type');
+        $isTextual = $contentType === '' || \preg_match(
+            '/^(text\/|application\/(json|xml|x-www-form-urlencoded|grpc))/i',
+            $contentType
+        ) === 1;
+
+        // If the response is not textual, we will return a placeholder.
+        if (! $isTextual) {
+            return 'Binary Response';
+        }
+
         $stream = $response->getBody();
+
         try {
             if ($stream->isSeekable()) {
                 $stream->rewind();
@@ -102,22 +119,24 @@ class GuzzleHttpClientAspect extends AbstractAspect
             $content = $stream->getContents();
 
             if (is_string($content)) {
+                // Check if the content is within the size limits.
                 if (! $this->contentWithinLimits($content)) {
                     return 'Purged By Hyperf Telescope';
                 }
+                // Try to decode JSON responses and hide sensitive parameters.
                 if (
                     is_array(json_decode($content, true))
                     && json_last_error() === JSON_ERROR_NONE
                 ) {
-                    return $this->contentWithinLimits($content) /* @phpstan-ignore-line */
-                    ? $this->hideParameters(json_decode($content, true), Telescope::$hiddenResponseParameters)
-                    : 'Purged By Hyperf Telescope';
+                    return $this->hideParameters(json_decode($content, true), Telescope::$hiddenResponseParameters);
                 }
-                if (Str::startsWith(strtolower($response->getHeaderLine('content-type') ?: ''), 'text/plain')) {
-                    return $this->contentWithinLimits($content) ? $content : 'Purged By Hyperf Telescope'; /* @phpstan-ignore-line */
-                }
+                // Return gRPC responses and plain text responses as is.
                 if (Str::contains($response->getHeaderLine('content-type'), 'application/grpc') !== false) {
                     return TelescopeContext::getGrpcResponsePayload() ?: 'Purged By Hyperf Telescope';
+                }
+                // Return plain text responses as is.
+                if (Str::startsWith(strtolower($response->getHeaderLine('content-type') ?: ''), 'text/plain')) {
+                    return $content;
                 }
             }
 
@@ -127,9 +146,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
         } catch (Throwable $e) {
             return 'Purged By Hyperf Telescope: ' . $e->getMessage();
         } finally {
-            if ($stream->isSeekable()) {
-                $stream->rewind();
-            }
+            $stream->isSeekable() && $stream->rewind();
         }
 
         return 'HTML Response';
