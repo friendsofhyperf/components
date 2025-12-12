@@ -94,11 +94,19 @@ class GuzzleHttpClientAspect extends AbstractAspect
     public function getResponsePayload(ResponseInterface $response)
     {
         $stream = $response->getBody();
-        try {
-            if ($stream->isSeekable()) {
-                $stream->rewind();
-            }
 
+        // Determine if the response is textual based on the Content-Type header.
+        $isTextual = \preg_match(
+            '/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i',
+            $response->getHeaderLine('Content-Type')
+        ) === 1;
+
+        // If the response is not textual or the stream is not seekable, we will return a placeholder.
+        if (! ($isTextual && $stream->isSeekable())) {
+            return 'Binary Response';
+        }
+
+        try {
             $content = $stream->getContents();
 
             if (is_string($content)) {
