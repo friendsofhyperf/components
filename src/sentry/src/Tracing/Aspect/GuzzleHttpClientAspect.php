@@ -33,7 +33,7 @@ use function FriendsOfHyperf\Sentry\trace;
  */
 class GuzzleHttpClientAspect extends AbstractAspect
 {
-    private const MAX_RESPONSE_BODY_SIZE = 8192; // 8KB，和 Telescope 对齐
+    private const MAX_RESPONSE_BODY_SIZE = 8192; // 8 KB
 
     public array $classes = [
         Client::class . '::transfer',
