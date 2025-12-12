@@ -170,7 +170,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 return $content;
             }
 
-            return '[Non-String Response]';
+            return '[Empty-String Response]';
         } catch (Throwable $e) {
             return '[Error Retrieving Response Content]';
         } finally {
