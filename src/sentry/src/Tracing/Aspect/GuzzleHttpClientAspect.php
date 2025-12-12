@@ -150,8 +150,6 @@ class GuzzleHttpClientAspect extends AbstractAspect
             return '[Streamed Response]';
         }
 
-        $stream = $response->getBody();
-
         // Determine if the response is textual based on the Content-Type header.
         $isTextual = \preg_match(
             '/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i',
@@ -159,9 +157,11 @@ class GuzzleHttpClientAspect extends AbstractAspect
         ) === 1;
 
         // If the response is not textual or the stream is not seekable, we will return a placeholder.
-        if (! ($isTextual && $stream->isSeekable())) {
+        if (! $isTextual) {
             return '[Binary Omitted]';
         }
+
+        $stream = $response->getBody();
 
         try {
             $content = $stream->getContents();
@@ -174,7 +174,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
         } catch (Throwable $e) {
             return '[Error Retrieving Response Content]';
         } finally {
-            $stream->rewind();
+            $stream->isSeekable() && $stream->rewind();
         }
     }
 }
