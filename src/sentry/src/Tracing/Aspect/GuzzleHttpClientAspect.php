@@ -152,7 +152,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
         // Determine if the response is textual based on the Content-Type header.
         $isTextual = \preg_match(
-            '/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i',
+            '/^(text\/|application\/(json|xml|x-www-form-urlencoded|grpc))/i',
             $response->getHeaderLine('Content-Type')
         ) === 1;
 
