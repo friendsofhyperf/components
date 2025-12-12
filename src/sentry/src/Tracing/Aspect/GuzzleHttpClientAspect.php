@@ -122,7 +122,11 @@ class GuzzleHttpClientAspect extends AbstractAspect
                                 ) === 1;
                                 $body = $response->getBody();
 
-                                if ($isTextual && $body->isSeekable()) {
+                                if (isset($options['stream']) && $options['stream'] === true) {
+                                    $span->setData([
+                                        'http.response.body.contents' => '[streamed response]',
+                                    ]);
+                                } elseif ($isTextual && $body->isSeekable()) {
                                     $pos = $body->tell();
                                     $span->setData([
                                         'http.response.body.contents' => \GuzzleHttp\Psr7\Utils::copyToString($body, 8192), // 8KB 上限
