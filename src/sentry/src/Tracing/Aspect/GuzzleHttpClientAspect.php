@@ -22,6 +22,7 @@ use Psr\Http\Message\RequestInterface;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
+use Throwable;
 
 use function FriendsOfHyperf\Sentry\trace;
 
@@ -116,27 +117,9 @@ class GuzzleHttpClientAspect extends AbstractAspect
                             ]);
 
                             if ($this->feature->isTracingTagEnabled('http.response.body.contents')) {
-                                $isTextual = \preg_match(
-                                    '/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i',
-                                    $response->getHeaderLine('Content-Type')
-                                ) === 1;
-                                $body = $response->getBody();
-
-                                if (isset($options['stream']) && $options['stream'] === true) {
-                                    $span->setData([
-                                        'http.response.body.contents' => '[streamed response]',
-                                    ]);
-                                } elseif ($isTextual && $body->isSeekable()) {
-                                    $pos = $body->tell();
-                                    $span->setData([
-                                        'http.response.body.contents' => \GuzzleHttp\Psr7\Utils::copyToString($body, 8192), // 8KB 上限
-                                    ]);
-                                    $body->seek($pos);
-                                } else {
-                                    $span->setData([
-                                        'http.response.body.contents' => '[binary omitted]',
-                                    ]);
-                                }
+                                $span->setData([
+                                    'http.response.body.contents' => $this->getResponsePayload($response, $options),
+                                ]);
                             }
 
                             $span->setHttpStatus($response->getStatusCode());
@@ -159,5 +142,42 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 ->setDescription($request->getMethod() . ' ' . (string) $request->getUri())
                 ->setOrigin('auto.http.client')
         );
+    }
+
+    protected function getResponsePayload(?\Psr\Http\Message\ResponseInterface $response, array $options = []): mixed
+    {
+        if (isset($options['stream']) && $options['stream'] === true) {
+            return '[Streamed Response]';
+        }
+
+        $stream = $response->getBody();
+
+        // Determine if the response is textual based on the Content-Type header.
+        $isTextual = \preg_match(
+            '/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i',
+            $response->getHeaderLine('Content-Type')
+        ) === 1;
+
+        // If the response is not textual or the stream is not seekable, we will return a placeholder.
+        if (! ($isTextual && $stream->isSeekable())) {
+            return '[Binary Omitted]';
+        }
+
+        try {
+            $content = $stream->getContents();
+
+            if (is_string($content)) {
+                return $content;
+            }
+
+            return '[Non-String Response]';
+        } catch (Throwable $e) {
+            return '[Error Retrieving Response Content]';
+        } finally {
+            // Rewind the stream to its original position.
+            if ($stream->isSeekable()) {
+                $stream->rewind();
+            }
+        }
     }
 }
