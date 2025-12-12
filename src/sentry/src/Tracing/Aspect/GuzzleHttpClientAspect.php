@@ -166,7 +166,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
         try {
             $content = $stream->getContents();
 
-            if (is_string($content)) {
+            if (! empty($content)) {
                 return $content;
             }
 
@@ -174,10 +174,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
         } catch (Throwable $e) {
             return '[Error Retrieving Response Content]';
         } finally {
-            // Rewind the stream to its original position.
-            if ($stream->isSeekable()) {
-                $stream->rewind();
-            }
+            $stream->rewind();
         }
     }
 }

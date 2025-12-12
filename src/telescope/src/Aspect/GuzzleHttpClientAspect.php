@@ -139,9 +139,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
         } catch (Throwable $e) {
             return 'Purged By Hyperf Telescope: ' . $e->getMessage();
         } finally {
-            if ($stream->isSeekable()) {
-                $stream->rewind();
-            }
+            $stream->rewind();
         }
 
         return 'HTML Response';
