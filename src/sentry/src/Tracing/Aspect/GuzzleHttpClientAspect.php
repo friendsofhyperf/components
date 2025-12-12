@@ -19,9 +19,11 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
+use Throwable;
 
 use function FriendsOfHyperf\Sentry\trace;
 
@@ -31,6 +33,8 @@ use function FriendsOfHyperf\Sentry\trace;
  */
 class GuzzleHttpClientAspect extends AbstractAspect
 {
+    private const MAX_RESPONSE_BODY_SIZE = 8192; // 8 KB
+
     public array $classes = [
         Client::class . '::transfer',
     ];
@@ -116,23 +120,9 @@ class GuzzleHttpClientAspect extends AbstractAspect
                             ]);
 
                             if ($this->feature->isTracingTagEnabled('http.response.body.contents')) {
-                                $isTextual = \preg_match(
-                                    '/^(text\/|application\/(json|xml|x-www-form-urlencoded))/i',
-                                    $response->getHeaderLine('Content-Type')
-                                ) === 1;
-                                $body = $response->getBody();
-
-                                if ($isTextual && $body->isSeekable()) {
-                                    $pos = $body->tell();
-                                    $span->setData([
-                                        'http.response.body.contents' => \GuzzleHttp\Psr7\Utils::copyToString($body, 8192), // 8KB 上限
-                                    ]);
-                                    $body->seek($pos);
-                                } else {
-                                    $span->setData([
-                                        'http.response.body.contents' => '[binary omitted]',
-                                    ]);
-                                }
+                                $span->setData([
+                                    'http.response.body.contents' => $this->getResponsePayload($response, $options),
+                                ]);
                             }
 
                             $span->setHttpStatus($response->getStatusCode());
@@ -155,5 +145,59 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 ->setDescription($request->getMethod() . ' ' . (string) $request->getUri())
                 ->setOrigin('auto.http.client')
         );
+    }
+
+    protected function getResponsePayload(ResponseInterface $response, array $options = []): mixed
+    {
+        if (isset($options['stream']) && $options['stream'] === true) {
+            return '[Streamed Response]';
+        }
+
+        // Determine if the response is textual based on the Content-Type header.
+        $contentType = $response->getHeaderLine('Content-Type');
+        $isTextual = $contentType === '' || \preg_match(
+            '/^(text\/|application\/(json|xml|x-www-form-urlencoded|grpc))/i',
+            $contentType
+        ) === 1;
+
+        // If the response is not textual or the stream is not seekable, we will return a placeholder.
+        if (! $isTextual) {
+            return '[Binary Omitted]';
+        }
+
+        $stream = $response->getBody();
+        $pos = null;
+
+        try {
+            if ($stream->isSeekable()) {
+                $pos = $stream->tell();
+                $stream->rewind();
+            }
+
+            $content = \GuzzleHttp\Psr7\Utils::copyToString(
+                $stream,
+                self::MAX_RESPONSE_BODY_SIZE + 1 // 多读 1 byte 用来判断是否截断
+            );
+
+            if (strlen($content) > self::MAX_RESPONSE_BODY_SIZE) {
+                return substr(
+                    $content,
+                    0,
+                    self::MAX_RESPONSE_BODY_SIZE
+                ) . '… [truncated]';
+            }
+
+            return $content === '' ? '[Empty-String Response]' : $content;
+        } catch (Throwable $e) {
+            return '[Error Retrieving Response Content]';
+        } finally {
+            if ($pos !== null) {
+                try {
+                    $stream->seek($pos);
+                } catch (Throwable) {
+                    // ignore: tracing must not break the request flow
+                }
+            }
+        }
     }
 }
