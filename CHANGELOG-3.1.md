@@ -1,5 +1,23 @@
 # Changelog
 
+## v3.1.76 - 2025-12-12
+
+### What's Changed
+
+* Update .github/copilot-instructions.md to reflect latest project code by @Copilot in https://github.com/friendsofhyperf/components/pull/1039
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.2.0-alpha.6...v3.2.0-beta.1
+
+### What's Changed
+
+* refactor: centralize context management in Sentry integration by @huangdijia in https://github.com/friendsofhyperf/components/pull/1035
+* feat: 添加多种Backoff重试策略实现 by @huangdijia in https://github.com/friendsofhyperf/components/pull/1036
+* docs: update copilot-instructions.md with latest project information by @Copilot in https://github.com/friendsofhyperf/components/pull/1038
+* docs: add rate-limit component documentation by @Copilot in https://github.com/friendsofhyperf/components/pull/1040
+* fix: improve handling of binary responses in GuzzleHttpClientAspect by @huangdijia in https://github.com/friendsofhyperf/components/pull/1041
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.75...v3.1.76
+
 ## v3.1.75 - 2025-12-03
 
 ### What's Changed
