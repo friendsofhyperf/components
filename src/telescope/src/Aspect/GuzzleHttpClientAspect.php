@@ -119,22 +119,24 @@ class GuzzleHttpClientAspect extends AbstractAspect
             $content = $stream->getContents();
 
             if (is_string($content)) {
+                // Check if the content is within the size limits.
                 if (! $this->contentWithinLimits($content)) {
                     return 'Purged By Hyperf Telescope';
                 }
+                // Try to decode JSON responses and hide sensitive parameters.
                 if (
                     is_array(json_decode($content, true))
                     && json_last_error() === JSON_ERROR_NONE
                 ) {
-                    return $this->contentWithinLimits($content) /* @phpstan-ignore-line */
-                    ? $this->hideParameters(json_decode($content, true), Telescope::$hiddenResponseParameters)
-                    : 'Purged By Hyperf Telescope';
+                    return $this->hideParameters(json_decode($content, true), Telescope::$hiddenResponseParameters);
                 }
-                if (Str::startsWith(strtolower($response->getHeaderLine('content-type') ?: ''), 'text/plain')) {
-                    return $this->contentWithinLimits($content) ? $content : 'Purged By Hyperf Telescope'; /* @phpstan-ignore-line */
-                }
+                // Return gRPC responses and plain text responses as is.
                 if (Str::contains($response->getHeaderLine('content-type'), 'application/grpc') !== false) {
                     return TelescopeContext::getGrpcResponsePayload() ?: 'Purged By Hyperf Telescope';
+                }
+                // Return plain text responses as is.
+                if (Str::startsWith(strtolower($response->getHeaderLine('content-type') ?: ''), 'text/plain')) {
+                    return $content;
                 }
             }
 
