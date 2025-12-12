@@ -60,7 +60,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
         // Add or override the on_stats option to record the request duration.
         $onStats = $options['on_stats'] ?? null;
-        $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($onStats) {
+        $proceedingJoinPoint->arguments['keys']['options']['on_stats'] = function (TransferStats $stats) use ($onStats, $options) {
             try {
                 $request = $stats->getRequest();
                 $response = $stats->getResponse();
@@ -75,7 +75,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     $content['response_status'] = $response->getStatusCode();
                     $content['response_headers'] = $response->getHeaders();
                     $content['response_reason'] = $response->getReasonPhrase();
-                    $content['response_payload'] = $this->getResponsePayload($response);
+                    $content['response_payload'] = $this->getResponsePayload($response, $options);
                 }
 
                 Telescope::recordClientRequest(IncomingEntry::make($content));
@@ -91,8 +91,12 @@ class GuzzleHttpClientAspect extends AbstractAspect
         return $proceedingJoinPoint->process();
     }
 
-    public function getResponsePayload(ResponseInterface $response)
+    public function getResponsePayload(ResponseInterface $response, array $options = []): mixed
     {
+        if (! empty($options['stream'])) {
+            return 'Streamed Response';
+        }
+
         $stream = $response->getBody();
 
         // Determine if the response is textual based on the Content-Type header.
