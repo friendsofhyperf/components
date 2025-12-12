@@ -19,6 +19,7 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Psr\Container\ContainerInterface;
 use Psr\Http\Message\RequestInterface;
+use Psr\Http\Message\ResponseInterface;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 use Sentry\Tracing\SpanStatus;
@@ -144,7 +145,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
         );
     }
 
-    protected function getResponsePayload(?\Psr\Http\Message\ResponseInterface $response, array $options = []): mixed
+    protected function getResponsePayload(?ResponseInterface $response, array $options = []): mixed
     {
         if ($response === null) {
             return '[No Response]';
