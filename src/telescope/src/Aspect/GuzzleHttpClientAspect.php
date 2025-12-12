@@ -109,8 +109,8 @@ class GuzzleHttpClientAspect extends AbstractAspect
             ) === 1;
         }
 
-        // If the response is not textual or the stream is not seekable, we will return a placeholder.
-        if (! ($isTextual && $stream->isSeekable())) {
+        // If the response is not textual, we will return a placeholder.
+        if (! $isTextual) {
             return $contentType === '' || $contentType === null
                 ? 'No Content-Type Header (treated as text)'
                 : 'Binary Response';
