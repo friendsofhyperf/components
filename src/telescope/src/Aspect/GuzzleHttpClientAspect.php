@@ -93,7 +93,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
     public function getResponsePayload(ResponseInterface $response, array $options = []): mixed
     {
-        if (! empty($options['stream'])) {
+        if (isset($options['stream']) && $options['stream'] === true) {
             return 'Streamed Response';
         }
 
