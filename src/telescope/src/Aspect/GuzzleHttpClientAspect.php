@@ -111,6 +111,10 @@ class GuzzleHttpClientAspect extends AbstractAspect
         $stream = $response->getBody();
 
         try {
+            if ($stream->isSeekable()) {
+                $stream->rewind();
+            }
+
             $content = $stream->getContents();
 
             if (is_string($content)) {
