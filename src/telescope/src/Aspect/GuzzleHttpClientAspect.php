@@ -99,7 +99,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
         // Determine if the response is textual based on the Content-Type header.
         $contentType = $response->getHeaderLine('Content-Type');
-        if ($contentType === '' || $contentType === null) {
+        if ($contentType === '') {
             // If Content-Type is missing or empty, default to textual.
             $isTextual = true;
         } else {
@@ -111,7 +111,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
 
         // If the response is not textual, we will return a placeholder.
         if (! $isTextual) {
-            return $contentType === '' || $contentType === null
+            return $contentType === ''
                 ? 'No Content-Type Header (treated as text)'
                 : 'Binary Response';
         }
