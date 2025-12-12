@@ -166,7 +166,7 @@ class SetupSentryListener implements ListenerInterface
 
             if (is_a($handler, HttpServer::class, true) || is_a($handler, RpcServer::class, true)) {
                 $server['options'] ??= [];
-                $server['options']['enable_request_lifecycle'] = true;
+                $server['options']['enable_request_lifecycle'] ??= true;
             }
         }
 
