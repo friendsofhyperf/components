@@ -166,9 +166,9 @@ class GuzzleHttpClientAspect extends AbstractAspect
         }
 
         $stream = $response->getBody();
+        $pos = null;
 
         try {
-            $pos = null;
             if ($stream->isSeekable()) {
                 $pos = $stream->tell();
                 $stream->rewind();
@@ -178,10 +178,6 @@ class GuzzleHttpClientAspect extends AbstractAspect
                 $stream,
                 self::MAX_RESPONSE_BODY_SIZE + 1 // 多读 1 byte 用来判断是否截断
             );
-
-            if ($pos !== null) {
-                $stream->seek($pos);
-            }
 
             if (strlen($content) > self::MAX_RESPONSE_BODY_SIZE) {
                 return substr(
@@ -195,7 +191,13 @@ class GuzzleHttpClientAspect extends AbstractAspect
         } catch (Throwable $e) {
             return '[Error Retrieving Response Content]';
         } finally {
-            $stream->isSeekable() && $stream->rewind();
+            if ($pos !== null) {
+                try {
+                    $stream->seek($pos);
+                } catch (Throwable) {
+                    // ignore: tracing must not break the request flow
+                }
+            }
         }
     }
 }
