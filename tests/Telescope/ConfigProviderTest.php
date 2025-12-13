@@ -17,14 +17,14 @@ test('ConfigProvider includes all required listeners', function () {
     expect($config)->toHaveKey('listeners')
         ->and($config['listeners'])->toBeArray()
         ->and($config['listeners'])->toContain(
-            \FriendsOfHyperf\Telescope\Listener\RequestHandledListener::class,
-            \FriendsOfHyperf\Telescope\Listener\SetRequestLifecycleListener::class,
-            \FriendsOfHyperf\Telescope\Listener\ExceptionHandlerListener::class,
-            \FriendsOfHyperf\Telescope\Listener\CommandListener::class,
-            \FriendsOfHyperf\Telescope\Listener\CronEventListener::class,
-            \FriendsOfHyperf\Telescope\Listener\DbQueryListener::class,
-            \FriendsOfHyperf\Telescope\Listener\FetchRecordingOnBootListener::class,
-            \FriendsOfHyperf\Telescope\Listener\RedisCommandExecutedListener::class
+            FriendsOfHyperf\Telescope\Listener\RequestHandledListener::class,
+            FriendsOfHyperf\Telescope\Listener\SetRequestLifecycleListener::class,
+            FriendsOfHyperf\Telescope\Listener\ExceptionHandlerListener::class,
+            FriendsOfHyperf\Telescope\Listener\CommandListener::class,
+            FriendsOfHyperf\Telescope\Listener\CronEventListener::class,
+            FriendsOfHyperf\Telescope\Listener\DbQueryListener::class,
+            FriendsOfHyperf\Telescope\Listener\FetchRecordingOnBootListener::class,
+            FriendsOfHyperf\Telescope\Listener\RedisCommandExecutedListener::class
         );
 });
 
@@ -32,6 +32,6 @@ test('ConfigProvider includes RegisterRoutesListener with priority', function ()
     $configProvider = new ConfigProvider();
     $config = $configProvider();
 
-    expect($config['listeners'])->toHaveKey(\FriendsOfHyperf\Telescope\Listener\RegisterRoutesListener::class)
-        ->and($config['listeners'][\FriendsOfHyperf\Telescope\Listener\RegisterRoutesListener::class])->toBe(-1);
+    expect($config['listeners'])->toHaveKey(FriendsOfHyperf\Telescope\Listener\RegisterRoutesListener::class)
+        ->and($config['listeners'][FriendsOfHyperf\Telescope\Listener\RegisterRoutesListener::class])->toBe(-1);
 });
