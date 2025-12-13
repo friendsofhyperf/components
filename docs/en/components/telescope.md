@@ -34,39 +34,11 @@ php bin/hyperf.php migrate
 
 ## Usage
 
-> Choose either the listener or middleware
+### Middleware (Optional for gRPC)
 
-### Request Listener
+Add the middleware in the `config/autoload/middlewares.php` configuration file
 
-Add the listener in the `config/autoload/listeners.php` configuration file
-
-```php
-<?php
-
-return [
-    FriendsOfHyperf\Telescope\Listener\RequestHandledListener::class,
-    FriendsOfHyperf\Telescope\Listener\SetRequestLifecycleListener::class,
-];
-
-```
-
-### Middleware
-
-Add the global middleware in the `config/autoload/middlewares.php` configuration file
-
-To record HTTP requests, use the `http` middleware
-
-```php
-<?php
-
-return [
-    'http' => [
-        FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware::class,
-    ],
-];
-```
-
-To record gRPC requests, use the `grpc` middleware
+To enable additional gRPC functionality, use the `grpc` middleware
 
 ```php
 <?php
@@ -77,6 +49,8 @@ return [
     ],
 ];
 ```
+
+> Note: Request tracking is automatically enabled via the RequestHandledListener. The TelescopeMiddleware is only needed for additional gRPC-specific functionality.
 
 ## View Dashboard
 

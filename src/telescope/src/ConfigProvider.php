@@ -48,6 +48,8 @@ class ConfigProvider
                 Listener\FetchRecordingOnBootListener::class,
                 Listener\RedisCommandExecutedListener::class,
                 Listener\RegisterRoutesListener::class => -1,
+                Listener\RequestHandledListener::class,
+                Listener\SetRequestLifecycleListener::class,
             ],
             'publish' => [
                 [
