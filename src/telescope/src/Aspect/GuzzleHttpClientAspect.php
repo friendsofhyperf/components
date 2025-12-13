@@ -68,7 +68,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     'method' => $request->getMethod(),
                     'uri' => $request->getUri()->__toString(),
                     'headers' => $request->getHeaders(),
-                    'duration' => round(($stats->getTransferTime() ?? 0) * 1000),
+                    'duration' => floor(($stats->getTransferTime() ?? 0) * 1000),
                 ];
                 if ($response) {
                     $content['response_status'] = $response->getStatusCode();
