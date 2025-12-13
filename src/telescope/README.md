@@ -39,21 +39,7 @@ php bin/hyperf.php vendor:publish friendsofhyperf/telescope
 php bin/hyperf.php migrate
 ```
 
-## Add Listener
-
-```php
-<?php
-
-// config/autoload/listeners.php
-
-return [
-    FriendsOfHyperf\Telescope\Listener\SetRequestLifecycleListener::class,
-    FriendsOfHyperf\Telescope\Listener\RequestHandledListener::class,
-];
-
-```
-
-## Add Middleware
+## Add Middleware (Optional for gRPC)
 
 ```php
 <?php
@@ -68,7 +54,7 @@ return [
 
 ```
 
-> TelescopeMiddleware or RequestHandledListener, you can choose one of them.
+> Note: Request tracking is automatically enabled via the RequestHandledListener. The TelescopeMiddleware is only needed for additional gRPC-specific functionality.
 
 ## Add env
 
