@@ -34,39 +34,11 @@ php bin/hyperf.php migrate
 
 ## 使用
 
-> 監聽器和中介軟體，二選一即可
+### 中介軟體（可選，僅用於gRPC）
 
-### 請求監聽器
+在 `config/autoload/middlewares.php`配置檔案加上中介軟體
 
-在 `config/autoload/listeners.php`配置檔案新增監聽器
-
-```php
-<?php
-
-return [
-    FriendsOfHyperf\Telescope\Listener\RequestHandledListener::class,
-    FriendsOfHyperf\Telescope\Listener\SetRequestLifecycleListener::class,
-];
-
-```
-
-### 中介軟體
-
-在 `config/autoload/middlewares.php`配置檔案加上全域性中介軟體
-
-如需記錄http請求，請使用`http`中介軟體
-
-```php
-<?php
-
-return [
-    'http' => [
-        FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware::class,
-    ],
-];
-```
-
-如需記錄gRPC請求，請使用`grpc`中介軟體
+如需gRPC的額外功能，請使用`grpc`中介軟體
 
 ```php
 <?php
@@ -77,6 +49,8 @@ return [
     ],
 ];
 ```
+
+> 注意: 請求追蹤功能已透過 RequestHandledListener 自動啟用。TelescopeMiddleware 僅用於 gRPC 的額外功能。
 
 ## 檢視儀表板
 

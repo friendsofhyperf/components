@@ -34,39 +34,11 @@ php bin/hyperf.php migrate
 
 ## 使用
 
-> 监听器和中间件，二选一即可
+### 中间件（可选，仅用于gRPC）
 
-### 请求监听器
+在 `config/autoload/middlewares.php`配置文件加上中间件
 
-在 `config/autoload/listeners.php`配置文件添加监听器
-
-```php
-<?php
-
-return [
-    FriendsOfHyperf\Telescope\Listener\RequestHandledListener::class,
-    FriendsOfHyperf\Telescope\Listener\SetRequestLifecycleListener::class,
-];
-
-```
-
-### 中间件
-
-在 `config/autoload/middlewares.php`配置文件加上全局中间件
-
-如需记录http请求，请使用`http`中间件
-
-```php
-<?php
-
-return [
-    'http' => [
-        FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware::class,
-    ],
-];
-```
-
-如需记录gRPC请求，请使用`grpc`中间件
+如需gRPC的额外功能，请使用`grpc`中间件
 
 ```php
 <?php
@@ -77,6 +49,8 @@ return [
     ],
 ];
 ```
+
+> 注意: 请求跟踪功能已通过 RequestHandledListener 自动启用。TelescopeMiddleware 仅用于 gRPC 的额外功能。
 
 ## 查看仪表板
 
