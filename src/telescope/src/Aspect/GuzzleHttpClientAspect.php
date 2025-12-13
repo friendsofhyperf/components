@@ -74,9 +74,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
                     $content['response_status'] = $response->getStatusCode();
                     $content['response_headers'] = $response->getHeaders();
                     $content['response_reason'] = $response->getReasonPhrase();
-                    $responsePayload = $this->getResponsePayload($response, $options);
-                    $content['response_payload'] = $responsePayload;
-                    $content['response'] = $responsePayload;
+                    $content['response'] = $this->getResponsePayload($response, $options);
                 }
 
                 Telescope::recordClientRequest(IncomingEntry::make($content));
