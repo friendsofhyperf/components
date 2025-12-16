@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Lock\Driver;
 
 use FriendsOfHyperf\Lock\Exception\LockTimeoutException;
+use Hyperf\Macroable\Macroable;
 use Hyperf\Stringable\Str;
 use Hyperf\Support\Traits\InteractsWithTime;
 use Override;
@@ -21,6 +22,7 @@ use function Hyperf\Support\now;
 abstract class AbstractLock implements LockInterface
 {
     use InteractsWithTime;
+    use Macroable;
 
     /**
      * The scope identifier of this lock.
