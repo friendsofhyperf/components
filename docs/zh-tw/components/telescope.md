@@ -50,7 +50,7 @@ return [
 ];
 ```
 
-> 注意: 請求追蹤功能已透過 RequestHandledListener 自動啟用。TelescopeMiddleware 僅用於 gRPC 的額外功能。
+> 注意: 請求跟蹤功能已透過 RequestHandledListener 自動啟用。TelescopeMiddleware 僅用於 gRPC 的額外功能。
 
 ## 檢視儀表板
 
