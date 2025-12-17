@@ -120,15 +120,15 @@ class OnMetricFactoryReady implements ListenerInterface
             );
             metrics()->gauge(
                 'metric_process_memory_usage',
-                (float) memory_get_usage(),
+                memory_get_usage(true) / 1024 / 1024,
                 ['worker' => (string) $workerId],
-                Unit::byte()
+                Unit::megabyte()
             );
             metrics()->gauge(
                 'metric_process_memory_peak_usage',
-                (float) memory_get_peak_usage(),
+                memory_get_peak_usage(true) / 1024 / 1024,
                 ['worker' => (string) $workerId],
-                Unit::byte()
+                Unit::megabyte()
             );
         });
 
