@@ -15,10 +15,7 @@ use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Metrics\Event\MetricFactoryReady;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\Contract\ConfigInterface;
-use Hyperf\Coordinator\Constants;
-use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coordinator\Timer;
-use Hyperf\Engine\Coroutine;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
 
@@ -55,7 +52,11 @@ class QueueWatcher implements ListenerInterface
             return;
         }
 
-        $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () {
+        $this->timer->tick($this->feature->getMetricsInterval(), function ($isClosing = false) {
+            if ($isClosing) {
+                return Timer::STOP;
+            }
+
             defer(fn () => metrics()->flush());
 
             $config = $this->container->get(ConfigInterface::class);
@@ -86,11 +87,6 @@ class QueueWatcher implements ListenerInterface
                     ['queue' => $name]
                 );
             }
-        });
-
-        Coroutine::create(function () use ($timerId) {
-            CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
-            $this->timer->clear($timerId);
         });
     }
 }

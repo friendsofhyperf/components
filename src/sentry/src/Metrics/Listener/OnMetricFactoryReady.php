@@ -16,8 +16,6 @@ use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Metrics\CoroutineServerStats;
 use FriendsOfHyperf\Sentry\Metrics\Event\MetricFactoryReady;
 use FriendsOfHyperf\Sentry\Metrics\Traits\MetricSetter;
-use Hyperf\Coordinator\Constants;
-use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coordinator\Timer;
 use Hyperf\Engine\Coroutine;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -98,7 +96,11 @@ class OnMetricFactoryReady implements ListenerInterface
             }
         }
 
-        $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () use ($metrics, $serverStatsFactory, $workerId) {
+        $this->timer->tick($this->feature->getMetricsInterval(), function ($isClosing = false) use ($metrics, $serverStatsFactory, $workerId) {
+            if ($isClosing) {
+                return Timer::STOP;
+            }
+
             defer(fn () => metrics()->flush());
 
             $this->trySet('', $metrics, Coroutine::stats(), $workerId);
@@ -130,11 +132,6 @@ class OnMetricFactoryReady implements ListenerInterface
                 ['worker' => (string) $workerId],
                 Unit::megabyte()
             );
-        });
-
-        Coroutine::create(function () use ($timerId) {
-            CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
-            $this->timer->clear($timerId);
         });
     }
 }

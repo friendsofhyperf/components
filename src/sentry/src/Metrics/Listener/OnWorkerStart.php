@@ -14,10 +14,7 @@ namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Metrics\Event\MetricFactoryReady;
 use FriendsOfHyperf\Sentry\Metrics\Traits\MetricSetter;
-use Hyperf\Coordinator\Constants;
-use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coordinator\Timer;
-use Hyperf\Engine\Coroutine;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BeforeWorkerStart;
 use Psr\Container\ContainerInterface;
@@ -90,7 +87,11 @@ class OnWorkerStart implements ListenerInterface
             'ru_stime_tv_sec',
         ];
 
-        $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () use ($metrics, $event) {
+        $this->timer->tick($this->feature->getMetricsInterval(), function ($isClosing = false) use ($metrics, $event) {
+            if ($isClosing) {
+                return Timer::STOP;
+            }
+
             defer(fn () => metrics()->flush());
 
             $server = $this->container->get(Server::class);
@@ -120,11 +121,6 @@ class OnWorkerStart implements ListenerInterface
                 ['worker' => (string) ($event->workerId ?? 0)],
                 Unit::megabyte()
             );
-        });
-
-        Coroutine::create(function () use ($timerId) {
-            CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
-            $this->timer->clear($timerId);
         });
     }
 }
