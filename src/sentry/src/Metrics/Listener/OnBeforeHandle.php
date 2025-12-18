@@ -21,6 +21,7 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\Unit;
 
 use function FriendsOfHyperf\Sentry\metrics;
+use function Hyperf\Coroutine\defer;
 
 class OnBeforeHandle implements ListenerInterface
 {
