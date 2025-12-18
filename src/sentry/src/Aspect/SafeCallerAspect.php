@@ -31,7 +31,11 @@ class SafeCallerAspect extends AbstractAspect
         $annotation = $proceedingJoinPoint->getAnnotationMetadata();
 
         /** @var SafeCallerAnnotation $safeCaller */
-        $safeCaller = $annotation->method[SafeCallerAnnotation::class];
+        $safeCaller = $annotation->method[SafeCallerAnnotation::class] ?? null;
+
+        if (! $safeCaller) {
+            return $proceedingJoinPoint->process();
+        }
 
         try {
             return $proceedingJoinPoint->process();
