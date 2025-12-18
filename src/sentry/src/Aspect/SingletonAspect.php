@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Aspect;
 
+use Closure;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -33,13 +34,30 @@ class SingletonAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $key = $proceedingJoinPoint->className;
-        $args = $proceedingJoinPoint->getArguments();
+        $key = $className = $proceedingJoinPoint->className;
+        $arguments = $proceedingJoinPoint->getArguments();
 
-        if (! empty($args)) {
-            $key .= '#' . $args[0];
+        if (! empty($arguments)) {
+            $key .= '#' . $arguments[0];
         }
 
-        return Context::getOrSet($key, fn () => $proceedingJoinPoint->process());
+        $key = $className = $proceedingJoinPoint->className;
+        $arguments = $proceedingJoinPoint->getArguments();
+
+        if (! empty($arguments)) {
+            $key .= '#' . $arguments[0];
+        }
+
+        return Context::getOrSet($key, function () use ($proceedingJoinPoint, $className, $arguments) {
+            // Reset singleton instance before proceeding
+            Closure::bind(function () use ($className, $arguments) {
+                match (true) {
+                    property_exists($className, 'instance') => $className::$instance = null,
+                    property_exists($className, 'instances') => $className::$instances[$arguments[0]] = null,
+                    default => null,
+                };
+            }, null, $className)();
+            return $proceedingJoinPoint->process();
+        });
     }
 }
