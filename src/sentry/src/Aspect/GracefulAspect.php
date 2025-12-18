@@ -29,7 +29,7 @@ class GracefulAspect extends AbstractAspect
     {
         $metadata = $proceedingJoinPoint->getAnnotationMetadata();
 
-        /** @var Graceful $annotation */
+        /** @var null|Graceful $annotation */
         $annotation = $metadata->method[Graceful::class] ?? null;
 
         if ($annotation === null) {
