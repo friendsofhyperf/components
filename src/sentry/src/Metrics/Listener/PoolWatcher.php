@@ -12,10 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
 use FriendsOfHyperf\Sentry\Feature;
-use Hyperf\Coordinator\Constants;
-use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coordinator\Timer;
-use Hyperf\Engine\Coroutine;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BeforeWorkerStart;
 use Hyperf\Pool\Pool;
@@ -65,11 +62,15 @@ abstract class PoolWatcher implements ListenerInterface
             return;
         }
 
-        $timerId = $this->timer->tick($this->feature->getMetricsInterval(), function () use (
+        $this->timer->tick($this->feature->getMetricsInterval(), function ($isClosing = false) use (
             $pool,
             $workerId,
             $poolName
         ) {
+            if ($isClosing) {
+                return Timer::STOP;
+            }
+
             defer(fn () => metrics()->flush());
 
             metrics()->gauge(
@@ -96,11 +97,6 @@ abstract class PoolWatcher implements ListenerInterface
                     'worker' => (string) $workerId,
                 ]
             );
-        });
-
-        Coroutine::create(function () use ($timerId) {
-            CoordinatorManager::until(Constants::WORKER_EXIT)->yield();
-            $this->timer->clear($timerId);
         });
     }
 }
