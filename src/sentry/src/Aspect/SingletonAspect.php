@@ -41,13 +41,6 @@ class SingletonAspect extends AbstractAspect
             $key .= '#' . $arguments[0];
         }
 
-        $key = $className = $proceedingJoinPoint->className;
-        $arguments = $proceedingJoinPoint->getArguments();
-
-        if (! empty($arguments)) {
-            $key .= '#' . $arguments[0];
-        }
-
         return Context::getOrSet($key, function () use ($proceedingJoinPoint, $className, $arguments) {
             // Reset singleton instance before proceeding
             Closure::bind(function () use ($className, $arguments) {
