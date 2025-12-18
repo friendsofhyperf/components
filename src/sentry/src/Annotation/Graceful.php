@@ -18,33 +18,33 @@ use Hyperf\Di\Annotation\AbstractAnnotation;
 class Graceful extends AbstractAnnotation
 {
     /**
-     * 转换为指定异常再抛出.
+     * Convert to the specified exception and throw it.
      */
     public const STRATEGY_TRANSLATE = 'translate';
 
     /**
-     * 调用兜底方法并返回.
+     * Call the fallback method and return.
      */
     public const STRATEGY_FALLBACK = 'fallback';
 
     /**
-     * 吞掉异常并返回 null.
+     * Swallow the exception and return null.
      */
     public const STRATEGY_SWALLOW = 'swallow';
 
     /**
-     * 记录后仍原样抛出.
+     * Record and rethrow the original exception.
      */
     public const STRATEGY_RETHROW = 'rethrow';
 
     /**
-     * @param null|callable $fallback 兜底方法
+     * @param null|callable $fallback Fallback method
      */
     public function __construct(
         public string $strategy = self::STRATEGY_SWALLOW,
-        public $fallback = null, // strategy=fallback 时使用
-        public ?string $mapTo = null, // strategy=translate 时使用（异常类全名）
-        public bool $report = true, // 是否记录日志
+        public $fallback = null, // Used when strategy=fallback
+        public ?string $mapTo = null, // Used when strategy=translate (full exception class name)
+        public bool $report = true, // Whether to log
     ) {
     }
 }
