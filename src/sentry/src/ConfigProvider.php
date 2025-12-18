@@ -23,6 +23,7 @@ class ConfigProvider
                 Aspect\CacheAspect::class,
                 Aspect\CoroutineAspect::class,
                 Aspect\FilesystemAspect::class,
+                Aspect\GracefulAspect::class,
                 Aspect\GuzzleHttpClientAspect::class,
                 Aspect\LoggerAspect::class,
                 Aspect\RedisAspect::class,
