@@ -21,6 +21,7 @@ class SafeCaller extends AbstractAnnotation
 
     /**
      * @param mixed $default 默认返回值
+     * @param null|callable $exceptionHandler 异常处理函数，并且决定是否上报sentry
      */
     public function __construct(
         public mixed $default = null,
