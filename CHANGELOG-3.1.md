@@ -1,5 +1,17 @@
 # Changelog
 
+## v3.1.77 - 2025-12-18
+
+### What's Changed
+
+* fix(telescope): register RequestHandledListener and SetRequestLifecycleListener in ConfigProvider by @Copilot in https://github.com/friendsofhyperf/components/pull/1043
+* optimize(telescope): refine GuzzleHttpClientAspect client request recording by @guandeng in https://github.com/friendsofhyperf/components/pull/1044
+* AbstractLock use Macroable by @tw2066 in https://github.com/friendsofhyperf/components/pull/1045
+* refactor(sentry): improve timer cleanup in metrics listeners by @huangdijia in https://github.com/friendsofhyperf/components/pull/1046
+* Add Annotation for Sentry Safe Caller by @xuanyanwow in https://github.com/friendsofhyperf/components/pull/1047
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.76...v3.1.77
+
 ## v3.1.76 - 2025-12-12
 
 ### What's Changed
