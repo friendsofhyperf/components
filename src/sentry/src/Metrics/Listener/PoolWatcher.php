@@ -20,7 +20,6 @@ use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
 
 use function FriendsOfHyperf\Sentry\metrics;
-use function Hyperf\Coroutine\defer;
 
 abstract class PoolWatcher implements ListenerInterface
 {
@@ -71,8 +70,6 @@ abstract class PoolWatcher implements ListenerInterface
                 return Timer::STOP;
             }
 
-            defer(fn () => metrics()->flush());
-
             metrics()->gauge(
                 $this->getPrefix() . '_connections_in_use',
                 (float) $pool->getCurrentConnections(),
@@ -97,6 +94,8 @@ abstract class PoolWatcher implements ListenerInterface
                     'worker' => (string) $workerId,
                 ]
             );
+
+            metrics()->flush();
         });
     }
 }
