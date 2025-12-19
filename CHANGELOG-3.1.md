@@ -1,5 +1,13 @@
 # Changelog
 
+## v3.1.78 - 2025-12-19
+
+### What's Changed
+
+* fix(sentry): remove duplicate code and improve singleton instance reset in SingletonAspect by @huangdijia in https://github.com/friendsofhyperf/components/pull/1048
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.77...v3.1.78
+
 ## v3.1.77 - 2025-12-18
 
 ### What's Changed
