@@ -25,7 +25,6 @@ use Sentry\Tracing\SpanContext;
 
 use function FriendsOfHyperf\Sentry\startTransaction;
 use function FriendsOfHyperf\Sentry\trace;
-use function Hyperf\Coroutine\defer;
 use function Sentry\continueTrace;
 
 class CoroutineAspect extends AbstractAspect
@@ -83,7 +82,7 @@ class CoroutineAspect extends AbstractAspect
                         );
 
                         // Defer the finishing of the transaction and flushing of events until the coroutine completes.
-                        defer(function () use ($transaction) {
+                        Co::defer(function () use ($transaction) {
                             $transaction->finish();
                             Integration::flushEvents();
                         });

@@ -20,7 +20,6 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
 
 use function FriendsOfHyperf\Sentry\metrics;
-use function Hyperf\Coroutine\defer;
 
 class QueueWatcher implements ListenerInterface
 {
@@ -57,8 +56,6 @@ class QueueWatcher implements ListenerInterface
                 return Timer::STOP;
             }
 
-            defer(fn () => metrics()->flush());
-
             $config = $this->container->get(ConfigInterface::class);
             $queues = array_keys($config->get('async_queue', []));
 
@@ -87,6 +84,8 @@ class QueueWatcher implements ListenerInterface
                     ['queue' => $name]
                 );
             }
+
+            metrics()->flush();
         });
     }
 }

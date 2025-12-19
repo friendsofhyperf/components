@@ -25,7 +25,6 @@ use Sentry\Unit;
 use Swoole\Server as SwooleServer;
 
 use function FriendsOfHyperf\Sentry\metrics;
-use function Hyperf\Coroutine\defer;
 
 class OnMetricFactoryReady implements ListenerInterface
 {
@@ -101,8 +100,6 @@ class OnMetricFactoryReady implements ListenerInterface
                 return Timer::STOP;
             }
 
-            defer(fn () => metrics()->flush());
-
             $this->trySet('', $metrics, Coroutine::stats(), $workerId);
             $this->trySet('timer_', $metrics, Timer::stats(), $workerId);
 
@@ -115,6 +112,7 @@ class OnMetricFactoryReady implements ListenerInterface
             }
 
             $load = sys_getloadavg();
+
             metrics()->gauge(
                 'sys_load',
                 round($load[0] / System::getCpuCoresNum(), 2),
@@ -132,6 +130,8 @@ class OnMetricFactoryReady implements ListenerInterface
                 ['worker' => (string) $workerId],
                 Unit::megabyte()
             );
+
+            metrics()->flush();
         });
     }
 }

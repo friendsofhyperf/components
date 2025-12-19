@@ -17,7 +17,6 @@ use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 
 use function FriendsOfHyperf\Sentry\metrics;
-use function Hyperf\Coroutine\defer;
 
 class CounterAspect extends AbstractAspect
 {
@@ -46,12 +45,12 @@ class CounterAspect extends AbstractAspect
                 $name = $source;
             }
 
-            defer(fn () => metrics()->flush());
-
             metrics()->count($name, 1, [
                 'class' => $proceedingJoinPoint->className,
                 'method' => $proceedingJoinPoint->methodName,
             ]);
+
+            metrics()->flush();
         }
 
         return $proceedingJoinPoint->process();

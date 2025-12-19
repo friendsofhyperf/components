@@ -21,7 +21,6 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Sentry\Unit;
 
 use function FriendsOfHyperf\Sentry\metrics;
-use function Hyperf\Coroutine\defer;
 
 class OnBeforeHandle implements ListenerInterface
 {
@@ -93,8 +92,6 @@ class OnBeforeHandle implements ListenerInterface
                 return Timer::STOP;
             }
 
-            defer(fn () => metrics()->flush());
-
             $this->trySet('gc_', $metrics, gc_status());
             $this->trySet('', $metrics, getrusage());
 
@@ -110,6 +107,8 @@ class OnBeforeHandle implements ListenerInterface
                 ['worker' => '0'],
                 Unit::megabyte()
             );
+
+            metrics()->flush();
         });
     }
 }
