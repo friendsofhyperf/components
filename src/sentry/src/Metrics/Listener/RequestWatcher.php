@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
+use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Metrics\CoroutineServerStats;
 use FriendsOfHyperf\Sentry\Metrics\Timer;
 use Hyperf\Engine\Coroutine as Co;
@@ -22,8 +23,10 @@ use Psr\Http\Message\ServerRequestInterface;
 
 class RequestWatcher implements ListenerInterface
 {
-    public function __construct(protected CoroutineServerStats $stats)
-    {
+    public function __construct(
+        protected CoroutineServerStats $stats,
+        protected Feature $feature,
+    ) {
     }
 
     public function listen(): array
@@ -38,6 +41,10 @@ class RequestWatcher implements ListenerInterface
 
     public function process(object $event): void
     {
+        if (! $this->feature->isMetricsEnabled()) {
+            return;
+        }
+
         if ($event instanceof HttpEvent\RequestReceived || $event instanceof RpcEvent\RequestReceived) {
             ++$this->stats->accept_count;
             ++$this->stats->request_count;
