@@ -23,7 +23,6 @@ use Sentry\Unit;
 use Swoole\Server;
 
 use function FriendsOfHyperf\Sentry\metrics;
-use function Hyperf\Coroutine\defer;
 
 class OnWorkerStart implements ListenerInterface
 {
@@ -92,8 +91,6 @@ class OnWorkerStart implements ListenerInterface
                 return Timer::STOP;
             }
 
-            defer(fn () => metrics()->flush());
-
             $server = $this->container->get(Server::class);
             $serverStats = $server->stats();
             $this->trySet('gc_', $metrics, gc_status());
@@ -121,6 +118,8 @@ class OnWorkerStart implements ListenerInterface
                 ['worker' => (string) ($event->workerId ?? 0)],
                 Unit::megabyte()
             );
+
+            metrics()->flush();
         });
     }
 }
