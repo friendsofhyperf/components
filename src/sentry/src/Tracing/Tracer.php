@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing;
 
-use Hyperf\Engine\Coroutine;
+use Hyperf\Engine\Coroutine as Co;
 use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
@@ -21,7 +21,6 @@ use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 use Throwable;
 
-use function Hyperf\Coroutine\defer;
 use function Sentry\trace;
 
 class Tracer
@@ -35,9 +34,9 @@ class Tracer
         $hub->pushScope();
         $hub->configureScope(static fn (Scope $scope) => $scope->clearBreadcrumbs());
 
-        defer(static fn () => $hub->popScope());
+        Co::defer(static fn () => $hub->popScope());
 
-        $transactionContext->setData(['coroutine.id' => Coroutine::id()] + $transactionContext->getData());
+        $transactionContext->setData(['coroutine.id' => Co::id()] + $transactionContext->getData());
 
         if ($transactionContext->getStartTimestamp() === null) {
             $transactionContext->setStartTimestamp(microtime(true));
@@ -77,7 +76,7 @@ class Tracer
             $context->setStartTimestamp(microtime(true));
         }
 
-        $context->setData(['coroutine.id' => Coroutine::id()] + $context->getData());
+        $context->setData(['coroutine.id' => Co::id()] + $context->getData());
 
         return trace(
             function (Scope $scope) use ($trace) {

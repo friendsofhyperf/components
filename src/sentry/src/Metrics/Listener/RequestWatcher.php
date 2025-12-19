@@ -13,7 +13,7 @@ namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
 use FriendsOfHyperf\Sentry\Metrics\CoroutineServerStats;
 use FriendsOfHyperf\Sentry\Metrics\Timer;
-use Hyperf\Engine\Coroutine;
+use Hyperf\Engine\Coroutine as Co;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Event as HttpEvent;
 use Hyperf\HttpServer\Router\Dispatched;
@@ -49,7 +49,7 @@ class RequestWatcher implements ListenerInterface
                 'request_method' => $request->getMethod(),
             ]);
 
-            Coroutine::defer(function () use ($timer) {
+            Co::defer(function () use ($timer) {
                 ++$this->stats->close_count;
                 ++$this->stats->response_count;
                 --$this->stats->connection_num;
