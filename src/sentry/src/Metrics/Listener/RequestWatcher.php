@@ -14,12 +14,13 @@ namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Metrics\CoroutineServerStats;
 use FriendsOfHyperf\Sentry\Metrics\Timer;
-use Hyperf\Engine\Coroutine as Co;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Event as HttpEvent;
 use Hyperf\HttpServer\Router\Dispatched;
 use Hyperf\RpcServer\Event as RpcEvent;
 use Psr\Http\Message\ServerRequestInterface;
+
+use function Hyperf\Coroutine\defer;
 
 class RequestWatcher implements ListenerInterface
 {
@@ -56,7 +57,7 @@ class RequestWatcher implements ListenerInterface
                 'request_method' => $request->getMethod(),
             ]);
 
-            Co::defer(function () use ($timer) {
+            defer(function () use ($timer) {
                 ++$this->stats->close_count;
                 ++$this->stats->response_count;
                 --$this->stats->connection_num;

@@ -19,6 +19,8 @@ use Hyperf\Engine\Coroutine as Co;
 use Sentry\SentrySdk;
 use Throwable;
 
+use function Hyperf\Coroutine\defer;
+
 class CoroutineAspect extends AbstractAspect
 {
     public const CONTEXT_KEYS = [
@@ -58,7 +60,7 @@ class CoroutineAspect extends AbstractAspect
             }
 
             // Defer the flushing of events until the coroutine completes.
-            Co::defer(fn () => Integration::flushEvents());
+            defer(fn () => Integration::flushEvents());
 
             // Continue the callable in the new Coroutine.
             $callable();
@@ -73,6 +75,6 @@ class CoroutineAspect extends AbstractAspect
             return;
         }
 
-        Co::defer(fn () => SentrySdk::getCurrentHub()->captureException($throwable));
+        defer(fn () => SentrySdk::getCurrentHub()->captureException($throwable));
     }
 }

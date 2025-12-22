@@ -21,6 +21,7 @@ use Sentry\Tracing\TransactionContext;
 use Sentry\Tracing\TransactionSource;
 use Throwable;
 
+use function Hyperf\Coroutine\defer;
 use function Sentry\trace;
 
 class Tracer
@@ -34,7 +35,7 @@ class Tracer
         $hub->pushScope();
         $hub->configureScope(static fn (Scope $scope) => $scope->clearBreadcrumbs());
 
-        Co::defer(static fn () => $hub->popScope());
+        defer(static fn () => $hub->popScope());
 
         $transactionContext->setData(['coroutine.id' => Co::id()] + $transactionContext->getData());
 

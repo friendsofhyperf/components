@@ -19,17 +19,19 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 class SingletonAspect extends AbstractAspect
 {
     public array $classes = [
-        \Sentry\CheckInStatus::class . '::getInstance',
-        \Sentry\EventType::class . '::getInstance',
-        \Sentry\MonitorScheduleUnit::class . '::getInstance',
-        \Sentry\Integration\IntegrationRegistry::class . '::getInstance',
-        \Sentry\Logs\LogLevel::class . '::getInstance',
-        \Sentry\Metrics\TraceMetrics::class . '::getInstance',
+        // Singleton Classes
         \Sentry\State\HubAdapter::class . '::getInstance',
-        \Sentry\Tracing\SpanStatus::class . '::getInstance',
-        \Sentry\Tracing\TransactionSource::class . '::getInstance',
-        \Sentry\Transport\ResultStatus::class . '::getInstance',
-        \Sentry\Unit::class . '::getInstance',
+        \Sentry\Integration\IntegrationRegistry::class . '::getInstance',
+        \Sentry\Metrics\TraceMetrics::class . '::getInstance',
+        // Enums
+        // \Sentry\CheckInStatus::class . '::getInstance',
+        // \Sentry\EventType::class . '::getInstance',
+        // \Sentry\MonitorScheduleUnit::class . '::getInstance',
+        // \Sentry\Logs\LogLevel::class . '::getInstance',
+        // \Sentry\Tracing\SpanStatus::class . '::getInstance',
+        // \Sentry\Tracing\TransactionSource::class . '::getInstance',
+        // \Sentry\Transport\ResultStatus::class . '::getInstance',
+        // \Sentry\Unit::class . '::getInstance',
     ];
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -37,26 +39,30 @@ class SingletonAspect extends AbstractAspect
         $key = $className = $proceedingJoinPoint->className;
         $arguments = $proceedingJoinPoint->getArguments();
 
-        if (isset($arguments[0])) {
+        if (! array_key_exists(0, $arguments)) {
             $key .= '#' . $arguments[0];
         }
 
-        return Context::getOrSet($key, function () use ($proceedingJoinPoint, $className, $arguments) {
-            // Reset singleton instance before proceeding
-            Closure::bind(function () use ($className, $arguments) {
-                if (property_exists($className, 'instance')) {
-                    $className::$instance = null;
-                } elseif (
-                    property_exists($className, 'instances')
-                    && isset($arguments[0])
-                    && array_key_exists($arguments[0], $className::$instances)
-                ) {
-                    $className::$instances[$arguments[0]] = null;
-                }
-            }, null, $className)();
+        return match ($className) {
+            // Singleton Classes
+            \Sentry\State\HubAdapter::class,
+            \Sentry\Integration\IntegrationRegistry::class => Context::getOrSet($key, function () use ($className) {
+                return Closure::bind(fn () => new $className(), null, $className)();
+            }),
+            \Sentry\Metrics\TraceMetrics::class => Context::getOrSet($key, function () use ($className) {
+                return new $className();
+            }),
 
-            // Proceed to get the singleton instance
-            return $proceedingJoinPoint->process();
-        });
+            // Enums
+            // \Sentry\CheckInStatus::class,
+            // \Sentry\EventType::class,
+            // \Sentry\MonitorScheduleUnit::class,
+            // \Sentry\Logs\LogLevel::class,
+            // \Sentry\Tracing\SpanStatus::class,
+            // \Sentry\Tracing\TransactionSource::class,
+            // \Sentry\Transport\ResultStatus::class,
+            // \Sentry\Unit::class => $proceedingJoinPoint->process(),
+            default => $proceedingJoinPoint->process(),
+        };
     }
 }
