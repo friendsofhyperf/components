@@ -29,7 +29,6 @@ use Hyperf\Coroutine\Coroutine;
 use Hyperf\Crontab\Event as CrontabEvent;
 use Hyperf\Database\Events as DbEvent;
 use Hyperf\DbConnection\Pool\PoolFactory;
-use Hyperf\Engine\Coroutine as Co;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\HttpServer\Event as HttpEvent;
 use Hyperf\HttpServer\Router\Dispatched;
@@ -55,6 +54,7 @@ use Symfony\Component\Console\Command\Command as SymfonyCommand;
 
 use function FriendsOfHyperf\Sentry\startTransaction;
 use function FriendsOfHyperf\Sentry\trace;
+use function Hyperf\Coroutine\defer;
 use function Sentry\continueTrace;
 
 /**
@@ -328,7 +328,7 @@ class EventHandleListener implements ListenerInterface
 
         SentrySdk::getCurrentHub()->setSpan($span);
 
-        Co::defer(function () use ($transaction, $span) {
+        defer(function () use ($transaction, $span) {
             // Make sure the span is finished after the request is handled
             $span->finish();
 
@@ -531,7 +531,7 @@ class EventHandleListener implements ListenerInterface
                 ])
         );
 
-        Co::defer(function () use ($transaction) {
+        defer(function () use ($transaction) {
             // Make sure the transaction is finished after the task is executed
             SentrySdk::getCurrentHub()->setSpan($transaction);
 
@@ -600,7 +600,7 @@ class EventHandleListener implements ListenerInterface
                 ])
         );
 
-        Co::defer(function () use ($transaction) {
+        defer(function () use ($transaction) {
             // Make sure the transaction is finished after the message is processed
             SentrySdk::getCurrentHub()->setSpan($transaction);
 
@@ -668,7 +668,7 @@ class EventHandleListener implements ListenerInterface
                 ])
         );
 
-        Co::defer(function () use ($transaction) {
+        defer(function () use ($transaction) {
             // Make sure the transaction is finished after the message is processed
             SentrySdk::getCurrentHub()->setSpan($transaction);
 
@@ -718,7 +718,7 @@ class EventHandleListener implements ListenerInterface
                 ])
         );
 
-        Co::defer(function () use ($transaction) {
+        defer(function () use ($transaction) {
             // Make sure the transaction is finished after the job is processed
             SentrySdk::getCurrentHub()->setSpan($transaction);
 

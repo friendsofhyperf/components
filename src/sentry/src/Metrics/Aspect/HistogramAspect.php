@@ -16,8 +16,8 @@ use FriendsOfHyperf\Sentry\Metrics\Annotation\Histogram;
 use FriendsOfHyperf\Sentry\Metrics\Timer;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
-use Hyperf\Engine\Coroutine as Co;
 
+use function Hyperf\Coroutine\defer;
 use function Hyperf\Tappable\tap;
 
 class HistogramAspect extends AbstractAspect
@@ -54,7 +54,7 @@ class HistogramAspect extends AbstractAspect
         ]);
 
         return tap($proceedingJoinPoint->process(), function () use ($timer) {
-            Co::defer(fn () => $timer->end(true));
+            defer(fn () => $timer->end(true));
         });
     }
 
