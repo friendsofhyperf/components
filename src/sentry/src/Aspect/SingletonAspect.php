@@ -37,7 +37,7 @@ class SingletonAspect extends AbstractAspect
         $key = $className = $proceedingJoinPoint->className;
         $arguments = $proceedingJoinPoint->getArguments();
 
-        if (! empty($arguments)) {
+        if (! array_key_exists(0, $arguments)) {
             $key .= '#' . $arguments[0];
         }
 
