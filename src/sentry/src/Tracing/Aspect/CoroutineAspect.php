@@ -19,7 +19,6 @@ use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Engine\Coroutine as Co;
-use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
@@ -66,8 +65,6 @@ class CoroutineAspect extends AbstractAspect
 
                     // Transfer the Sentry context to the new coroutine.
                     $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $span, $callingOnFunction, $cid) {
-                        SentrySdk::init(); // Ensure Sentry is initialized in the new coroutine.
-
                         // Restore the Context in the new Coroutine.
                         foreach (self::CONTEXT_KEYS as $key) {
                             Context::getOrSet($key, fn () => Context::get($key, coroutineId: $cid));
