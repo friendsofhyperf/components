@@ -19,17 +19,19 @@ use Hyperf\Di\Aop\ProceedingJoinPoint;
 class SingletonAspect extends AbstractAspect
 {
     public array $classes = [
-        \Sentry\CheckInStatus::class . '::getInstance',
-        \Sentry\EventType::class . '::getInstance',
-        \Sentry\MonitorScheduleUnit::class . '::getInstance',
-        \Sentry\Integration\IntegrationRegistry::class . '::getInstance',
-        \Sentry\Logs\LogLevel::class . '::getInstance',
-        \Sentry\Metrics\TraceMetrics::class . '::getInstance',
+        // Singleton Classes
         \Sentry\State\HubAdapter::class . '::getInstance',
-        \Sentry\Tracing\SpanStatus::class . '::getInstance',
-        \Sentry\Tracing\TransactionSource::class . '::getInstance',
-        \Sentry\Transport\ResultStatus::class . '::getInstance',
-        \Sentry\Unit::class . '::getInstance',
+        \Sentry\Integration\IntegrationRegistry::class . '::getInstance',
+        \Sentry\Metrics\TraceMetrics::class . '::getInstance',
+        // Enums
+        // \Sentry\CheckInStatus::class . '::getInstance',
+        // \Sentry\EventType::class . '::getInstance',
+        // \Sentry\MonitorScheduleUnit::class . '::getInstance',
+        // \Sentry\Logs\LogLevel::class . '::getInstance',
+        // \Sentry\Tracing\SpanStatus::class . '::getInstance',
+        // \Sentry\Tracing\TransactionSource::class . '::getInstance',
+        // \Sentry\Transport\ResultStatus::class . '::getInstance',
+        // \Sentry\Unit::class . '::getInstance',
     ];
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
@@ -52,14 +54,14 @@ class SingletonAspect extends AbstractAspect
             }),
 
             // Enums
-            \Sentry\CheckInStatus::class,
-            \Sentry\EventType::class,
-            \Sentry\MonitorScheduleUnit::class,
-            \Sentry\Logs\LogLevel::class,
-            \Sentry\Tracing\SpanStatus::class,
-            \Sentry\Tracing\TransactionSource::class,
-            \Sentry\Transport\ResultStatus::class,
-            \Sentry\Unit::class => $proceedingJoinPoint->process(),
+            // \Sentry\CheckInStatus::class,
+            // \Sentry\EventType::class,
+            // \Sentry\MonitorScheduleUnit::class,
+            // \Sentry\Logs\LogLevel::class,
+            // \Sentry\Tracing\SpanStatus::class,
+            // \Sentry\Tracing\TransactionSource::class,
+            // \Sentry\Transport\ResultStatus::class,
+            // \Sentry\Unit::class => $proceedingJoinPoint->process(),
             default => $proceedingJoinPoint->process(),
         };
     }
