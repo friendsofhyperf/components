@@ -110,10 +110,10 @@ class Integration implements IntegrationInterface
 
         if ($client !== null) {
             $client->flush();
-
-            Logs::getInstance()->flush();
-            TraceMetrics::getInstance()->flush();
         }
+
+        Logs::getInstance()->flush();
+        TraceMetrics::getInstance()->flush();
     }
 
     /**
