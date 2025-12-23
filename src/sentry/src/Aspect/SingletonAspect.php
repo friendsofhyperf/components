@@ -22,6 +22,7 @@ class SingletonAspect extends AbstractAspect
         // Singleton Classes
         \Sentry\State\HubAdapter::class . '::getInstance',
         \Sentry\Integration\IntegrationRegistry::class . '::getInstance',
+        \Sentry\Logs\Logs::class . '::getInstance',
         \Sentry\Metrics\TraceMetrics::class . '::getInstance',
         // Enums
         // \Sentry\CheckInStatus::class . '::getInstance',
@@ -46,7 +47,8 @@ class SingletonAspect extends AbstractAspect
         return match ($className) {
             // Singleton Classes
             \Sentry\State\HubAdapter::class,
-            \Sentry\Integration\IntegrationRegistry::class => Context::getOrSet($key, function () use ($className) {
+            \Sentry\Integration\IntegrationRegistry::class,
+            \Sentry\Logs\Logs::class => Context::getOrSet($key, function () use ($className) {
                 return Closure::bind(fn () => new $className(), null, $className)();
             }),
             \Sentry\Metrics\TraceMetrics::class => Context::getOrSet($key, function () use ($className) {
