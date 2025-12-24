@@ -56,9 +56,8 @@ class OnCoroutineServerStart implements ListenerInterface
 
         $this->running = true;
 
-        if ($this->feature->isMetricsEnabled()) {
-            $eventDispatcher = $this->container->get(EventDispatcherInterface::class);
-            $eventDispatcher->dispatch(new MetricFactoryReady());
+        if ($this->feature->isMetricsEnabled() && $this->container->has(EventDispatcherInterface::class)) {
+            $this->container->get(EventDispatcherInterface::class)->dispatch(new MetricFactoryReady());
         }
 
         if (! $this->feature->isDefaultMetricsEnabled()) {

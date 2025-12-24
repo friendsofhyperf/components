@@ -61,8 +61,9 @@ class OnBeforeHandle implements ListenerInterface
 
         Constants::$runningInCommand = true;
 
-        $eventDispatcher = $this->container->get(EventDispatcherInterface::class);
-        $eventDispatcher->dispatch(new MetricFactoryReady());
+        if ($this->container->has(EventDispatcherInterface::class)) {
+            $this->container->get(EventDispatcherInterface::class)->dispatch(new MetricFactoryReady());
+        }
 
         if (! $this->feature->isDefaultMetricsEnabled()) {
             return;
