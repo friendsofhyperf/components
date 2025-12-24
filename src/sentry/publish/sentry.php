@@ -65,6 +65,8 @@ return [
 
     'enable_default_metrics' => env('SENTRY_ENABLE_DEFAULT_METRICS', true),
     'enable_command_metrics' => env('SENTRY_ENABLE_COMMAND_METRICS', true),
+    'enable_pool_metrics' => env('SENTRY_ENABLE_POOL_METRICS', true),
+    'enable_queue_metrics' => env('SENTRY_ENABLE_QUEUE_METRICS', true),
     'metrics_interval' => (int) env('SENTRY_METRICS_INTERVAL', 10),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#send_default_pii

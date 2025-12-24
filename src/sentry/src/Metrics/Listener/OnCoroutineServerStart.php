@@ -50,18 +50,15 @@ class OnCoroutineServerStart implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if (! $this->feature->isMetricsEnabled()) {
-            return;
-        }
-
         if ($this->running) {
             return;
         }
 
         $this->running = true;
 
-        $eventDispatcher = $this->container->get(EventDispatcherInterface::class);
-        $eventDispatcher->dispatch(new MetricFactoryReady());
+        if ($this->feature->isMetricsEnabled() && $this->container->has(EventDispatcherInterface::class)) {
+            $this->container->get(EventDispatcherInterface::class)->dispatch(new MetricFactoryReady());
+        }
 
         if (! $this->feature->isDefaultMetricsEnabled()) {
             return;
@@ -96,28 +93,27 @@ class OnCoroutineServerStart implements ListenerInterface
             'ru_stime_tv_sec',
         ];
 
-        $this->timer->tick($this->feature->getMetricsInterval(), function ($isClosing = false) use ($metrics) {
-            if ($isClosing) {
-                return Timer::STOP;
+        $this->timer->tick(
+            $this->feature->getMetricsInterval(),
+            function () use ($metrics) {
+                $this->trySet('gc_', $metrics, gc_status());
+                $this->trySet('', $metrics, getrusage());
+
+                metrics()->gauge(
+                    'memory_usage',
+                    memory_get_usage(true) / 1024 / 1024,
+                    ['worker' => '0'],
+                    Unit::megabyte()
+                );
+                metrics()->gauge(
+                    'memory_peak_usage',
+                    memory_get_peak_usage(true) / 1024 / 1024,
+                    ['worker' => '0'],
+                    Unit::megabyte()
+                );
+
+                metrics()->flush();
             }
-
-            $this->trySet('gc_', $metrics, gc_status());
-            $this->trySet('', $metrics, getrusage());
-
-            metrics()->gauge(
-                'memory_usage',
-                memory_get_usage(true) / 1024 / 1024,
-                ['worker' => '0'],
-                Unit::megabyte()
-            );
-            metrics()->gauge(
-                'memory_peak_usage',
-                memory_get_peak_usage(true) / 1024 / 1024,
-                ['worker' => '0'],
-                Unit::megabyte()
-            );
-
-            metrics()->flush();
-        });
+        );
     }
 }

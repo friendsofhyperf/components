@@ -49,13 +49,15 @@ class OnWorkerStart implements ListenerInterface
      */
     public function process(object $event): void
     {
+        if ($this->feature->isMetricsEnabled() && $event->workerId == 0) {
+            $workerId = $event->workerId;
+            $eventDispatcher = $this->container->get(EventDispatcherInterface::class);
+            $eventDispatcher->dispatch(new MetricFactoryReady($workerId));
+        }
+
         if (! $this->feature->isDefaultMetricsEnabled()) {
             return;
         }
-
-        $workerId = $event->workerId;
-        $eventDispatcher = $this->container->get(EventDispatcherInterface::class);
-        $eventDispatcher->dispatch(new MetricFactoryReady($workerId));
 
         // The following metrics MUST be collected in worker.
         $metrics = [
@@ -86,40 +88,39 @@ class OnWorkerStart implements ListenerInterface
             'ru_stime_tv_sec',
         ];
 
-        $this->timer->tick($this->feature->getMetricsInterval(), function ($isClosing = false) use ($metrics, $event) {
-            if ($isClosing) {
-                return Timer::STOP;
+        $this->timer->tick(
+            $this->feature->getMetricsInterval(),
+            function () use ($metrics, $event) {
+                $server = $this->container->get(Server::class);
+                $serverStats = $server->stats();
+                $this->trySet('gc_', $metrics, gc_status());
+                $this->trySet('', $metrics, getrusage());
+
+                metrics()->gauge(
+                    'worker_request_count',
+                    (float) $serverStats['worker_request_count'],
+                    ['worker' => (string) ($event->workerId ?? 0)],
+                );
+                metrics()->gauge(
+                    'worker_dispatch_count',
+                    (float) $serverStats['worker_dispatch_count'],
+                    ['worker' => (string) ($event->workerId ?? 0)],
+                );
+                metrics()->gauge(
+                    'memory_usage',
+                    memory_get_usage(true) / 1024 / 1024,
+                    ['worker' => (string) ($event->workerId ?? 0)],
+                    Unit::megabyte()
+                );
+                metrics()->gauge(
+                    'memory_peak_usage',
+                    memory_get_peak_usage(true) / 1024 / 1024,
+                    ['worker' => (string) ($event->workerId ?? 0)],
+                    Unit::megabyte()
+                );
+
+                metrics()->flush();
             }
-
-            $server = $this->container->get(Server::class);
-            $serverStats = $server->stats();
-            $this->trySet('gc_', $metrics, gc_status());
-            $this->trySet('', $metrics, getrusage());
-
-            metrics()->gauge(
-                'worker_request_count',
-                (float) $serverStats['worker_request_count'],
-                ['worker' => (string) ($event->workerId ?? 0)],
-            );
-            metrics()->gauge(
-                'worker_dispatch_count',
-                (float) $serverStats['worker_dispatch_count'],
-                ['worker' => (string) ($event->workerId ?? 0)],
-            );
-            metrics()->gauge(
-                'memory_usage',
-                memory_get_usage(true) / 1024 / 1024,
-                ['worker' => (string) ($event->workerId ?? 0)],
-                Unit::megabyte()
-            );
-            metrics()->gauge(
-                'memory_peak_usage',
-                memory_get_peak_usage(true) / 1024 / 1024,
-                ['worker' => (string) ($event->workerId ?? 0)],
-                Unit::megabyte()
-            );
-
-            metrics()->flush();
-        });
+        );
     }
 }

@@ -13,11 +13,14 @@ namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
+use FriendsOfHyperf\Sentry\Metrics\Event\MetricFactoryReady;
 use FriendsOfHyperf\Sentry\Metrics\Traits\MetricSetter;
 use FriendsOfHyperf\Sentry\SentryContext;
 use Hyperf\Command\Event\BeforeHandle;
 use Hyperf\Coordinator\Timer;
 use Hyperf\Event\Contract\ListenerInterface;
+use Psr\Container\ContainerInterface;
+use Psr\EventDispatcher\EventDispatcherInterface;
 use Sentry\Unit;
 
 use function FriendsOfHyperf\Sentry\metrics;
@@ -28,8 +31,10 @@ class OnBeforeHandle implements ListenerInterface
 
     protected Timer $timer;
 
-    public function __construct(protected Feature $feature)
-    {
+    public function __construct(
+        protected ContainerInterface $container,
+        protected Feature $feature
+    ) {
         $this->timer = new Timer();
     }
 
@@ -49,12 +54,15 @@ class OnBeforeHandle implements ListenerInterface
             ! $event instanceof BeforeHandle
             || SentryContext::getCronCheckInId() // Prevent duplicate metrics in cron job.
             || ! $event->getCommand()->getApplication()->isAutoExitEnabled() // Only enable in the command with auto exit.
-            || ! $this->feature->isCommandMetricsEnabled()
         ) {
             return;
         }
 
         Constants::$runningInCommand = true;
+
+        if ($this->feature->isCommandMetricsEnabled() && $this->container->has(EventDispatcherInterface::class)) {
+            $this->container->get(EventDispatcherInterface::class)->dispatch(new MetricFactoryReady());
+        }
 
         if (! $this->feature->isDefaultMetricsEnabled()) {
             return;
@@ -87,28 +95,27 @@ class OnBeforeHandle implements ListenerInterface
             'ru_stime_tv_sec',
         ];
 
-        $this->timer->tick($this->feature->getMetricsInterval(), function ($isClosing = false) use ($metrics) {
-            if ($isClosing) {
-                return Timer::STOP;
+        $this->timer->tick(
+            $this->feature->getMetricsInterval(),
+            function () use ($metrics) {
+                $this->trySet('gc_', $metrics, gc_status());
+                $this->trySet('', $metrics, getrusage());
+
+                metrics()->gauge(
+                    'memory_usage',
+                    memory_get_usage(true) / 1024 / 1024,
+                    ['worker' => '0'],
+                    Unit::megabyte()
+                );
+                metrics()->gauge(
+                    'memory_peak_usage',
+                    memory_get_peak_usage(true) / 1024 / 1024,
+                    ['worker' => '0'],
+                    Unit::megabyte()
+                );
+
+                metrics()->flush();
             }
-
-            $this->trySet('gc_', $metrics, gc_status());
-            $this->trySet('', $metrics, getrusage());
-
-            metrics()->gauge(
-                'memory_usage',
-                memory_get_usage(true) / 1024 / 1024,
-                ['worker' => '0'],
-                Unit::megabyte()
-            );
-            metrics()->gauge(
-                'memory_peak_usage',
-                memory_get_peak_usage(true) / 1024 / 1024,
-                ['worker' => '0'],
-                Unit::megabyte()
-            );
-
-            metrics()->flush();
-        });
+        );
     }
 }
