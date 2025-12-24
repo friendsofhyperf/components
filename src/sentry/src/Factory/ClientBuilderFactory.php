@@ -12,47 +12,29 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Factory;
 
 use FriendsOfHyperf\Sentry\Version;
+use Hyperf\Collection\Arr;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 use Sentry\ClientBuilder;
+use Sentry\Options;
 use Sentry\Transport\TransportInterface;
 
 use function Hyperf\Support\env;
 use function Hyperf\Tappable\tap;
 
+/**
+ * @property \Symfony\Component\OptionsResolver\OptionsResolver $resolver
+ */
 class ClientBuilderFactory
 {
-    public const SPECIFIC_OPTIONS = [
-        'breadcrumbs',
-        'crons',
-        'enable',
-        'ignore_commands',
-        'integrations',
-        'http_chanel_size', // deprecated, will be removed in v3.2
-        'http_concurrent_limit', // deprecated, will be removed in v3.2
-        'logs_channel_level',
-        'enable_default_metrics',
-        'enable_command_metrics',
-        'enable_queue_metrics',
-        'enable_pool_metrics',
-        'metrics_interval',
-        'transport_channel_size',
-        'transport_concurrent_limit',
-        'tracing',
-        'tracing_spans',
-        'tracing_tags',
-    ];
-
     public function __invoke(ContainerInterface $container): ClientBuilder
     {
         $userConfig = $container->get(ConfigInterface::class)->get('sentry', []);
         $userConfig['enable_tracing'] ??= true;
 
-        foreach (static::SPECIFIC_OPTIONS as $specificOptionName) {
-            if (isset($userConfig[$specificOptionName])) {
-                unset($userConfig[$specificOptionName]);
-            }
-        }
+        /** @var null|\Symfony\Component\OptionsResolver\OptionsResolver $resolver */
+        $resolver = (fn () => $this->resolver)->call(new Options());
+        $userConfig = Arr::only($userConfig, $resolver?->getDefinedOptions() ?? []);
 
         if (isset($userConfig['logger'])) {
             if (is_string($userConfig['logger']) && $container->has($userConfig['logger'])) {
