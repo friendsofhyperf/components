@@ -54,6 +54,24 @@ class Feature
         return (bool) $this->config->get('sentry.enable_command_metrics', $default);
     }
 
+    public function isPoolMetricsEnabled(bool $default = true): bool
+    {
+        if (! $this->isMetricsEnabled()) {
+            return false;
+        }
+
+        return (bool) $this->config->get('sentry.enable_pool_metrics', $default);
+    }
+
+    public function isQueueMetricsEnabled(bool $default = true): bool
+    {
+        if (! $this->isMetricsEnabled()) {
+            return false;
+        }
+
+        return (bool) $this->config->get('sentry.enable_queue_metrics', $default);
+    }
+
     public function getMetricsInterval(int $default = 10): int
     {
         $interval = (int) $this->config->get('sentry.metrics_interval', $default);

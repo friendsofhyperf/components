@@ -47,45 +47,44 @@ class QueueWatcher implements ListenerInterface
      */
     public function process(object $event): void
     {
-        if (! $this->feature->isMetricsEnabled()) {
+        if (! $this->feature->isQueueMetricsEnabled()) {
             return;
         }
 
-        $this->timer->tick($this->feature->getMetricsInterval(), function ($isClosing = false) {
-            if ($isClosing) {
-                return Timer::STOP;
+        $this->timer->tick(
+            $this->feature->getMetricsInterval(),
+            function () {
+                $config = $this->container->get(ConfigInterface::class);
+                $queues = array_keys($config->get('async_queue', []));
+
+                foreach ($queues as $name) {
+                    $queue = $this->container->get(DriverFactory::class)->get($name);
+                    $info = $queue->info();
+
+                    metrics()->gauge(
+                        'queue_waiting',
+                        (float) $info['waiting'],
+                        ['queue' => $name]
+                    );
+                    metrics()->gauge(
+                        'queue_delayed',
+                        (float) $info['delayed'],
+                        ['queue' => $name]
+                    );
+                    metrics()->gauge(
+                        'queue_failed',
+                        (float) $info['failed'],
+                        ['queue' => $name]
+                    );
+                    metrics()->gauge(
+                        'queue_timeout',
+                        (float) $info['timeout'],
+                        ['queue' => $name]
+                    );
+                }
+
+                metrics()->flush();
             }
-
-            $config = $this->container->get(ConfigInterface::class);
-            $queues = array_keys($config->get('async_queue', []));
-
-            foreach ($queues as $name) {
-                $queue = $this->container->get(DriverFactory::class)->get($name);
-                $info = $queue->info();
-
-                metrics()->gauge(
-                    'queue_waiting',
-                    (float) $info['waiting'],
-                    ['queue' => $name]
-                );
-                metrics()->gauge(
-                    'queue_delayed',
-                    (float) $info['delayed'],
-                    ['queue' => $name]
-                );
-                metrics()->gauge(
-                    'queue_failed',
-                    (float) $info['failed'],
-                    ['queue' => $name]
-                );
-                metrics()->gauge(
-                    'queue_timeout',
-                    (float) $info['timeout'],
-                    ['queue' => $name]
-                );
-            }
-
-            metrics()->flush();
-        });
+        );
     }
 }

@@ -33,6 +33,8 @@ class ClientBuilderFactory
         'logs_channel_level',
         'enable_default_metrics',
         'enable_command_metrics',
+        'enable_queue_metrics',
+        'enable_pool_metrics',
         'metrics_interval',
         'transport_channel_size',
         'transport_concurrent_limit',

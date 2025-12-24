@@ -57,45 +57,40 @@ abstract class PoolWatcher implements ListenerInterface
 
     public function watch(Pool $pool, string $poolName, int $workerId): void
     {
-        if (! $this->feature->isMetricsEnabled()) {
+        if (! $this->feature->isPoolMetricsEnabled()) {
             return;
         }
 
-        $this->timer->tick($this->feature->getMetricsInterval(), function ($isClosing = false) use (
-            $pool,
-            $workerId,
-            $poolName
-        ) {
-            if ($isClosing) {
-                return Timer::STOP;
+        $this->timer->tick(
+            $this->feature->getMetricsInterval(),
+            function () use ($pool, $workerId, $poolName) {
+                metrics()->gauge(
+                    $this->getPrefix() . '_connections_in_use',
+                    (float) $pool->getCurrentConnections(),
+                    [
+                        'pool' => $poolName,
+                        'worker' => (string) $workerId,
+                    ]
+                );
+                metrics()->gauge(
+                    $this->getPrefix() . '_connections_in_waiting',
+                    (float) $pool->getConnectionsInChannel(),
+                    [
+                        'pool' => $poolName,
+                        'worker' => (string) $workerId,
+                    ]
+                );
+                metrics()->gauge(
+                    $this->getPrefix() . '_max_connections',
+                    (float) $pool->getOption()->getMaxConnections(),
+                    [
+                        'pool' => $poolName,
+                        'worker' => (string) $workerId,
+                    ]
+                );
+
+                metrics()->flush();
             }
-
-            metrics()->gauge(
-                $this->getPrefix() . '_connections_in_use',
-                (float) $pool->getCurrentConnections(),
-                [
-                    'pool' => $poolName,
-                    'worker' => (string) $workerId,
-                ]
-            );
-            metrics()->gauge(
-                $this->getPrefix() . '_connections_in_waiting',
-                (float) $pool->getConnectionsInChannel(),
-                [
-                    'pool' => $poolName,
-                    'worker' => (string) $workerId,
-                ]
-            );
-            metrics()->gauge(
-                $this->getPrefix() . '_max_connections',
-                (float) $pool->getOption()->getMaxConnections(),
-                [
-                    'pool' => $poolName,
-                    'worker' => (string) $workerId,
-                ]
-            );
-
-            metrics()->flush();
-        });
+        );
     }
 }
