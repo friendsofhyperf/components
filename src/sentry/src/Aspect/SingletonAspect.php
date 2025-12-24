@@ -47,13 +47,15 @@ class SingletonAspect extends AbstractAspect
         return match ($className) {
             // Singleton Classes
             \Sentry\State\HubAdapter::class,
-            \Sentry\Integration\IntegrationRegistry::class,
             \Sentry\Logs\Logs::class => Context::getOrSet($key, function () use ($className) {
                 return Closure::bind(fn () => new $className(), null, $className)();
             }),
             \Sentry\Metrics\TraceMetrics::class => Context::getOrSet($key, function () use ($className) {
                 return new $className();
             }),
+
+            // !!!
+            \Sentry\Integration\IntegrationRegistry::class => $proceedingJoinPoint->process(),
 
             // Enums
             // \Sentry\CheckInStatus::class,
