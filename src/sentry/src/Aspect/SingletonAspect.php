@@ -21,9 +21,10 @@ class SingletonAspect extends AbstractAspect
     public array $classes = [
         // Singleton Classes
         \Sentry\State\HubAdapter::class . '::getInstance',
-        \Sentry\Integration\IntegrationRegistry::class . '::getInstance',
         \Sentry\Logs\Logs::class . '::getInstance',
         \Sentry\Metrics\TraceMetrics::class . '::getInstance',
+        // !!! Don't enable this for now, it may cause some unexpected issues !!!
+        // \Sentry\Integration\IntegrationRegistry::class . '::getInstance',
         // Enums
         // \Sentry\CheckInStatus::class . '::getInstance',
         // \Sentry\EventType::class . '::getInstance',
@@ -54,8 +55,8 @@ class SingletonAspect extends AbstractAspect
                 return new $className();
             }),
 
-            // !!!
-            \Sentry\Integration\IntegrationRegistry::class => $proceedingJoinPoint->process(),
+            // !!! Don't enable this for now, it may cause some unexpected issues !!!
+            // \Sentry\Integration\IntegrationRegistry::class => $proceedingJoinPoint->process(),
 
             // Enums
             // \Sentry\CheckInStatus::class,
