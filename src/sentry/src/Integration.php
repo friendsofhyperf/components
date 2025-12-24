@@ -106,9 +106,9 @@ class Integration implements IntegrationInterface
      */
     public static function flushEvents(): void
     {
-        SentrySdk::getCurrentHub()->getClient()?->flush();
         Logs::getInstance()->flush();
         TraceMetrics::getInstance()->flush();
+        SentrySdk::getCurrentHub()->getClient()?->flush();
     }
 
     /**
