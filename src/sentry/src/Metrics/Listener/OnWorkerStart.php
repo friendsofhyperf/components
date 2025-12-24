@@ -90,7 +90,7 @@ class OnWorkerStart implements ListenerInterface
 
         $this->timer->tick(
             $this->feature->getMetricsInterval(),
-            function ($isClosing = false) use ($metrics, $event) {
+            function () use ($metrics, $event) {
                 $server = $this->container->get(Server::class);
                 $serverStats = $server->stats();
                 $this->trySet('gc_', $metrics, gc_status());

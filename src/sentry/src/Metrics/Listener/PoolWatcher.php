@@ -63,7 +63,7 @@ abstract class PoolWatcher implements ListenerInterface
 
         $this->timer->tick(
             $this->feature->getMetricsInterval(),
-            function ($isClosing = false) use ($pool, $workerId, $poolName) {
+            function () use ($pool, $workerId, $poolName) {
                 metrics()->gauge(
                     $this->getPrefix() . '_connections_in_use',
                     (float) $pool->getCurrentConnections(),

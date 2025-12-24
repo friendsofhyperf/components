@@ -96,7 +96,7 @@ class OnCoroutineServerStart implements ListenerInterface
 
         $this->timer->tick(
             $this->feature->getMetricsInterval(),
-            function ($isClosing = false) use ($metrics) {
+            function () use ($metrics) {
                 $this->trySet('gc_', $metrics, gc_status());
                 $this->trySet('', $metrics, getrusage());
 

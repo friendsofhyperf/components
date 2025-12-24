@@ -97,7 +97,7 @@ class OnMetricFactoryReady implements ListenerInterface
 
         $this->timer->tick(
             $this->feature->getMetricsInterval(),
-            function ($isClosing = false) use ($metrics, $serverStatsFactory, $workerId) {
+            function () use ($metrics, $serverStatsFactory, $workerId) {
                 $this->trySet('', $metrics, Co::stats(), $workerId);
                 $this->trySet('timer_', $metrics, Timer::stats(), $workerId);
 

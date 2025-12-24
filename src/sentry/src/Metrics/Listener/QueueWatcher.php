@@ -53,7 +53,7 @@ class QueueWatcher implements ListenerInterface
 
         $this->timer->tick(
             $this->feature->getMetricsInterval(),
-            function ($isClosing = false) {
+            function () {
                 $config = $this->container->get(ConfigInterface::class);
                 $queues = array_keys($config->get('async_queue', []));
 
