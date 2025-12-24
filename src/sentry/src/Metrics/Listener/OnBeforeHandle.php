@@ -54,14 +54,13 @@ class OnBeforeHandle implements ListenerInterface
             ! $event instanceof BeforeHandle
             || SentryContext::getCronCheckInId() // Prevent duplicate metrics in cron job.
             || ! $event->getCommand()->getApplication()->isAutoExitEnabled() // Only enable in the command with auto exit.
-            || ! $this->feature->isCommandMetricsEnabled()
         ) {
             return;
         }
 
         Constants::$runningInCommand = true;
 
-        if ($this->container->has(EventDispatcherInterface::class)) {
+        if ($this->feature->isCommandMetricsEnabled() && $this->container->has(EventDispatcherInterface::class)) {
             $this->container->get(EventDispatcherInterface::class)->dispatch(new MetricFactoryReady());
         }
 
