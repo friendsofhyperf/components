@@ -17,7 +17,7 @@ use FriendsOfHyperf\Sentry\Metrics\CoroutineServerStats;
 use FriendsOfHyperf\Sentry\Metrics\Event\MetricFactoryReady;
 use FriendsOfHyperf\Sentry\Metrics\Traits\MetricSetter;
 use Hyperf\Coordinator\Timer;
-use Hyperf\Engine\Coroutine;
+use Hyperf\Engine\Coroutine as Co;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Support\System;
 use Psr\Container\ContainerInterface;
@@ -98,7 +98,7 @@ class OnMetricFactoryReady implements ListenerInterface
         $this->timer->tick(
             $this->feature->getMetricsInterval(),
             function ($isClosing = false) use ($metrics, $serverStatsFactory, $workerId) {
-                $this->trySet('', $metrics, Coroutine::stats(), $workerId);
+                $this->trySet('', $metrics, Co::stats(), $workerId);
                 $this->trySet('timer_', $metrics, Timer::stats(), $workerId);
 
                 if ($serverStatsFactory) {
