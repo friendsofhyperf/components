@@ -20,7 +20,7 @@ class SingletonAspect extends AbstractAspect
 {
     public array $classes = [
         // Singleton Classes
-        \Sentry\State\HubAdapter::class . '::getInstance',
+        // \Sentry\State\HubAdapter::class . '::getInstance',
         \Sentry\Logs\Logs::class . '::getInstance',
         \Sentry\Metrics\TraceMetrics::class . '::getInstance',
         // !!! Don't enable this for now, it may cause some unexpected issues !!!
@@ -47,7 +47,7 @@ class SingletonAspect extends AbstractAspect
 
         return match ($className) {
             // Singleton Classes
-            \Sentry\State\HubAdapter::class,
+            // \Sentry\State\HubAdapter::class,
             \Sentry\Logs\Logs::class => Context::getOrSet($key, function () use ($className) {
                 return Closure::bind(fn () => new $className(), null, $className)();
             }),
