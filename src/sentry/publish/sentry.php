@@ -136,6 +136,7 @@ return [
         'amqp' => env('SENTRY_TRACING_ENABLE_AMQP', true),
         'async_queue' => env('SENTRY_TRACING_ENABLE_ASYNC_QUEUE', true),
         'command' => env('SENTRY_TRACING_ENABLE_COMMAND', true),
+        'coroutine' => env('SENTRY_TRACING_ENABLE_COROUTINE', true),
         'crontab' => env('SENTRY_TRACING_ENABLE_CRONTAB', true),
         'kafka' => env('SENTRY_TRACING_ENABLE_KAFKA', true),
         'missing_routes' => env('SENTRY_TRACING_ENABLE_MISSING_ROUTES', true),
