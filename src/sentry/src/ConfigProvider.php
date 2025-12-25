@@ -26,7 +26,7 @@ class ConfigProvider
                 Aspect\GracefulAspect::class,
                 Aspect\GuzzleHttpClientAspect::class,
                 Aspect\LoggerAspect::class,
-                Aspect\SingletonAspect::class,
+                // Aspect\SingletonAspect::class,
                 Metrics\Aspect\CounterAspect::class,
                 Metrics\Aspect\HistogramAspect::class,
                 Tracing\Aspect\AmqpProducerAspect::class,
