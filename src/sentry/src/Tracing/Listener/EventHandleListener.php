@@ -446,7 +446,6 @@ class EventHandleListener implements ListenerInterface
         } finally {
             if ($sampled) {
                 $span->finish();
-                Integration::flushEvents();
             }
 
             $parentSpan = CoContainer::pull($command);
@@ -456,6 +455,8 @@ class EventHandleListener implements ListenerInterface
                 $parentSpan->finish();
                 SentrySdk::getCurrentHub()->popScope();
             }
+
+            Integration::flushEvents();
         }
     }
 
