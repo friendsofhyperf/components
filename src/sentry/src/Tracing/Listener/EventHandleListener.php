@@ -337,9 +337,6 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
-
-            // Flush events
-            Integration::flushEvents();
         });
     }
 
@@ -538,9 +535,6 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
-
-            // Flush events
-            Integration::flushEvents();
         });
     }
 
@@ -607,9 +601,6 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
-
-            // Flush events
-            Integration::flushEvents();
         });
     }
 
@@ -675,9 +666,6 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
-
-            // Flush events
-            Integration::flushEvents();
         });
     }
 
@@ -725,9 +713,6 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
-
-            // Flush events
-            Integration::flushEvents();
         });
     }
 
