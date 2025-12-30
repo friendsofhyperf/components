@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
-use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Metrics\Event\MetricFactoryReady;
@@ -59,7 +58,7 @@ class OnBeforeHandle implements ListenerInterface
             return;
         }
 
-        Constants::$runningInCommand = true;
+        SentryContext::setRunningInCommand();
 
         if ($this->feature->isCommandMetricsEnabled() && $this->container->has(EventDispatcherInterface::class)) {
             $this->container->get(EventDispatcherInterface::class)->dispatch(new MetricFactoryReady());

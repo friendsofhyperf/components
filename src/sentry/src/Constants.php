@@ -66,5 +66,8 @@ class Constants
 
     public const TRACEPARENT = 'traceparent';
 
+    /**
+     * @deprecated since v3.1, will be removed in v3.2.
+     */
     public static bool $runningInCommand = false;
 }

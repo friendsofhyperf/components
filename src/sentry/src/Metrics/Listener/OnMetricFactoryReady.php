@@ -11,12 +11,12 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
-use FriendsOfHyperf\Sentry\Constants as SentryConstants;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Metrics\CoroutineServerStats;
 use FriendsOfHyperf\Sentry\Metrics\Event\MetricFactoryReady;
 use FriendsOfHyperf\Sentry\Metrics\Traits\MetricSetter;
+use FriendsOfHyperf\Sentry\SentryContext;
 use Hyperf\Coordinator\Timer;
 use Hyperf\Engine\Coroutine as Co;
 use Hyperf\Event\Contract\ListenerInterface;
@@ -84,7 +84,7 @@ class OnMetricFactoryReady implements ListenerInterface
 
         $serverStatsFactory = null;
 
-        if (! SentryConstants::$runningInCommand) {
+        if (! SentryContext::isRunningInCommand()) {
             if ($this->container->has(SwooleServer::class) && $server = $this->container->get(SwooleServer::class)) {
                 if ($server instanceof SwooleServer) {
                     $serverStatsFactory = fn (): array => $server->stats();
