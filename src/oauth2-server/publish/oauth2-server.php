@@ -49,7 +49,7 @@ return [
         # Whether to require code challenge for public clients for the auth code grant
         'require_code_challenge_for_public_clients' => true,
         # Whether to enable access token saving to persistence layer (default to true)
-        'persist_access_tokens' => true,
+        'persist_access_token' => true,
     ],
     'resource_server' => [
         # Full path to the public key file
