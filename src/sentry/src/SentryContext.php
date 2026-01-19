@@ -39,6 +39,8 @@ class SentryContext
 
     public const CTX_RPC_SPAN_CONTEXT = 'sentry.ctx.rpc.span.context';
 
+    public const CTX_RUNNING_IN_COMMAND = 'sentry.ctx.running_in_command';
+
     public static function disableTracing(): void
     {
         Context::set(self::CTX_DISABLE_COROUTINE_TRACING, true);
@@ -157,5 +159,15 @@ class SentryContext
     public static function destroyRpcSpanContext(): void
     {
         Context::destroy(self::CTX_RPC_SPAN_CONTEXT);
+    }
+
+    public static function setRunningInCommand(): void
+    {
+        Context::set(self::CTX_RUNNING_IN_COMMAND, true);
+    }
+
+    public static function isRunningInCommand(): bool
+    {
+        return (bool) Context::get(self::CTX_RUNNING_IN_COMMAND);
     }
 }
