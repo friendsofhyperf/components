@@ -47,7 +47,7 @@ jobs:
           composer require pestphp/pest-plugin-faker:2.0.0 --dev --no-update
           composer require phpunit/phpunit:10.5.36 --dev --no-update
       - name: Setup Packages
-        run: composer update -o --with-all-dependencies
+        run: composer update -o
       - name: Check Composer Json
         run: |
           composer normalize --dry-run --no-update-lock
@@ -93,7 +93,7 @@ jobs:
           composer require pestphp/pest-plugin-faker:2.0.0 --dev --no-update
           composer require phpunit/phpunit:10.5.36 --dev --no-update
       - name: Setup Dependencies
-        run: composer update -o --with-all-dependencies
+        run: composer update -o
       - name: Run Analyse
         run: composer analyse src
       - name: Run Type Tests
