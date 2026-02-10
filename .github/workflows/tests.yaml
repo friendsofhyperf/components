@@ -40,11 +40,7 @@ jobs:
           tools: phpize
           coverage: none
       - name: Setup Packages
-        run: |
-          if [ "${{ matrix.php }}" = "8.1" ]; then
-            composer require brianium/paratest:~7.3.1 --dev --no-update
-          fi
-          composer update -o
+        run: composer update -o
       - name: Check Composer Json
         run: |
           composer normalize --dry-run --no-update-lock
