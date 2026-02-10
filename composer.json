@@ -247,6 +247,9 @@
             "pestphp/pest-plugin": true,
             "php-http/discovery": false
         },
+        "audit": {
+            "block-insecure": false
+        },
         "optimize-autoloader": true,
         "sort-packages": true
     },
