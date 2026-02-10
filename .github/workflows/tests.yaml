@@ -42,7 +42,7 @@ jobs:
       - name: Setup Pest for PHP 8.1
         if: ${{ matrix.php == '8.1' }}
         run: |
-          composer update pestphp/pest pestphp/pest-plugin-faker phpunit/phpunit -o --with-all-dependencies
+          composer require pestphp/pest pestphp/pest-plugin-faker phpunit/phpunit --dev
       - name: Setup Packages
         run: composer update -o --with-all-dependencies
       - name: Check Composer Json
@@ -85,7 +85,7 @@ jobs:
       - name: Setup Pest for PHP 8.1
         if: ${{ matrix.php == '8.1' }}
         run: |
-          composer update pestphp/pest pestphp/pest-plugin-faker phpunit/phpunit -o --with-all-dependencies
+          composer require pestphp/pest pestphp/pest-plugin-faker phpunit/phpunit --dev
       - name: Setup Dependencies
         run: composer update -o --with-all-dependencies
       - name: Run Analyse
