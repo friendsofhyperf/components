@@ -39,13 +39,13 @@ jobs:
           extensions: redis, pdo, pdo_mysql, bcmath, swoole
           tools: phpize
           coverage: none
-      - name: Setup Pest for PHP 8.1
-        if: ${{ matrix.php == '8.1' }}
-        run: |
-          composer require brianium/paratest:7.3.1 --dev --no-update
-          composer require pestphp/pest:2.36.0 --dev --no-update
-          composer require pestphp/pest-plugin-faker:2.0.0 --dev --no-update
-          composer require phpunit/phpunit:10.5.36 --dev --no-update
+      # - name: Setup Pest for PHP 8.1
+      #   if: ${{ matrix.php == '8.1' }}
+      #   run: |
+      #     composer require brianium/paratest:7.3.1 --dev --no-update
+      #     composer require pestphp/pest:2.36.0 --dev --no-update
+      #     composer require pestphp/pest-plugin-faker:2.0.0 --dev --no-update
+      #     composer require phpunit/phpunit:10.5.36 --dev --no-update
       - name: Setup Packages
         run: composer update -o
       - name: Check Composer Json
@@ -85,13 +85,13 @@ jobs:
       #   run: ./.travis/setup.swoole.sh
       - name: Show PHP Information
         run: php -v && php --ri swoole
-      - name: Setup Pest for PHP 8.1
-        if: ${{ matrix.php == '8.1' }}
-        run: |
-          composer require brianium/paratest:7.3.1 --dev --no-update
-          composer require pestphp/pest:2.36.0 --dev --no-update
-          composer require pestphp/pest-plugin-faker:2.0.0 --dev --no-update
-          composer require phpunit/phpunit:10.5.36 --dev --no-update
+      # - name: Setup Pest for PHP 8.1
+      #   if: ${{ matrix.php == '8.1' }}
+      #   run: |
+      #     composer require brianium/paratest:7.3.1 --dev --no-update
+      #     composer require pestphp/pest:2.36.0 --dev --no-update
+      #     composer require pestphp/pest-plugin-faker:2.0.0 --dev --no-update
+      #     composer require phpunit/phpunit:10.5.36 --dev --no-update
       - name: Setup Dependencies
         run: composer update -o
       - name: Run Analyse
