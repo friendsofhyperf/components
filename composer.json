@@ -242,6 +242,9 @@
         }
     },
     "config": {
+        "audit": {
+            "block-insecure": false
+        },
         "allow-plugins": {
             "ergebnis/composer-normalize": true,
             "pestphp/pest-plugin": true,
