@@ -39,10 +39,10 @@ jobs:
           extensions: redis, pdo, pdo_mysql, bcmath, swoole
           tools: phpize
           coverage: none
-      - name: Setup ParaTest for PHP 8.1
+      - name: Setup Pest for PHP 8.1
         if: ${{ matrix.php == '8.1' }}
         run: |
-          composer require pestphp/pest:~2.7 pestphp/pest-plugin-faker:2.0.0 --dev
+          composer update pestphp/pest pestphp/pest-plugin-faker phpunit/phpunit -o --with-all-dependencies
       - name: Setup Packages
         run: composer update -o --with-all-dependencies
       - name: Check Composer Json
@@ -82,10 +82,10 @@ jobs:
       #   run: ./.travis/setup.swoole.sh
       - name: Show PHP Information
         run: php -v && php --ri swoole
-      - name: Setup ParaTest for PHP 8.1
+      - name: Setup Pest for PHP 8.1
         if: ${{ matrix.php == '8.1' }}
         run: |
-          composer require pestphp/pest:~2.7 pestphp/pest-plugin-faker:2.0.0 --dev
+          composer update pestphp/pest pestphp/pest-plugin-faker phpunit/phpunit -o --with-all-dependencies
       - name: Setup Dependencies
         run: composer update -o --with-all-dependencies
       - name: Run Analyse
