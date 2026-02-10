@@ -39,15 +39,15 @@ jobs:
           extensions: redis, pdo, pdo_mysql, bcmath, swoole
           tools: phpize
           coverage: none
-      - name: Setup ParaTest for PHP 8.1
-        if: ${{ matrix.php == '8.1' }}
-        run: |
-          composer require phpunit/phpunit:^10.5.62 --dev
-          composer require pestphp/pest:~2.8.0 --dev --no-update
-          composer require pestphp/pest-plugin-faker:2.0.0 --dev --no-update
-          composer require brianium/paratest:~7.3.0 --dev --no-update
+      # - name: Setup ParaTest for PHP 8.1
+      #   if: ${{ matrix.php == '8.1' }}
+      #   run: |
+      #     composer require phpunit/phpunit:^10.5.62 --dev
+      #     composer require pestphp/pest:~2.8.0 --dev --no-update
+      #     composer require pestphp/pest-plugin-faker:2.0.0 --dev --no-update
+      #     composer require brianium/paratest:~7.3.0 --dev --no-update
       - name: Setup Packages
-        run: composer update -o
+        run: composer update -o --with-all-dependencies
       - name: Check Composer Json
         run: |
           composer normalize --dry-run --no-update-lock
@@ -85,14 +85,15 @@ jobs:
       #   run: ./.travis/setup.swoole.sh
       - name: Show PHP Information
         run: php -v && php --ri swoole
-      - name: Setup ParaTest for PHP 8.1
-        if: ${{ matrix.php == '8.1' }}
-        run: |
-          composer require pestphp/pest:~2.8.0 --dev --no-update
-          composer require pestphp/pest-plugin-faker:2.0.0 --dev --no-update
-          composer require brianium/paratest:~7.3.0 --dev --no-update
+      # - name: Setup ParaTest for PHP 8.1
+      #   if: ${{ matrix.php == '8.1' }}
+      #   run: |
+      #     composer require phpunit/phpunit:^10.5.62 --dev
+      #     composer require pestphp/pest:~2.8.0 --dev --no-update
+      #     composer require pestphp/pest-plugin-faker:2.0.0 --dev --no-update
+      #     composer require brianium/paratest:~7.3.0 --dev --no-update
       - name: Setup Dependencies
-        run: composer update -o
+        run: composer update -o --with-all-dependencies
       - name: Run Analyse
         run: composer analyse src
       - name: Run Type Tests
