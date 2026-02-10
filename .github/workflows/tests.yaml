@@ -44,6 +44,7 @@ jobs:
         run: |
           composer require pestphp/pest:^2.8.0 --dev --no-update
           composer require pestphp/pest-plugin-faker:2.0.0 --dev --no-update
+          composer require brianium/paratest:~7.2.0 --dev --no-update
       - name: Setup Packages
         run: composer update -o
       - name: Check Composer Json
@@ -88,6 +89,7 @@ jobs:
         run: |
           composer require pestphp/pest:^2.8.0 --dev --no-update
           composer require pestphp/pest-plugin-faker:2.0.0 --dev --no-update
+          composer require brianium/paratest:~7.2.0 --dev --no-update
       - name: Setup Dependencies
         run: composer update -o
       - name: Run Analyse
