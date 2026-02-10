@@ -39,6 +39,9 @@ jobs:
           extensions: redis, pdo, pdo_mysql, bcmath, swoole
           tools: phpize
           coverage: none
+      - name: Setup ParaTest for PHP 8.1
+        if: ${{ matrix.php == '8.1' }}
+        run: composer require brianium/paratest:~7.3.1 --dev --no-update
       - name: Setup Packages
         run: composer update -o
       - name: Check Composer Json
@@ -78,6 +81,9 @@ jobs:
       #   run: ./.travis/setup.swoole.sh
       - name: Show PHP Information
         run: php -v && php --ri swoole
+      - name: Setup ParaTest for PHP 8.1
+        if: ${{ matrix.php == '8.1' }}
+        run: composer require brianium/paratest:~7.3.1 --dev --no-update
       - name: Setup Dependencies
         run: composer update -o
       - name: Run Analyse
