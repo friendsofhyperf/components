@@ -52,7 +52,7 @@ class SentrySdkAspect extends AbstractAspect
 
     private function handleSetCurrentHub(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        $arguments = $proceedingJoinPoint->arguments ?? [];
+        $arguments = $proceedingJoinPoint->arguments['keys'] ?? [];
         $hub = $arguments['hub'];
         // @phpstan-ignore-next-line
         Closure::bind(fn () => static::getRuntimeContextManager()->setCurrentHub($hub), null, SentrySdk::class)();
