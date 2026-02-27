@@ -31,7 +31,6 @@ class SentrySdkAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        // Do nothing, just for class mapping.
         return match ($proceedingJoinPoint->methodName) {
             'init' => $this->handleInit($proceedingJoinPoint),
             'setCurrentHub' => $this->handleSetCurrentHub($proceedingJoinPoint),
