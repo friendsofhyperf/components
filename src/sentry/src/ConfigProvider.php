@@ -77,7 +77,7 @@ class ConfigProvider
             'annotations' => [
                 'scan' => [
                     'class_map' => [
-                        \Sentry\SentrySdk::class => __DIR__ . '/../class_map/SentrySdk.php',
+                        // \Sentry\SentrySdk::class => __DIR__ . '/../class_map/SentrySdk.php',
                     ],
                 ],
             ],
