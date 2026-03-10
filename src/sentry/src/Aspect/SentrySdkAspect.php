@@ -21,6 +21,9 @@ use Sentry\State\RuntimeContextManager;
 
 use function Hyperf\Support\make;
 
+/**
+ * @mixin \Sentry\SentrySdk
+ */
 class SentrySdkAspect extends AbstractAspect
 {
     public array $classes = [
