@@ -11,7 +11,6 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Aspect;
 
-use FriendsOfHyperf\Sentry\Integration;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
@@ -60,7 +59,7 @@ class CoroutineAspect extends AbstractAspect
             }
 
             // Defer the flushing of events until the coroutine completes.
-            defer(fn () => Integration::flushEvents());
+            defer(fn () => SentrySdk::flush());
 
             // Continue the callable in the new Coroutine.
             $callable();

@@ -14,8 +14,6 @@ namespace FriendsOfHyperf\Sentry;
 use Sentry\Breadcrumb;
 use Sentry\Event;
 use Sentry\Integration\IntegrationInterface;
-use Sentry\Logs\Logs;
-use Sentry\Metrics\TraceMetrics;
 use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Sentry\Tracing\Span;
@@ -106,9 +104,7 @@ class Integration implements IntegrationInterface
      */
     public static function flushEvents(): void
     {
-        Logs::getInstance()->flush();
-        TraceMetrics::getInstance()->flush();
-        SentrySdk::getCurrentHub()->getClient()?->flush();
+        SentrySdk::flush();
     }
 
     /**

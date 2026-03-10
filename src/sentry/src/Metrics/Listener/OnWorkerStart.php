@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
 use FriendsOfHyperf\Sentry\Feature;
-use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Metrics\Event\MetricFactoryReady;
 use FriendsOfHyperf\Sentry\Metrics\Traits\MetricSetter;
 use Hyperf\Coordinator\Timer;
@@ -20,6 +19,7 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BeforeWorkerStart;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Sentry\SentrySdk;
 use Sentry\Unit;
 use Swoole\Server;
 
@@ -120,8 +120,7 @@ class OnWorkerStart implements ListenerInterface
                     Unit::megabyte()
                 );
 
-                // metrics()->flush();
-                Integration::flushEvents();
+                SentrySdk::flush();
             }
         );
     }
