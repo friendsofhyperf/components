@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
-use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Metrics\Event\MetricFactoryReady;
 use FriendsOfHyperf\Sentry\Metrics\Traits\MetricSetter;
 use FriendsOfHyperf\Sentry\SentryContext;
@@ -22,6 +21,7 @@ use Hyperf\Coordinator\Timer;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
+use Sentry\SentrySdk;
 use Sentry\Unit;
 
 use function FriendsOfHyperf\Sentry\metrics;
@@ -115,8 +115,7 @@ class OnBeforeHandle implements ListenerInterface
                     Unit::megabyte()
                 );
 
-                // metrics()->flush();
-                Integration::flushEvents();
+                SentrySdk::flush();
             }
         );
     }

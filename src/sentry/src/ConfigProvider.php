@@ -28,6 +28,7 @@ class ConfigProvider
                 Aspect\LoggerAspect::class,
                 Aspect\RedisAspect::class,
                 // Aspect\SingletonAspect::class,
+                Aspect\SentrySdkAspect::class,
                 Metrics\Aspect\CounterAspect::class,
                 Metrics\Aspect\HistogramAspect::class,
                 Tracing\Aspect\AmqpProducerAspect::class,
@@ -75,9 +76,7 @@ class ConfigProvider
             ],
             'annotations' => [
                 'scan' => [
-                    'class_map' => [
-                        \Sentry\SentrySdk::class => __DIR__ . '/../class_map/SentrySdk.php',
-                    ],
+                    'class_map' => [],
                 ],
             ],
             'publish' => [

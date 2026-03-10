@@ -12,13 +12,13 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
 use FriendsOfHyperf\Sentry\Feature;
-use FriendsOfHyperf\Sentry\Integration;
 use Hyperf\Coordinator\Timer;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BeforeWorkerStart;
 use Hyperf\Pool\Pool;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
+use Sentry\SentrySdk;
 
 use function FriendsOfHyperf\Sentry\metrics;
 
@@ -90,8 +90,7 @@ abstract class PoolWatcher implements ListenerInterface
                     ]
                 );
 
-                // metrics()->flush();
-                Integration::flushEvents();
+                SentrySdk::flush();
             }
         );
     }

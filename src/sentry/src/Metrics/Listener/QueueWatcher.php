@@ -12,13 +12,13 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
 use FriendsOfHyperf\Sentry\Feature;
-use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Metrics\Event\MetricFactoryReady;
 use Hyperf\AsyncQueue\Driver\DriverFactory;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coordinator\Timer;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
+use Sentry\SentrySdk;
 
 use function FriendsOfHyperf\Sentry\metrics;
 
@@ -84,8 +84,7 @@ class QueueWatcher implements ListenerInterface
                     );
                 }
 
-                // metrics()->flush();
-                Integration::flushEvents();
+                SentrySdk::flush();
             }
         );
     }

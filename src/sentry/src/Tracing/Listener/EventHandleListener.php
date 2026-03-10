@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Tracing\Listener;
 use Closure;
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
-use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use FriendsOfHyperf\Sentry\Util\CoContainer;
@@ -454,7 +453,7 @@ class EventHandleListener implements ListenerInterface
                 SentrySdk::getCurrentHub()->popScope();
             }
 
-            Integration::flushEvents();
+            SentrySdk::flush();
         }
     }
 

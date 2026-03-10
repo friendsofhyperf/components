@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
 use FriendsOfHyperf\Sentry\Constants as SentryConstants;
 use FriendsOfHyperf\Sentry\Feature;
-use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Metrics\CoroutineServerStats;
 use FriendsOfHyperf\Sentry\Metrics\Event\MetricFactoryReady;
 use FriendsOfHyperf\Sentry\Metrics\Traits\MetricSetter;
@@ -22,6 +21,7 @@ use Hyperf\Engine\Coroutine as Co;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Support\System;
 use Psr\Container\ContainerInterface;
+use Sentry\SentrySdk;
 use Sentry\Unit;
 use Swoole\Server as SwooleServer;
 
@@ -130,8 +130,7 @@ class OnMetricFactoryReady implements ListenerInterface
                     Unit::megabyte()
                 );
 
-                // metrics()->flush();
-                Integration::flushEvents();
+                SentrySdk::flush();
             }
         );
     }

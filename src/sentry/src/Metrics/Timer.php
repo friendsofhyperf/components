@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Metrics;
 
+use Sentry\SentrySdk;
 use Sentry\Unit;
 
 use function FriendsOfHyperf\Sentry\metrics;
@@ -55,7 +56,7 @@ class Timer
             $this->unit ?? Unit::second()
         );
 
-        $flush && metrics()->flush();
+        $flush && SentrySdk::flush();
 
         $this->ended = true;
     }
