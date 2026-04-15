@@ -47,8 +47,7 @@ beforeEach(function () {
                 'port' => 9509,
             ],
             'record_mode' => RecordMode::SYNC,
-            'ignore_logs' => [
-            ],
+            'ignore_logs' => [],
             'path' => 'telescope',
             'only_paths' => [
                 'api/*',

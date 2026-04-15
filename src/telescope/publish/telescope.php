@@ -51,8 +51,7 @@ return [
     ],
 
     'record_mode' => RecordMode::ASYNC,
-    'ignore_logs' => [
-    ],
+    'ignore_logs' => [],
     'only_paths' => [
         // 'api/*'
     ],

@@ -16,8 +16,7 @@ class ConfigProvider
     public function __invoke()
     {
         return [
-            'listeners' => [
-            ],
+            'listeners' => [],
         ];
     }
 }

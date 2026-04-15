@@ -118,8 +118,7 @@ return [
     ],
 
     // Additional integrations to register
-    'integrations' => [
-    ],
+    'integrations' => [],
 
     // Commands to ignore for performance monitoring
     'ignore_commands' => [
