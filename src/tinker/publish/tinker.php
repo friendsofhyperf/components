@@ -20,11 +20,9 @@ return [
         // App\Console\Commands\ExampleCommand::class,
     ],
 
-    'alias' => [
-    ],
+    'alias' => [],
 
-    'dont_alias' => [
-    ],
+    'dont_alias' => [],
 
     'casters' => [
         // CLASS => CasterCallback,
