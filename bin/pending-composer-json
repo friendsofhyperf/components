@@ -19,7 +19,7 @@ foreach ([__DIR__ . '/../../autoload.php', __DIR__ . '/../vendor/autoload.php', 
 }
 
 $options = $argv;
-// ./bin/pending-composer-json --version=~3.1.0
+// ./bin/pending-composer-json --version=~3.2.0
 $version = '';
 foreach ($options as $option) {
     if (str_starts_with($option, '--') && $option = substr($option, 2)) {
@@ -85,7 +85,7 @@ foreach ($files as $file) {
         $composerJson->extra = new stdClass();
     }
     $composerJson->extra->{'branch-alias'} = [
-        'dev-main' => '3.1-dev',
+        'dev-main' => '3.2-dev',
     ];
 
     // Removed

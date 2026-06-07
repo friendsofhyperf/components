@@ -34,8 +34,8 @@
     },
     "suggest": {
         "hyperf/amqp": "Required to use PendingAmqpProducerMessageDispatch.(~3.2.0)",
-        "hyperf/queue": "Required to use PendingAsyncQueueDispatch.(~3.2.0)",
         "hyperf/kafka": "Required to use PendingKafkaProducerMessageDispatch.(~3.2.0)",
+        "hyperf/queue": "Required to use PendingAsyncQueueDispatch.(~3.2.0)",
         "vlucas/phpdotenv": "Required to use Dotenv.(^5.0)"
     },
     "minimum-stability": "dev",
@@ -53,7 +53,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "3.1-dev"
+            "dev-main": "3.2-dev"
         },
         "hyperf": {
             "config": "FriendsOfHyperf\\Support\\ConfigProvider"

@@ -247,13 +247,18 @@
             "pestphp/pest-plugin": true,
             "php-http/discovery": false
         },
-        "audit": {
-            "block-insecure": false
-        },
         "optimize-autoloader": true,
+        "policy": {
+            "advisories": {
+                "block": false
+            }
+        },
         "sort-packages": true
     },
     "extra": {
+        "branch-alias": {
+            "dev-main": "3.2-dev"
+        },
         "hyperf": {
             "config": [
                 "FriendsOfHyperf\\AmqpJob\\ConfigProvider",
