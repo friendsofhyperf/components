@@ -1,22 +1,28 @@
 # ReCaptcha
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/recaptcha)](https://packagist.org/packages/friendsofhyperf/recaptcha)
-[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/recaptcha)](https://packagist.org/packages/friendsofhyperf/recaptcha)
-[![License](https://img.shields.io/packagist/l/friendsofhyperf/recaptcha)](https://github.com/friendsofhyperf/recaptcha)
-
-The Google recaptcha component for Hyperf.
+A Google ReCaptcha component for Hyperf.
 
 ## Installation
-
-- Request
 
 ```shell
 composer require friendsofhyperf/recaptcha
 ```
 
+## Configuration
+
+Publish `config/autoload/recaptcha.php` before using the middleware or validator:
+
+```shell
+php bin/hyperf.php vendor:publish friendsofhyperf/recaptcha
+```
+
+Set `RECAPTCHA_SECRET_V2_KEY` for reCAPTCHA v2 and `RECAPTCHA_SECRET_V3_KEY` for reCAPTCHA v3,
+or configure `v2.secret_key` and `v3.secret_key` in the published file. The `default` key selects
+the version used when no version is passed explicitly.
+
 ## Usage
 
-- Middleware
+- Define Middleware
 
 ```php
 namespace App\Middleware;
@@ -40,7 +46,7 @@ class V2CaptchaMiddleware extends ReCaptchaMiddleware
 }
 ```
 
-- Validator
+- Validator Usage
 
 ```php
 <?php
@@ -77,12 +83,3 @@ class IndexController
     }
 }
 ```
-
-## Contact
-
-- [Twitter](https://twitter.com/huangdijia)
-- [Gmail](mailto:huangdijia@gmail.com)
-
-## License
-
-[MIT](LICENSE)

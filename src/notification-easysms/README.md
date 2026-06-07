@@ -1,18 +1,36 @@
 # Notification EasySms Channel
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/friendsofhyperf/notification-easysms.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/notification-easysms)
-[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/notification-easysms.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/notification-easysms)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/notification-easysms)](https://github.com/friendsofhyperf/notification-easysms)
+This component sends notifications through [EasySms](https://github.com/overtrue/easy-sms).
 
 ## Installation
 
 ```shell
-composer require friendsofhyperf/notification-easysms:~3.1.0
+composer require friendsofhyperf/notification-easysms
 ```
+
+The component requires `friendsofhyperf/notification` and `overtrue/easy-sms:^3.0`;
+Composer installs them automatically.
+
+## Configuration
+
+Publish `config/autoload/easy_sms.php`, then configure its default strategy, default gateways, and
+gateway credentials according to the EasySms documentation:
+
+```shell
+php bin/hyperf.php vendor:publish friendsofhyperf/notification-easysms
+```
+
+The component constructs its `EasySms` instance from the complete `easy_sms` configuration array.
 
 ## Usage
 
-### Use `Notifiable` trait in Model
+When the application boots, the component registers `EasySmsChannel` under the `easy-sms`
+channel name.
+
+### Define the Notification Route
+
+Use the `Notifiable` trait on the recipient and define `routeNotificationForSms()`. Return the
+phone number as a string.
 
 ```php
 <?php
@@ -21,82 +39,78 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use Hyperf\DbConnection\Model\Model;
 use FriendsOfHyperf\Notification\Traits\Notifiable;
-use Overtrue\EasySms\PhoneNumber;
+use Hyperf\DbConnection\Model\Model;
 
-/**
- * @property int $id 
- * @property \Carbon\Carbon $created_at 
- * @property \Carbon\Carbon $updated_at 
- */
 class User extends Model
 {
     use Notifiable;
 
-    /**
-     * The table associated with the model.
-     */
-    protected ?string $table = 'user';
-
-    // 通知手机号
-    public function routeNotificationForSms(): string|PhoneNumber
+    public function routeNotificationForSms(): string
     {
         return $this->phone;
     }
 }
 ```
 
-### SMS Notifications
+Although the notification channel is named `easy-sms`, it resolves the recipient by calling
+`routeNotificationFor('sms', $notification)`, which invokes `routeNotificationForSms()`.
 
-- Install the easy-sms package
+### Create an SMS Notification
 
-```shell
-composer require overtrue/easy-sms:^3.0
-```
+The notification must implement `Smsable`. Return `easy-sms` from `via()` and return either an
+array accepted by EasySms or an `Overtrue\EasySms\Message` from `toSms()`.
 
 ```php
+<?php
+
+declare(strict_types=1);
+
 namespace App\Notification;
 
-use FriendsOfHyperf\Notification\EasySms\Contract\EasySmsChannelToSmsArrayContract;
 use FriendsOfHyperf\Notification\EasySms\Contract\Smsable;
 use FriendsOfHyperf\Notification\Notification;
 use Overtrue\EasySms\Message;
 
-// 通知类
-class TestNotification extends Notification implements Smsable
+class VerificationCodeNotification extends Notification implements Smsable
 {
     public function __construct(private string $code)
     {
     }
-    
-    public function via()
+
+    public function via(object $notifiable): array
     {
-        return [
-            'easy-sms'
-        ];
+        return ['easy-sms'];
     }
-    
-    /**
-     * 返回的内容将组装到短信模型中 new Message($notification->toSms()). 
-     * 文档 https://github.com/overtrue/easy-sms?tab=readme-ov-file#%E5%AE%9A%E4%B9%89%E7%9F%AD%E4%BF%A1 
-     */
+
     public function toSms(mixed $notifiable): array|Message
     {
         return [
-            'code' => $this->code,
+            'content' => "Your verification code is {$this->code}.",
             'template' => 'SMS_123456789',
             'data' => [
                 'code' => $this->code,
-            ]
+            ],
         ];
     }
-
-    // or return customer Message
-    // public function toSms(mixed $notifiable): array|Message
-    // {
-    //     return new Message();
-    // }
-
 }
 ```
+
+EasySms converts an array payload to a `Message`. Supported message attributes include
+`content`, `template`, `data`, `type`, and `gateways`. Return a `Message` directly when you need
+to configure it with methods such as `setGateways()`:
+
+```php
+public function toSms(mixed $notifiable): array|Message
+{
+    return (new Message())
+        ->setTemplate('SMS_123456789')
+        ->setData(['code' => $this->code])
+        ->setGateways(['aliyun']);
+}
+```
+
+When the message does not select gateways, EasySms uses `default.gateways` from
+`config/autoload/easy_sms.php`. Sending returns EasySms's gateway result array to the notification
+dispatcher. If the notification does not implement `Smsable`, the channel throws a
+`RuntimeException`.

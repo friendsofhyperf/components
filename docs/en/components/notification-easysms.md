@@ -5,18 +5,22 @@ This component sends notifications through [EasySms](https://github.com/overtrue
 ## Installation
 
 ```shell
-composer require friendsofhyperf/notification-easysms:~3.2.0
+composer require friendsofhyperf/notification-easysms
 ```
 
-The component requires `friendsofhyperf/notification:~3.2.0` and `overtrue/easy-sms:^3.0`;
+The component requires `friendsofhyperf/notification` and `overtrue/easy-sms:^3.0`;
 Composer installs them automatically.
 
 ## Configuration
 
-Create `config/autoload/easy_sms.php`, using the component's `publish/easy_sms.php` file as a
-template. Configure its default strategy, default gateways, and gateway credentials according to
-the EasySms documentation. The component constructs its `EasySms` instance from the complete
-`easy_sms` configuration array.
+Publish `config/autoload/easy_sms.php`, then configure its default strategy, default gateways, and
+gateway credentials according to the EasySms documentation:
+
+```shell
+php bin/hyperf.php vendor:publish friendsofhyperf/notification-easysms
+```
+
+The component constructs its `EasySms` instance from the complete `easy_sms` configuration array.
 
 ## Usage
 

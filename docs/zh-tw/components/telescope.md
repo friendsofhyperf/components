@@ -17,7 +17,7 @@
 ## 安裝
 
 ```shell
-composer require friendsofhyperf/telescope:~3.1.0
+composer require friendsofhyperf/telescope
 ```
 
 使用 `vendor:publish`  命令來發布其公共資源

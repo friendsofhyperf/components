@@ -35,7 +35,7 @@ php bin/hyperf.php vendor:publish friendsofhyperf/oauth2-server
 
 ```bash
 # Generate private/public key pair
-php bin/hyperf.php oauth2:generate-keypair
+php bin/hyperf.php oauth2-server:generate-keypair
 ```
 
 4. Run migrations (if using database storage):
@@ -100,7 +100,7 @@ return [
         # Whether to require code challenge for public clients for the auth code grant
         'require_code_challenge_for_public_clients' => true,
         # Whether to enable access token saving to persistence layer (default to true)
-        'persist_access_tokens' => true,
+        'persist_access_token' => true,
     ],
     'resource_server' => [
         # Full path to the public key file
@@ -126,11 +126,11 @@ return [
 
 | Command | Description |
 |---------|-------------|
-| `oauth2:clear-expired-tokens` | Remove expired access/refresh tokens |
-| `oauth2:create-client` | Create a new OAuth2 client |
-| `oauth2:delete-client` | Delete an OAuth2 client |
-| `oauth2:generate-keypair` | Generate private/public key pair |
-| `oauth2:list-clients` | List all OAuth2 clients |
+| `oauth2-server:clear-expired-tokens` | Remove expired access/refresh tokens |
+| `oauth2-server:create-client` | Create a new OAuth2 client |
+| `oauth2-server:delete-client` | Delete an OAuth2 client |
+| `oauth2-server:generate-keypair` | Generate private/public key pair |
+| `oauth2-server:list-clients` | List all OAuth2 clients |
 
 ## API Endpoints
 
@@ -220,7 +220,7 @@ class YourController
 1. Create a client:
 
 ```bash
-php bin/hyperf.php oauth2:create-client \
+php bin/hyperf.php oauth2-server:create-client \
     --name="My App" \
     --redirect-uri="https://myapp.com/callback" \
     --grant-type="authorization_code" \

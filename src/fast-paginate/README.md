@@ -1,74 +1,86 @@
-# Fast Paginate for Hyperf
+# Fast Paginate
 
-> Fork from https://github.com/hammerstonedev/fast-paginate
+> Forked from [hammerstonedev/fast-paginate](https://github.com/hammerstonedev/fast-paginate)
 
 ## About
 
-This is a fast `limit`/`offset` pagination macro for Hyperf. It can be used in place of the standard `paginate` methods.
+Fast Paginate provides faster `limit`/`offset` pagination macros for Hyperf model builders and
+relations. It is most useful for queries with large offsets, but performance depends on the data and
+indexes, so benchmark it against the standard paginator for your application.
 
-This package uses a SQL method similar to a "deferred join" to achieve this speedup. A deferred join is a technique that defers access to requested columns until _after_ the `offset` and `limit` have been applied.
-
-In our case we don't actually do a join, but rather a `where in` with a subquery. Using this technique we create a subquery that can be optimized with specific indexes for maximum speed and then use those results to fetch the full rows.
-
-The SQL looks something like this:
+The component uses an approach similar to a deferred join. It first paginates a query that selects
+the model's primary key and any selected aliases required for ordering. It then fetches the complete
+rows for the keys on that page with a second query. Conceptually, the two data queries look like:
 
 ```sql
-select * from contacts              -- The full data that you want to show your users.
-    where contacts.id in (          -- The "deferred join" or subquery, in our case.
-        select id from contacts     -- The pagination, accessing as little data as possible - ID only.
-        limit 15 offset 150000
-    )
+select contacts.id from contacts limit 15 offset 150000;
+select * from contacts where contacts.id in (...);
 ```
 
-> You might get an error trying to run the query above! Something like `This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery.`
-> In this package, we run them as [two _separate_ queries](https://github.com/hammerstonedev/fast-paginate/blob/154da286f8160a9e75e64e8025b0da682aa2ba23/src/BuilderMixin.php#L62-L79) to get around that!  
-
-The benefits can vary based on your dataset, but this method allows the database to examine as little data as possible to satisfy the user's intent.
-
-It's unlikely that this method will ever perform worse than traditional `offset` / `limit`, although it is possible, so be
-sure to test on your data!
-
-> If you want to read 3,000 words on the theory of this package, you can head over to [aaronfrancis.com/2022/efficient-pagination-using-deferred-joins](https://aaronfrancis.com/2022/efficient-pagination-using-deferred-joins).
+The component executes separate queries rather than putting the limited query inside a `where in`
+subquery. `fastPaginate()` also runs the normal count query needed for a length-aware paginator;
+`simpleFastPaginate()` does not run that count query.
 
 ## Installation
-
-This package supports Hyperf 3.0+.
-
-To install, require the package via composer:
 
 ```shell
 composer require friendsofhyperf/fast-paginate
 ```
 
-There is nothing further you need to do. The service provider will be loaded automatically by Hyperf.
+The component depends on Hyperf 3.2 packages. No configuration is required: Hyperf discovers the
+component's `ConfigProvider`, which registers the pagination macros when the application boots.
 
 ## Usage
 
-Anywhere you would use `Model::query()->paginate()`, you can use `Model::query()->fastPaginate()`! That's it! The method signature is the same.
+### Model builders and relations
 
-Relationships are supported as well:
+Model builders and relations provide both macros:
 
 ```php
+User::query()->fastPaginate();
+User::query()->simpleFastPaginate();
+
 User::first()->posts()->fastPaginate();
+User::first()->posts()->simpleFastPaginate();
 ```
 
-## A Favor
+Their signatures match the corresponding Hyperf model-builder pagination methods:
 
-If this helps you, please [start me](https://github.com/friendsofhyperf/fast-paginate) with before and after times! I'd love to know :D
+```php
+fastPaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null);
+simpleFastPaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null);
+```
 
-Some community results so far:
-* [30 seconds --> 250ms](https://twitter.com/mdavis1982/status/1482429071288066054)
-* [28 seconds --> 2 seconds](https://twitter.com/joecampo/status/1483550610028957701)
-* [7.5x faster](https://twitter.com/max_eckel/status/1483764319372333057)
-* [1.1 seconds --> 0.1 seconds](https://twitter.com/max_eckel/status/1483852300414337032)
-* [20 seconds --> 2 seconds](https://twitter.com/1ralphmorris/status/1484242437618941957)
-* [2 seconds --> .2 seconds](https://twitter.com/julioelpoeta/status/1549524738980077568)
+- `$perPage`: items per page; `null` uses the model's configured per-page value.
+- `$columns`: columns fetched for the complete rows.
+- `$pageName`: query-string parameter used to resolve the current page.
+- `$page`: explicit page number; `null` resolves it from the current request.
 
-## Contact
+`fastPaginate()` returns a length-aware paginator with a total count. `simpleFastPaginate()` returns
+a simple paginator that only determines whether more pages exist. `BelongsToMany` relations keep
+their hydrated pivot data, and `HasManyThrough` relations are also supported.
 
-- [Twitter](https://twitter.com/huangdijia)
-- [Gmail](mailto:huangdijia@gmail.com)
+### Scout builders
 
-## License
+When `hyperf/scout` is installed, the component also registers `fastPaginate()` on
+`Hyperf\Scout\Builder`:
 
-[MIT](LICENSE)
+```php
+User::search('Hyperf')->fastPaginate();
+```
+
+Its signature is `fastPaginate($perPage = null, $pageName = 'page', $page = null)`. This Scout macro
+delegates directly to Scout's normal `paginate()` method; it does not use the two-query database
+optimization. `hyperf/scout` is not required by this component.
+
+## Automatic fallbacks
+
+When the optimized query shape is incompatible, the component automatically calls the corresponding
+standard `paginate()` or `simplePaginate()` method. This happens when:
+
+- the query contains `having`, `group by`, or `union` clauses;
+- `$perPage` is `-1`;
+- a selected expression required for ordering contains a `?` binding placeholder.
+
+These fallbacks preserve pagination behavior, but they do not provide the fast-pagination
+optimization.

@@ -29,6 +29,8 @@ php bin/hyperf.php gen:dto UserDTO
 
 namespace App\DTO;
 
+use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
+
 class UserDTO extends ValidatedDTO
 {
     protected function rules(): array
@@ -173,6 +175,17 @@ class CreateUserCommand extends Command
     }
 }
 ```
+
+## 导出 DTO 类型
+
+使用 `dto:export` 可以将 DTO 类导出为 TypeScript。传入完整 DTO 类名，也可以指定输出文件：
+
+```shell
+php bin/hyperf.php dto:export 'App\DTO\UserDTO'
+php bin/hyperf.php dto:export 'App\DTO\UserDTO' --output=resources/types/user.dto.ts --force
+```
+
+`--lang` 选项支持 `typescript` 或 `ts`。
 
 ## 访问 DTO 数据
 
@@ -618,6 +631,8 @@ class URLCast implements Castable
 然后你可以将其应用到你的 DTO：
 
 ```php
+use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
+
 class CustomDTO extends ValidatedDTO
 {
     protected function rules(): array

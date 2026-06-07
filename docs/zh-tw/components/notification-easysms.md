@@ -5,15 +5,20 @@
 ## 安裝
 
 ```shell
-composer require friendsofhyperf/notification-easysms:~3.2.0
+composer require friendsofhyperf/notification-easysms
 ```
 
-元件依賴 `friendsofhyperf/notification:~3.2.0` 和 `overtrue/easy-sms:^3.0`，Composer 會自動安裝。
+元件依賴 `friendsofhyperf/notification` 和 `overtrue/easy-sms:^3.0`，Composer 會自動安裝。
 
 ## 設定
 
-請參考元件的 `publish/easy_sms.php` 範本建立 `config/autoload/easy_sms.php`，並參照 EasySms 文件設定
-預設策略、預設閘道和閘道憑證。元件會使用完整的 `easy_sms` 設定陣列建立 `EasySms` 實例。
+發佈 `config/autoload/easy_sms.php`，然後參照 EasySms 文件設定預設策略、預設閘道和閘道憑證：
+
+```shell
+php bin/hyperf.php vendor:publish friendsofhyperf/notification-easysms
+```
+
+元件會使用完整的 `easy_sms` 設定陣列建立 `EasySms` 實例。
 
 ## 使用
 

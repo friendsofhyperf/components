@@ -27,7 +27,7 @@ return [
     |
     | If this is set to true, you must configure a cast type for all properties of your DTOs.
     | If a property doesn't have a cast type configured it will throw a
-    | \FriendsOfHyperf\ValidatedDTO\Exceptions\MissingCastTypeException exception
+    | \FriendsOfHyperf\ValidatedDTO\Exception\MissingCastTypeException exception
     |
     */
     'require_casting' => false,
