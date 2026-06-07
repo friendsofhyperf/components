@@ -1,6 +1,7 @@
 # Command Benchmark
 
-Hyperf 命令的基准测试组件，Fork 自 [christophrumpel/artisan-benchmark](https://github.com/christophrumpel/artisan-benchmark)。
+Hyperf 命令的基准测试组件，Fork 自
+[christophrumpel/artisan-benchmark](https://github.com/christophrumpel/artisan-benchmark)。
 
 ## 安装
 
@@ -8,117 +9,58 @@ Hyperf 命令的基准测试组件，Fork 自 [christophrumpel/artisan-benchmark
 composer require friendsofhyperf/command-benchmark
 ```
 
-## 介绍
-
-Command Benchmark 组件为 Hyperf 命令提供了性能基准测试功能。它可以自动收集并显示命令执行的性能指标，包括：
-
-- **执行时间**：命令运行所需的时间
-- **内存使用**：命令执行期间使用的内存
-- **数据库查询次数**：命令执行期间执行的 SQL 查询数量
+该包声明依赖 Hyperf Collection、Command 和 Event `~3.2.0`。Hyperf 包发现机制会加载其
+`ConfigProvider`，并注册组件的 AOP 切面。
 
 ## 使用
 
-该组件通过 AOP（面向切面编程）自动为所有 Hyperf 命令添加 `--enable-benchmark` 选项。
-
-### 启用基准测试
-
-在运行任何命令时，只需添加 `--enable-benchmark` 选项即可启用基准测试：
+该切面会为继承 `Hyperf\Command\Command` 的命令添加无需值的
+`--enable-benchmark` 选项。调用命令时添加该选项即可：
 
 ```shell
 php bin/hyperf.php your:command --enable-benchmark
 ```
 
-### 输出示例
+命令的 `execute()` 方法正常返回后，组件会输出前后带空行的彩色摘要：
 
-命令执行完成后，会在输出末尾显示基准测试结果：
-
-```
+```text
 ⚡ TIME: 2.5s  MEM: 15.23MB  SQL: 42
 ```
 
-各指标说明：
-- **TIME**：执行时间（毫秒、秒或分钟）
-- **MEM**：内存使用量（MB）
-- **SQL**：执行的 SQL 查询次数
+未传入 `--enable-benchmark` 时不会输出摘要。
 
-## 工作原理
+## 指标
 
-该组件使用 Hyperf 的 AOP 功能拦截命令的构造和执行：
+- **TIME**：从命令构造函数返回后到其 `execute()` 方法返回的耗时。小于一秒时显示为毫秒，
+  小于 60 秒时显示为秒，更长时间显示为分钟和秒。
+- **MEM**：进程内存差值的报告值，以 MB 为单位并保留两位小数。实现会用最终的
+  `memory_get_usage()` 值减去通过 `memory_get_usage(true)` 记录的起始值；该值不是峰值内存，
+  也可能为负数。
+- **SQL**：从命令构造函数返回后到输出摘要前观察到的
+  `Hyperf\Database\Events\QueryExecuted` 事件数量。监听器会观察进程内派发的所有此类事件，
+  不仅限于可归因于当前命令的查询；未派发此类事件时为 `0`。
 
-1. **构造阶段**：
-   - 记录开始时间和内存使用
-   - 注册数据库查询事件监听器
-   - 为命令添加 `--enable-benchmark` 选项
-
-2. **执行阶段**：
-   - 如果启用了 `--enable-benchmark` 选项
-   - 计算执行时间、内存使用和查询次数
-   - 格式化并显示基准测试结果
-
-3. **结果显示**：
-   - 使用彩色输出显示各项指标
-   - 自动格式化时间（毫秒、秒、分钟）
-   - 在命令输出末尾显示结果
+每个命令在构造时都会开始收集指标，即使之后调用命令时没有传入
+`--enable-benchmark`。因此，报告的区间可能包含命令构造完成至执行之间的工作，并不仅限于
+`execute()` 方法体。
 
 ## 配置
 
-该组件无需额外配置，安装后即可使用。组件会自动注册到 Hyperf 容器中。
+组件不会发布配置文件。`FriendsOfHyperf\CommandBenchmark\ConfigProvider` 会自动注册
+`FriendsOfHyperf\CommandBenchmark\Aspect\CommandAspect`。如果禁用了 Hyperf 包发现机制，
+请确保加载该配置提供器。
 
-## 技术细节
-
-### AOP 切面
-
-组件通过 `CommandAspect` 切面类拦截 `Hyperf\Command\Command` 类的以下方法：
-- `__construct`：初始化性能指标收集
-- `execute`：执行完成后显示基准测试结果
-
-### 性能指标
-
-- **执行时间**：使用 `microtime(true)` 测量
-- **内存使用**：使用 `memory_get_usage()` 测量
-- **查询次数**：通过监听 `QueryExecuted` 事件统计
-
-### 时间格式化
-
-时间会根据执行时长自动选择合适的单位：
-- 小于 1 秒：显示为毫秒（如 `250ms`）
-- 1 秒到 60 秒：显示为秒（如 `2.5s`）
-- 大于 60 秒：显示为分钟和秒（如 `2m 30s`）
-
-## 示例
-
-### 测试数据导入命令
-
-```shell
-php bin/hyperf.php import:users --enable-benchmark
-```
-
-输出：
-```
-Importing users...
-100 users imported successfully.
-
-⚡ TIME: 5.23s  MEM: 28.45MB  SQL: 150
-```
-
-### 测试缓存清理命令
-
-```shell
-php bin/hyperf.php cache:clear --enable-benchmark
-```
-
-输出：
-```
-Cache cleared successfully.
-
-⚡ TIME: 120ms  MEM: 2.15MB  SQL: 0
-```
+组件没有配置项或注解；其操作入口是 `--enable-benchmark` 命令选项。
 
 ## 注意事项
 
-1. 基准测试会带来轻微的性能开销，建议只在开发和调试时使用
-2. SQL 查询统计包括所有通过 Hyperf 数据库组件执行的查询
-3. 内存使用量是相对值，表示命令执行期间增加的内存使用量
+- 仓库目前没有该组件的专用测试。
+- 指标收集和 SQL 事件监听器会产生开销，建议主要用于开发和诊断。无论之后是否使用该选项，
+  每个命令构造时都会收集指标并注册监听器。
+- 应将 `--enable-benchmark` 视为保留选项名；命令自行定义同名但不兼容的选项会导致选项注册失败。
+- `hyperf/database` 不是该包声明的依赖；仅当应用派发其 `QueryExecuted` 事件时，SQL 指标
+  才有意义。
+- SQL 指标统计已派发的 `QueryExecuted` 事件，不会直接检查数据库连接。
 
 ## 联系方式
 

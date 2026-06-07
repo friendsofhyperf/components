@@ -1,6 +1,7 @@
 # Command Benchmark
 
-A benchmarking component for Hyperf commands, forked from [christophrumpel/artisan-benchmark](https://github.com/christophrumpel/artisan-benchmark).
+A benchmarking component for Hyperf commands, forked from
+[christophrumpel/artisan-benchmark](https://github.com/christophrumpel/artisan-benchmark).
 
 ## Installation
 
@@ -8,117 +9,67 @@ A benchmarking component for Hyperf commands, forked from [christophrumpel/artis
 composer require friendsofhyperf/command-benchmark
 ```
 
-## Introduction
-
-The Command Benchmark component provides performance benchmarking capabilities for Hyperf commands. It automatically collects and displays performance metrics for command execution, including:
-
-- **Execution Time**: The time required for the command to run
-- **Memory Usage**: Memory consumed during command execution
-- **Database Query Count**: Number of SQL queries executed during command execution
+The package declares Hyperf Collection, Command, and Event `~3.2.0` as dependencies.
+Hyperf package discovery loads its `ConfigProvider`, which registers the component's AOP
+aspect.
 
 ## Usage
 
-This component automatically adds the `--enable-benchmark` option to all Hyperf commands through AOP (Aspect-Oriented Programming).
-
-### Enabling Benchmarking
-
-Simply add the `--enable-benchmark` option when running any command to enable benchmarking:
+The aspect adds the flag-only `--enable-benchmark` option to commands that extend
+`Hyperf\Command\Command`. Add the option when invoking a command:
 
 ```shell
 php bin/hyperf.php your:command --enable-benchmark
 ```
 
-### Output Example
+After the command's `execute()` method returns normally, the component prints a colored
+summary surrounded by blank lines:
 
-After command execution completes, benchmark results will be displayed at the end of the output:
-
-```
+```text
 ⚡ TIME: 2.5s  MEM: 15.23MB  SQL: 42
 ```
 
-Metric explanations:
-- **TIME**: Execution time (milliseconds, seconds, or minutes)
-- **MEM**: Memory usage (MB)
-- **SQL**: Number of SQL queries executed
+Commands invoked without `--enable-benchmark` do not print the summary.
 
-## How It Works
+## Metrics
 
-This component uses Hyperf's AOP functionality to intercept command construction and execution:
+- **TIME**: elapsed time from immediately after the command constructor returns until its
+  `execute()` method returns. Durations below one second are shown in milliseconds,
+  durations below 60 seconds in seconds, and longer durations in minutes and seconds.
+- **MEM**: the reported process-memory difference in MB, rounded to two decimal places.
+  The implementation subtracts the value captured with `memory_get_usage(true)` from the
+  final `memory_get_usage()` value. It is not peak memory usage and can be negative.
+- **SQL**: the number of `Hyperf\Database\Events\QueryExecuted` events observed after the
+  command constructor returns and before the summary is rendered. The listener observes
+  every dispatched event of this type in the process, not only queries attributable to the
+  command. The value remains `0` when no such events are dispatched.
 
-1. **Construction Phase**:
-   - Records start time and memory usage
-   - Registers database query event listeners
-   - Adds the `--enable-benchmark` option to the command
-
-2. **Execution Phase**:
-   - If the `--enable-benchmark` option is enabled
-   - Calculates execution time, memory usage, and query count
-   - Formats and displays benchmark results
-
-3. **Result Display**:
-   - Displays metrics using colored output
-   - Automatically formats time (milliseconds, seconds, minutes)
-   - Shows results at the end of command output
+Metric collection starts when each command is constructed, even when the command is later
+invoked without `--enable-benchmark`. Therefore, the reported interval can include work
+performed between command construction and command execution; it is not limited to the
+body of `execute()`.
 
 ## Configuration
 
-This component requires no additional configuration and is ready to use after installation. It automatically registers with the Hyperf container.
+No configuration file is published. `FriendsOfHyperf\CommandBenchmark\ConfigProvider`
+registers `FriendsOfHyperf\CommandBenchmark\Aspect\CommandAspect` automatically. If
+Hyperf package discovery is disabled, ensure that this config provider is loaded.
 
-## Technical Details
-
-### AOP Aspect
-
-The component intercepts the following methods of the `Hyperf\Command\Command` class through the `CommandAspect` aspect class:
-- `__construct`: Initializes performance metric collection
-- `execute`: Displays benchmark results after execution completes
-
-### Performance Metrics
-
-- **Execution Time**: Measured using `microtime(true)`
-- **Memory Usage**: Measured using `memory_get_usage()`
-- **Query Count**: Counted by listening to `QueryExecuted` events
-
-### Time Formatting
-
-Time is automatically formatted with appropriate units based on execution duration:
-- Less than 1 second: Displayed in milliseconds (e.g., `250ms`)
-- 1 second to 60 seconds: Displayed in seconds (e.g., `2.5s`)
-- More than 60 seconds: Displayed in minutes and seconds (e.g., `2m 30s`)
-
-## Examples
-
-### Testing Data Import Command
-
-```shell
-php bin/hyperf.php import:users --enable-benchmark
-```
-
-Output:
-```
-Importing users...
-100 users imported successfully.
-
-⚡ TIME: 5.23s  MEM: 28.45MB  SQL: 150
-```
-
-### Testing Cache Clear Command
-
-```shell
-php bin/hyperf.php cache:clear --enable-benchmark
-```
-
-Output:
-```
-Cache cleared successfully.
-
-⚡ TIME: 120ms  MEM: 2.15MB  SQL: 0
-```
+There are no configuration keys or annotations. The operational interface is the
+`--enable-benchmark` command option.
 
 ## Notes
 
-1. Benchmarking introduces slight performance overhead; recommended for development and debugging only
-2. SQL query statistics include all queries executed through the Hyperf database component
-3. Memory usage is a relative value, representing the increase in memory usage during command execution
+- The repository currently has no dedicated tests for this component.
+- Benchmark collection and SQL event listeners add overhead, so use the option primarily
+  for development and diagnostics. Collection and listener registration happen when each
+  command is constructed, regardless of whether the option is later used.
+- Treat `--enable-benchmark` as a reserved option name; defining an incompatible option
+  with the same name on a command causes option registration to fail.
+- `hyperf/database` is not a declared dependency of this package; the SQL metric is only
+  meaningful when the application dispatches its `QueryExecuted` events.
+- The SQL metric counts dispatched `QueryExecuted` events; it does not inspect database
+  connections directly.
 
 ## Contact
 

@@ -1,51 +1,97 @@
 # OpenAI Client
 
-------
+此元件將 [openai-php/client](https://github.com/openai-php/client) 整合至 Hyperf，
+向依賴注入容器註冊上游用戶端，並提供靜態門面。
 
-**OpenAI PHP** for Laravel 是一個功能強大的社群 PHP API 客戶端，允許您與 [Open AI API](https://beta.openai.com/docs/api-reference/introduction) 進行互動。
+## 相依需求
 
-> **注意：** 此倉庫包含 **OpenAI PHP** 的 Hyperf 整合程式碼。如果您想在與框架無關的方式中使用 **OpenAI PHP** 客戶端，請檢視 [openai-php/client](https://github.com/openai-php/client) 倉庫。
+此套件適用於 Hyperf 3.2，相依於 `hyperf/config`、`hyperf/di`、`hyperf/guzzle` 和
+0.10.0 或更新版本的 `openai-php/client`，且未宣告選用相依套件。
 
-## 快速開始
-
-> **Requires [PHP 8.1+](https://php.net/releases/)**
-
-首先，透過 [Composer](https://getcomposer.org/) 包管理器安裝 OpenAI：
+## 安裝
 
 ```shell
 composer require friendsofhyperf/openai-client
 ```
 
-接下來，釋出配置檔案：
+發布設定檔：
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/openai-client
 ```
 
-這將在您的專案中建立一個 `config/autoload/openai.php` 配置檔案，您可以使用環境變數根據需要進行修改：
+此指令會建立 `config/autoload/openai.php`。
+
+## 設定
+
+發布的設定檔會讀取以下環境變數：
 
 ```env
+OPENAI_BASE_URI=api.openai.com/v1
 OPENAI_API_KEY=sk-...
+OPENAI_ORGANIZATION=
+OPENAI_REQUEST_TIMEOUT=30
 ```
 
-最後，您可以使用容器中的 `OpenAI\Client` 例項來訪問 OpenAI API：
+| 設定項目 | 預設值 | 說明 |
+| --- | --- | --- |
+| `openai.base_uri` | `api.openai.com/v1` | 傳給上游用戶端工廠的基礎 URI。 |
+| `openai.api_key` | 空字串 | 用於 Bearer 驗證的 API 金鑰。 |
+| `openai.organization` | `null` | 選用的 OpenAI 組織識別碼。 |
+| `openai.request_timeout` | `30` | 傳給 Hyperf Guzzle 用戶端的逾時時間，單位為秒。 |
+
+## 容器綁定與執行行為
+
+元件會將 `OpenAI\Client` 和 `OpenAI\Contracts\ClientContract` 綁定至同一個
+用戶端實例。工廠會：
+
+- 透過 `Hyperf\Guzzle\ClientFactory` 建立 HTTP 用戶端；
+- 套用設定的基礎 URI、API 金鑰、組織和請求逾時時間；
+- 傳送 `OpenAI-Beta: assistants=v2` 請求標頭。
+
+API 金鑰必須是字串，組織必須是 `null` 或字串。型別不正確時會擲出
+`FriendsOfHyperf\OpenAi\Exception\ApiKeyIsMissing`。空 API 金鑰仍是字串，因此不會
+觸發此例外；API 請求會改為因驗證失敗而報錯。
+
+## 使用方式
+
+### 容器
+
+可以從容器解析契約或具體用戶端。資源方法、請求參數和回應物件由已安裝的
+`openai-php/client` 版本提供。
 
 ```php
-use OpenAI\Client;
+use OpenAI\Contracts\ClientContract;
 
-$result = di(OpenAI\Client::class)->completions()->create([
-    'model' => 'text-davinci-003',
-    'prompt' => 'PHP is',
+$response = di(ClientContract::class)->chat()->create([
+    'model' => 'YOUR_MODEL',
+    'messages' => [
+        ['role' => 'user', 'content' => 'Briefly explain dependency injection.'],
+    ],
 ]);
 
-echo $result['choices'][0]['text']; // an open-source, widely-used, server-side scripting language.
+echo $response->choices[0]->message->content;
 ```
 
-## Azure
+### 門面
 
-要使用 Azure OpenAI 服務，必須使用工廠手動構建客戶端。
+`FriendsOfHyperf\OpenAi\Facade\OpenAI` 會將靜態呼叫轉發給容器綁定的 `ClientContract`。
 
 ```php
+use FriendsOfHyperf\OpenAi\Facade\OpenAI;
+
+$models = OpenAI::models()->list();
+```
+
+## Azure 與自訂用戶端
+
+元件工廠會固定設定 Bearer 驗證，且未提供自訂請求標頭或查詢參數的設定。
+Azure OpenAI 等需要 `api-key` 請求標頭和 `api-version` 查詢參數的服務，必須使用
+上游工廠手動建立用戶端：
+
+```php
+use OpenAI;
+
 $client = OpenAI::factory()
     ->withBaseUri('{your-resource-name}.openai.azure.com/openai/deployments/{deployment-id}')
     ->withHttpHeader('api-key', '{your-api-key}')
@@ -53,16 +99,10 @@ $client = OpenAI::factory()
     ->make();
 ```
 
-要使用 Azure，您必須部署一個模型，該模型由 {deployment-id} 標識，已整合到 API 呼叫中。因此，您不必在呼叫期間提供模型，因為它已包含在 BaseUri 中。
+手動建立的用戶端不會自動註冊至 Hyperf 容器。由於 Azure 基礎 URI 已包含部署，
+因此針對該部署的呼叫不需傳入 `model` 參數。
 
-因此，一個基本的示例完成呼叫將是：
+## 上游 API 指南
 
-```php
-$result = $client->completions()->create([
-    'prompt' => 'PHP is'
-]);
-```
-
-## 官方指南
-
-有關使用示例，請檢視 [openai-php/client](https://github.com/openai-php/client) 倉庫。
+有關支援的資源和使用範例，請參閱與已安裝版本相符的
+[openai-php/client 文件](https://github.com/openai-php/client)。

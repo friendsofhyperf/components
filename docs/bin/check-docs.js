@@ -107,6 +107,19 @@ if (await exists(srcRoot)) {
     if (unknownComponentPages.length > 0) {
         errors.push(`Documentation without a component: ${unknownComponentPages.join(', ')}`);
     }
+
+    for (const componentPage of componentPages) {
+        const component = path.basename(componentPage, '.md');
+        const installationCommand = `composer require friendsofhyperf/${component}`;
+
+        for (const locale of locales) {
+            const filePath = path.join(docsRoot, locale, 'components', componentPage);
+            const markdown = await readFile(filePath, 'utf8');
+            if (! markdown.includes(installationCommand)) {
+                errors.push(`${locale}/components/${componentPage} is missing: ${installationCommand}`);
+            }
+        }
+    }
 }
 
 for (const relativePath of referenceFiles) {

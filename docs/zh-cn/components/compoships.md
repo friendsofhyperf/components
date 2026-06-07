@@ -1,10 +1,15 @@
 # Compoships
 
-**Compoships** 提供了在 Hyperf 的 Model ORM 中基于两个（或更多）列指定关系的能力。当处理第三方或预先存在的模式/数据库时，通常会出现需要在 Eloquent 关系的定义中匹配多个列的情况。
+**Compoships** 允许 Hyperf 的 Model ORM 定义基于两个或更多列匹配的模型关系。
+它适用于第三方或遗留数据库结构中单个外键列不足以定位关联记录的场景。
+
+Compoships 只扩展关系处理能力；它不会让 Hyperf 模型自身的主键变成复合主键。
 
 ## 问题
 
-Eloquent 不支持复合键。因此，无法通过匹配多个列来定义从一个模型到另一个模型的关系。尝试使用 `where` 子句（如下例所示）在预加载关系时不起作用，因为在处理关系时 **$this->team_id** 为 null。
+Eloquent 风格的关系通常只会把一个外键列匹配到一个本地键或拥有者键列。在关系中
+额外添加 `where` 子句并不能替代复合键关系，因为预加载会在单个模型实例可用之前
+构造关系查询。下面的示例中，准备预加载约束时 `$this->team_id` 是 `null`。
 
 ```php
 namespace App;
@@ -15,7 +20,6 @@ class User extends Model
 {
     public function tasks()
     {
-        //WON'T WORK WITH EAGER LOADING!!!
         return $this->hasMany(Task::class)->where('team_id', $this->team_id);
     }
 }
@@ -23,83 +27,137 @@ class User extends Model
 
 ## 安装
 
-推荐通过 [Composer](http://getcomposer.org/) 安装 **Compoships** 组件。
+通过 Composer 安装组件：
 
 ```shell
 composer require friendsofhyperf/compoships
 ```
 
+该组件面向 Hyperf 3.2，并依赖组件声明的 `hyperf/database` 及相关 Hyperf 支撑包。
+`composer.json` 中的建议包是可选第三方包，并不是 Compoships 关系所必需的依赖。
+
+## 配置
+
+无需发布配置文件。组件提供了 Hyperf `ConfigProvider`，但当前返回的是空配置数组。
+
 ## 使用
 
 ### 使用 `FriendsOfHyperf\Compoships\Database\Eloquent\Model` 类
 
-只需让您的模型类派生自 `FriendsOfHyperf\Compoships\Database\Eloquent\Model` 基类。`FriendsOfHyperf\Compoships\Database\Eloquent\Model` 扩展了 `Eloquent` 基类，而不改变其核心功能。
-
-### 使用 `FriendsOfHyperf\Compoships\Compoships` trait
-
-如果由于某些原因您无法从 `FriendsOfHyperf\Compoships\Database\Eloquent\Model` 派生您的模型，您可以利用 `FriendsOfHyperf\Compoships\Compoships` trait。只需在您的模型中使用该 trait。
-
-**注意：** 要从模型 *A* 到另一个模型 *B* 定义多列关系，**两个模型都必须扩展 `FriendsOfHyperf\Compoships\Database\Eloquent\Model` 或使用 `FriendsOfHyperf\Compoships\Compoships` trait**
-
-### 用法
-
-... 现在我们可以通过匹配两个或更多列（通过传递列数组而不是字符串）来定义从模型 *A* 到另一个模型 *B* 的关系。
+让模型继承 `FriendsOfHyperf\Compoships\Database\Eloquent\Model`，而不是直接继承
+`Hyperf\Database\Model\Model`。这个基础模型使用了 Compoships trait，同时保留正常
+的 Hyperf 模型行为。
 
 ```php
 namespace App;
 
-use Hyperf\Database\Model\Model;
+use FriendsOfHyperf\Compoships\Database\Eloquent\Model;
 
-class A extends Model
+class User extends Model
 {
-    use \FriendsOfHyperf\Compoships\Compoships;
-    
-    public function b()
-    {
-        return $this->hasMany('B', ['foreignKey1', 'foreignKey2'], ['localKey1', 'localKey2']);
-    }
 }
 ```
 
-我们可以使用相同的语法来定义关系的反向关系：
+### 使用 `FriendsOfHyperf\Compoships\Compoships` Trait
+
+如果模型必须继承其他基础类，可以在模型中使用
+`FriendsOfHyperf\Compoships\Compoships` trait。
 
 ```php
 namespace App;
 
-use Hyperf\Database\Model\Model;
-
-class B extends Model
-{
-    use \FriendsOfHyperf\Compoships\Compoships;
-    
-    public function a()
-    {
-        return $this->belongsTo('A', ['foreignKey1', 'foreignKey2'], ['ownerKey1', 'ownerKey2']);
-    }
-}
-```
-
-### 例子
-
-作为一个例子，假设我们有一个带有分类的任务列表，由多个用户团队管理，其中：
-
-- 一个任务属于一个分类
-- 一个任务被分配给一个团队
-- 一个团队有很多用户
-- 一个用户属于一个团队
-- 一个用户负责一个分类的任务
-
-负责特定任务的用户是当前负责团队内该分类的用户。
-
-```php
-namespace App;
-
+use FriendsOfHyperf\Compoships\Compoships;
 use Hyperf\Database\Model\Model;
 
 class User extends Model
 {
-    use \FriendsOfHyperf\Compoships\Compoships;
-    
+    use Compoships;
+}
+```
+
+当关系使用键名数组时，被关联模型也必须接入 Compoships：要么继承
+`FriendsOfHyperf\Compoships\Database\Eloquent\Model`，要么使用
+`FriendsOfHyperf\Compoships\Compoships` trait。否则定义关系时会抛出
+`FriendsOfHyperf\Compoships\Exceptions\InvalidUsageException`。
+
+## 关系语法
+
+Compoships 支持在以下关系方法中使用复合键：
+
+- `hasOne($related, $foreignKey = null, $localKey = null)`
+- `hasMany($related, $foreignKey = null, $localKey = null)`
+- `belongsTo($related, $foreignKey = null, $ownerKey = null, $relation = null)`
+
+将键参数从字符串改为数组即可。数组顺序和元素数量应保持一致，因为值会按数组下标
+逐项匹配。
+
+对 `hasOne` 和 `hasMany` 来说，外键数组表示被关联模型上的列，本地键数组表示当前
+模型上的列：
+
+```php
+namespace App;
+
+use FriendsOfHyperf\Compoships\Compoships;
+use Hyperf\Database\Model\Model;
+
+class Team extends Model
+{
+    use Compoships;
+
+    public function latestTask()
+    {
+        return $this->hasOne(Task::class, ['team_id', 'category_id'], ['id', 'category_id']);
+    }
+
+    public function tasks()
+    {
+        return $this->hasMany(Task::class, ['team_id', 'category_id'], ['id', 'category_id']);
+    }
+}
+```
+
+对 `belongsTo` 来说，外键数组表示当前模型上的列，拥有者键数组表示被关联模型上的
+列：
+
+```php
+namespace App;
+
+use FriendsOfHyperf\Compoships\Compoships;
+use Hyperf\Database\Model\Model;
+
+class Task extends Model
+{
+    use Compoships;
+
+    public function team()
+    {
+        return $this->belongsTo(Team::class, ['team_id', 'category_id'], ['id', 'category_id']);
+    }
+}
+```
+
+## 示例
+
+假设一个任务列表由多个团队管理，并且每个团队中每个任务分类都有一名负责用户：
+
+- 一个任务属于一个分类。
+- 一个任务被分配给一个团队。
+- 一个团队有多个用户。
+- 一个用户属于一个团队。
+- 一个用户负责一个分类下的任务。
+
+某个任务的负责用户，就是该任务所属团队中负责该任务分类的用户。
+
+```php
+namespace App;
+
+use FriendsOfHyperf\Compoships\Compoships;
+use Hyperf\Database\Model\Model;
+
+class User extends Model
+{
+    use Compoships;
+
     public function tasks()
     {
         return $this->hasMany(Task::class, ['team_id', 'category_id'], ['team_id', 'category_id']);
@@ -107,20 +165,34 @@ class User extends Model
 }
 ```
 
-同样的语法可以定义关系的反向关系：
+反向关系使用同一组列：
 
 ```php
 namespace App;
 
+use FriendsOfHyperf\Compoships\Compoships;
 use Hyperf\Database\Model\Model;
 
 class Task extends Model
 {
-    use \FriendsOfHyperf\Compoships\Compoships;
-    
+    use Compoships;
+
     public function user()
     {
-        return $this->belongsTo(User::class, ['team_id', 'category_id'], ['team_id', 'category_id']);
+        return $this->belongsTo(
+            User::class,
+            ['team_id', 'category_id'],
+            ['team_id', 'category_id']
+        );
     }
 }
 ```
+
+## 行为说明
+
+Compoships 使用自定义查询构造器，因此预加载可以应用多列 `whereIn` 约束，关系存在性
+查询也可以通过 `whereColumn` 比较多列。
+
+对 `hasOne` 和 `hasMany` 来说，`save()` 和 `create()` 会把父模型本地键的值按顺序
+写入被关联模型的各个外键列。对 `belongsTo` 来说，`associate()` 会把拥有者键的值
+按顺序写入当前模型的各个外键列。

@@ -1,15 +1,7 @@
 # Model Hashids
 
-Using hashids instead of integer IDs in URLs and list items can be more attractive and clever. For more information, visit [hashids.org](https://hashids.org/).
-
-This package adds hashids to Hyperf models by dynamically encoding/decoding them, rather than persisting them in the database. This eliminates the need for an additional database column and allows for better performance by using primary keys in queries.
-
-Features include:
-
-- Generating hashids for models
-- Resolving hashids to models
-- Ability to customize hashid settings for each model
-- Using hashids for route binding (optional)
+Model Hashids encodes and decodes a model's primary key on demand. The hashid is not stored in the
+database, so queries still use the model's primary-key column.
 
 ## Installation
 
@@ -17,7 +9,8 @@ Features include:
 composer require friendsofhyperf/model-hashids
 ```
 
-Additionally, publish the vendor configuration file to your application (required for dependencies):
+The package requires `hashids/hashids` and Hyperf 3.2's config, database, and stringable components.
+Publish the configuration file only when you need to customize the hashid settings:
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/model-hashids
@@ -25,125 +18,127 @@ php bin/hyperf.php vendor:publish friendsofhyperf/model-hashids
 
 ## Setup
 
-Basic functionality is provided by using the `HasHashid` trait, and then hashid-based route binding can be added by using `HashidRouting`.
+Add `HasHashid` to a model. Add `HashidRouting` as well if implicit route binding should use hashids:
 
 ```php
-
-use Hyperf\Database\Model\Model;
 use FriendsOfHyperf\ModelHashids\Concerns\HasHashid;
 use FriendsOfHyperf\ModelHashids\Concerns\HashidRouting;
-
-Class Item extends Model
-{
-    use HasHashid, HashidRouting;
-}
-
-```
-
-### Customizing Hashid Settings
-
-You can customize the hashid settings for each model by overriding `getHashidsConnection()`. It must return the name of the connection in `config/autoload/hashids.php`.
-
-## Usage
-
-### Basics
-
-```php
-
-// Generating the model hashid based on its key
-$item->hashid();
-
-// Equivalent to the above but with the attribute style
-$item->hashid;
-
-// Finding a model based on the provided hashid or
-// returning null on failure
-Item::findByHashid($hashid);
-
-// Finding a model based on the provided hashid or
-// throwing a ModelNotFoundException on failure
-Item::findByHashidOrFail($hashid);
-
-// Decoding a hashid to its equivalent id 
-$item->hashidToId($hashid);
-
-// Encoding an id to its equivalent hashid
-$item->idToHashid($id);
-
-// Getting the name of the hashid connection
-$item->getHashidsConnection();
-
-```
-
-### Adding Hashid to Serialized Models
-
-Set it as default:
-
-```php
-
 use Hyperf\Database\Model\Model;
-use FriendsOfHyperf\ModelHashids\Concerns\HasHashid;
 
 class Item extends Model
 {
     use HasHashid;
-    
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = ['hashid'];
+    use HashidRouting;
 }
-
 ```
 
-Set it for a specific route:
+## Configuration
 
-`return $item->append('hashid')->toJson();`
+The published file is `config/autoload/hashids.php`. `default` selects a connection, and each
+connection accepts `salt`, `length`, and `alphabet`:
+
+```php
+return [
+    'default' => 'main',
+    'connections' => [
+        'main' => [
+            'salt' => '',
+            'length' => 0,
+            'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
+        ],
+    ],
+];
+```
+
+Without a published configuration, the component uses the `main` connection, an empty salt, a
+minimum length of `0`, and the alphabet shown above.
+
+To select a different connection for one model, override the protected `getHashidsConnection()`
+method:
+
+```php
+class Item extends Model
+{
+    use HasHashid;
+
+    protected function getHashidsConnection()
+    {
+        return 'alternative';
+    }
+}
+```
+
+## Usage
+
+### Encoding and Queries
+
+```php
+// Encode the model's primary key.
+$item->hashid();
+
+// Access the same value through the hashid accessor.
+$item->hashid;
+
+// Encode an ID or decode a valid hashid.
+$item->idToHashid($id);
+$item->hashidToId($hashid);
+
+// Add a primary-key constraint decoded from the hashid.
+Item::query()->byHashid($hashid)->get();
+
+// Return the first matching model, null, or throw ModelNotFoundException.
+Item::findByHashid($hashid);
+Item::findByHashidOrFail($hashid);
+```
+
+`hashidToId()` returns the first ID decoded by `hashids/hashids`; pass it a valid hashid created
+with the same connection settings.
+
+### Serializing the Hashid
+
+The `hashid` accessor is not appended automatically. Add it to the model's `$appends` property:
+
+```php
+class Item extends Model
+{
+    use HasHashid;
+
+    protected $appends = ['hashid'];
+}
+```
+
+Alternatively, append it only when needed:
+
+```php
+return $item->append('hashid')->toJson();
+```
 
 ### Implicit Route Binding
 
-If you want to resolve implicit route bindings using the model's hashid value, you can use `HashidRouting` in your model.
+`HashidRouting` makes the default route key the model's hashid and resolves it through `byHashid`:
 
 ```php
-
-use Hyperf\Database\Model\Model;
-use FriendsOfHyperf\ModelHashids\Concerns\HasHashid;
-use FriendsOfHyperf\ModelHashids\Concerns\HashidRouting;
-
-class Item extends Model
-{
-    use HasHashid, HashidRouting;
-}
-
+Route::get('/items/{item}', function (Item $item) {
+    return $item;
+});
 ```
 
-It overrides `getRouteKeyName()`, `getRouteKey()`, and `resolveRouteBindingQuery()` to use hashids as the route key.
-
-It supports Laravel's custom specific route key feature.
+For a route that explicitly names another field, resolution is delegated to the model's parent
+implementation:
 
 ```php
-
 Route::get('/items/{item:slug}', function (Item $item) {
     return $item;
 });
-
 ```
 
-#### Customizing the Default Route Key Name
-
-If you want to resolve implicit route bindings using another field by default, you can override `getRouteKeyName()` to return the field name used in the resolution process and `getRouteKey()` to return its value in links.
+You can also make another field the default while still selecting `hashid` on a specific route:
 
 ```php
-
-use Hyperf\Database\Model\Model;
-use FriendsOfHyperf\ModelHashids\Concerns\HasHashid;
-use FriendsOfHyperf\ModelHashids\Concerns\HashidRouting;
-
 class Item extends Model
 {
-    use HasHashid, HashidRouting;
+    use HasHashid;
+    use HashidRouting;
 
     public function getRouteKeyName()
     {
@@ -155,31 +150,10 @@ class Item extends Model
         return $this->slug;
     }
 }
-
 ```
 
-You can still specify the hashid for specific routes.
-
 ```php
-
 Route::get('/items/{item:hashid}', function (Item $item) {
     return $item;
 });
-
-```
-
-#### Supporting Other Laravel Implicit Route Binding Features
-
-When using `HashidRouting`, you can still use soft deletes and child route bindings.
-
-```php
-
-Route::get('/items/{item}', function (Item $item) {
-    return $item;
-})->withTrashed();
-
-Route::get('/user/{user}/items/{item}', function (User $user, Item $item) {
-    return $item;
-})->scopeBindings();
-
 ```
