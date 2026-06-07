@@ -1,9 +1,11 @@
 {
+  "type": "module",
   "devDependencies": {
     "vite": "^6.0.0",
     "vitepress": "^1.5.0"
   },
   "scripts": {
+    "docs:check": "node bin/check-docs.js",
     "docs:dev": "vitepress dev",
     "docs:build": "vitepress build",
     "docs:preview": "vitepress preview"

@@ -247,6 +247,36 @@ curl -X POST http://your-server/oauth/token \
     }'
 ```
 
+### 5. Device Code Grant
+
+Use the device code grant for devices with limited input capabilities, such as smart TVs and IoT
+devices. The device requests a code, the user approves it on another device, and the original
+device polls the token endpoint until authorization completes.
+
+### 6. Implicit Grant
+
+The implicit grant remains available for legacy integrations, but OAuth 2.1 deprecates it. Prefer
+the authorization code grant with PKCE for new applications.
+
+## Factory-Based Implementation
+
+The component creates OAuth servers and configuration through injectable factories, which keeps
+construction logic centralized and testable.
+
+### Authorization Server Factory
+
+Inject `AuthorizationServerFactory` and call `build()` when an application service needs a
+configured authorization server.
+
+### Resource Server Factory
+
+Inject `ResourceServerFactory` and call `build()` to validate authenticated resource requests and
+read OAuth attributes from the resulting request.
+
+### Configuration Factory
+
+Inject `ConfigFactory` and call `create()` to access the normalized OAuth2 server configuration.
+
 ## Making Authenticated Requests
 
 Include access token in Authorization header:
@@ -260,12 +290,18 @@ curl -X GET http://your-server/api/user \
 
 The component dispatches these events you can listen for:
 
+### Available Events
+
 - `AuthorizationRequestResolveEvent`: When authorization request needs user approval
 - `UserResolveEvent`: When resolving user for password grant
 - `ScopeResolveEvent`: When resolving scopes
 - `TokenRequestResolveEvent`: When processing token requests
+- `PreSaveClientEvent`: Before a client is persisted
+- `PostSaveClientEvent`: After a client is persisted
 
-### Example Event Listener
+### Event Listener Examples
+
+#### 1. Custom User Authentication
 
 ```php
 <?php
@@ -295,6 +331,19 @@ class UserResolveListener
 }
 ```
 
+#### 2. Custom Authorization Handling
+
+Listen to `AuthorizationRequestResolveEvent` to approve or deny authorization requests and attach
+the authenticated user.
+
+#### 3. Custom Scope Resolution
+
+Listen to `ScopeResolveEvent` to validate, filter, or expand requested scopes.
+
+#### 4. Token Request Logging
+
+Listen to `TokenRequestResolveEvent` to audit token responses or attach response metadata.
+
 ## Database Tables
 
 The package creates these tables:
@@ -318,6 +367,20 @@ Listen to `ScopeResolveEvent` to implement custom scope logic.
 ### Custom Token Storage
 
 Extend repository classes to implement custom storage backends.
+
+### Custom Client Validation
+
+Listen to `PreSaveClientEvent` to validate redirect URIs, grants, and scopes before a client is
+stored.
+
+### Custom Error Handling
+
+Listen to `TokenRequestResolveEvent` to normalize OAuth error responses for your API.
+
+### Custom Token Responses
+
+Listen to `TokenRequestResolveEvent` to attach application-specific metadata to successful token
+responses.
 
 ## Security Best Practices
 

@@ -1,6 +1,7 @@
 import {DefaultTheme} from "vitepress";
 
 const nav:DefaultTheme.NavItem[] = [
+    { text: '入门', link: '/zh-cn/guide/' },
     { text: '组件', link: '/zh-cn/components/' },
     { text: '常见问题', link: '/zh-cn/faq/index' },
     { text: '更多', items:[

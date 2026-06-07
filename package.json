@@ -1,5 +1,6 @@
 {
 	"scripts": {
+		"docs:check": "node docs/bin/check-docs.js",
 		"docs:translate": "node bin/doc-translate.js"
 	},
 	"type": "module",
