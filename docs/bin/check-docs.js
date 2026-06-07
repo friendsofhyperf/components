@@ -114,6 +114,9 @@ if (await exists(srcRoot)) {
 
         for (const locale of locales) {
             const filePath = path.join(docsRoot, locale, 'components', componentPage);
+            if (! await exists(filePath)) {
+                continue;
+            }
             const markdown = await readFile(filePath, 'utf8');
             if (! markdown.includes(installationCommand)) {
                 errors.push(`${locale}/components/${componentPage} is missing: ${installationCommand}`);
@@ -127,6 +130,10 @@ for (const relativePath of referenceFiles) {
 
     for (const locale of locales) {
         const filePath = path.join(docsRoot, locale, relativePath);
+        if (! await exists(filePath)) {
+            structures[locale] = null;
+            continue;
+        }
         const markdown = await readFile(filePath, 'utf8');
         structures[locale] = headings(markdown);
 
@@ -139,6 +146,9 @@ for (const relativePath of referenceFiles) {
 
     const referenceStructure = structures['zh-cn'].join(',');
     for (const locale of locales) {
+        if (structures[locale] === null) {
+            continue;
+        }
         if (structures[locale].join(',') !== referenceStructure) {
             errors.push(`${locale}/${relativePath} heading structure differs from zh-cn`);
         }

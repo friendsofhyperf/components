@@ -26,7 +26,8 @@ Use the `vendor:publish` command to publish its public resources
 php bin/hyperf.php vendor:publish friendsofhyperf/telescope
 ```
 
-Run the `migrate` command to execute database changes to create and store the data required by Telescope
+Run the `migrate` command to execute database changes and create the tables required by
+Telescope:
 
 ```shell
 php bin/hyperf.php migrate
@@ -50,7 +51,8 @@ return [
 ];
 ```
 
-> Note: Request tracking is automatically enabled via the RequestHandledListener. The TelescopeMiddleware is only needed for additional gRPC-specific functionality.
+> Note: Request tracking is automatically enabled via the RequestHandledListener. The
+> TelescopeMiddleware is only needed for additional gRPC-specific functionality.
 
 ## View Dashboard
 
@@ -58,7 +60,8 @@ return [
 
 ## Database Configuration
 
-Manage the database connection configuration in `config/autoload/telescope.php`, defaulting to the `default` connection
+Manage the database connection configuration in `config/autoload/telescope.php`. It defaults to
+the `default` connection:
 
 ```php
 'connection' => env('TELESCOPE_DB_CONNECTION', 'default'),
@@ -66,11 +69,13 @@ Manage the database connection configuration in `config/autoload/telescope.php`,
 
 ## Tags
 
-You may wish to attach your own custom tags to entries. To do this, you can use the **`Telescope::tag`** method.
+You may wish to attach your own custom tags to entries. To do this, use the
+**`Telescope::tag`** method.
 
 ## Batch Filtering
 
-You may want to record entries only under certain special conditions. To do this, you can use the **`Telescope::filter`** method.
+You may want to record entries only under certain special conditions. To do this, use the
+**`Telescope::filter`** method.
 
 Example
 

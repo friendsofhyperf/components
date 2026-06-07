@@ -20,16 +20,16 @@ defined in `FriendsOfHyperf\Helpers\Command`.
 
 | Function | Signature and behavior |
 | --- | --- |
-| `app` | `app(null|string|callable $abstract = null, array $parameters = [])`: resolves from the container; converts a callable to a `Closure`. |
+| `app` | `app(null\|string\|callable $abstract = null, array $parameters = [])`: resolves from the container; converts a callable to a `Closure`. |
 | `base_path` | `base_path(string $path = ''): string`: returns `BASE_PATH`, optionally with a path appended. |
 | `blank` / `filled` | Determine whether a value is blank or not blank. Models, numbers, and booleans are not blank. |
 | `cache` | `cache(...$arguments)`: returns the cache service with no arguments, gets a string key, or sets the first key/value pair from an array. |
 | `cookie` | Creates a `Cookie`; with no name, returns the `CookieJarInterface` service. A non-zero lifetime is specified in minutes. |
-| `class_namespace` | `class_namespace(object|string $class): string`: returns the class namespace. |
+| `class_namespace` | `class_namespace(object\|string $class): string`: returns the class namespace. |
 | `di` | `di(?string $abstract = null, array $parameters = [])`: resolves or makes a service. Without a container, it instantiates the class directly; calling it without an abstract then throws. |
 | `enum_value` | Returns a backed enum's value, a unit enum's name, or the original value. Blank non-string values use the optional default. |
 | `event` | `event(object $event)`: dispatches an event and returns the dispatcher's result. |
-| `fluent` | `fluent(object|array $value): Fluent`: creates a `Fluent` object. |
+| `fluent` | `fluent(object\|array $value): Fluent`: creates a `Fluent` object. |
 | `get_client_ip` | Returns the `x-real-ip` header, falling back to the request's `remote_addr`. |
 | `info` | `info(string\|Stringable $message, array $context = [], bool $backtrace = false)`: writes an info log; optionally adds a `backtrace` context value. |
 | `literal` | Returns the sole positional argument unchanged, or creates an object from named arguments. |

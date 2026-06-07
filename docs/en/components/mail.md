@@ -7,15 +7,15 @@ transports.
 
 ```shell
 composer require friendsofhyperf/mail
-php bin/hyperf vendor:publish friendsofhyperf/mail
+php bin/hyperf.php vendor:publish friendsofhyperf/mail
 ```
 
 Publishing the package creates `config/autoload/mail.php` and copies the mail view components to
-`storage/view/mail`. If your application does not already have the Hyperf view configuration,
+`storage/views/mail`. If your application does not already have the Hyperf view configuration,
 publish it separately:
 
 ```shell
-php bin/hyperf vendor:publish hyperf/view
+php bin/hyperf.php vendor:publish hyperf/view
 ```
 
 The package requires PHP 8.1 or later. Some features require optional packages:

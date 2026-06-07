@@ -1,10 +1,10 @@
 {
-	"scripts": {
-		"docs:check": "node docs/bin/check-docs.js",
-		"docs:translate": "node bin/doc-translate.js"
-	},
-	"type": "module",
-	"dependencies": {
-		"openai": "^4.77.0"
-	}
+  "scripts": {
+    "docs:check": "node docs/bin/check-docs.js",
+    "docs:translate": "node bin/doc-translate.js"
+  },
+  "type": "module",
+  "dependencies": {
+    "openai": "^4.77.0"
+  }
 }

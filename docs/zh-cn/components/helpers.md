@@ -19,16 +19,16 @@ composer require friendsofhyperf/helpers
 
 | 函数 | 签名与行为 |
 | --- | --- |
-| `app` | `app(null|string|callable $abstract = null, array $parameters = [])`：从容器解析服务；将可调用值转换为 `Closure`。 |
+| `app` | `app(null\|string\|callable $abstract = null, array $parameters = [])`：从容器解析服务；将可调用值转换为 `Closure`。 |
 | `base_path` | `base_path(string $path = ''): string`：返回 `BASE_PATH`，可追加路径。 |
 | `blank` / `filled` | 判断值是否为空或非空。模型、数字和布尔值不视为空。 |
 | `cache` | `cache(...$arguments)`：无参数时返回缓存服务；字符串参数用于读取；数组参数用于设置其中第一组键值。 |
 | `cookie` | 创建 `Cookie`；未传名称时返回 `CookieJarInterface` 服务。非零有效期以分钟为单位。 |
-| `class_namespace` | `class_namespace(object|string $class): string`：返回类的命名空间。 |
+| `class_namespace` | `class_namespace(object\|string $class): string`：返回类的命名空间。 |
 | `di` | `di(?string $abstract = null, array $parameters = [])`：解析或创建服务。无容器时直接实例化类；此时不传抽象名称会抛出异常。 |
 | `enum_value` | 返回有值枚举的值、纯枚举的名称或原值。空的非字符串值使用可选默认值。 |
 | `event` | `event(object $event)`：分发事件并返回分发器的结果。 |
-| `fluent` | `fluent(object|array $value): Fluent`：创建 `Fluent` 对象。 |
+| `fluent` | `fluent(object\|array $value): Fluent`：创建 `Fluent` 对象。 |
 | `get_client_ip` | 返回 `x-real-ip` 请求头；不存在时返回请求的 `remote_addr`。 |
 | `info` | `info(string\|Stringable $message, array $context = [], bool $backtrace = false)`：写入 info 日志；可附加 `backtrace` 上下文值。 |
 | `literal` | 仅有一个位置参数时原样返回；使用命名参数时创建对象。 |

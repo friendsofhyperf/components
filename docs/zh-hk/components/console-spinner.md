@@ -42,6 +42,7 @@ class FooCommand extends Command
 
     public function handle(): void
     {
+        $users = User::all();
         $spinner = $this->spinner($users->count());
         $spinner->setMessage('Loading...');
         $spinner->start();

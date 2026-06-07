@@ -19,16 +19,16 @@ composer require friendsofhyperf/helpers
 
 | 函式 | 簽名與行為 |
 | --- | --- |
-| `app` | `app(null|string|callable $abstract = null, array $parameters = [])`：從容器解析服務；將可呼叫值轉換為 `Closure`。 |
+| `app` | `app(null\|string\|callable $abstract = null, array $parameters = [])`：從容器解析服務；將可呼叫值轉換為 `Closure`。 |
 | `base_path` | `base_path(string $path = ''): string`：回傳 `BASE_PATH`，可附加路徑。 |
 | `blank` / `filled` | 判斷值是否為空或非空。模型、數字和布林值不視為空。 |
 | `cache` | `cache(...$arguments)`：無參數時回傳快取服務；字串參數用於讀取；陣列參數用於設定其中第一組鍵值。 |
 | `cookie` | 建立 `Cookie`；未傳名稱時回傳 `CookieJarInterface` 服務。非零有效期以分鐘為單位。 |
-| `class_namespace` | `class_namespace(object|string $class): string`：回傳類別的命名空間。 |
+| `class_namespace` | `class_namespace(object\|string $class): string`：回傳類別的命名空間。 |
 | `di` | `di(?string $abstract = null, array $parameters = [])`：解析或建立服務。無容器時直接實例化類別；此時未傳抽象名稱會擲回例外。 |
 | `enum_value` | 回傳有值列舉的值、純列舉的名稱或原值。空的非字串值使用可選預設值。 |
 | `event` | `event(object $event)`：分派事件並回傳分派器的結果。 |
-| `fluent` | `fluent(object|array $value): Fluent`：建立 `Fluent` 物件。 |
+| `fluent` | `fluent(object\|array $value): Fluent`：建立 `Fluent` 物件。 |
 | `get_client_ip` | 回傳 `x-real-ip` 請求標頭；不存在時回傳請求的 `remote_addr`。 |
 | `info` | `info(string\|Stringable $message, array $context = [], bool $backtrace = false)`：寫入 info 日誌；可附加 `backtrace` 上下文值。 |
 | `literal` | 僅有一個位置參數時原樣回傳；使用具名參數時建立物件。 |
