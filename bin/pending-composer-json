@@ -84,9 +84,10 @@ foreach ($files as $file) {
     if (! isset($composerJson->extra)) {
         $composerJson->extra = new stdClass();
     }
-    $composerJson->extra->{'branch-alias'} = [
-        'dev-main' => '3.1-dev',
-    ];
+
+    if (isset($composerJson->extra->{'branch-alias'})) {
+        unset($composerJson->extra->{'branch-alias'});
+    }
 
     // Removed
     if (isset($composerJson->{'require-dev'})) {

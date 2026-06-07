@@ -43,9 +43,6 @@
         "sort-packages": true
     },
     "extra": {
-        "branch-alias": {
-            "dev-main": "3.1-dev"
-        },
         "hyperf": {
             "config": "FriendsOfHyperf\\RateLimit\\ConfigProvider"
         }
