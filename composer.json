@@ -247,12 +247,12 @@
             "pestphp/pest-plugin": true,
             "php-http/discovery": false
         },
+        "optimize-autoloader": true,
         "policy": {
             "advisories": {
                 "block": false
             }
         },
-        "optimize-autoloader": true,
         "sort-packages": true
     },
     "extra": {
