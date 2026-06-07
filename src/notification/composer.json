@@ -47,7 +47,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "3.1-dev"
+            "dev-main": "3.2-dev"
         },
         "hyperf": {
             "config": "FriendsOfHyperf\\Notification\\ConfigProvider"
