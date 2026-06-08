@@ -10,7 +10,7 @@ composer require friendsofhyperf/rate-limit
 
 ## Requirements
 
-- Hyperf ~3.1.0
+- Hyperf ~3.2.0
 - Redis
 
 ## Features

@@ -8,6 +8,18 @@
 composer require friendsofhyperf/recaptcha
 ```
 
+## 配置
+
+使用中间件或验证规则前，先发布 `config/autoload/recaptcha.php`：
+
+```shell
+php bin/hyperf.php vendor:publish friendsofhyperf/recaptcha
+```
+
+通过 `RECAPTCHA_SECRET_V2_KEY` 配置 reCAPTCHA v2 密钥，通过 `RECAPTCHA_SECRET_V3_KEY`
+配置 reCAPTCHA v3 密钥，也可以直接修改发布文件中的 `v2.secret_key` 与 `v3.secret_key`。
+`default` 用于选择未显式传入版本时使用的版本。
+
 ## 使用
 
 - 定义中间件

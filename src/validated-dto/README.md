@@ -35,6 +35,8 @@ You can validate data in the same way you validate `Request` data:
 
 namespace App\DTO;
 
+use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
+
 class UserDTO extends ValidatedDTO
 {
     protected function rules(): array
@@ -179,6 +181,18 @@ class CreateUserCommand extends Command
     }
 }
 ```
+
+## Exporting DTO Types
+
+Export a DTO class to TypeScript with `dto:export`. Pass the fully qualified DTO class name and
+optionally write the output to a file:
+
+```shell
+php bin/hyperf.php dto:export 'App\DTO\UserDTO'
+php bin/hyperf.php dto:export 'App\DTO\UserDTO' --output=resources/types/user.dto.ts --force
+```
+
+The `--lang` option accepts `typescript` or `ts`.
 
 ## Accessing DTO data
 
@@ -615,6 +629,8 @@ class URLCast implements Castable
 Then you could apply this to your DTO:
 
 ```php
+use FriendsOfHyperf\ValidatedDTO\ValidatedDTO;
+
 class CustomDTO extends ValidatedDTO
 {
     protected function rules(): array

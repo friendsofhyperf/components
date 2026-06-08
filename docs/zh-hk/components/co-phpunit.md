@@ -1,127 +1,24 @@
 # Co-PHPUnit
 
-一個 PHPUnit 擴展，使測試能夠在 Swoole 協程中運行，專為測試 Hyperf 應用程序和其他基於 Swoole 的框架而設計。
+Co-PHPUnit 讓 PHPUnit 測試在 Swoole 協程中運行，適用於測試依賴協程上下文的 Hyperf
+組件。
 
 ## 安裝
+
+將組件安裝為開發依賴：
 
 ```bash
 composer require friendsofhyperf/co-phpunit --dev
 ```
 
-## 為什麼需要 Co-PHPUnit？
-
-在測試 Hyperf 應用程序時，許多組件依賴 Swoole 的協程上下文才能正常工作。在傳統的同步環境中運行測試可能會導致以下問題：
-
-- 協程上下文不可用
-- 定時器和事件循環無法正常工作
-- 協調器模式失敗
-- 數據庫連接池問題
-
-Co-PHPUnit 通過在需要時自動將測試執行包裝在 Swoole 協程上下文中來解決這些問題。
+組件依賴 `hyperf/coordinator` `~3.2.0`，並支援 PHPUnit 10、11 和 12。它沒有將 Swoole
+擴展聲明為 Composer 依賴；未載入該擴展時，測試會回退到 PHPUnit 的普通執行方式。
 
 ## 使用
 
-### 基本使用
+### 在協程中運行測試
 
-只需在測試類中使用 `RunTestsInCoroutine` trait：
-
-```php
-<?php
-
-namespace Your\Namespace\Tests;
-
-use FriendsOfHyperf\CoPHPUnit\Concerns\RunTestsInCoroutine;
-use PHPUnit\Framework\TestCase;
-
-class YourTest extends TestCase
-{
-    use RunTestsInCoroutine;
-
-    public function testSomething()
-    {
-        // 您的測試代碼
-        // 這將自動在 Swoole 協程中運行
-    }
-}
-```
-
-### 禁用特定測試的協程
-
-如果需要為特定測試類禁用協程執行，請將 `$enableCoroutine` 屬性設置為 `false`：
-
-```php
-<?php
-
-namespace Your\Namespace\Tests;
-
-use FriendsOfHyperf\CoPHPUnit\Concerns\RunTestsInCoroutine;
-use PHPUnit\Framework\TestCase;
-
-class YourTest extends TestCase
-{
-    use RunTestsInCoroutine;
-
-    protected bool $enableCoroutine = false;
-
-    public function testSomething()
-    {
-        // 此測試將在普通同步模式下運行
-    }
-}
-```
-
-## 工作原理
-
-`RunTestsInCoroutine` trait 重寫了 PHPUnit 的 `runBare()` 方法以：
-
-1. **檢查先決條件**：驗證 Swoole 擴展是否已加載且不在協程上下文中
-2. **創建協程上下文**：將測試執行包裝在 `Swoole\Coroutine\run()` 中
-3. **異常處理**：正確捕獲並重新拋出協程內的異常
-4. **清理**：測試完成時清除所有定時器並恢復協調器
-5. **回退**：如果不滿足條件，則回退到正常測試執行
-
-### PHPUnit 補丁
-
-該包包含一個 `phpunit-patch.php` 文件，自動從 PHPUnit 的 `TestCase::runBare()` 方法中移除 `final` 關鍵字，允許 trait 重寫它。此補丁在包自動加載時自動應用。
-
-## 要求
-
-- PHP >= 8.0
-- PHPUnit >= 10.0
-- Swoole 擴展（在協程模式下運行測試時）
-- Hyperf >= 3.1（用於協調器功能）
-
-## 配置
-
-### Composer 自動加載
-
-該包會自動在 composer.json 中註冊其自動加載文件：
-
-```json
-{
-    "autoload-dev": {
-        "psr-4": {
-            "Your\\Tests\\": "tests/"
-        },
-        "files": [
-            "vendor/friendsofhyperf/co-phpunit/phpunit-patch.php"
-        ]
-    }
-}
-```
-
-### PHPUnit 配置
-
-不需要特殊的 PHPUnit 配置。該包與您現有的 `phpunit.xml` 配置無縫協作。
-
-## 最佳實踐
-
-1. **用於集成測試**：這對於與 Hyperf 的協程感知組件交互的集成測試特別有用
-2. **選擇性啓用**：並非所有測試都需要在協程中運行。對於不需要協程上下文的單元測試，使用 `$enableCoroutine = false`
-3. **測試隔離**：該包會自動清理測試之間的定時器和協調器狀態
-4. **性能**：在協程中運行的測試可能具有略微不同的性能特徵
-
-## 示例：測試 Hyperf 服務
+在測試類或共享的測試基類中使用 `RunTestsInCoroutine`：
 
 ```php
 <?php
@@ -129,50 +26,80 @@ class YourTest extends TestCase
 namespace App\Tests;
 
 use FriendsOfHyperf\CoPHPUnit\Concerns\RunTestsInCoroutine;
-use Hyperf\Context\ApplicationContext;
 use PHPUnit\Framework\TestCase;
+use Swoole\Coroutine;
 
 class ServiceTest extends TestCase
 {
     use RunTestsInCoroutine;
 
-    public function testServiceWithCoroutineContext()
+    public function testRunsInCoroutine(): void
     {
-        // 從容器獲取服務
-        $service = ApplicationContext::getContainer()->get(YourService::class);
-
-        // 測試使用協程上下文的方法
-        $result = $service->asyncOperation();
-
-        $this->assertNotNull($result);
-    }
-
-    public function testDatabaseConnection()
-    {
-        // 測試需要連接池的數據庫操作
-        $result = Db::table('users')->first();
-
-        $this->assertIsArray($result);
+        self::assertNotSame(-1, Coroutine::getCid());
     }
 }
 ```
 
-## 故障排除
+安裝組件後，不需要額外配置 PHPUnit 或 Composer 自動載入。
 
-### 測試掛起或超時
+### 退出協程執行
 
-如果測試掛起，請確保：
-- 所有異步操作都已正確等待
-- 協程回調中不存在無限循環
-- 測試拆卸中清除了定時器
+將 `NonCoroutine` 應用於單個測試方法，可以讓該方法在不建立協程的情況下運行：
 
-### "Call to a member function on null"
+```php
+<?php
 
-這通常表明協程上下文不可用。請確保：
-- Swoole 擴展已安裝並啓用
-- 包含了 `RunTestsInCoroutine` trait
-- `$enableCoroutine` 設置為 `true`
+namespace App\Tests;
 
-### PHPUnit 版本兼容性
+use FriendsOfHyperf\CoPHPUnit\Attributes\NonCoroutine;
+use FriendsOfHyperf\CoPHPUnit\Concerns\RunTestsInCoroutine;
+use PHPUnit\Framework\TestCase;
+use Swoole\Coroutine;
 
-該包支持 PHPUnit 10.x、11.x 和 12.x。請確保您的 PHPUnit 版本兼容。
+class ServiceTest extends TestCase
+{
+    use RunTestsInCoroutine;
+
+    #[NonCoroutine]
+    public function testRunsWithoutCoroutine(): void
+    {
+        self::assertSame(-1, Coroutine::getCid());
+    }
+}
+```
+
+也可以將 `#[NonCoroutine]` 應用於測試類，讓該類中的所有測試方法退出協程執行。該屬性可用於
+類和方法，且沒有構造參數。
+
+組件的公開 API 包括：
+
+- `FriendsOfHyperf\CoPHPUnit\Concerns\RunTestsInCoroutine`；
+- `FriendsOfHyperf\CoPHPUnit\Attributes\NonCoroutine`。
+
+## 執行行為
+
+`RunTestsInCoroutine` 會重寫 PHPUnit 的 `runBare()` 方法。
+
+每個測試開始前，遇到以下任一情況時，它不會建立協程，而是以普通方式運行測試：
+
+- 未載入 Swoole 擴展；
+- 當前已經位於 Swoole 協程中；
+- 測試類帶有 `#[NonCoroutine]`；或
+- 當前測試方法帶有 `#[NonCoroutine]`。
+
+否則，它會調用 `Swoole\Coroutine\run()`，並在協程內執行 PHPUnit 父類的 `runBare()`。
+異常會先被捕獲，並在協程退出後重新拋出。在 `finally` 區塊中，該 trait 會清除所有 Swoole
+計時器，並恢復 Hyperf 的 `WORKER_EXIT` 協調器。僅當該 trait 建立協程時，才會執行這些
+清理操作。
+
+`#[NonCoroutine]` 只會阻止該 trait 建立協程。如果測試已經在協程內運行，該屬性不會讓測試
+退出現有協程。
+
+## PHPUnit 補丁
+
+組件透過 Composer 的 `autoload.files` 註冊 `phpunit-patch.php`。載入 Composer 自動載入
+文件時，該補丁會找到 PHPUnit 的 `TestCase` 原始碼文件；如果 `TestCase::runBare()` 帶有
+`final` 關鍵字，則將其移除，以便 trait 重寫該方法。
+
+該補丁會直接寫入已安裝的 PHPUnit 原始碼文件。需要應用補丁時，請確保 Composer 的 vendor
+目錄可寫。

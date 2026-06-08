@@ -1,6 +1,7 @@
-# Mysql Grammar Addon
+# MySQL Grammar Addon
 
-MySqlGrammar extension component for the Hyperf framework.
+This component prevents non-ASCII MySQL column comments from becoming garbled when Hyperf reads
+schema metadata.
 
 ## Installation
 
@@ -8,38 +9,42 @@ MySqlGrammar extension component for the Hyperf framework.
 composer require friendsofhyperf/mysql-grammar-addon --dev
 ```
 
-## Before Usage
+The package requires `hyperf/database` and `hyperf/di` version `~3.2.0` and declares no optional
+dependencies. Hyperf package discovery automatically registers the component's aspect, so no
+configuration is required.
 
-```php
-/**
- * @property int $id
- * @property int $user_id ??id
- * @property string $group_name ????
- * @property string $event_name ????
- * @property string $page_name ??
- * @property string $extra ????
- * @property string $device pc,android,ios,touch
- * @property string $device_id ???
- * @property \Carbon\Carbon $created_at ????
- */
-class Event extends Model
-{}
+## Behavior
+
+The aspect intercepts these MySQL schema grammar methods:
+
+- `Hyperf\Database\Schema\Grammars\MySqlGrammar::compileColumnListing()`
+- `Hyperf\Database\Schema\Grammars\MySqlGrammar::compileColumns()`
+
+It changes the generated metadata queries to select the column comment as binary:
+
+```sql
+binary `column_comment`
 ```
 
-## After Usage
+This preserves the original comment bytes for code that reads MySQL schema metadata. The component
+does not add query-builder methods or expose an API that application code needs to call.
+
+## Example
+
+Before installing the component, a generated model annotation may contain garbled comments:
 
 ```php
 /**
- * @property int $id 
- * @property int $user_id User ID
- * @property string $group_name Event Group
- * @property string $event_name Event Name
- * @property string $page_name Page
- * @property string $extra Additional Information
- * @property string $device pc,android,ios,touch
- * @property string $device_id Device ID
- * @property \Carbon\Carbon $created_at Creation Time
+ * @property int $user_id ??id
+ * @property string $event_name ????
  */
-class Event extends Model
-{}
+```
+
+After installing the component, the original comments can be preserved:
+
+```php
+/**
+ * @property int $user_id 用户id
+ * @property string $event_name 事件名称
+ */
 ```

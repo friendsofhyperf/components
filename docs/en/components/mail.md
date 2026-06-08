@@ -1,69 +1,47 @@
 # Mail
 
-The email component supports sending emails using drivers such as SMTP, SendMail, and Log, and also supports Markdown template rendering.
+The mail component sends view, Markdown, HTML, and plain-text messages through Symfony Mailer
+transports.
 
 ## Installation
 
 ```shell
 composer require friendsofhyperf/mail
-php bin/hyperf vendor:publish friendsofhyperf/mail
-# Publish the view configuration file.
-php bin/hyperf vendor:publish hyperf/view 
+php bin/hyperf.php vendor:publish friendsofhyperf/mail
 ```
 
-## Usage
+Publishing the package creates `config/autoload/mail.php` and copies the mail view components to
+`storage/views/mail`. If your application does not already have the Hyperf view configuration,
+publish it separately:
 
-### Configuration
+```shell
+php bin/hyperf.php vendor:publish hyperf/view
+```
+
+The package requires PHP 8.1 or later. Some features require optional packages:
+
+- `hyperf/devtool` provides the `gen:mail` command.
+- `aws/aws-sdk-php` is required for the `ses` and `ses-v2` transports.
+- `symfony/http-client` is required for Symfony API mail transports.
+- `symfony/mailgun-mailer` and `symfony/postmark-mailer` provide the corresponding transports.
+
+## Configuration
+
+The published configuration defaults to the `log` mailer. Select a mailer with `MAIL_MAILER`, then
+configure it under `mail.mailers`. Supported transports are `smtp`, `sendmail`, `mail`, `mailgun`,
+`ses`, `ses-v2`, `postmark`, `log`, `array`, `failover`, and `roundrobin`. Custom transports can be
+registered with `Mail::extend()`.
 
 ```php
 // config/autoload/mail.php
-/**
- * This file is part of friendsofhyperf/components.
- *
- * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/main/README.md
- * @contact  huangdijia@gmail.com
- */
 use function Hyperf\Support\env;
 
 return [
-    /*
-    |--------------------------------------------------------------------------
-    | Default Mailer
-    |--------------------------------------------------------------------------
-    |
-    | This option controls the default mailer that is used to send all email
-    | messages unless another mailer is explicitly specified when sending
-    | the message. All additional mailers can be configured within the
-    | "mailers" array. Examples of each type of mailer are provided.
-    |
-    */
-
     'default' => env('MAIL_MAILER', 'log'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Mailer Configurations
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure all of the mailers used by your application plus
-    | their respective settings. Several examples have been configured for
-    | you and you are free to add your own as your application requires.
-    |
-    | Laravel supports a variety of mail "transport" drivers that can be used
-    | when delivering an email. You may specify which one you're using for
-    | your mailers below. You may also add additional mailers if needed.
-    |
-    | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
-    |            "postmark", "resend", "log", "array",
-    |            "failover", "roundrobin"
-    |
-    */
-
     'mailers' => [
         'smtp' => [
             'transport' => 'smtp',
-            'url' => env('MAIL_URL','smtp://xxx@xxx:xxx@xxx.com:465'),
+            'url' => env('MAIL_URL'),
             'host' => env('MAIL_HOST', '127.0.0.1'),
             'port' => env('MAIL_PORT', 2525),
             'encryption' => env('MAIL_ENCRYPTION', 'tls'),
@@ -71,83 +49,18 @@ return [
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
+            'scheme' => env('MAIL_SCHEME', 'smtp'),
         ],
-
-        'ses' => [
-            'transport' => 'ses',
-        ],
-
-        'postmark' => [
-            'transport' => 'postmark',
-            // 'message_stream_id' => env('POSTMARK_MESSAGE_STREAM_ID'),
-            // 'client' => [
-            //     'timeout' => 5,
-            // ],
-        ],
-
-        'resend' => [
-            'transport' => 'resend',
-        ],
-
-        'sendmail' => [
-            'transport' => 'sendmail',
-            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
-        ],
-
         'log' => [
             'transport' => 'log',
-            'group' => env('MAIL_LOG_GROUP','default'),
-            'name' => env('MAIL_LOG_NAME','mail'),
-        ],
-
-        'array' => [
-            'transport' => 'array',
-        ],
-
-        'failover' => [
-            'transport' => 'failover',
-            'mailers' => [
-                'smtp',
-                'log',
-            ],
-        ],
-
-        'roundrobin' => [
-            'transport' => 'roundrobin',
-            'mailers' => [
-                'ses',
-                'postmark',
-            ],
+            'group' => env('MAIL_LOG_GROUP', 'default'),
+            'name' => env('MAIL_LOG_NAME', 'mail'),
         ],
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Global "From" Address
-    |--------------------------------------------------------------------------
-    |
-    | You may wish for all emails sent by your application to be sent from
-    | the same address. Here you may specify a name and address that is
-    | used globally for all emails that are sent by your application.
-    |
-    */
-
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hyperf@hyperf.com'),
-        'name' => env('MAIL_FROM_NAME', 'Hyperf'),
+        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Markdown Mail Settings
-    |--------------------------------------------------------------------------
-    |
-    | If you are using Markdown based email rendering, you may configure your
-    | theme and component paths here, allowing you to customize the design
-    | of the emails. Or, you may simply stick with the Laravel defaults!
-    |
-    */
-
     'markdown' => [
         'theme' => env('MAIL_MARKDOWN_THEME', 'default'),
         'paths' => [
@@ -157,88 +70,93 @@ return [
 ];
 ```
 
-### Building the Mail Class
+A mailer-specific `from`, `reply_to`, `to`, or `return_path` value overrides the corresponding
+global address. A global `to` address also removes the original To, Cc, and Bcc recipients before
+sending, which is useful in development.
+
+## Creating a Mailable
+
+With `hyperf/devtool` installed, generate a view-based mailable or use `--markdown` to also create a
+Markdown template:
 
 ```shell
 php bin/hyperf.php gen:mail TestMail
+php bin/hyperf.php gen:mail TestMail --markdown
 ```
 
-```php
-// app/Mail/TestMail.php
+`Envelope` defines addresses, subject, tags, metadata, and Symfony message callbacks. `Content`
+accepts `view` (or its `html` alias), `text`, `markdown`, `htmlString`, and `with`. Public properties
+declared by your mailable are also exposed to the view.
 
+```php
 namespace App\Mail;
 
 use FriendsOfHyperf\Mail\Mailable;
+use FriendsOfHyperf\Mail\Mailable\Attachment;
 use FriendsOfHyperf\Mail\Mailable\Content;
 use FriendsOfHyperf\Mail\Mailable\Envelope;
 
 class TestMail extends Mailable
 {
-
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(
-        private readonly string $name,
-    ){}
-
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
+    public function __construct(public readonly string $name)
     {
-        return new Envelope(
-            subject: 'Test Mail',
-        );
     }
 
-    /**
-     * Get the message content definition.
-     */
+    public function envelope(): Envelope
+    {
+        return new Envelope(subject: 'Test Mail');
+    }
+
     public function content(): Content
     {
         return new Content(
             markdown: 'mail.test',
-            with: [
-                'name' => $this->name,
-            ],
+            with: ['name' => $this->name],
         );
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \FriendsOfHyperf\Mail\Mailables\Attachment>
-     */
     public function attachments(): array
     {
-        return [];
+        return [
+            Attachment::fromPath(BASE_PATH . '/storage/report.pdf')
+                ->as('report.pdf')
+                ->withMime('application/pdf'),
+        ];
     }
 }
 ```
 
-### Defining the Controller or Service
+Attachments can also be created with `Attachment::fromData()`, `fromStorage()`, or
+`fromStorageDisk()`. A reusable attachable object may implement
+`FriendsOfHyperf\Mail\Contract\Attachable`.
+
+## Sending Mail
+
+`Mail::mailer()` selects a configured mailer; omitting its argument uses `mail.default`. The
+`to()`, `cc()`, and `bcc()` methods return a pending mail object whose `send()` method accepts a
+`FriendsOfHyperf\Mail\Contract\Mailable`. Sending returns a `SentMessage` or `null` when a
+`MessageSending` listener stops delivery.
 
 ```php
-// app/Controller/IndexController.php
-
+use App\Mail\TestMail;
 use FriendsOfHyperf\Mail\Facade\Mail;
 
-class IndexController extends AbstractController
-{
-    public function index()
-    {
-        $user = $this->request->input('user', 'Hyperf');
-        $mailer = Mail::mailer('smtp');
-        $mailer->alwaysFrom('root@imoi.cn','Hyperf');
+Mail::mailer('smtp')
+    ->to('user@example.com', 'Example User')
+    ->cc('team@example.com')
+    ->send(new TestMail('Hyperf'));
+```
 
-        $mailer->to('2771717608@qq.com')->send(new \App\Mail\TestMail($user));
-        $method = $this->request->getMethod();
+For messages that do not need a mailable class, the mailer also exposes `html()`, `raw()`,
+`plain()`, and `send()` with a view name or view array. The callback receives a
+`FriendsOfHyperf\Mail\Message`, which forwards unknown methods to the underlying Symfony
+`Email`.
 
-        return [
-            'method' => $method,
-            'message' => "Hello {$user}.",
-        ];
-    }
-}
+```php
+use FriendsOfHyperf\Mail\Facade\Mail;
+use FriendsOfHyperf\Mail\Message;
+
+Mail::html('<h1>Hello</h1>', function (Message $message) {
+    $message->to('user@example.com')->subject('Greeting');
+});
 ```

@@ -1,100 +1,81 @@
 # Telescope
 
-[![Latest Version](https://img.shields.io/packagist/v/friendsofhyperf/telescope.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/telescope)
-[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/telescope.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/telescope)
-[![GitHub license](https://img.shields.io/github/license/friendsofhyperf/telescope)](https://github.com/friendsofhyperf/telescope)
+## Available Listeners
 
-An elegant debug assistant for the hyperf framework.
-
-## Functions
-
-- [x] request
-- [x] exception
-- [x] sql
-- [x] grpc server/client
-- [x] redis
-- [x] log
-- [x] command
-- [x] event
-- [x] guzzle
-- [x] cache
-- [x] rpc server/client
-- [x] schedule
+- [x] Request Monitor
+- [x] Exception Monitor
+- [x] Data Query Monitor
+- [x] gRPC Request Monitor
+- [x] Redis Monitor
+- [x] Log Monitor
+- [x] Command Line Monitor
+- [x] Event Monitor
+- [x] HTTP Client Monitor
+- [x] Cache Monitor
+- [x] Scheduled Task Monitor
 
 ## Installation
 
 ```shell
-composer require friendsofhyperf/telescope:~3.1.0
+composer require friendsofhyperf/telescope
 ```
 
-## Publish
+Use the `vendor:publish` command to publish its public resources
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/telescope
 ```
 
-## Migrate
+Run the `migrate` command to execute database changes and create the tables required by
+Telescope:
 
 ```shell
 php bin/hyperf.php migrate
 ```
 
-## Add Middleware (Optional for gRPC)
+## Usage
+
+### Middleware (Optional for gRPC)
+
+Add the middleware in the `config/autoload/middlewares.php` configuration file
+
+To enable additional gRPC functionality, use the `grpc` middleware
 
 ```php
 <?php
-
-// config/autoload/middlewares.php
 
 return [
     'grpc' => [
         FriendsOfHyperf\Telescope\Middleware\TelescopeMiddleware::class,
     ],
 ];
-
 ```
 
-> Note: Request tracking is automatically enabled via the RequestHandledListener. The TelescopeMiddleware is only needed for additional gRPC-specific functionality.
+> Note: Request tracking is automatically enabled via the RequestHandledListener. The
+> TelescopeMiddleware is only needed for additional gRPC-specific functionality.
 
-## Add env
-
-```env
-# telescope
-TELESCOPE_DB_CONNECTION=default
-
-TELESCOPE_ENABLE_REQUEST=true
-TELESCOPE_ENABLE_COMMAND=true
-TELESCOPE_ENABLE_GRPC=true
-TELESCOPE_ENABLE_LOG=true
-TELESCOPE_ENABLE_REDIS=true
-TELESCOPE_ENABLE_EVENT=true
-TELESCOPE_ENABLE_EXCEPTION=true
-TELESCOPE_ENABLE_JOB=true
-TELESCOPE_ENABLE_DB=true
-TELESCOPE_ENABLE_GUZZLE=true
-TELESCOPE_ENABLE_CACHE=true
-TELESCOPE_ENABLE_RPC=true
-
-TELESCOPE_SERVER_ENABLE=true
-```
-
-## Visit
+## View Dashboard
 
 `http://127.0.0.1:9501/telescope`
 
-<img src="./requests.jpg" />
+## Database Configuration
 
-<img src="./grpc.jpg" />
+Manage the database connection configuration in `config/autoload/telescope.php`. It defaults to
+the `default` connection:
 
-<img src="./exception.jpg" />
+```php
+'connection' => env('TELESCOPE_DB_CONNECTION', 'default'),
+```
 
-## Tagging
+## Tags
 
-you may want to attach your own custom tags to entries. To accomplish this, you may use the **`Telescope::tag`** method.
+You may wish to attach your own custom tags to entries. To do this, use the
+**`Telescope::tag`** method.
 
-## Filtering
+## Batch Filtering
 
-You may only want to record entries under certain special conditions. To achieve this, you may use the **`Telescope::filter`** method.
+You may want to record entries only under certain special conditions. To do this, use the
+**`Telescope::filter`** method.
 
 Example
 
@@ -138,5 +119,3 @@ class TelescopeInitListener implements ListenerInterface
     }
 }
 ```
-
-> You can also do this in middleware.

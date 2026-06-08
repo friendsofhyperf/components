@@ -1,6 +1,19 @@
 import {DefaultTheme} from "vitepress";
 
 const sidebar:DefaultTheme.Sidebar = {
+    '/en/faq/':[{
+        text: 'Frequently Asked Questions',
+        items: [
+            {
+                text: 'About FriendsOfHyperf',
+                link: '/en/faq/about'
+            },
+            {
+                text: 'How to use components',
+                link: '/en/faq/how-to-use'
+            }
+        ]
+    }],
     '/en/components/':[
         {
             text: 'Components',

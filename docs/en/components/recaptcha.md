@@ -8,6 +8,18 @@ A Google ReCaptcha component for Hyperf.
 composer require friendsofhyperf/recaptcha
 ```
 
+## Configuration
+
+Publish `config/autoload/recaptcha.php` before using the middleware or validator:
+
+```shell
+php bin/hyperf.php vendor:publish friendsofhyperf/recaptcha
+```
+
+Set `RECAPTCHA_SECRET_V2_KEY` for reCAPTCHA v2 and `RECAPTCHA_SECRET_V3_KEY` for reCAPTCHA v3,
+or configure `v2.secret_key` and `v3.secret_key` in the published file. The `default` key selects
+the version used when no version is passed explicitly.
+
 ## Usage
 
 - Define Middleware

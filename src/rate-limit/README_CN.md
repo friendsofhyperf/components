@@ -14,7 +14,7 @@ composer require friendsofhyperf/rate-limit
 
 ## 环境要求
 
-- Hyperf ~3.1.0
+- Hyperf ~3.2.0
 - Redis
 
 ## 特性

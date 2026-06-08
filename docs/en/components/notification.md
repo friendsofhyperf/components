@@ -3,7 +3,7 @@
 ## Installation
 
 ```shell
-composer require friendsofhyperf/notification:~3.1.0
+composer require friendsofhyperf/notification
 ```
 
 ## Usage
@@ -17,9 +17,8 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use Hyperf\DbConnection\Model\Model;
 use FriendsOfHyperf\Notification\Traits\Notifiable;
-use Overtrue\EasySms\PhoneNumber;
+use Hyperf\DbConnection\Model\Model;
 
 /**
  * @property int $id 
@@ -44,12 +43,7 @@ class User extends Model
      * The attributes that should be cast to native types.
      */
     protected array $casts = ['id' => 'integer', 'created_at' => 'datetime', 'updated_at' => 'datetime'];
-    
-    // Notification phone number
-    public function routeNotificationForSms(): string|PhoneNumber
-    {
-        return $this->phone;
-    }
+
 }
 ```
 
@@ -57,7 +51,7 @@ class User extends Model
 
 ```shell
 # Install the database package
-composer require hyperf/database:~3.1.0
+composer require hyperf/database:~3.2.0
 
 # Publish the migration file
 php bin/hyperf.php notification:table
@@ -66,7 +60,7 @@ php bin/hyperf.php notification:table
 php bin/hyperf.php migrate
 
 # Create a notification
-php bin/hyperf.php make:notification TestNotification
+php bin/hyperf.php gen:notification TestNotification
 ```
 
 ---

@@ -1,70 +1,44 @@
 # Mail
 
-電子郵件元件，支援使用 SMTP、SendMail、Log 等驅動傳送郵件，並支援 Markdown 模板渲染。
+Mail 元件透過 Symfony Mailer 傳輸傳送檢視、Markdown、HTML 和純文字郵件。
 
 ## 安裝
 
 ```shell
 composer require friendsofhyperf/mail
-php bin/hyperf vendor:publish friendsofhyperf/mail
-# Publish the view configuration file.
-php bin/hyperf vendor:publish hyperf/view 
-
+php bin/hyperf.php vendor:publish friendsofhyperf/mail
 ```
 
-## 使用
+發布元件會建立 `config/autoload/mail.php`，並將郵件檢視元件複製到 `storage/views/mail`。
+如果應用尚無 Hyperf 檢視設定，請另行發布：
 
-### 配置
+```shell
+php bin/hyperf.php vendor:publish hyperf/view
+```
+
+元件要求 PHP 8.1 或更高版本。部分功能需要可選相依套件：
+
+- `hyperf/devtool` 提供 `gen:mail` 指令。
+- `aws/aws-sdk-php` 是 `ses` 和 `ses-v2` 傳輸的必要相依套件。
+- Symfony API 郵件傳輸需要 `symfony/http-client`。
+- `symfony/mailgun-mailer` 和 `symfony/postmark-mailer` 提供對應傳輸。
+
+## 設定
+
+發布的設定預設使用 `log` mailer。透過 `MAIL_MAILER` 選擇 mailer，並在 `mail.mailers` 下設定。
+支援的傳輸包括 `smtp`、`sendmail`、`mail`、`mailgun`、`ses`、`ses-v2`、`postmark`、`log`、
+`array`、`failover` 和 `roundrobin`。可使用 `Mail::extend()` 註冊自訂傳輸。
 
 ```php
 // config/autoload/mail.php
-/**
- * This file is part of friendsofhyperf/components.
- *
- * @link     https://github.com/friendsofhyperf/components
- * @document https://github.com/friendsofhyperf/components/blob/main/README.md
- * @contact  huangdijia@gmail.com
- */
 use function Hyperf\Support\env;
 
 return [
-    /*
-    |--------------------------------------------------------------------------
-    | Default Mailer
-    |--------------------------------------------------------------------------
-    |
-    | This option controls the default mailer that is used to send all email
-    | messages unless another mailer is explicitly specified when sending
-    | the message. All additional mailers can be configured within the
-    | "mailers" array. Examples of each type of mailer are provided.
-    |
-    */
-
     'default' => env('MAIL_MAILER', 'log'),
-
-    /*
-    |--------------------------------------------------------------------------
-    | Mailer Configurations
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure all of the mailers used by your application plus
-    | their respective settings. Several examples have been configured for
-    | you and you are free to add your own as your application requires.
-    |
-    | Laravel supports a variety of mail "transport" drivers that can be used
-    | when delivering an email. You may specify which one you're using for
-    | your mailers below. You may also add additional mailers if needed.
-    |
-    | Supported: "smtp", "sendmail", "mailgun", "ses", "ses-v2",
-    |            "postmark", "resend", "log", "array",
-    |            "failover", "roundrobin"
-    |
-    */
-
     'mailers' => [
         'smtp' => [
             'transport' => 'smtp',
-            'url' => env('MAIL_URL','smtp://xxx@xxx:xxx@xxx.com:465'),
+            'url' => env('MAIL_URL'),
             'host' => env('MAIL_HOST', '127.0.0.1'),
             'port' => env('MAIL_PORT', 2525),
             'encryption' => env('MAIL_ENCRYPTION', 'tls'),
@@ -72,83 +46,18 @@ return [
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'local_domain' => env('MAIL_EHLO_DOMAIN'),
+            'scheme' => env('MAIL_SCHEME', 'smtp'),
         ],
-
-        'ses' => [
-            'transport' => 'ses',
-        ],
-
-        'postmark' => [
-            'transport' => 'postmark',
-            // 'message_stream_id' => env('POSTMARK_MESSAGE_STREAM_ID'),
-            // 'client' => [
-            //     'timeout' => 5,
-            // ],
-        ],
-
-        'resend' => [
-            'transport' => 'resend',
-        ],
-
-        'sendmail' => [
-            'transport' => 'sendmail',
-            'path' => env('MAIL_SENDMAIL_PATH', '/usr/sbin/sendmail -bs -i'),
-        ],
-
         'log' => [
             'transport' => 'log',
-            'group' => env('MAIL_LOG_GROUP','default'),
-            'name' => env('MAIL_LOG_NAME','mail'),
-        ],
-
-        'array' => [
-            'transport' => 'array',
-        ],
-
-        'failover' => [
-            'transport' => 'failover',
-            'mailers' => [
-                'smtp',
-                'log',
-            ],
-        ],
-
-        'roundrobin' => [
-            'transport' => 'roundrobin',
-            'mailers' => [
-                'ses',
-                'postmark',
-            ],
+            'group' => env('MAIL_LOG_GROUP', 'default'),
+            'name' => env('MAIL_LOG_NAME', 'mail'),
         ],
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Global "From" Address
-    |--------------------------------------------------------------------------
-    |
-    | You may wish for all emails sent by your application to be sent from
-    | the same address. Here you may specify a name and address that is
-    | used globally for all emails that are sent by your application.
-    |
-    */
-
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', 'hyperf@hyperf.com'),
-        'name' => env('MAIL_FROM_NAME', 'Hyperf'),
+        'address' => env('MAIL_FROM_ADDRESS', 'hello@example.com'),
+        'name' => env('MAIL_FROM_NAME', 'Example'),
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Markdown Mail Settings
-    |--------------------------------------------------------------------------
-    |
-    | If you are using Markdown based email rendering, you may configure your
-    | theme and component paths here, allowing you to customize the design
-    | of the emails. Or, you may simply stick with the Laravel defaults!
-    |
-    */
-
     'markdown' => [
         'theme' => env('MAIL_MARKDOWN_THEME', 'default'),
         'paths' => [
@@ -158,89 +67,86 @@ return [
 ];
 ```
 
-### 構建郵件類
+mailer 專屬的 `from`、`reply_to`、`to` 或 `return_path` 會覆寫對應全域地址。全域 `to` 地址還會在
+傳送前移除原始 To、Cc 和 Bcc 收件者，適合開發環境使用。
+
+## 建立 Mailable
+
+安裝 `hyperf/devtool` 後，可產生基於檢視的 mailable；使用 `--markdown` 會同時建立 Markdown 範本：
 
 ```shell
 php bin/hyperf.php gen:mail TestMail
+php bin/hyperf.php gen:mail TestMail --markdown
 ```
 
-```php
-// app/Mail/TestMail.php
+`Envelope` 定義地址、主旨、標籤、中繼資料和 Symfony 訊息回呼。`Content` 接受 `view`（或其 `html`
+別名）、`text`、`markdown`、`htmlString` 和 `with`。mailable 中宣告的 public 屬性也會公開給檢視。
 
+```php
 namespace App\Mail;
 
 use FriendsOfHyperf\Mail\Mailable;
+use FriendsOfHyperf\Mail\Mailable\Attachment;
 use FriendsOfHyperf\Mail\Mailable\Content;
 use FriendsOfHyperf\Mail\Mailable\Envelope;
 
 class TestMail extends Mailable
 {
-
-    /**
-     * Create a new message instance.
-     */
-    public function __construct(
-        private readonly string $name,
-    ){}
-
-    /**
-     * Get the message envelope.
-     */
-    public function envelope(): Envelope
+    public function __construct(public readonly string $name)
     {
-        return new Envelope(
-            subject: 'Test Mail',
-        );
     }
 
-    /**
-     * Get the message content definition.
-     */
+    public function envelope(): Envelope
+    {
+        return new Envelope(subject: 'Test Mail');
+    }
+
     public function content(): Content
     {
         return new Content(
             markdown: 'mail.test',
-            with: [
-                'name' => $this->name,
-            ],
+            with: ['name' => $this->name],
         );
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \FriendsOfHyperf\Mail\Mailables\Attachment>
-     */
     public function attachments(): array
     {
-        return [];
+        return [
+            Attachment::fromPath(BASE_PATH . '/storage/report.pdf')
+                ->as('report.pdf')
+                ->withMime('application/pdf'),
+        ];
     }
 }
 ```
 
-### 定義控制器或 Service
+附件還可透過 `Attachment::fromData()`、`fromStorage()` 或 `fromStorageDisk()` 建立。可重複使用的附件
+物件可以實作 `FriendsOfHyperf\Mail\Contract\Attachable`。
+
+## 傳送郵件
+
+`Mail::mailer()` 選擇已設定的 mailer；省略參數時使用 `mail.default`。`to()`、`cc()` 和 `bcc()`
+傳回待傳送郵件物件，其 `send()` 接受 `FriendsOfHyperf\Mail\Contract\Mailable`。傳送成功時傳回
+`SentMessage`；當 `MessageSending` 監聽器中止傳送時傳回 `null`。
 
 ```php
-// app/Controller/IndexController.php
-
+use App\Mail\TestMail;
 use FriendsOfHyperf\Mail\Facade\Mail;
 
-class IndexController extends AbstractController
-{
-    public function index()
-    {
-        $user = $this->request->input('user', 'Hyperf');
-        $mailer = Mail::mailer('smtp');
-        $mailer->alwaysFrom('root@imoi.cn','Hyperf');
+Mail::mailer('smtp')
+    ->to('user@example.com', 'Example User')
+    ->cc('team@example.com')
+    ->send(new TestMail('Hyperf'));
+```
 
-        $mailer->to('2771717608@qq.com')->send(new \App\Mail\TestMail($user));
-        $method = $this->request->getMethod();
+對於無需 mailable 類別的郵件，mailer 還提供 `html()`、`raw()`、`plain()`，以及接受檢視名稱或檢視陣列的
+`send()`。回呼會收到 `FriendsOfHyperf\Mail\Message`，其未知方法會轉送給底層 Symfony `Email`。
 
-        return [
-            'method' => $method,
-            'message' => "Hello {$user}.",
-        ];
-    }
-}
+```php
+use FriendsOfHyperf\Mail\Facade\Mail;
+use FriendsOfHyperf\Mail\Message;
 
+Mail::html('<h1>Hello</h1>', function (Message $message) {
+    $message->to('user@example.com')->subject('Greeting');
+});
 ```

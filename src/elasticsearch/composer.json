@@ -35,6 +35,9 @@
         "sort-packages": true
     },
     "extra": {
+        "hyperf": {
+            "config": "FriendsOfHyperf\\Elasticsearch\\ConfigProvider"
+        },
         "branch-alias": {
             "dev-main": "3.2-dev"
         }

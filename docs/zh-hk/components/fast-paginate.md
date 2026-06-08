@@ -4,30 +4,19 @@
 
 ## 關於
 
-這是一個用於 Hyperf 的快速 `limit`/`offset` 分頁宏。它可以替代標準的 `paginate` 方法。
+Fast Paginate 為 Hyperf 模型查詢構造器和關係提供更快的 `limit`/`offset` 分頁宏。它最適合偏移量較大的
+查詢，但實際效能取決於數據和索引，請在應用中與標準分頁器進行基準測試。
 
-這個包使用了一種類似於“延遲連接”的 SQL 方法來實現這種加速。延遲連接是一種在應用 `offset` 和 `limit` 之後才訪問請求列的技術。
-
-在我們的例子中，我們實際上並沒有進行連接，而是使用了帶有子查詢的 `where in`。使用這種技術，我們創建了一個可以通過特定索引進行優化的子查詢以達到最大速度，然後使用這些結果來獲取完整的行。
-
-SQL 語句如下所示：
+該組件使用類似延遲連接的方式。它首先對僅選擇模型主鍵以及排序所需已選別名的查詢進行分頁，然後通過第二次
+查詢獲取當前頁主鍵對應的完整數據。兩次數據查詢的概念形式如下：
 
 ```sql
-select * from contacts              -- The full data that you want to show your users.
-    where contacts.id in (          -- The "deferred join" or subquery, in our case.
-        select id from contacts     -- The pagination, accessing as little data as possible - ID only.
-        limit 15 offset 150000
-    )
+select contacts.id from contacts limit 15 offset 150000;
+select * from contacts where contacts.id in (...);
 ```
 
-> 運行上述查詢時，您可能會遇到錯誤！例如 `This version of MySQL doesn't yet support 'LIMIT & IN/ALL/ANY/SOME subquery.`
-> 在這個包中，我們將它們作為[兩個獨立的查詢](https://github.com/hammerstonedev/fast-paginate/blob/154da286f8160a9e75e64e8025b0da682aa2ba23/src/BuilderMixin.php#L62-L79)來運行以解決這個問題！
-
-根據您的數據集，性能提升可能會有所不同，但這種方法允許數據庫檢查儘可能少的數據以滿足用户的需求。
-
-雖然這種方法不太可能比傳統的 `offset` / `limit` 性能更差，但也有可能，所以請務必在您的數據上進行測試！
-
-> 如果您想閲讀關於這個包理論的 3,000 字文章，可以訪問 [aaronfrancis.com/2022/efficient-pagination-using-deferred-joins](https://aaronfrancis.com/2022/efficient-pagination-using-deferred-joins)。
+組件會執行獨立查詢，而不是把帶限制的查詢放入 `where in` 子查詢中。`fastPaginate()` 還會執行長度感知
+分頁器所需的標準計數查詢；`simpleFastPaginate()` 不會執行該計數查詢。
 
 ## 安裝
 
@@ -35,14 +24,56 @@ select * from contacts              -- The full data that you want to show your 
 composer require friendsofhyperf/fast-paginate
 ```
 
-無需執行其他操作，服務提供者將由 Hyperf 自動加載。
+該組件依賴 Hyperf 3.2 系列軟件包。無需配置：Hyperf 會發現組件的 `ConfigProvider`，並在應用啟動時註冊
+分頁宏。
 
 ## 使用
 
-在任何您會使用 `Model::query()->paginate()` 的地方，您都可以使用 `Model::query()->fastPaginate()`！就是這麼簡單！方法簽名是相同的。
+### 模型查詢構造器和關係
 
-關係也同樣支持：
+模型查詢構造器和關係均提供以下兩個宏：
 
 ```php
+User::query()->fastPaginate();
+User::query()->simpleFastPaginate();
+
 User::first()->posts()->fastPaginate();
+User::first()->posts()->simpleFastPaginate();
 ```
+
+它們的簽名與對應的 Hyperf 模型查詢構造器分頁方法一致：
+
+```php
+fastPaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null);
+simpleFastPaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page = null);
+```
+
+- `$perPage`：每頁條目數；`null` 使用模型配置的每頁條目數。
+- `$columns`：獲取完整數據時查詢的欄位。
+- `$pageName`：用於解析當前頁的查詢字串參數名。
+- `$page`：明確指定的頁碼；`null` 時從當前請求解析。
+
+`fastPaginate()` 返回包含總數的長度感知分頁器。`simpleFastPaginate()` 返回僅判斷是否還有下一頁的簡單
+分頁器。`BelongsToMany` 關係會保留已填充的中間表數據，同時也支援 `HasManyThrough` 關係。
+
+### Scout 查詢構造器
+
+安裝 `hyperf/scout` 後，組件還會在 `Hyperf\Scout\Builder` 上註冊 `fastPaginate()`：
+
+```php
+User::search('Hyperf')->fastPaginate();
+```
+
+其簽名為 `fastPaginate($perPage = null, $pageName = 'page', $page = null)`。該 Scout 宏會直接調用
+Scout 的標準 `paginate()` 方法，不使用數據庫兩次查詢優化。本組件不強制依賴 `hyperf/scout`。
+
+## 自動回退
+
+當查詢結構與優化方式不兼容時，組件會自動調用對應的標準 `paginate()` 或 `simplePaginate()` 方法。
+以下情況會觸發回退：
+
+- 查詢包含 `having`、`group by` 或 `union` 子句；
+- `$perPage` 為 `-1`；
+- 排序所需的已選表達式包含 `?` 綁定佔位符。
+
+這些回退會保留分頁行為，但不會獲得快速分頁優化。

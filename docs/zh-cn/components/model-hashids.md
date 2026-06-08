@@ -1,15 +1,6 @@
 # Model Hashids
 
-使用 hashids 代替 URL 和列表项中的整数 ID 可以更具吸引力和巧妙。更多信息请访问 [hashids.org](https://hashids.org/)。
-
-这个包通过动态编码/解码 hashids 来为 Hyperf 模型添加 hashids，而不是将它们持久化到数据库中。因此，不需要额外的数据库列，并且通过在查询中使用主键可以获得更高的性能。
-
-功能包括：
-
-- 为模型生成 hashids
-- 将 hashids 解析为模型
-- 能够为每个模型自定义 hashid 设置
-- 使用 hashids 进行路由绑定（可选）
+Model Hashids 按需编码和解码模型主键。hashid 不会存储到数据库中，因此查询仍然使用模型的主键列。
 
 ## 安装
 
@@ -17,7 +8,8 @@
 composer require friendsofhyperf/model-hashids
 ```
 
-另外，将供应商配置文件发布到您的应用程序（依赖项所必需的）：
+此组件依赖 `hashids/hashids`，以及 Hyperf 3.2 的 config、database 和 stringable 组件。仅在需要
+自定义 hashid 设置时发布配置文件：
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/model-hashids
@@ -25,125 +17,124 @@ php bin/hyperf.php vendor:publish friendsofhyperf/model-hashids
 
 ## 设置
 
-基本功能通过使用 `HasHashid` trait 提供，然后可以通过使用 `HashidRouting` 添加基于 hashids 的路由绑定。
+在模型中使用 `HasHashid`。如果隐式路由绑定也需要使用 hashid，再添加 `HashidRouting`：
 
 ```php
-
-use Hyperf\Database\Model\Model;
 use FriendsOfHyperf\ModelHashids\Concerns\HasHashid;
 use FriendsOfHyperf\ModelHashids\Concerns\HashidRouting;
-
-Class Item extends Model
-{
-    use HasHashid, HashidRouting;
-}
-
-```
-
-### 自定义 Hashid 设置
-
-可以通过重写 `getHashidsConnection()` 为每个模型自定义 hashids 设置。它必须返回 `config/autoload/hashids.php` 中连接的名称。
-
-## 使用
-
-### 基础
-
-```php
-
-// Generating the model hashid based on its key
-$item->hashid();
-
-// Equivalent to the above but with the attribute style
-$item->hashid;
-
-// Finding a model based on the provided hashid or
-// returning null on failure
-Item::findByHashid($hashid);
-
-// Finding a model based on the provided hashid or
-// throwing a ModelNotFoundException on failure
-Item::findByHashidOrFail($hashid);
-
-// Decoding a hashid to its equivalent id 
-$item->hashidToId($hashid);
-
-// Encoding an id to its equivalent hashid
-$item->idToHashid($id);
-
-// Getting the name of the hashid connection
-$item->getHashidsConnection();
-
-```
-
-### 将 hashid 添加到序列化模型
-
-将其设置为默认值：
-
-```php
-
 use Hyperf\Database\Model\Model;
-use FriendsOfHyperf\ModelHashids\Concerns\HasHashid;
 
 class Item extends Model
 {
     use HasHashid;
-    
-    /**
-     * The accessors to append to the model's array form.
-     *
-     * @var array
-     */
-    protected $appends = ['hashid'];
+    use HashidRouting;
 }
-
 ```
 
-将其设置为特定路由：
+## 配置
 
-`return $item->append('hashid')->toJson();`
+发布后的文件为 `config/autoload/hashids.php`。`default` 用于选择连接，每个连接可设置 `salt`、
+`length` 和 `alphabet`：
+
+```php
+return [
+    'default' => 'main',
+    'connections' => [
+        'main' => [
+            'salt' => '',
+            'length' => 0,
+            'alphabet' => 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
+        ],
+    ],
+];
+```
+
+未发布配置时，组件使用 `main` 连接、空 salt、最小长度 `0` 和上面显示的字符表。
+
+如需为某个模型选择其他连接，请覆写受保护的 `getHashidsConnection()` 方法：
+
+```php
+class Item extends Model
+{
+    use HasHashid;
+
+    protected function getHashidsConnection()
+    {
+        return 'alternative';
+    }
+}
+```
+
+## 使用
+
+### 编码和查询
+
+```php
+// Encode the model's primary key.
+$item->hashid();
+
+// Access the same value through the hashid accessor.
+$item->hashid;
+
+// Encode an ID or decode a valid hashid.
+$item->idToHashid($id);
+$item->hashidToId($hashid);
+
+// Add a primary-key constraint decoded from the hashid.
+Item::query()->byHashid($hashid)->get();
+
+// Return the first matching model, null, or throw ModelNotFoundException.
+Item::findByHashid($hashid);
+Item::findByHashidOrFail($hashid);
+```
+
+`hashidToId()` 返回 `hashids/hashids` 解码出的第一个 ID；请传入使用相同连接设置生成的有效
+hashid。
+
+### 序列化 Hashid
+
+`hashid` 访问器不会自动追加。可将它添加到模型的 `$appends` 属性：
+
+```php
+class Item extends Model
+{
+    use HasHashid;
+
+    protected $appends = ['hashid'];
+}
+```
+
+也可以仅在需要时追加：
+
+```php
+return $item->append('hashid')->toJson();
+```
 
 ### 隐式路由绑定
 
-如果您希望使用模型的 hashid 值解析隐式路由绑定，可以在模型中使用 `HashidRouting`。
+`HashidRouting` 将模型的 hashid 作为默认路由键，并通过 `byHashid` 解析：
 
 ```php
-
-use Hyperf\Database\Model\Model;
-use FriendsOfHyperf\ModelHashids\Concerns\HasHashid;
-use FriendsOfHyperf\ModelHashids\Concerns\HashidRouting;
-
-class Item extends Model
-{
-    use HasHashid, HashidRouting;
-}
-
+Route::get('/items/{item}', function (Item $item) {
+    return $item;
+});
 ```
 
-它重写了 `getRouteKeyName()`、`getRouteKey()` 和 `resolveRouteBindingQuery()` 以使用 hashids 作为路由键。
-
-它支持 Laravel 的自定义特定路由键的功能。
+当路由明确指定其他字段时，解析会交给模型的父类实现：
 
 ```php
-
 Route::get('/items/{item:slug}', function (Item $item) {
     return $item;
 });
-
 ```
 
-#### 自定义默认路由键名称
-
-如果您希望默认使用另一个字段解析隐式路由绑定，可以重写 `getRouteKeyName()` 以返回解析过程中的字段名称，并在链接中返回其值的 `getRouteKey()`。
+也可以将其他字段设为默认路由键，同时在特定路由中指定 `hashid`：
 
 ```php
-
-use Hyperf\Database\Model\Model;
-use FriendsOfHyperf\ModelHashids\Concerns\HasHashid;
-use FriendsOfHyperf\ModelHashids\Concerns\HashidRouting;
-
 class Item extends Model
 {
-    use HasHashid, HashidRouting;
+    use HasHashid;
+    use HashidRouting;
 
     public function getRouteKeyName()
     {
@@ -155,31 +146,10 @@ class Item extends Model
         return $this->slug;
     }
 }
-
 ```
 
-您仍然可以为特定路由指定 hashid。
-
 ```php
-
 Route::get('/items/{item:hashid}', function (Item $item) {
     return $item;
 });
-
-```
-
-#### 支持 Laravel 的其他隐式路由绑定功能
-
-使用 `HashidRouting` 时，您仍然可以使用软删除和子路由绑定。
-
-```php
-
-Route::get('/items/{item}', function (Item $item) {
-    return $item;
-})->withTrashed();
-
-Route::get('/user/{user}/items/{item}', function (User $user, Item $item) {
-    return $item;
-})->scopeBindings();
-
 ```

@@ -3,7 +3,7 @@
 ## Installation
 
 ```shell
-composer require friendsofhyperf/notification-mail:~3.1.0
+composer require friendsofhyperf/notification-mail
 ```
 
 ## Usage
@@ -17,9 +17,8 @@ declare(strict_types=1);
 
 namespace App\Model;
 
-use Hyperf\DbConnection\Model\Model;
 use FriendsOfHyperf\Notification\Traits\Notifiable;
-use Overtrue\EasySms\PhoneNumber;
+use Hyperf\DbConnection\Model\Model;
 
 /**
  * @property int $id 
@@ -38,7 +37,7 @@ class User extends Model
     
 
     // Notification email address
-    public function routeNotificationForMail(): string|PhoneNumber
+    public function routeNotificationForMail(): string
     {
         return $this->mail;
     }

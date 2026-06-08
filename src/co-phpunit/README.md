@@ -1,131 +1,25 @@
 # Co-PHPUnit
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/co-phpunit)](https://packagist.org/packages/friendsofhyperf/co-phpunit)
-[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/co-phpunit)](https://packagist.org/packages/friendsofhyperf/co-phpunit)
-[![License](https://img.shields.io/packagist/l/friendsofhyperf/co-phpunit)](https://github.com/friendsofhyperf/components)
-
-A PHPUnit extension that enables tests to run inside Swoole coroutines, specifically designed for testing Hyperf applications and other Swoole-based frameworks.
+Co-PHPUnit runs PHPUnit tests inside a Swoole coroutine. It is useful for tests that exercise
+coroutine-aware Hyperf components.
 
 ## Installation
+
+Install the package as a development dependency:
 
 ```bash
 composer require friendsofhyperf/co-phpunit --dev
 ```
 
-## Why Co-PHPUnit?
-
-When testing Hyperf applications, many components rely on Swoole's coroutine context to function properly. Running tests in a traditional synchronous environment can lead to issues such as:
-
-- Coroutine context not being available
-- Timers and event loops not working correctly
-- Coordinator pattern failures
-- Database connection pool issues
-
-Co-PHPUnit solves these problems by automatically wrapping test execution in a Swoole coroutine context when needed.
+The package requires `hyperf/coordinator` `~3.2.0` and supports PHPUnit 10, 11, and 12.
+It does not declare the Swoole extension as a Composer dependency. Without the extension,
+tests fall back to PHPUnit's normal execution.
 
 ## Usage
 
-### Basic Usage
+### Run Tests in Coroutines
 
-Simply use the `RunTestsInCoroutine` trait in your test class:
-
-```php
-<?php
-
-namespace Your\Namespace\Tests;
-
-use FriendsOfHyperf\CoPHPUnit\Concerns\RunTestsInCoroutine;
-use PHPUnit\Framework\TestCase;
-
-class YourTest extends TestCase
-{
-    use RunTestsInCoroutine;
-
-    public function testSomething()
-    {
-        // Your test code here
-        // This will automatically run inside a Swoole coroutine
-    }
-}
-```
-
-### Disabling Coroutine for Specific Tests
-
-If you need to disable coroutine execution for a specific test class, set the `$enableCoroutine` property to `false`:
-
-```php
-<?php
-
-namespace Your\Namespace\Tests;
-
-use FriendsOfHyperf\CoPHPUnit\Concerns\RunTestsInCoroutine;
-use PHPUnit\Framework\TestCase;
-
-class YourTest extends TestCase
-{
-    use RunTestsInCoroutine;
-
-    protected bool $enableCoroutine = false;
-
-    public function testSomething()
-    {
-        // This test will run in normal synchronous mode
-    }
-}
-```
-
-## How It Works
-
-The `RunTestsInCoroutine` trait overrides PHPUnit's `runBare()` method to:
-
-1. **Check Prerequisites**: Verifies that the Swoole extension is loaded and not already in a coroutine context
-2. **Create Coroutine Context**: Wraps test execution in `Swoole\Coroutine\run()`
-3. **Exception Handling**: Properly captures and re-throws exceptions from within the coroutine
-4. **Cleanup**: Clears all timers and resumes coordinator on test completion
-5. **Fallback**: If conditions aren't met, falls back to normal test execution
-
-### PHPUnit Patch
-
-The package includes a `phpunit-patch.php` file that automatically removes the `final` keyword from PHPUnit's `TestCase::runBare()` method, allowing the trait to override it. This patch is applied automatically when the package is autoloaded.
-
-## Requirements
-
-- PHP >= 8.0
-- PHPUnit >= 10.0
-- Swoole extension (when running tests in coroutine mode)
-- Hyperf >= 3.1 (for coordinator functionality)
-
-## Configuration
-
-### Composer Autoload
-
-The package automatically registers its autoload files in composer.json:
-
-```json
-{
-    "autoload-dev": {
-        "psr-4": {
-            "Your\\Tests\\": "tests/"
-        },
-        "files": [
-            "vendor/friendsofhyperf/co-phpunit/phpunit-patch.php"
-        ]
-    }
-}
-```
-
-### PHPUnit Configuration
-
-No special PHPUnit configuration is required. The package works seamlessly with your existing `phpunit.xml` configuration.
-
-## Best Practices
-
-1. **Use for Integration Tests**: This is particularly useful for integration tests that interact with Hyperf's coroutine-aware components
-2. **Selective Enablement**: Not all tests need to run in coroutines. Use `$enableCoroutine = false` for unit tests that don't require coroutine context
-3. **Test Isolation**: The package automatically cleans up timers and coordinator state between tests
-4. **Performance**: Tests running in coroutines may have slightly different performance characteristics
-
-## Example: Testing Hyperf Services
+Use `RunTestsInCoroutine` on a test class or on a shared base test class:
 
 ```php
 <?php
@@ -133,69 +27,83 @@ No special PHPUnit configuration is required. The package works seamlessly with 
 namespace App\Tests;
 
 use FriendsOfHyperf\CoPHPUnit\Concerns\RunTestsInCoroutine;
-use Hyperf\Context\ApplicationContext;
 use PHPUnit\Framework\TestCase;
+use Swoole\Coroutine;
 
 class ServiceTest extends TestCase
 {
     use RunTestsInCoroutine;
 
-    public function testServiceWithCoroutineContext()
+    public function testRunsInCoroutine(): void
     {
-        // Get service from container
-        $service = ApplicationContext::getContainer()->get(YourService::class);
-
-        // Test methods that use coroutine context
-        $result = $service->asyncOperation();
-
-        $this->assertNotNull($result);
-    }
-
-    public function testDatabaseConnection()
-    {
-        // Test database operations that require connection pool
-        $result = Db::table('users')->first();
-
-        $this->assertIsArray($result);
+        self::assertNotSame(-1, Coroutine::getCid());
     }
 }
 ```
 
-## Troubleshooting
+No additional PHPUnit or Composer autoload configuration is required after installing the
+package.
 
-### Tests Hang or Timeout
+### Opt Out of Coroutine Execution
 
-If tests hang, ensure that:
-- All async operations are properly awaited
-- No infinite loops exist in coroutine callbacks
-- Timers are cleared in test teardown
+Apply `NonCoroutine` to an individual test method to run that method without creating a
+coroutine:
 
-### "Call to a member function on null"
+```php
+<?php
 
-This usually indicates that coroutine context is not available. Ensure:
-- Swoole extension is installed and enabled
-- The `RunTestsInCoroutine` trait is included
-- `$enableCoroutine` is set to `true`
+namespace App\Tests;
 
-### PHPUnit Version Compatibility
+use FriendsOfHyperf\CoPHPUnit\Attributes\NonCoroutine;
+use FriendsOfHyperf\CoPHPUnit\Concerns\RunTestsInCoroutine;
+use PHPUnit\Framework\TestCase;
+use Swoole\Coroutine;
 
-The package supports PHPUnit 10.x, 11.x, and 12.x. Ensure your PHPUnit version is compatible.
+class ServiceTest extends TestCase
+{
+    use RunTestsInCoroutine;
 
-## Contributing
+    #[NonCoroutine]
+    public function testRunsWithoutCoroutine(): void
+    {
+        self::assertSame(-1, Coroutine::getCid());
+    }
+}
+```
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+You can also apply `#[NonCoroutine]` to the test class to opt out every test method in that
+class. The attribute targets classes and methods and has no constructor arguments.
 
-## Support
+These are the component's public APIs:
 
-- Issues: [GitHub Issues](https://github.com/friendsofhyperf/components/issues)
-- Documentation: [Hyperf Fans](https://docs.hdj.me)
-- Pull Requests: [GitHub Pull Requests](https://github.com/friendsofhyperf/components/pulls)
+- `FriendsOfHyperf\CoPHPUnit\Concerns\RunTestsInCoroutine`;
+- `FriendsOfHyperf\CoPHPUnit\Attributes\NonCoroutine`.
 
-## License
+## Execution Behavior
 
-This package is open-sourced software licensed under the [MIT license](LICENSE).
+`RunTestsInCoroutine` overrides PHPUnit's `runBare()` method.
 
-## Credits
+Before each test, it runs the test normally instead of creating a coroutine when any of these
+conditions is true:
 
-- [huangdijia](https://github.com/huangdijia)
-- [All Contributors](https://github.com/friendsofhyperf/components/graphs/contributors)
+- the Swoole extension is not loaded;
+- execution is already inside a Swoole coroutine;
+- the test class has `#[NonCoroutine]`; or
+- the current test method has `#[NonCoroutine]`.
+
+Otherwise, it calls `Swoole\Coroutine\run()` and executes PHPUnit's parent `runBare()` inside
+the coroutine. Exceptions are captured and rethrown after the coroutine exits. In a `finally`
+block, the trait clears all Swoole timers and resumes Hyperf's `WORKER_EXIT` coordinator.
+This cleanup only runs when the trait creates the coroutine.
+
+`#[NonCoroutine]` prevents the trait from creating a coroutine. If the test is already running
+inside a coroutine, the attribute does not move it out of that existing coroutine.
+
+## PHPUnit Patch
+
+The package registers `phpunit-patch.php` through Composer's `autoload.files`. When Composer's
+autoload file is loaded, the patch locates PHPUnit's `TestCase` source file and removes the
+`final` keyword from `TestCase::runBare()` if present, allowing the trait to override it.
+
+This patch writes directly to the installed PHPUnit source file. Ensure the Composer vendor
+directory is writable when the patch needs to be applied.
