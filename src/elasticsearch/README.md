@@ -1,5 +1,7 @@
 # Elasticsearch
 
+[中文说明](README_CN.md)
+
 This component integrates the official Elasticsearch PHP client with Hyperf's Guzzle client and
 provides a static facade for configured connections.
 

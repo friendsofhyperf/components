@@ -1,5 +1,7 @@
 # Hyperf OpenAI Client
 
+[中文说明](README_CN.md)
+
 [![Latest Test](https://github.com/friendsofhyperf/openai-client/workflows/tests/badge.svg)](https://github.com/friendsofhyperf/openai-client/actions)
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/friendsofhyperf/openai-client.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/openai-client)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/openai-client.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/openai-client)

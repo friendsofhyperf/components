@@ -1,5 +1,7 @@
 # ReCaptcha
 
+[中文说明](README_CN.md)
+
 A Google ReCaptcha component for Hyperf.
 
 ## Installation

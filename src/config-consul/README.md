@@ -1,5 +1,7 @@
 # Config Consul
 
+[中文说明](README_CN.md)
+
 A Consul configuration center driver for Hyperf.
 
 ## Installation

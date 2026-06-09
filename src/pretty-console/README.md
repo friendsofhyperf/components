@@ -1,5 +1,7 @@
 # Pretty Console
 
+[中文说明](README_CN.md)
+
 [![Latest Test](https://github.com/friendsofhyperf/pretty-console/workflows/tests/badge.svg)](https://github.com/friendsofhyperf/pretty-console/actions)
 [![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/pretty-console)](https://packagist.org/packages/friendsofhyperf/pretty-console)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/pretty-console)](https://packagist.org/packages/friendsofhyperf/pretty-console)

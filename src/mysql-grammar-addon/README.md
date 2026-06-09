@@ -1,5 +1,7 @@
 # mysql-grammar-addon
 
+[中文说明](README_CN.md)
+
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/mysql-grammar-addon/v/stable.svg)](https://packagist.org/packages/friendsofhyperf/mysql-grammar-addon)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/mysql-grammar-addon)](https://packagist.org/packages/friendsofhyperf/mysql-grammar-addon)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/mysql-grammar-addon)](https://github.com/friendsofhyperf/mysql-grammar-addon)

@@ -1,5 +1,7 @@
 # Ipc Broadcaster
 
+[中文说明](README_CN.md)
+
 Broadcast serializable messages between Hyperf server workers and user processes.
 
 ## Installation

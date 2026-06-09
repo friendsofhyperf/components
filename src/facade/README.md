@@ -1,5 +1,7 @@
 # Hyperf Facades
 
+[中文说明](README_CN.md)
+
 [![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/facade)](https://packagist.org/packages/friendsofhyperf/facade)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/facade)](https://packagist.org/packages/friendsofhyperf/facade)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/facade)](https://github.com/friendsofhyperf/facade)

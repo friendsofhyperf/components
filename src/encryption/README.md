@@ -1,5 +1,7 @@
 # Encryption
 
+[中文说明](README_CN.md)
+
 The encryption component provides authenticated encryption for values and strings in Hyperf.
 
 ## Installation

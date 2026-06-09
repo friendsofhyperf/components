@@ -1,5 +1,7 @@
 # Rate Limit
 
+[中文说明](README_CN.md)
+
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/rate-limit/v)](https://packagist.org/packages/friendsofhyperf/rate-limit)
 [![Total Downloads](https://poser.pugx.org/friendsofhyperf/rate-limit/downloads)](https://packagist.org/packages/friendsofhyperf/rate-limit)
 [![License](https://poser.pugx.org/friendsofhyperf/rate-limit/license)](https://packagist.org/packages/friendsofhyperf/rate-limit)

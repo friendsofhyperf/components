@@ -1,5 +1,7 @@
 # model-factory
 
+[中文说明](README_CN.md)
+
 [![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/model-factory)](https://packagist.org/packages/friendsofhyperf/model-factory)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/model-factory)](https://packagist.org/packages/friendsofhyperf/model-factory)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/model-factory)](https://github.com/friendsofhyperf/model-factory)

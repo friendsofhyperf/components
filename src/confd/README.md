@@ -1,5 +1,7 @@
 # Confd
 
+[中文说明](README_CN.md)
+
 The Confd component fetches configuration from Etcd or Nacos, maps remote values to environment
 variable names, and can write them to an existing `.env` file or watch for changes.
 

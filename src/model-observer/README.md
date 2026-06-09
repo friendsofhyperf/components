@@ -1,5 +1,7 @@
 # model-observer
 
+[中文说明](README_CN.md)
+
 [![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/model-observer)](https://packagist.org/packages/friendsofhyperf/model-observer)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/model-observer)](https://packagist.org/packages/friendsofhyperf/model-observer)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/model-observer)](https://github.com/friendsofhyperf/model-observer)

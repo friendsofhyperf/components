@@ -1,22 +1,16 @@
 # Redis Subscriber
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/redis-subscriber)](https://packagist.org/packages/friendsofhyperf/redis-subscriber)
-[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/redis-subscriber)](https://packagist.org/packages/friendsofhyperf/redis-subscriber)
-[![License](https://img.shields.io/packagist/l/friendsofhyperf/redis-subscriber)](https://github.com/friendsofhyperf/redis-subscriber)
+[English](README.md)
 
-Forked from [mix-php/redis-subscriber](https://github.com/mix-php/redis-subscriber)
+基于 Swoole 协程的 Redis 原生协议订阅器，代码从 [mix-php/redis-subscriber](https://github.com/mix-php/redis-subscriber) 复刻而来。
 
-Redis native protocol Subscriber based on Swoole coroutine
-
-基于 Swoole 协程的 Redis 原生协议订阅库
-
-使用 Socket 直接连接 Redis 服务器，不依赖 phpredis 扩展，该订阅器有如下优点：
+基于 Swoole 协程的 Redis 原生协议订阅库，使用 Socket 直接连接 Redis 服务器，不依赖 phpredis 扩展，该订阅器有如下优点：
 
 - 平滑修改：可随时增加、取消订阅通道，实现无缝切换通道的需求。
 - 跨协程安全关闭：可在任意时刻关闭订阅。
 - 通道获取消息：该库封装风格参考 golang 语言 [go-redis](https://github.com/go-redis/redis) 库封装，通过 channel 获取订阅的消息。
 
-## Installation
+## 安装
 
 ```shell
 composer require friendsofhyperf/redis-subscriber
@@ -65,7 +59,3 @@ object(FriendsOfHyperf\Redis\Subscriber\Message)#8 (2) {
 | punsubscribe(string ...$channels) : void | 取消通配订阅 |
 | channel() : Hyperf\Engine\Channel | 获取消息通道 |
 | close() : void | 关闭订阅 |
-
-## License
-
-MIT

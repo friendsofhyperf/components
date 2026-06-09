@@ -1,5 +1,7 @@
 # Mail
 
+[中文说明](README_CN.md)
+
 The mail component sends view, Markdown, HTML, and plain-text messages through Symfony Mailer
 transports.
 

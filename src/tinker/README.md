@@ -1,5 +1,7 @@
 # Tinker
 
+[中文说明](README_CN.md)
+
 [![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/tinker)](https://packagist.org/packages/friendsofhyperf/tinker)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/tinker)](https://packagist.org/packages/friendsofhyperf/tinker)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/tinker)](https://github.com/friendsofhyperf/tinker)

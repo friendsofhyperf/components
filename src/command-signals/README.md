@@ -1,5 +1,7 @@
 # Command Signals
 
+[中文说明](README_CN.md)
+
 [![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/command-signals)](https://packagist.org/packages/friendsofhyperf/command-signals)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/command-signals)](https://packagist.org/packages/friendsofhyperf/command-signals)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/command-signals)](https://github.com/friendsofhyperf/command-signals)

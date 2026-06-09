@@ -1,5 +1,7 @@
 # Fast Paginate
 
+[中文说明](README_CN.md)
+
 > Forked from [hammerstonedev/fast-paginate](https://github.com/hammerstonedev/fast-paginate)
 
 ## About

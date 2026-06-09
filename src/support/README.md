@@ -1,5 +1,7 @@
 # Support
 
+[中文说明](README_CN.md)
+
 [![Latest Version](https://img.shields.io/packagist/v/friendsofhyperf/support.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/support)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/support.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/support)
 [![GitHub license](https://img.shields.io/github/license/friendsofhyperf/support)](https://github.com/friendsofhyperf/support)

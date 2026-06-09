@@ -1,5 +1,7 @@
 # Notification EasySms Channel
 
+[中文说明](README_CN.md)
+
 This component sends notifications through [EasySms](https://github.com/overtrue/easy-sms).
 
 ## Installation

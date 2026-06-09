@@ -1,5 +1,7 @@
 # Macros
 
+[中文说明](README_CN.md)
+
 [![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/macros)](https://packagist.org/packages/friendsofhyperf/macros)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/macros)](https://packagist.org/packages/friendsofhyperf/macros)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/macros)](https://github.com/friendsofhyperf/macros)
