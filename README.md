@@ -4,245 +4,189 @@
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/components/v)](https://packagist.org/packages/friendsofhyperf/components)
 [![License](https://poser.pugx.org/friendsofhyperf/components/license)](https://packagist.org/packages/friendsofhyperf/components)
 [![PHP Version Require](https://poser.pugx.org/friendsofhyperf/components/require/php)](https://packagist.org/packages/friendsofhyperf/components)
-[![Hyperf Version Require](https://img.shields.io/badge/hyperf->=3.2.0-brightgreen.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/components)
+[![Hyperf Version Require](https://img.shields.io/badge/hyperf-%3E%3D3.2.0-brightgreen.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/components)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/friendsofhyperf/components)
 
 [中文说明](README_CN.md)
 
-🚀 The most popular and comprehensive collection of high-quality components for the [Hyperf](https://hyperf.io) framework, providing 50+ production-ready packages to accelerate your application development.
+A monorepo of 48 independently installable components for
+[Hyperf](https://hyperf.io) 3.2 and later.
 
-## 📖 About
+## Requirements
 
-This repository is a **monorepo** containing a collection of battle-tested, community-driven components that extend the Hyperf framework with additional features and integrations. Each component is independently usable and can be installed separately or as a complete suite.
+- PHP 8.2 or later
+- Hyperf 3.2 or later
+- Swoole or Swow, when required by the application or component
 
-## ✨ Features
+Each component declares its exact dependencies in `src/<component>/composer.json`.
 
-- 🎯 **50+ Components** - Comprehensive collection covering various development needs
-- 🔌 **Easy Integration** - Seamless integration with Hyperf 3.2+
-- 📦 **Modular Design** - Install only what you need
-- 🛡️ **Production Ready** - Battle-tested in production environments
-- 📚 **Well Documented** - Comprehensive documentation in multiple languages
-- 🧪 **Fully Tested** - High test coverage with PHPUnit and Pest
-- 🌍 **Multi-language** - Documentation available in Chinese (Simplified, Traditional, HK) and English
+## Installation
 
-## 📋 Requirements
-
-- PHP >= 8.2
-- Hyperf >= 3.2.0
-- Swoole or Swow extension
-
-## 💾 Installation
-
-### Install All Components
+Install the complete collection:
 
 ```bash
 composer require friendsofhyperf/components
 ```
 
-### Install Individual Components
-
-You can install specific components as needed:
+Or install only the components your application needs:
 
 ```bash
-# Example: Install Telescope (Debug Assistant)
 composer require friendsofhyperf/telescope
-
-# Example: Install HTTP Client
 composer require friendsofhyperf/http-client
-
-# Example: Install Model Factory
 composer require friendsofhyperf/model-factory --dev
 ```
 
-## 🎯 Quick Start
-
-After installing a component, most packages will automatically register with Hyperf through the `ConfigProvider`. Some components may require publishing configuration files:
+Most framework-integrated packages are discovered through their `ConfigProvider`. Some
+components also publish configuration or resources:
 
 ```bash
-php bin/hyperf.php vendor:publish friendsofhyperf/[component-name]
+php bin/hyperf.php vendor:publish friendsofhyperf/<component>
 ```
 
-## 📦 Available Components
+Consult the component README and documentation before publishing files; not every component
+provides publishable resources.
 
-### 🔧 Development & Debugging Tools
+## Components
 
-- **[telescope](src/telescope)** - Elegant debug assistant for Hyperf (requests, exceptions, SQL, Redis, etc.)
-- **[tinker](src/tinker)** - Powerful REPL for interactive debugging
-- **[web-tinker](src/web-tinker)** - Web-based Tinker interface
-- **[ide-helper](src/ide-helper)** - Enhanced IDE support and autocompletion
-- **[pretty-console](src/pretty-console)** - Beautiful console output formatting
+### Development and Debugging
 
-### 💾 Database & Models
+- [telescope](src/telescope) - request, exception, SQL, Redis, and runtime inspection
+- [tinker](src/tinker) - interactive REPL
+- [web-tinker](src/web-tinker) - browser-based Tinker interface
+- [ide-helper](src/ide-helper) - IDE metadata generation
+- [pretty-console](src/pretty-console) - improved console presentation
 
-- **[model-factory](src/model-factory)** - Database model factories for testing
-- **[model-observer](src/model-observer)** - Eloquent model observers
-- **[model-scope](src/model-scope)** - Global and local query scopes
-- **[model-hashids](src/model-hashids)** - Hashids integration for models
-- **[model-morph-addon](src/model-morph-addon)** - Polymorphic relationship enhancements
-- **[compoships](src/compoships)** - Multi-column relationships for Eloquent
-- **[fast-paginate](src/fast-paginate)** - High-performance pagination
-- **[mysql-grammar-addon](src/mysql-grammar-addon)** - MySQL grammar extensions
-- **[trigger](src/trigger)** - MySQL trigger support
+### Database and Models
 
-### 🗄️ Caching & Storage
+- [model-factory](src/model-factory), [model-observer](src/model-observer),
+  [model-scope](src/model-scope), [model-hashids](src/model-hashids), and
+  [model-morph-addon](src/model-morph-addon)
+- [compoships](src/compoships), [fast-paginate](src/fast-paginate),
+  [mysql-grammar-addon](src/mysql-grammar-addon), and [trigger](src/trigger)
 
-- **[cache](src/cache)** - Advanced caching with multiple drivers
-- **[lock](src/lock)** - Distributed locking mechanisms
-- **[redis-subscriber](src/redis-subscriber)** - Redis pub/sub subscriber
+### Infrastructure and Integrations
 
-### 🌐 HTTP & API
+- Cache and coordination: [cache](src/cache), [lock](src/lock), and
+  [redis-subscriber](src/redis-subscriber)
+- HTTP and APIs: [http-client](src/http-client) and [oauth2-server](src/oauth2-server)
+- Messaging: [notification](src/notification), [notification-mail](src/notification-mail),
+  [notification-easysms](src/notification-easysms), [mail](src/mail), and
+  [tcp-sender](src/tcp-sender)
+- External services: [elasticsearch](src/elasticsearch),
+  [telescope-elasticsearch](src/telescope-elasticsearch), [openai-client](src/openai-client),
+  [recaptcha](src/recaptcha), and [sentry](src/sentry)
+- Configuration: [confd](src/confd) and [config-consul](src/config-consul)
 
-- **[http-client](src/http-client)** - Elegant HTTP client (Laravel-style)
-- **[oauth2-server](src/oauth2-server)** - OAuth2 server implementation
+### Framework Extensions
 
-### 📨 Notifications & Communication
+- Commands: [command-benchmark](src/command-benchmark),
+  [command-signals](src/command-signals), [command-validation](src/command-validation), and
+  [console-spinner](src/console-spinner)
+- Architecture: [facade](src/facade), [ipc-broadcaster](src/ipc-broadcaster), and
+  [exception-event](src/exception-event)
+- Security and validation: [encryption](src/encryption), [purifier](src/purifier),
+  [rate-limit](src/rate-limit), [validated-dto](src/validated-dto), and
+  [grpc-validation](src/grpc-validation)
+- Shared utilities: [helpers](src/helpers), [support](src/support), and [macros](src/macros)
+- Queue and testing: [amqp-job](src/amqp-job) and [co-phpunit](src/co-phpunit)
 
-- **[notification](src/notification)** - Multi-channel notifications
-- **[notification-mail](src/notification-mail)** - Email notification channel
-- **[notification-easysms](src/notification-easysms)** - SMS notification via EasySMS
-- **[mail](src/mail)** - Email sending component
-- **[tcp-sender](src/tcp-sender)** - TCP message sender
+Every component directory contains its own package metadata and README. The complete list is
+available under [`src/`](src).
 
-### 🔍 Search & Data
+## Documentation
 
-- **[elasticsearch](src/elasticsearch)** - Elasticsearch client integration
-- **[telescope-elasticsearch](src/telescope-elasticsearch)** - Elasticsearch storage for Telescope
+The documentation site is available in four languages:
 
-### ⚙️ Configuration & Infrastructure
-
-- **[confd](src/confd)** - Configuration management with confd
-- **[config-consul](src/config-consul)** - Consul configuration center
-
-### 🛠️ Command & Console
-
-- **[command-signals](src/command-signals)** - Signal handling for commands
-- **[command-validation](src/command-validation)** - Command input validation
-- **[command-benchmark](src/command-benchmark)** - Command performance benchmarking
-- **[console-spinner](src/console-spinner)** - Console loading spinners
-
-### 🧩 Dependency Injection & Architecture
-
-- **[facade](src/facade)** - Laravel-style facades for Hyperf
-- **[ipc-broadcaster](src/ipc-broadcaster)** - Inter-process communication broadcaster
-
-### 🔐 Security & Validation
-
-- **[encryption](src/encryption)** - Data encryption and decryption
-- **[purifier](src/purifier)** - HTML purification (XSS protection)
-- **[recaptcha](src/recaptcha)** - Google reCAPTCHA integration
-- **[validated-dto](src/validated-dto)** - Data Transfer Objects with validation
-- **[grpc-validation](src/grpc-validation)** - gRPC request validation
-
-### 🎨 Utilities & Helpers
-
-- **[helpers](src/helpers)** - Useful helper functions
-- **[support](src/support)** - Support utilities and classes
-- **[macros](src/macros)** - Macro support for various classes
-
-### 📊 Monitoring & Logging
-
-- **[sentry](src/sentry)** - Sentry error tracking integration
-
-### 🚀 Queue & Jobs
-
-- **[amqp-job](src/amqp-job)** - AMQP-based job queue
-
-### 🧪 Testing
-
-- **[co-phpunit](src/co-phpunit)** - Coroutine-compatible PHPUnit
-
-### 🤖 AI & External Services
-
-- **[openai-client](src/openai-client)** - OpenAI API client
-
-### 📝 Others
-
-- **[exception-event](src/exception-event)** - Exception event handling
-
-## 📚 Documentation
-
-For detailed documentation, visit the [official documentation website](https://docs.hdj.me/).
-
-### Documentation by Language
-
-- [简体中文 (Simplified Chinese)](https://docs.hdj.me/zh-cn/)
-- [繁體中文 (Traditional Chinese)](https://docs.hdj.me/zh-tw/)
-- [香港繁體 (Hong Kong Traditional)](https://docs.hdj.me/zh-hk/)
+- [Simplified Chinese](https://docs.hdj.me/zh-cn/)
+- [Traditional Chinese](https://docs.hdj.me/zh-tw/)
+- [Hong Kong Traditional Chinese](https://docs.hdj.me/zh-hk/)
 - [English](https://docs.hdj.me/en/)
 
-## 🔨 Development
+Component documentation is maintained under `docs/<locale>/components/`. Component READMEs
+and documentation pages are separate sources, so behavior changes may require updates to
+both.
 
-### Clone the Repository
+## Repository Layout
 
-```bash
-git clone https://github.com/friendsofhyperf/components.git
-cd components
+```text
+src/<component>/        independently installable component packages
+tests/<Component>/      shared Pest test suite
+docs/<locale>/          VitePress documentation in four languages
+types/                  PHP stubs checked at PHPStan max level
+bin/                    repository maintenance, split, and release scripts
 ```
 
-### Install Dependencies
+The root package aggregates all components. Most components integrate with Hyperf through a
+`ConfigProvider`; a small number are framework-independent libraries.
+
+## Development
+
+Install dependencies from the repository root:
 
 ```bash
 composer install
 ```
 
-### Running Tests
+Run the standard local checks:
 
 ```bash
-# Run all tests
-composer test
-
-# Run specific test suites
-composer test:unit      # Unit tests
-composer test:lint      # Code style checks
-composer test:types     # Type coverage analysis
+composer test          # code style, Pest tests, and type coverage
+composer analyse       # PHPStan analysis
+composer analyse:types # PHPStan max-level analysis for types/
 ```
 
-### Code Quality
+Run focused checks while developing a component:
 
 ```bash
-# Fix code style
-composer cs-fix
-
-# Run static analysis
-composer analyse
+vendor/bin/pest --group cache
+vendor/bin/pest tests/CoPhpunit
+composer analyse src/cache
+composer cs-fix -- src/cache
 ```
 
-## 🤝 Contributing
+Pest groups are defined in [`tests/Pest.php`](tests/Pest.php). Not every component has a
+group, so use a test directory or file when necessary. `composer test` does not run PHPStan;
+run `composer analyse` separately before submitting code changes.
 
-We welcome contributions from the community! Please read our [Contributing Guidelines](CONTRIBUTE.md) before submitting pull requests.
+For documentation changes:
 
-### Development Workflow
+```bash
+npm install
+npm run docs:check
+```
 
-1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/amazing-feature`)
-3. Make your changes
-4. Run tests and code quality checks
-5. Commit your changes (`git commit -m 'Add amazing feature'`)
-6. Push to the branch (`git push origin feature/amazing-feature`)
-7. Open a Pull Request
+Simplified Chinese is the translation source. Keep the page set and heading structure
+synchronized across `en`, `zh-cn`, `zh-hk`, and `zh-tw`, then review generated translations
+before submission. `npm run docs:translate` modifies translated files and requires translation
+service configuration; run it only when intentionally regenerating translations.
 
-## 🌟 Support & Community
+## Contributing
 
-- 📖 **Documentation**: [docs.hdj.me](https://docs.hdj.me/)
-- 💬 **Issues**: [GitHub Issues](https://github.com/friendsofhyperf/components/issues)
-- 🐦 **Twitter**: [@huangdijia](https://twitter.com/huangdijia)
-- 📧 **Email**: [huangdijia@gmail.com](mailto:huangdijia@gmail.com)
+Read [CONTRIBUTE.md](CONTRIBUTE.md) and [AGENTS.md](AGENTS.md) before making changes.
 
-## 🔗 Mirrors
+- Treat component source and tests as the authority for documented behavior.
+- Update tests when public behavior changes.
+- Update the component README and documentation snippets when they are affected.
+- Keep changes scoped; do not edit generated or unrelated files without a reason.
+- Run targeted checks first, followed by the relevant repository-level checks.
+- Use Conventional Commits, scoped to a component when possible.
 
-- [GitHub](https://github.com/friendsofhyperf/components)
-- [CNB](https://cnb.cool/friendsofhyperf/components)
+## Release Model
 
-## 👥 Contributors
+This monorepo is the source of truth. Maintenance workflows split `src/<component>` into
+individual `friendsofhyperf/<component>` repositories, and releases apply a shared version
+tag across the monorepo and component repositories.
 
-We are grateful to all the contributors who have helped make this project better!
+The split and release scripts force-push or tag remote repositories. They are maintainer-only
+operations and should not be run during normal development.
 
-[![Contributors](https://contrib.rocks/image?repo=friendsofhyperf/components)](https://github.com/friendsofhyperf/components/graphs/contributors)
+## Community
 
-## 📄 License
+- [Documentation](https://docs.hdj.me/)
+- [GitHub Issues](https://github.com/friendsofhyperf/components/issues)
+- [CNB Mirror](https://cnb.cool/friendsofhyperf/components)
+- [Contributors](https://github.com/friendsofhyperf/components/graphs/contributors)
 
-This project is open-sourced software licensed under the [MIT License](LICENSE).
+## License
 
----
-
-<p align="center">Made with ❤️ by <a href="https://github.com/huangdijia">Deeka Wong</a> and <a href="https://github.com/friendsofhyperf/components/graphs/contributors">contributors</a></p>
+FriendsOfHyperf Components is open-sourced software licensed under the [MIT License](LICENSE).
