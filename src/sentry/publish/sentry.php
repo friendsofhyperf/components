@@ -145,6 +145,7 @@ return [
     // Enable or disable specific tracing spans
     'tracing_spans' => [
         'cache' => env('SENTRY_TRACING_SPANS_CACHE', true),
+        'coordinator' => env('SENTRY_TRACING_SPANS_COORDINATOR', false),
         'coroutine' => env('SENTRY_TRACING_SPANS_COROUTINE', true),
         'db' => env('SENTRY_TRACING_SPANS_DB', true),
         'elasticsearch' => env('SENTRY_TRACING_SPANS_ELASTICSEARCH', true),
