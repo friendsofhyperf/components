@@ -1,5 +1,7 @@
 # Telescope Elasticsearch Driver
 
+[中文说明](README_CN.md)
+
 [![Latest Version](https://img.shields.io/packagist/v/friendsofhyperf/telescope-elasticsearch.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/telescope-elasticsearch)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/telescope-elasticsearch.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/telescope-elasticsearch)
 [![GitHub license](https://img.shields.io/github/license/friendsofhyperf/telescope-elasticsearch)](https://github.com/friendsofhyperf/telescope-elasticsearch)

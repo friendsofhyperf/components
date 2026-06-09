@@ -1,5 +1,7 @@
 # HTTP Client
 
+[中文说明](README_CN.md)
+
 An HTTP client component for Hyperf, ported from Laravel and backed by Guzzle.
 
 ## Installation

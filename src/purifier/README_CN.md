@@ -1,8 +1,6 @@
 # Purifier
 
-[![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/purifier)](https://packagist.org/packages/friendsofhyperf/purifier)
-[![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/purifier)](https://packagist.org/packages/friendsofhyperf/purifier)
-[![License](https://img.shields.io/packagist/l/friendsofhyperf/purifier)](https://github.com/friendsofhyperf/purifier)
+[English](README.md)
 
 HTML 过滤器. 派生于 [mews/purifier](https://github.com/mewebstudio/Purifier).
 
@@ -67,10 +65,10 @@ use FriendsOfHyperf\Purifier\Casts\CleanHtmlOutput;
 
 class Monster extends Model
 {
-    protected array $casts = [
-        'bio' => CleanHtml::class, // 在获取和设置值时都会进行清理
-        'description' => CleanHtmlInput::class, // 设置值时清理
-        'history' => CleanHtmlOutput::class, // 获取值时进行清理
+    protected $casts = [
+        'bio'            => CleanHtml::class, // 在获取和设置值时都会进行清理
+        'description'    => CleanHtmlInput::class, // 设置值时清理
+        'history'        => CleanHtmlOutput::class, // 获取值时进行清理
     ];
 }
 ```
@@ -79,33 +77,33 @@ class Monster extends Model
 
 要使用您自己的设置，请发布配置.
 
-```sehll
+```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/purifier
 ```
 
-配置文件 `config/autoload/purifier.php` 内容如下:
+配置文件 `config/autoload/purifier.php` 内容如下：
 
 ```php
 
 return [
-    'encoding' => 'UTF-8',
-    'finalize' => true,
-    'ignore_non_strings' => false,
-    'cache_path' => storage_path('app/purifier'),
-    'cache_file_mode' => 0755,
-    'settings' => [
+    'encoding'           => 'UTF-8',
+    'finalize'           => true,
+    'ignore_non_strings'   => false,
+    'cache_path'          => BASE_PATH . '/storage/app/purifier',
+    'cache_file_mode'      => 0755,
+    'settings'      => [
         'default' => [
-            'HTML.Doctype' => 'HTML 4.01 Transitional',
-            'HTML.Allowed' => 'div,b,strong,i,em,u,a[href|title],ul,ol,li,p[style],br,span[style],img[width|height|alt|src]',
-            'CSS.AllowedProperties' => 'font,font-size,font-weight,font-style,font-family,text-decoration,padding-left,color,background-color,text-align',
+            'HTML.Doctype'             => 'HTML 4.01 Transitional',
+            'HTML.Allowed'             => 'div,b,strong,i,em,u,a[href|title],ul,ol,li,p[style],br,span[style],img[width|height|alt|src]',
+            'CSS.AllowedProperties'    => 'font,font-size,font-weight,font-style,font-family,text-decoration,padding-left,color,background-color,text-align',
             'AutoFormat.AutoParagraph' => true,
-            'AutoFormat.RemoveEmpty' => true,
+            'AutoFormat.RemoveEmpty'   => true,
         ],
-        'test' => [
+        'test'    => [
             'Attr.EnableID' => 'true',
         ],
         "youtube" => [
-            "HTML.SafeIframe" => 'true',
+            "HTML.SafeIframe"      => 'true',
             "URI.SafeIframeRegexp" => "%^(http://|https://|//)(www.youtube.com/embed/|player.vimeo.com/video/)%",
         ],
         'custom_definition' => [
@@ -120,11 +118,14 @@ return [
                 ['aside',   'Block', 'Flow', 'Common'],
                 ['header',  'Block', 'Flow', 'Common'],
                 ['footer',  'Block', 'Flow', 'Common'],
+
                 ['address', 'Block', 'Flow', 'Common'],
                 ['hgroup', 'Block', 'Required: h1 | h2 | h3 | h4 | h5 | h6', 'Common'],
+
                 // https://developers.whatwg.org/grouping-content.html
                 ['figure', 'Block', 'Optional: (figcaption, Flow) | (Flow, figcaption) | Flow', 'Common'],
                 ['figcaption', 'Inline', 'Flow', 'Common'],
+
                 // https://developers.whatwg.org/the-video-element.html#the-video-element
                 ['video', 'Block', 'Optional: (source, Flow) | (Flow, source) | Flow', 'Common', [
                     'src' => 'URI',
@@ -139,6 +140,7 @@ return [
                     'src' => 'URI',
                     'type' => 'Text',
                 ]],
+
                 // https://developers.whatwg.org/text-level-semantics.html
                 ['s',    'Inline', 'Inline', 'Common'],
                 ['var',  'Inline', 'Inline', 'Common'],
@@ -146,6 +148,7 @@ return [
                 ['sup',  'Inline', 'Inline', 'Common'],
                 ['mark', 'Inline', 'Inline', 'Common'],
                 ['wbr',  'Inline', 'Empty', 'Core'],
+
                 // https://developers.whatwg.org/edits.html
                 ['ins', 'Block', 'Flow', 'Common', ['cite' => 'URI', 'datetime' => 'CDATA']],
                 ['del', 'Block', 'Flow', 'Common', ['cite' => 'URI', 'datetime' => 'CDATA']],

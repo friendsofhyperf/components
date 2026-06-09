@@ -1,5 +1,7 @@
 # Command Validation
 
+[中文说明](README_CN.md)
+
 Validate a Hyperf command's arguments and options before the command runs.
 
 ## Installation

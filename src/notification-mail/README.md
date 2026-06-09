@@ -1,5 +1,7 @@
 # Notification Mail Channel
 
+[中文说明](README_CN.md)
+
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/friendsofhyperf/notification-mail.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/notification-mail)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/notification-mail.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/notification-mail)
 [![GitHub license](https://img.shields.io/github/license/friendsofhyperf/notification-mail)](https://github.com/friendsofhyperf/notification-mail)

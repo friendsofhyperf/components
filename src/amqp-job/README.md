@@ -1,5 +1,7 @@
 # Amqp Job
 
+[中文说明](README_CN.md)
+
 ## Introduction
 
 `friendsofhyperf/amqp-job` dispatches PHP job objects through `hyperf/amqp`. A job

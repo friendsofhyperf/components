@@ -1,5 +1,7 @@
 # model-morph-addon
 
+[中文说明](README_CN.md)
+
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/model-morph-addon/v/stable.svg)](https://packagist.org/packages/friendsofhyperf/model-morph-addon)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/model-morph-addon)](https://packagist.org/packages/friendsofhyperf/model-morph-addon)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/model-morph-addon)](https://github.com/friendsofhyperf/model-morph-addon)

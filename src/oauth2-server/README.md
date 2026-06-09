@@ -1,5 +1,7 @@
 # FriendsOfHyperf OAuth2 Server
 
+[中文说明](README_CN.md)
+
 A complete OAuth2 server implementation for Hyperf framework, based on [league/oauth2-server](https://oauth2.thephpleague.com/).
 
 ## Features

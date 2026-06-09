@@ -1,5 +1,7 @@
 # console-spinner
 
+[中文说明](README_CN.md)
+
 [![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/console-spinner)](https://packagist.org/packages/friendsofhyperf/console-spinner)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/console-spinner)](https://packagist.org/packages/friendsofhyperf/console-spinner)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/console-spinner)](https://github.com/friendsofhyperf/console-spinner)

@@ -1,5 +1,7 @@
 # Cache
 
+[中文说明](README_CN.md)
+
 ## Introduction
 
 `friendsofhyperf/cache` wraps the drivers provided by `hyperf/cache` with a

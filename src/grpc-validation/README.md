@@ -1,5 +1,7 @@
 # gRPC Validation
 
+[中文说明](README_CN.md)
+
 Validate a protobuf request before a Hyperf gRPC service method runs.
 
 ## Installation

@@ -1,5 +1,7 @@
 # model-scope
 
+[中文说明](README_CN.md)
+
 [![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/model-scope)](https://packagist.org/packages/friendsofhyperf/model-scope)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/model-scope)](https://packagist.org/packages/friendsofhyperf/model-scope)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/model-scope)](https://github.com/friendsofhyperf/model-scope)

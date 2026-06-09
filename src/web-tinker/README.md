@@ -1,5 +1,7 @@
 # Web Tinker
 
+[中文说明](README_CN.md)
+
 [![Latest Stable Version](https://img.shields.io/packagist/v/friendsofhyperf/web-tinker)](https://packagist.org/packages/friendsofhyperf/web-tinker)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/web-tinker)](https://packagist.org/packages/friendsofhyperf/web-tinker)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/web-tinker)](https://github.com/friendsofhyperf/web-tinker)

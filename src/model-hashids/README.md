@@ -1,5 +1,7 @@
 # model-hashids
 
+[中文说明](README_CN.md)
+
 > Using hashids instead of integer ids in urls and list items can be more
 appealing and clever. For more information visit [hashids.org](https://hashids.org/).
 

@@ -1,8 +1,6 @@
 # Rate Limit
 
-[![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/rate-limit/v)](https://packagist.org/packages/friendsofhyperf/rate-limit)
-[![Total Downloads](https://poser.pugx.org/friendsofhyperf/rate-limit/downloads)](https://packagist.org/packages/friendsofhyperf/rate-limit)
-[![License](https://poser.pugx.org/friendsofhyperf/rate-limit/license)](https://packagist.org/packages/friendsofhyperf/rate-limit)
+[English](README.md)
 
 Hyperf 的限流组件，支持多种算法（固定窗口、滑动窗口、令牌桶、漏桶）。
 
@@ -134,7 +132,7 @@ class UserController
 }
 ```
 
-#### 注解参数
+### 注解参数
 
 | 参数 | 类型 | 默认值 | 说明 |
 |-----------|------|---------|-------------|
@@ -143,10 +141,10 @@ class UserController
 | `decay` | `int` | `60` | 时间窗口（秒） |
 | `algorithm` | `Algorithm` | `Algorithm::FIXED_WINDOW` | 算法：fixed_window, sliding_window, token_bucket, leaky_bucket |
 | `pool` | `?string` | `null` | 使用的 Redis 连接池 |
-| `response` | `string` | `'Too Many Attempts.'` | 超出限流时的自定义响应 |
+| `response` | `string` | `'Too Many Attempts, Please try again in %d seconds.'` | 超出限流时的自定义响应 |
 | `responseCode` | `int` | `429` | 超出限流时的 HTTP 状态码 |
 
-#### 使用 AutoSort 实现多限流规则智能排序
+### 使用 AutoSort 实现多限流规则智能排序
 
 当同一个方法需要多个限流规则时（例如每分钟和每小时的限制），可以使用 `AutoSort` 注解自动按严格程度排序：
 
@@ -189,7 +187,7 @@ class ApiController
 - **可选**：仅在显式使用 `AutoSort` 的方法上生效
 - **向后兼容**：现有代码无需修改即可继续工作
 
-#### 键占位符
+### 键占位符
 
 `key` 参数支持动态占位符，会被方法参数替换：
 
@@ -246,9 +244,9 @@ return [
 ];
 ```
 
-### 限流算法
+## 限流算法
 
-#### 固定窗口（默认）
+### 固定窗口（默认）
 
 最简单的算法，在固定时间窗口内计数请求。
 
@@ -259,7 +257,7 @@ return [
 **优点**：简单，内存高效
 **缺点**：可能在窗口边界处允许突发请求
 
-#### 滑动窗口
+### 滑动窗口
 
 比固定窗口更准确，均匀分布请求。
 
@@ -270,7 +268,7 @@ return [
 **优点**：平滑突发流量，更准确
 **缺点**：稍微复杂一些
 
-#### 令牌桶
+### 令牌桶
 
 允许突发流量，同时保持平均速率。
 
@@ -281,7 +279,7 @@ return [
 **优点**：允许突发流量，灵活
 **缺点**：需要更多配置
 
-#### 漏桶
+### 漏桶
 
 以恒定速率处理请求，排队突发流量。
 
@@ -292,7 +290,7 @@ return [
 **优点**：平滑输出速率，防止突发
 **缺点**：可能延迟请求
 
-### 自定义限流器
+## 自定义限流器
 
 你可以通过实现 `RateLimiterInterface` 来实现自己的限流器：
 
@@ -468,7 +466,3 @@ class ReportController
     }
 }
 ```
-
-## 许可证
-
-[MIT](LICENSE)

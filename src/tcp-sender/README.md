@@ -1,5 +1,7 @@
 # TcpSender
 
+[中文说明](README_CN.md)
+
 [![Latest Version](https://img.shields.io/packagist/v/friendsofhyperf/tcp-sender.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/tcp-sender)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/tcp-sender.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/tcp-sender)
 [![GitHub license](https://img.shields.io/github/license/friendsofhyperf/tcp-sender)](https://github.com/friendsofhyperf/tcp-sender)

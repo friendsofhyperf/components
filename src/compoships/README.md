@@ -1,5 +1,7 @@
 # Compoships
 
+[中文说明](README_CN.md)
+
 [![Latest Stable Version](https://poser.pugx.org/friendsofhyperf/compoships/v/stable.svg)](https://packagist.org/packages/friendsofhyperf/compoships)
 [![Total Downloads](https://img.shields.io/packagist/dt/friendsofhyperf/compoships)](https://packagist.org/packages/friendsofhyperf/compoships)
 [![License](https://img.shields.io/packagist/l/friendsofhyperf/compoships)](https://github.com/friendsofhyperf/compoships)

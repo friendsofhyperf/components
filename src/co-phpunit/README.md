@@ -1,5 +1,7 @@
 # Co-PHPUnit
 
+[中文说明](README_CN.md)
+
 Co-PHPUnit runs PHPUnit tests inside a Swoole coroutine. It is useful for tests that exercise
 coroutine-aware Hyperf components.
 
