@@ -74,7 +74,9 @@ class ConfigProvider
             ],
             'annotations' => [
                 'scan' => [
-                    'class_map' => [],
+                    'class_map' => [
+                        \Sentry\State\RuntimeContextManager::class => __DIR__ . '/../class_map/RuntimeContextManager.php',
+                    ],
                 ],
             ],
             'publish' => [
