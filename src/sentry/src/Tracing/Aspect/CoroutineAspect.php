@@ -26,6 +26,9 @@ use function FriendsOfHyperf\Sentry\trace;
 use function Hyperf\Coroutine\defer;
 use function Sentry\continueTrace;
 
+/**
+ * Run after FriendsOfHyperf\Sentry\Aspect\CoroutineAspect.
+ */
 class CoroutineAspect extends AbstractAspect
 {
     public const CONTEXT_KEYS = [
