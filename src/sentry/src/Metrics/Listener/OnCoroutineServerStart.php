@@ -19,7 +19,6 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Sentry\SentrySdk;
 use Sentry\Unit;
 
 use function FriendsOfHyperf\Sentry\metrics;
@@ -112,8 +111,6 @@ class OnCoroutineServerStart implements ListenerInterface
                     ['worker' => '0'],
                     Unit::megabyte()
                 );
-
-                SentrySdk::flush();
             }
         );
     }

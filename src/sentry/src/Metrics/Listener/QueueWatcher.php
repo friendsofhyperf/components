@@ -18,7 +18,6 @@ use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coordinator\Timer;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
-use Sentry\SentrySdk;
 
 use function FriendsOfHyperf\Sentry\metrics;
 
@@ -83,8 +82,6 @@ class QueueWatcher implements ListenerInterface
                         ['queue' => $name]
                     );
                 }
-
-                SentrySdk::flush();
             }
         );
     }

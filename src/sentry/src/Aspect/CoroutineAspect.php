@@ -52,14 +52,17 @@ class CoroutineAspect extends AbstractAspect
         $callable = $proceedingJoinPoint->arguments['keys']['callable'];
         $cid = Co::id();
 
+        // Propagate the Context to the new Coroutine.
+        SentrySdk::startContext();
+
         $proceedingJoinPoint->arguments['keys']['callable'] = function () use ($callable, $cid) {
             // Restore the Context in the new Coroutine.
             foreach (self::CONTEXT_KEYS as $key) {
                 Context::getOrSet($key, fn () => Context::get($key, coroutineId: $cid));
             }
 
-            // Defer the flushing of events until the coroutine completes.
-            defer(fn () => SentrySdk::flush());
+            // End the Context when the Coroutine ends.
+            defer(fn () => SentrySdk::endContext());
 
             // Continue the callable in the new Coroutine.
             $callable();

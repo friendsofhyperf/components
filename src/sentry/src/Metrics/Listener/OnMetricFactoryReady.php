@@ -21,7 +21,6 @@ use Hyperf\Engine\Coroutine as Co;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Support\System;
 use Psr\Container\ContainerInterface;
-use Sentry\SentrySdk;
 use Sentry\Unit;
 use Swoole\Server as SwooleServer;
 
@@ -129,8 +128,6 @@ class OnMetricFactoryReady implements ListenerInterface
                     ['worker' => (string) $workerId],
                     Unit::megabyte()
                 );
-
-                SentrySdk::flush();
             }
         );
     }

@@ -18,7 +18,6 @@ use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Engine\Coroutine as Co;
-use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
@@ -80,10 +79,7 @@ class CoroutineAspect extends AbstractAspect
                         );
 
                         // Defer the finishing of the transaction and flushing of events until the coroutine completes.
-                        defer(function () use ($transaction) {
-                            $transaction->finish();
-                            SentrySdk::flush();
-                        });
+                        defer(fn () => $transaction->finish());
 
                         return trace(
                             fn () => $callable(),

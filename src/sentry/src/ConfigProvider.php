@@ -28,7 +28,6 @@ class ConfigProvider
                 Aspect\LoggerAspect::class,
                 Aspect\RedisAspect::class,
                 // Aspect\SingletonAspect::class,
-                Aspect\SentrySdkAspect::class,
                 Metrics\Aspect\CounterAspect::class,
                 Metrics\Aspect\HistogramAspect::class,
                 Tracing\Aspect\AmqpProducerAspect::class,
