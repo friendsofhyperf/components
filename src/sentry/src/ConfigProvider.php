@@ -27,8 +27,6 @@ class ConfigProvider
                 Aspect\GuzzleHttpClientAspect::class,
                 Aspect\LoggerAspect::class,
                 Aspect\RedisAspect::class,
-                // Aspect\SingletonAspect::class,
-                Aspect\SentrySdkAspect::class,
                 Metrics\Aspect\CounterAspect::class,
                 Metrics\Aspect\HistogramAspect::class,
                 Tracing\Aspect\AmqpProducerAspect::class,
@@ -76,7 +74,9 @@ class ConfigProvider
             ],
             'annotations' => [
                 'scan' => [
-                    'class_map' => [],
+                    'class_map' => [
+                        \Sentry\State\RuntimeContextManager::class => __DIR__ . '/../class_map/RuntimeContextManager.php',
+                    ],
                 ],
             ],
             'publish' => [

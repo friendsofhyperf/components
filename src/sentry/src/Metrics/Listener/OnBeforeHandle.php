@@ -21,7 +21,6 @@ use Hyperf\Coordinator\Timer;
 use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Sentry\SentrySdk;
 use Sentry\Unit;
 
 use function FriendsOfHyperf\Sentry\metrics;
@@ -114,8 +113,6 @@ class OnBeforeHandle implements ListenerInterface
                     ['worker' => '0'],
                     Unit::megabyte()
                 );
-
-                SentrySdk::flush();
             }
         );
     }

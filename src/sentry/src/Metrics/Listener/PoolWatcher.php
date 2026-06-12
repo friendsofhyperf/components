@@ -18,7 +18,6 @@ use Hyperf\Framework\Event\BeforeWorkerStart;
 use Hyperf\Pool\Pool;
 use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
-use Sentry\SentrySdk;
 
 use function FriendsOfHyperf\Sentry\metrics;
 
@@ -89,8 +88,6 @@ abstract class PoolWatcher implements ListenerInterface
                         'worker' => (string) $workerId,
                     ]
                 );
-
-                SentrySdk::flush();
             }
         );
     }
