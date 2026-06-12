@@ -17,6 +17,8 @@ use Psr\Log\NullLogger;
 use Sentry\Tracing\PropagationContext;
 use Throwable;
 
+use function Hyperf\Support\make;
+
 /**
  * Manages runtime-local SDK state across different execution models.
  *
@@ -54,6 +56,9 @@ final class RuntimeContextManager
 
     public function __construct(HubInterface $baseHub)
     {
+        if (! $baseHub->getClient()) {
+            $baseHub = make(HubInterface::class);
+        }
         $this->baseHub = $baseHub;
         $this->globalContext = null;
         // Using plain arrays here since the manager is designed to be used in a single-threaded execution environment and does not require the overhead of thread-safe structures.
