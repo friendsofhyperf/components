@@ -56,6 +56,7 @@ final class RuntimeContextManager
     {
         $this->baseHub = $baseHub;
         $this->globalContext = null;
+        // Using plain arrays here since the manager is designed to be used in a single-threaded execution environment and does not require the overhead of thread-safe structures.
         $context = new ContextArrayObject();
         $this->activeContexts = $context;
         $this->executionContextToRuntimeContext = $context;
