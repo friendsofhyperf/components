@@ -32,7 +32,7 @@ class CoordinatorAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->feature->isTracingSpanEnabled('coordinator')) {
+        if (! $this->feature->isTracingSpanEnabled('coordinator', false)) {
             return $proceedingJoinPoint->process();
         }
 
