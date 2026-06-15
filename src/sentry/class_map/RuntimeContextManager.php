@@ -45,12 +45,12 @@ final class RuntimeContextManager
     private $globalContext;
 
     /**
-     * @var array{string: RuntimeContext} map of active runtime contexts by their internal ID
+     * @var ContextArrayObject{string: RuntimeContext} map of active runtime contexts by their internal ID
      */
     private $activeContexts;
 
     /**
-     * @var array<string, string> map of execution context keys to active runtime context IDs
+     * @var ContextArrayObject{string: string} map of execution context keys to active runtime context IDs
      */
     private $executionContextToRuntimeContext;
 
@@ -61,7 +61,7 @@ final class RuntimeContextManager
         }
         $this->baseHub = $baseHub;
         $this->globalContext = null;
-        // Using plain arrays here since the manager is designed to be used in a single-threaded execution environment and does not require the overhead of thread-safe structures.
+        // Using ContextArrayObject here since the manager is designed to be used in a single-threaded execution environment and does not require the overhead of thread-safe structures.
         $context = new ContextArrayObject();
         $this->activeContexts = $context;
         $this->executionContextToRuntimeContext = $context;
