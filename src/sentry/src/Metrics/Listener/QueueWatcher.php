@@ -20,6 +20,7 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Psr\Container\ContainerInterface;
 
 use function FriendsOfHyperf\Sentry\metrics;
+use function Hyperf\Coroutine\wait;
 
 class QueueWatcher implements ListenerInterface
 {
@@ -54,34 +55,36 @@ class QueueWatcher implements ListenerInterface
         $this->timer->tick(
             $this->feature->getMetricsInterval(),
             function () {
-                $config = $this->container->get(ConfigInterface::class);
-                $queues = array_keys($config->get('async_queue', []));
+                wait(function () {
+                    $config = $this->container->get(ConfigInterface::class);
+                    $queues = array_keys($config->get('async_queue', []));
 
-                foreach ($queues as $name) {
-                    $queue = $this->container->get(DriverFactory::class)->get($name);
-                    $info = $queue->info();
+                    foreach ($queues as $name) {
+                        $queue = $this->container->get(DriverFactory::class)->get($name);
+                        $info = $queue->info();
 
-                    metrics()->gauge(
-                        'queue_waiting',
-                        (float) $info['waiting'],
-                        ['queue' => $name]
-                    );
-                    metrics()->gauge(
-                        'queue_delayed',
-                        (float) $info['delayed'],
-                        ['queue' => $name]
-                    );
-                    metrics()->gauge(
-                        'queue_failed',
-                        (float) $info['failed'],
-                        ['queue' => $name]
-                    );
-                    metrics()->gauge(
-                        'queue_timeout',
-                        (float) $info['timeout'],
-                        ['queue' => $name]
-                    );
-                }
+                        metrics()->gauge(
+                            'queue_waiting',
+                            (float) $info['waiting'],
+                            ['queue' => $name]
+                        );
+                        metrics()->gauge(
+                            'queue_delayed',
+                            (float) $info['delayed'],
+                            ['queue' => $name]
+                        );
+                        metrics()->gauge(
+                            'queue_failed',
+                            (float) $info['failed'],
+                            ['queue' => $name]
+                        );
+                        metrics()->gauge(
+                            'queue_timeout',
+                            (float) $info['timeout'],
+                            ['queue' => $name]
+                        );
+                    }
+                });
             }
         );
     }

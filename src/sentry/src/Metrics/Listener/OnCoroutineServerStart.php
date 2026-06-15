@@ -22,6 +22,7 @@ use Psr\EventDispatcher\EventDispatcherInterface;
 use Sentry\Unit;
 
 use function FriendsOfHyperf\Sentry\metrics;
+use function Hyperf\Coroutine\wait;
 
 class OnCoroutineServerStart implements ListenerInterface
 {
@@ -96,21 +97,23 @@ class OnCoroutineServerStart implements ListenerInterface
         $this->timer->tick(
             $this->feature->getMetricsInterval(),
             function () use ($metrics) {
-                $this->trySet('gc_', $metrics, gc_status());
-                $this->trySet('', $metrics, getrusage());
+                wait(function () use ($metrics) {
+                    $this->trySet('gc_', $metrics, gc_status());
+                    $this->trySet('', $metrics, getrusage());
 
-                metrics()->gauge(
-                    'memory_usage',
-                    memory_get_usage(true) / 1024 / 1024,
-                    ['worker' => '0'],
-                    Unit::megabyte()
-                );
-                metrics()->gauge(
-                    'memory_peak_usage',
-                    memory_get_peak_usage(true) / 1024 / 1024,
-                    ['worker' => '0'],
-                    Unit::megabyte()
-                );
+                    metrics()->gauge(
+                        'memory_usage',
+                        memory_get_usage(true) / 1024 / 1024,
+                        ['worker' => '0'],
+                        Unit::megabyte()
+                    );
+                    metrics()->gauge(
+                        'memory_peak_usage',
+                        memory_get_peak_usage(true) / 1024 / 1024,
+                        ['worker' => '0'],
+                        Unit::megabyte()
+                    );
+                });
             }
         );
     }

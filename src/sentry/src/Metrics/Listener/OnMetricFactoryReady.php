@@ -25,6 +25,7 @@ use Sentry\Unit;
 use Swoole\Server as SwooleServer;
 
 use function FriendsOfHyperf\Sentry\metrics;
+use function Hyperf\Coroutine\wait;
 
 class OnMetricFactoryReady implements ListenerInterface
 {
@@ -98,36 +99,38 @@ class OnMetricFactoryReady implements ListenerInterface
         $this->timer->tick(
             $this->feature->getMetricsInterval(),
             function () use ($metrics, $serverStatsFactory, $workerId) {
-                $this->trySet('', $metrics, Co::stats(), $workerId);
-                $this->trySet('timer_', $metrics, Timer::stats(), $workerId);
+                wait(function () use ($metrics, $serverStatsFactory, $workerId) {
+                    $this->trySet('', $metrics, Co::stats(), $workerId);
+                    $this->trySet('timer_', $metrics, Timer::stats(), $workerId);
 
-                if ($serverStatsFactory) {
-                    $this->trySet('', $metrics, $serverStatsFactory(), $workerId);
-                }
+                    if ($serverStatsFactory) {
+                        $this->trySet('', $metrics, $serverStatsFactory(), $workerId);
+                    }
 
-                if (class_exists('Swoole\Timer')) {
-                    $this->trySet('swoole_timer_', $metrics, \Swoole\Timer::stats(), $workerId);
-                }
+                    if (class_exists('Swoole\Timer')) {
+                        $this->trySet('swoole_timer_', $metrics, \Swoole\Timer::stats(), $workerId);
+                    }
 
-                $load = sys_getloadavg();
+                    $load = sys_getloadavg();
 
-                metrics()->gauge(
-                    'sys_load',
-                    round($load[0] / System::getCpuCoresNum(), 2),
-                    ['worker' => (string) $workerId],
-                );
-                metrics()->gauge(
-                    'metric_process_memory_usage',
-                    memory_get_usage(true) / 1024 / 1024,
-                    ['worker' => (string) $workerId],
-                    Unit::megabyte()
-                );
-                metrics()->gauge(
-                    'metric_process_memory_peak_usage',
-                    memory_get_peak_usage(true) / 1024 / 1024,
-                    ['worker' => (string) $workerId],
-                    Unit::megabyte()
-                );
+                    metrics()->gauge(
+                        'sys_load',
+                        round($load[0] / System::getCpuCoresNum(), 2),
+                        ['worker' => (string) $workerId],
+                    );
+                    metrics()->gauge(
+                        'metric_process_memory_usage',
+                        memory_get_usage(true) / 1024 / 1024,
+                        ['worker' => (string) $workerId],
+                        Unit::megabyte()
+                    );
+                    metrics()->gauge(
+                        'metric_process_memory_peak_usage',
+                        memory_get_peak_usage(true) / 1024 / 1024,
+                        ['worker' => (string) $workerId],
+                        Unit::megabyte()
+                    );
+                });
             }
         );
     }

@@ -20,6 +20,7 @@ use Hyperf\Server\Event\MainCoroutineServerStart;
 use Psr\Container\ContainerInterface;
 
 use function FriendsOfHyperf\Sentry\metrics;
+use function Hyperf\Coroutine\wait;
 
 abstract class PoolWatcher implements ListenerInterface
 {
@@ -64,30 +65,32 @@ abstract class PoolWatcher implements ListenerInterface
         $this->timer->tick(
             $this->feature->getMetricsInterval(),
             function () use ($pool, $workerId, $poolName) {
-                metrics()->gauge(
-                    $this->getPrefix() . '_connections_in_use',
-                    (float) $pool->getCurrentConnections(),
-                    [
-                        'pool' => $poolName,
-                        'worker' => (string) $workerId,
-                    ]
-                );
-                metrics()->gauge(
-                    $this->getPrefix() . '_connections_in_waiting',
-                    (float) $pool->getConnectionsInChannel(),
-                    [
-                        'pool' => $poolName,
-                        'worker' => (string) $workerId,
-                    ]
-                );
-                metrics()->gauge(
-                    $this->getPrefix() . '_max_connections',
-                    (float) $pool->getOption()->getMaxConnections(),
-                    [
-                        'pool' => $poolName,
-                        'worker' => (string) $workerId,
-                    ]
-                );
+                wait(function () use ($pool, $workerId, $poolName) {
+                    metrics()->gauge(
+                        $this->getPrefix() . '_connections_in_use',
+                        (float) $pool->getCurrentConnections(),
+                        [
+                            'pool' => $poolName,
+                            'worker' => (string) $workerId,
+                        ]
+                    );
+                    metrics()->gauge(
+                        $this->getPrefix() . '_connections_in_waiting',
+                        (float) $pool->getConnectionsInChannel(),
+                        [
+                            'pool' => $poolName,
+                            'worker' => (string) $workerId,
+                        ]
+                    );
+                    metrics()->gauge(
+                        $this->getPrefix() . '_max_connections',
+                        (float) $pool->getOption()->getMaxConnections(),
+                        [
+                            'pool' => $poolName,
+                            'worker' => (string) $workerId,
+                        ]
+                    );
+                });
             }
         );
     }
