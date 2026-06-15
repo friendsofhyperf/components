@@ -58,6 +58,10 @@ class CoroutineAspect extends AbstractAspect
                 Context::getOrSet($key, fn () => Context::get($key, coroutineId: $cid));
             }
 
+            SentrySdk::startContext();
+
+            defer(fn () => SentrySdk::endContext());
+
             $callable();
         };
     }
