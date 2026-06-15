@@ -18,6 +18,7 @@ use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Engine\Coroutine as Co;
+use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
@@ -72,6 +73,8 @@ class CoroutineAspect extends AbstractAspect
                             Context::getOrSet($key, fn () => Context::get($key, coroutineId: $cid));
                         }
 
+                        SentrySdk::startContext();
+
                         // Start a new transaction for the coroutine preparation phase.
                         $transaction = startTransaction(
                             continueTrace($span->toTraceparent(), $span->toBaggage())
@@ -82,7 +85,10 @@ class CoroutineAspect extends AbstractAspect
                         );
 
                         // Defer the finishing of the transaction and flushing of events until the coroutine completes.
-                        defer(fn () => $transaction->finish());
+                        defer(function () use ($transaction) {
+                            $transaction->finish();
+                            SentrySdk::endContext();
+                        });
 
                         return trace(
                             fn () => $callable(),

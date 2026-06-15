@@ -58,13 +58,6 @@ class CoroutineAspect extends AbstractAspect
                 Context::getOrSet($key, fn () => Context::get($key, coroutineId: $cid));
             }
 
-            // Propagate the Context to the new Coroutine.
-            SentrySdk::startContext();
-
-            // End the Context when the Coroutine ends.
-            defer(fn () => SentrySdk::endContext());
-
-            // Continue the callable in the new Coroutine.
             $callable();
         };
     }
