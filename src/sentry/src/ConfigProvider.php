@@ -32,7 +32,6 @@ class ConfigProvider
                 Tracing\Aspect\AmqpProducerAspect::class,
                 Tracing\Aspect\AsyncQueueJobMessageAspect::class,
                 Tracing\Aspect\CacheAspect::class,
-                Tracing\Aspect\CoordinatorAspect::class,
                 Tracing\Aspect\CoroutineAspect::class,
                 Tracing\Aspect\DbAspect::class,
                 Tracing\Aspect\DbConnectionAspect::class,
