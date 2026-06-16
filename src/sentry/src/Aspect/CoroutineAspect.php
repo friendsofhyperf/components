@@ -58,10 +58,10 @@ class CoroutineAspect extends AbstractAspect
                 Context::getOrSet($key, fn () => Context::get($key, coroutineId: $cid));
             }
 
-            // Defer the flushing of events until the coroutine completes.
-            defer(fn () => SentrySdk::flush());
+            SentrySdk::startContext();
 
-            // Continue the callable in the new Coroutine.
+            defer(fn () => SentrySdk::endContext());
+
             $callable();
         };
     }

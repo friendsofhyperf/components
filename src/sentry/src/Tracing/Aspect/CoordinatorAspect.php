@@ -32,10 +32,6 @@ class CoordinatorAspect extends AbstractAspect
 
     public function process(ProceedingJoinPoint $proceedingJoinPoint)
     {
-        if (! $this->feature->isTracingSpanEnabled('coordinator')) {
-            return $proceedingJoinPoint->process();
-        }
-
         $timeout = $proceedingJoinPoint->arguments['keys']['timeout'] ?? -1;
 
         return trace(

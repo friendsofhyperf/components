@@ -19,7 +19,6 @@ use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BeforeWorkerStart;
 use Psr\Container\ContainerInterface;
 use Psr\EventDispatcher\EventDispatcherInterface;
-use Sentry\SentrySdk;
 use Sentry\Unit;
 use Swoole\Server;
 
@@ -119,8 +118,6 @@ class OnWorkerStart implements ListenerInterface
                     ['worker' => (string) ($event->workerId ?? 0)],
                     Unit::megabyte()
                 );
-
-                SentrySdk::flush();
             }
         );
     }

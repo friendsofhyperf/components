@@ -452,8 +452,6 @@ class EventHandleListener implements ListenerInterface
                 $parentSpan->finish();
                 SentrySdk::getCurrentHub()->popScope();
             }
-
-            SentrySdk::flush();
         }
     }
 
