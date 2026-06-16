@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
 use FriendsOfHyperf\Sentry\Feature;
-use FriendsOfHyperf\Sentry\Integration;
 use Hyperf\Coordinator\Timer;
 use Hyperf\Event\Contract\ListenerInterface;
 use Hyperf\Framework\Event\BeforeWorkerStart;
@@ -89,9 +88,6 @@ abstract class PoolWatcher implements ListenerInterface
                         'worker' => (string) $workerId,
                     ]
                 );
-
-                // metrics()->flush();
-                Integration::flushEvents();
             }
         );
     }

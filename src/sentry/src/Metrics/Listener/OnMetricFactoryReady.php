@@ -13,7 +13,6 @@ namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
 use FriendsOfHyperf\Sentry\Constants as SentryConstants;
 use FriendsOfHyperf\Sentry\Feature;
-use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Metrics\CoroutineServerStats;
 use FriendsOfHyperf\Sentry\Metrics\Event\MetricFactoryReady;
 use FriendsOfHyperf\Sentry\Metrics\Traits\MetricSetter;
@@ -129,9 +128,6 @@ class OnMetricFactoryReady implements ListenerInterface
                     ['worker' => (string) $workerId],
                     Unit::megabyte()
                 );
-
-                // metrics()->flush();
-                Integration::flushEvents();
             }
         );
     }

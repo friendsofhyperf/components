@@ -12,13 +12,13 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Feature;
-use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Util\CoroutineBacktraceHelper;
 use Hyperf\Context\Context;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Hyperf\Engine\Coroutine as Co;
+use Sentry\SentrySdk;
 use Sentry\State\Scope;
 use Sentry\Tracing\SpanContext;
 
@@ -27,6 +27,9 @@ use function FriendsOfHyperf\Sentry\trace;
 use function Hyperf\Coroutine\defer;
 use function Sentry\continueTrace;
 
+/**
+ * Run after FriendsOfHyperf\Sentry\Aspect\CoroutineAspect.
+ */
 class CoroutineAspect extends AbstractAspect
 {
     public const CONTEXT_KEYS = [
@@ -70,6 +73,8 @@ class CoroutineAspect extends AbstractAspect
                             Context::getOrSet($key, fn () => Context::get($key, coroutineId: $cid));
                         }
 
+                        SentrySdk::startContext();
+
                         // Start a new transaction for the coroutine preparation phase.
                         $transaction = startTransaction(
                             continueTrace($span->toTraceparent(), $span->toBaggage())
@@ -82,7 +87,7 @@ class CoroutineAspect extends AbstractAspect
                         // Defer the finishing of the transaction and flushing of events until the coroutine completes.
                         defer(function () use ($transaction) {
                             $transaction->finish();
-                            Integration::flushEvents();
+                            SentrySdk::endContext();
                         });
 
                         return trace(

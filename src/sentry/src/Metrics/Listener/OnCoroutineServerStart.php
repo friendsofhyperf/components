@@ -12,7 +12,6 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Metrics\Listener;
 
 use FriendsOfHyperf\Sentry\Feature;
-use FriendsOfHyperf\Sentry\Integration;
 use FriendsOfHyperf\Sentry\Metrics\Event\MetricFactoryReady;
 use FriendsOfHyperf\Sentry\Metrics\Traits\MetricSetter;
 use Hyperf\Coordinator\Timer;
@@ -112,9 +111,6 @@ class OnCoroutineServerStart implements ListenerInterface
                     ['worker' => '0'],
                     Unit::megabyte()
                 );
-
-                // metrics()->flush();
-                Integration::flushEvents();
             }
         );
     }

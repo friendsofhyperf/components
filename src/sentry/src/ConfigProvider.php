@@ -26,13 +26,11 @@ class ConfigProvider
                 Aspect\GracefulAspect::class,
                 Aspect\GuzzleHttpClientAspect::class,
                 Aspect\LoggerAspect::class,
-                // Aspect\SingletonAspect::class,
                 Metrics\Aspect\CounterAspect::class,
                 Metrics\Aspect\HistogramAspect::class,
                 Tracing\Aspect\AmqpProducerAspect::class,
                 Tracing\Aspect\AsyncQueueJobMessageAspect::class,
                 Tracing\Aspect\CacheAspect::class,
-                Tracing\Aspect\CoordinatorAspect::class,
                 Tracing\Aspect\CoroutineAspect::class,
                 Tracing\Aspect\DbAspect::class,
                 Tracing\Aspect\DbConnectionAspect::class,
@@ -74,7 +72,7 @@ class ConfigProvider
             'annotations' => [
                 'scan' => [
                     'class_map' => [
-                        \Sentry\SentrySdk::class => __DIR__ . '/../class_map/SentrySdk.php',
+                        \Sentry\State\RuntimeContextManager::class => __DIR__ . '/../class_map/RuntimeContextManager.php',
                     ],
                 ],
             ],
