@@ -9,7 +9,7 @@
 
 [English](README.md)
 
-面向 [Hyperf](https://hyperf.io) 3.2 及以上版本的组件 monorepo，包含 48 个可独立安装的组件。
+面向 [Hyperf](https://hyperf.io) 3.2 及以上版本的组件 monorepo，包含 49 个可独立安装的组件。
 
 ## 环境要求
 
@@ -69,7 +69,7 @@ php bin/hyperf.php vendor:publish friendsofhyperf/<component>
 - 消息与通知：[notification](src/notification)、[notification-mail](src/notification-mail)、
   [notification-easysms](src/notification-easysms)、[mail](src/mail) 和
   [tcp-sender](src/tcp-sender)
-- 外部服务：[elasticsearch](src/elasticsearch)、
+- 外部服务与可观测性：[elasticsearch](src/elasticsearch)、
   [telescope-elasticsearch](src/telescope-elasticsearch)、[openai-client](src/openai-client)、
   [recaptcha](src/recaptcha) 和 [sentry](src/sentry)
 - 配置管理：[confd](src/confd) 和 [config-consul](src/config-consul)

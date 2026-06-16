@@ -9,7 +9,7 @@
 
 [中文说明](README_CN.md)
 
-A monorepo of 48 independently installable components for
+A monorepo of 49 independently installable components for
 [Hyperf](https://hyperf.io) 3.2 and later.
 
 ## Requirements
@@ -72,7 +72,7 @@ provides publishable resources.
 - Messaging: [notification](src/notification), [notification-mail](src/notification-mail),
   [notification-easysms](src/notification-easysms), [mail](src/mail), and
   [tcp-sender](src/tcp-sender)
-- External services: [elasticsearch](src/elasticsearch),
+- External services and observability: [elasticsearch](src/elasticsearch),
   [telescope-elasticsearch](src/telescope-elasticsearch), [openai-client](src/openai-client),
   [recaptcha](src/recaptcha), and [sentry](src/sentry)
 - Configuration: [confd](src/confd) and [config-consul](src/config-consul)

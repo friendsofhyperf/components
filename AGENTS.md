@@ -2,7 +2,7 @@
 
 ## Scope and Source of Truth
 
-- This repository is the source monorepo for 48 independently installable
+- This repository is the source monorepo for 49 independently installable
   `friendsofhyperf/*` Composer packages.
 - Treat component source, component `composer.json` files, and tests as authoritative.
   Do not invent public APIs, configuration keys, defaults, or framework behavior from
@@ -116,6 +116,18 @@ commands, and local links. It does not prove that prose or code examples match b
 also verify claims against source and tests. `npm run docs:translate` modifies translated
 files and requires translation service configuration; run it only when the user explicitly
 requests translation regeneration.
+
+### Sentry Documentation Notes
+
+- `src/sentry/publish/sentry.php` is the source of truth for documented Sentry options,
+  environment variables, default values, and publishable configuration examples.
+- `src/sentry/src/ConfigProvider.php` is the source of truth for registered commands,
+  listeners, aspects, dependencies, and the custom coroutine HTTP transport.
+- Document Sentry annotations and helper functions only from public classes under
+  `FriendsOfHyperf\Sentry\Annotation`, `FriendsOfHyperf\Sentry\Tracing\Annotation`,
+  `FriendsOfHyperf\Sentry\Metrics\Annotation`, and `src/sentry/src/Function.php`.
+- Keep the four Sentry component pages and both component READMEs semantically synchronized
+  when updating logs, tracing, metrics, crons, transport, or optional dependency notes.
 
 ## Coding Style
 
