@@ -1,5 +1,22 @@
 # Changelog
 
+## v3.1.79 - 2026-06-17
+
+### What's Changed
+
+* refactor(sentry): optimize SingletonAspect with match expression by @huangdijia in https://github.com/friendsofhyperf/components/pull/1049
+* feat(sentry): add singleton support for Logs class by @huangdijia in https://github.com/friendsofhyperf/components/pull/1050
+* fix(sentry): correct singleton key generation logic in SingletonAspect by @huangdijia in https://github.com/friendsofhyperf/components/pull/1051
+* fix(sentry): adjust event flush order in Integration by @huangdijia in https://github.com/friendsofhyperf/components/pull/1052
+* feat(sentry): add separate configuration options for pool and queue metrics by @huangdijia in https://github.com/friendsofhyperf/components/pull/1053
+* refactor(sentry): remove redundant Integration::flushEvents() calls from defer callbacks by @huangdijia in https://github.com/friendsofhyperf/components/pull/1054
+* Fix access token persistence key in oauth2-server.php by @zds-s in https://github.com/friendsofhyperf/components/pull/1058
+* fix: use proper GitHub Actions conditional for ParaTest installation by @huangdijia in https://github.com/friendsofhyperf/components/pull/1061
+* feat(sentry): add SentrySdkAspect for coroutine-safe SDK usage by @huangdijia in https://github.com/friendsofhyperf/components/pull/1063
+* refactor(sentry): replace manual flush with context lifecycle management by @huangdijia in https://github.com/friendsofhyperf/components/pull/1070
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.78...v3.1.79
+
 ## v3.1.75 - 2025-12-03
 
 ### What's Changed
