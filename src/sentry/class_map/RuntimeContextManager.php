@@ -11,7 +11,7 @@ declare(strict_types=1);
 
 namespace Sentry\State;
 
-use ArrayObject;
+use FriendsOfHyperf\Sentry\Util\CoArrayObject;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
 use Sentry\Tracing\PropagationContext;
@@ -45,12 +45,12 @@ final class RuntimeContextManager
     private $globalContext;
 
     /**
-     * @var ArrayObject{string: RuntimeContext} map of active runtime contexts by their internal ID
+     * @var CoArrayObject{string: RuntimeContext} map of active runtime contexts by their internal ID
      */
     private $activeContexts;
 
     /**
-     * @var ArrayObject{string: string} map of execution context keys to active runtime context IDs
+     * @var CoArrayObject{string: string} map of execution context keys to active runtime context IDs
      */
     private $executionContextToRuntimeContext;
 
@@ -58,8 +58,9 @@ final class RuntimeContextManager
     {
         $this->baseHub = $baseHub->getClient() ? $baseHub : make(HubInterface::class);
         $this->globalContext = null;
-        $this->activeContexts = $this->getCoArrayObject();
-        $this->executionContextToRuntimeContext = $this->getCoArrayObject();
+        $context = new CoArrayObject();
+        $this->activeContexts = $context;
+        $this->executionContextToRuntimeContext = $context;
     }
 
     /**
@@ -290,10 +291,5 @@ final class RuntimeContextManager
         }
 
         return $this->globalContext;
-    }
-
-    private function getCoArrayObject(): ArrayObject
-    {
-        return \Hyperf\Engine\Coroutine::getContextFor();
     }
 }
