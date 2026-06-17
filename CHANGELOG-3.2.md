@@ -1,5 +1,16 @@
 # Changelog
 
+## v3.2.1 - 2026-06-17
+
+### What's Changed
+
+* 📝 docs: enhance documentation navigation and FAQ sections by @huangdijia in https://github.com/friendsofhyperf/components/pull/1066
+* feat(sentry): add coordinator tracing span configuration by @huangdijia in https://github.com/friendsofhyperf/components/pull/1067
+* [codex] update repository guides by @huangdijia in https://github.com/friendsofhyperf/components/pull/1068
+* docs(readme): add Chinese component readmes by @huangdijia in https://github.com/friendsofhyperf/components/pull/1069
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.2.0...v3.2.1
+
 ## v3.2.0 - 2026-06-07
 
 ### What's Changed
