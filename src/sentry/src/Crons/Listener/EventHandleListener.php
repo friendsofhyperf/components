@@ -66,7 +66,6 @@ class EventHandleListener implements ListenerInterface
 
     protected function handleCrontabTaskStarting(Event\BeforeExecute $event, array $options): void
     {
-        $hub = SentrySdk::getCurrentHub();
         $slug = $event->crontab->getName();
         $rule = $event->crontab->getRule();
         $rules = explode(' ', $rule);
@@ -83,7 +82,7 @@ class EventHandleListener implements ListenerInterface
             $monitorConfig = $this->createMonitorConfig($event, $options, $rule);
         }
 
-        $checkInId = $hub->captureCheckIn(
+        $checkInId = SentrySdk::getCurrentHub()->captureCheckIn(
             slug: $slug,
             status: CheckInStatus::inProgress(),
             monitorConfig: $monitorConfig,
@@ -100,10 +99,9 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        $hub = SentrySdk::getCurrentHub();
         $slug = $event->crontab->getName();
 
-        $hub->captureCheckIn(
+        SentrySdk::getCurrentHub()->captureCheckIn(
             slug: $slug,
             status: CheckInStatus::ok(),
             checkInId: $checkInId,
@@ -118,10 +116,9 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
-        $hub = SentrySdk::getCurrentHub();
         $slug = $event->crontab->getName();
 
-        $hub->captureCheckIn(
+        SentrySdk::getCurrentHub()->captureCheckIn(
             slug: $slug,
             status: CheckInStatus::error(),
             checkInId: $checkInId,
