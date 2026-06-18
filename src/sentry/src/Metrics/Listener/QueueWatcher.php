@@ -82,6 +82,8 @@ class QueueWatcher implements ListenerInterface
                         ['queue' => $name]
                     );
                 }
+
+                metrics()->flush();
             }
         );
     }

@@ -43,6 +43,9 @@ return [
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#enable_logs
     'enable_logs' => env('SENTRY_ENABLE_LOGS', true),
 
+    // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#log_flush_threshold
+    'log_flush_threshold' => env('SENTRY_LOG_FLUSH_THRESHOLD') === null ? null : (int) env('SENTRY_LOG_FLUSH_THRESHOLD'),
+
     // @see: https://docs.sentry.io/platforms/php/configuration/options/#before_send_log
     // 'before_send_log' => function (Sentry\Logs\Log $log): Sentry\Logs\Log {
     //     return $log;

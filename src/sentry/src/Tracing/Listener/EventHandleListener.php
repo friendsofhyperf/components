@@ -335,6 +335,8 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
+
+            unset($transaction, $span);
         });
     }
 
@@ -531,6 +533,8 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
+
+            unset($transaction);
         });
     }
 
@@ -597,6 +601,8 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
+
+            unset($transaction);
         });
     }
 
@@ -662,6 +668,8 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
+
+            unset($transaction);
         });
     }
 
@@ -709,6 +717,8 @@ class EventHandleListener implements ListenerInterface
 
             // Finish transaction
             $transaction->finish();
+
+            unset($transaction);
         });
     }
 

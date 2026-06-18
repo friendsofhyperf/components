@@ -111,6 +111,8 @@ class OnCoroutineServerStart implements ListenerInterface
                     ['worker' => '0'],
                     Unit::megabyte()
                 );
+
+                metrics()->flush();
             }
         );
     }

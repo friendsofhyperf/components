@@ -88,6 +88,8 @@ abstract class PoolWatcher implements ListenerInterface
                         'worker' => (string) $workerId,
                     ]
                 );
+
+                metrics()->flush();
             }
         );
     }
