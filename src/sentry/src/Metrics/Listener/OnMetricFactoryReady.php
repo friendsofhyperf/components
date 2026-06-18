@@ -128,6 +128,8 @@ class OnMetricFactoryReady implements ListenerInterface
                     ['worker' => (string) $workerId],
                     Unit::megabyte()
                 );
+
+                metrics()->flush();
             }
         );
     }

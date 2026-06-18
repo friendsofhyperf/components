@@ -113,6 +113,8 @@ class OnBeforeHandle implements ListenerInterface
                     ['worker' => '0'],
                     Unit::megabyte()
                 );
+
+                metrics()->flush();
             }
         );
     }

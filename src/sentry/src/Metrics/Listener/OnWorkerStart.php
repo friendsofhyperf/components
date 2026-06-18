@@ -118,6 +118,8 @@ class OnWorkerStart implements ListenerInterface
                     ['worker' => (string) ($event->workerId ?? 0)],
                     Unit::megabyte()
                 );
+
+                metrics()->flush();
             }
         );
     }
