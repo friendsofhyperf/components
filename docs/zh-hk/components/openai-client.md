@@ -1,12 +1,12 @@
 # OpenAI Client
 
-此組件將 [openai-php/client](https://github.com/openai-php/client) 整合至 Hyperf，
-向依賴注入容器註冊上游客戶端，並提供靜態門面。
+此組件將 [openai-php/client](https://github.com/openai-php/client) 集成到 Hyperf，
+向依賴注入容器註冊上游客户端，並提供靜態門面。
 
 ## 依賴要求
 
-此套件適用於 Hyperf 3.2，依賴 `hyperf/config`、`hyperf/di`、`hyperf/guzzle` 和
-0.10.0 或以上版本的 `openai-php/client`，並未聲明可選依賴。
+此包面向 Hyperf 3.2，依賴 `hyperf/config`、`hyperf/di`、`hyperf/guzzle` 和 0.10.0 或更高版本的
+`openai-php/client`，未聲明可選依賴。
 
 ## 安裝
 
@@ -20,11 +20,11 @@ composer require friendsofhyperf/openai-client
 php bin/hyperf.php vendor:publish friendsofhyperf/openai-client
 ```
 
-此指令會建立 `config/autoload/openai.php`。
+此命令會創建 `config/autoload/openai.php`。
 
 ## 配置
 
-發佈的配置文件會讀取以下環境變數：
+發佈的配置文件會讀取以下環境變量：
 
 ```env
 OPENAI_BASE_URI=api.openai.com/v1
@@ -33,31 +33,31 @@ OPENAI_ORGANIZATION=
 OPENAI_REQUEST_TIMEOUT=30
 ```
 
-| 配置項 | 預設值 | 說明 |
+| 配置項 | 默認值 | 説明 |
 | --- | --- | --- |
-| `openai.base_uri` | `api.openai.com/v1` | 傳給上游客戶端工廠的基礎 URI。 |
-| `openai.api_key` | 空字串 | 用於 Bearer 身份驗證的 API 密鑰。 |
-| `openai.organization` | `null` | 可選的 OpenAI 組織識別碼。 |
-| `openai.request_timeout` | `30` | 傳給 Hyperf Guzzle 客戶端的逾時時間，單位為秒。 |
+| `openai.base_uri` | `api.openai.com/v1` | 傳給上游客户端工廠的基礎 URI。 |
+| `openai.api_key` | 空字符串 | 用於 Bearer 身份驗證的 API 密鑰。 |
+| `openai.organization` | `null` | 可選的 OpenAI 組織標識。 |
+| `openai.request_timeout` | `30` | 傳給 Hyperf Guzzle 客户端的超時時間，單位為秒。 |
 
 ## 容器綁定與運行行為
 
-組件會將 `OpenAI\Client` 和 `OpenAI\Contracts\ClientContract` 綁定至同一個
-客戶端實例。工廠會：
+組件會將 `OpenAI\Client` 和 `OpenAI\Contracts\ClientContract` 綁定到同一個
+客户端實例。工廠會：
 
-- 透過 `Hyperf\Guzzle\ClientFactory` 建立 HTTP 客戶端；
-- 套用配置的基礎 URI、API 密鑰、組織和請求逾時時間；
-- 傳送 `OpenAI-Beta: assistants=v2` 請求標頭。
+- 通過 `Hyperf\Guzzle\ClientFactory` 創建 HTTP 客户端；
+- 應用配置的基礎 URI、API 密鑰、組織和請求超時時間；
+- 發送 `OpenAI-Beta: assistants=v2` 請求頭。
 
-API 密鑰必須是字串，組織必須是 `null` 或字串。類型不正確時會拋出
-`FriendsOfHyperf\OpenAi\Exception\ApiKeyIsMissing`。空 API 密鑰仍是字串，因此不會
-觸發此例外；API 請求會改為因身份驗證失敗而報錯。
+API 密鑰必須是字符串，組織必須是 `null` 或字符串。類型不正確時會拋出
+`FriendsOfHyperf\OpenAi\Exception\ApiKeyIsMissing`。空 API 密鑰仍是字符串，因此不會
+觸發此異常；API 請求會改為因身份驗證失敗而報錯。
 
 ## 使用
 
 ### 容器
 
-可以從容器解析契約或具體客戶端。資源方法、請求參數和回應物件由已安裝的
+可以從容器解析契約或具體客户端。資源方法、請求參數和響應對象由已安裝的
 `openai-php/client` 版本提供。
 
 ```php
@@ -83,11 +83,11 @@ use FriendsOfHyperf\OpenAi\Facade\OpenAI;
 $models = OpenAI::models()->list();
 ```
 
-## Azure 與自訂客戶端
+## Azure 與自定義客户端
 
-組件工廠會固定配置 Bearer 身份驗證，且未提供自訂請求標頭或查詢參數的配置。
-Azure OpenAI 等需要 `api-key` 請求標頭和 `api-version` 查詢參數的服務，必須使用
-上游工廠手動建立客戶端：
+組件工廠始終配置 Bearer 身份驗證，且未提供自定義請求頭或查詢參數的配置。
+Azure OpenAI 等需要 `api-key` 請求頭和 `api-version` 查詢參數的服務，必須使用
+上游工廠手動創建客户端：
 
 ```php
 use OpenAI;
@@ -99,10 +99,10 @@ $client = OpenAI::factory()
     ->make();
 ```
 
-手動建立的客戶端不會自動註冊至 Hyperf 容器。由於 Azure 基礎 URI 已包含部署，
-因此針對該部署的調用毋須傳入 `model` 參數。
+手動創建的客户端不會自動註冊到 Hyperf 容器。由於 Azure 基礎 URI 已包含部署，
+因此針對該部署的調用無需傳入 `model` 參數。
 
 ## 上游 API 指南
 
-有關支援的資源和使用示例，請參閱與已安裝版本相符的
-[openai-php/client 文件](https://github.com/openai-php/client)。
+有關支持的資源和使用示例，請參閲與已安裝版本匹配的
+[openai-php/client 文檔](https://github.com/openai-php/client)。

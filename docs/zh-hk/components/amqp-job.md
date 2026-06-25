@@ -3,7 +3,7 @@
 ## 簡介
 
 `friendsofhyperf/amqp-job` 通過 `hyperf/amqp` 分發 PHP 任務對象。任務使用 `AmqpJob`
-註解聲明 AMQP 綁定，服務啟動時，組件會為每個已啟用且帶有該註解的任務自動註冊消費者。
+註解聲明 AMQP 綁定，服務啓動時，組件會為每個已啓用且帶有該註解的任務自動註冊消費者。
 
 組件默認使用 PHP 序列化，因此只應分發可信的任務對象，並確保消費者可以加載對應的類。
 
@@ -60,11 +60,11 @@ function dispatchFoo(Producer $producer, int $id): bool
 ```
 
 `dispatch(JobInterface $payload, ?bool $confirm = null, ?int $timeout = null): bool`
-是創建並發布 `JobMessage` 的便捷函數。如果任務尚無任務 ID，它會為其分配唯一 ID。可選的
+是創建併發布 `JobMessage` 的便捷函數。如果任務尚無任務 ID，它會為其分配唯一 ID。可選的
 `confirm` 和 `timeout` 參數會覆蓋本次分發使用的任務值。
 
 當前 `dispatch()` 不會將任務的交換機、路由鍵或連接池複製到 `JobMessage`。因此生成的生產者
-消息會使用空交換機、空路由鍵和 Hyperf 的 `default` AMQP 連接池。若要發布到 `AmqpJob`
+消息會使用空交換機、空路由鍵和 Hyperf 的 `default` AMQP 連接池。若要發佈到 `AmqpJob`
 聲明的綁定，請像上例一樣創建 `JobMessage`、設置目的地，再交給 `Hyperf\Amqp\Producer`。
 
 ## 註解選項
@@ -83,7 +83,7 @@ function dispatchFoo(Producer $producer, int $id): bool
 | `name` | `?string` | `null` | 消費者進程名稱。 |
 
 如果任務未使用該註解，其 getter 默認返回交換機 `hyperf`、路由鍵 `hyperf.job`、無指定
-連接池、關閉發布確認、5 秒發布超時和不重試。子類可以提供 `$exchange`、`$routingKey`、
+連接池、關閉發佈確認、5 秒發佈超時和不重試。子類可以提供 `$exchange`、`$routingKey`、
 `$poolName`、`$confirm`、`$timeout` 或 `$maxAttempts` 等受保護屬性來覆蓋這些 getter 值。
 如上所述，`dispatch()` 只使用確認和超時 getter。
 
@@ -106,7 +106,7 @@ public function fail(Throwable $e): void
 }
 ```
 
-默認 Redis 次數鍵使用 `hyperf:amqp-job:attempts:` 前綴，並在 86,400 秒後過期，因此啟用
+默認 Redis 次數鍵使用 `hyperf:amqp-job:attempts:` 前綴，並在 86,400 秒後過期，因此啓用
 重試時必須可用 Redis。綁定 `FriendsOfHyperf\AmqpJob\Contract\Attempt` 或
 `FriendsOfHyperf\AmqpJob\Contract\Packer` 可以替換默認實現。記錄異常時，消費者會依次
 解析 `FriendsOfHyperf\AmqpJob\Contract\LoggerInterface` 和

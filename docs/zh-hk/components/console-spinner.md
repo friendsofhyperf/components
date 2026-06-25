@@ -1,7 +1,7 @@
 # Console Spinner
 
-用於 Hyperf 命令的控制台 Spinner 元件。它封裝了 Symfony `ProgressBar`，並在每次推進時切換
-進度字元。
+用於 Hyperf 命令的控制枱 Spinner 組件。它封裝了 Symfony `ProgressBar`，並在每次推進時切換
+進度字符。
 
 ## 安裝
 
@@ -11,13 +11,13 @@ composer require friendsofhyperf/console-spinner
 
 ## 可選配置
 
-僅在需要自訂 Spinner 字元時發佈配置檔案：
+僅在需要自定義 Spinner 字符時發佈配置文件：
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/console-spinner
 ```
 
-發佈後的 `config/autoload/console_spinner.php` 檔案包含：
+發佈後的 `config/autoload/console_spinner.php` 文件包含：
 
 ```php
 return [
@@ -25,11 +25,11 @@ return [
 ];
 ```
 
-請確保 `chars` 是非空陣列，因為 Spinner 每次推進時都會從中選擇一個字元。
+請確保 `chars` 是非空數組，因為 Spinner 每次推進時都會從中選擇一個字符。
 
 ## 使用
 
-在 Hyperf 命令中使用 `Spinnerable` Trait。它的受保護輔助方法 `spinner(int $max = 0)` 會建立
+在 Hyperf 命令中使用 `Spinnerable` Trait。它的受保護輔助方法 `spinner(int $max = 0)` 會創建
 一個具有指定最大步數的 Spinner：
 
 ```php
@@ -57,15 +57,15 @@ class FooCommand extends Command
 }
 ```
 
-`Spinner::advance(int $step = 1)` 會切換 Spinner 字元並推進封裝的進度條。呼叫其他方法時，會將
-呼叫轉發給 Symfony `ProgressBar`；需要直接存取底層實例時，可使用 `getOriginalProgressBar()`。
+`Spinner::advance(int $step = 1)` 會切換 Spinner 字符並推進封裝的進度條。調用其他方法時，會將
+調用轉發給 Symfony `ProgressBar`；需要直接訪問底層實例時，可使用 `getOriginalProgressBar()`。
 
 ## 使用 `withSpinner` 處理步驟
 
-受保護輔助方法 `withSpinner($totalSteps, Closure $callback, string $message = '')` 會自動啟動
+受保護輔助方法 `withSpinner($totalSteps, Closure $callback, string $message = '')` 會自動啓動
 和結束 Spinner。
 
-當 `$totalSteps` 是陣列等可計數的可迭代物件時，回呼會接收目前元素和 Spinner，並在處理每個
+當 `$totalSteps` 是數組等可計數的可迭代對象時，回調會接收當前元素和 Spinner，並在處理每個
 元素後自動推進 Spinner：
 
 ```php
@@ -74,7 +74,7 @@ $this->withSpinner(User::all(), function ($user, $spinner): void {
 }, 'Loading...');
 ```
 
-當 `$totalSteps` 是整數時，回呼只接收 Spinner，並負責推進它：
+當 `$totalSteps` 是整數時，回調只接收 Spinner，並負責推進它：
 
 ```php
 $this->withSpinner(10, function ($spinner): void {
