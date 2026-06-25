@@ -16,6 +16,7 @@ use Hyperf\Command\Command as HyperfCommand;
 use Hyperf\Contract\ConfigInterface;
 use Psr\Container\ContainerInterface;
 use Psy\Configuration;
+use Psy\ManualUpdater\Checker as ManualUpdaterChecker;
 use Psy\Shell;
 use Psy\VersionUpdater\Checker;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
@@ -56,6 +57,7 @@ class TinkerCommand extends HyperfCommand
 
         $config = Configuration::fromInput($this->input);
         $config->setUpdateCheck(Checker::NEVER);
+        $config->setUpdateManualCheck(ManualUpdaterChecker::NEVER);
         $config->setUsePcntl((bool) $this->config->get('tinker.usePcntl', false));
         $config->getPresenter()->addCasters(
             $this->getCasters()
