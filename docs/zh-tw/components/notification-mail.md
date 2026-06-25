@@ -36,7 +36,7 @@ class User extends Model
     
     
 
-    // 通知信箱
+    // 通知郵箱
     public function routeNotificationForMail(): string
     {
         return $this->mail;

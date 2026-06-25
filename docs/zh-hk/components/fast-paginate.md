@@ -5,9 +5,9 @@
 ## 關於
 
 Fast Paginate 為 Hyperf 模型查詢構造器和關係提供更快的 `limit`/`offset` 分頁宏。它最適合偏移量較大的
-查詢，但實際效能取決於數據和索引，請在應用中與標準分頁器進行基準測試。
+查詢，但實際性能取決於數據和索引，請在應用中與標準分頁器進行基準測試。
 
-該組件使用類似延遲連接的方式。它首先對僅選擇模型主鍵以及排序所需已選別名的查詢進行分頁，然後通過第二次
+該組件使用類似延遲連接的方式。它首先對僅選擇模型主鍵以及排序所需選中別名的查詢進行分頁，然後通過第二次
 查詢獲取當前頁主鍵對應的完整數據。兩次數據查詢的概念形式如下：
 
 ```sql
@@ -24,7 +24,7 @@ select * from contacts where contacts.id in (...);
 composer require friendsofhyperf/fast-paginate
 ```
 
-該組件依賴 Hyperf 3.2 系列軟件包。無需配置：Hyperf 會發現組件的 `ConfigProvider`，並在應用啟動時註冊
+該組件依賴 Hyperf 3.2 系列軟件包。無需配置：Hyperf 會發現組件的 `ConfigProvider`，並在應用啓動時註冊
 分頁宏。
 
 ## 使用
@@ -49,12 +49,12 @@ simpleFastPaginate($perPage = null, $columns = ['*'], $pageName = 'page', $page 
 ```
 
 - `$perPage`：每頁條目數；`null` 使用模型配置的每頁條目數。
-- `$columns`：獲取完整數據時查詢的欄位。
-- `$pageName`：用於解析當前頁的查詢字串參數名。
+- `$columns`：獲取完整數據時查詢的列。
+- `$pageName`：用於解析當前頁的查詢字符串參數名。
 - `$page`：明確指定的頁碼；`null` 時從當前請求解析。
 
 `fastPaginate()` 返回包含總數的長度感知分頁器。`simpleFastPaginate()` 返回僅判斷是否還有下一頁的簡單
-分頁器。`BelongsToMany` 關係會保留已填充的中間表數據，同時也支援 `HasManyThrough` 關係。
+分頁器。`BelongsToMany` 關係會保留已填充的中間表數據，同時也支持 `HasManyThrough` 關係。
 
 ### Scout 查詢構造器
 
@@ -74,6 +74,6 @@ Scout 的標準 `paginate()` 方法，不使用數據庫兩次查詢優化。本
 
 - 查詢包含 `having`、`group by` 或 `union` 子句；
 - `$perPage` 為 `-1`；
-- 排序所需的已選表達式包含 `?` 綁定佔位符。
+- 排序所需的選中表達式包含 `?` 綁定佔位符。
 
 這些回退會保留分頁行為，但不會獲得快速分頁優化。

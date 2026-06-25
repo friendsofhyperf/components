@@ -178,7 +178,7 @@ class CreateUserCommand extends Command
 
 ## 匯出 DTO 型別
 
-使用 `dto:export` 可以將 DTO 類別匯出為 TypeScript。傳入完整 DTO 類別名稱，也可以指定輸出檔案：
+使用 `dto:export` 可以將 DTO 類匯出為 TypeScript。傳入完整 DTO 類名，也可以指定輸出檔案：
 
 ```shell
 php bin/hyperf.php dto:export 'App\DTO\UserDTO'

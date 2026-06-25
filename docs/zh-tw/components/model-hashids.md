@@ -1,6 +1,6 @@
 # Model Hashids
 
-Model Hashids 按需編碼和解碼模型主鍵。hashid 不會儲存到資料庫中，因此查詢仍然使用模型的主鍵欄位。
+Model Hashids 按需編碼和解碼模型主鍵。hashid 不會儲存到資料庫中，因此查詢仍然使用模型的主鍵列。
 
 ## 安裝
 
@@ -9,7 +9,7 @@ composer require friendsofhyperf/model-hashids
 ```
 
 此元件依賴 `hashids/hashids`，以及 Hyperf 3.2 的 config、database 和 stringable 元件。僅在需要
-自訂 hashid 設定時發布設定檔：
+自定義 hashid 設定時釋出配置檔案：
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/model-hashids
@@ -33,7 +33,7 @@ class Item extends Model
 
 ## 配置
 
-發布後的檔案為 `config/autoload/hashids.php`。`default` 用於選擇連線，每個連線可設定 `salt`、
+釋出後的檔案為 `config/autoload/hashids.php`。`default` 用於選擇連線，每個連線可設定 `salt`、
 `length` 和 `alphabet`：
 
 ```php
@@ -49,7 +49,7 @@ return [
 ];
 ```
 
-未發布設定時，元件使用 `main` 連線、空 salt、最小長度 `0` 和上面顯示的字元表。
+未釋出配置時，元件使用 `main` 連線、空 salt、最小長度 `0` 和上面顯示的字元表。
 
 如需為某個模型選擇其他連線，請覆寫受保護的 `getHashidsConnection()` 方法：
 
@@ -88,12 +88,12 @@ Item::findByHashid($hashid);
 Item::findByHashidOrFail($hashid);
 ```
 
-`hashidToId()` 回傳 `hashids/hashids` 解碼出的第一個 ID；請傳入使用相同連線設定產生的有效
+`hashidToId()` 返回 `hashids/hashids` 解碼出的第一個 ID；請傳入使用相同連線設定生成的有效
 hashid。
 
 ### 序列化 Hashid
 
-`hashid` 存取器不會自動附加。可將它新增到模型的 `$appends` 屬性：
+`hashid` 訪問器不會自動追加。可將它新增到模型的 `$appends` 屬性：
 
 ```php
 class Item extends Model
@@ -104,7 +104,7 @@ class Item extends Model
 }
 ```
 
-也可以僅在需要時附加：
+也可以僅在需要時追加：
 
 ```php
 return $item->append('hashid')->toJson();
@@ -120,7 +120,7 @@ Route::get('/items/{item}', function (Item $item) {
 });
 ```
 
-當路由明確指定其他欄位時，解析會交給模型的父類別實作：
+當路由明確指定其他欄位時，解析會交給模型的父類實現：
 
 ```php
 Route::get('/items/{item:slug}', function (Item $item) {

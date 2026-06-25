@@ -9,25 +9,25 @@ composer require friendsofhyperf/mail
 php bin/hyperf.php vendor:publish friendsofhyperf/mail
 ```
 
-發布元件會建立 `config/autoload/mail.php`，並將郵件檢視元件複製到 `storage/views/mail`。
-如果應用尚無 Hyperf 檢視設定，請另行發布：
+釋出元件會建立 `config/autoload/mail.php`，並將郵件檢視元件複製到 `storage/views/mail`。
+如果應用尚無 Hyperf 檢視配置，請另行釋出：
 
 ```shell
 php bin/hyperf.php vendor:publish hyperf/view
 ```
 
-元件要求 PHP 8.1 或更高版本。部分功能需要可選相依套件：
+元件要求 PHP 8.1 或更高版本。部分功能需要可選依賴：
 
-- `hyperf/devtool` 提供 `gen:mail` 指令。
-- `aws/aws-sdk-php` 是 `ses` 和 `ses-v2` 傳輸的必要相依套件。
+- `hyperf/devtool` 提供 `gen:mail` 命令。
+- `aws/aws-sdk-php` 是 `ses` 和 `ses-v2` 傳輸的必要依賴。
 - Symfony API 郵件傳輸需要 `symfony/http-client`。
 - `symfony/mailgun-mailer` 和 `symfony/postmark-mailer` 提供對應傳輸。
 
-## 設定
+## 配置
 
-發布的設定預設使用 `log` mailer。透過 `MAIL_MAILER` 選擇 mailer，並在 `mail.mailers` 下設定。
+釋出的配置預設使用 `log` mailer。透過 `MAIL_MAILER` 選擇 mailer，並在 `mail.mailers` 下配置。
 支援的傳輸包括 `smtp`、`sendmail`、`mail`、`mailgun`、`ses`、`ses-v2`、`postmark`、`log`、
-`array`、`failover` 和 `roundrobin`。可使用 `Mail::extend()` 註冊自訂傳輸。
+`array`、`failover` 和 `roundrobin`。可使用 `Mail::extend()` 註冊自定義傳輸。
 
 ```php
 // config/autoload/mail.php
@@ -67,20 +67,20 @@ return [
 ];
 ```
 
-mailer 專屬的 `from`、`reply_to`、`to` 或 `return_path` 會覆寫對應全域地址。全域 `to` 地址還會在
-傳送前移除原始 To、Cc 和 Bcc 收件者，適合開發環境使用。
+mailer 專屬的 `from`、`reply_to`、`to` 或 `return_path` 會覆蓋對應全域性地址。全域性 `to` 地址還會在
+傳送前移除原始 To、Cc 和 Bcc 收件人，適合開發環境使用。
 
 ## 建立 Mailable
 
-安裝 `hyperf/devtool` 後，可產生基於檢視的 mailable；使用 `--markdown` 會同時建立 Markdown 範本：
+安裝 `hyperf/devtool` 後，可生成基於檢視的 mailable；使用 `--markdown` 會同時建立 Markdown 模板：
 
 ```shell
 php bin/hyperf.php gen:mail TestMail
 php bin/hyperf.php gen:mail TestMail --markdown
 ```
 
-`Envelope` 定義地址、主旨、標籤、中繼資料和 Symfony 訊息回呼。`Content` 接受 `view`（或其 `html`
-別名）、`text`、`markdown`、`htmlString` 和 `with`。mailable 中宣告的 public 屬性也會公開給檢視。
+`Envelope` 定義地址、主題、標籤、元資料和 Symfony 訊息回撥。`Content` 接受 `view`（或其 `html`
+別名）、`text`、`markdown`、`htmlString` 和 `with`。mailable 中宣告的 public 屬性也會暴露給檢視。
 
 ```php
 namespace App\Mail;
@@ -120,14 +120,14 @@ class TestMail extends Mailable
 }
 ```
 
-附件還可透過 `Attachment::fromData()`、`fromStorage()` 或 `fromStorageDisk()` 建立。可重複使用的附件
-物件可以實作 `FriendsOfHyperf\Mail\Contract\Attachable`。
+附件還可透過 `Attachment::fromData()`、`fromStorage()` 或 `fromStorageDisk()` 建立。可複用的附件
+物件可以實現 `FriendsOfHyperf\Mail\Contract\Attachable`。
 
 ## 傳送郵件
 
-`Mail::mailer()` 選擇已設定的 mailer；省略參數時使用 `mail.default`。`to()`、`cc()` 和 `bcc()`
-傳回待傳送郵件物件，其 `send()` 接受 `FriendsOfHyperf\Mail\Contract\Mailable`。傳送成功時傳回
-`SentMessage`；當 `MessageSending` 監聽器中止傳送時傳回 `null`。
+`Mail::mailer()` 選擇已配置的 mailer；省略引數時使用 `mail.default`。`to()`、`cc()` 和 `bcc()`
+返回待發送郵件物件，其 `send()` 接受 `FriendsOfHyperf\Mail\Contract\Mailable`。傳送成功時返回
+`SentMessage`；當 `MessageSending` 監聽器中止傳送時返回 `null`。
 
 ```php
 use App\Mail\TestMail;
@@ -139,8 +139,8 @@ Mail::mailer('smtp')
     ->send(new TestMail('Hyperf'));
 ```
 
-對於無需 mailable 類別的郵件，mailer 還提供 `html()`、`raw()`、`plain()`，以及接受檢視名稱或檢視陣列的
-`send()`。回呼會收到 `FriendsOfHyperf\Mail\Message`，其未知方法會轉送給底層 Symfony `Email`。
+對於無需 mailable 類的郵件，mailer 還提供 `html()`、`raw()`、`plain()`，以及接受檢視名或檢視陣列的
+`send()`。回撥會收到 `FriendsOfHyperf\Mail\Message`，其未知方法會轉發給底層 Symfony `Email`。
 
 ```php
 use FriendsOfHyperf\Mail\Facade\Mail;

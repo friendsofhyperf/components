@@ -1,7 +1,7 @@
 # Macros
 
-此元件為 Hyperf 的集合、上下文、請求和字串類別加入常用巨集。元件的 `ConfigProvider` 會在應用程式
-啟動時自動註冊 mixin，無需發布設定檔。
+該元件為 Hyperf 的集合、上下文、請求和字串類新增常用宏。元件的 `ConfigProvider` 會在應用啟動時
+自動註冊 mixin，無需釋出配置檔案。
 
 ## 安裝
 
@@ -11,16 +11,16 @@ composer require friendsofhyperf/macros
 
 ## 可選依賴
 
-已註冊的巨集會直接使用以下可選套件：
+已註冊的宏會直接使用以下可選包：
 
-- `hyperf/http-server`：所有 `Request` 巨集。
+- `hyperf/http-server`：所有 `Request` 宏。
 - `league/commonmark`：`Str::markdown`、`Str::inlineMarkdown` 及對應的 `Stringable` 方法。
 - `voku/portable-ascii`：`Str::transliterate`。
-- `friendsofhyperf/encryption`：`Stringable::encrypt` 和 `Stringable::decrypt`；同時需要設定
+- `friendsofhyperf/encryption`：`Stringable::encrypt` 和 `Stringable::decrypt`；同時需要配置
   encryption 元件。
 
-`composer.json` 還建議安裝用於產生 UUID 的 `ramsey/uuid`、用於產生 ULID 的 `symfony/uid` 和
-`opis/closure`。目前 mixin 原始碼不會直接呼叫這三個套件。
+`composer.json` 還建議安裝用於生成 UUID 的 `ramsey/uuid`、用於生成 ULID 的 `symfony/uid` 和
+`opis/closure`。當前 mixin 原始碼不會直接呼叫這三個包。
 
 ## 支援方法
 
@@ -38,9 +38,9 @@ composer require friendsofhyperf/macros
 - `Arr::sortByMany($array, $comparisons = [])`
 - `Arr::string(ArrayAccess|array $array, null|string|int $key, ?string $default = null)`
 
-帶型別的讀取方法支援點號路徑；解析出的值不符合目標型別時會擲回 `InvalidArgumentException`。
-`Arr::from` 可將支援的陣列、Enumerable/Arrayable 物件、可迭代物件、支援 JSON 的物件和一般物件
-轉換為陣列，但拒絕純量值。
+帶型別的讀取方法支援點號路徑；解析出的值不符合目標型別時會丟擲 `InvalidArgumentException`。
+`Arr::from` 可將受支援的陣列、Enumerable/Arrayable 物件、可遍歷物件、支援 JSON 的物件和普通物件
+轉換為陣列，但拒絕標量值。
 
 ### Hyperf\Collection\Collection
 
@@ -51,14 +51,14 @@ composer require friendsofhyperf/macros
 - `LazyCollection::collapseWithKeys()`
 
 `collapseWithKeys` 在保留鍵的同時展平巢狀陣列或集合。非陣列和非集合值會被忽略，後出現的重複鍵會
-覆寫先前的值。
+覆蓋先前的值。
 
 ### Hyperf\Context\Context
 
 - `Context::decrement(string $id, int $step = 1, ?int $coroutineId = null)`
 - `Context::increment(string $id, int $step = 1, ?int $coroutineId = null)`
 
-兩個方法都透過 `Context::override` 更新所選上下文中的值。缺少的值會先按零處理，再套用步長。
+兩個方法都透過 `Context::override` 更新選定上下文中的值。缺失的值會先按零處理，再應用步長。
 
 ### Hyperf\HttpServer\Request
 
@@ -102,8 +102,8 @@ composer require friendsofhyperf/macros
 - `Request::whenFilled($key, callable $callback, ?callable $default = null)`
 - `Request::whenHas($key, callable $callback, ?callable $default = null)`
 
-`Request::fake` 建立獨立的 PSR-7 `ServerRequest`，並可選擇將其傳給回呼。`merge` 和
-`mergeIfMissing` 會更新目前上下文中儲存的解析後輸入。`validate` 和 `validateWithBag` 會從容器
+`Request::fake` 建立獨立的 PSR-7 `ServerRequest`，並可選擇將其傳給回撥。`merge` 和
+`mergeIfMissing` 會更新當前上下文中儲存的解析後輸入。`validate` 和 `validateWithBag` 會從容器
 解析 Hyperf 的 `ValidatorFactoryInterface`。
 
 ### Hyperf\Stringable\Str
@@ -130,10 +130,10 @@ composer require friendsofhyperf/macros
 - `Stringable::toHtmlString()`
 - `Stringable::whenIsAscii($callback, $default = null)`
 
-多數 `Stringable` 轉換巨集會傳回新的 `Stringable` 執行個體，因此可以鏈式呼叫。兩個 `doesnt*`
-方法傳回布林值，`toHtmlString` 傳回 `FriendsOfHyperf\Support\HtmlString`。
+多數 `Stringable` 轉換宏返回新的 `Stringable` 例項，因此可以鏈式呼叫。兩個 `doesnt*` 方法返回
+布林值，`toHtmlString` 返回 `FriendsOfHyperf\Support\HtmlString`。
 
-## 範例
+## 示例
 
 ```php
 use Hyperf\Collection\Arr;

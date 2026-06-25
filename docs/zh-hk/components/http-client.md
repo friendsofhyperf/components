@@ -1,6 +1,6 @@
 # HTTP Client
 
-適用於 Hyperf 的 HTTP 客戶端組件，移植自 Laravel，並由 Guzzle 提供底層支援。
+適用於 Hyperf 的 HTTP 客户端組件，移植自 Laravel，並由 Guzzle 提供底層支持。
 
 ## 安裝
 
@@ -8,12 +8,12 @@
 composer require friendsofhyperf/http-client guzzlehttp/guzzle:^7.6
 ```
 
-`guzzlehttp/guzzle` 是本套件建議安裝的依賴，傳送請求時必須可用。無需發佈設定檔。
+`guzzlehttp/guzzle` 是本包建議安裝的依賴，發送請求時必須可用。無需發佈配置文件。
 
-## 傳送請求
+## 發送請求
 
-使用 `Http` 門面傳送 `GET`、`HEAD`、`POST`、`PUT`、`PATCH` 和 `DELETE`
-請求。請求內容預設以 JSON 格式傳送。
+使用 `Http` 門面發送 `GET`、`HEAD`、`POST`、`PUT`、`PATCH` 和 `DELETE`
+請求。請求體默認以 JSON 格式發送。
 
 ```php
 use FriendsOfHyperf\Http\Client\Http;
@@ -27,7 +27,7 @@ $response = Http::post('https://example.com/users', [
 ]);
 ```
 
-在 HTTP 方法前以鏈式方法設定待傳送請求：
+在 HTTP 方法前鏈式調用方法以配置待發送請求：
 
 ```php
 $response = Http::baseUrl('https://example.com')
@@ -40,8 +40,8 @@ $response = Http::baseUrl('https://example.com')
     ->get('/users/{user}', ['active' => true]);
 ```
 
-使用 `withUrlParameters()` 展開 URI 範本佔位符。使用 `asForm()`、`attach()`
-或 `withBody()` 分別傳送表單、多部分或原始請求內容：
+使用 `withUrlParameters()` 展開 URI 模板佔位符。使用 `asForm()`、`attach()`
+或 `withBody()` 分別發送表單、多部分或原始請求體：
 
 ```php
 $response = Http::withUrlParameters(['user' => 1])
@@ -55,13 +55,13 @@ $response = Http::attach('avatar', fopen('/path/to/avatar.jpg', 'r'), 'avatar.jp
     ->post('https://example.com/users/1/avatar');
 ```
 
-預設連線逾時為 10 秒，請求總逾時為 30 秒。可使用 `withOptions()` 傳入其他
-Guzzle 請求選項。只應在確實需要停用 TLS 憑證驗證時使用 `withoutVerifying()`。
+默認連接超時為 10 秒，請求總超時為 30 秒。可使用 `withOptions()` 傳入其他
+Guzzle 請求選項。僅在確實需要禁用 TLS 證書驗證時使用 `withoutVerifying()`。
 
 ## 重試
 
-`retry()` 的第一個參數可以是總嘗試次數，也可以是以毫秒為單位的退避延遲陣列。
-第二個參數可以是固定延遲或閉包。可選的第三個參數決定是否重試失敗回應或連線例外。
+`retry()` 的第一個參數可以是總嘗試次數，也可以是以毫秒為單位的退避延遲數組。
+第二個參數可以是固定延遲或閉包。可選的第三個參數決定是否重試失敗響應或連接異常。
 
 ```php
 use FriendsOfHyperf\Http\Client\PendingRequest;
@@ -74,11 +74,11 @@ $response = Http::retry(
 )->get('https://example.com');
 ```
 
-預設情況下，重試耗盡後會拋出例外。將第四個參數設為 `false` 可回傳最終失敗回應。
+默認情況下，重試耗盡後會拋出異常。將第四個參數設為 `false` 可返回最終失敗響應。
 
-## 回應與例外
+## 響應與異常
 
-請求回傳 `FriendsOfHyperf\Http\Client\Response`。常用回應方法包括：
+請求返回 `FriendsOfHyperf\Http\Client\Response`。常用響應方法包括：
 
 ```php
 $response->body();
@@ -99,8 +99,8 @@ $response->clientError();
 $response->serverError();
 ```
 
-HTTP 4xx 和 5xx 回應預設不會拋出例外。在待傳送請求或回應上呼叫 `throw()` 可拋出
-`RequestException`。連線失敗會拋出 `ConnectionException`。
+HTTP 4xx 和 5xx 響應默認不會拋出異常。在待發送請求或響應上調用 `throw()` 可拋出
+`RequestException`。連接失敗會拋出 `ConnectionException`。
 
 ```php
 use FriendsOfHyperf\Http\Client\RequestException;
@@ -112,9 +112,9 @@ try {
 }
 ```
 
-## 並行請求
+## 併發請求
 
-使用 `pool()` 並行傳送請求。使用 `as()` 為回應指定鍵名。
+使用 `pool()` 併發發送請求。使用 `as()` 為響應指定鍵名。
 
 ```php
 use FriendsOfHyperf\Http\Client\Http;
@@ -132,8 +132,8 @@ $responses['user']->status();
 
 ## 測試
 
-`fake()` 會攔截符合的請求，並記錄請求以供斷言。呼叫 `preventStrayRequests()`
-可拒絕沒有符合假回應的請求。
+`fake()` 會攔截匹配的請求，並記錄請求以供斷言。調用 `preventStrayRequests()`
+可拒絕沒有匹配假響應的請求。
 
 ```php
 use FriendsOfHyperf\Http\Client\Http;
@@ -150,8 +150,8 @@ Http::assertSent(fn (Request $request) => $request->url() === 'https://example.c
 Http::assertSentCount(1);
 ```
 
-重複請求需要回傳不同回應時，可使用回應序列。序列耗盡後預設拋出
-`OutOfBoundsException`，除非設定了 `whenEmpty()` 或 `dontFailWhenEmpty()`。
+重複請求需要返回不同響應時，可使用響應序列。序列耗盡後默認拋出
+`OutOfBoundsException`，除非配置了 `whenEmpty()` 或 `dontFailWhenEmpty()`。
 
 ```php
 Http::fakeSequence('example.com/*')
@@ -162,17 +162,17 @@ Http::fakeSequence('example.com/*')
 其他可用斷言包括 `assertNotSent()`、`assertNothingSent()`、`assertSentInOrder()`
 和 `assertSequencesAreEmpty()`。
 
-## 中介軟件與事件
+## 中間件與事件
 
 使用 `withMiddleware()`、`withRequestMiddleware()` 或 `withResponseMiddleware()`
-加入單次請求中介軟件。`Factory` 還提供 `globalMiddleware()`、
+添加單次請求中間件。`Factory` 還提供 `globalMiddleware()`、
 `globalRequestMiddleware()` 和 `globalResponseMiddleware()`。
 
-使用 PSR 事件分派器建立 `Factory` 時，組件會分派 `RequestSending`、
+使用 PSR 事件分發器創建 `Factory` 時，組件會分發 `RequestSending`、
 `ResponseReceived` 和 `ConnectionFailed` 事件。
 
-## Laravel 相容性
+## Laravel 兼容性
 
-本組件 API 基於 Laravel HTTP 客戶端，但實際可用 API 和行為以本組件源碼為準。
-可參閱 [Laravel HTTP Client 文件](https://laravel.com/docs/9.x/http-client)
-了解更多背景，並在使用前對照本組件確認 API。
+本組件 API 基於 Laravel HTTP 客户端，但實際可用 API 和行為以本組件源碼為準。
+可參閲 [Laravel HTTP Client 文檔](https://laravel.com/docs/9.x/http-client)
+瞭解更多背景，並在使用前對照本組件確認 API。

@@ -8,17 +8,17 @@
 composer require friendsofhyperf/recaptcha
 ```
 
-## 設定
+## 配置
 
-使用中介軟體或驗證規則前，先發佈 `config/autoload/recaptcha.php`：
+使用中間件或驗證規則前，先發布 `config/autoload/recaptcha.php`：
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/recaptcha
 ```
 
-透過 `RECAPTCHA_SECRET_V2_KEY` 設定 reCAPTCHA v2 金鑰，透過 `RECAPTCHA_SECRET_V3_KEY`
-設定 reCAPTCHA v3 金鑰，也可以直接修改發佈檔案中的 `v2.secret_key` 與 `v3.secret_key`。
-`default` 用於選擇未明確傳入版本時使用的版本。
+通過 `RECAPTCHA_SECRET_V2_KEY` 配置 reCAPTCHA v2 密鑰，通過 `RECAPTCHA_SECRET_V3_KEY`
+配置 reCAPTCHA v3 密鑰，也可以直接修改發佈文件中的 `v2.secret_key` 與 `v3.secret_key`。
+`default` 用於選擇未顯式傳入版本時使用的版本。
 
 ## 使用
 

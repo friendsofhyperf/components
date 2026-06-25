@@ -10,23 +10,23 @@ composer require friendsofhyperf/notification-easysms
 
 元件依賴 `friendsofhyperf/notification` 和 `overtrue/easy-sms:^3.0`，Composer 會自動安裝。
 
-## 設定
+## 配置
 
-發佈 `config/autoload/easy_sms.php`，然後參照 EasySms 文件設定預設策略、預設閘道和閘道憑證：
+釋出 `config/autoload/easy_sms.php`，然後參照 EasySms 文件配置預設策略、預設閘道器和閘道器憑據：
 
 ```shell
 php bin/hyperf.php vendor:publish friendsofhyperf/notification-easysms
 ```
 
-元件會使用完整的 `easy_sms` 設定陣列建立 `EasySms` 實例。
+元件會使用完整的 `easy_sms` 配置陣列建立 `EasySms` 例項。
 
 ## 使用
 
-應用程式啟動時，元件會以 `easy-sms` 通道名稱註冊 `EasySmsChannel`。
+應用啟動時，元件會以 `easy-sms` 通道名註冊 `EasySmsChannel`。
 
 ### 定義通知路由
 
-在接收者中使用 `Notifiable` trait，並定義 `routeNotificationForSms()`。此方法應回傳電話號碼字串。
+在接收者中使用 `Notifiable` trait，並定義 `routeNotificationForSms()`。該方法應返回手機號碼字串。
 
 ```php
 <?php
@@ -49,12 +49,12 @@ class User extends Model
 }
 ```
 
-雖然通知通道名稱為 `easy-sms`，但它會透過 `routeNotificationFor('sms', $notification)` 取得接收者，
+雖然通知通道名為 `easy-sms`，但它會透過 `routeNotificationFor('sms', $notification)` 獲取接收者，
 因此實際呼叫的方法是 `routeNotificationForSms()`。
 
 ### 建立簡訊通知
 
-通知必須實作 `Smsable`。`via()` 應回傳 `easy-sms`，`toSms()` 應回傳 EasySms 接受的陣列或
+通知必須實現 `Smsable`。`via()` 應返回 `easy-sms`，`toSms()` 應返回 EasySms 接受的陣列或
 `Overtrue\EasySms\Message`。
 
 ```php
@@ -92,8 +92,8 @@ class VerificationCodeNotification extends Notification implements Smsable
 }
 ```
 
-EasySms 會將陣列酬載轉換為 `Message`。支援的訊息屬性包括 `content`、`template`、`data`、`type`
-和 `gateways`。需要透過 `setGateways()` 等方法設定訊息時，可直接回傳 `Message`：
+EasySms 會將陣列載荷轉換為 `Message`。支援的訊息屬性包括 `content`、`template`、`data`、`type`
+和 `gateways`。需要透過 `setGateways()` 等方法配置訊息時，可直接返回 `Message`：
 
 ```php
 public function toSms(mixed $notifiable): array|Message
@@ -105,6 +105,6 @@ public function toSms(mixed $notifiable): array|Message
 }
 ```
 
-訊息未指定閘道時，EasySms 會使用 `config/autoload/easy_sms.php` 中的 `default.gateways`。傳送結果是
-EasySms 回傳的閘道結果陣列，並會傳給通知調度器。如果通知未實作 `Smsable`，通道會拋出
+訊息未指定閘道器時，EasySms 會使用 `config/autoload/easy_sms.php` 中的 `default.gateways`。傳送結果是
+EasySms 返回的閘道器結果陣列，並會傳給通知排程器。如果通知未實現 `Smsable`，通道會丟擲
 `RuntimeException`。
