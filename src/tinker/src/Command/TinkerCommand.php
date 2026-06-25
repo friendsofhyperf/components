@@ -18,6 +18,7 @@ use Psr\Container\ContainerInterface;
 use Psy\Configuration;
 use Psy\Shell;
 use Psy\VersionUpdater\Checker;
+use Psy\ManualUpdater\Checker as ManualUpdaterChecker;
 use Symfony\Component\Console\Command\Command as SymfonyCommand;
 use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Exception\LogicException;
@@ -56,6 +57,7 @@ class TinkerCommand extends HyperfCommand
 
         $config = Configuration::fromInput($this->input);
         $config->setUpdateCheck(Checker::NEVER);
+        $config->setUpdateManualCheck(ManualUpdaterChecker::NEVER);
         $config->setUsePcntl((bool) $this->config->get('tinker.usePcntl', false));
         $config->getPresenter()->addCasters(
             $this->getCasters()
