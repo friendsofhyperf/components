@@ -42,6 +42,8 @@ class CoHttpTransport implements TransportInterface
 
     protected int $channelSize = 65535;
 
+    protected float $timeout = -1;
+
     public function __construct(
         protected ContainerInterface $container,
     ) {
@@ -50,9 +52,15 @@ class CoHttpTransport implements TransportInterface
         if ($channelSize > 0) {
             $this->channelSize = $channelSize;
         }
+
         $concurrentLimit = (int) $config->get('sentry.transport_concurrent_limit', 1000);
         if ($concurrentLimit > 0) {
             $this->concurrent = new Concurrent($concurrentLimit);
+        }
+
+        $timeout = (float) $config->get('sentry.transport_timeout', -1);
+        if ($timeout > 0) {
+            $this->timeout = $timeout;
         }
     }
 
@@ -61,7 +69,8 @@ class CoHttpTransport implements TransportInterface
         $this->loop();
 
         $chan = $this->chan;
-        $chan?->push($event);
+        // push event to channel, if timeout is set, it will wait for the specified time
+        $chan?->push($event, $this->timeout);
 
         return new Result(ResultStatus::success(), $event);
     }

@@ -184,6 +184,7 @@ return [
     // Transport configuration
     'transport_channel_size' => (int) env('SENTRY_TRANSPORT_CHANNEL_SIZE', 65535),
     'transport_concurrent_limit' => (int) env('SENTRY_TRANSPORT_CONCURRENT_LIMIT', 1000),
+    'transport_timeout' => (float) env('SENTRY_TRANSPORT_TIMEOUT', -1),
 
     'http_timeout' => (float) env('SENTRY_HTTP_TIMEOUT', 2.0),
 ];
