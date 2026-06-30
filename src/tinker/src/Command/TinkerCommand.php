@@ -57,7 +57,12 @@ class TinkerCommand extends HyperfCommand
 
         $config = Configuration::fromInput($this->input);
         $config->setUpdateCheck(Checker::NEVER);
-        $config->setUpdateManualCheck(ManualUpdaterChecker::NEVER);
+        if (
+            method_exists($config, 'setUpdateManualCheck')
+            && class_exists(ManualUpdaterChecker::class)
+        ) {
+            $config->setUpdateManualCheck(ManualUpdaterChecker::NEVER);
+        }
         $config->setUsePcntl((bool) $this->config->get('tinker.usePcntl', false));
         $config->getPresenter()->addCasters(
             $this->getCasters()
