@@ -65,12 +65,15 @@ class EventHandleListener implements ListenerInterface
 
     protected array $ignoreCommands = [];
 
+    protected array $ignoreAmqpConsumer = [];
+
     public function __construct(
         protected ContainerInterface $container,
         protected ConfigInterface $config,
         protected Feature $feature
     ) {
         $this->ignoreCommands = (array) $this->config->get('sentry.ignore_commands', []);
+        $this->ignoreAmqpConsumer = (array) $this->config->get('sentry.ignore_amqp_consumer', []);
     }
 
     public function listen(): array
@@ -559,6 +562,10 @@ class EventHandleListener implements ListenerInterface
 
         /** @var ConsumerMessage $message */
         $message = $event->getMessage();
+        if (in_array($message::class, $this->ignoreAmqpConsumer, true)) {
+            return;
+        }
+
         $carrier = null;
 
         if (method_exists($event, 'getAMQPMessage')) {

@@ -133,6 +133,11 @@ return [
         'vendor:publish',
     ],
 
+    // AMQP consumers to ignore for performance monitoring
+    'ignore_amqp_consumer' => [
+        // App\Amqp\Consumers\DemoConsumer::class,
+    ],
+
     // Performance monitoring specific configuration
     'tracing' => [
         'amqp' => env('SENTRY_TRACING_ENABLE_AMQP', true),
