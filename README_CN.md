@@ -5,6 +5,7 @@
 [![License](https://poser.pugx.org/friendsofhyperf/components/license)](https://packagist.org/packages/friendsofhyperf/components)
 [![PHP Version Require](https://poser.pugx.org/friendsofhyperf/components/require/php)](https://packagist.org/packages/friendsofhyperf/components)
 [![Hyperf Version Require](https://img.shields.io/badge/hyperf-%3E%3D3.2.0-brightgreen.svg?style=flat-square)](https://packagist.org/packages/friendsofhyperf/components)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/friendsofhyperf/components/badge)](https://scorecard.dev/viewer/?uri=github.com/friendsofhyperf/components)
 [![Ask DeepWiki](https://deepwiki.com/badge.svg)](https://deepwiki.com/friendsofhyperf/components)
 
 [English](README.md)
