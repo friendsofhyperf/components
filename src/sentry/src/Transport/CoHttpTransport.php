@@ -70,7 +70,7 @@ class CoHttpTransport implements TransportInterface
 
         $chan = $this->chan;
         // push event to channel, if timeout is set, it will wait for the specified time
-        $result = $chan?->push($event, $this->timeout) ? ResultStatus::success() : ResultStatus::skipped();
+        $result = $chan?->push($event, $this->timeout) ? ResultStatus::success() : ResultStatus::failed();
 
         return new Result($result, $event);
     }
