@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.1.80 - 2026-07-13
+
+### What's Changed
+
+* 🐛 fix(sentry): flush metrics in watchers and release captured refs in defer by @huangdijia in https://github.com/friendsofhyperf/components/pull/1071
+* feat(sentry): add transport push timeout config by @huangdijia in https://github.com/friendsofhyperf/components/pull/1074
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.1.79...v3.1.80
+
 ## v3.1.79 - 2026-06-17
 
 ### What's Changed
