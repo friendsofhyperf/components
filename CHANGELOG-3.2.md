@@ -1,5 +1,14 @@
 # Changelog
 
+## v3.2.2 - 2026-07-13
+
+### What's Changed
+
+* chore(deps): 更新 psy/psysh 依赖并配置手动更新检查 by @tw2066 in https://github.com/friendsofhyperf/components/pull/1073
+* fix(sentry): report skipped result when channel push fails by @huangdijia in https://github.com/friendsofhyperf/components/pull/1076
+
+**Full Changelog**: https://github.com/friendsofhyperf/components/compare/v3.2.1...v3.2.2
+
 ## v3.2.1 - 2026-06-17
 
 ### What's Changed
