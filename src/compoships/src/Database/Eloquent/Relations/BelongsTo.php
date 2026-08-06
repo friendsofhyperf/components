@@ -19,7 +19,8 @@ use Hyperf\Database\Model\Relations\Constraint;
 
 /**
  * @template TRelatedModel of Model
- * @extends BaseBelongsTo<TRelatedModel>
+ * @template TDeclaringModel of Model
+ * @extends BaseBelongsTo<TRelatedModel, TDeclaringModel>
  */
 class BelongsTo extends BaseBelongsTo
 {

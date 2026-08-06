@@ -8,6 +8,8 @@ declare(strict_types=1);
  * @document https://github.com/friendsofhyperf/components/blob/main/README.md
  * @contact  huangdijia@gmail.com
  */
+// Keep named @var assertions that bridge invariant relation generics across Hyperf 3.2.x.
+// @php-cs-fixer-ignore return_assignment
 
 namespace FriendsOfHyperf\Compoships\Database\Eloquent\Concerns;
 
@@ -50,11 +52,13 @@ trait HasRelationships
     /**
      * Define a one-to-one relationship.
      *
-     * @param string $related
+     * @template TRelatedModel of Model
+     *
+     * @param class-string<TRelatedModel> $related
      * @param null|array|string $foreignKey
      * @param null|array|string $localKey
      *
-     * @return HasOne
+     * @return HasOne<TRelatedModel, static>
      */
     public function hasOne($related, $foreignKey = null, $localKey = null)
     {
@@ -62,6 +66,7 @@ trait HasRelationships
             $this->validateRelatedModel($related);
         }
 
+        /** @var TRelatedModel $instance */
         $instance = $this->newRelatedInstance($related);
 
         $foreignKey = $foreignKey ?: $this->getForeignKey();
@@ -78,17 +83,22 @@ trait HasRelationships
 
         $localKey = $localKey ?: $this->getKeyName();
 
-        return $this->newHasOne($instance->newQuery(), $this, $foreignKeys ?: $foreignKey, $localKey);
+        /** @var HasOne<TRelatedModel, static> $relation */
+        $relation = $this->newHasOne($instance->newQuery(), $this, $foreignKeys ?: $foreignKey, $localKey);
+
+        return $relation;
     }
 
     /**
      * Define a one-to-many relationship.
      *
-     * @param string $related
+     * @template TRelatedModel of Model
+     *
+     * @param class-string<TRelatedModel> $related
      * @param null|array|string $foreignKey
      * @param null|array|string $localKey
      *
-     * @return HasMany
+     * @return HasMany<TRelatedModel, static>
      */
     public function hasMany($related, $foreignKey = null, $localKey = null)
     {
@@ -96,6 +106,7 @@ trait HasRelationships
             $this->validateRelatedModel($related);
         }
 
+        /** @var TRelatedModel $instance */
         $instance = $this->newRelatedInstance($related);
 
         $foreignKey = $foreignKey ?: $this->getForeignKey();
@@ -112,18 +123,23 @@ trait HasRelationships
 
         $localKey = $localKey ?: $this->getKeyName();
 
-        return $this->newHasMany($instance->newQuery(), $this, $foreignKeys ?: $foreignKey, $localKey);
+        /** @var HasMany<TRelatedModel, static> $relation */
+        $relation = $this->newHasMany($instance->newQuery(), $this, $foreignKeys ?: $foreignKey, $localKey);
+
+        return $relation;
     }
 
     /**
      * Define an inverse one-to-one or many relationship.
      *
-     * @param string $related
+     * @template TRelatedModel of Model
+     *
+     * @param class-string<TRelatedModel> $related
      * @param null|array|string $foreignKey
      * @param null|array|string $ownerKey
      * @param string $relation
      *
-     * @return BelongsTo
+     * @return BelongsTo<TRelatedModel, static>
      */
     public function belongsTo($related, $foreignKey = null, $ownerKey = null, $relation = null)
     {
@@ -138,6 +154,7 @@ trait HasRelationships
             $relation = $this->guessBelongsToRelation();
         }
 
+        /** @var TRelatedModel $instance */
         $instance = $this->newRelatedInstance($related);
 
         // If no foreign key was supplied, we can use a backtrace to guess the proper
@@ -152,53 +169,78 @@ trait HasRelationships
         // actually be responsible for retrieving and hydrating every relations.
         $ownerKey = $ownerKey ?: $instance->getKeyName();
 
-        return $this->newBelongsTo($instance->newQuery(), $this, $foreignKey, $ownerKey, $relation);
+        /** @var BelongsTo<TRelatedModel, static> $belongsTo */
+        $belongsTo = $this->newBelongsTo($instance->newQuery(), $this, $foreignKey, $ownerKey, $relation);
+
+        return $belongsTo;
     }
 
     /**
      * Instantiate a new HasOne relationship.
      *
+     * @template TRelatedModel of Model
+     * @template TDeclaringModel of Model
+     *
+     * @param Builder<TRelatedModel> $query
+     * @param TDeclaringModel $parent
      * @param array|string $foreignKey
      * @param array|string $localKey
      *
-     * @return HasOne
+     * @return HasOne<TRelatedModel, TDeclaringModel>
      */
     protected function newHasOne(Builder $query, Model $parent, $foreignKey, $localKey)
     {
-        return new HasOne($query, $parent, $foreignKey, $localKey);
+        /** @var HasOne<TRelatedModel, TDeclaringModel> $relation */
+        $relation = new HasOne($query, $parent, $foreignKey, $localKey);
+
+        return $relation;
     }
 
     /**
      * Instantiate a new HasMany relationship.
      *
+     * @template TRelatedModel of Model
+     * @template TDeclaringModel of Model
+     *
+     * @param Builder<TRelatedModel> $query
+     * @param TDeclaringModel $parent
      * @param array|string $foreignKey
      * @param array|string $localKey
      *
-     * @return HasMany
+     * @return HasMany<TRelatedModel, TDeclaringModel>
      */
     protected function newHasMany(Builder $query, Model $parent, $foreignKey, $localKey)
     {
-        return new HasMany($query, $parent, $foreignKey, $localKey);
+        /** @var HasMany<TRelatedModel, TDeclaringModel> $relation */
+        $relation = new HasMany($query, $parent, $foreignKey, $localKey);
+
+        return $relation;
     }
 
     /**
      * Instantiate a new BelongsTo relationship.
      *
+     * @template TRelatedModel of Model
+     *
+     * @param Builder<TRelatedModel> $query
      * @param array|string $foreignKey
      * @param array|string $ownerKey
      * @param string $relation
      *
-     * @return BelongsTo
+     * @return BelongsTo<TRelatedModel, static>
      */
     protected function newBelongsTo(Builder $query, Model $child, $foreignKey, $ownerKey, $relation)
     {
-        return new BelongsTo($query, $child, $foreignKey, $ownerKey, $relation);
+        /** @var BelongsTo<TRelatedModel, static> $relationInstance */
+        $relationInstance = new BelongsTo($query, $child, $foreignKey, $ownerKey, $relation);
+
+        return $relationInstance;
     }
 
     /**
      * Honor DB::raw instances.
      *
-     * @param string $instance
+     * @param Model $instance
      * @param string $foreignKey
      *
      * @return Expression|string

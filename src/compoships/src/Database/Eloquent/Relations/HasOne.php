@@ -17,7 +17,8 @@ use Hyperf\Database\Model\Relations\HasOne as BaseHasOne;
 
 /**
  * @template TRelatedModel of Model
- * @extends BaseHasOne<TRelatedModel>
+ * @template TDeclaringModel of Model
+ * @extends BaseHasOne<TRelatedModel, TDeclaringModel>
  */
 class HasOne extends BaseHasOne
 {

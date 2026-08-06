@@ -12,11 +12,13 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Compoships\Database\Eloquent\Relations;
 
 use Hyperf\Database\Model\Collection;
+use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\HasMany as BaseHasMany;
 
 /**
  * @template TRelatedModel of Model
- * @extends BaseHasMany<TRelatedModel>
+ * @template TDeclaringModel of Model
+ * @extends BaseHasMany<TRelatedModel, TDeclaringModel>
  */
 class HasMany extends BaseHasMany
 {

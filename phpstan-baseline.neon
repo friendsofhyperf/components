@@ -26,38 +26,8 @@ parameters:
 			path: src/compoships/src/Database/Eloquent/Model.php
 
 		-
-			message: "#^Return type \\(FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\BelongsTo\\) of method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Model\\:\\:belongsTo\\(\\) should be compatible with return type \\(Hyperf\\\\Database\\\\Model\\\\Relations\\\\BelongsTo\\<Hyperf\\\\Database\\\\Model\\\\Model, \\$this\\(Hyperf\\\\Database\\\\Model\\\\Model\\)\\>\\) of method Hyperf\\\\Database\\\\Model\\\\Model\\:\\:belongsTo\\(\\)$#"
-			count: 1
-			path: src/compoships/src/Database/Eloquent/Model.php
-
-		-
-			message: "#^Return type \\(FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\BelongsTo\\) of method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Model\\:\\:newBelongsTo\\(\\) should be compatible with return type \\(Hyperf\\\\Database\\\\Model\\\\Relations\\\\BelongsTo\\<Hyperf\\\\Database\\\\Model\\\\Model, \\$this\\(Hyperf\\\\Database\\\\Model\\\\Model\\)\\>\\) of method Hyperf\\\\Database\\\\Model\\\\Model\\:\\:newBelongsTo\\(\\)$#"
-			count: 1
-			path: src/compoships/src/Database/Eloquent/Model.php
-
-		-
-			message: "#^Return type \\(FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasMany\\) of method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Model\\:\\:hasMany\\(\\) should be compatible with return type \\(Hyperf\\\\Database\\\\Model\\\\Relations\\\\HasMany\\<Hyperf\\\\Database\\\\Model\\\\Model, \\$this\\(Hyperf\\\\Database\\\\Model\\\\Model\\)\\>\\) of method Hyperf\\\\Database\\\\Model\\\\Model\\:\\:hasMany\\(\\)$#"
-			count: 1
-			path: src/compoships/src/Database/Eloquent/Model.php
-
-		-
-			message: "#^Return type \\(FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasMany\\) of method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Model\\:\\:newHasMany\\(\\) should be compatible with return type \\(Hyperf\\\\Database\\\\Model\\\\Relations\\\\HasMany\\<Hyperf\\\\Database\\\\Model\\\\Model, Hyperf\\\\Database\\\\Model\\\\Model\\>\\) of method Hyperf\\\\Database\\\\Model\\\\Model\\:\\:newHasMany\\(\\)$#"
-			count: 1
-			path: src/compoships/src/Database/Eloquent/Model.php
-
-		-
-			message: "#^Return type \\(FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasOne\\) of method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Model\\:\\:hasOne\\(\\) should be compatible with return type \\(Hyperf\\\\Database\\\\Model\\\\Relations\\\\HasOne\\<Hyperf\\\\Database\\\\Model\\\\Model, \\$this\\(Hyperf\\\\Database\\\\Model\\\\Model\\)\\>\\) of method Hyperf\\\\Database\\\\Model\\\\Model\\:\\:hasOne\\(\\)$#"
-			count: 1
-			path: src/compoships/src/Database/Eloquent/Model.php
-
-		-
 			message: "#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#"
 			count: 9
-			path: src/compoships/src/Database/Eloquent/Relations/BelongsTo.php
-
-		-
-			message: "#^Generic type Hyperf\\\\Database\\\\Model\\\\Relations\\\\BelongsTo\\<Hyperf\\\\Database\\\\Model\\\\Model\\> in PHPDoc tag @extends does not specify all template types of class Hyperf\\\\Database\\\\Model\\\\Relations\\\\BelongsTo\\: TRelatedModel, TDeclaringModel$#"
-			count: 1
 			path: src/compoships/src/Database/Eloquent/Relations/BelongsTo.php
 
 		-
@@ -91,32 +61,12 @@ parameters:
 			path: src/compoships/src/Database/Eloquent/Relations/BelongsTo.php
 
 		-
-			message: "#^Call to an undefined method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasMany\\<TRelatedModel of FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\Model\\>\\:\\:qualifyRelatedColumn\\(\\)\\.$#"
-			count: 1
-			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
-
-		-
-			message: "#^Call to an undefined method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasMany\\<TRelatedModel of FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\Model\\>\\:\\:qualifySubSelectColumn\\(\\)\\.$#"
-			count: 1
-			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
-
-		-
-			message: "#^Call to an undefined static method Hyperf\\\\Database\\\\Model\\\\Relations\\\\HasMany\\<TRelatedModel of FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\Model, Hyperf\\\\Database\\\\Model\\\\Model\\>\\:\\:addOneOfManyJoinSubQueryConstraints\\(\\)\\.$#"
-			count: 1
-			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
-
-		-
 			message: "#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#"
 			count: 9
 			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
 
 		-
 			message: "#^Call to method getTable\\(\\) on an unknown class FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\Model\\.$#"
-			count: 1
-			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
-
-		-
-			message: "#^Generic type Hyperf\\\\Database\\\\Model\\\\Relations\\\\HasMany\\<FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\Model\\> in PHPDoc tag @extends does not specify all template types of class Hyperf\\\\Database\\\\Model\\\\Relations\\\\HasMany\\: TRelatedModel, TDeclaringModel$#"
 			count: 1
 			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
 
@@ -156,28 +106,8 @@ parameters:
 			path: src/compoships/src/Database/Eloquent/Relations/HasMany.php
 
 		-
-			message: "#^Call to an undefined method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasOne\\<TRelatedModel of Hyperf\\\\Database\\\\Model\\\\Model\\>\\:\\:qualifyRelatedColumn\\(\\)\\.$#"
-			count: 1
-			path: src/compoships/src/Database/Eloquent/Relations/HasOne.php
-
-		-
-			message: "#^Call to an undefined method FriendsOfHyperf\\\\Compoships\\\\Database\\\\Eloquent\\\\Relations\\\\HasOne\\<TRelatedModel of Hyperf\\\\Database\\\\Model\\\\Model\\>\\:\\:qualifySubSelectColumn\\(\\)\\.$#"
-			count: 1
-			path: src/compoships/src/Database/Eloquent/Relations/HasOne.php
-
-		-
-			message: "#^Call to an undefined static method Hyperf\\\\Database\\\\Model\\\\Relations\\\\HasOne\\<TRelatedModel of Hyperf\\\\Database\\\\Model\\\\Model, Hyperf\\\\Database\\\\Model\\\\Model\\>\\:\\:addOneOfManyJoinSubQueryConstraints\\(\\)\\.$#"
-			count: 1
-			path: src/compoships/src/Database/Eloquent/Relations/HasOne.php
-
-		-
 			message: "#^Call to function is_array\\(\\) with string will always evaluate to false\\.$#"
 			count: 11
-			path: src/compoships/src/Database/Eloquent/Relations/HasOne.php
-
-		-
-			message: "#^Generic type Hyperf\\\\Database\\\\Model\\\\Relations\\\\HasOne\\<Hyperf\\\\Database\\\\Model\\\\Model\\> in PHPDoc tag @extends does not specify all template types of class Hyperf\\\\Database\\\\Model\\\\Relations\\\\HasOne\\: TRelatedModel, TDeclaringModel$#"
-			count: 1
 			path: src/compoships/src/Database/Eloquent/Relations/HasOne.php
 
 		-

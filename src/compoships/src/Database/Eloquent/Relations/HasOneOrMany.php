@@ -15,7 +15,6 @@ use Hyperf\Database\Model\Builder;
 use Hyperf\Database\Model\Collection;
 use Hyperf\Database\Model\Model;
 use Hyperf\Database\Model\Relations\Constraint;
-use Hyperf\Database\Query\JoinClause;
 
 use function Hyperf\Collection\collect;
 use function Hyperf\Collection\last;
@@ -159,20 +158,6 @@ trait HasOneOrMany
                         return $hash . '.' . $k;
                     }, $this->getForeignKeyName()) : $hash . '.' . $this->getForeignKeyName()
             );
-    }
-
-    /**
-     * Add join query constraints for one of many relationships.
-     */
-    public function addOneOfManyJoinSubQueryConstraints(JoinClause $join)
-    {
-        if (is_array($this->foreignKey)) {
-            foreach ($this->foreignKey as $key) {
-                $join->on($this->qualifySubSelectColumn($key), '=', $this->qualifyRelatedColumn($key));
-            }
-        } else {
-            parent::addOneOfManyJoinSubQueryConstraints($join);
-        }
     }
 
     /**
