@@ -189,14 +189,22 @@ SENTRY_CRONS_TIMEZONE=UTC
 
 ## 传输
 
-默认绑定使用 `FriendsOfHyperf\Sentry\Transport\CoHttpTransport`。使用下面的环境
-变量调整队列和并发：
+默认绑定使用 `FriendsOfHyperf\Sentry\Transport\CoHttpTransport`。它使用有界队列和固定
+worker 池：
 
 ```env
-SENTRY_TRANSPORT_CHANNEL_SIZE=65535
-SENTRY_TRANSPORT_CONCURRENT_LIMIT=1000
+SENTRY_TRANSPORT_CHANNEL_SIZE=512
+SENTRY_TRANSPORT_CONCURRENT_LIMIT=32
+SENTRY_TRANSPORT_TIMEOUT=0
 SENTRY_HTTP_TIMEOUT=2.0
 ```
+
+`SENTRY_TRANSPORT_TIMEOUT=0` 会在队列已满时立即失败并丢弃遥测数据，避免 Sentry 或网络变慢
+时持续占用应用内存。如需有限背压，可设置较小的正数。`CoHttpTransport::getStats()` 可查看已接收、
+已丢弃、排队中、发送中和 worker 数量。
+
+升级不会覆盖已经发布的配置文件。如果现有应用仍使用之前的 `65535`、`1000` 和 `-1`，需手动
+更新这些值才能启用新的有界默认配置。
 
 ## Sentry 开发文档
 

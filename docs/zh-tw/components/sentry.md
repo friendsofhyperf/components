@@ -187,14 +187,22 @@ SENTRY_CRONS_TIMEZONE=UTC
 
 ## 傳輸
 
-預設繫結使用 `FriendsOfHyperf\Sentry\Transport\CoHttpTransport`。使用下面的環境
-變數調整佇列和併發：
+預設繫結使用 `FriendsOfHyperf\Sentry\Transport\CoHttpTransport`。它使用有界佇列和固定
+worker 池：
 
 ```env
-SENTRY_TRANSPORT_CHANNEL_SIZE=65535
-SENTRY_TRANSPORT_CONCURRENT_LIMIT=1000
+SENTRY_TRANSPORT_CHANNEL_SIZE=512
+SENTRY_TRANSPORT_CONCURRENT_LIMIT=32
+SENTRY_TRANSPORT_TIMEOUT=0
 SENTRY_HTTP_TIMEOUT=2.0
 ```
+
+`SENTRY_TRANSPORT_TIMEOUT=0` 會在佇列已滿時立即失敗並丟棄遙測資料，避免 Sentry 或網路變慢
+時持續佔用應用程式記憶體。如需有限背壓，可設定較小的正數。`CoHttpTransport::getStats()` 可查看
+已接收、已丟棄、排隊中、傳送中和 worker 數量。
+
+升級不會覆蓋已經發布的設定檔。如果現有應用程式仍使用之前的 `65535`、`1000` 和 `-1`，需手動
+更新這些值才能啟用新的有界預設設定。
 
 ## Sentry 開發文件
 

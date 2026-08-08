@@ -14,7 +14,6 @@ namespace FriendsOfHyperf\Sentry\Transport;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
-use Hyperf\Coroutine\Concurrent;
 use Hyperf\Engine\Channel;
 use Hyperf\Engine\Coroutine;
 use Psr\Container\ContainerInterface;
@@ -36,48 +35,102 @@ class CoHttpTransport implements TransportInterface
 
     protected ?Coroutine $workerWatcher = null;
 
-    protected ?Concurrent $concurrent = null;
-
     protected ?ClientBuilder $clientBuilder = null;
 
-    protected int $channelSize = 65535;
+    protected ?TransportInterface $httpTransport = null;
 
-    protected float $timeout = -1;
+    protected int $channelSize = 512;
+
+    protected int $workerCount = 32;
+
+    protected float $timeout = 0;
+
+    protected int $inFlight = 0;
+
+    protected int $accepted = 0;
+
+    protected int $dropped = 0;
 
     public function __construct(
         protected ContainerInterface $container,
     ) {
         $config = $this->container->get(ConfigInterface::class);
-        $channelSize = (int) $config->get('sentry.transport_channel_size', 65535);
+        $channelSize = (int) $config->get('sentry.transport_channel_size', 512);
         if ($channelSize > 0) {
             $this->channelSize = $channelSize;
         }
 
-        $concurrentLimit = (int) $config->get('sentry.transport_concurrent_limit', 1000);
+        $concurrentLimit = (int) $config->get('sentry.transport_concurrent_limit', 32);
         if ($concurrentLimit > 0) {
-            $this->concurrent = new Concurrent($concurrentLimit);
+            $this->workerCount = $concurrentLimit;
         }
 
-        $timeout = (float) $config->get('sentry.transport_timeout', -1);
-        if ($timeout > 0) {
+        $timeout = (float) $config->get('sentry.transport_timeout', 0);
+        if ($timeout >= 0) {
             $this->timeout = $timeout;
         }
     }
 
     public function send(Event $event): Result
     {
+        if ($this->workerExited) {
+            ++$this->dropped;
+
+            return new Result(ResultStatus::skipped(), $event);
+        }
+
         $this->loop();
 
         $chan = $this->chan;
-        // push event to channel, if timeout is set, it will wait for the specified time
-        $result = $chan?->push($event, $this->timeout) ? ResultStatus::success() : ResultStatus::skipped();
+        // Swoole treats a zero timeout as an infinite wait, so check capacity first
+        // to provide fail-fast backpressure without suspending the application coroutine.
+        if ($this->timeout === 0.0 && $chan !== null && $chan->getLength() >= $chan->getCapacity()) {
+            ++$this->dropped;
 
-        return new Result($result, $event);
+            return new Result(ResultStatus::skipped(), $event);
+        }
+
+        if (! $chan?->push($event, $this->timeout)) {
+            ++$this->dropped;
+
+            return new Result(ResultStatus::skipped(), $event);
+        }
+
+        ++$this->accepted;
+
+        return new Result(ResultStatus::success(), $event);
     }
 
     public function close(?int $timeout = null): Result
     {
+        if ($timeout === null || $timeout <= 0) {
+            return new Result(ResultStatus::success());
+        }
+
+        $deadline = microtime(true) + $timeout;
+        while (! $this->isIdle()) {
+            if (microtime(true) >= $deadline) {
+                return new Result(ResultStatus::skipped());
+            }
+
+            msleep(1);
+        }
+
         return new Result(ResultStatus::success());
+    }
+
+    /**
+     * @return array{accepted: int, dropped: int, queued: int, in_flight: int, workers: int}
+     */
+    public function getStats(): array
+    {
+        return [
+            'accepted' => $this->accepted,
+            'dropped' => $this->dropped,
+            'queued' => $this->chan?->getLength() ?? 0,
+            'in_flight' => $this->inFlight,
+            'workers' => $this->workerCount,
+        ];
     }
 
     protected function loop(): void
@@ -92,55 +145,61 @@ class CoHttpTransport implements TransportInterface
 
         $this->chan = new Channel($this->channelSize);
 
-        Coroutine::create(function () {
-            while (true) {
-                $transport = $this->makeHttpTransport();
-                $logger = $this->clientBuilder?->getLogger();
+        for ($worker = 0; $worker < $this->workerCount; ++$worker) {
+            Coroutine::create(fn () => $this->runWorker());
+        }
 
-                while (true) {
-                    /** @var null|Event|false $event */
-                    $event = $this->chan?->pop();
+        $this->watchWorkerExit();
+    }
 
-                    if (! $event) {
-                        break 2;
-                    }
+    protected function runWorker(): void
+    {
+        $chan = $this->chan;
+        if ($chan === null) {
+            return;
+        }
 
-                    try {
-                        $callable = static fn () => $transport->send($event);
-                        if ($this->concurrent !== null) {
-                            $this->concurrent->create($callable);
-                        } else {
-                            Coroutine::create($callable);
-                        }
-                    } catch (Throwable $e) {
-                        $logger?->error('Failed to send event to Sentry: ' . $e->getMessage(), ['exception' => $e]);
-                        $transport->close();
+        $transport = $this->getHttpTransport();
+        $logger = $this->clientBuilder?->getLogger();
 
-                        break;
-                    } finally {
-                        // Prevent memory leak
-                        $event = null;
-                    }
-                }
+        while (true) {
+            /** @var Event|false $event */
+            $event = $chan->pop();
+            if (! $event) {
+                break;
             }
 
-            $this->closeChannel();
-        });
+            ++$this->inFlight;
 
+            try {
+                $transport->send($event);
+            } catch (Throwable $e) {
+                $logger?->error('Failed to send event to Sentry: ' . $e->getMessage(), ['exception' => $e]);
+            } finally {
+                --$this->inFlight;
+                $event = null;
+            }
+        }
+    }
+
+    protected function watchWorkerExit(): void
+    {
         $this->workerWatcher ??= Coroutine::create(function () {
             if (CoordinatorManager::until(Constants::WORKER_EXIT)->yield()) {
-                // sleep before setting workerExited to prevent busy-waiting
-                msleep(100);
-
                 $this->workerExited = true;
 
-                while (! $this->chan?->isEmpty()) {
+                while (! $this->isIdle()) {
                     msleep(100);
                 }
 
                 $this->closeChannel();
             }
         });
+    }
+
+    protected function getHttpTransport(): TransportInterface
+    {
+        return $this->httpTransport ??= $this->makeHttpTransport();
     }
 
     protected function makeHttpTransport(): TransportInterface
@@ -163,5 +222,10 @@ class CoHttpTransport implements TransportInterface
         if ($this->chan === $chan) {
             $this->chan = null;
         }
+    }
+
+    protected function isIdle(): bool
+    {
+        return ($this->chan === null || $this->chan->isEmpty()) && $this->inFlight === 0;
     }
 }

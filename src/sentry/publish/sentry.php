@@ -181,10 +181,11 @@ return [
         'timezone' => env('SENTRY_CRONS_TIMEZONE', date_default_timezone_get()),
     ],
 
-    // Transport configuration
-    'transport_channel_size' => (int) env('SENTRY_TRANSPORT_CHANNEL_SIZE', 65535),
-    'transport_concurrent_limit' => (int) env('SENTRY_TRANSPORT_CONCURRENT_LIMIT', 1000),
-    'transport_timeout' => (float) env('SENTRY_TRANSPORT_TIMEOUT', -1),
+    // Transport configuration: bounded queue, fixed worker pool, and enqueue timeout in seconds.
+    // Keep the timeout at 0 to drop telemetry immediately when the queue is full.
+    'transport_channel_size' => (int) env('SENTRY_TRANSPORT_CHANNEL_SIZE', 512),
+    'transport_concurrent_limit' => (int) env('SENTRY_TRANSPORT_CONCURRENT_LIMIT', 32),
+    'transport_timeout' => (float) env('SENTRY_TRANSPORT_TIMEOUT', 0),
 
     'http_timeout' => (float) env('SENTRY_HTTP_TIMEOUT', 2.0),
 ];

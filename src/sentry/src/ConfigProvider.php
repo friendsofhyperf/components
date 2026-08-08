@@ -57,7 +57,8 @@ class ConfigProvider
             ],
             'listeners' => [
                 Listener\SetupSentryListener::class,
-                Listener\EventHandleListener::class => PHP_INT_MAX - 1,
+                Listener\RequestContextLifecycleListener::class => PHP_INT_MAX,
+                Listener\EventHandleListener::class => PHP_INT_MAX - 2,
                 Crons\Listener\EventHandleListener::class => PHP_INT_MAX - 1,
                 Metrics\Listener\DBPoolWatcher::class,
                 Metrics\Listener\OnBeforeHandle::class,
@@ -67,7 +68,7 @@ class ConfigProvider
                 Metrics\Listener\QueueWatcher::class,
                 Metrics\Listener\RedisPoolWatcher::class,
                 Metrics\Listener\RequestWatcher::class,
-                Tracing\Listener\EventHandleListener::class => PHP_INT_MAX, // !! Make sure it is the first one to handle the event
+                Tracing\Listener\EventHandleListener::class => PHP_INT_MAX - 1,
             ],
             'annotations' => [
                 'scan' => [

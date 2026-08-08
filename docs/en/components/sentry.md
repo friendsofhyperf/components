@@ -192,14 +192,23 @@ Set `monitor` to `false` on a crontab to skip check-ins for that task.
 
 ## Transport
 
-The default binding uses `FriendsOfHyperf\Sentry\Transport\CoHttpTransport`.
-Tune its queue and concurrency with:
+The default binding uses `FriendsOfHyperf\Sentry\Transport\CoHttpTransport`. It uses a bounded
+queue and a fixed worker pool:
 
 ```env
-SENTRY_TRANSPORT_CHANNEL_SIZE=65535
-SENTRY_TRANSPORT_CONCURRENT_LIMIT=1000
+SENTRY_TRANSPORT_CHANNEL_SIZE=512
+SENTRY_TRANSPORT_CONCURRENT_LIMIT=32
+SENTRY_TRANSPORT_TIMEOUT=0
 SENTRY_HTTP_TIMEOUT=2.0
 ```
+
+`SENTRY_TRANSPORT_TIMEOUT=0` fails fast and drops telemetry when the queue is full, protecting
+application memory when Sentry or the network is slow. Use a small positive value for bounded
+backpressure. `CoHttpTransport::getStats()` exposes accepted, dropped, queued, in-flight, and worker
+counts.
+
+Published configuration files are not overwritten during upgrades. If an existing application still
+uses the previous `65535`, `1000`, and `-1` values, update them manually to enable the bounded defaults.
 
 ## Sentry Development Documentation
 
