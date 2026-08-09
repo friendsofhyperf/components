@@ -196,8 +196,8 @@ The default binding uses `FriendsOfHyperf\Sentry\Transport\CoHttpTransport`.
 Tune its queue and concurrency with:
 
 ```env
-SENTRY_TRANSPORT_CHANNEL_SIZE=65535
-SENTRY_TRANSPORT_CONCURRENT_LIMIT=1000
+SENTRY_TRANSPORT_CHANNEL_SIZE=512
+SENTRY_TRANSPORT_CONCURRENT_LIMIT=100
 SENTRY_HTTP_TIMEOUT=2.0
 ```
 
