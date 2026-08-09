@@ -54,7 +54,7 @@ return [
     'logs_channel_level' => env('SENTRY_LOGS_CHANNEL_LEVEL', Sentry\Logs\LogLevel::debug()),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#enable_metrics
-    'enable_metrics' => env('SENTRY_ENABLE_METRICS', true),
+    'enable_metrics' => env('SENTRY_ENABLE_METRICS', false),
 
     // @see: https://docs.sentry.io/platforms/php/configuration/options/#before_send_metric
     // 'before_send_metric' => function (Sentry\Metrics\Types\Metric $metric): ?Sentry\Metrics\Types\Metric {
@@ -66,8 +66,8 @@ return [
     //     return $event;
     // },
 
-    'enable_default_metrics' => env('SENTRY_ENABLE_DEFAULT_METRICS', true),
-    'enable_command_metrics' => env('SENTRY_ENABLE_COMMAND_METRICS', true),
+    'enable_default_metrics' => env('SENTRY_ENABLE_DEFAULT_METRICS', false),
+    'enable_command_metrics' => env('SENTRY_ENABLE_COMMAND_METRICS', false),
     'enable_pool_metrics' => env('SENTRY_ENABLE_POOL_METRICS', true),
     'enable_queue_metrics' => env('SENTRY_ENABLE_QUEUE_METRICS', true),
     'metrics_interval' => (int) env('SENTRY_METRICS_INTERVAL', 10),
@@ -182,9 +182,9 @@ return [
     ],
 
     // Transport configuration
-    'transport_channel_size' => (int) env('SENTRY_TRANSPORT_CHANNEL_SIZE', 65535),
-    'transport_concurrent_limit' => (int) env('SENTRY_TRANSPORT_CONCURRENT_LIMIT', 1000),
-    'transport_timeout' => (float) env('SENTRY_TRANSPORT_TIMEOUT', -1),
+    'transport_channel_size' => (int) env('SENTRY_TRANSPORT_CHANNEL_SIZE', 512),
+    'transport_concurrent_limit' => (int) env('SENTRY_TRANSPORT_CONCURRENT_LIMIT', 100),
+    'transport_timeout' => (float) env('SENTRY_TRANSPORT_TIMEOUT', 0),
 
     'http_timeout' => (float) env('SENTRY_HTTP_TIMEOUT', 2.0),
 ];
