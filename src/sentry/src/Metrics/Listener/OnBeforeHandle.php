@@ -31,11 +31,14 @@ class OnBeforeHandle implements ListenerInterface
 
     protected Timer $timer;
 
+    private bool $ticking = false;
+
     public function __construct(
         protected ContainerInterface $container,
-        protected Feature $feature
+        protected Feature $feature,
+        ?Timer $timer = null,
     ) {
-        $this->timer = new Timer();
+        $this->timer = $timer ?? new Timer();
     }
 
     public function listen(): array
@@ -94,6 +97,12 @@ class OnBeforeHandle implements ListenerInterface
             'ru_stime_tv_usec',
             'ru_stime_tv_sec',
         ];
+
+        if ($this->ticking) {
+            return;
+        }
+
+        $this->ticking = true;
 
         $this->timer->tick(
             $this->feature->getMetricsInterval(),

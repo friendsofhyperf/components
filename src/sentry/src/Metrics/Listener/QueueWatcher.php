@@ -25,11 +25,14 @@ class QueueWatcher implements ListenerInterface
 {
     private Timer $timer;
 
+    private bool $ticking = false;
+
     public function __construct(
         protected ContainerInterface $container,
         protected Feature $feature,
+        ?Timer $timer = null,
     ) {
-        $this->timer = new Timer();
+        $this->timer = $timer ?? new Timer();
     }
 
     /**
@@ -50,6 +53,12 @@ class QueueWatcher implements ListenerInterface
         if (! $this->feature->isQueueMetricsEnabled()) {
             return;
         }
+
+        if ($this->ticking) {
+            return;
+        }
+
+        $this->ticking = true;
 
         $this->timer->tick(
             $this->feature->getMetricsInterval(),

@@ -32,11 +32,14 @@ class OnMetricFactoryReady implements ListenerInterface
 
     private Timer $timer;
 
+    private bool $ticking = false;
+
     public function __construct(
         protected ContainerInterface $container,
         protected Feature $feature,
+        ?Timer $timer = null,
     ) {
-        $this->timer = new Timer();
+        $this->timer = $timer ?? new Timer();
     }
 
     public function listen(): array
@@ -80,6 +83,12 @@ class OnMetricFactoryReady implements ListenerInterface
             'metric_process_memory_usage',
             'metric_process_memory_peak_usage',
         ];
+
+        if ($this->ticking) {
+            return;
+        }
+
+        $this->ticking = true;
 
         $serverStatsFactory = null;
 
