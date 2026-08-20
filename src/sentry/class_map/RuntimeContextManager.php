@@ -35,6 +35,14 @@ final class RuntimeContextManager
     private const PROCESS_EXECUTION_CONTEXT_KEY = 'sentry.process.execution_context';
 
     /**
+     * Default flush timeout (seconds) used when endContext() is called without an explicit
+     * timeout. 0 means "do not wait": the transport drains its channel asynchronously and
+     * endContext() returns as soon as possible, so a full channel can never block the
+     * coroutine from terminating.
+     */
+    private const DEFAULT_FLUSH_TIMEOUT = 0;
+
+    /**
      * @var HubInterface
      */
     private $baseHub;
@@ -146,7 +154,9 @@ final class RuntimeContextManager
         $runtimeContextId = $this->executionContextToRuntimeContext[$executionContextKey];
         unset($this->executionContextToRuntimeContext[$executionContextKey]);
 
-        $this->removeContextById($runtimeContextId, $timeout);
+        // Resolve the effective flush timeout here so that callers that omit it
+        // (e.g. SentrySdk::endContext()) can never block indefinitely; see DEFAULT_FLUSH_TIMEOUT.
+        $this->removeContextById($runtimeContextId, $timeout ?? self::DEFAULT_FLUSH_TIMEOUT);
     }
 
     private function createContextForExecutionContextKey(string $executionContextKey): void
@@ -165,6 +175,9 @@ final class RuntimeContextManager
         }
 
         $runtimeContext = $this->activeContexts[$runtimeContextId];
+        // Release the context BEFORE flushing (intentional order): even when a flush segment
+        // below throws or times out, the context is already freed and the coroutine can
+        // terminate without leaking request state. Flushing is best-effort only.
         unset($this->activeContexts[$runtimeContextId]);
         // Remove any key mappings that may still reference this context.
         $this->removeExecutionContextMappingsForRuntimeContext($runtimeContextId);
@@ -176,6 +189,10 @@ final class RuntimeContextManager
 
     private function flushRuntimeContextResources(RuntimeContext $runtimeContext, ?int $timeout, LoggerInterface $logger): void
     {
+        // Resolve the effective timeout once for every flush segment below. The context has
+        // already been released by the caller, so any failing/timing-out segment does not
+        // affect context release; each segment stays isolated in its own try/catch.
+        $timeout = $timeout ?? self::DEFAULT_FLUSH_TIMEOUT;
         $hub = $runtimeContext->getHub();
 
         // captureEvent can throw before transport send (for example from scope event processors
