@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry\Tracing;
 
+use FriendsOfHyperf\Sentry\Feature;
 use Hyperf\Engine\Coroutine as Co;
 use Sentry\SentrySdk;
 use Sentry\State\Scope;
@@ -26,11 +27,17 @@ use function Sentry\trace;
 
 class Tracer
 {
+    public function __construct(private Feature $feature)
+    {
+    }
+
     /**
      * Starts a new Transaction and returns it. This is the entry point to manual tracing instrumentation.
      */
     public function startTransaction(TransactionContext $transactionContext, array $customSamplingContext = []): Transaction
     {
+        (new SpanBudget($this->feature->getMaxSpans()))->reset();
+
         $hub = SentrySdk::getCurrentHub();
         $hub->pushScope();
         $hub->configureScope(static fn (Scope $scope) => $scope->clearBreadcrumbs());
@@ -78,6 +85,15 @@ class Tracer
         }
 
         $context->setData(['coroutine.id' => Co::id()] + $context->getData());
+
+        $hub = SentrySdk::getCurrentHub();
+
+        // The budget only constrains spans created inside a transaction: when the
+        // budget is exhausted we skip creating the span and execute the callable
+        // directly to bound the memory used by the transaction span tree.
+        if ($hub->getSpan() !== null && ! (new SpanBudget($this->feature->getMaxSpans()))->tryAcquire()) {
+            return $hub->configureScope(static fn (Scope $scope) => $trace($scope));
+        }
 
         return trace(
             function (Scope $scope) use ($trace) {
