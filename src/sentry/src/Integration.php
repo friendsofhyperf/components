@@ -11,6 +11,7 @@ declare(strict_types=1);
 
 namespace FriendsOfHyperf\Sentry;
 
+use Hyperf\Context\Context;
 use Sentry\Breadcrumb;
 use Sentry\Event;
 use Sentry\Integration\IntegrationInterface;
@@ -28,7 +29,7 @@ use const SWOOLE_VERSION;
 
 class Integration implements IntegrationInterface
 {
-    private static ?string $transaction = null;
+    public const CONTEXT_TRANSACTION = 'sentry.integration.transaction';
 
     public function setupOnce(): void
     {
@@ -90,12 +91,12 @@ class Integration implements IntegrationInterface
 
     public static function getTransaction(): ?string
     {
-        return self::$transaction;
+        return Context::get(self::CONTEXT_TRANSACTION);
     }
 
     public static function setTransaction(?string $transaction): void
     {
-        self::$transaction = $transaction;
+        Context::set(self::CONTEXT_TRANSACTION, $transaction);
     }
 
     /**

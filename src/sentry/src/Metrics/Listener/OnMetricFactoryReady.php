@@ -83,7 +83,7 @@ class OnMetricFactoryReady implements ListenerInterface
 
         $serverStatsFactory = null;
 
-        if (! SentryConstants::$runningInCommand) {
+        if (! SentryConstants::runningInCommand()) {
             if ($this->container->has(SwooleServer::class) && $server = $this->container->get(SwooleServer::class)) {
                 if ($server instanceof SwooleServer) {
                     $serverStatsFactory = fn (): array => $server->stats();
