@@ -54,7 +54,7 @@ class HistogramAspect extends AbstractAspect
         ]);
 
         return tap($proceedingJoinPoint->process(), function () use ($timer) {
-            defer(fn () => $timer->end(true));
+            defer(fn () => $timer->end());
         });
     }
 
