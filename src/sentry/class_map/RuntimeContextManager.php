@@ -26,6 +26,8 @@ use function Hyperf\Support\make;
  * - The manager keeps a lazily initialized global context as fallback.
  * - startContext() creates an isolated runtime context for the current
  *   execution key when no context is active yet.
+ * - startContext() only takes effect inside a coroutine; in non-coroutine
+ *   environments it is a no-op and the global fallback context is used.
  * - endContext() flushes context resources and removes that context.
  *
  * @internal
@@ -120,6 +122,13 @@ final class RuntimeContextManager
      */
     public function startContext(): void
     {
+        // The main coroutine (non-coroutine environment, Coroutine::id() <= 0)
+        // uses a process-level context store that is not reaped together with
+        // a coroutine, so falling back to the global context is safer there.
+        if (\Hyperf\Engine\Coroutine::id() <= 0) {
+            return;
+        }
+
         $executionContextKey = $this->getExecutionContextKey();
 
         if ($this->hasActiveContextForExecutionContextKey($executionContextKey)) {
@@ -279,8 +288,11 @@ final class RuntimeContextManager
 
     private function getExecutionContextKey(): string
     {
-        // All supported runtime modes currently use a process-local execution key.
-        return self::PROCESS_EXECUTION_CONTEXT_KEY;
+        // The key is scoped per coroutine so execution context mappings cannot
+        // leak across coroutines or linger on the main coroutine. CoArrayObject
+        // already stores values per current coroutine, so normal behavior is
+        // unchanged.
+        return \sprintf('%s.%d', self::PROCESS_EXECUTION_CONTEXT_KEY, \Hyperf\Engine\Coroutine::id());
     }
 
     private function getGlobalContext(): RuntimeContext
