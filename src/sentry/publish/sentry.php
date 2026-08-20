@@ -44,6 +44,9 @@ return [
     'enable_logs' => env('SENTRY_ENABLE_LOGS', true),
 
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#log_flush_threshold
+    // Reaching the threshold triggers an automatic flush, and the telemetry
+    // flush listener also periodically flushes as a fallback. Memory usage
+    // grows linearly with the threshold, so keep it <= 5000.
     'log_flush_threshold' => env('SENTRY_LOG_FLUSH_THRESHOLD') === null ? null : (int) env('SENTRY_LOG_FLUSH_THRESHOLD'),
 
     // @see: https://docs.sentry.io/platforms/php/configuration/options/#before_send_log
