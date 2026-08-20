@@ -58,7 +58,7 @@ class OnBeforeHandle implements ListenerInterface
             return;
         }
 
-        Constants::$runningInCommand = true;
+        Constants::setRunningInCommand();
 
         if ($this->feature->isCommandMetricsEnabled() && $this->container->has(EventDispatcherInterface::class)) {
             $this->container->get(EventDispatcherInterface::class)->dispatch(new MetricFactoryReady());
