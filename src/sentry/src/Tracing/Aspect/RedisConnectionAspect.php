@@ -66,14 +66,15 @@ class RedisConnectionAspect extends AbstractAspect
 
     private function getClusterNodeBySlot(RedisCluster $rc, string $key)
     {
-        // $slot = $rc->cluster('CLUSTER', 'KEYSLOT', $key);
         $slot = RedisClusterKeySlot::get($key);
-        $slots = ($this->slotNodeCache[$rc] ??= $rc->cluster('CLUSTER', 'SLOTS')); // @phpstan-ignore-line
+        $slots = (array) ($this->slotNodeCache[$rc] ??= $rc->cluster('CLUSTER', 'SLOTS')); // @phpstan-ignore-line
 
         foreach ($slots as $range) {
+            if (! is_array($range) || count($range) < 3) {
+                continue;
+            }
             [$start, $end, $master] = $range;
             if ($slot >= $start && $slot <= $end) {
-                // $master = [host, port, nodeId]
                 return [
                     'host' => $master[0],
                     'port' => $master[1],
