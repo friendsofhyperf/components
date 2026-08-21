@@ -62,7 +62,7 @@ class RequestWatcher implements ListenerInterface
                 ++$this->stats->response_count;
                 --$this->stats->connection_num;
 
-                $timer->end(true);
+                $timer->end();
 
                 unset($timer);
             });
