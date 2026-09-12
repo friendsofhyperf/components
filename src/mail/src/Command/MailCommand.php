@@ -32,7 +32,7 @@ class MailCommand extends GeneratorCommand
 
     protected function getStub(): string
     {
-        return $this->getConfig()['stub'] ?? ($this->input->getOption('markdown') !== false ? __DIR__ . '/stubs/mail.stub' : __DIR__ . '/stubs/markdown-mail.stub');
+        return $this->getConfig()['stub'] ?? ($this->input->getOption('markdown') ? __DIR__ . '/stubs/markdown-mail.stub' : __DIR__ . '/stubs/mail.stub');
     }
 
     protected function getDefaultNamespace(): string
@@ -81,7 +81,7 @@ class MailCommand extends GeneratorCommand
     {
         $view = $this->input->getOption('markdown');
 
-        if (! $view) {
+        if (! is_string($view) || $view === '') {
             $name = str_replace('\\', '/', $this->input->getArgument('name'));
 
             $view = 'mail.' . collect(explode('/', $name))
@@ -103,7 +103,7 @@ class MailCommand extends GeneratorCommand
             parent::buildClass($name)
         );
 
-        if ($this->input->getOption('markdown') !== false) {
+        if ($this->input->getOption('markdown')) {
             $class = str_replace(['DummyView', '{{ view }}'], $this->getView(), $class);
         }
 

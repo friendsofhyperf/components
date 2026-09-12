@@ -162,7 +162,11 @@ return [
 
 ```shell
 php bin/hyperf.php gen:mail TestMail
+php bin/hyperf.php gen:mail TestMail --markdown
 ```
+
+`--markdown`（或 `-m`）是无需传值的开关。对于 `TestMail`，生成的邮件类引用 `mail.test-mail`；
+请在配置的视图目录中另行创建对应的 Blade 模板。不使用该开关时，生成的类使用普通视图。
 
 ```php
 // app/Mail/TestMail.php
@@ -214,6 +218,22 @@ class TestMail extends Mailable
     public function attachments(): array
     {
         return [];
+    }
+}
+```
+
+对于已渲染的 HTML，可在 mailable 中返回 `Content(htmlString: ...)`，直接作为邮件正文，
+无需渲染 Blade 视图：
+
+```php
+use FriendsOfHyperf\Mail\Mailable;
+use FriendsOfHyperf\Mail\Mailable\Content;
+
+class HtmlMail extends Mailable
+{
+    public function content(): Content
+    {
+        return new Content(htmlString: '<h1>Hello</h1><p>Mail body</p>');
     }
 }
 ```
