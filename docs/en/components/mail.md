@@ -76,13 +76,16 @@ sending, which is useful in development.
 
 ## Creating a Mailable
 
-With `hyperf/devtool` installed, generate a view-based mailable or use `--markdown` to also create a
-Markdown template:
+With `hyperf/devtool` installed, generate a view-based mailable or use `--markdown` to generate a
+mailable that references a Markdown view:
 
 ```shell
 php bin/hyperf.php gen:mail TestMail
 php bin/hyperf.php gen:mail TestMail --markdown
 ```
+
+`--markdown` (or `-m`) is a flag and takes no value. For `TestMail`, the generated class references
+`mail.test-mail`; create that Blade template separately in your configured view directory.
 
 `Envelope` defines addresses, subject, tags, metadata, and Symfony message callbacks. `Content`
 accepts `view` (or its `html` alias), `text`, `markdown`, `htmlString`, and `with`. Public properties
@@ -129,6 +132,18 @@ class TestMail extends Mailable
 Attachments can also be created with `Attachment::fromData()`, `fromStorage()`, or
 `fromStorageDisk()`. A reusable attachable object may implement
 `FriendsOfHyperf\Mail\Contract\Attachable`.
+
+For pre-rendered HTML, return `Content(htmlString: ...)` from your mailable. The HTML is used
+directly without rendering a Blade view:
+
+```php
+use FriendsOfHyperf\Mail\Mailable\Content;
+
+public function content(): Content
+{
+    return new Content(htmlString: '<h1>Hello</h1><p>Mail body</p>');
+}
+```
 
 ## Sending Mail
 

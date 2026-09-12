@@ -74,12 +74,15 @@ mailer 专属的 `from`、`reply_to`、`to` 或 `return_path` 会覆盖对应全
 
 ## 创建 Mailable
 
-安装 `hyperf/devtool` 后，可生成基于视图的 mailable；使用 `--markdown` 会同时创建 Markdown 模板：
+安装 `hyperf/devtool` 后，可生成基于视图的 mailable；使用 `--markdown` 会生成引用 Markdown 视图的邮件类：
 
 ```shell
 php bin/hyperf.php gen:mail TestMail
 php bin/hyperf.php gen:mail TestMail --markdown
 ```
+
+`--markdown`（或 `-m`）是无需传值的开关。对于 `TestMail`，生成的类引用 `mail.test-mail`；
+请在配置的视图目录中另行创建对应的 Blade 模板。
 
 `Envelope` 定义地址、主题、标签、元数据和 Symfony 消息回调。`Content` 接受 `view`（或其 `html`
 别名）、`text`、`markdown`、`htmlString` 和 `with`。mailable 中声明的 public 属性也会暴露给视图。
@@ -124,6 +127,18 @@ class TestMail extends Mailable
 
 附件还可通过 `Attachment::fromData()`、`fromStorage()` 或 `fromStorageDisk()` 创建。可复用的附件
 对象可以实现 `FriendsOfHyperf\Mail\Contract\Attachable`。
+
+对于已渲染的 HTML，可在 mailable 中返回 `Content(htmlString: ...)`。HTML 将直接作为邮件正文，
+无需渲染 Blade 视图：
+
+```php
+use FriendsOfHyperf\Mail\Mailable\Content;
+
+public function content(): Content
+{
+    return new Content(htmlString: '<h1>Hello</h1><p>Mail body</p>');
+}
+```
 
 ## 发送邮件
 
