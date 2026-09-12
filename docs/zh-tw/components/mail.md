@@ -165,8 +165,8 @@ php bin/hyperf.php gen:mail TestMail
 php bin/hyperf.php gen:mail TestMail --markdown
 ```
 
-`--markdown`（或 `-m`）是無需傳值的開關。對於 `TestMail`，生成的郵件類別引用 `mail.test-mail`；
-請在設定的檢視目錄中另行建立對應的 Blade 範本。不使用該開關時，生成的類別使用一般檢視。
+`--markdown`（或 `-m`）是無需傳值的開關。對於 `TestMail`，生成的郵件類引用 `mail.test-mail`；
+請在配置的檢視目錄中另行建立對應的 Blade 模板。不使用該開關時，生成的類使用普通檢視。
 
 ```php
 // app/Mail/TestMail.php
@@ -222,7 +222,7 @@ class TestMail extends Mailable
 }
 ```
 
-對於已渲染的 HTML，可在 mailable 中回傳 `Content(htmlString: ...)`，直接作為郵件內文，
+對於已渲染的 HTML，可在 mailable 中返回 `Content(htmlString: ...)`，直接作為郵件正文，
 無需渲染 Blade 檢視：
 
 ```php
