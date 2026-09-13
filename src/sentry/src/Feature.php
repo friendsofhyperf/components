@@ -35,6 +35,11 @@ class Feature
         return (bool) $this->config->get('sentry.enable_metrics', $default);
     }
 
+    public function isLogsEnabled(bool $default = true): bool
+    {
+        return (bool) $this->config->get('sentry.enable_logs', $default);
+    }
+
     public function isDefaultMetricsEnabled(bool $default = true): bool
     {
         if (! $this->isMetricsEnabled()) {
