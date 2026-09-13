@@ -268,6 +268,15 @@ class EventHandleListener implements ListenerInterface
             return;
         }
 
+        // HTTP/RPC request coroutines are created by the engine (Hyperf\Engine\Coroutine::create)
+        // and never go through Hyperf\Coroutine\Coroutine::create, so the CoroutineAspect cannot
+        // start a runtime context for them. Start one explicitly and end it when the request
+        // coroutine exits. The defer must be registered before startTransaction(): defers run LIFO,
+        // so the transaction-finish defer (registered later) runs first, and the Transaction keeps
+        // the hub it was created with, so finishing it is unaffected by endContext.
+        SentrySdk::startContext();
+        defer(fn () => SentrySdk::endContext());
+
         $request = $event->request;
         /** @var Dispatched $dispatched */
         $dispatched = $request->getAttribute(Dispatched::class);
@@ -311,6 +320,11 @@ class EventHandleListener implements ListenerInterface
                 ->setData($data)
         );
 
+        // Capture the request hub while the runtime context is still active, so that
+        // finishing the transaction does not depend on the context lifetime and never
+        // touches the shared global hub after endContext() has run.
+        $hub = SentrySdk::getCurrentHub();
+
         if (! $transaction->getSampled()) {
             return;
         }
@@ -324,14 +338,14 @@ class EventHandleListener implements ListenerInterface
                 ->setStartTimestamp(microtime(true))
         );
 
-        SentrySdk::getCurrentHub()->setSpan($span);
+        $hub->setSpan($span);
 
-        defer(function () use ($transaction, $span) {
+        defer(function () use ($hub, $transaction, $span) {
             // Make sure the span is finished after the request is handled
             $span->finish();
 
             // Make sure the transaction is finished after the request is handled
-            SentrySdk::getCurrentHub()->setSpan($transaction);
+            $hub->setSpan($transaction);
 
             // Finish transaction
             $transaction->finish();

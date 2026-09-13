@@ -35,6 +35,8 @@ use Symfony\Component\Console\Input\ArgvInput;
 use Symfony\Component\Console\Input\InputInterface;
 use Throwable;
 
+use function Hyperf\Coroutine\defer;
+
 /**
  * @property InputInterface $input
  * @property int $exitCode
@@ -262,6 +264,13 @@ class EventHandleListener implements ListenerInterface
         if (! $this->feature->isEnabled('request')) {
             return;
         }
+
+        // Requests run in coroutines created by the engine, which are not wrapped by the
+        // CoroutineAspect, so start an isolated runtime context explicitly. It is a no-op
+        // when the tracing listener already started one, and is ended via defer once the
+        // request coroutine exits.
+        SentrySdk::startContext();
+        defer(fn () => SentrySdk::endContext());
     }
 
     /**
