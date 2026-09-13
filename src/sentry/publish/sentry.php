@@ -184,7 +184,10 @@ return [
     // Transport configuration
     'transport_channel_size' => (int) env('SENTRY_TRANSPORT_CHANNEL_SIZE', 512),
     'transport_concurrent_limit' => (int) env('SENTRY_TRANSPORT_CONCURRENT_LIMIT', 100),
-    'transport_timeout' => (float) env('SENTRY_TRANSPORT_TIMEOUT', 0),
+    // The max seconds to wait when pushing an event into the transport channel
+    // `<= 0` means non-blocking (skip the event immediately when the channel is full),
+    // `> 0` means wait at most N seconds for the channel to have capacity.
+    'transport_timeout' => (float) env('SENTRY_TRANSPORT_TIMEOUT', 1.0),
 
     'http_timeout' => (float) env('SENTRY_HTTP_TIMEOUT', 2.0),
 ];
