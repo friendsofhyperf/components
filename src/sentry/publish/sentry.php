@@ -72,6 +72,12 @@ return [
     'enable_queue_metrics' => env('SENTRY_ENABLE_QUEUE_METRICS', true),
     'metrics_interval' => (int) env('SENTRY_METRICS_INTERVAL', 10),
 
+    // The maximum number of spans allowed within a single transaction. Once the
+    // budget is exhausted new spans are skipped (the callable still runs) to
+    // prevent the span tree of a long-lived coroutine from growing unboundedly.
+    // A value of 0 (or negative) disables the limit.
+    'max_spans' => (int) env('SENTRY_MAX_SPANS', 1000),
+
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#send_default_pii
     'send_default_pii' => env('SENTRY_SEND_DEFAULT_PII', true),
 

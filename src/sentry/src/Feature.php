@@ -82,6 +82,11 @@ class Feature
         return $interval;
     }
 
+    public function getMaxSpans(int $default = 1000): int
+    {
+        return (int) $this->config->get('sentry.max_spans', $default);
+    }
+
     public function isTracingEnabled(string $key, bool $default = true): bool
     {
         return (bool) $this->config->get('sentry.tracing.' . $key, $default);
