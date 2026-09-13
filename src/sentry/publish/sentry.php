@@ -56,6 +56,14 @@ return [
     // @see: https://docs.sentry.io/platforms/php/guides/laravel/configuration/options/#enable_metrics
     'enable_metrics' => env('SENTRY_ENABLE_METRICS', false),
 
+    // Metrics are buffered in memory and are no longer flushed on every request
+    // or annotation call. They are reported when:
+    // - the SDK `metric_flush_threshold` is reached (automatic flush), or
+    // - the request runtime context ends (endContext flush), or
+    // - the periodic flush kicks in as a fallback (`metrics_interval`).
+    // Forcing a flush per request/call amplifies transport channel pressure and
+    // increases the risk of memory exhaustion under high traffic.
+
     // @see: https://docs.sentry.io/platforms/php/configuration/options/#before_send_metric
     // 'before_send_metric' => function (Sentry\Metrics\Types\Metric $metric): ?Sentry\Metrics\Types\Metric {
     //     return $metric;

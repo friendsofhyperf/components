@@ -49,8 +49,6 @@ class CounterAspect extends AbstractAspect
                 'class' => $proceedingJoinPoint->className,
                 'method' => $proceedingJoinPoint->methodName,
             ]);
-
-            metrics()->flush();
         }
 
         return $proceedingJoinPoint->process();
