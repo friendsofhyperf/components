@@ -161,7 +161,12 @@ return [
 
 ```shell
 php bin/hyperf.php gen:mail TestMail
+php bin/hyperf.php gen:mail TestMail --markdown
 ```
+
+`--markdown` (or `-m`) is a flag and takes no value. It generates a mailable referencing
+`mail.test-mail` for `TestMail`; create that Blade template separately in your configured view
+directory. Without the flag, the generated class uses a regular view.
 
 ```php
 // app/Mail/TestMail.php
@@ -213,6 +218,22 @@ class TestMail extends Mailable
     public function attachments(): array
     {
         return [];
+    }
+}
+```
+
+For pre-rendered HTML, return `Content(htmlString: ...)` from your mailable. The HTML is used
+directly without rendering a Blade view:
+
+```php
+use FriendsOfHyperf\Mail\Mailable;
+use FriendsOfHyperf\Mail\Mailable\Content;
+
+class HtmlMail extends Mailable
+{
+    public function content(): Content
+    {
+        return new Content(htmlString: '<h1>Hello</h1><p>Mail body</p>');
     }
 }
 ```
