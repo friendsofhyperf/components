@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\SentryContext;
+use FriendsOfHyperf\Sentry\Util\PayloadLimiter;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
 use Hyperf\DB\Pool\PoolFactory;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -112,7 +113,7 @@ class DbAspect extends AbstractAspect
         ];
 
         if ($this->feature->isTracingTagEnabled('db.sql.bindings', true)) {
-            $data['db.sql.bindings'] = $arguments['arguments']['bindings'] ?? [];
+            $data['db.sql.bindings'] = PayloadLimiter::limit($arguments['arguments']['bindings'] ?? []);
         }
 
         return trace(
@@ -120,14 +121,14 @@ class DbAspect extends AbstractAspect
                 $result = $proceedingJoinPoint->process();
                 if ($this->feature->isTracingTagEnabled('db.result')) {
                     $scope->getSpan()?->setData([
-                        'db.result' => json_encode($result, JSON_UNESCAPED_UNICODE),
+                        'db.result' => PayloadLimiter::limitString((string) json_encode($result, JSON_UNESCAPED_UNICODE)),
                     ]);
                 }
                 return $result;
             },
             SpanContext::make()
                 ->setOp('db.sql.query')
-                ->setDescription($sql)
+                ->setDescription(PayloadLimiter::limitString($sql))
                 ->setOrigin('auto.db')
                 ->setData($data)
         );

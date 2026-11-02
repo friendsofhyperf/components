@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
+use FriendsOfHyperf\Sentry\Util\PayloadLimiter;
 use GuzzleHttp\Client;
 use GuzzleHttp\TransferStats;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -101,8 +102,8 @@ class GuzzleHttpClientAspect extends AbstractAspect
                             'http.request.headers' => $request->getHeaders(),
                             // Other
                             'http.system' => 'guzzle',
-                            'http.guzzle.config' => $guzzleConfig,
-                            'http.guzzle.options' => $options ?? [],
+                            'http.guzzle.config' => PayloadLimiter::guzzleOptions($guzzleConfig),
+                            'http.guzzle.options' => PayloadLimiter::guzzleOptions($options),
                             'duration' => $stats->getTransferTime() * 1000, // in milliseconds
                             'server.address' => $request->getUri()->getHost(),
                             'server.port' => $request->getUri()->getPort(),

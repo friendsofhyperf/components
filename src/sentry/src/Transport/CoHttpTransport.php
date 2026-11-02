@@ -40,25 +40,25 @@ class CoHttpTransport implements TransportInterface
 
     protected ?ClientBuilder $clientBuilder = null;
 
-    protected int $channelSize = 65535;
+    protected int $channelSize = 512;
 
-    protected float $timeout = -1;
+    protected float $timeout = 0;
 
     public function __construct(
         protected ContainerInterface $container,
     ) {
         $config = $this->container->get(ConfigInterface::class);
-        $channelSize = (int) $config->get('sentry.transport_channel_size', 65535);
+        $channelSize = (int) $config->get('sentry.transport_channel_size', 512);
         if ($channelSize > 0) {
             $this->channelSize = $channelSize;
         }
 
-        $concurrentLimit = (int) $config->get('sentry.transport_concurrent_limit', 1000);
+        $concurrentLimit = (int) $config->get('sentry.transport_concurrent_limit', 100);
         if ($concurrentLimit > 0) {
             $this->concurrent = new Concurrent($concurrentLimit);
         }
 
-        $timeout = (float) $config->get('sentry.transport_timeout', -1);
+        $timeout = (float) $config->get('sentry.transport_timeout', 0);
         if ($timeout > 0) {
             $this->timeout = $timeout;
         }
@@ -69,10 +69,17 @@ class CoHttpTransport implements TransportInterface
         $this->loop();
 
         $chan = $this->chan;
-        // push event to channel, if timeout is set, it will wait for the specified time
-        $result = $chan?->push($event, $this->timeout) ? ResultStatus::success() : ResultStatus::skipped();
+        // Never wait without a bound: blocked callers would pile up with their events while Sentry is slow.
+        // Without a timeout a full channel drops the event, otherwise it waits for the specified time.
+        $pushed = $chan !== null
+            && ($this->timeout > 0 || ! $chan->isFull())
+            && $chan->push($event, $this->timeout);
 
-        return new Result($result, $event);
+        if (! $pushed) {
+            $this->clientBuilder?->getLogger()?->warning('Sentry transport channel is full, dropping event.', ['event_id' => (string) $event->getId()]);
+        }
+
+        return new Result($pushed ? ResultStatus::success() : ResultStatus::skipped(), $event);
     }
 
     public function close(?int $timeout = null): Result

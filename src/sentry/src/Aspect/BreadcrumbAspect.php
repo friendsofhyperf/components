@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Aspect;
 
 use FriendsOfHyperf\Sentry\Annotation\Breadcrumb as BreadcrumbAnnotation;
 use FriendsOfHyperf\Sentry\Integration;
+use FriendsOfHyperf\Sentry\Util\PayloadLimiter;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\Breadcrumb;
@@ -43,8 +44,8 @@ class BreadcrumbAspect extends AbstractAspect
             $category = $annotation->category;
             $message = $annotation->message ?? sprintf('%s::%s', $proceedingJoinPoint->className, $proceedingJoinPoint->methodName);
             $metadata = array_replace($annotation->metadata, [
-                'arguments' => $proceedingJoinPoint->arguments['keys'] ?? [],
-                'result' => $result,
+                'arguments' => PayloadLimiter::limit($proceedingJoinPoint->arguments['keys'] ?? []),
+                'result' => PayloadLimiter::limit($result),
                 'timeMs' => (microtime(true) - $startTime) * 1000,
             ]);
 

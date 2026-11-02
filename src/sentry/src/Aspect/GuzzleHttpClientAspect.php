@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Aspect;
 
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
+use FriendsOfHyperf\Sentry\Util\PayloadLimiter;
 use GuzzleHttp\Client;
 use GuzzleHttp\TransferStats;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -60,7 +61,7 @@ class GuzzleHttpClientAspect extends AbstractAspect
             $response = $stats->getResponse();
             $uri = $request->getUri()->__toString();
             $data = [
-                'config' => $guzzleConfig,
+                'config' => PayloadLimiter::guzzleOptions($guzzleConfig),
                 // request
                 'http.request.method' => $request->getMethod(),
                 'http.request.body.size' => strlen($options['body'] ?? ''),

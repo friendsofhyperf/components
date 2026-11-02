@@ -17,6 +17,7 @@ use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Util\Carrier;
 use FriendsOfHyperf\Sentry\Util\CoContainer;
+use FriendsOfHyperf\Sentry\Util\PayloadLimiter;
 use FriendsOfHyperf\Sentry\Util\SqlParser;
 use Hyperf\Amqp\Event as AmqpEvent;
 use Hyperf\Amqp\Message\ConsumerMessage;
@@ -196,7 +197,7 @@ class EventHandleListener implements ListenerInterface
         ];
 
         if ($this->feature->isTracingTagEnabled('db.sql.bindings', true)) {
-            $data['db.sql.bindings'] = $event->bindings;
+            $data['db.sql.bindings'] = PayloadLimiter::limit($event->bindings);
         }
 
         $startTimestamp = microtime(true) - $event->time / 1000;
@@ -205,7 +206,7 @@ class EventHandleListener implements ListenerInterface
             fn () => null,
             SpanContext::make()
                 ->setOp('db.sql.query')
-                ->setDescription($event->sql)
+                ->setDescription(PayloadLimiter::limitString($event->sql))
                 ->setOrigin('auto.db')
                 ->setStartTimestamp($startTimestamp)
                 ->setData($data)
@@ -464,7 +465,7 @@ class EventHandleListener implements ListenerInterface
 
         $pool = $this->container->get(RedisPoolFactory::class)->getPool($event->connectionName);
         $config = $this->config->get('redis.' . $event->connectionName, []);
-        $redisStatement = $event->getFormatCommand();
+        $redisStatement = PayloadLimiter::limitString($event->getFormatCommand());
 
         trace(
             function (Scope $scope) use ($event) {
@@ -473,7 +474,7 @@ class EventHandleListener implements ListenerInterface
                 }
 
                 if ($this->feature->isTracingTagEnabled('redis.result')) {
-                    $span->setData(['db.redis.result' => $event->result]);
+                    $span->setData(['db.redis.result' => PayloadLimiter::limit($event->result)]);
                 }
 
                 if ($event->throwable) {
@@ -488,7 +489,7 @@ class EventHandleListener implements ListenerInterface
                     'db.statement' => $redisStatement,
                     'db.redis.connection' => $event->connectionName,
                     'db.redis.database_index' => $config['db'] ?? 0,
-                    'db.redis.parameters' => $event->parameters,
+                    'db.redis.parameters' => PayloadLimiter::limit($event->parameters),
                     'db.redis.pool.name' => $event->connectionName,
                     'db.redis.pool.max' => $pool->getOption()->getMaxConnections(),
                     'db.redis.pool.max_idle_time' => $pool->getOption()->getMaxIdleTime(),
