@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Listener;
 
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
+use FriendsOfHyperf\Sentry\Util\PayloadLimiter;
 use Hyperf\Amqp\Event as AmqpEvent;
 use Hyperf\AsyncQueue\Event as AsyncQueueEvent;
 use Hyperf\Command\Event as CommandEvent;
@@ -175,7 +176,7 @@ class EventHandleListener implements ListenerInterface
         }
 
         if ($this->feature->isBreadcrumbEnabled('sql_bindings')) {
-            $data['bindings'] = $event->bindings;
+            $data['bindings'] = PayloadLimiter::limit($event->bindings);
         }
 
         try {
@@ -193,7 +194,7 @@ class EventHandleListener implements ListenerInterface
             Breadcrumb::LEVEL_INFO,
             Breadcrumb::TYPE_DEFAULT,
             'db.sql.query',
-            $event->sql,
+            PayloadLimiter::limitString($event->sql),
             $data
         ));
     }
@@ -229,8 +230,8 @@ class EventHandleListener implements ListenerInterface
 
         $data = [
             'connectionName' => $event->connectionName,
-            'arguments' => $event->parameters,
-            'result' => $event->result,
+            'arguments' => PayloadLimiter::limit($event->parameters),
+            'result' => PayloadLimiter::limit($event->result),
             'duration' => $event->time * 1000,
         ];
 

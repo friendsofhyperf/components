@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Transport;
 
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Concurrent;
@@ -40,25 +41,31 @@ class CoHttpTransport implements TransportInterface
 
     protected ?ClientBuilder $clientBuilder = null;
 
-    protected int $channelSize = 65535;
+    protected int $channelSize = 512;
 
-    protected float $timeout = -1;
+    protected float $timeout = 0;
+
+    protected int $droppedEvents = 0;
+
+    protected float $dropWarningInterval = 60;
+
+    protected bool $reportingDroppedEvents = false;
 
     public function __construct(
         protected ContainerInterface $container,
     ) {
         $config = $this->container->get(ConfigInterface::class);
-        $channelSize = (int) $config->get('sentry.transport_channel_size', 65535);
+        $channelSize = (int) $config->get('sentry.transport_channel_size', 512);
         if ($channelSize > 0) {
             $this->channelSize = $channelSize;
         }
 
-        $concurrentLimit = (int) $config->get('sentry.transport_concurrent_limit', 1000);
+        $concurrentLimit = (int) $config->get('sentry.transport_concurrent_limit', 100);
         if ($concurrentLimit > 0) {
             $this->concurrent = new Concurrent($concurrentLimit);
         }
 
-        $timeout = (float) $config->get('sentry.transport_timeout', -1);
+        $timeout = (float) $config->get('sentry.transport_timeout', 0);
         if ($timeout > 0) {
             $this->timeout = $timeout;
         }
@@ -69,15 +76,54 @@ class CoHttpTransport implements TransportInterface
         $this->loop();
 
         $chan = $this->chan;
-        // push event to channel, if timeout is set, it will wait for the specified time
-        $result = $chan?->push($event, $this->timeout) ? ResultStatus::success() : ResultStatus::skipped();
+        // Never wait without a bound: blocked callers would pile up with their events while Sentry is slow.
+        // Without a timeout a full channel drops the event, otherwise it waits for the specified time.
+        $pushed = $chan !== null
+            && ($this->timeout > 0 || ! $chan->isFull())
+            && $chan->push($event, $this->timeout);
 
-        return new Result($result, $event);
+        if (! $pushed) {
+            $this->recordDroppedEvent();
+        }
+
+        return new Result($pushed ? ResultStatus::success() : ResultStatus::skipped(), $event);
     }
 
     public function close(?int $timeout = null): Result
     {
         return new Result(ResultStatus::success());
+    }
+
+    /**
+     * Writing to stdout may block, so a single coroutine reports the drops: a stuck write holds neither the caller nor more coroutines.
+     * It stays until an interval passes without drops, so the last ones of a burst are reported too.
+     */
+    protected function recordDroppedEvent(): void
+    {
+        ++$this->droppedEvents;
+
+        if ($this->reportingDroppedEvents || ! $this->container->has(StdoutLoggerInterface::class)) {
+            return;
+        }
+
+        $this->reportingDroppedEvents = true;
+
+        Coroutine::create(function () {
+            while ($this->droppedEvents > 0) {
+                $droppedEvents = $this->droppedEvents;
+                $this->droppedEvents = 0;
+
+                try {
+                    $this->container->get(StdoutLoggerInterface::class)->warning(sprintf('Sentry transport channel is full, dropped %d event(s) since the last warning.', $droppedEvents));
+                } catch (Throwable) {
+                    // A failed warning must not take the worker down.
+                }
+
+                CoordinatorManager::until(Constants::WORKER_EXIT)->yield($this->dropWarningInterval);
+            }
+
+            $this->reportingDroppedEvents = false;
+        });
     }
 
     protected function loop(): void

@@ -182,6 +182,7 @@ return [
     ],
 
     // Transport configuration
+    // transport_timeout is the max seconds to wait when the channel is full, 0 drops the event immediately
     'transport_channel_size' => (int) env('SENTRY_TRANSPORT_CHANNEL_SIZE', 512),
     'transport_concurrent_limit' => (int) env('SENTRY_TRANSPORT_CONCURRENT_LIMIT', 100),
     'transport_timeout' => (float) env('SENTRY_TRANSPORT_TIMEOUT', 0),

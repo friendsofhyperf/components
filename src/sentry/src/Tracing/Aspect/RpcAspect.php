@@ -15,6 +15,7 @@ use FriendsOfHyperf\Sentry\Constants;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\SentryContext;
 use FriendsOfHyperf\Sentry\Util\Carrier;
+use FriendsOfHyperf\Sentry\Util\PayloadLimiter;
 use Hyperf\Context\Context;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\Aop\AbstractAspect;
@@ -114,7 +115,7 @@ class RpcAspect extends AbstractAspect
                     }
                     return tap($proceedingJoinPoint->process(), function ($result) use ($span) {
                         if ($this->feature->isTracingTagEnabled('rpc.result')) {
-                            $span?->setData(['rpc.result' => $result]);
+                            $span?->setData(['rpc.result' => PayloadLimiter::limit($result)]);
                         }
                         $span?->setData([
                             'server.address' => SentryContext::getRpcServerAddress() ?? 'unknown',

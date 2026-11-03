@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Tracing\Annotation\Trace;
+use FriendsOfHyperf\Sentry\Util\PayloadLimiter;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
@@ -46,16 +47,16 @@ class TraceAnnotationAspect extends AbstractAspect
 
         if (in_array($methodName, ['__call', '__callStatic'])) {
             $methodName = $proceedingJoinPoint->arguments['keys']['name'] ?? $proceedingJoinPoint->methodName;
-            $data['annotation.arguments'] = $proceedingJoinPoint->arguments['keys']['arguments'] ?? $proceedingJoinPoint->arguments['keys'];
+            $data['annotation.arguments'] = PayloadLimiter::limit($proceedingJoinPoint->arguments['keys']['arguments'] ?? $proceedingJoinPoint->arguments['keys']);
         } else {
-            $data['annotation.arguments'] = $proceedingJoinPoint->arguments['keys'];
+            $data['annotation.arguments'] = PayloadLimiter::limit($proceedingJoinPoint->arguments['keys']);
         }
 
         return trace(
             function (Scope $scope) use ($proceedingJoinPoint) {
                 return tap($proceedingJoinPoint->process(), function ($result) use ($scope) {
                     if ($this->feature->isTracingTagEnabled('annotation.result')) {
-                        $scope->getSpan()?->setData(['annotation.result' => $result]);
+                        $scope->getSpan()?->setData(['annotation.result' => PayloadLimiter::limit($result)]);
                     }
                 });
             },

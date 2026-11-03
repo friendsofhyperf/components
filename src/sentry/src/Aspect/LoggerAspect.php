@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Sentry\Aspect;
 use BackedEnum;
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\Integration;
+use FriendsOfHyperf\Sentry\Util\PayloadLimiter;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Monolog\DateTimeImmutable;
@@ -58,8 +59,8 @@ class LoggerAspect extends AbstractAspect
                 (string) $this->getSeverityFromLevel($level),
                 Breadcrumb::TYPE_DEFAULT,
                 'log.' . Logger::getLevelName($level), // @phpstan-ignore argument.type
-                $message,
-                $context,
+                PayloadLimiter::limitString((string) $message),
+                (array) PayloadLimiter::limit($context),
                 $datetime?->getTimestamp()
             ));
         });

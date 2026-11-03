@@ -13,6 +13,7 @@ namespace FriendsOfHyperf\Sentry\Tracing\Aspect;
 
 use FriendsOfHyperf\Sentry\Feature;
 use FriendsOfHyperf\Sentry\SentryContext;
+use FriendsOfHyperf\Sentry\Util\PayloadLimiter;
 use Hyperf\Di\Aop\AbstractAspect;
 use Hyperf\Di\Aop\ProceedingJoinPoint;
 use Sentry\State\Scope;
@@ -54,7 +55,7 @@ class ElasticsearchAspect extends AbstractAspect
                 return tap($proceedingJoinPoint->process(), function ($result) use ($scope) {
                     if ($this->feature->isTracingTagEnabled('elasticsearch.result')) {
                         $scope->getSpan()?->setData([
-                            'elasticsearch.result' => (string) json_encode($result, JSON_UNESCAPED_UNICODE),
+                            'elasticsearch.result' => PayloadLimiter::limitString((string) json_encode($result, JSON_UNESCAPED_UNICODE)),
                         ]);
                     }
 
