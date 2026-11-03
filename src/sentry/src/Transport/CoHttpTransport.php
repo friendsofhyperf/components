@@ -31,6 +31,8 @@ use function Hyperf\Support\msleep;
 
 class CoHttpTransport implements TransportInterface
 {
+    private const DROP_WARNING_INTERVAL = 60; // seconds
+
     protected ?Channel $chan = null;
 
     protected bool $workerExited = false;
@@ -44,6 +46,10 @@ class CoHttpTransport implements TransportInterface
     protected int $channelSize = 512;
 
     protected float $timeout = 0;
+
+    protected int $droppedEvents = 0;
+
+    protected float $lastDropWarningAt = 0;
 
     public function __construct(
         protected ContainerInterface $container,
@@ -76,8 +82,8 @@ class CoHttpTransport implements TransportInterface
             && ($this->timeout > 0 || ! $chan->isFull())
             && $chan->push($event, $this->timeout);
 
-        if (! $pushed && $this->container->has(StdoutLoggerInterface::class)) {
-            $this->container->get(StdoutLoggerInterface::class)->warning(sprintf('Sentry transport channel is full, dropping event %s.', $event->getId()));
+        if (! $pushed) {
+            $this->recordDroppedEvent();
         }
 
         return new Result($pushed ? ResultStatus::success() : ResultStatus::skipped(), $event);
@@ -86,6 +92,26 @@ class CoHttpTransport implements TransportInterface
     public function close(?int $timeout = null): Result
     {
         return new Result(ResultStatus::success());
+    }
+
+    /**
+     * Writing to stdout may block, so a burst of drops must not write once per event.
+     * The state changes before the write: a stuck write costs one coroutine per interval at most.
+     */
+    protected function recordDroppedEvent(): void
+    {
+        ++$this->droppedEvents;
+
+        $now = microtime(true);
+        if ($now - $this->lastDropWarningAt < self::DROP_WARNING_INTERVAL || ! $this->container->has(StdoutLoggerInterface::class)) {
+            return;
+        }
+
+        $droppedEvents = $this->droppedEvents;
+        $this->droppedEvents = 0;
+        $this->lastDropWarningAt = $now;
+
+        $this->container->get(StdoutLoggerInterface::class)->warning(sprintf('Sentry transport channel is full, dropped %d event(s) since the last warning.', $droppedEvents));
     }
 
     protected function loop(): void

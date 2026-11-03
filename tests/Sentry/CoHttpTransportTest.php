@@ -90,13 +90,25 @@ test('a full channel drops events without blocking by default', function () {
     expect(sendEvents($transport, 6))->toBe(['SUCCESS', 'SUCCESS', 'SUCCESS', 'SUCCESS', 'SKIPPED', 'SKIPPED']);
 });
 
-test('a dropped event is logged through the stdout logger', function () {
+test('dropped events are merged into one warning per interval', function () {
+    $messages = [];
     $logger = m::mock(StdoutLoggerInterface::class);
-    $logger->expects('warning')->once()->with(m::pattern('/channel is full, dropping event [0-9a-f]{32}/'));
+    $logger->allows('warning')->andReturnUsing(function (string $message) use (&$messages) {
+        $messages[] = $message;
+    });
 
     $transport = makeBlockedTransport(['transport_channel_size' => 1, 'transport_concurrent_limit' => 1], $this->release, $logger);
 
-    expect(sendEvents($transport, 4))->toBe(['SUCCESS', 'SUCCESS', 'SUCCESS', 'SKIPPED']);
+    // The first drop warns right away, the next two wait for the interval to end.
+    expect(sendEvents($transport, 6))->toBe(['SUCCESS', 'SUCCESS', 'SUCCESS', 'SKIPPED', 'SKIPPED', 'SKIPPED'])
+        ->and($messages)->toHaveCount(1)
+        ->and($messages[0])->toContain('dropped 1 event(s)');
+
+    (fn () => $this->lastDropWarningAt = 0.0)->call($transport);
+    sendEvents($transport, 1);
+
+    expect($messages)->toHaveCount(2)
+        ->and($messages[1])->toContain('dropped 3 event(s)');
 });
 
 test('legacy blocking timeouts are treated as drop on full', function ($timeout) {
