@@ -111,6 +111,28 @@ test('dropped events are merged into one warning per interval', function () {
         ->and($messages[1])->toContain('dropped 3 event(s)');
 });
 
+test('a stuck warning holds neither the caller nor more than one coroutine', function () {
+    $written = 0;
+    $stuck = new Channel(1);
+    $logger = m::mock(StdoutLoggerInterface::class);
+    $logger->allows('warning')->andReturnUsing(function () use (&$written, $stuck) {
+        ++$written;
+        $stuck->pop();
+    });
+
+    $transport = makeBlockedTransport(['transport_channel_size' => 1, 'transport_concurrent_limit' => 1], $this->release, $logger);
+
+    expect(sendEvents($transport, 4))->toBe(['SUCCESS', 'SUCCESS', 'SUCCESS', 'SKIPPED'])
+        ->and($written)->toBe(1);
+
+    (fn () => $this->lastDropWarningAt = 0.0)->call($transport);
+
+    expect(sendEvents($transport, 1))->toBe(['SKIPPED'])
+        ->and($written)->toBe(1);
+
+    $stuck->close();
+});
+
 test('legacy blocking timeouts are treated as drop on full', function ($timeout) {
     $transport = makeBlockedTransport([
         'transport_channel_size' => 1,

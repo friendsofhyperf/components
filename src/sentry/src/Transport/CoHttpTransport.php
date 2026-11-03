@@ -51,6 +51,8 @@ class CoHttpTransport implements TransportInterface
 
     protected float $lastDropWarningAt = 0;
 
+    protected bool $writingDropWarning = false;
+
     public function __construct(
         protected ContainerInterface $container,
     ) {
@@ -95,23 +97,36 @@ class CoHttpTransport implements TransportInterface
     }
 
     /**
-     * Writing to stdout may block, so a burst of drops must not write once per event.
-     * The state changes before the write: a stuck write costs one coroutine per interval at most.
+     * Writing to stdout may block, so the warning is written by its own coroutine, one at a time:
+     * a stuck write holds neither the caller nor more than one coroutine.
      */
     protected function recordDroppedEvent(): void
     {
         ++$this->droppedEvents;
 
         $now = microtime(true);
-        if ($now - $this->lastDropWarningAt < self::DROP_WARNING_INTERVAL || ! $this->container->has(StdoutLoggerInterface::class)) {
+        if (
+            $this->writingDropWarning
+            || $now - $this->lastDropWarningAt < self::DROP_WARNING_INTERVAL
+            || ! $this->container->has(StdoutLoggerInterface::class)
+        ) {
             return;
         }
 
         $droppedEvents = $this->droppedEvents;
         $this->droppedEvents = 0;
         $this->lastDropWarningAt = $now;
+        $this->writingDropWarning = true;
 
-        $this->container->get(StdoutLoggerInterface::class)->warning(sprintf('Sentry transport channel is full, dropped %d event(s) since the last warning.', $droppedEvents));
+        Coroutine::create(function () use ($droppedEvents) {
+            try {
+                $this->container->get(StdoutLoggerInterface::class)->warning(sprintf('Sentry transport channel is full, dropped %d event(s) since the last warning.', $droppedEvents));
+            } catch (Throwable) {
+                // A failed warning must not take the worker down.
+            } finally {
+                $this->writingDropWarning = false;
+            }
+        });
     }
 
     protected function loop(): void
