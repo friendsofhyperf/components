@@ -25,6 +25,8 @@ use Sentry\Transport\Result;
 use Sentry\Transport\ResultStatus;
 use Sentry\Transport\TransportInterface;
 
+use function Hyperf\Support\msleep;
+
 function makeBlockedTransport(array $config, Channel $release, ?StdoutLoggerInterface $logger = null): CoHttpTransport
 {
     $container = m::mock(ContainerInterface::class);
@@ -74,6 +76,7 @@ function sendEvents(CoHttpTransport $transport, int $count): array
 }
 
 beforeEach(function () {
+    CoordinatorManager::clear(Constants::WORKER_EXIT);
     $this->release = new Channel(1);
 });
 
@@ -98,17 +101,24 @@ test('dropped events are merged into one warning per interval', function () {
     });
 
     $transport = makeBlockedTransport(['transport_channel_size' => 1, 'transport_concurrent_limit' => 1], $this->release, $logger);
+    (fn () => $this->dropWarningInterval = 0.01)->call($transport);
 
     // The first drop warns right away, the next two wait for the interval to end.
     expect(sendEvents($transport, 6))->toBe(['SUCCESS', 'SUCCESS', 'SUCCESS', 'SKIPPED', 'SKIPPED', 'SKIPPED'])
         ->and($messages)->toHaveCount(1)
         ->and($messages[0])->toContain('dropped 1 event(s)');
 
-    (fn () => $this->lastDropWarningAt = 0.0)->call($transport);
-    sendEvents($transport, 1);
+    // The end of the burst is reported without any further drop.
+    msleep(50);
 
     expect($messages)->toHaveCount(2)
-        ->and($messages[1])->toContain('dropped 3 event(s)');
+        ->and($messages[1])->toContain('dropped 2 event(s)');
+
+    // Once idle, the next burst warns right away again.
+    sendEvents($transport, 1);
+
+    expect($messages)->toHaveCount(3)
+        ->and($messages[2])->toContain('dropped 1 event(s)');
 });
 
 test('a stuck warning holds neither the caller nor more than one coroutine', function () {
@@ -122,12 +132,9 @@ test('a stuck warning holds neither the caller nor more than one coroutine', fun
 
     $transport = makeBlockedTransport(['transport_channel_size' => 1, 'transport_concurrent_limit' => 1], $this->release, $logger);
 
-    expect(sendEvents($transport, 4))->toBe(['SUCCESS', 'SUCCESS', 'SUCCESS', 'SKIPPED'])
-        ->and($written)->toBe(1);
+    (fn () => $this->dropWarningInterval = 0.01)->call($transport);
 
-    (fn () => $this->lastDropWarningAt = 0.0)->call($transport);
-
-    expect(sendEvents($transport, 1))->toBe(['SKIPPED'])
+    expect(sendEvents($transport, 5))->toBe(['SUCCESS', 'SUCCESS', 'SUCCESS', 'SKIPPED', 'SKIPPED'])
         ->and($written)->toBe(1);
 
     $stuck->close();

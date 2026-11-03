@@ -31,8 +31,6 @@ use function Hyperf\Support\msleep;
 
 class CoHttpTransport implements TransportInterface
 {
-    private const DROP_WARNING_INTERVAL = 60; // seconds
-
     protected ?Channel $chan = null;
 
     protected bool $workerExited = false;
@@ -49,9 +47,9 @@ class CoHttpTransport implements TransportInterface
 
     protected int $droppedEvents = 0;
 
-    protected float $lastDropWarningAt = 0;
+    protected float $dropWarningInterval = 60;
 
-    protected bool $writingDropWarning = false;
+    protected bool $reportingDroppedEvents = false;
 
     public function __construct(
         protected ContainerInterface $container,
@@ -97,35 +95,34 @@ class CoHttpTransport implements TransportInterface
     }
 
     /**
-     * Writing to stdout may block, so the warning is written by its own coroutine, one at a time:
-     * a stuck write holds neither the caller nor more than one coroutine.
+     * Writing to stdout may block, so a single coroutine reports the drops: a stuck write holds neither the caller nor more coroutines.
+     * It stays until an interval passes without drops, so the last ones of a burst are reported too.
      */
     protected function recordDroppedEvent(): void
     {
         ++$this->droppedEvents;
 
-        $now = microtime(true);
-        if (
-            $this->writingDropWarning
-            || $now - $this->lastDropWarningAt < self::DROP_WARNING_INTERVAL
-            || ! $this->container->has(StdoutLoggerInterface::class)
-        ) {
+        if ($this->reportingDroppedEvents || ! $this->container->has(StdoutLoggerInterface::class)) {
             return;
         }
 
-        $droppedEvents = $this->droppedEvents;
-        $this->droppedEvents = 0;
-        $this->lastDropWarningAt = $now;
-        $this->writingDropWarning = true;
+        $this->reportingDroppedEvents = true;
 
-        Coroutine::create(function () use ($droppedEvents) {
-            try {
-                $this->container->get(StdoutLoggerInterface::class)->warning(sprintf('Sentry transport channel is full, dropped %d event(s) since the last warning.', $droppedEvents));
-            } catch (Throwable) {
-                // A failed warning must not take the worker down.
-            } finally {
-                $this->writingDropWarning = false;
+        Coroutine::create(function () {
+            while ($this->droppedEvents > 0) {
+                $droppedEvents = $this->droppedEvents;
+                $this->droppedEvents = 0;
+
+                try {
+                    $this->container->get(StdoutLoggerInterface::class)->warning(sprintf('Sentry transport channel is full, dropped %d event(s) since the last warning.', $droppedEvents));
+                } catch (Throwable) {
+                    // A failed warning must not take the worker down.
+                }
+
+                CoordinatorManager::until(Constants::WORKER_EXIT)->yield($this->dropWarningInterval);
             }
+
+            $this->reportingDroppedEvents = false;
         });
     }
 
