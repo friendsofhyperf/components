@@ -59,9 +59,9 @@ class PayloadLimiter
      */
     public static function guzzleOptions(array $options): array
     {
-        return array_filter(
-            array_intersect_key($options, array_flip(self::GUZZLE_OPTIONS)),
-            is_scalar(...)
+        return array_map(
+            static fn ($option) => is_string($option) ? self::limitString($option) : $option,
+            array_filter(array_intersect_key($options, array_flip(self::GUZZLE_OPTIONS)), is_scalar(...))
         );
     }
 
@@ -101,12 +101,15 @@ class PayloadLimiter
         $remaining = count($value);
 
         foreach ($value as $key => $item) {
-            if ($budget <= 0) {
+            $keyBytes = is_string($key) ? strlen($key) : self::SCALAR_BYTES;
+
+            // A key is kept whole, so one that does not fit must stay out: it could be larger than any limit.
+            if ($budget <= 0 || $keyBytes > $budget) {
                 $limited[self::TRUNCATED] = $remaining;
                 break;
             }
 
-            $budget -= is_string($key) ? strlen($key) : self::SCALAR_BYTES;
+            $budget -= $keyBytes;
             $limited[$key] = self::walk($item, $budget, $depth - 1);
             --$remaining;
         }

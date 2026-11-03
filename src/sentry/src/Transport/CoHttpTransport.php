@@ -12,6 +12,7 @@ declare(strict_types=1);
 namespace FriendsOfHyperf\Sentry\Transport;
 
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Coroutine\Concurrent;
@@ -75,8 +76,8 @@ class CoHttpTransport implements TransportInterface
             && ($this->timeout > 0 || ! $chan->isFull())
             && $chan->push($event, $this->timeout);
 
-        if (! $pushed) {
-            $this->clientBuilder?->getLogger()?->warning('Sentry transport channel is full, dropping event.', ['event_id' => (string) $event->getId()]);
+        if (! $pushed && $this->container->has(StdoutLoggerInterface::class)) {
+            $this->container->get(StdoutLoggerInterface::class)->warning(sprintf('Sentry transport channel is full, dropping event %s.', $event->getId()));
         }
 
         return new Result($pushed ? ResultStatus::success() : ResultStatus::skipped(), $event);

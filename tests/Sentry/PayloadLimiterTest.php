@@ -66,3 +66,16 @@ test('guzzle options keep only scalar transfer settings', function () {
 
     expect($options)->toBe(['timeout' => 2.0, 'http_errors' => false]);
 });
+
+test('guzzle options limit string settings', function () {
+    $options = PayloadLimiter::guzzleOptions(['timeout' => 2.0, 'verify' => str_repeat('x', 1048576)]);
+
+    expect($options['timeout'])->toBe(2.0)
+        ->and(strlen($options['verify']))->toBeLessThan(PayloadLimiter::MAX_BYTES + 32);
+});
+
+test('an oversized key is not retained', function () {
+    $limited = PayloadLimiter::limit(['small' => 'value', str_repeat('k', 1048576) => 'value', 'other' => 'value']);
+
+    expect($limited)->toBe(['small' => 'value', '… [truncated]' => 2]);
+});

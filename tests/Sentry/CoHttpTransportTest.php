@@ -14,6 +14,7 @@ namespace FriendsOfHyperf\Tests\Sentry;
 use FriendsOfHyperf\Sentry\Transport\CoHttpTransport;
 use Hyperf\Config\Config;
 use Hyperf\Contract\ConfigInterface;
+use Hyperf\Contract\StdoutLoggerInterface;
 use Hyperf\Coordinator\Constants;
 use Hyperf\Coordinator\CoordinatorManager;
 use Hyperf\Engine\Channel;
@@ -24,10 +25,12 @@ use Sentry\Transport\Result;
 use Sentry\Transport\ResultStatus;
 use Sentry\Transport\TransportInterface;
 
-function makeBlockedTransport(array $config, Channel $release): CoHttpTransport
+function makeBlockedTransport(array $config, Channel $release, ?StdoutLoggerInterface $logger = null): CoHttpTransport
 {
     $container = m::mock(ContainerInterface::class);
     $container->allows('get')->with(ConfigInterface::class)->andReturn(new Config(['sentry' => $config]));
+    $container->allows('has')->with(StdoutLoggerInterface::class)->andReturn($logger !== null);
+    $logger && $container->allows('get')->with(StdoutLoggerInterface::class)->andReturn($logger);
 
     $inner = new class($release) implements TransportInterface {
         public function __construct(private Channel $release)
@@ -85,6 +88,15 @@ test('a full channel drops events without blocking by default', function () {
     $transport = makeBlockedTransport(['transport_channel_size' => 2, 'transport_concurrent_limit' => 1], $this->release);
 
     expect(sendEvents($transport, 6))->toBe(['SUCCESS', 'SUCCESS', 'SUCCESS', 'SUCCESS', 'SKIPPED', 'SKIPPED']);
+});
+
+test('a dropped event is logged through the stdout logger', function () {
+    $logger = m::mock(StdoutLoggerInterface::class);
+    $logger->expects('warning')->once()->with(m::pattern('/channel is full, dropping event [0-9a-f]{32}/'));
+
+    $transport = makeBlockedTransport(['transport_channel_size' => 1, 'transport_concurrent_limit' => 1], $this->release, $logger);
+
+    expect(sendEvents($transport, 4))->toBe(['SUCCESS', 'SUCCESS', 'SUCCESS', 'SKIPPED']);
 });
 
 test('legacy blocking timeouts are treated as drop on full', function ($timeout) {
